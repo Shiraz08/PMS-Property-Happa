@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MagicVilla_VillaAPI.Repository.IRepostiory;
+using Microsoft.AspNetCore.Mvc;
+using PMS_PropertyHapa.Models;
+using PMS_PropertyHapa.Models.DTO;
 using System.Net;
 
 namespace PMS_PropertyHapa.API.Controllers

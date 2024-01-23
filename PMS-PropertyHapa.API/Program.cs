@@ -23,7 +23,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<ApiDbContext>();
 builder.Services.AddResponseCaching();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-//builder.Services.AddAutoMapper(typeof(MappingConfig));
+builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.AddApiVersioning(options => {
     options.AssumeDefaultVersionWhenUnspecified = true;
     options.DefaultApiVersion = new ApiVersion(1, 0);
@@ -58,16 +58,17 @@ builder.Services.AddAuthentication(x =>
         };
     });
 
-//builder.Services.AddControllers(option => {
-//    option.Filters.Add<CustomExceptionFilter>();
-//}).AddNewtonsoftJson().AddXmlDataContractSerializerFormatters().
-//ConfigureApiBehaviorOptions(option =>
-//{
-//    option.ClientErrorMapping[StatusCodes.Status500InternalServerError] = new ClientErrorData
-//    {
-//        Link = "https://dotnetmastery.com/500"
-//    };
-//});
+builder.Services.AddControllers(option =>
+{
+    option.Filters.Add<CustomExceptionFilter>();
+}).AddNewtonsoftJson().AddXmlDataContractSerializerFormatters().
+ConfigureApiBehaviorOptions(option =>
+{
+    option.ClientErrorMapping[StatusCodes.Status500InternalServerError] = new ClientErrorData
+    {
+        Link = "https://dotnetmastery.com/500"
+    };
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
@@ -79,15 +80,13 @@ app.UseSwagger();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwaggerUI(options => {
-        options.SwaggerEndpoint("/swagger/v2/swagger.json", "Magic_VillaV2");
-        options.SwaggerEndpoint("/swagger/v1/swagger.json", "Magic_VillaV1");
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "PMSPropertyHapaV1");
     });
 }
 else
 {
     app.UseSwaggerUI(options => {
-        options.SwaggerEndpoint("/swagger/v2/swagger.json", "Magic_VillaV2");
-        options.SwaggerEndpoint("/swagger/v1/swagger.json", "Magic_VillaV1");
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "PMSPropertyHapaV1");
         options.RoutePrefix = "";
     });
 }

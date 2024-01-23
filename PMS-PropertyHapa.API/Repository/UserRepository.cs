@@ -234,11 +234,16 @@ namespace MagicVilla_VillaAPI.Repository
 
         private async Task MarkAllTokenInChainAsInvalid(string userId, string tokenId)
         {
-            await _db.RefreshTokens.Where(u => u.UserId == userId
-               && u.JwtTokenId == tokenId)
-                   .ExecuteUpdateAsync(u => u.SetProperty(refreshToken => refreshToken.IsValid, false));
-    
-    }
+            var refreshToken = await _db.RefreshTokens
+            .Where(u => u.UserId == userId && u.JwtTokenId == tokenId)
+            .FirstOrDefaultAsync();
+
+            if (refreshToken != null)
+            {
+                refreshToken.IsValid = false;
+                await _db.SaveChangesAsync();
+            }
+        }
 
 
         private Task MarkTokenAsInvalid(RefreshToken refreshToken)
