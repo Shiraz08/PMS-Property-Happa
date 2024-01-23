@@ -1,15 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using PMS_PropertyHapa.Areas.Identity.Data;
-using PMS_PropertyHapa.Data;
 var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Configuration.GetConnectionString("PMS_PropertyHapaContextConnection") ?? throw new InvalidOperationException("Connection string 'PMS_PropertyHapaContextConnection' not found.");
 
-builder.Services.AddDbContext<PMS_PropertyHapaContext>(options =>
-    options.UseSqlServer(connectionString));
-
-builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<PMS_PropertyHapaContext>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
