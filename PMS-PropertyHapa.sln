@@ -7,7 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PMS-PropertyHapa", "PMS-Pro
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PMS-PropertyHapa.API", "PMS-PropertyHapa.API\PMS-PropertyHapa.API.csproj", "{01F31C9A-989F-423A-8053-1104E9EB942C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PMS-PropertyHapa.Models", "PMS-PropertyHapa.Models\PMS-PropertyHapa.Models.csproj", "{C0853E8F-C070-4034-B510-F699F8BA84E5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PMS-PropertyHapa.Models", "PMS-PropertyHapa.Models\PMS-PropertyHapa.Models.csproj", "{C0853E8F-C070-4034-B510-F699F8BA84E5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PMS-PropertyHapa.Shared", "PMS-PropertyHapa.Shared\PMS-PropertyHapa.Shared.csproj", "{92D2317F-A971-41E3-88EF-B57169DB273E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{C0853E8F-C070-4034-B510-F699F8BA84E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C0853E8F-C070-4034-B510-F699F8BA84E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C0853E8F-C070-4034-B510-F699F8BA84E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92D2317F-A971-41E3-88EF-B57169DB273E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92D2317F-A971-41E3-88EF-B57169DB273E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92D2317F-A971-41E3-88EF-B57169DB273E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92D2317F-A971-41E3-88EF-B57169DB273E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

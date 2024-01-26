@@ -12,6 +12,8 @@ using PMS_PropertyHapa.API.Middlewares;
 using PMS_PropertyHapa.API.Areas.Identity.Data;
 using PMS_PropertyHapa.API;
 using PMS_PropertyHapa.API.Filters;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using PMS_PropertyHapa.Shared.Email;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,7 +36,7 @@ builder.Services.AddVersionedApiExplorer(options =>
     options.GroupNameFormat = "'v'VVV";
     options.SubstituteApiVersionInUrl = true;
 });
-
+builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 var key = builder.Configuration.GetValue<string>("ApiSettings:Secret");
 
