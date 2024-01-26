@@ -8,7 +8,7 @@ namespace PMS_PropertyHapa.API.Controllers
 {
     [Route("api/v{version:apiVersion}/UsersAuth")]
     [ApiController]
-    [ApiVersionNeutral]
+  //  [ApiVersionNeutral]
     public class UsersController : Controller
     {
         private readonly IUserRepository _userRepo;
@@ -117,6 +117,115 @@ namespace PMS_PropertyHapa.API.Controllers
             _response.Result = "Invalid Input";
             return BadRequest(_response);
         }
+
+
+
+        #region Registeration 
+
+        [HttpPost("register/tenant")]
+        public async Task<IActionResult> RegisterTenant([FromBody] RegisterationRequestDTO model)
+        {
+            var user = await _userRepo.RegisterTenant(model);
+
+            if (user == null || user.ID == null)
+            {
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                _response.IsSuccess = false;
+                _response.ErrorMessages.Add("Error while registering tenant");
+                return BadRequest(_response);
+            }
+
+            _response.StatusCode = HttpStatusCode.OK;
+            _response.IsSuccess = true;
+            _response.Result = user;
+            return Ok(_response);
+        }
+
+
+
+
+        [HttpPost("register/admin")]
+        public async Task<IActionResult> RegisterAdmin([FromBody] RegisterationRequestDTO model)
+        {
+            try
+            {
+
+
+                var user = await _userRepo.RegisterAdmin(model);
+                if (user == null || user.ID == null)
+                {
+                    _response.StatusCode = HttpStatusCode.BadRequest;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("Error while registering admin");
+                    return BadRequest(_response);
+                }
+                _response.StatusCode = HttpStatusCode.OK;
+                _response.IsSuccess = true;
+                _response.Result = user;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+
+        [HttpPost("register/user")]
+        public async Task<IActionResult> RegisterUser([FromBody] RegisterationRequestDTO model)
+        {
+           
+            var user = await _userRepo.RegisterUser(model);
+            if (user == null || user.ID == null)
+            {
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                _response.IsSuccess = false;
+                _response.ErrorMessages.Add("Error while registering user");
+                return BadRequest(_response);
+            }
+            _response.StatusCode = HttpStatusCode.OK;
+            _response.IsSuccess = true;
+            _response.Result = user;
+            return Ok(_response);
+        }
+
+
+
+        #endregion
+
+
+
+
+
+        #region ChangePassword, ForgetPassword, Reset Password
+        [HttpPost("change-password")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequestDto model)
+        {
+            bool isCurrentPasswordValid = await _userRepo.ValidateCurrentPassword(model.UserName, model.Password);
+            if (!isCurrentPasswordValid)
+            {
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                _response.IsSuccess = false;
+                _response.ErrorMessages.Add("Current password is incorrect");
+                return BadRequest(_response);
+            }
+
+            var result = await _userRepo.ChangePassword(model.UserName, model.Password, model.NewPassword);
+            if (!result)
+            {
+                _response.StatusCode = HttpStatusCode.InternalServerError;
+                _response.IsSuccess = false;
+                _response.ErrorMessages.Add("Error while changing password");
+                return StatusCode(500, _response); 
+            }
+
+            _response.StatusCode = HttpStatusCode.OK;
+            _response.IsSuccess = true;
+            _response.Result = "Password changed successfully";
+            return Ok(_response);
+        }
+
+        #endregion
 
     }
 }
