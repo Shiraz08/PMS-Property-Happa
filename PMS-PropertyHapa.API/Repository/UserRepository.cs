@@ -334,9 +334,9 @@ namespace MagicVilla_VillaAPI.Repository
 
 
 
-        public async Task<bool> ValidateCurrentPassword(string userName, string currentPassword)
+        public async Task<bool> ValidateCurrentPassword(long userId, string currentPassword)
         {
-            var user = await _userManager.FindByNameAsync(userName);
+            var user = await _userManager.FindByIdAsync(userId.ToString());
             if (user != null)
             {
                 return await _userManager.CheckPasswordAsync(user, currentPassword);
@@ -344,14 +344,12 @@ namespace MagicVilla_VillaAPI.Repository
             return false;
         }
 
-
-
-        public async Task<bool> ChangePassword(string userName, string currentPassword, string newPassword)
+        public async Task<bool> ChangePassword(long userId, string currentPassword, string newPassword)
         {
-            var user = await _userManager.FindByNameAsync(userName);
+            var user = await _userManager.FindByIdAsync(userId.ToString());
             if (user == null)
             {
-                return false; 
+                return false;
             }
             if (await _userManager.CheckPasswordAsync(user, currentPassword))
             {
@@ -359,8 +357,9 @@ namespace MagicVilla_VillaAPI.Repository
                 return result.Succeeded;
             }
 
-            return false; 
+            return false;
         }
+
 
 
         #endregion

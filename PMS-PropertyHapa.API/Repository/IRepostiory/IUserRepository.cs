@@ -18,8 +18,8 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
 
         Task<UserDTO> RegisterUser(RegisterationRequestDTO registrationRequestDTO);
 
-        Task<bool> ValidateCurrentPassword(string userName, string currentPassword);
+        Task<bool> ValidateCurrentPassword(long userId, string currentPassword);
 
-        Task<bool> ChangePassword(string userName, string currentPassword, string newPassword);
+        Task<bool> ChangePassword(long userId, string currentPassword, string newPassword);
     }
 }

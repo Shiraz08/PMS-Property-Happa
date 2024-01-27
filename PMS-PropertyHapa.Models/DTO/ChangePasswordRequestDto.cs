@@ -9,10 +9,9 @@ namespace PMS_PropertyHapa.Models.DTO
     public class ChangePasswordRequestDto
     {
         public long userId { get; set; }
-        public string UserName { get; set; }
-        public string Password { get; set; }
-        public string NewPassword { get; set; }
-
+        public string currentPassword { get; set; }
+        public string newPassword { get; set; }
+        public string newRepeatPassword { get; set; }
 
     }
 }
