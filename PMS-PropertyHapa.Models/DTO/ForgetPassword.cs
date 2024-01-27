@@ -8,13 +8,11 @@ namespace PMS_PropertyHapa.Models.DTO
 {
     public class ForgetPassword
     {
-        public long userId { get; set; }
-        public string UserName { get; set; }
         public string Email { get; set; }
-        public string OfficialPhone { get; set; }
-        public string LastPassword { get; set; }
-        public string NewPassword { get; set; }
-        public string NewRepeatPassword { get; set; }
+        //public string OfficialPhone { get; set; }
+        //public string LastPassword { get; set; }
+        //public string NewPassword { get; set; }
+        //public string NewRepeatPassword { get; set; }
 
     }
 }

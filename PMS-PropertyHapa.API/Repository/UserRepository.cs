@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using MagicVilla_VillaAPI.Repository.IRepostiory;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using PMS_PropertyHapa.API.Areas.Identity.Data;
 using PMS_PropertyHapa.Models;
 using PMS_PropertyHapa.Models.DTO;
+using PMS_PropertyHapa.Shared.Email;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -19,15 +21,17 @@ namespace MagicVilla_VillaAPI.Repository
         private readonly RoleManager<IdentityRole> _roleManager;
         private string secretKey;
         private readonly IMapper _mapper;
+        private readonly IEmailSender _emailSender;
 
         public UserRepository(ApiDbContext db, IConfiguration configuration,
-            UserManager<ApplicationUser> userManager, IMapper mapper, RoleManager<IdentityRole> roleManager)
+            UserManager<ApplicationUser> userManager, IMapper mapper, RoleManager<IdentityRole> roleManager, IEmailSender emailSender)
         {
             _db = db;
             _mapper = mapper;
             _userManager = userManager;
             secretKey = configuration.GetValue<string>("ApiSettings:Secret");
             _roleManager = roleManager;
+            _emailSender = emailSender;
         }
 
         public bool IsUniqueUser(string username)
@@ -361,6 +365,51 @@ namespace MagicVilla_VillaAPI.Repository
         }
 
 
+
+
+        public async Task<ApplicationUser> FindByEmailAsync(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                return null;
+            }
+
+            return await _userManager.Users
+                                 .FirstOrDefaultAsync(u => u.Email == email);
+        }
+
+
+
+        public async Task<string> GeneratePasswordResetTokenAsync(ApplicationUser user)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
+
+            return await _userManager.GeneratePasswordResetTokenAsync(user);
+        }
+
+
+        public async Task SendResetPasswordEmailAsync(ApplicationUser user, string callbackUrl)
+        {
+            if (user == null)
+                throw new ArgumentNullException(nameof(user));
+
+            if (string.IsNullOrWhiteSpace(callbackUrl))
+                throw new ArgumentException("Callback URL is required.", nameof(callbackUrl));
+
+            string emailContent = $"To reset your password, follow this link: <a href='{callbackUrl}'>link</a>";
+            string Subject = "Reset Password Request";
+            await _emailSender.SendEmailAsync(user.Email, Subject, emailContent);
+        }
+
+
+
+        public async Task<IdentityResult> ResetPasswordAsync(ApplicationUser user,string token, string newPassword)
+        {
+            return await _userManager.ResetPasswordAsync(user,token, newPassword);
+        }
 
         #endregion
 

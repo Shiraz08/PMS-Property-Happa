@@ -7,19 +7,18 @@ using System.Net;
 using PMS_PropertyHapa.API.Areas.Identity.Data;
 using PMS_PropertyHapa.Shared.Email;
 using Microsoft.AspNetCore.Identity.UI.Services;
-
+using System.Web;
 
 namespace PMS_PropertyHapa.API.Controllers
 {
     [Route("api/v1/UsersAuth")]
     [ApiController]
-  //  [ApiVersionNeutral]
+    //  [ApiVersionNeutral]
     public class UsersController : Controller
     {
         private readonly IUserRepository _userRepo;
         private readonly IEmailSender _emailSender;
         protected APIResponse _response;
-        private readonly UserManager<ApplicationUser> _userManager;
 
         public UsersController(IUserRepository userRepo)
         {
@@ -87,7 +86,7 @@ namespace PMS_PropertyHapa.API.Controllers
             if (ModelState.IsValid)
             {
                 var tokenDTOResponse = await _userRepo.RefreshAccessToken(tokenDTO);
-                if (tokenDTOResponse==null || string.IsNullOrEmpty(tokenDTOResponse.AccessToken))
+                if (tokenDTOResponse == null || string.IsNullOrEmpty(tokenDTOResponse.AccessToken))
                 {
                     _response.StatusCode = HttpStatusCode.BadRequest;
                     _response.IsSuccess = false;
@@ -105,21 +104,21 @@ namespace PMS_PropertyHapa.API.Controllers
                 _response.Result = "Invalid Input";
                 return BadRequest(_response);
             }
-            
+
         }
 
 
         [HttpPost("revoke")]
         public async Task<IActionResult> RevokeRefreshToken([FromBody] TokenDTO tokenDTO)
         {
-            
+
             if (ModelState.IsValid)
             {
                 await _userRepo.RevokeRefreshToken(tokenDTO);
                 _response.IsSuccess = true;
                 _response.StatusCode = HttpStatusCode.OK;
                 return Ok(_response);
-                
+
             }
             _response.IsSuccess = false;
             _response.Result = "Invalid Input";
@@ -182,7 +181,7 @@ namespace PMS_PropertyHapa.API.Controllers
         [HttpPost("register/user")]
         public async Task<IActionResult> RegisterUser([FromBody] RegisterationRequestDTO model)
         {
-           
+
             var user = await _userRepo.RegisterUser(model);
             if (user == null || user.userID == null)
             {
@@ -239,37 +238,28 @@ namespace PMS_PropertyHapa.API.Controllers
         }
 
 
-
         [HttpPost("reset-password")]
-        public async Task<IActionResult> ResetPassword([FromBody] ChangePasswordRequestDto model, string token)
+        public async Task<IActionResult> ResetPassword(ResetPasswordDto model)
         {
-            var user = await _userManager.FindByIdAsync(model.userId.ToString());
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var user = await _userRepo.FindByEmailAsync(model.Email);
             if (user == null)
             {
-                _response.StatusCode = HttpStatusCode.BadRequest;
-                _response.IsSuccess = false;
-                _response.ErrorMessages.Add("User not found");
-                return BadRequest(_response);
+                return BadRequest("Invalid request.");
             }
-
-            if (model.newPassword != model.newRepeatPassword)
+            if (model.Password != model.ConfirmPassword)
             {
-                _response.StatusCode = HttpStatusCode.BadRequest;
-                _response.IsSuccess = false;
-                _response.ErrorMessages.Add("New password and confirmation password do not match");
-                return BadRequest(_response);
+                return BadRequest("The password and confirmation password do not match.");
             }
-
-            var decodedToken = WebUtility.UrlDecode(token);
-            var resetPassResult = await _userManager.ResetPasswordAsync(user, decodedToken, model.newPassword);
-            if (!resetPassResult.Succeeded)
+            var result = await _userRepo.ResetPasswordAsync(user, model.Token, model.Password);
+            if (!result.Succeeded)
             {
-                _response.StatusCode = HttpStatusCode.InternalServerError;
-                _response.IsSuccess = false;
-                _response.ErrorMessages.Add("Error while resetting the password");
-                return StatusCode(500, _response);
+                var errors = result.Errors.Select(e => e.Description);
+                return BadRequest(new { Errors = errors });
             }
-
             _response.StatusCode = HttpStatusCode.OK;
             _response.IsSuccess = true;
             _response.Result = "Password has been reset successfully";
@@ -278,33 +268,28 @@ namespace PMS_PropertyHapa.API.Controllers
 
 
 
-
         [HttpPost("forgot-password")]
         public async Task<IActionResult> ForgotPassword(ForgetPassword model)
         {
-            var user = await _userManager.FindByEmailAsync(model.Email);
+            var user = await _userRepo.FindByEmailAsync(model.Email);
             if (user == null)
             {
-                _response.StatusCode = HttpStatusCode.OK; 
-                _response.IsSuccess = true; 
+                _response.StatusCode = HttpStatusCode.OK;
+                _response.IsSuccess = true;
                 return Ok(_response);
             }
 
-            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-            var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, token = token }, protocol: HttpContext.Request.Scheme);
-
-            await _emailSender.SendEmailAsync(user.Email, "Reset Password Request", $"To reset your password, follow this link: <a href='{callbackUrl}'>link</a>");
+            var token = await _userRepo.GeneratePasswordResetTokenAsync(user);
+            var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.Value}";
+            var callbackUrl = $"{baseUrl}/reset-password?token={HttpUtility.UrlEncode(token)}";
+            await _userRepo.SendResetPasswordEmailAsync(user, callbackUrl);
 
             _response.StatusCode = HttpStatusCode.OK;
             _response.IsSuccess = true;
             _response.Result = "Reset password email sent successfully";
             return Ok(_response);
+
         }
-
-
-
-
         #endregion
-
     }
 }

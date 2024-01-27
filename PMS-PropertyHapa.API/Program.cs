@@ -22,9 +22,11 @@ builder.Services.AddDbContext<ApiDbContext>(option => {
     option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultSQLConnection"));
 });
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-    .AddEntityFrameworkStores<ApiDbContext>();
+    .AddEntityFrameworkStores<ApiDbContext>()
+    .AddDefaultTokenProviders();
 builder.Services.AddResponseCaching();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.AddApiVersioning(options => {
     options.AssumeDefaultVersionWhenUnspecified = true;
@@ -39,6 +41,7 @@ builder.Services.AddVersionedApiExplorer(options =>
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 var key = builder.Configuration.GetValue<string>("ApiSettings:Secret");
+
 
 builder.Services.AddAuthentication(x =>
 {

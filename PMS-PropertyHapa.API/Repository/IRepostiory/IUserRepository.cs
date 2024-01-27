@@ -1,4 +1,6 @@
 ﻿
+using Microsoft.AspNetCore.Identity;
+using PMS_PropertyHapa.API.Areas.Identity.Data;
 using PMS_PropertyHapa.Models.DTO;
 
 namespace MagicVilla_VillaAPI.Repository.IRepostiory
@@ -21,5 +23,16 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
         Task<bool> ValidateCurrentPassword(long userId, string currentPassword);
 
         Task<bool> ChangePassword(long userId, string currentPassword, string newPassword);
+
+        Task<ApplicationUser> FindByEmailAsync(string email);
+
+        Task<string> GeneratePasswordResetTokenAsync(ApplicationUser user);
+
+        Task SendResetPasswordEmailAsync(ApplicationUser user, string callbackUrl);
+
+
+        Task<IdentityResult> ResetPasswordAsync(ApplicationUser user,string token, string newPassword);
+
+
     }
 }
