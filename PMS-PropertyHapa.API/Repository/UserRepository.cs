@@ -252,6 +252,120 @@ namespace MagicVilla_VillaAPI.Repository
            return _db.SaveChangesAsync();
         }
 
-       
+
+
+
+        #region Registeration Section
+        public async Task<UserDTO> RegisterTenant(RegisterationRequestDTO registrationRequestDTO)
+        {
+            ApplicationUser user = new ApplicationUser
+            {
+                UserName = registrationRequestDTO.UserName,
+                PasswordHash = registrationRequestDTO.Password,
+                Name = registrationRequestDTO.Name
+            };
+
+            var result = await _userManager.CreateAsync(user, registrationRequestDTO.Password);
+            if (result.Succeeded)
+            {
+                if (!await _roleManager.RoleExistsAsync("Tenant"))
+                {
+                    await _roleManager.CreateAsync(new IdentityRole("Tenant"));
+                }
+
+                await _userManager.AddToRoleAsync(user, "Tenant");
+
+                return _mapper.Map<UserDTO>(user);
+            }
+
+            return new UserDTO();
+        }
+
+
+        public async Task<UserDTO> RegisterAdmin(RegisterationRequestDTO registrationRequestDTO)
+        {
+            ApplicationUser user = new ApplicationUser
+            {
+                UserName = registrationRequestDTO.UserName,
+                PasswordHash = registrationRequestDTO.Password,
+                Name = registrationRequestDTO.Name
+            };
+
+            var result = await _userManager.CreateAsync(user, registrationRequestDTO.Password);
+            if (result.Succeeded)
+            {
+                if (!await _roleManager.RoleExistsAsync("Admin"))
+                {
+                    await _roleManager.CreateAsync(new IdentityRole("Admin"));
+                }
+                await _userManager.AddToRoleAsync(user, "Admin");
+
+                return _mapper.Map<UserDTO>(user);
+            }
+
+            return new UserDTO();
+        }
+
+
+
+        public async Task<UserDTO> RegisterUser(RegisterationRequestDTO registrationRequestDTO)
+        {
+            ApplicationUser user = new ApplicationUser
+            {
+                UserName = registrationRequestDTO.UserName,
+                PasswordHash = registrationRequestDTO.Password,
+                Name = registrationRequestDTO.Name
+            };
+
+            var result = await _userManager.CreateAsync(user, registrationRequestDTO.Password);
+            if (result.Succeeded)
+            {
+                if (!await _roleManager.RoleExistsAsync("User"))
+                {
+                    await _roleManager.CreateAsync(new IdentityRole("User"));
+                }
+                await _userManager.AddToRoleAsync(user, "User");
+
+                return _mapper.Map<UserDTO>(user);
+            }
+            return new UserDTO();
+        }
+
+
+
+
+        public async Task<bool> ValidateCurrentPassword(long userId, string currentPassword)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user != null)
+            {
+                return await _userManager.CheckPasswordAsync(user, currentPassword);
+            }
+            return false;
+        }
+
+        public async Task<bool> ChangePassword(long userId, string currentPassword, string newPassword)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+            {
+                return false;
+            }
+            if (await _userManager.CheckPasswordAsync(user, currentPassword))
+            {
+                var result = await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+                return result.Succeeded;
+            }
+
+            return false;
+        }
+
+
+
+        #endregion
+
+
+
+
     }
 }

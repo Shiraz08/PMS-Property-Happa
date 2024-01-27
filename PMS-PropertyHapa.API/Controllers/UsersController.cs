@@ -1,18 +1,26 @@
 ﻿using MagicVilla_VillaAPI.Repository.IRepostiory;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using PMS_PropertyHapa.Models;
 using PMS_PropertyHapa.Models.DTO;
 using System.Net;
+using PMS_PropertyHapa.API.Areas.Identity.Data;
+using PMS_PropertyHapa.Shared.Email;
+using Microsoft.AspNetCore.Identity.UI.Services;
+
 
 namespace PMS_PropertyHapa.API.Controllers
 {
-    [Route("api/v{version:apiVersion}/UsersAuth")]
+    [Route("api/v1/UsersAuth")]
     [ApiController]
-    [ApiVersionNeutral]
+  //  [ApiVersionNeutral]
     public class UsersController : Controller
     {
         private readonly IUserRepository _userRepo;
+        private readonly IEmailSender _emailSender;
         protected APIResponse _response;
+        private readonly UserManager<ApplicationUser> _userManager;
+
         public UsersController(IUserRepository userRepo)
         {
             _userRepo = userRepo;
@@ -117,6 +125,186 @@ namespace PMS_PropertyHapa.API.Controllers
             _response.Result = "Invalid Input";
             return BadRequest(_response);
         }
+
+
+
+        #region Registeration 
+
+        [HttpPost("register/tenant")]
+        public async Task<IActionResult> RegisterTenant([FromBody] RegisterationRequestDTO model)
+        {
+            var user = await _userRepo.RegisterTenant(model);
+
+            if (user == null || user.userID == null)
+            {
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                _response.IsSuccess = false;
+                _response.ErrorMessages.Add("Error while registering tenant");
+                return BadRequest(_response);
+            }
+
+            _response.StatusCode = HttpStatusCode.OK;
+            _response.IsSuccess = true;
+            _response.Result = user;
+            return Ok(_response);
+        }
+
+
+
+
+        [HttpPost("register/admin")]
+        public async Task<IActionResult> RegisterAdmin([FromBody] RegisterationRequestDTO model)
+        {
+            try
+            {
+
+
+                var user = await _userRepo.RegisterAdmin(model);
+                if (user == null || user.userID == null)
+                {
+                    _response.StatusCode = HttpStatusCode.BadRequest;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("Error while registering admin");
+                    return BadRequest(_response);
+                }
+                _response.StatusCode = HttpStatusCode.OK;
+                _response.IsSuccess = true;
+                _response.Result = user;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+
+        [HttpPost("register/user")]
+        public async Task<IActionResult> RegisterUser([FromBody] RegisterationRequestDTO model)
+        {
+           
+            var user = await _userRepo.RegisterUser(model);
+            if (user == null || user.userID == null)
+            {
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                _response.IsSuccess = false;
+                _response.ErrorMessages.Add("Error while registering user");
+                return BadRequest(_response);
+            }
+            _response.StatusCode = HttpStatusCode.OK;
+            _response.IsSuccess = true;
+            _response.Result = user;
+            return Ok(_response);
+        }
+
+
+
+        #endregion
+
+
+
+
+
+        #region ChangePassword, ForgetPassword, Reset Password
+
+        [HttpPost("change-password")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequestDto model)
+        {
+            if (!await _userRepo.ValidateCurrentPassword(model.userId, model.currentPassword))
+            {
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                _response.IsSuccess = false;
+                _response.ErrorMessages.Add("Current password is incorrect");
+                return BadRequest(_response);
+            }
+
+            if (model.newPassword != model.newRepeatPassword)
+            {
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                _response.IsSuccess = false;
+                _response.ErrorMessages.Add("New password and confirmation password do not match");
+                return BadRequest(_response);
+            }
+            if (!await _userRepo.ChangePassword(model.userId, model.currentPassword, model.newPassword))
+            {
+                _response.StatusCode = HttpStatusCode.InternalServerError;
+                _response.IsSuccess = false;
+                _response.ErrorMessages.Add("Error while changing password");
+                return StatusCode(500, _response);
+            }
+            _response.StatusCode = HttpStatusCode.OK;
+            _response.IsSuccess = true;
+            _response.Result = "Password changed successfully";
+            return Ok(_response);
+        }
+
+
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ChangePasswordRequestDto model, string token)
+        {
+            var user = await _userManager.FindByIdAsync(model.userId.ToString());
+            if (user == null)
+            {
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                _response.IsSuccess = false;
+                _response.ErrorMessages.Add("User not found");
+                return BadRequest(_response);
+            }
+
+            if (model.newPassword != model.newRepeatPassword)
+            {
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                _response.IsSuccess = false;
+                _response.ErrorMessages.Add("New password and confirmation password do not match");
+                return BadRequest(_response);
+            }
+
+            var decodedToken = WebUtility.UrlDecode(token);
+            var resetPassResult = await _userManager.ResetPasswordAsync(user, decodedToken, model.newPassword);
+            if (!resetPassResult.Succeeded)
+            {
+                _response.StatusCode = HttpStatusCode.InternalServerError;
+                _response.IsSuccess = false;
+                _response.ErrorMessages.Add("Error while resetting the password");
+                return StatusCode(500, _response);
+            }
+
+            _response.StatusCode = HttpStatusCode.OK;
+            _response.IsSuccess = true;
+            _response.Result = "Password has been reset successfully";
+            return Ok(_response);
+        }
+
+
+
+
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword(ForgetPassword model)
+        {
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                _response.StatusCode = HttpStatusCode.OK; 
+                _response.IsSuccess = true; 
+                return Ok(_response);
+            }
+
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, token = token }, protocol: HttpContext.Request.Scheme);
+
+            await _emailSender.SendEmailAsync(user.Email, "Reset Password Request", $"To reset your password, follow this link: <a href='{callbackUrl}'>link</a>");
+
+            _response.StatusCode = HttpStatusCode.OK;
+            _response.IsSuccess = true;
+            _response.Result = "Reset password email sent successfully";
+            return Ok(_response);
+        }
+
+
+
+
+        #endregion
 
     }
 }
