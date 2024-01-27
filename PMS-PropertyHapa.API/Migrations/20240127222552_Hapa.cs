@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace PMS_PropertyHapa.API.Migrations
 {
-    public partial class demo : Migration
+    public partial class Hapa : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

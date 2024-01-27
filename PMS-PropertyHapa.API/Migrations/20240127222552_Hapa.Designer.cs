@@ -12,8 +12,8 @@ using PMS_PropertyHapa.API.Areas.Identity.Data;
 namespace PMS_PropertyHapa.API.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    [Migration("20240126140556_demo")]
-    partial class demo
+    [Migration("20240127222552_Hapa")]
+    partial class Hapa
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

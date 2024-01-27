@@ -9,7 +9,7 @@ using PMS_PropertyHapa.Shared.Email;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using System.Web;
 
-namespace PMS_PropertyHapa.API.Controllers
+namespace PMS_PropertyHapa.API.Controllers.V1
 {
     [Route("api/v1/UsersAuth")]
     [ApiController]
@@ -245,16 +245,12 @@ namespace PMS_PropertyHapa.API.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var user = await _userRepo.FindByEmailAsync(model.Email);
-            if (user == null)
-            {
-                return BadRequest("Invalid request.");
-            }
+
             if (model.Password != model.ConfirmPassword)
             {
                 return BadRequest("The password and confirmation password do not match.");
             }
-            var result = await _userRepo.ResetPasswordAsync(user, model.Token, model.Password);
+            var result = await _userRepo.ResetPasswordAsync(model);
             if (!result.Succeeded)
             {
                 var errors = result.Errors.Select(e => e.Description);

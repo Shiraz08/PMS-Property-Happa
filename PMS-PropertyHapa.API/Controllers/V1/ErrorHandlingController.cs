@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace PMS_PropertyHapa.API.Controllers
+namespace PMS_PropertyHapa.API.Controllers.V1
 {
     [Route("ErrorHandling")]
     [ApiController]
@@ -30,6 +30,6 @@ namespace PMS_PropertyHapa.API.Controllers
             {
                 return Problem();
             }
-        } 
+        }
     }
 }

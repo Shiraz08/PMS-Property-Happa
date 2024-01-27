@@ -31,7 +31,7 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
         Task SendResetPasswordEmailAsync(ApplicationUser user, string callbackUrl);
 
 
-        Task<IdentityResult> ResetPasswordAsync(ApplicationUser user,string token, string newPassword);
+        Task<IdentityResult> ResetPasswordAsync(ResetPasswordDto user);
 
 
     }

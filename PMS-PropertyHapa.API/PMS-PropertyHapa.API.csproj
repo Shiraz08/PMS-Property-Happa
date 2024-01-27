@@ -35,7 +35,6 @@
 
 
 	<ItemGroup>
-	  <Folder Include="Controllers\V1\" />
 	  <ProjectReference Include="..\PMS-PropertyHapa.Models\PMS-PropertyHapa.Models.csproj" />
 	  <ProjectReference Include="..\PMS-PropertyHapa.Shared\PMS-PropertyHapa.Shared.csproj" />
 	</ItemGroup>

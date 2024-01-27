@@ -2,6 +2,7 @@
 using MagicVilla_VillaAPI.Repository.IRepostiory;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using PMS_PropertyHapa.API.Areas.Identity.Data;
@@ -406,10 +407,20 @@ namespace MagicVilla_VillaAPI.Repository
 
 
 
-        public async Task<IdentityResult> ResetPasswordAsync(ApplicationUser user,string token, string newPassword)
+        public async Task<IdentityResult> ResetPasswordAsync(ResetPasswordDto model)
         {
-            return await _userManager.ResetPasswordAsync(user,token, newPassword);
+            var user = await FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                return IdentityResult.Failed(new IdentityError { Description = "User not found" });
+            }
+
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var result = await _userManager.ResetPasswordAsync(user, token, model.Password);
+
+            return result;
         }
+
 
         #endregion
 
