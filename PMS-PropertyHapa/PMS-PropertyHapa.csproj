@@ -10,12 +10,20 @@
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.26" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.26" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.26" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.26">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.16" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PMS-PropertyHapa.Models\PMS-PropertyHapa.Models.csproj" />
+    <ProjectReference Include="..\PMS-PropertyHapa.Shared\PMS-PropertyHapa.Shared.csproj" />
   </ItemGroup>
 
   

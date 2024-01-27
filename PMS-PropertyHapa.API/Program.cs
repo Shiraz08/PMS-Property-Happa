@@ -14,6 +14,8 @@ using PMS_PropertyHapa.API;
 using PMS_PropertyHapa.API.Filters;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using PMS_PropertyHapa.Shared.Email;
+using Hangfire;
+using Hangfire.SqlServer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,12 +43,16 @@ builder.Services.AddVersionedApiExplorer(options =>
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 var key = builder.Configuration.GetValue<string>("ApiSettings:Secret");
+var ValidAudience = builder.Configuration.GetValue<string>("ApiSettings:ValidAudience");
+var ValidIssuer = builder.Configuration.GetValue<string>("ApiSettings:ValidIssuer");
 
 
 builder.Services.AddAuthentication(x =>
 {
     x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+
 })
     .AddJwtBearer(x => {
         x.RequireHttpsMetadata = false;
@@ -56,8 +62,8 @@ builder.Services.AddAuthentication(x =>
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(key)),
             ValidateIssuer = true,
-            ValidIssuer = "https://magicvilla-api.com",
-            ValidAudience = "dotnetmastery.com",
+            ValidIssuer = ValidIssuer,
+            ValidAudience = ValidAudience,
             ValidateAudience = true,
             ClockSkew = TimeSpan.Zero,
         };
@@ -78,6 +84,22 @@ ConfigureApiBehaviorOptions(option =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddHangfire(configuration => configuration
+    .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+    .UseSimpleAssemblyNameTypeSerializer()
+    .UseRecommendedSerializerSettings()
+    .UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultSQLConnection"), new SqlServerStorageOptions
+    {
+        CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+        SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+        QueuePollInterval = TimeSpan.Zero,
+        UseRecommendedIsolationLevel = true,
+        DisableGlobalLocks = true
+    }));
+builder.Services.AddHangfireServer();
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
 var app = builder.Build();
 app.UseSwagger();
 
@@ -104,7 +126,7 @@ app.UseStaticFiles();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.MapHangfireDashboard();
 app.MapControllers();
 ApplyMigration();
 app.Run();
