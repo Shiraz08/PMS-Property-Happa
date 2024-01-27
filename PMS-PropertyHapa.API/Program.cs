@@ -37,11 +37,15 @@ builder.Services.AddVersionedApiExplorer(options =>
 
 
 var key = builder.Configuration.GetValue<string>("ApiSettings:Secret");
+var ValidAudience = builder.Configuration.GetValue<string>("ApiSettings:ValidAudience");
+var ValidIssuer = builder.Configuration.GetValue<string>("ApiSettings:ValidIssuer");
 
 builder.Services.AddAuthentication(x =>
 {
     x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+
 })
     .AddJwtBearer(x => {
         x.RequireHttpsMetadata = false;
@@ -51,8 +55,8 @@ builder.Services.AddAuthentication(x =>
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(key)),
             ValidateIssuer = true,
-            ValidIssuer = "https://magicvilla-api.com",
-            ValidAudience = "dotnetmastery.com",
+            ValidIssuer = ValidIssuer,
+            ValidAudience = ValidAudience,
             ValidateAudience = true,
             ClockSkew = TimeSpan.Zero,
         };

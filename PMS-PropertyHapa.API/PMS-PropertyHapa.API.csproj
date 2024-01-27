@@ -29,12 +29,12 @@
 
 
 	<ItemGroup>
-	  <Folder Include="Controllers\v1\" />
+	  <ProjectReference Include="..\PMS-PropertyHapa.Models\PMS-PropertyHapa.Models.csproj" />
 	</ItemGroup>
 
 
 	<ItemGroup>
-	  <ProjectReference Include="..\PMS-PropertyHapa.Models\PMS-PropertyHapa.Models.csproj" />
+	  <Folder Include="Controllers\V1\" />
 	</ItemGroup>
 
 </Project>
