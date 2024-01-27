@@ -47,5 +47,38 @@ namespace PMS_PropertyHapa.Services
                 Url = villaUrl + $"/api/{SD.CurrentAPIVersion}/UsersAuth/revoke"
             });
         }
+
+
+        #region Change Password, Forgot Password, Reset Password 
+        public async Task<T> ChangePasswordAsync<T>(ChangePasswordRequestDto obj)
+        {
+            return await _baseService.SendAsync<T>(new APIRequest()
+            {
+                ApiType = SD.ApiType.POST,
+                Data = obj,
+                Url = villaUrl + $"/api/{SD.CurrentAPIVersion}/UsersAuth/change-password"
+            });
+        }
+
+        public async Task<T> ForgotPasswordAsync<T>(ForgetPassword obj)
+        {
+            return await _baseService.SendAsync<T>(new APIRequest()
+            {
+                ApiType = SD.ApiType.POST,
+                Data = obj,
+                Url = villaUrl + $"/api/{SD.CurrentAPIVersion}/UsersAuth/forgot-password"
+            });
+        }
+
+        public async Task<T> ResetPasswordAsync<T>(ResetPasswordDto obj)
+        {
+            return await _baseService.SendAsync<T>(new APIRequest()
+            {
+                ApiType = SD.ApiType.POST,
+                Data = obj,
+                Url = villaUrl + $"/api/{SD.CurrentAPIVersion}/UsersAuth/reset-password"
+            });
+        }
+        #endregion
     }
 }
