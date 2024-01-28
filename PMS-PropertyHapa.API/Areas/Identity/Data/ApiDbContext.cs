@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using PMS_PropertyHapa.Models;
+using PMS_PropertyHapa.Models.Entities;
 
 namespace PMS_PropertyHapa.API.Areas.Identity.Data
 {
@@ -12,6 +13,7 @@ namespace PMS_PropertyHapa.API.Areas.Identity.Data
         }
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<Tenant> Tenant { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
