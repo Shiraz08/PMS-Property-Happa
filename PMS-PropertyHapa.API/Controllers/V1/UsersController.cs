@@ -8,6 +8,7 @@ using PMS_PropertyHapa.API.Areas.Identity.Data;
 using PMS_PropertyHapa.Shared.Email;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using System.Web;
+using System.Security.Claims;
 
 namespace PMS_PropertyHapa.API.Controllers.V1
 {
@@ -18,12 +19,14 @@ namespace PMS_PropertyHapa.API.Controllers.V1
     {
         private readonly IUserRepository _userRepo;
         private readonly IEmailSender _emailSender;
+        private readonly UserManager<ApplicationUser> _userManager;
         protected APIResponse _response;
 
-        public UsersController(IUserRepository userRepo)
+        public UsersController(IUserRepository userRepo, UserManager<ApplicationUser> userManager)
         {
             _userRepo = userRepo;
             _response = new();
+            _userManager = userManager;
         }
 
         [HttpGet("Error")]
@@ -200,7 +203,48 @@ namespace PMS_PropertyHapa.API.Controllers.V1
 
         #endregion
 
+        #region Update Profile API
 
+        [HttpPut("update")]
+        public async Task<IActionResult> UpdateProfile([FromBody] ProfileModel model)
+        {
+
+            
+            var user = await _userRepo.FindByUserId(model.userId);
+
+            if (user == null)
+            {
+                _response.StatusCode = HttpStatusCode.NotFound;
+                _response.IsSuccess = false;
+                _response.ErrorMessages.Add("User not found");
+                return NotFound(_response);
+            }
+
+            user.Name = model.name;
+            user.UserName = model.userName;
+            user.Email = model.email;
+
+            var result = await _userManager.UpdateAsync(user);
+
+            if (result.Succeeded)
+            {
+                _response.StatusCode = HttpStatusCode.OK;
+                _response.IsSuccess = true;
+                _response.Result = user; 
+                return Ok(_response);
+            }
+
+            _response.StatusCode = HttpStatusCode.BadRequest;
+            _response.IsSuccess = false;
+            foreach (var error in result.Errors)
+            {
+                _response.ErrorMessages.Add(error.Description);
+            }
+
+            return BadRequest(_response);
+        }
+
+        #endregion
 
 
 

@@ -381,6 +381,19 @@ namespace MagicVilla_VillaAPI.Repository
 
 
 
+        public async Task<ApplicationUser> FindByUserId(string userId)
+        {
+            if (userId == null)
+            {
+                return null;
+            }
+
+            return await _userManager.Users
+                                 .FirstOrDefaultAsync(u => u.Id == userId);
+        }
+
+
+
         public async Task<string> GeneratePasswordResetTokenAsync(ApplicationUser user)
         {
             if (user == null)

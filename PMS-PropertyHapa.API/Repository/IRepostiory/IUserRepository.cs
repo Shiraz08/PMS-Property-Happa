@@ -33,6 +33,8 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
 
         Task<IdentityResult> ResetPasswordAsync(ResetPasswordDto user);
 
+        Task<ApplicationUser> FindByUserId(string userId);
+
 
     }
 }
