@@ -1,8 +1,63 @@
 ﻿@model PMS_PropertyHapa.Models.DTO.RegisterationRequestDTO
+@{
+    ViewData["Title"] = "Register";
+    Layout = "~/Views/Shared/_IdentityLayout.cshtml";
+}
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(function () {
+            $('.register-form').on('submit', function (e) {
+                e.preventDefault();
+
+                var role = $('#Role').val().toLowerCase();
+                var apiUrl;
+                switch (role) {
+                    case 'tenant':
+                        apiUrl = 'https://localhost:7178/api/v1/UsersAuth/register/tenant';
+                        break;
+                    case 'admin':
+                        apiUrl = 'https://localhost:7178/api/v1/UsersAuth/register/admin';
+                        break;
+                    case 'user':
+                        apiUrl = 'https://localhost:7178/api/v1/UsersAuth/register/user';
+                        break;
+                    default:
+                        alert('Please select a valid role.');
+                        return;
+                }
+
+                var registerData = {
+                    UserName: $('#UserName').val(),
+                    Name: $('#Name').val(),
+                    Password: $('#Password').val(),
+                    Role: role
+                };
+
+                $.ajax({
+                    url: apiUrl,
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(registerData),
+                    success: function (response) {
+                        console.log(response);
+                        alert("Registered Successfully");
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(xhr.responseText);
+                        alert("An Error Occurred");
+                    }
+                });
+            });
+        });
+    </script>
+}
 
 
-<form method="post">
-    <div class="container border p-4">
+
+<form class="theme-form register-form needs-validation" novalidate="" method="post">
+    <div class="container border p-4" style="max-width: 500px; margin: 0 auto;">
         <div class="row text-center">
             <h1>Register</h1>
         </div>
@@ -10,32 +65,28 @@
             <div asp-validation-summary="All" class="text-danger"></div>
         </div>
         <div class="row">
-            <div class="col-6 offset-3 pb-2">
+            <div class="col-md-12 pb-2">
                 <input asp-for="UserName" type="text" class="form-control" placeholder="Username..." />
             </div>
-            <div class="col-6 offset-3 pb-2">
+            <div class="col-md-12 pb-2">
                 <input asp-for="Name" type="text" class="form-control" placeholder="Name..." />
-
             </div>
-            <div class="col-6 offset-3 pb-2">
-                <input asp-for="Password" type="text" class="form-control" placeholder="Password..." />
-
+            <div class="col-md-12 pb-2">
+                <input asp-for="Password" type="password" class="form-control" placeholder="Password..." />
             </div>
-            <div class="col-6 offset-3 pb-2">
-                <select asp-for="Role" class="form-select" asp-items="@ViewBag.RoleList">
+            <div class="col-md-12 pb-2">
+                <select asp-for="Role" class="form-select">
                     <option disabled selected>--Select Role--</option>
+                    <option value="Tenant">Tenant</option>
+                    <option value="Admin">Admin</option>
+                    <option value="User">User</option>
                 </select>
             </div>
-            <div class="col-6 offset-3 pb-2">
-                <button type="submit" class="form-control btn-success" value="Submit">Register</button>
-
+            <div class="col-md-12 pb-2">
+                <button type="submit" class="btn btn-success w-100">Register</button>
             </div>
         </div>
     </div>
-
-    
 </form>
 
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
+

@@ -35,6 +35,9 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
 
         Task<ApplicationUser> FindByUserId(string userId);
 
+        Task<string> EncryptEmail(string email);
+        Task<string> DecryptEmail(string encryptedEmail);
+
 
     }
 }
