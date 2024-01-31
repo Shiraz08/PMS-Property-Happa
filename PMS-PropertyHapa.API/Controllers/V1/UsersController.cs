@@ -41,6 +41,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             throw new BadImageFormatException("Fake Image Exception");
         }
 
+
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequestDTO model)
         {
