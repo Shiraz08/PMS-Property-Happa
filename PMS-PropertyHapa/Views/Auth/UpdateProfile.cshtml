@@ -1,0 +1,62 @@
+﻿@model PMS_PropertyHapa.Models.DTO.ProfileModel
+
+@{
+    ViewData["Title"] = "Update Profile";
+    Layout = "~/Views/Shared/_IdentityLayout.cshtml";
+}
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(function () {
+            var urlParams = new URLSearchParams(window.location.search);
+            var Email = urlParams.get('email');
+            $('#Email').val(Email);
+            $('#updateProfileForm').on('submit', function (e) {
+                e.preventDefault();
+
+                var profileData = {
+                    userId: '@Model.userId',
+                    name: $('#Name').val(),
+                    userName: $('#UserName').val(),
+                    email: $('#Email').val()
+                };
+
+                $.ajax({
+                    url: 'https://localhost:7178/api/v1/UsersAuth/update', 
+                    type: 'PUT',
+                    contentType: 'application/json',
+                    data: JSON.stringify(profileData),
+                    success: function (response) {
+                        alert("Profile updated successfully.");
+                    
+                    },
+                    error: function (xhr, status, error) {
+                        alert("Error updating profile: " + xhr.responseText);
+              
+                    }
+                });
+            });
+        });
+    </script>
+}
+
+<div class="container">
+    <h1>Update Profile</h1>
+    <form class="theme-form updateProfileForm needs-validation" id="updateProfileForm" method="post">
+        <div class="form-group">
+            <label asp-for="name">Name</label>
+            <input asp-for="name" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label asp-for="userName">Username</label>
+            <input asp-for="userName" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label asp-for="email">Email</label>
+            <input asp-for="email" type="email" class="form-control" />
+        </div>
+        <input asp-for="userId" type="hidden" />
+        <button type="submit" class="btn btn-primary">Update</button>
+    </form>
+</div>
