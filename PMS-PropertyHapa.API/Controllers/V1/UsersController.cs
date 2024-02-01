@@ -41,6 +41,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             throw new BadImageFormatException("Fake Image Exception");
         }
 
+
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequestDTO model)
         {
@@ -290,21 +291,37 @@ namespace PMS_PropertyHapa.API.Controllers.V1
                 return BadRequest(ModelState);
             }
 
+          Task<string> email;
+            try
+            {
+               email = _userRepo.DecryptEmail(model.Email);
+            }
+            catch
+            {
+                return BadRequest("Invalid reset link.");
+            }
+
             if (model.Password != model.ConfirmPassword)
             {
                 return BadRequest("The password and confirmation password do not match.");
             }
+
+            // Update the model with the decrypted email
+            model.Email = email.Result.ToString();
+
             var result = await _userRepo.ResetPasswordAsync(model);
             if (!result.Succeeded)
             {
                 var errors = result.Errors.Select(e => e.Description);
                 return BadRequest(new { Errors = errors });
             }
+
             _response.StatusCode = HttpStatusCode.OK;
             _response.IsSuccess = true;
             _response.Result = "Password has been reset successfully";
             return Ok(_response);
         }
+
 
 
 
@@ -314,22 +331,25 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             var user = await _userRepo.FindByEmailAsync(model.Email);
             if (user == null)
             {
-                _response.StatusCode = HttpStatusCode.OK;
-                _response.IsSuccess = true;
-                return Ok(_response);
+                _response.StatusCode = HttpStatusCode.NotFound; 
+                _response.IsSuccess = false;
+                _response.ErrorMessages.Add("No user found with this email.");
+                return NotFound(_response);  
             }
 
-            var token = await _userRepo.GeneratePasswordResetTokenAsync(user);
-            var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.Value}";
-            var callbackUrl = $"{baseUrl}/reset-password?token={HttpUtility.UrlEncode(token)}";
-            await _userRepo.SendResetPasswordEmailAsync(user, callbackUrl);
+            // Encrypt the email
+            var encryptedEmail = _userRepo.EncryptEmail(user.Email);
+
+            var baseUrl = $"https://localhost:7182";
+            var resetPasswordUrl = $"{baseUrl}/auth/ResetPassword?email={encryptedEmail.Result}";
+            await _userRepo.SendResetPasswordEmailAsync(user, resetPasswordUrl);
 
             _response.StatusCode = HttpStatusCode.OK;
             _response.IsSuccess = true;
             _response.Result = "Reset password email sent successfully";
             return Ok(_response);
-
         }
+
         #endregion
     }
 }

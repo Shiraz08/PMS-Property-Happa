@@ -27,7 +27,6 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<ApiDbContext>()
     .AddDefaultTokenProviders();
 builder.Services.AddResponseCaching();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.AddApiVersioning(options => {
@@ -41,6 +40,18 @@ builder.Services.AddVersionedApiExplorer(options =>
     options.SubstituteApiVersionInUrl = true;
 });
 builder.Services.AddTransient<IEmailSender, EmailSender>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "AllowSpecificOrigin",
+                      builder =>
+                      {
+                          builder.WithOrigins("https://localhost:7182")
+                                 .AllowAnyHeader()
+                                 .AllowAnyMethod();
+                      });
+});
+
 
 var key = builder.Configuration.GetValue<string>("ApiSettings:Secret");
 var ValidAudience = builder.Configuration.GetValue<string>("ApiSettings:ValidAudience");
@@ -127,6 +138,7 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapHangfireDashboard();
+app.UseCors("AllowSpecificOrigin");
 app.MapControllers();
 ApplyMigration();
 app.Run();

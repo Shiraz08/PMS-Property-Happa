@@ -93,6 +93,23 @@ namespace PMS_PropertyHapa.Controllers
             return View();
         }
 
+        [HttpGet]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+
+        [HttpGet]
+        public IActionResult ResetPassword(string email)
+        {
+            var model = new ResetPasswordDto
+            {
+                Email = email
+            };
+            return View(model);
+        }
+
 
         public async Task<IActionResult> Logout()
         {
