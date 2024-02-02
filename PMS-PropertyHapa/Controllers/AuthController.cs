@@ -101,6 +101,18 @@ namespace PMS_PropertyHapa.Controllers
 
 
         [HttpGet]
+        public IActionResult UpdateProfile(string Email)
+        {
+            Email = "violate619@gmail.com";
+            var model = new ProfileModel
+            {
+                email = Email
+            };
+            return View(model);
+        }
+
+
+        [HttpGet]
         public IActionResult ResetPassword(string email)
         {
             var model = new ResetPasswordDto
