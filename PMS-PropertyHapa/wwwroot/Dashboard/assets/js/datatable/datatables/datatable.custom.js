@@ -201,6 +201,16 @@ $(document).ready(function() {
             null
         ]
     });
+    $('#grouproles').DataTable({
+        "aoColumns": [
+            null,
+            null,
+            { "orderSequence": ["asc"] },
+            { "orderSequence": ["desc", "asc", "asc"] },
+            { "orderSequence": ["desc"] },
+            null
+        ]
+    });
     $('#example-style-1').DataTable();
     $('#example-style-2').DataTable();
     $('#example-style-3').DataTable();
