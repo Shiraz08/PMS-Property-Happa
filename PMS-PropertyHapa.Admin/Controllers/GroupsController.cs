@@ -8,7 +8,7 @@ using PMS_PropertyHapa.Models.Entities;
 
 namespace PMS_PropertyHapa.Admin.Controllers
 {
-    //[Authorize]
+    [Authorize]
     public class GroupsController : Controller
     {
         private RoleManager<IdentityRole> roleManager;

@@ -9,6 +9,7 @@ namespace PMS_PropertyHapa.API.Areas.Identity.Data
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Password { get; set; }
+        public string Group { get; set; }
         public string Email { get; set; }
         public int UserTypeId { get; set; }
         public string IP { get; set; }

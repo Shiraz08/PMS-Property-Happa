@@ -55,7 +55,22 @@ builder.Services.Configure<IdentityOptions>(opts =>
     opts.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10);
     opts.Lockout.MaxFailedAccessAttempts = 3;
 });
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    //Location for your Custom Access Denied Page
+    options.AccessDeniedPath = "/Account/AccessDenied";
+
+    //Location for your Custom Login Page
+    options.LoginPath = "/Account/Login";
+});
 var app = builder.Build();
+using (var scope = app.Services.CreateScope())
+{
+    //var userManager = (UserManager<ApplicationUser>)scope.ServiceProvider.GetService(typeof(UserManager<ApplicationUser>));
+    //var roleManager = (RoleManager<IdentityRole>)scope.ServiceProvider.GetService(typeof(RoleManager<IdentityRole>));
+    //await StaticRoles.GenericRolesAsync(userManager, roleManager);
+    //await StaticRoles.SeedSuperAdminAsync(userManager, roleManager);
+}
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {

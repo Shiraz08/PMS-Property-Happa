@@ -7,7 +7,7 @@ using PMS_PropertyHapa.Models.Entities;
 
 namespace PMS_PropertyHapa.Admin.Controllers
 {
-  //  [Authorize]
+    [Authorize]
     public class GroupRolesController : Controller
     {
         private readonly PropertyHapaAdminContext _context;

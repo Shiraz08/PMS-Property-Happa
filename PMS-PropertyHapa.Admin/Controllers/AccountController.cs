@@ -42,29 +42,26 @@ namespace PMS_PropertyHapa.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginRequestDTO login)
         {
-            if (ModelState.IsValid)
+            try
             {
-                try
+                ApplicationUser appUser = _context.Users.Where(x => x.Email == login.Email).FirstOrDefault();
+                if (appUser != null)
                 {
-                    ApplicationUser appUser = await _userManager.FindByEmailAsync(login.Email);
-                    if (appUser != null)
-                    {
-                        await _signInManager.SignOutAsync();
-                        Microsoft.AspNetCore.Identity.SignInResult result = await _signInManager.PasswordSignInAsync(appUser, login.Password, login.Remember, false);
+                    await _signInManager.SignOutAsync();
+                    Microsoft.AspNetCore.Identity.SignInResult result = await _signInManager.PasswordSignInAsync(appUser, login.Password, login.Remember, false);
 
-                        if (result.Succeeded)
-                            return Redirect(login.ReturnUrl ?? "/");
+                    if (result.Succeeded)
+                        return RedirectToAction("Index", "Home");
 
-                        if (result.IsLockedOut)
-                            ModelState.AddModelError("", "Your account is locked out. Kindly wait for 10 minutes and try again");
-                    }
-                    ModelState.AddModelError(nameof(login.Email), "Login Failed: Invalid Email or password");
+                    if (result.IsLockedOut)
+                        ModelState.AddModelError("", "Your account is locked out. Kindly wait for 10 minutes and try again");
                 }
-                catch (Exception e)
-                {
+                ModelState.AddModelError(nameof(login.Email), "Login Failed: Invalid Email or password");
+            }
+            catch (Exception e)
+            {
 
-                    throw;
-                }
+                throw;
             }
             return View(login);
         }
@@ -73,6 +70,10 @@ namespace PMS_PropertyHapa.Admin.Controllers
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
+        }
+        public async Task<IActionResult> AccessDenied()
+        {
+            return View();
         }
     }
 }
