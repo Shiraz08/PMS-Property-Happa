@@ -9,13 +9,13 @@
         <div class="page-title">
             <div class="row">
                 <div class="col-12 col-sm-6">
-                    <h3>Default</h3>
+                    <h3>Roles/Groups List</h3>
                 </div>
                 <div class="col-12 col-sm-6">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"> <a class="home-item" href="index.html"><i data-feather="home"></i></a></li>
                         <li class="breadcrumb-item"> Dashboard</li>
-                        <li class="breadcrumb-item active"> Default</li>
+                        <li class="breadcrumb-item active"> Roles/Groups</li>
                     </ol>
                 </div>
             </div>
@@ -26,7 +26,7 @@
             <div class="col-xl-12 col-md-6 dash-xl-50">
                 <div class="card">
                     <div class="card-header align-items-center d-flex">
-                        <h4 class="card-title mb-0 flex-grow-1"><button type="button" class="btn btn-success add-btn" data-bs-toggle="modal" id="create-btn" data-bs-target="#AddRole"><i class="ri-add-line align-bottom me-1"></i> Add Role</button></h4>
+                        <h4 class="card-title mb-0 flex-grow-1"><button type="button" class="btn btn-success add-btn" data-bs-toggle="modal" id="create-btn" data-bs-target="#AddRole"><i class="ri-add-line align-bottom me-1"></i> Add Roles/Groups</button></h4>
                         <div class="flex-shrink-0">
                         </div>
                     </div><!-- end card header -->
@@ -34,10 +34,10 @@
                         <table class="display" id="grouproles">
                             <thead>
                                 <tr>
-                                    <th scope="col">Roles Title</th>
-                                    <th scope="col">Roles Key</th>
-                                    <th scope="col">Roles Status</th>
-                                    <th scope="col">Action</th>
+                                    <th style="width:320px!important;text-align:center!important">Roles Title</th>
+                                    <th style="width:320px!important;text-align:center!important">Roles Status</th>
+                                    <th style="width:320px!important;text-align:center!important">Roles Key</th>
+                                    <th style="">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -52,49 +52,49 @@
 </div>
 
 @* Add Model*@
-<div class="modal fade" id="AddRole" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+<div class="modal fade" id="AddRole" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header bg-light p-3">
-                <h5 class="modal-title" id="exampleModalLabel"></h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="close-modal"></button>
+            <div class="modal-header">
+                <h5 class="modal-title">Add Group/Role</h5>
+                <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="form-group">
                     <label for="name">Role Title:</label>
-                    <input name="RoleTitle" id="RoleTitle" class="form-control" placeholder="Enter Role Title" type="text" onkeypress="InputAlphaNoOnlyvalidation(event)"  />
+                    <input name="RoleTitle" id="RoleTitle" class="form-control" placeholder="Enter Role Title" type="text" onkeypress="InputAlphaNoOnlyvalidation(event)" />
                 </div>
-                 <div class="form-group">
+                <div class="form-group">
                     <label for="name">Role Key:</label>
-                    <input name="RoleKey" id="RoleKey" class="form-control" placeholder="Enter Role Key" type="text" onkeypress="InputAlphaNoOnlyvalidation(event)"  />
+                    <input name="RoleKey" id="RoleKey" class="form-control" placeholder="Enter Role Key" type="text" onkeypress="InputAlphaNoOnlyvalidation(event)" />
                 </div>
             </div>
             <div class="modal-footer">
                 <div class="hstack gap-2 justify-content-end">
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-success" id="addbtn" onclick="Addrole();">Add Role</button>
+                    <button type="submit" class="btn btn-success" id="addbtn" onclick="Addrole();">Add Roles/Groups</button>
                 </div>
             </div>
         </div>
     </div>
 </div>
 @*Edit Model*@
-<div class="modal fade" id="EditRole" tabindex="-1" aria-labelledby="exampleModalLabels" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+<div class="modal fade" id="EditRole" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header bg-light p-3">
-                <h5 class="modal-title" id="exampleModalLabels"></h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="close-modal"></button>
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Group/Role</h5>
+                <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                     <input name="Ids" id="Ids" class="form-control" type="hidden" />
+                <input name="Ids" id="Ids" class="form-control" type="hidden" />
                 <div class="form-group">
                     <label for="name">Role Title:</label>
-                    <input name="RoleTitles" id="RoleTitles" class="form-control" placeholder="Enter Role Title" type="text" onkeypress="InputAlphaNoOnlyvalidation(event)"  />
+                    <input name="RoleTitles" id="RoleTitles" class="form-control" placeholder="Enter Role Title" type="text" onkeypress="InputAlphaNoOnlyvalidation(event)" />
                 </div>
                 <div class="form-group">
                     <label for="name">Role Key:</label>
-                    <input name="RoleKeys" id="RoleKeys" class="form-control" placeholder="Enter Role Key" type="text" onkeypress="InputAlphaNoOnlyvalidation(event)"  disabled="disabled"/>
+                    <input name="RoleKeys" id="RoleKeys" class="form-control" placeholder="Enter Role Key" type="text" onkeypress="InputAlphaNoOnlyvalidation(event)" disabled="disabled" />
                 </div>
             </div>
             <div class="modal-footer">
@@ -106,6 +106,7 @@
         </div>
     </div>
 </div>
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script>
     $(document).ready(function () {
@@ -170,13 +171,13 @@
                 var op = '';
                 $.each(response, function (key, item) {
                     debugger
-                    op += '<tr>';
-                    op += '<td class="name">' + item.RoleTitle + '</td>';
+                    op += '<tr style="text-align:center!important">';
+                    op += '<td class="name" >' + item.RoleTitle + '</td>';
                     op += '<td class="name">' + item.RoleKey + '</td>';
                     if (item.RoleActive == true)
                     {
                         op += '<td style="color:green">Active</td>';
-                        op += '<td><div class="d-flex gap-2"><div class="edit"><button class="btn btn-sm btn-success edit-item-btn" data-bs-toggle="modal" data-bs-target="#EditRole" onclick="EditRole(\'' + item.Id + '\',\'' + item.GroupName + '\',\'' + item.RoleTitle + '\',\'' + item.RoleKey + '\')">Edit Role</button></div><div class="remove"></div><button class="btn btn-sm btn-danger remove-item-btn" onclick="DeleteInactive(\'' + item.Id + '\')">In-Active Role</button><button class="btn btn-sm btn-danger remove-item-btn" onclick="DeleteR(\'' + item.Id + '\')">Delete Role</button> </div></td>';
+                        op += '<td><div class="d-flex gap-2"><div class="edit"><button class="btn btn-sm btn-success edit-item-btn" data-bs-toggle="modal" data-bs-target="#EditRole" onclick="EditRole(\'' + item.Id + '\',\'' + item.GroupName + '\',\'' + item.RoleTitle + '\',\'' + item.RoleKey + '\')">Edit Role</button></div><div class="remove"></div><button class="btn btn-sm btn-warning remove-item-btn" onclick="DeleteInactive(\'' + item.Id + '\')">In-Active Role</button><button class="btn btn-sm btn-danger remove-item-btn" onclick="DeleteR(\'' + item.Id + '\')">Delete Role</button> </div></td>';
                     }
                     else
                     {

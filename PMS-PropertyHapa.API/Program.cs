@@ -16,6 +16,9 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using PMS_PropertyHapa.Shared.Email;
 using Hangfire;
 using Hangfire.SqlServer;
+using AutoMapper;
+using PMS_PropertyHapa.Shared.Dapper;
+using PMS_PropertyHapa.Shared.MappingProfiles;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -110,7 +113,22 @@ builder.Services.AddHangfire(configuration => configuration
     }));
 builder.Services.AddHangfireServer();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+//Register dapper in scope    
+builder.Services.AddScoped<IDapper, DapperServices>();
+// Auto Mapper Configurations
+var mapperConfig = new MapperConfiguration(mc =>
+{
+    mc.AddProfile(new MappingProfile());
+});
+IMapper mapper = mapperConfig.CreateMapper();
+builder.Services.AddSingleton(mapper);
 
+builder.Services.Configure<IdentityOptions>(opts =>
+{
+    opts.Lockout.AllowedForNewUsers = true;
+    opts.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10);
+    opts.Lockout.MaxFailedAccessAttempts = 3;
+});
 var app = builder.Build();
 app.UseSwagger();
 

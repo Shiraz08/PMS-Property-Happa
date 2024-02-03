@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using PMS_PropertyHapa.Admin.Data;
 using PMS_PropertyHapa.Shared.Email;
@@ -6,6 +7,7 @@ using System.Diagnostics;
 
 namespace PMS_PropertyHapa.Admin.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
