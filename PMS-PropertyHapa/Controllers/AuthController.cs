@@ -102,6 +102,13 @@ namespace PMS_PropertyHapa.Controllers
         }
 
 
+
+        [HttpGet]
+        public IActionResult ChangePassword()
+        {
+            return View();
+        }
+
         [HttpGet]
         public IActionResult ResetPassword(string email)
         {
