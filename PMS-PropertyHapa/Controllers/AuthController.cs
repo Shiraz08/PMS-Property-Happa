@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
+using PMS_PropertyHapa.API.Areas.Identity.Data;
 using PMS_PropertyHapa.Models;
 using PMS_PropertyHapa.Models.DTO;
 using PMS_PropertyHapa.Services.IServices;
@@ -101,18 +103,6 @@ namespace PMS_PropertyHapa.Controllers
 
 
         [HttpGet]
-        public IActionResult UpdateProfile(string Email)
-        {
-            Email = "violate619@gmail.com";
-            var model = new ProfileModel
-            {
-                email = Email
-            };
-            return View(model);
-        }
-
-
-        [HttpGet]
         public IActionResult ResetPassword(string email)
         {
             var model = new ResetPasswordDto
@@ -121,6 +111,16 @@ namespace PMS_PropertyHapa.Controllers
             };
             return View(model);
         }
+
+
+        [HttpGet]
+        public IActionResult UpdateProfile()
+        {
+            var model = new ProfileModel();
+
+            return View(model);
+        }
+
 
 
         public async Task<IActionResult> Logout()

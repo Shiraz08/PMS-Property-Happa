@@ -7,56 +7,109 @@
 
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        #profile-picture-container {
+            width: 200px;
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
     <script>
-        $(function () {
-            var urlParams = new URLSearchParams(window.location.search);
-            var Email = urlParams.get('email');
-            $('#Email').val(Email);
-            $('#updateProfileForm').on('submit', function (e) {
-                e.preventDefault();
+        $(document).ready(function () {
+            var userId = '@Model.UserId';
+            var imageName;
 
-                var profileData = {
-                    userId: '@Model.userId',
-                    name: $('#Name').val(),
-                    userName: $('#UserName').val(),
-                    email: $('#Email').val()
-                };
-
-                $.ajax({
-                    url: 'https://localhost:7178/api/v1/UsersAuth/update', 
-                    type: 'PUT',
-                    contentType: 'application/json',
-                    data: JSON.stringify(profileData),
-                    success: function (response) {
-                        alert("Profile updated successfully.");
-                    
-                    },
-                    error: function (xhr, status, error) {
-                        alert("Error updating profile: " + xhr.responseText);
-              
+            $.ajax({
+                url: 'https://localhost:7178/api/v1/UsersAuth/' + userId,
+                type: 'GET',
+                success: function (data) {
+                    $('#Name').val(data.name);
+                    $('#UserName').val(data.userName);
+                    $('#Email').val(data.email);
+                    // Update this part of your JavaScript code
+                    if (data.existingPictureUrl) {
+                        var imagePath = 'https://localhost:7187' + data.existingPictureUrl; // Adjust the base URL
+                        var imageName = data.existingPictureUrl.split('/').pop();
+                        $('#imageName').text(imageName);
+                        $('#profile-picture-container').css('background-image', 'url(' + imagePath + ')').show();
                     }
-                });
+
+                },
+                error: function (error) {
+                    console.log('Error fetching profile:', error);
+                }
+            });
+
+            $("#NewPicture").change(function () {
+                imageName = $(this).val().split('\\').pop();
+                $('#imageName').text(imageName);
+
+                if (this.files && this.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        $('#profile-picture-container').css('background-image', 'url(' + e.target.result + ')').show();
+                    }
+                    reader.readAsDataURL(this.files[0]);
+                }
             });
         });
+
+        $('form').submit(function (e) {
+            e.preventDefault();
+            var formData = new FormData(this);
+
+            // Add userId to formData
+            formData.append('userId', '@Model.UserId');
+
+            $.ajax({
+                url: 'https://localhost:7178/api/v1/UsersAuth/Update',
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    console.log(response);
+                    alert('Profile updated successfully');
+                    var imageUrl = 'https://localhost:7187/wwwwroot' + response.pictureUrl; 
+                    $('#profile-picture-container').css('background-image', 'url(' + imageUrl + ')').show();
+                    imageName = response.pictureUrl.split('/').pop();
+                    $('#imageName').text(imageName);
+                },
+                error: function (xhr, status, error) {
+                    alert('Error updating profile');
+                    console.error(xhr.responseText);
+                }
+            });
+        });
+
     </script>
 }
 
 <div class="container">
-    <h1>Update Profile</h1>
-    <form class="theme-form updateProfileForm needs-validation" id="updateProfileForm" method="post">
+    <h1>@ViewData["Title"]</h1>
+    <form id="updateProfileForm" class="theme-form needs-validation" enctype="multipart/form-data" method="post">
         <div class="form-group">
-            <label asp-for="name">Name</label>
-            <input asp-for="name" class="form-control" />
+            <label>Name</label>
+            <input id="Name" name="Name" class="form-control" />
         </div>
         <div class="form-group">
-            <label asp-for="userName">Username</label>
-            <input asp-for="userName" class="form-control" />
+            <label>Username</label>
+            <input id="UserName" name="UserName" class="form-control" />
         </div>
         <div class="form-group">
-            <label asp-for="email">Email</label>
-            <input asp-for="email" type="email" class="form-control" />
+            <label>Email</label>
+            <input id="Email" name="Email" type="email" class="form-control" />
         </div>
-        <input asp-for="userId" type="hidden" />
-        <button type="submit" class="btn btn-primary">Update</button>
+        <div class="form-group">
+            <label>Profile Picture</label>
+            <input id="NewPicture" name="NewPicture" type="file" class="form-control" />
+
+            <span id="imageName" class="form-text text-muted"></span>
+            <div id="profile-picture-container" style="display: none;"></div>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Update</button>
+        </div>
     </form>
 </div>
