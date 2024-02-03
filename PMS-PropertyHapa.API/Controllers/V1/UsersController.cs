@@ -236,8 +236,19 @@ namespace PMS_PropertyHapa.API.Controllers.V1
                 return NotFound();
             }
 
+            // Update basic information
             user.Name = model.Name;
             user.Email = model.Email;
+            user.PhoneNumber = model.PhoneNumber;
+
+            user.Address = model.Address;
+            user.Address2 = model.Address2;
+            user.Locality = model.Locality;
+            user.District = model.District;
+            user.Region = model.Region;
+            user.PostalCode = model.PostalCode;
+            user.Country = model.Country;
+            user.Status = true;
 
             if (model.NewPicture != null)
             {
@@ -250,7 +261,6 @@ namespace PMS_PropertyHapa.API.Controllers.V1
                 var originalFileName = Path.GetFileName(model.NewPicture.FileName);
                 var safeFileName = WebUtility.HtmlEncode(originalFileName);
                 var filePath = Path.Combine(uploadsFolderPath, safeFileName);
-
 
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
@@ -268,6 +278,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
 
             return BadRequest(result.Errors);
         }
+
 
 
 

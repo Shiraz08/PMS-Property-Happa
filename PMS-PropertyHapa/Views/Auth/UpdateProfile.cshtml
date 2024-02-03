@@ -27,14 +27,20 @@
                     $('#Name').val(data.name);
                     $('#UserName').val(data.userName);
                     $('#Email').val(data.email);
-                    // Update this part of your JavaScript code
+                    $('#PhoneNumber').val(data.phoneNumber);
+                    $('#Address').val(data.address);
+                    $('#Address2').val(data.address2);
+                    $('#Locality').val(data.locality);
+                    $('#District').val(data.district);
+                    $('#Region').val(data.region);
+                    $('#PostalCode').val(data.postalCode);
+                    $('#Country').val(data.country);
                     if (data.existingPictureUrl) {
-                        var imagePath = 'https://localhost:7187' + data.existingPictureUrl; // Adjust the base URL
-                        var imageName = data.existingPictureUrl.split('/').pop();
-                        $('#imageName').text(imageName);
+                        var imagePath = 'https://localhost:7187' + data.existingPictureUrl;
                         $('#profile-picture-container').css('background-image', 'url(' + imagePath + ')').show();
+                        imageName = data.existingPictureUrl.split('/').pop();
+                        $('#imageName').text(imageName);
                     }
-
                 },
                 error: function (error) {
                     console.log('Error fetching profile:', error);
@@ -58,9 +64,7 @@
         $('form').submit(function (e) {
             e.preventDefault();
             var formData = new FormData(this);
-
-            // Add userId to formData
-            formData.append('userId', '@Model.UserId');
+            formData.append('UserId', '@Model.UserId'); // Ensure UserId is appended if not automatically included
 
             $.ajax({
                 url: 'https://localhost:7178/api/v1/UsersAuth/Update',
@@ -71,7 +75,7 @@
                 success: function (response) {
                     console.log(response);
                     alert('Profile updated successfully');
-                    var imageUrl = 'https://localhost:7187/wwwwroot' + response.pictureUrl; 
+                    var imageUrl = 'https://localhost:7187/wwwwroot' + response.pictureUrl;
                     $('#profile-picture-container').css('background-image', 'url(' + imageUrl + ')').show();
                     imageName = response.pictureUrl.split('/').pop();
                     $('#imageName').text(imageName);
@@ -86,6 +90,183 @@
     </script>
 }
 
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Zeta admin is super flexible, powerful, clean &amp; modern responsive bootstrap 5 admin template with unlimited possibilities.">
+    <meta name="keywords" content="admin template, Zeta admin template, dashboard template, flat admin template, responsive admin template, web app">
+    <meta name="author" content="pixelstrap">
+    <link rel="icon" href="../assets/images/logo/favicon-icon.png" type="image/x-icon">
+    <link rel="shortcut icon" href="../assets/images/logo/favicon-icon.png" type="image/x-icon">
+    <title>Zeta admin dashboard </title>
+    <!-- Google font-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../assets/css/vendors/font-awesome.css">
+    <!-- ico-font-->
+    <link rel="stylesheet" type="text/css" href="../assets/css/vendors/icofont.css">
+    <!-- Themify icon-->
+    <link rel="stylesheet" type="text/css" href="../assets/css/vendors/themify.css">
+    <!-- Flag icon-->
+    <link rel="stylesheet" type="text/css" href="../assets/css/vendors/flag-icon.css">
+    <!-- Feather icon-->
+    <link rel="stylesheet" type="text/css" href="../assets/css/vendors/feather-icon.css">
+    <!-- Plugins css start-->
+    <link rel="stylesheet" type="text/css" href="../assets/css/vendors/scrollbar.css">
+    <!-- Plugins css Ends-->
+    <!-- Bootstrap css-->
+    <link rel="stylesheet" type="text/css" href="../assets/css/vendors/bootstrap.css">
+    <!-- App css-->
+    <link rel="stylesheet" type="text/css" href="../assets/css/style.css">
+    <link id="color" rel="stylesheet" href="../assets/css/color-1.css" media="screen">
+    <!-- Responsive css-->
+    <link rel="stylesheet" type="text/css" href="../assets/css/responsive.css">
+</head>
+
+
+
+
+<body>
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-sm-6">
+                    <h3>Edit Profile</h3>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="index.html">
+                                <i data-feather="home"></i>
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item">User</li>
+                        <li class="breadcrumb-item active"> User Edit</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container-fluid">
+        <div class="edit-profile">
+            <div class="row">
+               
+                <div class="col-xl-8">
+                    <form class="card">
+                        <div class="card-header pb-0">
+                            <h4 class="card-title mb-0">Edit Profile</h4>
+                            <div class="card-options"><a class="card-options-collapse" href="#" data-bs-toggle="card-collapse"><i class="fe fe-chevron-up"></i></a><a class="card-options-remove" href="#" data-bs-toggle="card-remove"><i class="fe fe-x"></i></a></div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="card-body">
+                                    <div class="row">
+
+                                        <div class="col-sm-6 col-md-3">
+                                            <div class="mb-3">
+                                                <label class="form-label">Username</label>
+                                                <input class="form-control" type="text" placeholder="Username" name="UserName">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 col-md-4">
+                                            <div class="mb-3">
+                                                <label class="form-label">Email Address</label>
+                                                <input class="form-control" type="email" placeholder="Email" name="Email">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label">Address</label>
+                                                <input class="form-control" type="text" placeholder="Address" name="Address">
+
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label">Address 2</label>
+                                                <input class="form-control" type="text" placeholder="Address 2" name="Address2">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="mb-3">
+                                                <label class="form-label">Locality</label>
+                                                <input class="form-control" type="text" placeholder="Locality" name="Locality">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 col-md-4">
+                                            <div class="mb-3">
+                                                <label class="form-label">District</label>
+                                                <input class="form-control" type="text" placeholder="District" name="District">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 col-md-3">
+                                            <div class="mb-3">
+                                                <label class="form-label">Region</label>
+                                                <input class="form-control" type="text" placeholder="Region" name="Region">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 col-md-3">
+                                            <div class="mb-3">
+                                                <label class="form-label">Postal Code</label>
+                                                <input class="form-control" type="text" placeholder="Postal Code" name="PostalCode">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <div class="mb-3">
+                                                <label class="form-label">Country</label>
+                                                <select class="form-control btn-square" name="Country">
+                                                    <option value="">--Select--</option>
+                                                    <option value="Germany">Germany</option>
+                                                    <option value="Canada">Canada</option>
+                                                    <option value="USA">USA</option>
+                                                    <option value="Australia">Australia</option>
+
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer text-end">
+                                    <button class="btn btn-primary" type="submit">Update Profile</button>
+                                </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<!-- latest jquery-->
+<script src="../assets/js/jquery-3.5.1.min.js"></script>
+<!-- Bootstrap js-->
+<script src="../assets/js/bootstrap/bootstrap.bundle.min.js"></script>
+<!-- feather icon js-->
+<script src="../assets/js/icons/feather-icon/feather.min.js"></script>
+<script src="../assets/js/icons/feather-icon/feather-icon.js"></script>
+<!-- scrollbar js-->
+<script src="../assets/js/scrollbar/simplebar.js"></script>
+<script src="../assets/js/scrollbar/custom.js"></script>
+<!-- Sidebar jquery-->
+<script src="../assets/js/config.js"></script>
+<!-- Plugins JS start-->
+<script src="../assets/js/sidebar-menu.js"></script>
+<!-- Plugins JS Ends-->
+<!-- Theme js-->
+<script src="../assets/js/script.js"></script>
+<script src="../assets/js/theme-customizer/customizer.js"></script>
+<!-- login js-->
+<!-- Plugin used-->
+@*
 <div class="container">
     <h1>@ViewData["Title"]</h1>
     <form id="updateProfileForm" class="theme-form needs-validation" enctype="multipart/form-data" method="post">
@@ -113,3 +294,4 @@
         </div>
     </form>
 </div>
+ *@
