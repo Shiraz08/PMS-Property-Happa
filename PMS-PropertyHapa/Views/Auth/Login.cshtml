@@ -23,7 +23,9 @@
                     data: JSON.stringify(loginData),
                     success: function (response) {
                         console.log(response);
+                        localStorage.setItem('userName', response.userName);
                         alert("Logged In Successfully");
+                        window.location.href = "/Home/Index";
                     },
                     error: function (xhr, status, error) {
                         console.error(xhr.responseText);

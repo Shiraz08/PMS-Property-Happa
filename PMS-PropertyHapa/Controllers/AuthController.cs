@@ -51,7 +51,7 @@ namespace PMS_PropertyHapa.Controllers
 
 
                 _tokenProvider.SetToken(model);
-                return RedirectToAction("Index","Home");
+                return RedirectToAction("Index", "Home");
             }
             else
             {
