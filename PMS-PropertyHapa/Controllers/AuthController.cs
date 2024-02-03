@@ -51,7 +51,7 @@ namespace PMS_PropertyHapa.Controllers
 
 
                 _tokenProvider.SetToken(model);
-                return RedirectToAction("Index","Home");
+                return RedirectToAction("Index", "Home");
             }
             else
             {
@@ -101,6 +101,13 @@ namespace PMS_PropertyHapa.Controllers
             return View();
         }
 
+
+
+        [HttpGet]
+        public IActionResult ChangePassword()
+        {
+            return View();
+        }
 
         [HttpGet]
         public IActionResult ResetPassword(string email)

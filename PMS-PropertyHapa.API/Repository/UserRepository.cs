@@ -70,7 +70,8 @@ namespace MagicVilla_VillaAPI.Repository
             return new TokenDTO
             {
                 AccessToken = accessToken,
-                RefreshToken = refreshToken
+                RefreshToken = refreshToken,
+                UserName = user.UserName
             };
         }
 
