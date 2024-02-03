@@ -51,4 +51,28 @@
     <_ContentIncludedByDefault Remove="Views\Shared\_IdentityLayout.cshtml" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="Views\GroupRoles\Index.cshtml" />
+    <None Include="Views\Groups\Create.cshtml" />
+    <None Include="Views\Groups\Index.cshtml" />
+    <None Include="Views\Groups\Update.cshtml" />
+    <None Include="wwwroot\Dashboard\assets\datatables-buttons\js\buttons.bootstrap4.js" />
+    <None Include="wwwroot\Dashboard\assets\datatables-buttons\js\buttons.bootstrap4.min.js" />
+    <None Include="wwwroot\Dashboard\assets\datatables-buttons\js\buttons.colVis.js" />
+    <None Include="wwwroot\Dashboard\assets\datatables-buttons\js\buttons.colVis.min.js" />
+    <None Include="wwwroot\Dashboard\assets\datatables-buttons\js\buttons.flash.js" />
+    <None Include="wwwroot\Dashboard\assets\datatables-buttons\js\buttons.flash.min.js" />
+    <None Include="wwwroot\Dashboard\assets\datatables-buttons\js\buttons.html5.js" />
+    <None Include="wwwroot\Dashboard\assets\datatables-buttons\js\buttons.html5.min.js" />
+    <None Include="wwwroot\Dashboard\assets\datatables-buttons\js\buttons.print.js" />
+    <None Include="wwwroot\Dashboard\assets\datatables-buttons\js\buttons.print.min.js" />
+    <None Include="wwwroot\Dashboard\assets\datatables-buttons\js\dataTables.buttons.js" />
+    <None Include="wwwroot\Dashboard\assets\datatables-buttons\js\dataTables.buttons.min.js" />
+    <None Include="wwwroot\Dashboard\assets\pdfmake\pdfmake.js" />
+    <None Include="wwwroot\Dashboard\assets\pdfmake\pdfmake.js.map" />
+    <None Include="wwwroot\Dashboard\assets\pdfmake\pdfmake.min.js" />
+    <None Include="wwwroot\Dashboard\assets\pdfmake\pdfmake.min.js.map" />
+    <None Include="wwwroot\Dashboard\assets\pdfmake\vfs_fonts.js" />
+  </ItemGroup>
+
 </Project>
