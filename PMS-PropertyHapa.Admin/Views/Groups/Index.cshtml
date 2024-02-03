@@ -3,25 +3,39 @@
     ViewData["Title"] = "Groups";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
-<div class="row">
-    <div class="col-xl-12">
-        <div class="card">
-            <div class="card-header align-items-center d-flex">
-                <h4 class="card-title mb-0 flex-grow-1"><button type="button" class="btn btn-success add-btn" data-bs-toggle="modal" id="create-btn" data-bs-target="#AddRole"><i class="ri-add-line align-bottom me-1"></i> Add Group</button></h4>
-                <div class="flex-shrink-0">
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-sm-6">
+                    <h3>Groups List</h3>
                 </div>
-            </div><!-- end card header -->
-
-            <div class="card-body">
-                <div class="live-preview">
-                    <div class="table-responsive">
-                        <table id="groups" class="table align-middle table-hover table-nowrap table-striped-columns mb-0">
-                            <thead class="table-light">
+                <div class="col-12 col-sm-6">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"> <a class="home-item" href="index.html"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item"> Dashboard</li>
+                        <li class="breadcrumb-item active"> Roles/Groups</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid default-dash">
+        <div class="row">
+            <div class="col-xl-12 col-md-6 dash-xl-50">
+                <div class="card">
+                    <div class="card-header align-items-center d-flex">
+                        <h4 class="card-title mb-0 flex-grow-1"><button type="button" class="btn btn-success add-btn" data-bs-toggle="modal" id="create-btn" data-bs-target="#AddRole"><i class="ri-add-line align-bottom me-1"></i> Add Groups</button></h4>
+                        <div class="flex-shrink-0">
+                        </div>
+                    </div><!-- end card header -->
+                    <div class="card-body table-responsive">
+                        <table class="display" id="grouproles">
+                            <thead>
                                 <tr>
-                                    <th scope="col">Group Name</th>
-                                    <th scope="col">Roles</th>
-                                    <th scope="col">Action</th>
+                                    <th style="width:350px!important;text-align:center!important">Group Name</th>
+                                    <th style="width:350px!important;text-align:center!important">Roles</th>
+                                    <th style="">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -29,40 +43,41 @@
                         </table>
                     </div>
                 </div>
-            </div><!-- end card-body -->
-        </div><!-- end card -->
+            </div>
+
+        </div>
     </div>
 </div>
 @* Add Model*@
-<div class="modal fade" id="AddRole" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+<div class="modal fade" id="AddRole" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header bg-light p-3">
-                <h5 class="modal-title" id="exampleModalLabel"></h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="close-modal"></button>
+            <div class="modal-header">
+                <h5 class="modal-title">Add Group</h5>
+                <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-                <div class="modal-body">
-                        <div class="form-group">
-                            <label for="name">Group Name:</label>
-                            <input name="Rolename" id="Rolename" class="form-control" placeholder="Enter Group Name" type="text" onkeypress="InputAlphaNoOnlyvalidation(event)"  />
-                        </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="name">Group Name:</label>
+                    <input name="Rolename" id="Rolename" class="form-control" placeholder="Enter Group Name" type="text" onkeypress="InputAlphaNoOnlyvalidation(event)" />
                 </div>
-                <div class="modal-footer">
-                    <div class="hstack gap-2 justify-content-end">
-                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+            </div>
+            <div class="modal-footer">
+                <div class="hstack gap-2 justify-content-end">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-success" id="addbtn" onclick="Addrole();">Add Role</button>
-                    </div>
                 </div>
+            </div>
         </div>
     </div>
 </div>
 @*Edit Model*@
-<div class="modal fade" id="EditRole" tabindex="-1" aria-labelledby="exampleModalLabels" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+<div class="modal fade" id="EditRole" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header bg-light p-3">
-                <h5 class="modal-title" id="exampleModalLabels"></h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="close-modal"></button>
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Group</h5>
+                <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="form-group">
@@ -81,10 +96,10 @@
     </div>
 </div>
 @*Assign Roles Model*@
-<div class="modal fade" id="AssignRole" tabindex="-1" aria-labelledby="AssignRolelables" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-xl">
+<div class="modal fade" id="AssignRole" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
         <div class="modal-content">
-            <div class="modal-header bg-light p-3">
+            <div class="modal-header">
                 <h5 class="modal-title" id="AssignRolelables">Assign Roles</h5> &nbsp;
                                                         <div class="row">
                                           <div class="col-lg-12">
@@ -105,146 +120,8 @@
                                         <div class="row">
                                             <div class="col-lg-2">
                                                 <div class="mt-2 mt-lg-0">
-                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Users</label>
-                                                    <div id="Show_User_checkboxes"> </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-2">
-                                                <div class="mt-2 mt-lg-0">
-                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Products</label>
-                                                    <div id="Show_Product_checkboxes"> </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-2">
-                                                <div class="mt-2 mt-lg-0">
-                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Catelogs</label>
-                                                    <div id="Show_Catelog_checkboxes"> </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-2">
-                                                <div class="mt-2 mt-lg-0">
-                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Orders</label>
-                                                    <div id="Show_Order_checkboxes"> </div>
-                                                </div>
-                                            </div>
-                                              <div class="col-lg-2">
-                                                <div class="mt-2 mt-lg-0">
-                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Status List</label>
-                                                    <div id="Show_StatusList_checkboxes"> </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-2">
-                                                <div class="mt-2 mt-lg-0">
-                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Classified Ads</label>
-                                                    <div id="Show_ClassifiedAds_checkboxes"> </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-lg-2">
-                                                <div class="mt-2 mt-lg-0">
-                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Dashboard</label>
-                                                    <div id="Show_Dashboard_checkboxes"> </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-2">
-                                                <div class="mt-2 mt-lg-0">
-                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Banners</label>
-                                                    <div id="Show_Banner_checkboxes"> </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-2">
-                                                <div class="mt-2 mt-lg-0">
-                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Stores</label>
-                                                    <div id="Show_Store_checkboxes"> </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-2">
-                                                <div class="mt-2 mt-lg-0">
-                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Vouchers</label>
-                                                    <div id="Show_Voucher_checkboxes"> </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-2">
-                                                <div class="mt-2 mt-lg-0">
-                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Voucher Reports</label>
-                                                    <div id="Show_VoucherReport_checkboxes"> </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-2">
-                                                <div class="mt-2 mt-lg-0">
-                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Short URL's</label>
-                                                    <div id="Show_ShortURL_checkboxes"> </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-lg-2">
-                                                <div class="mt-2 mt-lg-0">
-                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Discount</label>
-                                                    <div id="Show_Discount_checkboxes"> </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-2">
-                                                <div class="mt-2 mt-lg-0">
-                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Manage Area</label>
-                                                    <div id="Show_ManageArea_checkboxes"> </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-2">
-                                                <div class="mt-2 mt-lg-0">
-                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Audit Log</label>
-                                                    <div id="Show_AuditLog_checkboxes"> </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-2">
-                                                <div class="mt-2 mt-lg-0">
-                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Feed Back</label>
-                                                    <div id="Show_FeedBack_checkboxes"> </div> 
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-2">
-                                                <div class="mt-2 mt-lg-0">
-                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Informative Ads</label>
-                                                    <div id="Show_InformativeAds_checkboxes"> </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-2">
-                                                <div class="mt-2 mt-lg-0">
-                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Out of Stock Remainder</label>
-                                                    <div id="Show_OutofStockRemainder_checkboxes"> </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-lg-2">
-                                                <div class="mt-2 mt-lg-0">
-                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Content Pages</label>
-                                                    <div id="Show_ContentPages_checkboxes"> </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-2">
-                                                <div class="mt-2 mt-lg-0">
-                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Sale Report</label>
-                                                    <div id="Show_SaleReport_checkboxes"> </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-2">
-                                                <div class="mt-2 mt-lg-0">
-                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Sale Report For Shop</label>
-                                                    <div id="Show_SaleReportforShop_checkboxes"> </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-2">
-                                                <div class="mt-2 mt-lg-0">
-                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Sale Report For POS</label>
-                                                    <div id="Show_SaleReportforPOS_checkboxes"> </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-2">
-                                                <div class="mt-2 mt-lg-0">
-                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Inventory</label>
-                                                    <div id="Show_Inventory_checkboxes"> </div>
+                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Users Pages</label>
+                                                    <div id="Show_Identity_checkboxes"> </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -266,16 +143,6 @@
 </div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.2/js/toastr.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
-    <script src="~/assets/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
-    <script src="~/assets/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
-    <script src="~/assets/plugins/jszip/jszip.min.js"></script>
-    <script src="~/assets/plugins/pdfmake/pdfmake.min.js"></script>
-    <script src="~/assets/plugins/pdfmake/vfs_fonts.js"></script>
-    <script src="~/assets/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
-    <script src="~/assets/plugins/datatables-buttons/js/buttons.print.min.js"></script>
-    <script src="~/assets/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
 <script>
     function checkallcheckboxes()
     {
@@ -290,135 +157,15 @@
             contentType: false,
             success: function (response) {
                 debugger
-                var User = '';
-                var Product = '';
-                var Catelog = '';
-                var Order = '';
-                var StatusList = '';
-                var ClassifiedAds = '';
+                var Identity = '';
 
-
-                var Dashboard = '';
-                var Banner = '';
-                var Store = '';
-                var Voucher = '';
-                var VoucherReport = '';
-                var ShortURL = '';
-
-
-                var Discount = '';
-                var ManageArea = '';
-                var AuditLog = '';
-                var FeedBack = '';
-                var InformativeAds = '';
-                var OutofStockRemainder = '';
-
-                var ContentPages = '';
-                var SaleReport = '';
-                var SaleReportforShop = '';
-                var SaleReportforPOS = '';
-                var Inventory = '';
 
                 $.each(response, function (key, item) {
-                     if (item.RoleKey == "ContentPages") {
-                        ContentPages += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
-                    }
-                    if (item.RoleKey == "SaleReport") {
-                        SaleReport += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
-                    }
-                    if (item.RoleKey == "SaleReportforShop") {
-                        SaleReportforShop += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
-                    }
-                   if (item.RoleKey == "FeedBack") {
-                        FeedBack += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
-                    }
-                    if (item.RoleKey == "SaleReportforPOS") {
-                        SaleReportforPOS += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
-                    }
-                    if (item.RoleKey == "Inventory") {
-                        Inventory += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
-                    }
-
-
-
-                    if (item.RoleKey == "Discount") {
-                        Discount += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
-                    }
-                    if (item.RoleKey == "ManageArea") {
-                        ManageArea += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
-                    }
-                    if (item.RoleKey == "AuditLog") {
-                        AuditLog += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
-                    }
-                   if (item.RoleKey == "FeedBack") {
-                        FeedBack += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
-                    }
-                    if (item.RoleKey == "InformativeAds") {
-                        InformativeAds += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
-                    }
-                    if (item.RoleKey == "OutofStockRemainder") {
-                        OutofStockRemainder += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
-                    }
-                    if (item.RoleKey == "User") {
-                        User += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
-                    }
-                    if (item.RoleKey == "Product") {
-                        Product += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
-                    }
-                    if (item.RoleKey == "Catelog") {
-                        Catelog += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
-                    }
-                   if (item.RoleKey == "Order") {
-                        Order += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
-                    }
-                    if (item.RoleKey == "StatusList") {
-                        StatusList += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
-                    }
-                    if (item.RoleKey == "ClassifiedAds") {
-                        ClassifiedAds += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
-                    }
-                    if (item.RoleKey == "Dashboard") {
-                        Dashboard += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
-                    }
-                    if (item.RoleKey == "Banner") {
-                        Banner += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
-                    }
-                    if (item.RoleKey == "Store") {
-                        Store += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
-                    }
-                    if (item.RoleKey == "Voucher") {
-                        Voucher += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
-                    }
-                    if (item.RoleKey == "VoucherReport") {
-                        VoucherReport += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
-                    }
-                    if (item.RoleKey == "ShortURL") {
-                        ShortURL += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
+                     if (item.RoleKey == "Identity") {
+                        Identity += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
                     }
                 });
-                $('#Show_ContentPages_checkboxes').empty().append(ContentPages);
-                $('#Show_SaleReport_checkboxes').empty().append(SaleReport);
-                $('#Show_SaleReportforShop_checkboxes').empty().append(SaleReportforShop);
-                $('#Show_SaleReportforPOS_checkboxes').empty().append(SaleReportforPOS);
-                $('#Show_Inventory_checkboxes').empty().append(Inventory);
-                $('#Show_Discount_checkboxes').empty().append(Discount);
-                $('#Show_ManageArea_checkboxes').empty().append(ManageArea);
-                $('#Show_AuditLog_checkboxes').empty().append(AuditLog);
-                $('#Show_FeedBack_checkboxes').empty().append(FeedBack);
-                $('#Show_InformativeAds_checkboxes').empty().append(InformativeAds);
-                $('#Show_OutofStockRemainder_checkboxes').empty().append(OutofStockRemainder);
-                $('#Show_Dashboard_checkboxes').empty().append(Dashboard);
-                $('#Show_Banner_checkboxes').empty().append(Banner);
-                $('#Show_Store_checkboxes').empty().append(Store);
-                $('#Show_Voucher_checkboxes').empty().append(Voucher);
-                $('#Show_VoucherReport_checkboxes').empty().append(VoucherReport);
-                $('#Show_ShortURL_checkboxes').empty().append(ShortURL);
-                $('#Show_User_checkboxes').empty().append(User);
-                $('#Show_Product_checkboxes').empty().append(Product);
-                $('#Show_Catelog_checkboxes').empty().append(Catelog);
-                $('#Show_Order_checkboxes').empty().append(Order);
-                $('#Show_StatusList_checkboxes').empty().append(StatusList);
-                $('#Show_ClassifiedAds_checkboxes').empty().append(ClassifiedAds);
+                $('#Show_Identity_checkboxes').empty().append(Identity);
             }, 
             failure: function (response) {
                 $('#result').html(response);
@@ -426,13 +173,6 @@
         });
     }
     $(document).ready(function () {
-            $('#groups').DataTable( {
-        dom: 'Bfrtip',
-            "pageLength": 20,
-        buttons: [
-            'copy', 'csv', 'excel', 'pdf', 'print'
-        ]
-    });
         getroles();
         getRolePages();
     });
@@ -513,7 +253,7 @@
                 var expr = "</tr>\\s*<tr";
                 var regEx = new RegExp(expr, "gm");
                 var newRows = op.replace(regEx, "</tr><tr");
-                $("#groups").DataTable().clear().rows.add($(newRows)).draw();
+                $("#grouproles").DataTable().clear().rows.add($(newRows)).draw();
             },
             failure: function (response) {
                 $('#result').html(response);
