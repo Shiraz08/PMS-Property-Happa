@@ -39,5 +39,6 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
         Task<string> DecryptEmail(string encryptedEmail);
 
 
+        Task<ProfileModel> GetProfileModelAsync(string userId);
     }
 }

@@ -12,7 +12,7 @@
                 e.preventDefault();
 
                 var loginData = {
-                    UserName: $('#UserName').val(),
+                    Email: $('#Email').val(), 
                     Password: $('#Password').val()
                 };
 
@@ -27,33 +27,29 @@
                     },
                     error: function (xhr, status, error) {
                         console.error(xhr.responseText);
-                        alert("Wrong UserName or Password");
+                        alert("Wrong Email or Password"); 
                     }
                 });
             });
         });
     </script>
-
-
 }
 
-
-
-<form class="theme-form login-form needs-validation" novalidate="" method="post">
+<form class="theme-form login-form needs-validation" method="post">
     <h4>Login</h4>
     <h6>Welcome back! Log in to your account.</h6>
     <div class="form-group">
-        <label>Email Address</label>
+        <label>Email Address</label> 
         <div class="input-group">
             <span class="input-group-text"><i class="icon-email"></i></span>
-            <input asp-for="UserName" type="text" class="form-control" placeholder="Username..." required="" />
+            <input id="Email" type="email" class="form-control" placeholder="Email..." required="" /> 
         </div>
     </div>
     <div class="form-group">
         <label>Password</label>
         <div class="input-group">
             <span class="input-group-text"><i class="icon-lock"></i></span>
-            <input asp-for="Password" type="password" class="form-control" placeholder="Password..." />
+            <input id="Password" type="password" class="form-control" placeholder="Password..." required="" />
             <div class="show-hide"><span class="show"></span></div>
         </div>
     </div>
@@ -61,11 +57,10 @@
         <div class="checkbox">
             <input id="checkbox1" type="checkbox">
             <label class="text-muted" for="checkbox1">Remember password</label>
-        </div><a class="link" href="forget-password.html">Forgot password?</a>
+        </div><a class="link" href="/auth/ForgotPassword">Forgot password?</a>
     </div>
     <div class="form-group">
         <button class="btn btn-primary btn-block" type="submit">Sign in</button>
     </div>
- 
-    <p>Don't have account?<a class="ms-2" href="sign-up.html">Create Account</a></p>
+    <p>Don't have an account?<a class="ms-2" href="/auth/Register">Create Account</a></p>
 </form>

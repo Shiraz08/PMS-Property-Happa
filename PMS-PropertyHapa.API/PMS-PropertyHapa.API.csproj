@@ -39,4 +39,9 @@
 	  <ProjectReference Include="..\PMS-PropertyHapa.Shared\PMS-PropertyHapa.Shared.csproj" />
 	</ItemGroup>
 
+
+	<ItemGroup>
+	  <Folder Include="wwwroot\uploads\" />
+	</ItemGroup>
+
 </Project>

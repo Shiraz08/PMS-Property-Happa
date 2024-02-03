@@ -48,29 +48,34 @@ namespace MagicVilla_VillaAPI.Repository
 
         public async Task<TokenDTO> Login(LoginRequestDTO loginRequestDTO)
         {
-            var user = _db.ApplicationUsers
-                .FirstOrDefault(u => u.UserName.ToLower() == loginRequestDTO.UserName.ToLower());
+            var user = await _db.ApplicationUsers
+                                      .AsNoTracking()
+                                      .FirstOrDefaultAsync(u => u.Email.ToLower() == loginRequestDTO.Email.ToLower());
 
+            if (user == null)
+            {
+                return new TokenDTO() { AccessToken = "" };
+            }
             bool isValid = await _userManager.CheckPasswordAsync(user, loginRequestDTO.Password);
 
-
-            if (user == null || isValid == false)
+            if (!isValid)
             {
-                return new TokenDTO()
-                {
-                    AccessToken = ""
-                };
+                return new TokenDTO() { AccessToken = "" };
             }
+
             var jwtTokenId = $"JTI{Guid.NewGuid()}";
-            var accessToken = await GetAccessToken(user,jwtTokenId);
+            var accessToken = await GetAccessToken(user, jwtTokenId);
             var refreshToken = await CreateNewRefreshToken(user.Id, jwtTokenId);
-            TokenDTO tokenDto = new()
+
+            return new TokenDTO
             {
                 AccessToken = accessToken,
                 RefreshToken = refreshToken
             };
-            return tokenDto;
         }
+
+
+
 
         public async Task<UserDTO> Register(RegisterationRequestDTO registerationRequestDTO)
         {
@@ -392,6 +397,35 @@ namespace MagicVilla_VillaAPI.Repository
             return await _userManager.Users
                                  .FirstOrDefaultAsync(u => u.Id == userId);
         }
+
+
+        public async Task<ProfileModel> GetProfileModelAsync(string userId)
+        {
+            if (userId == null)
+            {
+                return null;
+            }
+
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null)
+            {
+                return null;
+            }
+
+            var profile = new ProfileModel
+            {
+                UserId = user.Id,
+                Name = user.Name,
+                UserName = user.UserName,
+                Email = user.Email,
+                ExistingPictureUrl = user.Picture
+            };
+
+            return profile;
+        }
+
+
 
 
 

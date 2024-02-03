@@ -9,6 +9,7 @@ using PMS_PropertyHapa.Shared.Email;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using System.Web;
 using System.Security.Claims;
+using System.Net.Http.Headers;
 
 namespace PMS_PropertyHapa.API.Controllers.V1
 {
@@ -50,7 +51,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             {
                 _response.StatusCode = HttpStatusCode.BadRequest;
                 _response.IsSuccess = false;
-                _response.ErrorMessages.Add("Username or password is incorrect");
+                _response.ErrorMessages.Add("Email or password is incorrect"); 
                 return BadRequest(_response);
             }
             _response.StatusCode = HttpStatusCode.OK;
@@ -58,6 +59,9 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             _response.Result = tokenDto;
             return Ok(_response);
         }
+
+
+
 
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterationRequestDTO model)
@@ -206,44 +210,70 @@ namespace PMS_PropertyHapa.API.Controllers.V1
 
         #region Update Profile API
 
-        [HttpPut("update")]
-        public async Task<IActionResult> UpdateProfile([FromBody] ProfileModel model)
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> GetProfile(string userId)
+        
+        
         {
+            var profileModel = await _userRepo.GetProfileModelAsync(userId);
+            if (profileModel == null)
+            {
+                return NotFound("User not found");
+            }
 
-            
-            var user = await _userRepo.FindByUserId(model.userId);
+            return Ok(profileModel);
+        }
 
+
+
+
+        [HttpPost("Update")]
+        public async Task<IActionResult> UpdateProfile([FromForm] ProfileModel model)
+        {
+            var user = await _userManager.FindByIdAsync(model.UserId);
             if (user == null)
             {
-                _response.StatusCode = HttpStatusCode.NotFound;
-                _response.IsSuccess = false;
-                _response.ErrorMessages.Add("User not found");
-                return NotFound(_response);
+                return NotFound();
             }
 
-            user.Name = model.name;
-            user.UserName = model.userName;
-            user.Email = model.email;
+            user.Name = model.Name;
+            user.Email = model.Email;
+
+            if (model.NewPicture != null)
+            {
+                var uploadsFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
+                if (!Directory.Exists(uploadsFolderPath))
+                {
+                    Directory.CreateDirectory(uploadsFolderPath);
+                }
+
+                var originalFileName = Path.GetFileName(model.NewPicture.FileName);
+                var safeFileName = WebUtility.HtmlEncode(originalFileName);
+                var filePath = Path.Combine(uploadsFolderPath, safeFileName);
+
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await model.NewPicture.CopyToAsync(stream);
+                }
+
+                user.Picture = $"/uploads/{safeFileName}";
+            }
 
             var result = await _userManager.UpdateAsync(user);
-
             if (result.Succeeded)
             {
-                _response.StatusCode = HttpStatusCode.OK;
-                _response.IsSuccess = true;
-                _response.Result = user; 
-                return Ok(_response);
+                return Ok(new { pictureUrl = user.Picture });
             }
 
-            _response.StatusCode = HttpStatusCode.BadRequest;
-            _response.IsSuccess = false;
-            foreach (var error in result.Errors)
-            {
-                _response.ErrorMessages.Add(error.Description);
-            }
-
-            return BadRequest(_response);
+            return BadRequest(result.Errors);
         }
+
+
+
+
+
+
 
         #endregion
 
