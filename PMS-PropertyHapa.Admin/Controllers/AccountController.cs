@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using NuGet.Protocol.Plugins;
 using PMS_PropertyHapa.Admin.Data;
 using PMS_PropertyHapa.Models.DTO;
 using PMS_PropertyHapa.Shared.Email;
+using PMS_PropertyHapa.Shared.Enum;
 
 namespace PMS_PropertyHapa.Admin.Controllers
 {
@@ -37,6 +39,19 @@ namespace PMS_PropertyHapa.Admin.Controllers
             return View(login);
         }
 
+        [HttpGet]
+        public IActionResult Registration()
+        {
+            var roleList = new List<SelectListItem>()
+            {
+                  new SelectListItem{Text=SD.Admin,Value=SD.Admin},
+                new SelectListItem{Text=SD.Customer,Value=SD.Customer},
+            };
+            ViewBag.RoleList = roleList;
+            return View();
+        }
+
+
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -47,15 +62,21 @@ namespace PMS_PropertyHapa.Admin.Controllers
                 ApplicationUser appUser = _context.Users.Where(x => x.Email == login.Email).FirstOrDefault();
                 if (appUser != null)
                 {
-                    await _signInManager.SignOutAsync();
-                    Microsoft.AspNetCore.Identity.SignInResult result = await _signInManager.PasswordSignInAsync(appUser, login.Password, login.Remember, false);
+                    try
+                    {
 
-                    if (result.Succeeded)
-                        return RedirectToAction("Index", "Home");
 
-                    if (result.IsLockedOut)
-                        ModelState.AddModelError("", "Your account is locked out. Kindly wait for 10 minutes and try again");
-                }
+                        await _signInManager.SignOutAsync();
+                        Microsoft.AspNetCore.Identity.SignInResult result = await _signInManager.PasswordSignInAsync(appUser, login.Password, login.Remember, false);
+
+                        if (result.Succeeded)
+                            return RedirectToAction("Index", "Home");
+
+                        if (result.IsLockedOut)
+                            ModelState.AddModelError("", "Your account is locked out. Kindly wait for 10 minutes and try again");
+                    }
+                    catch(Exception ex) { }
+                    }
                 ModelState.AddModelError(nameof(login.Email), "Login Failed: Invalid Email or password");
             }
             catch (Exception e)
@@ -65,6 +86,38 @@ namespace PMS_PropertyHapa.Admin.Controllers
             }
             return View(login);
         }
+
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Registration(RegisterationRequestDTO model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = new ApplicationUser { UserName = model.UserName, Email = model.Email, Name = model.Name }; 
+                var result = await _userManager.CreateAsync(user, model.Password);
+
+                if (result.Succeeded)
+                {
+                   
+                     await _userManager.AddToRoleAsync(user, model.Role);
+
+                 
+
+                    return RedirectToAction("Index", "Home");
+                }
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+            }
+
+            return View(model);
+        }
+
+
+
 
         public async Task<IActionResult> Logout()
         {

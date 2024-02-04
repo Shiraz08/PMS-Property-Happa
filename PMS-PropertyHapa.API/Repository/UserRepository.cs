@@ -71,7 +71,9 @@ namespace MagicVilla_VillaAPI.Repository
             {
                 AccessToken = accessToken,
                 RefreshToken = refreshToken,
-                UserName = user.UserName
+                UserName = user.UserName,
+                UserId = user.Id
+
             };
         }
 
@@ -83,8 +85,8 @@ namespace MagicVilla_VillaAPI.Repository
             ApplicationUser user = new()
             {
                 UserName = registerationRequestDTO.UserName,
-                Email=registerationRequestDTO.UserName,
-                NormalizedEmail=registerationRequestDTO.UserName.ToUpper(),
+                Email = registerationRequestDTO.UserName,
+                NormalizedEmail = registerationRequestDTO.UserName.ToUpper(),
                 Name = registerationRequestDTO.Name
             };
 
@@ -93,7 +95,8 @@ namespace MagicVilla_VillaAPI.Repository
                 var result = await _userManager.CreateAsync(user, registerationRequestDTO.Password);
                 if (result.Succeeded)
                 {
-                    if (!_roleManager.RoleExistsAsync(registerationRequestDTO.Role).GetAwaiter().GetResult()){
+                    if (!_roleManager.RoleExistsAsync(registerationRequestDTO.Role).GetAwaiter().GetResult())
+                    {
                         await _roleManager.CreateAsync(new IdentityRole(registerationRequestDTO.Role));
                     }
                     await _userManager.AddToRoleAsync(user, registerationRequestDTO.Role);
@@ -103,7 +106,7 @@ namespace MagicVilla_VillaAPI.Repository
 
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
 
             }
@@ -129,8 +132,8 @@ namespace MagicVilla_VillaAPI.Repository
                     new Claim(JwtRegisteredClaimNames.Aud, "dotnetmastery.com")
                 }),
                 Expires = DateTime.UtcNow.AddMinutes(1),
-                Issuer="https://magicvilla-api.com",
-                Audience="https://test-magic-api.com",
+                Issuer = "https://magicvilla-api.com",
+                Audience = "https://test-magic-api.com",
                 SigningCredentials = new(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 
@@ -143,7 +146,8 @@ namespace MagicVilla_VillaAPI.Repository
         {
             // Find an existing refresh token
             var existingRefreshToken = await _db.RefreshTokens.FirstOrDefaultAsync(u => u.Refresh_Token == tokenDTO.RefreshToken);
-            if (existingRefreshToken == null) {
+            if (existingRefreshToken == null)
+            {
                 return new TokenDTO();
             }
 
@@ -158,7 +162,7 @@ namespace MagicVilla_VillaAPI.Repository
             // When someone tries to use not valid refresh token, fraud possible
             if (!existingRefreshToken.IsValid)
             {
-                await MarkAllTokenInChainAsInvalid(existingRefreshToken.UserId,existingRefreshToken.JwtTokenId);
+                await MarkAllTokenInChainAsInvalid(existingRefreshToken.UserId, existingRefreshToken.JwtTokenId);
             }
             // If just expired then mark as invalid and return empty
             if (existingRefreshToken.ExpiresAt < DateTime.UtcNow)
@@ -206,7 +210,7 @@ namespace MagicVilla_VillaAPI.Repository
                 return;
             }
 
-            await MarkAllTokenInChainAsInvalid(existingRefreshToken.UserId,existingRefreshToken.JwtTokenId);
+            await MarkAllTokenInChainAsInvalid(existingRefreshToken.UserId, existingRefreshToken.JwtTokenId);
 
         }
 
@@ -234,7 +238,7 @@ namespace MagicVilla_VillaAPI.Repository
                 var jwt = tokenHandler.ReadJwtToken(accessToken);
                 var jwtTokenId = jwt.Claims.FirstOrDefault(u => u.Type == JwtRegisteredClaimNames.Jti).Value;
                 var userId = jwt.Claims.FirstOrDefault(u => u.Type == JwtRegisteredClaimNames.Sub).Value;
-                return userId==expectedUserId && jwtTokenId== expectedTokenId;
+                return userId == expectedUserId && jwtTokenId == expectedTokenId;
 
             }
             catch
@@ -261,7 +265,7 @@ namespace MagicVilla_VillaAPI.Repository
         private Task MarkTokenAsInvalid(RefreshToken refreshToken)
         {
             refreshToken.IsValid = false;
-           return _db.SaveChangesAsync();
+            return _db.SaveChangesAsync();
         }
 
 
@@ -346,7 +350,7 @@ namespace MagicVilla_VillaAPI.Repository
 
 
 
-        public async Task<bool> ValidateCurrentPassword(long userId, string currentPassword)
+        public async Task<bool> ValidateCurrentPassword(string userId, string currentPassword)
         {
             var user = await _userManager.FindByIdAsync(userId.ToString());
             if (user != null)
@@ -356,9 +360,9 @@ namespace MagicVilla_VillaAPI.Repository
             return false;
         }
 
-        public async Task<bool> ChangePassword(long userId, string currentPassword, string newPassword)
+        public async Task<bool> ChangePassword(string userId, string currentPassword, string newPassword)
         {
-            var user = await _userManager.FindByIdAsync(userId.ToString());
+            var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
                 return false;
@@ -417,17 +421,22 @@ namespace MagicVilla_VillaAPI.Repository
             var profile = new ProfileModel
             {
                 UserId = user.Id,
-                Name = user.Name,
                 UserName = user.UserName,
                 Email = user.Email,
-                ExistingPictureUrl = user.Picture
+                PhoneNumber = user.PhoneNumber,
+                Address = user.Address,
+                Address2 = user.Address2,
+                Locality = user.Locality,
+                District = user.District,
+                Picture = user.Picture,
+                Region = user.Region,
+                PostalCode = user.PostalCode,
+                Country = user.Country,
+                Status = true
             };
 
             return profile;
         }
-
-
-
 
 
         public async Task<string> GeneratePasswordResetTokenAsync(ApplicationUser user)

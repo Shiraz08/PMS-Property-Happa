@@ -23,9 +23,16 @@
                     data: JSON.stringify(loginData),
                     success: function (response) {
                         console.log(response);
-                        localStorage.setItem('userName', response.userName);
-                        alert("Logged In Successfully");
-                        window.location.href = "/Home/Index";
+                        if (response && response.result && response.result.userId) {
+                            localStorage.setItem('userId', response.result.userId);
+                            localStorage.setItem('userName', response.result.userName);
+                            alert("Logged In Successfully");
+                            window.location.href = "/Home/Index";
+                        }
+                        else
+                        {
+                            alert("Login failed: No user information returned.");
+                        }
                     },
                     error: function (xhr, status, error) {
                         console.error(xhr.responseText);

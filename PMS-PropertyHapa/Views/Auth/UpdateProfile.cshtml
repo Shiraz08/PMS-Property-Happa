@@ -22,7 +22,11 @@
                 </div>
                 <div class="col-12 col-sm-6">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="index.html">                                       <i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item">
+                            <a href="index.html">
+                                <i data-feather="home"></i>
+                            </a>
+                        </li>
                         <li class="breadcrumb-item">User</li>
                         <li class="breadcrumb-item active"> User Edit</li>
                     </ol>
@@ -33,133 +37,134 @@
     <!-- Container-fluid starts-->
     <div class="container-fluid">
         <div class="edit-profile">
-            <div class="row">
-                <div class="col-xl-4">
-                    <div class="card">
-                        <div class="card-header pb-0">
-                            <h4 class="card-title mb-0">My Profile</h4>
-                            <div class="card-options"><a class="card-options-collapse" href="#" data-bs-toggle="card-collapse"><i class="fe fe-chevron-up"></i></a><a class="card-options-remove" href="#" data-bs-toggle="card-remove"><i class="fe fe-x"></i></a></div>
-                        </div>
-                        <div class="card-body">
-                            <form>
-                                <div class="row mb-2">
-                                    <div class="profile-title">
-                                        <div class="media">
-                                            <img class="img-70 rounded-circle" alt="" src="../assets/images/user/7.jpg">
-                                            <div class="media-body">
-                                                <h3 class="mb-1 f-20 txt-primary">MARK JECNO</h3>
-                                                <p class="f-12">DESIGNER</p>
+            <form method="post">
+                <div class="row">
+                    <div class="col-xl-4">
+                        <div class="card">
+                            <div class="card-header pb-0">
+                                <h4 class="card-title mb-0">My Profile</h4>
+                                <div class="card-options"><a class="card-options-collapse" href="#" data-bs-toggle="card-collapse"><i class="fe fe-chevron-up"></i></a><a class="card-options-remove" href="#" data-bs-toggle="card-remove"><i class="fe fe-x"></i></a></div>
+                            </div>
+                            <div class="card-body">
+                                <form class="card">
+                                    <div class="row mb-2">
+                                        <div class="profile-title">
+                                            <div class="media">
+                                                <img class="img-70 rounded-circle" alt="" src="../assets/images/user/7.jpg">
+                                                <div class="media-body">
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="mb-3">
-                                    <h6 class="form-label">Bio</h6>
-                                    <textarea class="form-control" rows="5">On the other hand, we denounce with righteous indignation</textarea>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Email-Address</label>
-                                    <input class="form-control" placeholder="your-email@domain.com">
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Password</label>
-                                    <input class="form-control" type="password" value="password">
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Website</label>
-                                    <input class="form-control" placeholder="http://Uplor .com">
-                                </div>
-                                <div class="form-footer">
-                                    <button class="btn btn-primary btn-block">Save</button>
-                                </div>
-                            </form>
+
+                                    <!-- Profile Picture Upload -->
+                                    <div class="form-group">
+                                        <div id="profile-picture-container" class="mb-4" style="margin-top: 10px; border-radius: 50%; width: 250px; height: 250px; background-size: cover; background-position: center;"></div>
+                                        <input id="NewPicture" name="NewPicture" type="file" class="form-control mb-3" />
+
+
+                                    </div>
+
+                                </form>
+
+
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-xl-8">
-                    <form class="card">
+                    <div class="col-xl-8">
+
                         <div class="card-header pb-0">
-                            <h4 class="card-title mb-0">Edit Profile</h4>
+                            <h4 class="card-title mb-0" id="displayUserName"></h4>
                             <div class="card-options"><a class="card-options-collapse" href="#" data-bs-toggle="card-collapse"><i class="fe fe-chevron-up"></i></a><a class="card-options-remove" href="#" data-bs-toggle="card-remove"><i class="fe fe-x"></i></a></div>
                         </div>
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-md-5">
+                                <div class="col-sm-6 col-md-3">
                                     <div class="mb-3">
-                                        <label class="form-label">Company</label>
-                                        <input class="form-control" type="text" placeholder="Company">
+                                        <label class="form-label">Username</label>
+                                        <input class="form-control" id="UserName" name="UserName" disabled value="@Model.UserName">
                                     </div>
                                 </div>
                                 <div class="col-sm-6 col-md-3">
                                     <div class="mb-3">
-                                        <label class="form-label">Username</label>
-                                        <input class="form-control" type="text" placeholder="Username">
+                                        <label class="form-label">Email Address</label>
+                                        <input class="form-control" id="Email" name="Email" required placeholder="your-email@domain.com">
                                     </div>
                                 </div>
-                                <div class="col-sm-6 col-md-4">
+                                <div class="col-sm-6 col-md-3">
                                     <div class="mb-3">
-                                        <label class="form-label">Email address</label>
-                                        <input class="form-control" type="email" placeholder="Email">
+                                        <label class="form-label">Phone Number</label>
+                                        <input class="form-control" type="text" id="PhoneNumber" name="PhoneNumber" placeholder="PhoneNumber" required>
                                     </div>
                                 </div>
-                                <div class="col-sm-6 col-md-6">
-                                    <div class="mb-3">
-                                        <label class="form-label">First Name</label>
-                                        <input class="form-control" type="text" placeholder="Company">
-                                    </div>
-                                </div>
-                                <div class="col-sm-6 col-md-6">
-                                    <div class="mb-3">
-                                        <label class="form-label">Last Name</label>
-                                        <input class="form-control" type="text" placeholder="Last Name">
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
+                                <div class="col-sm-6 col-md-3">
                                     <div class="mb-3">
                                         <label class="form-label">Address</label>
-                                        <input class="form-control" type="text" placeholder="Home Address">
+                                        <input class="form-control" type="text" id="Address" name="Address" placeholder="Address" required>
+
                                     </div>
                                 </div>
-                                <div class="col-sm-6 col-md-4">
+                                <div class="col-sm-6 col-md-3">
                                     <div class="mb-3">
-                                        <label class="form-label">City</label>
-                                        <input class="form-control" type="text" placeholder="City">
+                                        <label class="form-label">Address 2</label>
+                                        <input class="form-control" type="text" placeholder="Address 2" id="Address2" name="Address2" required>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Locality</label>
+                                        <input class="form-control" type="text" id="Locality" name="Locality" placeholder="Locality" required>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">District</label>
+                                        <input class="form-control" type="text" id="District" name="District" placeholder="District" required>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Region</label>
+                                        <input class="form-control" type="text" id="Region" name="Region" placeholder="Region" required>
                                     </div>
                                 </div>
                                 <div class="col-sm-6 col-md-3">
                                     <div class="mb-3">
                                         <label class="form-label">Postal Code</label>
-                                        <input class="form-control" type="number" placeholder="ZIP Code">
+                                        <input class="form-control" type="text" id="PostalCode" name="PostalCode" placeholder="Postal Code" required>
                                     </div>
                                 </div>
-                                <div class="col-md-5">
+                                <div class="col-sm-6 col-md-3">
                                     <div class="mb-3">
                                         <label class="form-label">Country</label>
-                                        <select class="form-control btn-square">
-                                            <option value="0">--Select--</option>
-                                            <option value="1">Germany</option>
-                                            <option value="2">Canada</option>
-                                            <option value="3">Usa</option>
-                                            <option value="4">Aus</option>
+                                        <select class="form-control btn-square" id="Country" name="Country">
+                                            <option value="">--Select--</option>
+                                            <option value="Germany">Germany</option>
+                                            <option value="Canada">Canada</option>
+                                            <option value="USA">USA</option>
+                                            <option value="Australia">Australia</option>
+
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-md-12">
-                                    <div>
-                                        <label class="form-label">About Me</label>
-                                        <textarea class="form-control" rows="5" placeholder="Enter About your description"></textarea>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Password</label>
+                                        <input class="form-control" id="Password" name="Password" required type="password" value="password">
                                     </div>
                                 </div>
+
                             </div>
                         </div>
                         <div class="card-footer text-end">
                             <button class="btn btn-primary" type="submit">Update Profile</button>
                         </div>
-                    </form>
-                    <!-- Container-fluid Ends-->
+
+                    </div>
                 </div>
-            </div>
+            </form>
         </div>
+
     </div>
 </div>
 
@@ -167,9 +172,11 @@
 
 <script>
     $(document).ready(function () {
-        var userId = '@Model.UserId';
+        var userId = localStorage.getItem('userId');
+        var userName = localStorage.getItem('userName');
         var imageName;
-
+        var imageDirectory = '@Url.Content(Model.Picture)';
+        $('#displayUserName').text(`Welcome, ${userName}`);
         $.ajax({
             url: 'https://localhost:7178/api/v1/UsersAuth/' + userId,
             type: 'GET',
@@ -185,12 +192,16 @@
                 $('#Region').val(data.region);
                 $('#PostalCode').val(data.postalCode);
                 $('#Country').val(data.country);
-                if (data.existingPictureUrl) {
-                    var imagePath = 'https://localhost:7187' + data.existingPictureUrl;
-                    $('#profile-picture-container').css('background-image', 'url(' + imagePath + ')').show();
-                    imageName = data.existingPictureUrl.split('/').pop();
+                if (data.picture) {
+                    var imageUrl = 'https://localhost:7178' + data.picture; 
+                    $('#profile-picture-container').css('background-image', 'url(' + imageUrl + ')');
+                    var imageName = data.picture.split('/').pop();
                     $('#imageName').text(imageName);
+                } else {
+                    alert("No profile picture available");
                 }
+
+                
             },
             error: function (error) {
                 console.log('Error fetching profile:', error);
@@ -198,24 +209,26 @@
         });
 
         $("#NewPicture").change(function () {
-            imageName = $(this).val().split('\\').pop();
-            $('#imageName').text(imageName);
-
             if (this.files && this.files[0]) {
                 var reader = new FileReader();
                 reader.onload = function (e) {
-                    $('#profile-picture-container').css('background-image', 'url(' + e.target.result + ')').show();
-                }
+                    $('#profile-picture-container').css('background-image', 'url(' + e.target.result + ')');
+                };
                 reader.readAsDataURL(this.files[0]);
             }
         });
+
     });
 
     $('form').submit(function (e) {
-        e.preventDefault();
-        var formData = new FormData(this);
-        formData.append('UserId', '@Model.UserId'); // Ensure UserId is appended if not automatically included
 
+        e.preventDefault();
+
+        var formData = new FormData(this);
+        var userId = localStorage.getItem('userId');
+        var userName = localStorage.getItem('userName');
+        formData.append('UserId', userId);
+        formData.append('UserName', userName); 
         $.ajax({
             url: 'https://localhost:7178/api/v1/UsersAuth/Update',
             type: 'POST',
@@ -225,8 +238,8 @@
             success: function (response) {
                 console.log(response);
                 alert('Profile updated successfully');
-                var imageUrl = 'https://localhost:7187/wwwwroot' + response.pictureUrl;
-                $('#profile-picture-container').css('background-image', 'url(' + imageUrl + ')').show();
+                var imageUrl = 'https://localhost:7178/wwwroot' + response.pictureUrl;
+                $('#profile-picture-container').css('background-image', 'url(' + imagePath + ')');
                 imageName = response.pictureUrl.split('/').pop();
                 $('#imageName').text(imageName);
             },

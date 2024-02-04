@@ -115,7 +115,8 @@
                                 </svg>
                             </div>
                             <ul class="profile-dropdown onhover-show-div">
-                                <li><a href="user-profile.html"><i data-feather="user"></i><span>Account</span></a></li>
+                                <li><a href="@Url.Action("UpdateProfile", "auth")"><i data-feather="user"></i><span>Profile</span></a></li>
+                                <li><a href="@Url.Action("ChangePassword", "auth")"><i data-feather="user"></i><span>Change Password</span></a></li>
                                 <li><a href="@Url.Action("Logout","Account")"><i data-feather="log-in"> </i><span>Log in</span></a></li>
                             </ul>
                         </li>
@@ -154,9 +155,8 @@
                                         </svg><span>Home</span>
                                     </a>
                                     <ul class="sidebar-submenu">
-                                        <li><a href="@Url.Action("UpdateProfile", "auth")">Update Profile</a></li>
-                                        <li><a href="@Url.Action("ChangePassword", "auth")">Change Password</a></li>
-                                        <li><a href="@Url.Action("Logout", "User")">Logout</a></li>
+                                  @*       <li><a href=">Change Password</a></li>
+                                        <li><a href="@Url.Action("Logout", "User")">Logout</a></li> *@
                                     </ul>
                                 </li>
                             </ul>

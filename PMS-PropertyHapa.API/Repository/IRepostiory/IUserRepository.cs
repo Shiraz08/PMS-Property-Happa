@@ -20,9 +20,9 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
 
         Task<UserDTO> RegisterUser(RegisterationRequestDTO registrationRequestDTO);
 
-        Task<bool> ValidateCurrentPassword(long userId, string currentPassword);
+        Task<bool> ValidateCurrentPassword(string userId, string currentPassword);
 
-        Task<bool> ChangePassword(long userId, string currentPassword, string newPassword);
+        Task<bool> ChangePassword(string userId, string currentPassword, string newPassword);
 
         Task<ApplicationUser> FindByEmailAsync(string email);
 

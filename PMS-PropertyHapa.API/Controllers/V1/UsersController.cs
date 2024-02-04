@@ -212,8 +212,6 @@ namespace PMS_PropertyHapa.API.Controllers.V1
 
         [HttpGet("{userId}")]
         public async Task<IActionResult> GetProfile(string userId)
-        
-        
         {
             var profileModel = await _userRepo.GetProfileModelAsync(userId);
             if (profileModel == null)
@@ -237,7 +235,6 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             }
 
             // Update basic information
-            user.Name = model.Name;
             user.Email = model.Email;
             user.PhoneNumber = model.PhoneNumber;
 
@@ -295,7 +292,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
         [HttpPost("change-password")]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequestDto model)
         {
-            if (!await _userRepo.ValidateCurrentPassword(model.userId, model.currentPassword))
+            if (!await _userRepo.ValidateCurrentPassword(model.UserId.ToString(), model.currentPassword))
             {
                 _response.StatusCode = HttpStatusCode.BadRequest;
                 _response.IsSuccess = false;
@@ -310,7 +307,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
                 _response.ErrorMessages.Add("New password and confirmation password do not match");
                 return BadRequest(_response);
             }
-            if (!await _userRepo.ChangePassword(model.userId, model.currentPassword, model.newPassword))
+            if (!await _userRepo.ChangePassword(model.UserId.ToString(), model.currentPassword, model.newPassword))
             {
                 _response.StatusCode = HttpStatusCode.InternalServerError;
                 _response.IsSuccess = false;

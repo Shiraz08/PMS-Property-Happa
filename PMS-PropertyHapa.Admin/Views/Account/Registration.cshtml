@@ -1,91 +1,39 @@
 ﻿@model PMS_PropertyHapa.Models.DTO.RegisterationRequestDTO
 @{
     ViewData["Title"] = "Register";
-    Layout = "~/Views/Shared/_IdentityLayout.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@section Scripts {
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(function () {
-            $('.register-form').find('input[type=text], input[type=password], select').val('');
-
-            $('.register-form').on('submit', function (e) {
-                e.preventDefault();
-
-                var role = $('#Role').val().toLowerCase();
-                var apiUrl;
-                switch (role) {
-                    case 'admin':
-                        apiUrl = 'https://localhost:7178/api/v1/UsersAuth/register/admin';
-                        break;
-                        break;
-                    default:
-                        alert('Please select a valid role.');
-                        return;
-                }
-
-                var registerData = {
-                    UserName: $('#UserName').val(),
-                    Name: $('#Name').val(),
-                    Password: $('#Password').val(),
-                    Role: role
-                };
-
-                $.ajax({
-                    url: apiUrl,
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify(registerData),
-                    success: function (response) {
-                        console.log(response);
-                        alert("Registered Successfully");
-                        window.location.href = "/Auth/Login";
-                    },
-                    error: function (xhr, status, error) {
-                        console.error(xhr.responseText);
-                        alert("An Error Occurred");
-                    }
-                });
-            });
-        });
-    </script>
-}
-
-
-
-<form class="theme-form register-form needs-validation" novalidate="" method="post">
-    <div class="container border p-4" style="max-width: 500px; margin: 0 auto;">
-        <div class="row text-center">
-            <h1>Register</h1>
-        </div>
-        <div class="row text-center">
-            <div asp-validation-summary="All" class="text-danger"></div>
-        </div>
-        <div class="row">
-            <div class="col-md-12 pb-2">
-                <input asp-for="UserName" type="text" class="form-control" placeholder="Username..." autocomplete="off" />
-            </div>
-            <div class="col-md-12 pb-2">
-                <input asp-for="Name" type="text" class="form-control" placeholder="Name..." autocomplete="off" />
-            </div>
-            <div class="col-md-12 pb-2">
-                <input asp-for="Password" type="password" class="form-control" placeholder="Password..." autocomplete="off" />
-            </div>
-            <div class="col-md-12 pb-2">
-                <select asp-for="Role" class="form-select">
-                    <option disabled selected>--Select Role--</option>
-                    <option value="User">User</option>
-                </select>
-            </div>
-            <div class="col-md-12 pb-2">
-                <button type="submit" class="btn btn-success w-100">Register</button>
-            </div>
-            <div class="col-md-12 pb-2">
-                <a class="btn btn-primary w-100" href="javascript:history.back()">Go Back</a>
-            </div>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form class="theme-form register-form needs-validation" novalidate asp-action="Registration" asp-controller="Account" method="post">
+                <div class="border p-4">
+                    <div class="text-center mb-4">
+                        <h1>Register</h1>
+                    </div>
+                    <div asp-validation-summary="All" class="text-danger text-center"></div>
+                    <div class="mb-3">
+                        <input asp-for="UserName" type="text" class="form-control" placeholder="Username..." autocomplete="off" required>
+                    </div>
+                    <div class="mb-3">
+                        <input asp-for="Name" type="text" class="form-control" placeholder="Name..." autocomplete="off" required>
+                    </div>
+                    <div class="mb-3">
+                        <input asp-for="Password" type="password" class="form-control" placeholder="Password..." autocomplete="off" required>
+                    </div>
+                    <div class="mb-3">
+                        <select asp-for="Role" class="form-select" required>
+                            <option value="" disabled>--Select Role--</option>
+                            <option value="Tenant">User</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100 mb-3">Register</button>
+                    <a class="btn btn-primary w-100" href="javascript:history.back()">Go Back</a>
+                </div>
+            </form>
         </div>
     </div>
-</form>
+</div>
 
 

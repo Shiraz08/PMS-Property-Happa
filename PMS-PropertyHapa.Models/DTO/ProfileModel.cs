@@ -9,7 +9,7 @@ namespace PMS_PropertyHapa.Models.DTO
 {
     public class ProfileModel
     {
-        public string UserId { get; set; } = "043a35d4-d995-469b-a43c-e9d173f50071";
+        public string UserId { get; set; } 
         public string Name { get; set; }
         public string UserName { get; set; }
         public string Email { get; set; }
