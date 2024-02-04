@@ -184,13 +184,16 @@
                     var imageName = data.picture.split('/').pop();
                     $('#imageName').text(imageName);
                 } else {
-                    alert("No profile picture available");
+                    var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
+                    Toast.fire({ icon: 'error', title: 'No profile picture available' });
                 }
 
                 
             },
             error: function (error) {
                 console.log('Error fetching profile:', error);
+                var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
+                Toast.fire({ icon: 'error', title: 'Error Fetching Profile' });
             }
         });
 
@@ -223,14 +226,16 @@
             processData: false,
             success: function (response) {
                 console.log(response);
-                alert('Profile updated successfully');
+                var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
+                Toast.fire({ icon: 'success', title: 'Profile updated successfully' });
                 var imageUrl = 'https://localhost:7178/wwwroot' + response.pictureUrl;
                 $('#profile-picture-container').css('background-image', 'url(' + imagePath + ')');
                 imageName = response.pictureUrl.split('/').pop();
                 $('#imageName').text(imageName);
             },
             error: function (xhr, status, error) {
-                alert('Error updating profile');
+                var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
+                Toast.fire({ icon: 'error', title: 'Error updating profile' });
                 console.error(xhr.responseText);
             }
         });

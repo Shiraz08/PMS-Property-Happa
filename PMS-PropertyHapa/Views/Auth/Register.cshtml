@@ -23,7 +23,8 @@
                         apiUrl = 'https://localhost:7178/api/v1/UsersAuth/register/user';
                         break;
                     default:
-                        alert('Please select a valid role.');
+                        var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
+                        Toast.fire({ icon: 'error', title: 'Please select a valid role.' });
                         return;
                 }
 
@@ -41,12 +42,15 @@
                     data: JSON.stringify(registerData),
                     success: function (response) {
                         console.log(response);
-                        alert("Registered Successfully");
+                        var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
+                        Toast.fire({ icon: 'success', title: 'Registered Successfully' });
+
                         window.location.href = "/Auth/Login";
                     },
                     error: function (xhr, status, error) {
                         console.error(xhr.responseText);
-                        alert("An Error Occurred");
+                        var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
+                        Toast.fire({ icon: 'error', title: 'An Error Occurred' });
                     }
                 });
             });

@@ -26,17 +26,20 @@
                         if (response && response.result && response.result.userId) {
                             localStorage.setItem('userId', response.result.userId);
                             localStorage.setItem('userName', response.result.userName);
-                            alert("Logged In Successfully");
+                            var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
+                            Toast.fire({ icon: 'success', title: 'Logged In Successfully..!' });
                             window.location.href = "/Home/Index";
                         }
                         else
                         {
-                            alert("Login failed: No user information returned.");
+                            var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
+                            Toast.fire({ icon: 'error', title: 'Login failed: No user information returned.' });
                         }
                     },
                     error: function (xhr, status, error) {
                         console.error(xhr.responseText);
-                        alert("Wrong Email or Password"); 
+                        var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
+                        Toast.fire({ icon: 'error', title: 'Wrong Email or Password!' });
                     }
                 });
             });
