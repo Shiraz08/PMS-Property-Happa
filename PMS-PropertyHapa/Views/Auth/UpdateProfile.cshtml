@@ -5,12 +5,14 @@
 }
 <style>
     #profile-picture-container {
-        width: 200px;
-        height: 200px;
+        width: 200px!important;
+        height: 200px!important;
         background-size: cover;
         background-position: center;
+        border-radius:30px!important
     }
 </style>
+
 
 <!-- Page Sidebar Ends-->
 <div class="page-body">
@@ -22,13 +24,9 @@
                 </div>
                 <div class="col-12 col-sm-6">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item">
-                            <a href="index.html">
-                                <i data-feather="home"></i>
-                            </a>
-                        </li>
-                        <li class="breadcrumb-item">User</li>
-                        <li class="breadcrumb-item active"> User Edit</li>
+                        <li class="breadcrumb-item"><a href="index.html"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item">Dashboars</li>
+                        <li class="breadcrumb-item active">User Edit</li>
                     </ol>
                 </div>
             </div>
@@ -37,44 +35,33 @@
     <!-- Container-fluid starts-->
     <div class="container-fluid">
         <div class="edit-profile">
-            <form method="post">
-                <div class="row">
-                    <div class="col-xl-4">
-                        <div class="card">
-                            <div class="card-header pb-0">
-                                <h4 class="card-title mb-0">My Profile</h4>
-                                <div class="card-options"><a class="card-options-collapse" href="#" data-bs-toggle="card-collapse"><i class="fe fe-chevron-up"></i></a><a class="card-options-remove" href="#" data-bs-toggle="card-remove"><i class="fe fe-x"></i></a></div>
-                            </div>
-                            <div class="card-body">
-                                <form class="card">
-                                    <div class="row mb-2">
-                                        <div class="profile-title">
-                                            <div class="media">
-                                                <img class="img-70 rounded-circle" alt="" src="../assets/images/user/7.jpg">
-                                                <div class="media-body">
-                                                </div>
+            <div class="row">
+                <div class="col-xl-4">
+                    <div class="card">
+                        <div class="card-header pb-0">
+                            <h4 class="card-title mb-0">My Profile</h4>
+                            <div class="card-options"><a class="card-options-collapse" href="#" data-bs-toggle="card-collapse"><i class="fe fe-chevron-up"></i></a><a class="card-options-remove" href="#" data-bs-toggle="card-remove"><i class="fe fe-x"></i></a></div>
+                        </div>
+                        <div class="card-body">
+                                <div class="row mb-2">
+                                    <div class="profile-title">
+                                        <div class="media">
+                                            <img class="img-70 rounded-circle" alt="" src="../assets/images/user/7.jpg">
+                                        <div id="profile-picture-container" class="img-70" ></div>    
+                                            <div class="media-body">
+                                            <h3 class="mb-1 f-20 txt-primary">@Model.UserName</h3>
+                                            <p class="f-12">@Model.Email</p>
                                             </div>
                                         </div>
                                     </div>
-
-                                    <!-- Profile Picture Upload -->
-                                    <div class="form-group">
-                                        <div id="profile-picture-container" class="mb-4" style="margin-top: 10px; border-radius: 50%; width: 250px; height: 250px; background-size: cover; background-position: center;"></div>
-                                        <input id="NewPicture" name="NewPicture" type="file" class="form-control mb-3" />
-
-
-                                    </div>
-
-                                </form>
-
-
-                            </div>
+                                </div>
                         </div>
                     </div>
-                    <div class="col-xl-8">
-
+                </div>
+                <div class="col-xl-8">
+                    <form class="card">
                         <div class="card-header pb-0">
-                            <h4 class="card-title mb-0" id="displayUserName"></h4>
+                            <h4 class="card-title mb-0">Edit Profile</h4>
                             <div class="card-options"><a class="card-options-collapse" href="#" data-bs-toggle="card-collapse"><i class="fe fe-chevron-up"></i></a><a class="card-options-remove" href="#" data-bs-toggle="card-remove"><i class="fe fe-x"></i></a></div>
                         </div>
                         <div class="card-body">
@@ -136,6 +123,12 @@
                                 </div>
                                 <div class="col-sm-6 col-md-3">
                                     <div class="mb-3">
+                                        <label class="form-label">Profile Image</label>
+                                        <input id="NewPicture" name="NewPicture" type="file" class="form-control mb-3" />
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
                                         <label class="form-label">Country</label>
                                         <select class="form-control btn-square" id="Country" name="Country">
                                             <option value="">--Select--</option>
@@ -147,26 +140,19 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-sm-6 col-md-3">
-                                    <div class="mb-3">
-                                        <label class="form-label">Password</label>
-                                        <input class="form-control" id="Password" name="Password" required type="password" value="password">
-                                    </div>
-                                </div>
-
                             </div>
                         </div>
                         <div class="card-footer text-end">
                             <button class="btn btn-primary" type="submit">Update Profile</button>
                         </div>
-
-                    </div>
+                    </form>
+                    <!-- Container-fluid Ends-->
                 </div>
-            </form>
+            </div>
         </div>
-
     </div>
 </div>
+
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
