@@ -116,7 +116,55 @@ namespace PMS_PropertyHapa.Admin.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangePassword(ChangePasswordRequestDto model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
 
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return RedirectToAction("Login");
+            }
+
+            var checkPassword = await _userManager.CheckPasswordAsync(user, model.currentPassword);
+            if (!checkPassword)
+            {
+                ModelState.AddModelError(string.Empty, "Current password is incorrect.");
+                return View(model);
+            }
+            
+            if (model.newPassword != model.newRepeatPassword)
+            {
+                ModelState.AddModelError(string.Empty, "New password and confirmation password do not match.");
+                return View(model);
+            }
+            var result = await _userManager.ChangePasswordAsync(user, model.currentPassword, model.newPassword);
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+                return View(model);
+            }
+            TempData["SuccessMessage"] = "Your password has been changed successfully.";
+            return RedirectToAction("Index", "Home");
+        }
+
+
+        [HttpGet]
+        [Authorize]
+        public IActionResult ChangePassword()
+        {
+            var model = new ChangePasswordRequestDto(); 
+            return View(model);
+        }
 
 
         public async Task<IActionResult> Logout()

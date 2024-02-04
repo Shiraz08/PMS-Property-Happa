@@ -304,7 +304,8 @@ namespace MagicVilla_VillaAPI.Repository
             {
                 UserName = registrationRequestDTO.UserName,
                 PasswordHash = registrationRequestDTO.Password,
-                Name = registrationRequestDTO.Name
+                Name = registrationRequestDTO.Name,
+                Email = registrationRequestDTO.Email,
             };
 
             var result = await _userManager.CreateAsync(user, registrationRequestDTO.Password);
@@ -330,7 +331,8 @@ namespace MagicVilla_VillaAPI.Repository
             {
                 UserName = registrationRequestDTO.UserName,
                 PasswordHash = registrationRequestDTO.Password,
-                Name = registrationRequestDTO.Name
+                Name = registrationRequestDTO.Name,
+                Email = registrationRequestDTO.Email,
             };
 
             var result = await _userManager.CreateAsync(user, registrationRequestDTO.Password);
