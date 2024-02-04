@@ -48,18 +48,12 @@ namespace PMS_PropertyHapa.API
                 options.SwaggerDoc(desc.GroupName, new OpenApiInfo
                 {
                     Version = desc.ApiVersion.ToString(),
-                    Title = $"Magic Villa {desc.ApiVersion}",
-                    Description = "API to manage Villa",
-                    TermsOfService = new Uri("https://example.com/terms"),
+                    Title = $"Property Hapa {desc.ApiVersion}",
+                    Description = "API to manage Property Hapa",
                     Contact = new OpenApiContact
                     {
-                        Name = "Dotnetmastery",
-                        Url = new Uri("https://dotnetmastery.com")
-                    },
-                    License = new OpenApiLicense
-                    {
-                        Name = "Example License",
-                        Url = new Uri("https://example.com/license")
+                        Name = "Website",
+                        Url = new Uri("https://propertyhapa.com/")
                     }
                 });
             }

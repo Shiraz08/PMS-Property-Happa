@@ -10,7 +10,7 @@
             <form class="theme-form register-form needs-validation" novalidate asp-action="Registration" asp-controller="Account" method="post">
                 <div class="border p-4">
                     <div class="text-center mb-4">
-                        <h1>Register</h1>
+                        <h1>Add New Tenant</h1>
                     </div>
                     <div asp-validation-summary="All" class="text-danger text-center"></div>
                     <div class="mb-3">
@@ -27,8 +27,7 @@
                     </div>
                     <div class="mb-3">
                         <select asp-for="Role" class="form-select" required>
-                            <option value="" disabled>--Select Role--</option>
-                            <option value="Tenant">User</option>
+                            <option value="Tenant">Tenant</option>
                         </select>
                     </div>
                     <button type="submit" class="btn btn-success w-100 mb-3">Register</button>

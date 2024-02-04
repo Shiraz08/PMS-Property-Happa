@@ -9,7 +9,7 @@
     <meta name="author" content="pixelstrap">
     <link rel="icon" href="~/Dashboard/assets/images/logo/favicon-icon.png" type="image/x-icon">
     <link rel="shortcut icon" href="~/Dashboard/assets/images/logo/favicon-icon.png" type="image/x-icon">
-    <title>Zeta admin dashboard </title>
+    <title>Admin Dashboard - Property Hapa</title>
     <!-- Google font-->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
@@ -41,6 +41,11 @@
     <!-- Responsive css-->
     <link rel="stylesheet" type="text/css" href="~/Dashboard/assets/css/responsive.css">
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.min.css" rel="stylesheet">
+    <style>
+        .page-wrapper.compact-wrapper .page-body-wrapper div.sidebar-wrapper .logo-wrapper, .page-wrapper.compact-wrapper .page-body-wrapper div.sidebar-wrapper .logo-icon-wrapper {
+            padding: 3px 30px!important;
+        }
+    </style>
 </head>
 <body>
     <!-- Loader starts-->
@@ -115,9 +120,8 @@
                                 </svg>
                             </div>
                             <ul class="profile-dropdown onhover-show-div">
-                                <li><a href="user-profile.html"><i data-feather="user"></i><span>Account</span></a></li>
                                 <li><a href="@Url.Action("ChangePassword", "Account")"><i data-feather="user"></i><span>Change Password</span></a></li>
-                                <li><a href="@Url.Action("Logout","Account")"><i data-feather="log-in"> </i><span>Log in</span></a></li>
+                                <li><a href="@Url.Action("Logout","Account")"><i data-feather="log-in"> </i><span>Log Out</span></a></li>
                             </ul>
                         </li>
                     </ul>
@@ -131,7 +135,9 @@
             <div class="sidebar-wrapper">
                 <div>
                     <div class="logo-wrapper">
-                        <a href="@Url.Action("Index","Home")"><img class="img-fluid for-light" src="~/Dashboard/assets/images/logo/small-logo.png" alt=""><img class="img-fluid for-dark" src="~/Dashboard/assets/images/logo/small-white-logo.png" alt=""></a>
+                        <a href="@Url.Action("Index","Home")">
+                            <img class="img-fluid for-light" src="~/Dashboard/assets/images/logo/Logo-01.jpg" alt="" style="width: 252px;height: 66px;">
+                        </a>
                         <div class="back-btn"><i class="fa fa-angle-left"></i></div>
                     </div>
                     <div class="logo-icon-wrapper"><a href="@Url.Action("Index","Home")"><img class="img-fluid" src="~/Dashboard/assets/images/logo-icon.png" alt=""></a></div>
@@ -142,6 +148,21 @@
                                 <li class="back-btn">
                                     <a href="index.html"><img class="img-fluid" src="~/Dashboard/assets/images/logo-icon.png" alt=""></a>
                                     <div class="mobile-back text-end"><span>Back</span><i class="fa fa-angle-right ps-2" aria-hidden="true">        </i></div>
+                                </li>
+                                <li class="sidebar-list">
+                                    <a class="sidebar-link sidebar-title" href="#">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <g>
+                                                <g>
+                                                    <path d="M15.7499 9.47167V6.43967C15.7549 4.35167 14.0659 2.65467 11.9779 2.64967C9.88887 2.64567 8.19287 4.33467 8.18787 6.42267V9.47167" stroke="#130F26" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M2.94995 14.2074C2.94995 8.91344 5.20495 7.14844 11.969 7.14844C18.733 7.14844 20.988 8.91344 20.988 14.2074C20.988 19.5004 18.733 21.2654 11.969 21.2654C5.20495 21.2654 2.94995 19.5004 2.94995 14.2074Z" stroke="#130F26" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                </g>
+                                            </g>
+                                        </svg><span>Manage App Tenant</span>
+                                    </a>
+                                    <ul class="sidebar-submenu">
+                                        <li><a href="@Url.Action("Index","Admin")">View App Tenant</a></li>
+                                    </ul>
                                 </li>
                                 <li class="sidebar-list">
                                     <a class="sidebar-link sidebar-title" href="#">
@@ -192,7 +213,7 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-12 footer-copyright text-center">
-                    <p class="mb-0">Copyright 2022 © Zeta theme by pixelstrap  </p>
+                    <p class="mb-0">Copyright 2024 © Property Hapa </p>
                 </div>
             </div>
         </div>

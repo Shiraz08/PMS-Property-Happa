@@ -14,6 +14,7 @@ namespace PMS_PropertyHapa.API.Areas.Identity.Data
         public int UserTypeId { get; set; }
         public string IP { get; set; }
         public string PhoneNumber { get; set; }
+        public DateTime BirthDate { get; set; }
         public string PasswordShow { get; set; }
         public string Picture { get; set; }
         public string Address { get; set; }

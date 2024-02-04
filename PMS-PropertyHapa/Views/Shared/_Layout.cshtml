@@ -9,7 +9,7 @@
     <meta name="author" content="pixelstrap">
     <link rel="icon" href="~/Dashboard/assets/images/logo/favicon-icon.png" type="image/x-icon">
     <link rel="shortcut icon" href="~/Dashboard/assets/images/logo/favicon-icon.png" type="image/x-icon">
-    <title>Zeta admin dashboard </title>
+    <title>Dashboard - Property Hapa </title>
     <!-- Google font-->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
@@ -41,6 +41,11 @@
     <!-- Responsive css-->
     <link rel="stylesheet" type="text/css" href="~/Dashboard/assets/css/responsive.css">
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.min.css" rel="stylesheet">
+    <style>
+        .page-wrapper.compact-wrapper .page-body-wrapper div.sidebar-wrapper .logo-wrapper, .page-wrapper.compact-wrapper .page-body-wrapper div.sidebar-wrapper .logo-icon-wrapper {
+            padding: 3px 30px !important;
+        }
+    </style>
 </head>
 <body>
     <!-- Loader starts-->
@@ -131,7 +136,9 @@
             <div class="sidebar-wrapper">
                 <div>
                     <div class="logo-wrapper">
-                        <a href="@Url.Action("Index","Home")"><img class="img-fluid for-light" src="~/Dashboard/assets/images/logo/small-logo.png" alt=""><img class="img-fluid for-dark" src="~/Dashboard/assets/images/logo/small-white-logo.png" alt=""></a>
+                        <a href="@Url.Action("Index","Home")">
+                            <img class="img-fluid for-light" src="~/Dashboard/assets/images/logo/Logo-01.jpg" alt="" style="width: 252px;height: 66px;">
+                        </a>
                         <div class="back-btn"><i class="fa fa-angle-left"></i></div>
                     </div>
                     <div class="logo-icon-wrapper"><a href="@Url.Action("Index","Home")"><img class="img-fluid" src="~/Dashboard/assets/images/logo-icon.png" alt=""></a></div>
@@ -178,7 +185,7 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-12 footer-copyright text-center">
-                    <p class="mb-0">Copyright 2022 © Zeta theme by pixelstrap  </p>
+                    <p class="mb-0">Copyright 2024 © Property Hapa  </p>
                 </div>
             </div>
         </div>

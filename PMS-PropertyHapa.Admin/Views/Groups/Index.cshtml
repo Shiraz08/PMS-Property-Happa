@@ -8,11 +8,11 @@
         <div class="page-title">
             <div class="row">
                 <div class="col-12">
-                    <h3>Groups List</h3>
+                    <h3>Roles List</h3>
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a class="home-item" href="index.html"><i data-feather="home"></i></a></li>
                         <li class="breadcrumb-item">Dashboard</li>
-                        <li class="breadcrumb-item active">Roles/Groups</li>
+                        <li class="breadcrumb-item active">Roles</li>
                     </ol>
                 </div>
             </div>
@@ -25,7 +25,7 @@
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h4 class="card-title">
                             <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#AddRole">
-                                <i class="ri-add-line align-bottom me-1"></i> Add Groups
+                                <i class="ri-add-line align-bottom me-1"></i> Add New Role
                             </button>
                         </h4>
                     </div>
@@ -34,9 +34,9 @@
                             <table class="table" id="grouproles">
                                 <thead>
                                     <tr>
-                                        <th>Group Name</th>
-                                        <th>Roles</th>
-                                        <th>Action</th>
+                                        <th style="width:290px!Important">Role Name</th>
+                                        <th style="width:290px!Important">Assign App Pages</th>
+                                        <th style="width:290px!Important">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -55,12 +55,12 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Add Group</h5>
+                <h5 class="modal-title">Add New Role</h5>
                 <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <label for="name">Group Name:</label>
+                    <label for="name">Role Name:</label>
                     <input name="Rolename" id="Rolename" class="form-control" placeholder="Enter Group Name" type="text" onkeypress="InputAlphaNoOnlyvalidation(event)" />
                 </div>
             </div>
@@ -243,8 +243,8 @@
                     op += '<td ></td>';
                     else
                         op += '<td><button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#AssignRole" onclick="AssignRole(\'' + item.Id + '\',\'' + item.Name + '\')">Assign Role</button></td>';
-                    if (item.Name != "SuperAdmin" && item.Name != "User") 
-                    op += '<td><div class="d-flex gap-2"><div class="edit"><button class="btn btn-sm btn-success edit-item-btn" data-bs-toggle="modal" data-bs-target="#EditRole" onclick="EditRole(\'' + item.Id + '\',\'' + item.Name + '\')">Edit Group</button></div><div class="remove"></div><button class="btn btn-sm btn-danger remove-item-btn" onclick="DeleteRole(\'' + item.Id + '\')">Delete Group</button> </div></td>';
+                    if (item.Name != "SuperAdmin" && item.Name != "User")
+                        op += '<td><div class="d-flex gap-2"><div class="edit"><button class="btn btn-sm btn-success edit-item-btn" data-bs-toggle="modal" data-bs-target="#EditRole" onclick="EditRole(\'' + item.Id + '\',\'' + item.Name + '\')">Edit Role</button></div><div class="remove"></div><button class="btn btn-sm btn-danger remove-item-btn" onclick="DeleteRole(\'' + item.Id + '\')">Delete Role</button> </div></td>';
                     else
                         op += '<td ></td>';
                     op += '</tr>';
@@ -316,7 +316,7 @@
                     },
                     success: function (response) {
                     var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
-                        Toast.fire({ icon: 'success', title: 'Groups Delete Successfully..!' });
+                        Toast.fire({ icon: 'success', title: 'Role Delete Successfully..!' });
                         getroles();
                     },
                     failure: function (response) {
@@ -338,7 +338,7 @@
                 success: function (response) {
                     $('#EditRole').modal('hide');
                     var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
-                    Toast.fire({ icon: 'success', title: 'Groups Update Successfully..!' });
+                    Toast.fire({ icon: 'success', title: 'Role Update Successfully..!' });
                     getroles();
                 },
                 failure: function (response) {

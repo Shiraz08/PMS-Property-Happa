@@ -86,7 +86,17 @@ namespace PMS_PropertyHapa.Admin.Controllers
             }
             return View(login);
         }
-
+        public JsonResult DoesUserEmailExist(string email)
+        {
+            if (_context.Users.Any(o => o.Email == email))
+            {
+                return Json(true);
+            }
+            else
+            {
+                return Json(false);
+            }
+        }
 
         [HttpPost]
         [AllowAnonymous]
