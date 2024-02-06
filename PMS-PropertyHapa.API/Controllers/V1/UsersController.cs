@@ -214,12 +214,19 @@ namespace PMS_PropertyHapa.API.Controllers.V1
         public async Task<IActionResult> GetProfile(string userId)
         {
             var profileModel = await _userRepo.GetProfileModelAsync(userId);
+
             if (profileModel == null)
             {
-                return NotFound("User not found");
+                _response.StatusCode = HttpStatusCode.NotFound;
+                _response.IsSuccess = false;
+                _response.ErrorMessages.Add("User not found");
+                return NotFound(_response); 
             }
 
-            return Ok(profileModel);
+            _response.StatusCode = HttpStatusCode.OK;
+            _response.IsSuccess = true;
+            _response.Result = profileModel;
+            return Ok(_response);
         }
 
 

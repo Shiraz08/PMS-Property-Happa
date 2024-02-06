@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.V4.Pages.Account.Internal;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
@@ -23,42 +24,70 @@ namespace PMS_PropertyHapa.Controllers
             _authService = authService;
             _tokenProvider = tokenProvider;
         }
-
         [HttpGet]
         public IActionResult Login()
         {
+            // Check if there's an error message passed via ViewBag and pass it to the view if needed
+            ViewBag.ErrorMessage = ViewBag.ErrorMessage ?? string.Empty;
             LoginRequestDTO obj = new();
             return View(obj);
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginRequestDTO obj)
         {
-            APIResponse response = await _authService.LoginAsync<APIResponse>(obj);
+            var response = await _authService.LoginAsync<APIResponse>(obj);
             if (response != null && response.IsSuccess)
-            { 
-                TokenDTO model = JsonConvert.DeserializeObject<TokenDTO>(Convert.ToString(response.Result));
-
-                var handler = new JwtSecurityTokenHandler();
-                var jwt = handler.ReadJwtToken(model.AccessToken);
-
-                var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
-                identity.AddClaim(new Claim(ClaimTypes.Name, jwt.Claims.FirstOrDefault(u => u.Type == "unique_name").Value));
-                identity.AddClaim(new Claim(ClaimTypes.Role, jwt.Claims.FirstOrDefault(u=>u.Type=="role").Value));
-                var principal = new ClaimsPrincipal(identity);
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
-
-
-                _tokenProvider.SetToken(model);
-                return RedirectToAction("Index", "Home");
+            {
+                return Json(new { success = true, message = "Logged In Successfully..!", result = response.Result });
             }
             else
             {
-                ModelState.AddModelError("CustomError", response.ErrorMessages.FirstOrDefault());
-                return View(obj);
+                var errorMessage = response?.ErrorMessages?.FirstOrDefault() ?? "An unexpected error occurred.";
+                return Json(new { success = false, message = errorMessage });
             }
         }
+
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetProfile(string userId)
+        {
+            var profileModel = await _authService.GetProfileAsync(userId);
+            if (profileModel == null)
+            {
+                return NotFound("User not found");
+            }
+
+            return Ok(profileModel);
+        }
+
+
+        // Action to update profile information
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateEditProfile(ProfileModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var success = await _authService.UpdateProfileAsync(model);
+
+            if (success)
+            {
+
+                return RedirectToAction("ProfileUpdated");
+            }
+
+            ModelState.AddModelError(string.Empty, "An error occurred while updating the profile.");
+            return View(model);
+        }
+
+
 
         [HttpGet]
         public IActionResult Register()
@@ -66,7 +95,7 @@ namespace PMS_PropertyHapa.Controllers
             var roleList = new List<SelectListItem>()
             {
                   new SelectListItem{Text=SD.Admin,Value=SD.Admin},
-                new SelectListItem{Text=SD.Customer,Value=SD.Customer},
+                new SelectListItem{Text=SD.User,Value=SD.User},
             };
             ViewBag.RoleList = roleList;
             return View();
@@ -79,9 +108,9 @@ namespace PMS_PropertyHapa.Controllers
         {
             if (string.IsNullOrEmpty(obj.Role))
             {
-                obj.Role = SD.Customer;
+                obj.Role = SD.User;
             }
-            APIResponse result =  await _authService.RegisterAsync<APIResponse>(obj);
+            APIResponse result = await _authService.RegisterAsync<APIResponse>(obj);
             if (result != null && result.IsSuccess)
             {
                 return RedirectToAction("Login");
@@ -128,6 +157,48 @@ namespace PMS_PropertyHapa.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ForgotPassword(ForgetPassword model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return Json(new
+                {
+                    statusCode = 400, 
+                    isSuccess = false,
+                    errorMessages = new List<string> { "Validation failed. Please check the input fields." },
+                    result = (string)null 
+                });
+            }
+
+            var response = await _authService.ForgotPasswordAsync(model);
+
+            if (response != null && response.IsSuccess)
+            {
+               
+                return Json(new
+                {
+                    statusCode = 200, 
+                    isSuccess = true,
+                    errorMessages = new List<string>(), 
+                    result = "Reset password email sent successfully" 
+                });
+            }
+            else
+            {
+              
+                string errorMessage = response?.ErrorMessages?.FirstOrDefault() ?? "An unexpected error occurred. Please try again.";
+                return Json(new
+                {
+                    statusCode = 400,
+                    isSuccess = false,
+                    errorMessages = new List<string> { errorMessage },
+                    result = (string)null 
+                });
+            }
+        }
+
 
 
         public async Task<IActionResult> Logout()
@@ -135,8 +206,8 @@ namespace PMS_PropertyHapa.Controllers
             await HttpContext.SignOutAsync();
             var token = _tokenProvider.GetToken();
             await _authService.LogoutAsync<APIResponse>(token);
-                _tokenProvider.ClearToken();
-            return RedirectToAction("Index","Home");
+            _tokenProvider.ClearToken();
+            return RedirectToAction("Index", "Home");
         }
 
         public IActionResult AccessDenied()

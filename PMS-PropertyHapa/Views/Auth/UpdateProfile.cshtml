@@ -164,7 +164,7 @@
         var imageDirectory = '@Url.Content(Model.Picture)';
         $('#displayUserName').text(`Welcome, ${userName}`);
         $.ajax({
-            url: 'https://localhost:7178/api/v1/UsersAuth/' + userId,
+            url: "GetEditProfile/" + userId,
             type: 'GET',
             success: function (data) {
                 $('#Name').val(data.name);
@@ -219,7 +219,7 @@
         formData.append('UserId', userId);
         formData.append('UserName', userName); 
         $.ajax({
-            url: 'https://localhost:7178/api/v1/UsersAuth/Update',
+            url: "Auth/UpdateEditProfile",
             type: 'POST',
             data: formData,
             contentType: false,

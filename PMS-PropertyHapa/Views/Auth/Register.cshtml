@@ -10,41 +10,22 @@
         $(function () {
             $('.register-form').find('input[type=text], input[type=password], select').val('');
 
-            $('.register-form').on('submit', function (e) {
+            $('#registerForm').on('submit', function (e) {
                 e.preventDefault();
 
-                var role = $('#Role').val().toLowerCase();
-                var apiUrl;
-                switch (role) {
-                    case 'admin':
-                        apiUrl = 'https://localhost:7178/api/v1/UsersAuth/register/admin';
-                        break;
-                    case 'user':
-                        apiUrl = 'https://localhost:7178/api/v1/UsersAuth/register/user';
-                        break;
-                    default:
-                        var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
-                        Toast.fire({ icon: 'error', title: 'Please select a valid role.' });
-                        return;
-                }
-
-                var registerData = {
-                    UserName: $('#UserName').val(),
-                    Name: $('#Name').val(),
-                    Password: $('#Password').val(),
-                    Role: role
-                };
+              
+                var formData = new FormData(this);
 
                 $.ajax({
-                    url: apiUrl,
+                    url: '/Auth/Register',
                     type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify(registerData),
+                    processData: false,
+                    contentType: false,  
+                    data: formData,
                     success: function (response) {
                         console.log(response);
                         var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
                         Toast.fire({ icon: 'success', title: 'Registered Successfully' });
-
                         window.location.href = "/Auth/Login";
                     },
                     error: function (xhr, status, error) {
@@ -56,6 +37,7 @@
             });
         });
     </script>
+
 }
 
 
@@ -84,8 +66,8 @@
             <div class="col-md-12 pb-2">
                 <select asp-for="Role" class="form-select">
                     <option disabled selected>--Select Role--</option>
-                    <option value="Admin">Admin</option>
-                    <option value="User">User</option>
+                    <option value="admin">Admin</option>
+                    <option value="user">User</option>
                 </select>
             </div>
             <div class="col-md-12 pb-2">

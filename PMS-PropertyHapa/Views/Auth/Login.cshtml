@@ -10,44 +10,39 @@
         $(function () {
             $('.login-form').on('submit', function (e) {
                 e.preventDefault();
-
-                var loginData = {
-                    Email: $('#Email').val(), 
-                    Password: $('#Password').val()
-                };
+                var formData = new FormData(this);
 
                 $.ajax({
-                    url: 'https://localhost:7178/api/v1/UsersAuth/login',
+                    url: "/Auth/Login",
                     type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify(loginData),
+                    data: formData,
+                    processData: false,
+                    contentType: false,
                     success: function (response) {
-                        console.log(response);
-                        if (response && response.result && response.result.userId) {
-                            localStorage.setItem('userId', response.result.userId);
-                            localStorage.setItem('userName', response.result.userName);
+                        if (response.success) {
+                            localStorage.setItem('userId', response.result.userId); 
+                            localStorage.setItem('userName', response.result.userName); 
                             var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
-                            Toast.fire({ icon: 'success', title: 'Logged In Successfully..!' });
-                            window.location.href = "/Home/Index";
-                        }
-                        else
-                        {
+                            Toast.fire({ icon: 'success', title: response.message });
+                            window.location.href = "/Home/Index"; 
+                        } else {
                             var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
-                            Toast.fire({ icon: 'error', title: 'Login failed: No user information returned.' });
+                            Toast.fire({ icon: 'error', title: response.message });
                         }
                     },
                     error: function (xhr, status, error) {
-                        console.error(xhr.responseText);
+                        var errorMessage = xhr.responseText || "An unexpected error occurred.";
                         var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
-                        Toast.fire({ icon: 'error', title: 'Wrong Email or Password!' });
+                        Toast.fire({ icon: 'error', title: errorMessage });
                     }
                 });
             });
         });
+
     </script>
 }
 
-<form class="theme-form login-form needs-validation" novalidate=""  method="post">
+<form class="theme-form login-form needs-validation" novalidate="" method="post">
     <h4>Login</h4>
     <h6>Welcome back! Log in to your account.</h6>
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })

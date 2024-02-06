@@ -1,5 +1,7 @@
 ﻿
+using PMS_PropertyHapa.Models;
 using PMS_PropertyHapa.Models.DTO;
+using System.Threading.Tasks;
 
 namespace PMS_PropertyHapa.Services.IServices
 {
@@ -11,8 +13,14 @@ namespace PMS_PropertyHapa.Services.IServices
 
         Task<T> ChangePasswordAsync<T>(ChangePasswordRequestDto obj);
 
-        Task<T> ForgotPasswordAsync<T>(ForgetPassword obj);
+        Task<APIResponse> ForgotPasswordAsync(ForgetPassword obj);
 
         Task<T> ResetPasswordAsync<T>(ResetPasswordDto obj);
+
+        Task<bool> UpdateProfileAsync(ProfileModel model);
+
+        Task<ProfileModel> GetProfileAsync(string userId);
+
+
     }
 }

@@ -43,7 +43,7 @@ builder.Services.AddControllers().AddNewtonsoftJson(options =>
     options.SerializerSettings.ContractResolver = new DefaultContractResolver();
 });
 
-
+builder.Configuration.GetSection("ServiceUrls");
 builder.Services.AddControllersWithViews();
 var app = builder.Build();
 if (!app.Environment.IsDevelopment())
