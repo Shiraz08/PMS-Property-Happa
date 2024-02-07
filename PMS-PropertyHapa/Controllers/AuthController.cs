@@ -51,21 +51,40 @@ namespace PMS_PropertyHapa.Controllers
         }
 
 
-
         [HttpGet]
         public async Task<IActionResult> GetProfile(string userId)
         {
-            var profileModel = await _authService.GetProfileAsync(userId);
-            if (profileModel == null)
-            {
-                return NotFound("User not found");
-            }
 
-            return Ok(profileModel);
+            try
+            {
+                var profileModel = await _authService.GetProfileAsync(userId);
+
+                if (profileModel != null)
+                {
+                    return Json(new
+                    {
+                        success = true,
+                        message = "Profile fetched successfully.",
+                        result = profileModel
+                    });
+
+
+                }
+                else
+                {
+                    return NotFound(new { message = "User not found" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = $"An error occurred: {ex.Message}" });
+            }
         }
 
 
-        // Action to update profile information
+
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateEditProfile(ProfileModel model)
@@ -87,6 +106,28 @@ namespace PMS_PropertyHapa.Controllers
             return View(model);
         }
 
+
+
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword([FromForm] ChangePasswordRequestDto changePasswordDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            // Assuming the service returns a result object that indicates success or failure
+            var result = await _authService.ChangePasswordAsync<APIResponse>(changePasswordDto);
+
+            if (result.IsSuccess)
+            {
+                return Ok(new { message = "Password successfully changed." });
+            }
+            else
+            {
+                return BadRequest(new { errors = result.ErrorMessages });
+            }
+        }
 
 
         [HttpGet]
@@ -148,6 +189,25 @@ namespace PMS_PropertyHapa.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword([FromForm] ResetPasswordDto model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var response = await _authService.ResetPasswordAsync<APIResponse>(model);
+
+            if (response.IsSuccess)
+            {
+                return Ok(new { message = "Password reset successfully." });
+            }
+            else
+            {
+                return BadRequest(new { message = "Failed to reset password.", errors = response.ErrorMessages });
+            }
+        }
+
 
         [HttpGet]
         public IActionResult UpdateProfile()
@@ -157,6 +217,8 @@ namespace PMS_PropertyHapa.Controllers
             return View(model);
         }
 
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ForgotPassword(ForgetPassword model)
@@ -165,10 +227,10 @@ namespace PMS_PropertyHapa.Controllers
             {
                 return Json(new
                 {
-                    statusCode = 400, 
+                    statusCode = 400,
                     isSuccess = false,
                     errorMessages = new List<string> { "Validation failed. Please check the input fields." },
-                    result = (string)null 
+                    result = (string)null
                 });
             }
 
@@ -176,25 +238,25 @@ namespace PMS_PropertyHapa.Controllers
 
             if (response != null && response.IsSuccess)
             {
-               
+
                 return Json(new
                 {
-                    statusCode = 200, 
+                    statusCode = 200,
                     isSuccess = true,
-                    errorMessages = new List<string>(), 
-                    result = "Reset password email sent successfully" 
+                    errorMessages = new List<string>(),
+                    result = "Reset password email sent successfully"
                 });
             }
             else
             {
-              
+
                 string errorMessage = response?.ErrorMessages?.FirstOrDefault() ?? "An unexpected error occurred. Please try again.";
                 return Json(new
                 {
                     statusCode = 400,
                     isSuccess = false,
                     errorMessages = new List<string> { errorMessage },
-                    result = (string)null 
+                    result = (string)null
                 });
             }
         }

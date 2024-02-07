@@ -1,9 +1,11 @@
 ﻿using MagicVilla_VillaAPI.Repository.IRepostiory;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using PMS_PropertyHapa.Models;
 using PMS_PropertyHapa.Models.DTO;
 using PMS_PropertyHapa.Services.IServices;
 using PMS_PropertyHapa.Shared.Enum;
+using System.Net.Http;
 
 namespace PMS_PropertyHapa.Services
 {
@@ -32,19 +34,6 @@ namespace PMS_PropertyHapa.Services
 
 
 
-        public async Task<ProfileModel> GetProfileAsync(string userId)
-        {
-            var profile = await _baseService.SendAsync<ProfileModel>(new APIRequest()
-            {
-                ApiType = SD.ApiType.GET, 
-                Url = $"{villaUrl}/api/v1/UsersAuth/{userId}"
-            }, withBearer: false); 
-
-            return profile;
-        }
-
-
-
         public async Task<bool> UpdateProfileAsync(ProfileModel model)
         {
             var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
@@ -56,6 +45,35 @@ namespace PMS_PropertyHapa.Services
 
             return response != null && response.IsSuccess;
         }
+
+
+        public async Task<ProfileModel> GetProfileAsync(string userId)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.GET,
+                    Url = $"{villaUrl}/api/v1/UsersAuth/{userId}"
+                });
+
+                if (response != null && response.IsSuccess)
+                {
+         
+                    return JsonConvert.DeserializeObject<ProfileModel>(Convert.ToString(response.Result));
+                }
+                else
+                {
+                    throw new Exception("Failed to retrieve profile data");
+                }
+            }
+            catch (Exception ex)
+            {
+             
+                throw new Exception($"An error occurred when fetching profile data: {ex.Message}", ex);
+            }
+        }
+
 
 
         public async Task<T> RegisterAsync<T>(RegisterationRequestDTO obj)
@@ -86,7 +104,7 @@ namespace PMS_PropertyHapa.Services
             {
                 ApiType = SD.ApiType.POST,
                 Data = obj,
-                Url = villaUrl + $"/api/{SD.CurrentAPIVersion}/UsersAuth/change-password"
+                Url = $"{villaUrl}/api/v1/UsersAuth/change-password"
             });
         }
 
@@ -123,7 +141,7 @@ namespace PMS_PropertyHapa.Services
             {
                 ApiType = SD.ApiType.POST,
                 Data = obj,
-                Url = villaUrl + $"/api/{SD.CurrentAPIVersion}/UsersAuth/reset-password"
+                Url = $"{villaUrl}/api/v1/UsersAuth/reset-password"
             });
         }
         #endregion

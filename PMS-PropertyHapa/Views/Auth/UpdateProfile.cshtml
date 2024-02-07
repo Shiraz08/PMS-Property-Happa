@@ -5,11 +5,11 @@
 }
 <style>
     #profile-picture-container {
-        width: 200px!important;
-        height: 200px!important;
+        width: 200px !important;
+        height: 200px !important;
         background-size: cover;
         background-position: center;
-        border-radius:30px!important
+        border-radius: 30px !important
     }
 </style>
 
@@ -43,18 +43,18 @@
                             <div class="card-options"><a class="card-options-collapse" href="#" data-bs-toggle="card-collapse"><i class="fe fe-chevron-up"></i></a><a class="card-options-remove" href="#" data-bs-toggle="card-remove"><i class="fe fe-x"></i></a></div>
                         </div>
                         <div class="card-body">
-                                <div class="row mb-2">
-                                    <div class="profile-title">
-                                        <div class="media">
-                                            <img class="img-70 rounded-circle" alt="" src="../assets/images/user/7.jpg">
-                                        <div id="profile-picture-container" class="img-70" ></div>    
-                                            <div class="media-body">
+                            <div class="row mb-2">
+                                <div class="profile-title">
+                                    <div class="media">
+                                        <img class="img-70 rounded-circle" alt="" src="../assets/images/user/7.jpg">
+                                        <div id="profile-picture-container" class="img-70"></div>
+                                        <div class="media-body">
                                             <h3 class="mb-1 f-20 txt-primary">@Model.UserName</h3>
                                             <p class="f-12">@Model.Email</p>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -164,31 +164,33 @@
         var imageDirectory = '@Url.Content(Model.Picture)';
         $('#displayUserName').text(`Welcome, ${userName}`);
         $.ajax({
-            url: "GetEditProfile/" + userId,
+            url: `/Auth/GetProfile?userId=${encodeURIComponent(userId)}`, // Append userId
             type: 'GET',
-            success: function (data) {
-                $('#Name').val(data.name);
-                $('#UserName').val(data.userName);
-                $('#Email').val(data.email);
-                $('#PhoneNumber').val(data.phoneNumber);
-                $('#Address').val(data.address);
-                $('#Address2').val(data.address2);
-                $('#Locality').val(data.locality);
-                $('#District').val(data.district);
-                $('#Region').val(data.region);
-                $('#PostalCode').val(data.postalCode);
-                $('#Country').val(data.country);
-                if (data.picture) {
-                    var imageUrl = 'https://localhost:7178' + data.picture; 
-                    $('#profile-picture-container').css('background-image', 'url(' + imageUrl + ')');
-                    var imageName = data.picture.split('/').pop();
-                    $('#imageName').text(imageName);
-                } else {
-                    var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
-                    Toast.fire({ icon: 'error', title: 'No profile picture available' });
-                }
+            success: function (response) {
+                if (response.success) {
+                    $('#Name').val(response.result.name);
+                    $('#UserName').val(response.result.userName);
+                    $('#Email').val(response.result.email);
+                    $('#PhoneNumber').val(response.result.phoneNumber);
+                    $('#Address').val(response.result.address);
+                    $('#Address2').val(response.result.address2);
+                    $('#Locality').val(response.result.locality);
+                    $('#District').val(response.result.district);
+                    $('#Region').val(response.result.region);
+                    $('#PostalCode').val(response.result.postalCode);
+                    $('#Country').val(response.result.country);
+                    if (response.result.picture) {
+                        var imageUrl = 'https://localhost:7178' + response.result.picture;
+                        $('#profile-picture-container').css('background-image', 'url(' + imageUrl + ')');
+                        var imageName = response.result.picture.split('/').pop();
+                        $('#imageName').text(imageName);
 
-                
+                    } else {
+                        var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
+                        Toast.fire({ icon: 'error', title: 'No profile picture available' });
+                    }
+
+                }
             },
             error: function (error) {
                 console.log('Error fetching profile:', error);
@@ -217,7 +219,7 @@
         var userId = localStorage.getItem('userId');
         var userName = localStorage.getItem('userName');
         formData.append('UserId', userId);
-        formData.append('UserName', userName); 
+        formData.append('UserName', userName);
         $.ajax({
             url: "Auth/UpdateEditProfile",
             type: 'POST',
