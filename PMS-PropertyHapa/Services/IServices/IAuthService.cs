@@ -8,7 +8,7 @@ namespace PMS_PropertyHapa.Services.IServices
     public interface IAuthService
     {
         Task<T> LoginAsync<T>(LoginRequestDTO objToCreate);
-        Task<T> RegisterAsync<T>(RegisterationRequestDTO objToCreate);
+        Task<T> RegisterAsync<T>(RegisterationRequestDTO obj);
         Task<T> LogoutAsync<T>(TokenDTO obj);
 
         Task<T> ChangePasswordAsync<T>(ChangePasswordRequestDto obj);
@@ -20,6 +20,8 @@ namespace PMS_PropertyHapa.Services.IServices
         Task<bool> UpdateProfileAsync(ProfileModel model);
 
         Task<ProfileModel> GetProfileAsync(string userId);
+
+        Task<IEnumerable<UserDTO>> GetAllUsersAsync();
 
 
     }

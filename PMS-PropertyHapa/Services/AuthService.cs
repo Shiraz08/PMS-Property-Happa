@@ -14,12 +14,22 @@ namespace PMS_PropertyHapa.Services
         private readonly IHttpClientFactory _clientFactory;
         private string villaUrl;
         private readonly IBaseService _baseService;
-        public AuthService(IHttpClientFactory clientFactory, IConfiguration configuration, IBaseService baseService) 
+        public AuthService(IHttpClientFactory clientFactory, IConfiguration configuration, IBaseService baseService)
         {
             _baseService = baseService;
             _clientFactory = clientFactory;
             villaUrl = configuration.GetValue<string>("ServiceUrls:VillaAPI");
 
+        }
+
+        public async Task<T> RegisterAsync<T>(RegisterationRequestDTO obj)
+        {
+            return await _baseService.SendAsync<T>(new APIRequest()
+            {
+                ApiType = SD.ApiType.POST,
+                Data = obj,
+                Url = $"{villaUrl}/api/v1/UsersAuth/register"
+            }, withBearer: false);
         }
 
         public async Task<T> LoginAsync<T>(LoginRequestDTO obj)
@@ -29,22 +39,53 @@ namespace PMS_PropertyHapa.Services
                 ApiType = SD.ApiType.POST,
                 Data = obj,
                 Url = villaUrl + $"/api/v1/UsersAuth/login"
-            },withBearer:false);
+            }, withBearer: false);
         }
-
 
 
         public async Task<bool> UpdateProfileAsync(ProfileModel model)
         {
-            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            using (var multipartContent = new MultipartFormDataContent())
             {
-                ApiType = SD.ApiType.POST,
-                Data = model,
-                Url = $"{villaUrl}/api/v1/UsersAuth/Update"
-            }, withBearer: true);
+                // Adding string properties to the multipart/form-data
+                multipartContent.Add(new StringContent(model.UserId), nameof(model.UserId));
+                multipartContent.Add(new StringContent(model.Name ?? string.Empty), nameof(model.Name));
+                multipartContent.Add(new StringContent(model.UserName ?? string.Empty), nameof(model.UserName));
+                multipartContent.Add(new StringContent(model.Email ?? string.Empty), nameof(model.Email));
+                multipartContent.Add(new StringContent(model.PhoneNumber ?? string.Empty), nameof(model.PhoneNumber));
+                multipartContent.Add(new StringContent(model.Address ?? string.Empty), nameof(model.Address));
+                multipartContent.Add(new StringContent(model.Address2 ?? string.Empty), nameof(model.Address2));
+                multipartContent.Add(new StringContent(model.Locality ?? string.Empty), nameof(model.Locality));
+                multipartContent.Add(new StringContent(model.District ?? string.Empty), nameof(model.District));
+                multipartContent.Add(new StringContent(model.Region ?? string.Empty), nameof(model.Region));
+                multipartContent.Add(new StringContent(model.PostalCode ?? string.Empty), nameof(model.PostalCode));
+                multipartContent.Add(new StringContent(model.Country ?? string.Empty), nameof(model.Country));
+                multipartContent.Add(new StringContent(model.Status.ToString()), nameof(model.Status));
+           
+                if (!string.IsNullOrEmpty(model.ExistingPictureUrl))
+                {
+                    multipartContent.Add(new StringContent(model.ExistingPictureUrl), nameof(model.ExistingPictureUrl));
+                }
 
-            return response != null && response.IsSuccess;
+ 
+                if (model.NewPicture != null)
+                {
+                    multipartContent.Add(new StreamContent(model.NewPicture.OpenReadStream()), nameof(model.NewPicture), model.NewPicture.FileName);
+                }
+
+         
+                var apiResponse = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Data = multipartContent,
+                    Url = $"{villaUrl}/api/v1/UsersAuth/Update"
+                });
+
+           
+                return apiResponse.IsSuccess;
+            }
         }
+
 
 
         public async Task<ProfileModel> GetProfileAsync(string userId)
@@ -59,7 +100,7 @@ namespace PMS_PropertyHapa.Services
 
                 if (response != null && response.IsSuccess)
                 {
-         
+
                     return JsonConvert.DeserializeObject<ProfileModel>(Convert.ToString(response.Result));
                 }
                 else
@@ -69,22 +110,40 @@ namespace PMS_PropertyHapa.Services
             }
             catch (Exception ex)
             {
-             
+
                 throw new Exception($"An error occurred when fetching profile data: {ex.Message}", ex);
             }
         }
 
 
-
-        public async Task<T> RegisterAsync<T>(RegisterationRequestDTO obj)
+        public async Task<IEnumerable<UserDTO>> GetAllUsersAsync()
         {
-            return await _baseService.SendAsync<T>(new APIRequest()
+            try
             {
-                ApiType = SD.ApiType.POST,
-                Data = obj,
-                Url = $"{villaUrl}/api/v1/UsersAuth/register"
-            }, withBearer: false);
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.GET,
+                    Url = $"{villaUrl}/api/v1/UsersAuth/Users"
+                });
+
+                if (response != null && response.IsSuccess)
+                {
+                    var userListJson = Convert.ToString(response.Result);
+                    var usersDto = JsonConvert.DeserializeObject<IEnumerable<UserDTO>>(userListJson);
+                    return usersDto;
+                }
+                else
+                {
+                    throw new Exception("Failed to retrieve user data");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when fetching user data: {ex.Message}", ex);
+            }
         }
+
+
 
         public async Task<T> LogoutAsync<T>(TokenDTO obj)
         {

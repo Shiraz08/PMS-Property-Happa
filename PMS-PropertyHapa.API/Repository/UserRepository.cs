@@ -46,6 +46,8 @@ namespace MagicVilla_VillaAPI.Repository
             return false;
         }
 
+
+
         public async Task<TokenDTO> Login(LoginRequestDTO loginRequestDTO)
         {
             var user = await _db.ApplicationUsers
@@ -321,6 +323,24 @@ namespace MagicVilla_VillaAPI.Repository
             }
 
             return new UserDTO();
+        }
+
+
+        public async Task<IEnumerable<UserDTO>> GetAllUsersAsync()
+        {
+        
+            var users = await _userManager.Users.ToListAsync();
+
+            var userDTOs = users.Select(u => new UserDTO
+            {
+               
+                userName = u.UserName,
+                email = u.Email,
+                phoneNumber = u.PhoneNumber,
+                createdOn = u.AddedDate, 
+            });
+
+            return userDTOs;
         }
 
 

@@ -84,10 +84,9 @@ namespace PMS_PropertyHapa.Controllers
 
 
 
-
+        // Action to update profile information
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UpdateEditProfile(ProfileModel model)
+        public async Task<IActionResult> UpdateProfile(ProfileModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -105,6 +104,9 @@ namespace PMS_PropertyHapa.Controllers
             ModelState.AddModelError(string.Empty, "An error occurred while updating the profile.");
             return View(model);
         }
+
+
+
 
 
 
@@ -189,6 +191,8 @@ namespace PMS_PropertyHapa.Controllers
             return View(model);
         }
 
+
+
         [HttpPost]
         public async Task<IActionResult> ResetPassword([FromForm] ResetPasswordDto model)
         {
@@ -208,6 +212,20 @@ namespace PMS_PropertyHapa.Controllers
             }
         }
 
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            try
+            {
+                var users = await _authService.GetAllUsersAsync();
+                return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while fetching users: {ex.Message}");
+            }
+        }
 
         [HttpGet]
         public IActionResult UpdateProfile()
@@ -261,7 +279,7 @@ namespace PMS_PropertyHapa.Controllers
             }
         }
 
-
+   
 
         public async Task<IActionResult> Logout()
         {
@@ -276,5 +294,7 @@ namespace PMS_PropertyHapa.Controllers
         {
             return View();
         }
+
+
     }
 }

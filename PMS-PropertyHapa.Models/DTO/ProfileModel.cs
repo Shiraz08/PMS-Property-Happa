@@ -14,6 +14,7 @@ namespace PMS_PropertyHapa.Models.DTO
         public string UserName { get; set; }
         public string Email { get; set; }
         public string? ExistingPictureUrl { get; set; }
+        public string? NewPictureBase64 { get; set; }
         public IFormFile NewPicture { get; set; }
         public string PhoneNumber { get; set; }
 

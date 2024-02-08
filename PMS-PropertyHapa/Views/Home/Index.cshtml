@@ -1,6 +1,12 @@
-﻿@{
-    ViewData["Title"] = "User Dashboard";
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@using Microsoft.AspNetCore.Http
+@using PMS_PropertyHapa.Admin.Data;
+@{
+    ViewData["Title"] = "Home Page";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var user = await UserManager.GetUserAsync(User);
 }
 
 <div class="page-body">
@@ -8,13 +14,13 @@
         <div class="page-title">
             <div class="row">
                 <div class="col-12 col-sm-6">
-                    <h3>Default</h3>
+                    <h3>Dashboard</h3>
                 </div>
                 <div class="col-12 col-sm-6">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"> <a class="home-item" href="index.html"><i data-feather="home"></i></a></li>
                         <li class="breadcrumb-item"> Dashboard</li>
-                        <li class="breadcrumb-item active"> Default</li>
+                        <li class="breadcrumb-item active"> </li>
                     </ol>
                 </div>
             </div>
@@ -28,8 +34,8 @@
                         <div class="media">
                             <div class="media-body">
                                 <div class="greeting-user">
-                                    <h1>Hello, Harry Mendez</h1>
-                                    <p>Welcome back, your dashboard is ready!</p><a class="btn btn-outline-white_color" href="blog-single.html">Get Started<i class="icon-arrow-right">                           </i></a>
+                                  @*   <h1>Hello, @user.UserName</h1> *@
+                                    <p>Welcome back, your dashboard is ready!</p>
                                 </div>
                             </div>
                         </div>

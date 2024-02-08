@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PMS_PropertyHapa.Admin.Data;
 
@@ -11,9 +12,10 @@ using PMS_PropertyHapa.Admin.Data;
 namespace PMS_PropertyHapa.Admin.Migrations
 {
     [DbContext(typeof(PropertyHapaAdminContext))]
-    partial class PropertyHapaAdminContextModelSnapshot : ModelSnapshot
+    [Migration("20240208131605_test-admin")]
+    partial class testadmin
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

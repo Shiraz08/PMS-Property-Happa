@@ -6,6 +6,9 @@ using PMS_PropertyHapa.Extensions;
 using PMS_PropertyHapa.Services.IServices;
 using PMS_PropertyHapa.Services;
 using PMS_PropertyHapa;
+using PMS_PropertyHapa.Admin.Data;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
@@ -34,6 +37,14 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
+
+
+builder.Services.AddDbContext<PropertyHapaAdminContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("PMS_PropertyHapaContextConnection")));
+
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+    .AddEntityFrameworkStores<PropertyHapaAdminContext>()
+    .AddDefaultTokenProviders();
 // Add other services
 builder.Services.AddControllersWithViews();
 builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();

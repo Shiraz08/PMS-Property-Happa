@@ -166,23 +166,27 @@
         $.ajax({
             url: `/Auth/GetProfile?userId=${encodeURIComponent(userId)}`, // Append userId
             type: 'GET',
-            success: function (response) {
-                if (response.success) {
-                    $('#Name').val(response.result.name);
-                    $('#UserName').val(response.result.userName);
-                    $('#Email').val(response.result.email);
-                    $('#PhoneNumber').val(response.result.phoneNumber);
-                    $('#Address').val(response.result.address);
-                    $('#Address2').val(response.result.address2);
-                    $('#Locality').val(response.result.locality);
-                    $('#District').val(response.result.district);
-                    $('#Region').val(response.result.region);
-                    $('#PostalCode').val(response.result.postalCode);
-                    $('#Country').val(response.result.country);
-                    if (response.result.picture) {
-                        var imageUrl = 'https://localhost:7178' + response.result.picture;
+            dataType: 'json',
+            success: function (response)
+            {
+                if (response.success == true) 
+                {
+                    debugger
+                    $('#Name').val(response.result.Name);
+                    $('#UserName').val(response.result.UserName);
+                    $('#Email').val(response.result.Email);
+                    $('#PhoneNumber').val(response.result.PhoneNumber);
+                    $('#Address').val(response.result.Address);
+                    $('#Address2').val(response.result.Address2);
+                    $('#Locality').val(response.result.Locality);
+                    $('#District').val(response.result.District);
+                    $('#Region').val(response.result.Region);
+                    $('#PostalCode').val(response.result.PostalCode);
+                    $('#Country').val(response.result.Country);
+                    if (response.result.Picture) {
+                        var imageUrl = 'https://localhost:7178' + response.result.Picture;
                         $('#profile-picture-container').css('background-image', 'url(' + imageUrl + ')');
-                        var imageName = response.result.picture.split('/').pop();
+                        var imageName = response.result.Picture.split('/').pop();
                         $('#imageName').text(imageName);
 
                     } else {
@@ -221,7 +225,7 @@
         formData.append('UserId', userId);
         formData.append('UserName', userName);
         $.ajax({
-            url: "Auth/UpdateEditProfile",
+            url: "/Auth/UpdateProfile",
             type: 'POST',
             data: formData,
             contentType: false,

@@ -40,5 +40,7 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
 
 
         Task<ProfileModel> GetProfileModelAsync(string userId);
+
+        Task<IEnumerable<UserDTO>> GetAllUsersAsync();
     }
 }

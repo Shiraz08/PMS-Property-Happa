@@ -229,8 +229,34 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             return Ok(_response);
         }
 
+        [HttpGet("Users")]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            try
+            {
+                var users = await _userRepo.GetAllUsersAsync();
 
+                if (users == null || !users.Any())
+                {
+                    _response.StatusCode = HttpStatusCode.BadRequest;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages = new List<string> { "Error while fetching users" };
+                    return BadRequest(_response);
+                }
 
+                _response.StatusCode = HttpStatusCode.OK;
+                _response.IsSuccess = true;
+                _response.Result = users.ToList();
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.StatusCode = HttpStatusCode.InternalServerError;
+                _response.IsSuccess = false;
+                _response.ErrorMessages = new List<string> { ex.Message };
+                return StatusCode((int)HttpStatusCode.InternalServerError, _response);
+            }
+        }
 
         [HttpPost("Update")]
         public async Task<IActionResult> UpdateProfile([FromForm] ProfileModel model)
@@ -240,6 +266,8 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             {
                 return NotFound();
             }
+
+           
 
             // Update basic information
             user.Email = model.Email;
@@ -251,6 +279,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             user.District = model.District;
             user.Region = model.Region;
             user.PostalCode = model.PostalCode;
+            user.Picture = model.Picture;
             user.Country = model.Country;
             user.Status = true;
 
@@ -262,7 +291,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
                     Directory.CreateDirectory(uploadsFolderPath);
                 }
 
-                var originalFileName = Path.GetFileName(model.NewPicture.FileName);
+                var originalFileName = model.NewPicture.FileName;
                 var safeFileName = WebUtility.HtmlEncode(originalFileName);
                 var filePath = Path.Combine(uploadsFolderPath, safeFileName);
 
@@ -270,7 +299,6 @@ namespace PMS_PropertyHapa.API.Controllers.V1
                 {
                     await model.NewPicture.CopyToAsync(stream);
                 }
-
                 user.Picture = $"/uploads/{safeFileName}";
             }
 
@@ -278,6 +306,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             if (result.Succeeded)
             {
                 return Ok(new { pictureUrl = user.Picture });
+
             }
 
             return BadRequest(result.Errors);
