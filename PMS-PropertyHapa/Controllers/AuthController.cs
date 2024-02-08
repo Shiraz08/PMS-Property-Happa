@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.V4.Pages.Account.Internal;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
@@ -23,42 +24,111 @@ namespace PMS_PropertyHapa.Controllers
             _authService = authService;
             _tokenProvider = tokenProvider;
         }
-
         [HttpGet]
         public IActionResult Login()
         {
+            // Check if there's an error message passed via ViewBag and pass it to the view if needed
+            ViewBag.ErrorMessage = ViewBag.ErrorMessage ?? string.Empty;
             LoginRequestDTO obj = new();
             return View(obj);
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginRequestDTO obj)
         {
-            APIResponse response = await _authService.LoginAsync<APIResponse>(obj);
+            var response = await _authService.LoginAsync<APIResponse>(obj);
             if (response != null && response.IsSuccess)
-            { 
-                TokenDTO model = JsonConvert.DeserializeObject<TokenDTO>(Convert.ToString(response.Result));
-
-                var handler = new JwtSecurityTokenHandler();
-                var jwt = handler.ReadJwtToken(model.AccessToken);
-
-                var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
-                identity.AddClaim(new Claim(ClaimTypes.Name, jwt.Claims.FirstOrDefault(u => u.Type == "unique_name").Value));
-                identity.AddClaim(new Claim(ClaimTypes.Role, jwt.Claims.FirstOrDefault(u=>u.Type=="role").Value));
-                var principal = new ClaimsPrincipal(identity);
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
-
-
-                _tokenProvider.SetToken(model);
-                return RedirectToAction("Index", "Home");
+            {
+                return Json(new { success = true, message = "Logged In Successfully..!", result = response.Result });
             }
             else
             {
-                ModelState.AddModelError("CustomError", response.ErrorMessages.FirstOrDefault());
-                return View(obj);
+                var errorMessage = response?.ErrorMessages?.FirstOrDefault() ?? "An unexpected error occurred.";
+                return Json(new { success = false, message = errorMessage });
             }
         }
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetProfile(string userId)
+        {
+
+            try
+            {
+                var profileModel = await _authService.GetProfileAsync(userId);
+
+                if (profileModel != null)
+                {
+                    return Json(new
+                    {
+                        success = true,
+                        message = "Profile fetched successfully.",
+                        result = profileModel
+                    });
+
+
+                }
+                else
+                {
+                    return NotFound(new { message = "User not found" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = $"An error occurred: {ex.Message}" });
+            }
+        }
+
+
+
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateEditProfile(ProfileModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var success = await _authService.UpdateProfileAsync(model);
+
+            if (success)
+            {
+
+                return RedirectToAction("ProfileUpdated");
+            }
+
+            ModelState.AddModelError(string.Empty, "An error occurred while updating the profile.");
+            return View(model);
+        }
+
+
+
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword([FromForm] ChangePasswordRequestDto changePasswordDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            // Assuming the service returns a result object that indicates success or failure
+            var result = await _authService.ChangePasswordAsync<APIResponse>(changePasswordDto);
+
+            if (result.IsSuccess)
+            {
+                return Ok(new { message = "Password successfully changed." });
+            }
+            else
+            {
+                return BadRequest(new { errors = result.ErrorMessages });
+            }
+        }
+
 
         [HttpGet]
         public IActionResult Register()
@@ -66,7 +136,7 @@ namespace PMS_PropertyHapa.Controllers
             var roleList = new List<SelectListItem>()
             {
                   new SelectListItem{Text=SD.Admin,Value=SD.Admin},
-                new SelectListItem{Text=SD.Customer,Value=SD.Customer},
+                new SelectListItem{Text=SD.User,Value=SD.User},
             };
             ViewBag.RoleList = roleList;
             return View();
@@ -79,9 +149,9 @@ namespace PMS_PropertyHapa.Controllers
         {
             if (string.IsNullOrEmpty(obj.Role))
             {
-                obj.Role = SD.Customer;
+                obj.Role = SD.User;
             }
-            APIResponse result =  await _authService.RegisterAsync<APIResponse>(obj);
+            APIResponse result = await _authService.RegisterAsync<APIResponse>(obj);
             if (result != null && result.IsSuccess)
             {
                 return RedirectToAction("Login");
@@ -119,6 +189,25 @@ namespace PMS_PropertyHapa.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword([FromForm] ResetPasswordDto model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var response = await _authService.ResetPasswordAsync<APIResponse>(model);
+
+            if (response.IsSuccess)
+            {
+                return Ok(new { message = "Password reset successfully." });
+            }
+            else
+            {
+                return BadRequest(new { message = "Failed to reset password.", errors = response.ErrorMessages });
+            }
+        }
+
 
         [HttpGet]
         public IActionResult UpdateProfile()
@@ -130,13 +219,57 @@ namespace PMS_PropertyHapa.Controllers
 
 
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ForgotPassword(ForgetPassword model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return Json(new
+                {
+                    statusCode = 400,
+                    isSuccess = false,
+                    errorMessages = new List<string> { "Validation failed. Please check the input fields." },
+                    result = (string)null
+                });
+            }
+
+            var response = await _authService.ForgotPasswordAsync(model);
+
+            if (response != null && response.IsSuccess)
+            {
+
+                return Json(new
+                {
+                    statusCode = 200,
+                    isSuccess = true,
+                    errorMessages = new List<string>(),
+                    result = "Reset password email sent successfully"
+                });
+            }
+            else
+            {
+
+                string errorMessage = response?.ErrorMessages?.FirstOrDefault() ?? "An unexpected error occurred. Please try again.";
+                return Json(new
+                {
+                    statusCode = 400,
+                    isSuccess = false,
+                    errorMessages = new List<string> { errorMessage },
+                    result = (string)null
+                });
+            }
+        }
+
+
+
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync();
             var token = _tokenProvider.GetToken();
             await _authService.LogoutAsync<APIResponse>(token);
-                _tokenProvider.ClearToken();
-            return RedirectToAction("Index","Home");
+            _tokenProvider.ClearToken();
+            return RedirectToAction("Index", "Home");
         }
 
         public IActionResult AccessDenied()
