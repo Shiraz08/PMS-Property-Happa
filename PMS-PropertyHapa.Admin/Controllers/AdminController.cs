@@ -3,6 +3,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using PMS_PropertyHapa.Admin.Data;
+using PMS_PropertyHapa.Models.DTO;
+using PMS_PropertyHapa.Models.Entities;
+using System.Net;
+using System.Net.Http.Headers;
 
 namespace PMS_PropertyHapa.Admin.Controllers
 {
@@ -16,7 +20,8 @@ namespace PMS_PropertyHapa.Admin.Controllers
         private PropertyHapaAdminContext _context;
         private readonly IEmailSender _emailSender;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        public AdminController(UserManager<ApplicationUser> usrMgr, IPasswordHasher<ApplicationUser> passwordHash, UserManager<ApplicationUser> userMgr, SignInManager<ApplicationUser> signinMgr, IWebHostEnvironment webHostEnvironment, PropertyHapaAdminContext context, IEmailSender emailSender)
+        private readonly Microsoft.AspNetCore.Hosting.IHostingEnvironment _hostingEnvironment;
+        public AdminController(UserManager<ApplicationUser> usrMgr, IPasswordHasher<ApplicationUser> passwordHash, UserManager<ApplicationUser> userMgr, SignInManager<ApplicationUser> signinMgr, IWebHostEnvironment webHostEnvironment, PropertyHapaAdminContext context, IEmailSender emailSender, Microsoft.AspNetCore.Hosting.IHostingEnvironment hostingEnvironment)
         {
             userManager = usrMgr;
             _passwordHasher = passwordHash;
@@ -25,6 +30,7 @@ namespace PMS_PropertyHapa.Admin.Controllers
             _context = context;
             _emailSender = emailSender;
             _webHostEnvironment = webHostEnvironment;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         public IActionResult Index()
@@ -32,55 +38,91 @@ namespace PMS_PropertyHapa.Admin.Controllers
             return View();
         }
 
-        public IActionResult Create() => View();
         [HttpPost]
-        public async Task<JsonResult> Create(ApplicationUser user)
+        public async Task<JsonResult> Create(TenantViewModel model)
         {
-            var selectdate = Request.Form.Where(x => x.Key == "BirthDate").FirstOrDefault().Value.ToString();
-            if (selectdate != "")
-            {
-                DateTime dob = DateTime.Parse(selectdate);
-                user.BirthDate = dob;
-            }
-            else
-            {
-                user.BirthDate = null;
-            }
+
+
             ApplicationUser appUser = new ApplicationUser
             {
-                UserName = user.UserName,
-                Email = user.Email,
+                UserName = model.User.UserName,
+                Email = model.User.Email,
                 AddedBy = User.Identity?.Name,
                 AddedDate = DateTime.Now,
                 Status = true,
-                BirthDate = user.BirthDate,
-                PhoneNumber = user.PhoneNumber,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Country = user.Country,
-                Group = user.Group
+                BirthDate = model.User.BirthDate,
+                PhoneNumber = model.User.PhoneNumber,
+                FirstName = model.User.FirstName,
+                LastName = model.User.LastName,
+                Country = model.User.Country,
+                Group = model.User.Group
+           
             };
-            IdentityResult result = null;
 
             try
             {
-                result = await userManager.CreateAsync(appUser, user.Password);
+                var result = await userManager.CreateAsync(appUser, model.User.Password);
+                if (result.Succeeded)
+                {
+                    var uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "uploads");
+
+                    if (!Directory.Exists(uploadsFolder))
+                    {
+                        Directory.CreateDirectory(uploadsFolder);
+                    }
+                    var orgIconFileName = await ProcessFileUpload(model.OrganizationInfo.OrganizationIconFile, uploadsFolder);
+                    var orgLogoFileName = await ProcessFileUpload(model.OrganizationInfo.OrganizationLogoFile, uploadsFolder);
+
+
+                    await userManager.AddToRoleAsync(appUser, model.User.Group);
+
+                    var newUserId = appUser.Id;
+                    TenantOrganizationInfo tenantOrgInfo = new TenantOrganizationInfo()
+                    {
+                        TenantUserId = Guid.Parse(newUserId),
+                        OrganizationName = model.OrganizationInfo.OrganizationName,
+                        OrganizationDescription = model.OrganizationInfo.OrganizationDescription,
+                        OrganizationIcon = orgIconFileName, 
+                        OrganizationLogo = orgLogoFileName,
+                        OrganizatioPrimaryColor = model.OrganizationInfo.OrganizatioPrimaryColor,
+                        OrganizationSecondColor = model.OrganizationInfo.OrganizationSecondColor
+                    };
+
+                    _context.TenantOrganizationInfo.Add(tenantOrgInfo);
+                    await _context.SaveChangesAsync();
+
+                    return Json(true);
+                }
+                else
+                {
+                    return Json(result.Errors.Select(x => x.Description).FirstOrDefault());
+                }
             }
             catch (Exception e)
             {
+                return Json("An error occurred.");
+            }
+        }
 
-                throw;
-            }
-            if (result.Succeeded)
+        private async Task<string> ProcessFileUpload(IFormFile file, string uploadsFolder)
+        {
+            if (file != null && file.Length > 0)
             {
-                //Add Role
-                await _UserManager.AddToRoleAsync(appUser, user.Group);
-                return Json(true);
+                var originalFileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                // Ensure the filename is safe to use
+                var safeFileName = WebUtility.HtmlEncode(originalFileName);
+                var uniqueFileName = Guid.NewGuid().ToString() + "_" + safeFileName;
+                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(fileStream);
+                }
+
+                return uniqueFileName; 
             }
-            else
-            {
-                return Json(result.Errors.Select(x => x.Description).FirstOrDefault());
-            }
+
+            return null; 
         }
 
         public async Task<IActionResult> Update(string id)
@@ -128,7 +170,7 @@ namespace PMS_PropertyHapa.Admin.Controllers
             }
             else
                 ModelState.AddModelError("", "User Not Found");
-            return Json(false);
+            return Json(new { success = false});
         }
 
         private void Errors(IdentityResult result)
@@ -156,9 +198,34 @@ namespace PMS_PropertyHapa.Admin.Controllers
 
         public JsonResult GetAllUser()
         {
-            var list = _context.Users.Where(x => x.Status == true).ToList();
+            // Fetch all users marked as active
+            var users = _context.Users
+                        .Where(user => user.Status == true)
+                        .ToList();
+
+            // Fetch all TenantOrganizationInfos
+            var tenantInfos = _context.TenantOrganizationInfo.ToList();
+            var list = users.Select(user => {
+                Guid userIdGuid = Guid.Empty;
+                bool isValidGuid = Guid.TryParse(user.Id, out userIdGuid);
+                var tenantInfo = isValidGuid ? tenantInfos.FirstOrDefault(info => info.TenantUserId == userIdGuid) : null;
+
+                return new
+                {
+                    user.Id,
+                    user.UserName,
+                    user.Email,
+                    user.PhoneNumber,
+                    user.AddedDate,
+                    OrganizationName = tenantInfo?.OrganizationName,
+                    OrganizationLogo = tenantInfo?.OrganizationLogo
+                };
+            }).ToList();
+
             return Json(list);
         }
+
+
         public JsonResult GetFilterAllUser(string Searchtext, string Shop)
         {
             var list = _context.Users.Where(x => x.Status == true).ToList();

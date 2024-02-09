@@ -79,4 +79,8 @@
     <None Include="wwwroot\Dashboard\assets\pdfmake\vfs_fonts.js" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\uploads\" />
+  </ItemGroup>
+
 </Project>

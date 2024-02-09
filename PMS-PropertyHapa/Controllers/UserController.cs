@@ -32,42 +32,7 @@ namespace PMS_PropertyHapa.Controllers
             return View();
         }
 
-        //[HttpPost]
-        //public async Task<IActionResult> DoesEmailExist(string email)
-        //{
-        //    var userExists = await _userManager.FindByEmailAsync(email) != null;
-        //    return Json(!userExists);
-        //}
-
-
-        //[HttpPost]
-        //public async Task<IActionResult> CreateTenant(ApplicationUser model, string password, string group)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        var user = new ApplicationUser
-        //        {
-        //            UserName = model.UserName,
-        //            Email = model.Email,
-        //            // Set other properties as necessary
-        //        };
-
-        //        var result = await _userManager.CreateAsync(user, password);
-
-        //        if (result.Succeeded)
-        //        {
-        //            // Optionally, add the user to a role
-        //            await _userManager.AddToRoleAsync(user, group);
-        //            return Json(new { success = true });
-        //        }
-        //        else
-        //        {
-        //            return Json(new { success = false, message = "Failed to create tenant" });
-        //        }
-        //    }
-        //    return Json(new { success = false, message = "Invalid model state" });
-        //}
-
+        
 
         [HttpGet]
         public async Task<IActionResult> GetAllUsers()
@@ -83,27 +48,5 @@ namespace PMS_PropertyHapa.Controllers
             }
         }
 
-
-        //[HttpPost]
-        //public async Task<IActionResult> DeleteUser(string id)
-        //{
-        //    var user = await _userManager.FindByIdAsync(id);
-        //    if (user != null)
-        //    {
-        //        var result = await _userManager.DeleteAsync(user);
-        //        if (result.Succeeded)
-        //        {
-        //            return Json(new { success = true });
-        //        }
-        //    }
-        //    return Json(new { success = false, message = "User not found" });
-        //}
-
-
-
-        //public IActionResult AccessDenied()
-        //{
-        //    return View();
-        //}
     }
 }

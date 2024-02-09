@@ -1,8 +1,10 @@
-﻿@model PMS_PropertyHapa.Admin.Data.ApplicationUser
+﻿@model PMS_PropertyHapa.Models.DTO.TenantViewModel
+}
 @{
     ViewData["Title"] = "Add Tenant";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
 <style>
 .custom-hover-nav-tabs .nav-item .nav-link {
     width: 120px;
@@ -42,30 +44,31 @@
                         <h4 class="card-title mb-0 flex-grow-1">Create New Tenant</h4>
                     </div>
                     <div class="card-body">
+                        <form class="create-form" novalidate="" method="post" enctype="multipart/form-data">
                         <div class="live-preview">
                             <div class="row gy-4">
                                 <!--end col-->
                                 <div class="col-xxl-3 col-md-6">
                                     <div>
                                         <label>First Name:&nbsp;<span style="color:red!important"><b>*</b></span></label>
-                                        <input asp-for="FirstName" class="form-control" placeholder="Enter First Name"  />
-                                        <span asp-validation-for="FirstName" class="text-danger"></span>
+                                        <input asp-for="User.FirstName" class="form-control" placeholder="Enter First Name"  />
+                                        <span asp-validation-for="User.FirstName" class="text-danger"></span>
                                     </div>
                                 </div>
                                 <!--end col-->
                                 <div class="col-xxl-3 col-md-6">
                                     <div>
-                                        <label asp-for="LastName"></label>
-                                        <input asp-for="LastName" class="form-control" placeholder="Enter Last Name"  />
-                                        <span asp-validation-for="LastName" class="text-danger"></span>
+                                        <label asp-for="User.LastName"></label>
+                                        <input asp-for="User.LastName" class="form-control" placeholder="Enter Last Name"  />
+                                        <span asp-validation-for="User.LastName" class="text-danger"></span>
                                     </div>
                                 </div>
                                 <!--end col-->
                                 <div class="col-xxl-3 col-md-6">
                                     <div>
                                         <label>User Name:&nbsp;<span style="color:red!important"><b>*</b></span></label>
-                                        <input asp-for="UserName" class="form-control" placeholder="Please Enter Username" autocomplete="off" />
-                                        <span asp-validation-for="UserName" class="text-danger"></span>
+                                        <input asp-for="User.UserName" class="form-control" placeholder="Please Enter Username" autocomplete="off" />
+                                        <span asp-validation-for="User.UserName" class="text-danger"></span>
                                     </div>
                                 </div>
                                 <!--end col-->
@@ -73,10 +76,10 @@
                                     <div>
                                         <label>Email:&nbsp;<span style="color:red!important"><b>*</b></span></label>
                                         <div class="form-icon right">
-                                            <input type="email" class="form-control form-control-icon" asp-for="Email" placeholder="example@gmail.com">
+                                            <input type="email" class="form-control form-control-icon" asp-for="User.Email" placeholder="example@gmail.com">
                                             <i class="ri-mail-unread-line"></i>
                                         </div>
-                                        <span asp-validation-for="Email" class="text-danger"></span>
+                                        <span asp-validation-for="User.Email" class="text-danger"></span>
                                     </div>
                                 </div>
                                 <!--end col-->
@@ -84,46 +87,109 @@
                                     <div>
                                         <label>Password:&nbsp;<span style="color:red!important"><b>*</b></span></label>
                                         <div class="form-icon right">
-                                            <input asp-for="Password" class="form-control form-control-icon" placeholder="Ex: Test@123" value="Pass@123" />
+                                            <input asp-for="User.Password" class="form-control form-control-icon" placeholder="Ex: Test@123" />
                                             <i class="ri-lock-password-line"></i>
                                         </div>
-                                        <span asp-validation-for="Password" class="text-danger"></span>
+                                        <span asp-validation-for="User.Password" class="text-danger"></span>
                                     </div>
                                 </div>
                                 <!--end col-->
                                 <div class="col-xxl-3 col-md-6">
                                     <div>
-                                        <label asp-for="BirthDate"></label>
+                                        <label asp-for="User.BirthDate"></label>
                                         <div class="form-icon right">
-                                            <input name="BirthDate" id="BirthDate" type="date" class="form-control" />
+                                                <input asp-for="User.BirthDate" name="User.BirthDate" type="date" class="form-control" />
+
                                         </div>
-                                        <span asp-validation-for="BirthDate" class="text-danger"></span>
+                                        <span asp-validation-for="User.BirthDate" class="text-danger"></span>
                                     </div>
                                 </div>
                                 <div class="col-xxl-3 col-md-6">
                                     <div>
                                         <label>PhoneNumber:&nbsp;<span style="color:red!important"><b>*</b></span></label>
                                         <div class="form-icon right">
-                                            <input asp-for="PhoneNumber" class="form-control form-control-icon" placeholder="Please Enter Phone Number" type="number" />
+                                            <input asp-for="User.PhoneNumber" class="form-control form-control-icon" placeholder="Please Enter Phone Number" type="number" />
                                             <i class="ri-phone-line"></i>
                                         </div>
-                                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                                        <span asp-validation-for="User.PhoneNumber" class="text-danger"></span>
                                     </div>
                                 </div>
                                 <div class="col-xxl-3 col-md-6">
                                     <div>
                                         <label>Role</label>
-                                        <select asp-for="Group" class="form-control"></select>
+                                            <select asp-for="User.Group" id="User_Group" class="form-control"></select>
                                     </div>
                                 </div>
+                                <!-- Organization Name -->
+                                <div class="col-xxl-3 col-md-6">
+                                    <div>
+                                        <label>Organization Name:&nbsp;<span style="color:red!important"><b>*</b></span></label>
+                                        <input asp-for="OrganizationInfo.OrganizationName" class="form-control" placeholder="Enter Organization Name" />
+                                        <span asp-validation-for="OrganizationInfo.OrganizationName" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <!-- Organization Description -->
+                                <div class="col-xxl-3 col-md-6">
+                                    <div>
+                                        <label>Organization Description:</label>
+                                        <textarea asp-for="OrganizationInfo.OrganizationDescription" class="form-control" placeholder="Enter Organization Description"></textarea>
+                                        <span asp-validation-for="OrganizationInfo.OrganizationDescription" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <!-- Organization Icon File Upload -->
+                                <div class="col-xxl-3 col-md-6">
+                                    <div>
+                                        <label>Organization Icon:&nbsp;<span style="color:red!important"><b>*</b></span></label>
+                                        <input asp-for="OrganizationInfo.OrganizationIconFile" type="file" class="form-control" />
+                                        <span asp-validation-for="OrganizationInfo.OrganizationIconFile" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <!-- Organization Logo File Upload -->
+                                <div class="col-xxl-3 col-md-6">
+                                    <div>
+                                        <label>Organization Logo:&nbsp;<span style="color:red!important"><b>*</b></span></label>
+                                        <input asp-for="OrganizationInfo.OrganizationLogoFile" type="file" class="form-control" />
+                                            <span asp-validation-for="OrganizationInfo.OrganizationLogoFile" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <!-- Organization Primary Color -->
+                                <div class="col-xxl-3 col-md-6">
+                                    <div>
+                                            <label for="primaryColorSelect">Primary Color:&nbsp;<span style="color:red!important"><b>*</b></span></label>
+                                            <select id="primaryColorSelect" class="form-control">
+                                                <option value="" disabled selected>Please select a color</option>
+                                            </select>
+                                            <input asp-for="OrganizationInfo.OrganizatioPrimaryColor" type="hidden" id="OrganizationInfo_OrganizatioPrimaryColor" />
+                                            <span asp-validation-for="OrganizationInfo.OrganizatioPrimaryColor" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <!-- Organization Secondary Color -->
+                                <div class="col-xxl-3 col-md-6">
+                                    <div>
+                                            <label for="secondaryColorSelect">Secondary Color:&nbsp;<span style="color:red!important"><b>*</b></span></label>
+                                            <select id="secondaryColorSelect" class="form-control">
+                                                <option value="" disabled selected>Please select a color</option>
+                                            </select>
+                                            <input asp-for="OrganizationInfo.OrganizationSecondColor" type="hidden" id="OrganizationInfo_OrganizationSecondColor" />
+                                            <span asp-validation-for="OrganizationInfo.OrganizationSecondColor" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+
                                 <div class="col-xxl-3 col-md-6">
                                     <div style="padding-top: 26px;">
-                                        <button type="button" onclick="ProfileUpdate();" class="btn btn-success">Create Tenant</button>
+                                        <button type="submit" id="createTenantButton" onclick="createTenant();" class="btn btn-success">Create Tenant</button>
                                     </div>
                                 </div>
                             </div>
                             <!--end row-->
                         </div>
+                        </form>
                     </div>
                 </div>
             </div>                <!--end col-->
@@ -176,6 +242,8 @@
                                                 <th scope="col">Email</th>
                                                 <th scope="col">Phone Number</th>
                                                 <th scope="col">Created Date</th>
+                                                <th scope="col">Organization Name</th>
+                                                <th scope="col">Organization Logo</th>
                                                 <th scope="col">Action</th>
                                             </tr>
                                         </thead>
@@ -245,9 +313,11 @@
             contentType: false,
             success: function (response) 
             {
+               
                 var All = '';
                 // All users
                 $.each(response, function (key, item) {
+                    
                         All += '<tr>';
                         All += '<td>' + item.UserName + '</td>';
                         All += '<td>' + item.Email + '</td>';
@@ -258,7 +328,19 @@
                         else {
                             All += '<td>' + formatDate(item.AddedDate) + '</td>';
                         }
-                    All += '<td><div class="d-flex gap-2"><div class="edit"><button class="btn btn-sm btn-success edit-item-btn" data-bs-toggle="modal" data-bs-target="#EditUser" onclick="EditUser(\'' + item.Id + '\')">Edit User</button></div><div class="remove"></div><button class="btn btn-sm btn-danger remove-item-btn" onclick="DeleteRole(\'' + item.Id + '\')">Delete User</button> </div></td>';
+                    All += '<td>' + item.OrganizationName + '</td>';
+                    if (item.OrganizationLogo) {
+                        All += '<td><img src="/uploads/' + item.OrganizationLogo + '" style="width:50px; height:50px;"></td>';
+                    } else {
+                        All += '<td></td>'; 
+                    }
+                    All += '<td><div class="d-flex gap-2">' +
+                        '<div class="edit">' +
+                        '<button class="btn btn-sm btn-success edit-item-btn" style="height: 30px; line-height: 1.2;" data-bs-toggle="modal" data-bs-target="#EditUser" onclick="EditUser(\'' + item.Id + '\')">Edit User</button>' +
+                        '</div><div class="remove">' +
+                        '<button class="btn btn-sm btn-danger remove-item-btn" style="height: 30px; line-height: 1.2;" onclick="DeleteRole(\'' + item.Id + '\')">Delete User</button>' +
+                        '</div></div></td>';
+
                         All += '</tr>';
                     });
                 $('#Allusertbody').empty().append(All);
@@ -334,11 +416,12 @@
         }
     }
     function CheckValidation() {
+        debugger
         if ($('#FirstName').val() == '') { $('#FirstName').css('border-color', 'red'); var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 }); Toast.fire({ icon: 'error', title: 'Required Fields are Mandatory...!' }); } else { $('#FirstName').css('border-color', '#ced4da') }
         if ($('#UserName').val() == '') { $('#UserName').css('border-color', 'red'); var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 }); Toast.fire({ icon: 'error', title: 'Required Fields are Mandatory...!' }); } else { $('#UserName').css('border-color', '#ced4da') }
         if ($('#Email').val() == '') { $('#Email').css('border-color', 'red'); var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 }); Toast.fire({ icon: 'error', title: 'Required Fields are Mandatory...!' }); } else { $('#Email').css('border-color', '#ced4da') }
         if ($('#PhoneNumber').val() == '') { $('#PhoneNumber').css('border-color', 'red'); var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 }); Toast.fire({ icon: 'error', title: 'Required Fields are Mandatory...!' }); } else { $('#PhoneNumber').css('border-color', '#ced4da') }
-        if ($('#Password').val() == '') { $('#Password').css('border-color', 'red'); var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 }); Toast.fire({ icon: 'error', title: 'Required Fields are Mandatory...!' }); } else { $('#Password').css('border-color', '#ced4da') }
+    //    if ($('#Password').val() == '') { $('#Password').css('border-color', 'red'); var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 }); Toast.fire({ icon: 'error', title: 'Required Fields are Mandatory...!' }); } else { $('#Password').css('border-color', '#ced4da') }
         if ($('#Group').val() == '') { $('#Group').css('border-color', 'red'); var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 }); Toast.fire({ icon: 'error', title: 'Required Fields are Mandatory...!' }); } else { $('#Group').css('border-color', '#ced4da') }
         if ($('#Group').val() == '' || $('#Password').val() == '' || $('#FirstName').val() == '' || $('#UserName').val() == '' || $('#Email').val() == '' || $('#PhoneNumber').val() == '') {
             return false;
@@ -356,6 +439,10 @@
 
         }
     }
+
+
+
+
     function ProfileUpdate() {
         var result = CheckValidation();
         var email = $("#Email").val().trim();
@@ -403,9 +490,7 @@
                                     $("#UserName").val('');
                                     $("#Password").val('');
                                     $("#Group").val('');
-						// setTimeout(function () {
-						// 	window.location.href = '@Url.Action("Index", "Admin")';
-						// }, 2000);
+                                
                                 }
                                 else {
                                     var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
@@ -422,6 +507,21 @@
             });
         }
     }
+
+
+
+
+
+   
+
+    // Attach this function to your form submission event or a button click event.
+    // Example:
+    $('#createTenantButton').on('click', function (e) {
+        e.preventDefault(); // Prevent default form submission if using form submit button.
+        createTenant();
+    });
+
+
     $("#Email").change(function () {
         var email = $("#Email").val().trim();
         $.ajax({
@@ -486,7 +586,7 @@
                 for (var i = 0; i < data.length; i++) {
                     s += '<option value="' + data[i].Text + '">' + data[i].Text + '</option>';
                 }
-                $("#Group").html(s);
+                $("#User_Group").html(s);
             }
         });
 
@@ -495,4 +595,98 @@
     {
         window.location.reload();
     }
+
+
+    function createTenant() {
+    
+        
+
+        var formData = new FormData();
+        formData.append('User.FirstName', $('#User_FirstName').val());
+        formData.append('User.LastName', $('#User_LastName').val());
+        formData.append('User.Email', $('#User_Email').val());
+        formData.append('User.PhoneNumber', $('#User_PhoneNumber').val());
+        formData.append('User.BirthDate', $('#User_BirthDate').val());
+        formData.append('User.UserName', $('#User_UserName').val());
+        formData.append('User.Password', $('#User_Password').val());
+        formData.append('User.Group', $('#User_Group').val());
+        formData.append('OrganizationInfo.OrganizationName', $('#OrganizationInfo_OrganizationName').val());
+        formData.append('OrganizationInfo.OrganizationDescription', $('#OrganizationInfo_OrganizationDescription').val());
+        formData.append('OrganizationInfo.OrganizationIconFile', $('#OrganizationInfo_OrganizationIconFile')[0].files[0]);
+        formData.append('OrganizationInfo.OrganizationLogoFile', $('#OrganizationInfo_OrganizationLogoFile')[0].files[0]);
+        formData.append('OrganizationInfo.OrganizatioPrimaryColor', $('#OrganizationInfo_OrganizatioPrimaryColor').val());
+        formData.append('OrganizationInfo.OrganizationSecondColor', $('#OrganizationInfo_OrganizationSecondColor').val());
+
+        $.ajax({
+            type: 'POST',
+            url: '/Admin/Create', 
+            data: formData,
+            contentType: false, 
+            processData: false, 
+            success: function (response) {
+                debugger
+                if (response.success) {
+                    var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
+                    Toast.fire({ icon: 'success', title: 'Tenant Created Successfully' });
+                    Refresh();
+                } else {
+                    var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
+                    Toast.fire({ icon: 'error', title: 'An error Occured' });
+                }
+            },
+            error: function (xhr, status, error) {
+                var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
+                Toast.fire({ icon: 'error', title: 'An error Occured' });
+            }
+        });
+    }
+
+    
+    $('#createTenantButton').on('click', function (e) {
+        e.preventDefault(); 
+        createTenant();
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var colorOptions = [
+            { name: "Please select a color", value: "" }, // Placeholder option
+            { name: "Red", value: "#FF0000" },
+            { name: "Green", value: "#00FF00" },
+            { name: "Blue", value: "#0000FF" }
+        ];
+
+        function createColorOptions(selectElementId, targetInputId) {
+            var select = document.getElementById(selectElementId);
+
+            // Clear existing options
+            select.innerHTML = '';
+
+            colorOptions.forEach(function (color, index) {
+                var option = new Option(color.name, color.value);
+                select.add(option);
+
+                // Disable the placeholder option
+                if (index === 0) {
+                    option.disabled = true;
+                }
+            });
+
+            // Set the placeholder option as selected initially
+            select.selectedIndex = 0;
+
+            select.addEventListener("change", function () {
+                var colorInput = document.querySelector('input[id="' + targetInputId + '"]');
+                colorInput.value = this.value;
+                colorInput.dispatchEvent(new Event('change'));
+            });
+        }
+
+        createColorOptions("primaryColorSelect", "OrganizationInfo_OrganizatioPrimaryColor");
+        createColorOptions("secondaryColorSelect", "OrganizationInfo_OrganizationSecondColor");
+    });
+
+
+  
 </script>

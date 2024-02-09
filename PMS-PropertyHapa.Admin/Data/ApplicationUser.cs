@@ -31,5 +31,7 @@ namespace PMS_PropertyHapa.Admin.Data
         public DateTime? BirthDate { get; set; }
         public string ModifiedBy { get; set; }
 
+        
+
     }
 }

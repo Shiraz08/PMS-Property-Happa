@@ -333,11 +333,11 @@ namespace MagicVilla_VillaAPI.Repository
 
             var userDTOs = users.Select(u => new UserDTO
             {
-               
+
                 userName = u.UserName,
                 email = u.Email,
                 phoneNumber = u.PhoneNumber,
-                createdOn = u.AddedDate, 
+                createdOn = u.AddedDate,
             });
 
             return userDTOs;
