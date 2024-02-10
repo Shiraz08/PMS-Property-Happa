@@ -24,7 +24,7 @@ namespace PMS_PropertyHapa.Controllers
                 var tenant = await _authService.GetTenantByIdAsync(tenantId.Value);
                 return View(tenant);
             }
-            return View(new TenantModelDto()); 
+            return View(new TenantModelDto()); // Return an empty tenant for adding
         }
 
         [HttpPost]
