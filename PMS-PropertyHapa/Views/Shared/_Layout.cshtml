@@ -4,10 +4,12 @@
 @inject UserManager<ApplicationUser> UserManager
 @using Microsoft.AspNetCore.Http
 @inject IHttpContextAccessor Accessor
+@inject PropertyHapaAdminContext _context
 @{
     string displayName = "";
     string imagePath = "";
     var user = await UserManager.GetUserAsync(User);
+    var tenantOrgInfo = _context.TenantOrganizationInfo.Where(x => x.TenantUserId == new Guid(user.Id)).FirstOrDefault();
     if (user == null)
     {
         displayName = User.Identity.Name;
@@ -208,7 +210,7 @@
                                     </a>
                                     <ul class="sidebar-submenu">
                                         <li><a href="@Url.Action("Rent","Accounting")">View Rent</a></li>
-                                        <li><a href="@Url.Action("AssestExpense","AssestExpense")">View Assest Expense</a></li>
+                                        <li><a href="@Url.Action("AssestExpense","Accounting")">View Assest Expense</a></li>
                                         <li><a href="@Url.Action("Deposit","Accounting")">View Deposit</a></li>
                                         <li><a href="@Url.Action("Billing","Accounting")">View Billing</a></li>
                                         <li><a href="@Url.Action("Invoices","Accounting")">View Invoices</a></li>

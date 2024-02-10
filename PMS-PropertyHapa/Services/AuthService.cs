@@ -1,6 +1,4 @@
-﻿using MagicVilla_VillaAPI.Repository.IRepostiory;
-using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using PMS_PropertyHapa.Models;
 using PMS_PropertyHapa.Models.DTO;
 using PMS_PropertyHapa.Services.IServices;

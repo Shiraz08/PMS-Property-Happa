@@ -1,17 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.V4.Pages.Account.Internal;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Newtonsoft.Json;
-using PMS_PropertyHapa.API.Areas.Identity.Data;
+using NuGet.Protocol.Plugins;
+using PMS_PropertyHapa.Admin.Data;
 using PMS_PropertyHapa.Models;
 using PMS_PropertyHapa.Models.DTO;
 using PMS_PropertyHapa.Services.IServices;
 using PMS_PropertyHapa.Shared.Enum;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 
 namespace PMS_PropertyHapa.Controllers
 {
@@ -19,10 +15,22 @@ namespace PMS_PropertyHapa.Controllers
     {
         private readonly IAuthService _authService;
         private readonly ITokenProvider _tokenProvider;
-        public AuthController(IAuthService authService, ITokenProvider tokenProvider)
+        private readonly ILogger<HomeController> _logger;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private PropertyHapaAdminContext _context;
+        private readonly IUserStore<ApplicationUser> _userStore;
+        private IWebHostEnvironment _environment;
+        public AuthController(IAuthService authService, ITokenProvider tokenProvider, IWebHostEnvironment Environment, ILogger<HomeController> logger, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, PropertyHapaAdminContext context, IUserStore<ApplicationUser> userStore)
         {
             _authService = authService;
             _tokenProvider = tokenProvider;
+            _logger = logger;
+            _signInManager = signInManager;
+            _userManager = userManager;
+            _context = context;
+            _userStore = userStore;
+            _environment = Environment;
         }
         [HttpGet]
         public IActionResult Login()
@@ -41,6 +49,11 @@ namespace PMS_PropertyHapa.Controllers
             var response = await _authService.LoginAsync<APIResponse>(obj);
             if (response != null && response.IsSuccess)
             {
+                //Usama
+                //Make api which get user data by email
+                //var users = await _authService.GetAllUsersAsync();
+                //var appUser = users.Where(x => x.email == obj.Email).FirstOrDefault();
+                //Microsoft.AspNetCore.Identity.SignInResult result = await _signInManager.PasswordSignInAsync(appUser, obj.Password, obj.Remember, false);
                 return Json(new { success = true, message = "Logged In Successfully..!", result = response.Result });
             }
             else
