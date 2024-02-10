@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using PMS_PropertyHapa.Models.Entities;
 using PMS_PropertyHapa.Models;
+using PMS_PropertyHapa.API.Areas.Identity.Data;
 
 namespace PMS_PropertyHapa.Admin.Data
 {

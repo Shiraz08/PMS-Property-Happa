@@ -54,34 +54,55 @@ namespace MagicVilla_VillaAPI.Repository
         public async Task<TokenDTO> Login(LoginRequestDTO loginRequestDTO)
         {
             var user = await _db.ApplicationUsers
-                                      .AsNoTracking()
-                                      .FirstOrDefaultAsync(u => u.Email.ToLower() == loginRequestDTO.Email.ToLower());
+                                 .AsNoTracking()
+                                 .FirstOrDefaultAsync(u => u.Email.ToLower() == loginRequestDTO.Email.ToLower());
 
             if (user == null)
             {
                 return new TokenDTO() { AccessToken = "" };
             }
+
+            // Attempt to sign in the user with the provided password
             Microsoft.AspNetCore.Identity.SignInResult result = await _signInManager.PasswordSignInAsync(user, loginRequestDTO.Password, loginRequestDTO.Remember, false);
-            if (result.Succeeded)
-            {
-                var jwtTokenId = $"JTI{Guid.NewGuid()}";
-                var accessToken = await GetAccessToken(user, jwtTokenId);
-                var refreshToken = await CreateNewRefreshToken(user.Id, jwtTokenId);
 
-                return new TokenDTO
-                {
-                    AccessToken = accessToken,
-                    RefreshToken = refreshToken,
-                    UserName = user.UserName,
-                    UserId = user.Id
-
-                };
-            }
-            else
+            // Check if the sign-in was not successful
+            if (!result.Succeeded)
             {
                 return new TokenDTO() { AccessToken = "" };
             }
+
+            // Ensure the user ID can be parsed as a GUID
+            bool isValidGuid = Guid.TryParse(user.Id, out Guid userIdGuid);
+            if (!isValidGuid)
+            {
+                return new TokenDTO() { AccessToken = "" };
+            }
+
+            // Fetch tenant organization details
+            var tenantOrganization = await _db.TenantOrganizationInfo
+                                              .AsNoTracking()
+                                              .FirstOrDefaultAsync(to => to.TenantUserId == userIdGuid);
+
+            // Generate JWT token and refresh token
+            var jwtTokenId = $"JTI{Guid.NewGuid()}";
+            var accessToken = await GetAccessToken(user, jwtTokenId);
+            var refreshToken = await CreateNewRefreshToken(user.Id, jwtTokenId);
+
+            // Return TokenDTO including tenant organization details, if available
+            return new TokenDTO
+            {
+                AccessToken = accessToken,
+                RefreshToken = refreshToken,
+                UserName = user.UserName,
+                UserId = user.Id,
+                OrganizationName = tenantOrganization?.OrganizationName,
+                PrimaryColor = tenantOrganization?.OrganizatioPrimaryColor,
+                SecondaryColor = tenantOrganization?.OrganizationSecondColor,
+                OrganizationLogo = tenantOrganization?.OrganizationLogo
+            };
         }
+
+
 
 
 

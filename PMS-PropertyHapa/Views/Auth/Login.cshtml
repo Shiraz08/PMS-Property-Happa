@@ -20,8 +20,21 @@
                     contentType: false,
                     success: function (response) {
                         if (response.success) {
+                            debugger
                             localStorage.setItem('userId', response.result.userId); 
-                            localStorage.setItem('userName', response.result.userName); 
+                            localStorage.setItem('userName', response.result.userName);
+                            if (response.result.organizationName) {
+                                localStorage.setItem('organizationName', response.result.organizationName);
+                            }
+                            if (response.result.organizationLogo) {
+                                localStorage.setItem('organizationLogo', response.result.organizationLogo);
+                            }
+                            if (response.result.primaryColor) {
+                                localStorage.setItem('primaryColor', response.result.primaryColor);
+                            }
+                            if (response.result.secondaryColor) {
+                                localStorage.setItem('secondaryColor', response.result.secondaryColor);
+                            }
                             var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
                             Toast.fire({ icon: 'success', title: response.message });
                             window.location.href = "/Home/Index"; 
