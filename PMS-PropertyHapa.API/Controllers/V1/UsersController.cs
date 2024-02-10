@@ -425,5 +425,83 @@ namespace PMS_PropertyHapa.API.Controllers.V1
         }
 
         #endregion
+
+
+
+        #region TenantCrud 
+
+        //[HttpGet]
+        //public async Task<ActionResult<IEnumerable<TenantModelDto>>> GetAllTenants()
+        //{
+        //    try
+        //    {
+        //        var tenants = await _userRepo.GetAllTenantsAsync();
+        //        return Ok(tenants);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, $"An error occurred: {ex.Message}");
+        //    }
+        //}
+
+
+
+        //[HttpGet("{tenantId}")]
+        //public async Task<ActionResult<TenantModelDto>> GetTenantById(int tenantId)
+        //{
+        //    try
+        //    {
+        //        var tenant = await _userRepo.GetTenantByIdAsync(tenantId);
+        //        return Ok(tenant);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, $"An error occurred: {ex.Message}");
+        //    }
+        //}
+
+        //[HttpPost]
+        //public async Task<ActionResult<bool>> CreateTenant(TenantModelDto tenant)
+        //{
+        //    try
+        //    {
+        //        var isSuccess = await _userRepo.CreateTenantAsync(tenant);
+        //        return Ok(isSuccess);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, $"An error occurred: {ex.Message}");
+        //    }
+        //}
+
+        //[HttpPut("{tenantId}")]
+        //public async Task<ActionResult<bool>> UpdateTenant(int tenantId, TenantModelDto tenant)
+        //{
+        //    try
+        //    {
+        //        tenant.TenantId = tenantId; // Ensure tenantId is set
+        //        var isSuccess = await _userRepo.UpdateTenantAsync(tenant);
+        //        return Ok(isSuccess);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, $"An error occurred: {ex.Message}");
+        //    }
+        //}
+
+        //[HttpDelete("{tenantId}")]
+        //public async Task<ActionResult<bool>> DeleteTenant(int tenantId)
+        //{
+        //    try
+        //    {
+        //        var isSuccess = await _userRepo.DeleteTenantAsync(tenantId);
+        //        return Ok(isSuccess);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, $"An error occurred: {ex.Message}");
+        //    }
+        //}
+        #endregion
     }
 }

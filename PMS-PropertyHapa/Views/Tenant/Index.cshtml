@@ -26,7 +26,7 @@
     $(document).ready(function () {
         $('#tenantsTable').DataTable({
             "ajax": {
-                "url": "/Tenants/GetAllTenants",
+                "url": "/Tenant/GetTenant",
                 "type": "GET",
                 "datatype": "json"
             },
@@ -60,11 +60,13 @@ function addTenant() {
     var tenantData = {
         FirstName: $('#FirstName').val(),
         LastName: $('#LastName').val(),
+        LastName: $('#EmailAddress').val(),
+        LastName: $('#PhoneNumber').val(),
         // Populate other fields similarly
     };
 
     $.ajax({
-        url: '/Tenants/Create',
+        url: '/Tenant/Create',
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify(tenantData),
@@ -85,11 +87,12 @@ function addTenant() {
             TenantId: tenantId,
             FirstName: $('#FirstName').val(),
             LastName: $('#LastName').val(),
-            // Populate other fields similarly
+            EmailAddress: $('#EmailAddress').val(),
+            PhoneNumber: $('#PhoneNumber').val(),
         };
 
         $.ajax({
-            url: '/Tenants/Update',
+            url: '/Tenant/Update',
             type: 'PUT',
             contentType: 'application/json',
             data: JSON.stringify(tenantData),
@@ -118,7 +121,7 @@ function addTenant() {
             .then((willDelete) => {
                 if (willDelete) {
                     $.ajax({
-                        url: `/Tenants/Delete/${tenantId}`,
+                        url: `/Tenant/Delete/${tenantId}`,
                         type: 'DELETE',
                         success: function (data) {
                             if (data.success) {

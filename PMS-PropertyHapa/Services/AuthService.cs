@@ -215,7 +215,7 @@ namespace PMS_PropertyHapa.Services
                 var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
                 {
                     ApiType = SD.ApiType.GET,
-                    Url = $"{villaUrl}/api/v1/Tenants/{tenantId}"
+                    Url = $"{villaUrl}/api/v1/UsersAuth/Tenants/{tenantId}"
                 });
 
                 if (response != null && response.IsSuccess)
@@ -241,7 +241,7 @@ namespace PMS_PropertyHapa.Services
                 {
                     ApiType = SD.ApiType.POST,
                     Data = tenant,
-                    Url = $"{villaUrl}/api/v1/Tenants"
+                    Url = $"{villaUrl}/api/v1/UsersAuth/Tenants"
                 });
 
                 return response.IsSuccess;
@@ -260,7 +260,7 @@ namespace PMS_PropertyHapa.Services
                 {
                     ApiType = SD.ApiType.PUT,
                     Data = tenant,
-                    Url = $"{villaUrl}/api/v1/Tenants/{tenant.TenantId}"
+                    Url = $"{villaUrl}/api/v1/UsersAuth/Tenants/{tenant.TenantId}"
                 });
 
                 return response.IsSuccess;
@@ -278,7 +278,7 @@ namespace PMS_PropertyHapa.Services
                 var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
                 {
                     ApiType = SD.ApiType.DELETE,
-                    Url = $"{villaUrl}/api/v1/Tenants/{tenantId}"
+                    Url = $"{villaUrl}/api/v1/UsersAuth/Tenants/{tenantId}"
                 });
 
                 return response.IsSuccess;
