@@ -160,10 +160,23 @@
             success: function (response) {
                 debugger
                 var Identity = '';
+                var Assests = '';
+                var Identity = '';
+                var Identity = '';
+                var Identity = '';
+                var Identity = '';
+                var Identity = '';
+                var Identity = '';
+                var Identity = '';
+                var Identity = '';
 
 
                 $.each(response, function (key, item) {
-                     if (item.RoleKey == "Identity") {
+                     if (item.RoleKey == "Identity")
+                     {
+                        Identity += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
+                    }
+                    if (item.RoleKey == "Assests") {
                         Identity += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
                     }
                 });
