@@ -165,7 +165,6 @@ namespace PMS_PropertyHapa.Admin.Controllers
                 _context.SaveChanges();
             }
 
-
             TblAssignRole assignRole = null;
             assignRole = new TblAssignRole();
             assignRole.RoleActive = true;
