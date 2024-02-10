@@ -30,6 +30,14 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
                   options.AccessDeniedPath = "/Auth/AccessDenied";
                   options.SlidingExpiration = true;
               });
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    //Location for your Custom Access Denied Page
+    options.AccessDeniedPath = "/Auth/AccessDenied";
+
+    //Location for your Custom Login Page
+    options.LoginPath = "/Auth/Login";
+});
 // Session
 builder.Services.AddSession(options =>
 {

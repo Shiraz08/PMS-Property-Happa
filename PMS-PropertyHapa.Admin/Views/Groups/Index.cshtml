@@ -126,6 +126,82 @@
                                                     <div id="Show_Identity_checkboxes"> </div>
                                                 </div>
                                             </div>
+                                            <div class="col-lg-2">
+                                                <div class="mt-2 mt-lg-0">
+                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Accounting</label>
+                                                    <div id="Show_Accounting_checkboxes"> </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <div class="mt-2 mt-lg-0">
+                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Assests</label>
+                                                    <div id="Show_Assests_checkboxes"> </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <div class="mt-2 mt-lg-0">
+                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Communication</label>
+                                                    <div id="Show_Communication_checkboxes"> </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <div class="mt-2 mt-lg-0">
+                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Documents</label>
+                                                    <div id="Show_Documents_checkboxes"> </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <div class="mt-2 mt-lg-0">
+                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Expense</label>
+                                                    <div id="Show_Expense_checkboxes"> </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-2">
+                                                <div class="mt-2 mt-lg-0">
+                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Landlord</label>
+                                                    <div id="Show_Landlord_checkboxes"> </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <div class="mt-2 mt-lg-0">
+                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Lease</label>
+                                                    <div id="Show_Lease_checkboxes"> </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <div class="mt-2 mt-lg-0">
+                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Maintance</label>
+                                                    <div id="Show_Maintance_checkboxes"> </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <div class="mt-2 mt-lg-0">
+                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Reports</label>
+                                                    <div id="Show_Reports_checkboxes"> </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <div class="mt-2 mt-lg-0">
+                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Services</label>
+                                                    <div id="Show_Services_checkboxes"> </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <div class="mt-2 mt-lg-0">
+                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Tenant</label>
+                                                    <div id="Show_Tenant_checkboxes"> </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-2">
+                                                <div class="mt-2 mt-lg-0">
+                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Vendor</label>
+                                                    <div id="Show_Vendor_checkboxes"> </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -157,17 +233,80 @@
             url: '/Groups/GetRolePages',
             processData: false,
             contentType: false,
-            success: function (response) {
-                debugger
-                var Identity = '';
+            success: function (response)
+            {
+                var Identity     = '';
+                var Accounting   = '';
+                var Assests      = '';
+                var Communication = '';
+                var Documents    = '';
+                var Expense      = '';
+                var Landlord     = '';
+                var Lease        = '';
+                var Maintance    = '';
+                var Reports      = '';
+                var Services     = '';
+                var Tenant       = '';
+                var Vendor       = '';
 
-
-                $.each(response, function (key, item) {
-                     if (item.RoleKey == "Identity") {
+                $.each(response, function (key, item) 
+                {
+                    if (item.RoleKey == "Identity") {
                         Identity += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
                     }
+                    if (item.RoleKey == "Accounting") {
+                        Accounting += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
+                    }
+                    if (item.RoleKey == "Assests") {
+                        Assests += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
+                    }
+                    if (item.RoleKey == "Communication") {
+                        Communication += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
+                    }
+                    if (item.RoleKey == "Documents") {
+                        Documents += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
+                    }
+                    if (item.RoleKey == "Expense") {
+                        Expense += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
+                    }
+
+                    if (item.RoleKey == "Landlord") {
+                        Landlord += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
+                    }
+                    if (item.RoleKey == "Lease") {
+                        Lease += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
+                    }
+                    if (item.RoleKey == "Maintance") {
+                        Maintance += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
+                    }
+                    if (item.RoleKey == "Reports") {
+                        Reports += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
+                    }
+                    if (item.RoleKey == "Services") {
+                        Services += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
+                    }
+                    if (item.RoleKey == "Tenant") {
+                        Tenant += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
+                    }
+
+                    if (item.RoleKey == "Vendor") {
+                        Vendor += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
+                    }
+
                 });
                 $('#Show_Identity_checkboxes').empty().append(Identity);
+                $('#Show_Accounting_checkboxes').empty().append(Accounting);
+                $('#Show_Assests_checkboxes').empty().append(Assests);
+                $('#Show_Communication_checkboxes').empty().append(Communication);
+                $('#Show_Documents_checkboxes').empty().append(Documents);
+                $('#Show_Expense_checkboxes').empty().append(Expense);
+                $('#Show_Landlord_checkboxes').empty().append(Landlord);
+                $('#Show_Lease_checkboxes').empty().append(Lease);
+                $('#Show_Maintance_checkboxes').empty().append(Maintance);
+                $('#Show_Reports_checkboxes').empty().append(Reports);
+                $('#Show_Services_checkboxes').empty().append(Services);
+                $('#Show_Tenant_checkboxes').empty().append(Tenant);
+                $('#Show_Vendor_checkboxes').empty().append(Vendor);
             }, 
             failure: function (response) {
                 $('#result').html(response);

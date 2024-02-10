@@ -1,17 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.V4.Pages.Account.Internal;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Newtonsoft.Json;
-using PMS_PropertyHapa.API.Areas.Identity.Data;
-using PMS_PropertyHapa.Models;
-using PMS_PropertyHapa.Models.DTO;
+﻿using Microsoft.AspNetCore.Mvc;
 using PMS_PropertyHapa.Services.IServices;
-using PMS_PropertyHapa.Shared.Enum;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 
 namespace PMS_PropertyHapa.Controllers
 {
