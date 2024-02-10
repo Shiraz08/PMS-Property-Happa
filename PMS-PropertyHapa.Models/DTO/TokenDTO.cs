@@ -7,5 +7,10 @@
 
         public string UserName { get; set; }
         public string UserId { get; set; }
+
+        public string PrimaryColor { get; set; }    
+        public string SecondaryColor { get; set;}
+        public string OrganizationName { get; set; }    
+        public string OrganizationLogo { get; set; }    
     }
 }

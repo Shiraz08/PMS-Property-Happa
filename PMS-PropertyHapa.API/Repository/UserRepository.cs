@@ -51,13 +51,14 @@ namespace MagicVilla_VillaAPI.Repository
         public async Task<TokenDTO> Login(LoginRequestDTO loginRequestDTO)
         {
             var user = await _db.ApplicationUsers
-                                      .AsNoTracking()
-                                      .FirstOrDefaultAsync(u => u.Email.ToLower() == loginRequestDTO.Email.ToLower());
+                                 .AsNoTracking()
+                                 .FirstOrDefaultAsync(u => u.Email.ToLower() == loginRequestDTO.Email.ToLower());
 
             if (user == null)
             {
                 return new TokenDTO() { AccessToken = "" };
             }
+
             bool isValid = await _userManager.CheckPasswordAsync(user, loginRequestDTO.Password);
 
             if (!isValid)
@@ -65,19 +66,39 @@ namespace MagicVilla_VillaAPI.Repository
                 return new TokenDTO() { AccessToken = "" };
             }
 
+            bool isValidGuid = Guid.TryParse(user.Id, out Guid userIdGuid);
+            if (!isValidGuid)
+            {
+                return new TokenDTO() { AccessToken = ""};
+            }
+            // Fetch tenant organization details
+            var tenantOrganization = await _db.TenantOrganizationInfo
+                                              .AsNoTracking()
+                                              .FirstOrDefaultAsync(to => to.TenantUserId == userIdGuid);
+
+            if (tenantOrganization == null)
+            {
+            }
+
             var jwtTokenId = $"JTI{Guid.NewGuid()}";
             var accessToken = await GetAccessToken(user, jwtTokenId);
             var refreshToken = await CreateNewRefreshToken(user.Id, jwtTokenId);
 
+            // Include tenant organization details in the TokenDTO, if needed
             return new TokenDTO
             {
                 AccessToken = accessToken,
                 RefreshToken = refreshToken,
                 UserName = user.UserName,
-                UserId = user.Id
-
+                UserId = user.Id,
+           
+                OrganizationName = tenantOrganization?.OrganizationName,
+                PrimaryColor = tenantOrganization?.OrganizatioPrimaryColor,
+                SecondaryColor = tenantOrganization?.OrganizationSecondColor,
+                OrganizationLogo = tenantOrganization?.OrganizationLogo
             };
         }
+
 
 
 

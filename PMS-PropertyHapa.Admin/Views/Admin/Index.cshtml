@@ -156,29 +156,24 @@
                                     </div>
                                 </div>
 
-                                <!-- Organization Primary Color -->
-                                <div class="col-xxl-3 col-md-6">
-                                    <div>
-                                            <label for="primaryColorSelect">Primary Color:&nbsp;<span style="color:red!important"><b>*</b></span></label>
-                                            <select id="primaryColorSelect" class="form-control">
-                                                <option value="" disabled selected>Please select a color</option>
-                                            </select>
-                                            <input asp-for="OrganizationInfo.OrganizatioPrimaryColor" type="hidden" id="OrganizationInfo_OrganizatioPrimaryColor" />
+                                    <!-- Organization Primary Color -->
+                                    <div class="col-xxl-3 col-md-6">
+                                        <div>
+                                            <label for="OrganizationInfo_OrganizatioPrimaryColor">Primary Color:&nbsp;<span style="color:red!important"><b>*</b></span></label>
+                                            <input type="color" id="OrganizationInfo_OrganizatioPrimaryColor" name="OrganizationInfo.OrganizatioPrimaryColor" class="form-control" /> 
                                             <span asp-validation-for="OrganizationInfo.OrganizatioPrimaryColor" class="text-danger"></span>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <!-- Organization Secondary Color -->
-                                <div class="col-xxl-3 col-md-6">
-                                    <div>
-                                            <label for="secondaryColorSelect">Secondary Color:&nbsp;<span style="color:red!important"><b>*</b></span></label>
-                                            <select id="secondaryColorSelect" class="form-control">
-                                                <option value="" disabled selected>Please select a color</option>
-                                            </select>
-                                            <input asp-for="OrganizationInfo.OrganizationSecondColor" type="hidden" id="OrganizationInfo_OrganizationSecondColor" />
+                                    <!-- Organization Secondary Color -->
+                                    <div class="col-xxl-3 col-md-6">
+                                        <div>
+                                            <label for="OrganizationInfo_OrganizationSecondColor">Secondary Color:&nbsp;<span style="color:red!important"><b>*</b></span></label>
+                                            <input type="color" id="OrganizationInfo_OrganizationSecondColor" name="OrganizationInfo.OrganizationSecondColor" class="form-control" /> 
                                             <span asp-validation-for="OrganizationInfo.OrganizationSecondColor" class="text-danger"></span>
+                                        </div>
                                     </div>
-                                </div>
+
 
 
                                 <div class="col-xxl-3 col-md-6">
@@ -648,7 +643,7 @@
     });
 </script>
 
-<script>
+@* <script>
     document.addEventListener("DOMContentLoaded", function () {
         var colorOptions = [
             { name: "Please select a color", value: "" }, // Placeholder option
@@ -689,4 +684,4 @@
 
 
   
-</script>
+</script> *@
