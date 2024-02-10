@@ -1,8 +1,63 @@
-﻿
+﻿@model PMS_PropertyHapa.Models.DTO.TenantModelDto
+
 @{
-    ViewData["Title"] = "AddTenant";
+    ViewData["Title"] = "Add/Edit Tenant";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>AddTenant</h1>
+<h2>@(Model.TenantId == 0 ? "Add" : "Edit") Tenant</h2>
 
+<form id="tenantForm">
+    <input type="hidden" id="TenantId" name="TenantId" value="@Model.TenantId" />
+    <div class="form-group">
+        <label for="FirstName">First Name</label>
+        <input type="text" class="form-control" id="FirstName" name="FirstName" value="@Model.FirstName" required />
+    </div>
+    <div class="form-group">
+        <label for="LastName">Last Name</label>
+        <input type="text" class="form-control" id="LastName" name="LastName" value="@Model.LastName" required />
+    </div>
+       <div class="form-group">
+        <label for="EmailAddress">Email</label>
+        <input type="email" class="form-control" id="EmailAddress" name="EmailAddress" value="@Model.EmailAddress" required />
+    </div>
+       <div class="form-group">
+        <label for="LastName">Phone Number</label>
+        <input type="number" class="form-control" id="PhoneNumber" name="PhoneNumber" value="@Model.PhoneNumber" required />
+    </div>
+    <!-- Add more fields as per your model -->
+    <button type="submit" class="btn btn-primary">@Model.TenantId == 0 ? "Add" : "Update" Tenant</button>
+</form>
+
+<script>
+    $(document).ready(function () {
+        $('#tenantForm').submit(function (e) {
+            e.preventDefault();
+
+            var tenantData = {
+                TenantId: $('#TenantId').val(),
+                FirstName: $('#FirstName').val(),
+                LastName: $('#LastName').val(),
+                EmailAddress: $('#EmailAddress').val(),
+                PhoneNumber: $('#PhoneNumber').val()
+                // Populate other fields similarly
+            };
+
+            var ajaxUrl = '@Model.TenantId == 0 ? "/Tenants/Create" : "/Tenants/Update"';
+            $.ajax({
+                url: ajaxUrl,
+                type: 'POST', 
+                contentType: 'application/json',
+                data: JSON.stringify(tenantData),
+                success: function (data) {
+                    if (data.success) {
+                        window.location.href = '/Tenants'; 
+                        toastr.success(data.message);
+                    } else {
+                        toastr.error(data.message);
+                    }
+                }
+            });
+        });
+    });
+</script>

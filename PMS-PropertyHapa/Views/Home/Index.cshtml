@@ -20,13 +20,13 @@
                         <div class="media">
                             <div class="media-body">
                                 <div class="greeting-user">
-                                    <h1 id="greetingUserName">Hello</h1>
+                                    <h1>Hello</h1>
                                     <p>Welcome back, your dashboard is ready!</p>
                                 </div>
                             </div>
                         </div>
                         <div class="cartoon-img">
-                            <img id="organizationLogo" class="img-fluid" src="~/Dashboard/assets/images/images.svg" alt="Organization Logo">
+                            <img class="img-fluid" src="~/Dashboard/assets/images/images.svg" alt="Organization Logo">
                         </div>
                     </div>
                 </div>
@@ -35,25 +35,5 @@
     </div>
 </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Fetch organization name and logo from localStorage
-            var organizationName = localStorage.getItem('organizationName');
-            var organizationLogo = localStorage.getItem('organizationLogo');
-
-            // Update the greeting text with the organization name if available
-            if (organizationName) {
-                document.getElementById('greetingUserName').textContent = `Hello, ${organizationName}`;
-            }
-
-        if (organizationLogo) {
-            // Remove quotes from the start and end of the organizationLogo
-            var cleanedOrganizationLogo = organizationLogo.slice(1, -1);
-            var fullLogoUrl = `https://localhost:7220/wwwroot/uploads/${cleanedOrganizationLogo}`;
-            document.getElementById('organizationLogo').setAttribute('src', fullLogoUrl);
-        }
-
-
-        });
-    </script>
+  
 

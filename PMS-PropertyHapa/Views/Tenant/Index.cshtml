@@ -1,8 +1,138 @@
-﻿
+﻿@using PMS_PropertyHapa.Models.DTO;
+@model TenantModelDto
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Tenants";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
+<h1>Tenants</h1>
+<a href="/Tenants/AddTenant" class="btn btn-primary mb-3">Add New Tenant</a>
 
+<table id="tenantsTable" class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email Address</th>
+            <th>Phone Number</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+<script>
+    $(document).ready(function () {
+        $('#tenantsTable').DataTable({
+            "ajax": {
+                "url": "/Tenants/GetAllTenants",
+                "type": "GET",
+                "datatype": "json"
+            },
+            "columns": [
+                { "data": "firstName", "autoWidth": true },
+                { "data": "lastName", "autoWidth": true },
+                { "data": "emailAddress", "autoWidth": true },
+                { "data": "phoneNumber", "autoWidth": true },
+                {
+                    "data": "tenantId",
+                    "render": function (data) {
+                        return `<button onclick="updateTenant(${data})" class="btn btn-success">Edit</button>
+                                    <button onclick="deleteTenant(${data})" class="btn btn-danger">Delete</button>`;
+                    },
+                    "orderable": false
+                }
+            ],
+            "language": {
+                "emptyTable": "No data found, Please click on <b>Add New</b> Button"
+            }
+        });
+    });
+
+    function updateTenant(tenantId) {
+        window.location.href = `/Tenants/AddTenant?tenantId=${tenantId}`;
+    }
+</script>
+<script>
+
+function addTenant() {
+    var tenantData = {
+        FirstName: $('#FirstName').val(),
+        LastName: $('#LastName').val(),
+        // Populate other fields similarly
+    };
+
+    $.ajax({
+        url: '/Tenants/Create',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(tenantData),
+        success: function (data) {
+            if (data.success) {
+                $('#tenantsTable').DataTable().ajax.reload();
+                toastr.success(data.message);
+            } else {
+                toastr.error(data.message);
+            }
+        }
+    });
+}
+
+
+    function updateTenant(tenantId) {
+        var tenantData = {
+            TenantId: tenantId,
+            FirstName: $('#FirstName').val(),
+            LastName: $('#LastName').val(),
+            // Populate other fields similarly
+        };
+
+        $.ajax({
+            url: '/Tenants/Update',
+            type: 'PUT',
+            contentType: 'application/json',
+            data: JSON.stringify(tenantData),
+            success: function (data) {
+                if (data.success) {
+                    $('#tenantsTable').DataTable().ajax.reload();
+                    toastr.success(data.message);
+                } else {
+                    toastr.error(data.message);
+                }
+            }
+        });
+    }
+
+
+
+
+    function deleteTenant(tenantId) {
+        swal({
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover this tenant!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    $.ajax({
+                        url: `/Tenants/Delete/${tenantId}`,
+                        type: 'DELETE',
+                        success: function (data) {
+                            if (data.success) {
+                                $('#tenantsTable').DataTable().ajax.reload();
+                                toastr.success(data.message);
+                            } else {
+                                toastr.error(data.message);
+                            }
+                        }
+                    });
+                }
+            });
+    }
+
+
+
+</script>

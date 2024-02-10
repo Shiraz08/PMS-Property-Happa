@@ -204,5 +204,93 @@ namespace PMS_PropertyHapa.Services
             });
         }
         #endregion
+
+
+
+
+
+        #region Tenant Crud
+        public async Task<TenantModelDto> GetTenantByIdAsync(int tenantId)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.GET,
+                    Url = $"{villaUrl}/api/v1/Tenants/{tenantId}"
+                });
+
+                if (response != null && response.IsSuccess)
+                {
+                    return JsonConvert.DeserializeObject<TenantModelDto>(Convert.ToString(response.Result));
+                }
+                else
+                {
+                    throw new Exception("Failed to retrieve tenant data");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when fetching tenant data: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<bool> CreateTenantAsync(TenantModelDto tenant)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Data = tenant,
+                    Url = $"{villaUrl}/api/v1/Tenants"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when creating tenant: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<bool> UpdateTenantAsync(TenantModelDto tenant)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.PUT,
+                    Data = tenant,
+                    Url = $"{villaUrl}/api/v1/Tenants/{tenant.TenantId}"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when updating tenant: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<bool> DeleteTenantAsync(int tenantId)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.DELETE,
+                    Url = $"{villaUrl}/api/v1/Tenants/{tenantId}"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when deleting tenant: {ex.Message}", ex);
+            }
+        }
+
+        #endregion
     }
 }
