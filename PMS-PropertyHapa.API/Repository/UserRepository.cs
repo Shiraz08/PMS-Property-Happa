@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using NuGet.Protocol.Plugins;
 using PMS_PropertyHapa.API.Areas.Identity.Data;
 using PMS_PropertyHapa.Models;
 using PMS_PropertyHapa.Models.DTO;
@@ -21,12 +22,13 @@ namespace MagicVilla_VillaAPI.Repository
         private readonly ApiDbContext _db;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
         private string secretKey;
         private readonly IMapper _mapper;
         private readonly IEmailSender _emailSender;
 
         public UserRepository(ApiDbContext db, IConfiguration configuration,
-            UserManager<ApplicationUser> userManager, IMapper mapper, RoleManager<IdentityRole> roleManager, IEmailSender emailSender)
+            UserManager<ApplicationUser> userManager, IMapper mapper, RoleManager<IdentityRole> roleManager, IEmailSender emailSender, SignInManager<ApplicationUser> signInManager)
         {
             _db = db;
             _mapper = mapper;
@@ -34,6 +36,7 @@ namespace MagicVilla_VillaAPI.Repository
             secretKey = configuration.GetValue<string>("ApiSettings:Secret");
             _roleManager = roleManager;
             _emailSender = emailSender;
+            _signInManager = signInManager;
         }
 
         public bool IsUniqueUser(string username)
@@ -58,25 +61,26 @@ namespace MagicVilla_VillaAPI.Repository
             {
                 return new TokenDTO() { AccessToken = "" };
             }
-            bool isValid = await _userManager.CheckPasswordAsync(user, loginRequestDTO.Password);
+            Microsoft.AspNetCore.Identity.SignInResult result = await _signInManager.PasswordSignInAsync(user, loginRequestDTO.Password, loginRequestDTO.Remember, false);
+            if (result.Succeeded)
+            {
+                var jwtTokenId = $"JTI{Guid.NewGuid()}";
+                var accessToken = await GetAccessToken(user, jwtTokenId);
+                var refreshToken = await CreateNewRefreshToken(user.Id, jwtTokenId);
 
-            if (!isValid)
+                return new TokenDTO
+                {
+                    AccessToken = accessToken,
+                    RefreshToken = refreshToken,
+                    UserName = user.UserName,
+                    UserId = user.Id
+
+                };
+            }
+            else
             {
                 return new TokenDTO() { AccessToken = "" };
             }
-
-            var jwtTokenId = $"JTI{Guid.NewGuid()}";
-            var accessToken = await GetAccessToken(user, jwtTokenId);
-            var refreshToken = await CreateNewRefreshToken(user.Id, jwtTokenId);
-
-            return new TokenDTO
-            {
-                AccessToken = accessToken,
-                RefreshToken = refreshToken,
-                UserName = user.UserName,
-                UserId = user.Id
-
-            };
         }
 
 
