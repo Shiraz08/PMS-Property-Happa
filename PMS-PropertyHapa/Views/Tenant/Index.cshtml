@@ -4,24 +4,37 @@
     ViewData["Title"] = "Tenants";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
+<div class="page-body">
 <h1>Tenants</h1>
 <a href="/Tenant/AddTenant" class="btn btn-primary mb-3">Add New Tenant</a>
 
 <table id="tenantsTable" class="table table-bordered table-striped">
     <thead>
         <tr>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Email Address</th>
-            <th>Phone Number</th>
-            <th>Actions</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email Address</th>
+                <th>Phone Number</th>
+                <th>Emergency Contact Info</th>
+                <th>Lease Agreement Id</th>
+                <th>Tenant Nationality</th>
+                <th>Gender</th>
+                <th>DOB</th>
+                <th>VAT</th>
+                <th>Legal Name</th>
+                <th>Account Name</th>
+                <th>Account Holder</th>
+                <th>Account IBAN</th>
+                <th>Account Swift</th>
+                <th>Account Bank</th>
+                <th>Account Currency</th>
+                <th>Actions</th>
         </tr>
     </thead>
     <tbody>
     </tbody>
 </table>
-
+</div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
         $(document).ready(function () {
@@ -34,11 +47,28 @@
                     "type": "GET",
                     "datatype": "json"
                 },
+            "scroller": true,
+            "deferRender": true, 
+            "scrollY": 200, 
+            "scrollCollapse": true,
                 "columns": [
-                    { "data": "FirstName", "autoWidth": true },
-                    { "data": "LastName", "autoWidth": true },
-                    { "data": "EmailAddress", "autoWidth": true },
-                    { "data": "PhoneNumber", "autoWidth": true },
+             { "data": "FirstName", "width": "60%" },
+        { "data": "LastName", "width": "60%" },
+        { "data": "EmailAddress", "width": "60%" },
+        { "data": "PhoneNumber", "width": "60%" },
+        { "data": "EmergencyContactInfo", "width": "60%" },
+        { "data": "LeaseAgreementId", "width": "60%" },
+        { "data": "TenantNationality", "width": "60%" },
+        { "data": "Gender", "width": "60%" },
+        { "data": "DOB", "width": "60%" },
+        { "data": "VAT", "width": "60%" },
+        { "data": "LegalName", "width": "60%" },
+        { "data": "Account_Name", "width": "60%" },
+        { "data": "Account_Holder", "width": "60%" },
+        { "data": "Account_IBAN", "width": "60%" },
+        { "data": "Account_Swift", "width": "60%" },
+        { "data": "Account_Bank", "width": "60%" },
+        { "data": "Account_Currency", "width": "60%" },
                 {
                     "data": "tenantId",
                     "render": function (data, type, row) {

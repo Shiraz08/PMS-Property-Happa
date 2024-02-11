@@ -34,7 +34,96 @@
                 <input type="number" class="form-control" id="PhoneNumber" name="PhoneNumber" value="@Model.PhoneNumber" required />
             </div>
         </div>
-        <!-- Add more fields as per your model -->
+        <div class="col-sm-6 col-md-3">
+            <div class="mb-3">
+                <label for="EmergencyContactInfo">Emergency Contact Info</label>
+                <input type="text" class="form-control" id="EmergencyContactInfo" name="EmergencyContactInfo" value="@Model.EmergencyContactInfo" />
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-3">
+    <div class="mb-3">
+        <label for="TenantNationality">Tenant Nationality</label>
+        <input type="text" class="form-control" id="TenantNationality" name="TenantNationality" value="@Model.TenantNationality" />
+    </div>
+</div>
+
+        <div class="col-sm-6 col-md-3">
+            <div class="mb-3">
+                <label for="Gender">Gender</label>
+                <select class="form-control" id="Gender" name="Gender">
+                    <option value="">Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+        </div>
+
+
+
+<div class="col-sm-6 col-md-3">
+    <div class="mb-3">
+        <label for="DOB">Date of Birth</label>
+        <input type="date" class="form-control" id="DOB" name="DOB" value="@Model.DOB" />
+    </div>
+</div>
+
+<div class="col-sm-6 col-md-3">
+    <div class="mb-3">
+        <label for="VAT">VAT Number</label>
+        <input type="text" class="form-control" id="VAT" name="VAT" value="@Model.VAT" />
+    </div>
+</div>
+
+<div class="col-sm-6 col-md-3">
+    <div class="mb-3">
+        <label for="LegalName">Legal Name</label>
+        <input type="text" class="form-control" id="LegalName" name="LegalName" value="@Model.LegalName" />
+    </div>
+</div>
+
+<div class="col-sm-6 col-md-3">
+    <div class="mb-3">
+        <label for="Account_Name">Account Name</label>
+        <input type="text" class="form-control" id="Account_Name" name="Account_Name" value="@Model.Account_Name" />
+    </div>
+</div>
+
+<div class="col-sm-6 col-md-3">
+    <div class="mb-3">
+        <label for="Account_Holder">Account Holder</label>
+        <input type="text" class="form-control" id="Account_Holder" name="Account_Holder" value="@Model.Account_Holder" />
+    </div>
+</div>
+
+<div class="col-sm-6 col-md-3">
+    <div class="mb-3">
+        <label for="Account_IBAN">Account IBAN</label>
+        <input type="text" class="form-control" id="Account_IBAN" name="Account_IBAN" value="@Model.Account_IBAN" />
+    </div>
+</div>
+
+<div class="col-sm-6 col-md-3">
+    <div class="mb-3">
+        <label for="Account_Swift">Account SWIFT/BIC</label>
+        <input type="text" class="form-control" id="Account_Swift" name="Account_Swift" value="@Model.Account_Swift" />
+    </div>
+</div>
+
+<div class="col-sm-6 col-md-3">
+    <div class="mb-3">
+        <label for="Account_Bank">Account Bank</label>
+        <input type="text" class="form-control" id="Account_Bank" name="Account_Bank" value="@Model.Account_Bank" />
+    </div>
+</div>
+
+<div class="col-sm-6 col-md-3">
+    <div class="mb-3">
+        <label for="Account_Currency">Account Currency</label>
+        <input type="text" class="form-control" id="Account_Currency" name="Account_Currency" value="@Model.Account_Currency" />
+    </div>
+</div>
+     
         <div>
             <button type="button" class="btn btn-primary" onclick="submitTenantForm()">@(Model.TenantId == null ? "Add" : "Edit") Tenant</button>
         </div>
@@ -56,8 +145,20 @@
             LastName: $('#LastName').val(),
             EmailAddress: $('#EmailAddress').val(),
             PhoneNumber: $('#PhoneNumber').val(),
+            EmergencyContactInfo: $('#EmergencyContactInfo').val(),
+            TenantNationality: $('#TenantNationality').val(),
+            Gender: $('#Gender').val(),
+            DOB: $('#DOB').val(),
+            VAT: $('#VAT').val(),
+            LegalName: $('#LegalName').val(),
+            Account_Name: $('#Account_Name').val(),
+            Account_Holder: $('#Account_Holder').val(),
+            Account_IBAN: $('#Account_IBAN').val(),
+            Account_Swift: $('#Account_Swift').val(),
+            Account_Bank: $('#Account_Bank').val(),
+            Account_Currency: $('#Account_Currency').val(),
             AppTId: userId
-            // Populate other fields similarly
+          
         };
 
         var ajaxUrl = '@(Model.TenantId == null ? "/Tenant/Create" : "/Tenant/Update")';
@@ -79,3 +180,11 @@
     }
 </script>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var gender = '@Model.Gender';
+        if (gender) {
+            document.querySelector("#Gender").value = gender;
+        }
+    });
+</script>
