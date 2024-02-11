@@ -253,7 +253,8 @@ namespace PMS_PropertyHapa.Admin.Controllers
                     user.PhoneNumber,
                     user.AddedDate,
                     OrganizationName = tenantInfo?.OrganizationName,
-                    OrganizationLogo = tenantInfo?.OrganizationLogo
+                    OrganizationLogo = tenantInfo?.OrganizationLogo,
+                    OrganizationIcon = tenantInfo?.OrganizationIcon
                 };
             }).ToList();
 
