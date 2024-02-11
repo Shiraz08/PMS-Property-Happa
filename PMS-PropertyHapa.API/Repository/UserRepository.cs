@@ -629,7 +629,14 @@ namespace MagicVilla_VillaAPI.Repository
                 Account_IBAN = tenant.Account_IBAN,
                 Account_Swift = tenant.Account_Swift,
                 Account_Bank = tenant.Account_Bank,
-                Account_Currency = tenant.Account_Currency
+                Account_Currency = tenant.Account_Currency,
+                Address = tenant.Address,
+                Address2 = tenant.Address2,
+                Locality = tenant.Locality,
+                Region = tenant.Region,
+                PostalCode = tenant.PostalCode,
+                Country = tenant.Country,
+                CountryCode = tenant.CountryCode
             }).ToList();
 
             return tenantDtos;
@@ -664,7 +671,14 @@ namespace MagicVilla_VillaAPI.Repository
                 Account_IBAN = tenant.Account_IBAN,
                 Account_Swift = tenant.Account_Swift,
                 Account_Bank = tenant.Account_Bank,
-                Account_Currency = tenant.Account_Currency
+                Account_Currency = tenant.Account_Currency,
+                Address = tenant.Address,
+                Address2 = tenant.Address2,
+                Locality = tenant.Locality,
+                Region = tenant.Region,
+                PostalCode = tenant.PostalCode,
+                Country = tenant.Country,
+                CountryCode = tenant.CountryCode
             };
 
             return tenantDto;
@@ -695,7 +709,14 @@ namespace MagicVilla_VillaAPI.Repository
                 Account_Swift = tenantDto.Account_Swift,
                 Account_Bank = tenantDto.Account_Bank,
                 Account_Currency = tenantDto.Account_Currency,
-                AppTenantId = tenantDto.AppTenantId
+                AppTenantId = tenantDto.AppTenantId,
+                Address = tenantDto.Address,
+                Address2 = tenantDto.Address2,
+                Locality = tenantDto.Locality,
+                Region = tenantDto.Region,
+                PostalCode = tenantDto.PostalCode,
+                Country = tenantDto.Country,
+                CountryCode = tenantDto.CountryCode
             };
 
             await _db.Tenant.AddAsync(newTenant);
@@ -731,7 +752,14 @@ namespace MagicVilla_VillaAPI.Repository
                 Account_Swift = tenantDto.Account_Swift,
                 Account_Bank = tenantDto.Account_Bank,
                 Account_Currency = tenantDto.Account_Currency,
-                AppTenantId = tenantDto.AppTenantId
+                AppTenantId = tenantDto.AppTenantId,
+                Address = tenantDto.Address,
+                Address2 = tenantDto.Address2,
+                Locality = tenantDto.Locality,
+                Region = tenantDto.Region,
+                PostalCode = tenantDto.PostalCode,
+                Country = tenantDto.Country,
+                CountryCode = tenantDto.CountryCode
             };
 
             _db.Tenant.Update(newTenant);
