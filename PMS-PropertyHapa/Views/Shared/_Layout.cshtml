@@ -4,12 +4,13 @@
 @inject UserManager<ApplicationUser> UserManager
 @using Microsoft.AspNetCore.Http
 @inject IHttpContextAccessor Accessor
-@inject PropertyHapaAdminContext _context
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+
 @{
     string displayName = "";
     string imagePath = "";
     var user = await UserManager.GetUserAsync(User);
-  //  var tenantOrgInfo = _context.TenantOrganizationInfo.Where(x => x.TenantUserId == new Guid(user.Id)).FirstOrDefault();
     if (user == null)
     {
         displayName = User.Identity.Name;
@@ -20,6 +21,7 @@
         displayName = user.UserName;
         imagePath = user.Picture;
     }
+    var ImageURL = Configuration.GetSection("ImageURl")["URL"].ToString();
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -30,9 +32,10 @@
     <meta name="description" content="">
     <meta name="keywords" content="">
     <meta name="author" content="">
-    <link rel="icon" href="~/Dashboard/assets/images/logo/favicon-icon.png" type="image/x-icon">
-    <link rel="shortcut icon" href="~/Dashboard/assets/images/logo/favicon-icon.png" type="image/x-icon">
-    <title>Dashboard - Property Hapa </title>
+
+    <link rel="icon" href="" type="image/x-icon" id="Org_icon">
+    <link rel="shortcut icon" href="" type="image/x-icon" id="Org_iconshort">
+    <title></title>
     <!-- Google font-->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
@@ -68,6 +71,14 @@
         .page-wrapper.compact-wrapper .page-body-wrapper div.sidebar-wrapper .logo-wrapper, .page-wrapper.compact-wrapper .page-body-wrapper div.sidebar-wrapper .logo-icon-wrapper {
             padding: 3px 30px !important;
         }
+
+        .profile-greeting {
+            position: relative!important;
+            background-color: var(--theme-deafult)!important;
+            color: #fff!important;
+            height: 154px!important;
+        }
+
     </style>
 </head>
 <body>
@@ -114,21 +125,6 @@
                 </div>
                 <div class="nav-right col-10 col-sm-6 pull-right right-header p-0">
                     <ul class="nav-menus">
-                        <li>
-                            <div class="mode animated backOutRight">
-                                <svg class="lighticon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <g>
-                                        <g>
-                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M18.1377 13.7902C19.2217 14.8742 16.3477 21.0542 10.6517 21.0542C6.39771 21.0542 2.94971 17.6062 2.94971 13.3532C2.94971 8.05317 8.17871 4.66317 9.67771 6.16217C10.5407 7.02517 9.56871 11.0862 11.1167 12.6352C12.6647 14.1842 17.0537 12.7062 18.1377 13.7902Z" stroke="#130F26" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                        </g>
-                                    </g>
-                                </svg>
-                                <svg class="darkicon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M17 12C17 14.7614 14.7614 17 12 17C9.23858 17 7 14.7614 7 12C7 9.23858 9.23858 7 12 7C14.7614 7 17 9.23858 17 12Z"></path>
-                                    <path d="M18.3117 5.68834L18.4286 5.57143M5.57144 18.4286L5.68832 18.3117M12 3.07394V3M12 21V20.9261M3.07394 12H3M21 12H20.9261M5.68831 5.68834L5.5714 5.57143M18.4286 18.4286L18.3117 18.3117" stroke-linecap="round" stroke-linejoin="round"></path>
-                                </svg>
-                            </div>
-                        </li>
                         <li class="maximize">
                             <a class="text-dark" href="#!" onclick="javascript:toggleFullScreen()">
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -175,10 +171,7 @@
                 <div>
                     <div class="logo-wrapper">
                         <a href="@Url.Action("Index","Home")">
-                            <div class="organization-container">
-                                <h2 id="greetingUserName"></h2>
-                                <div id="organizationLogoBox" class="organization-logo"></div>
-                            </div>
+                            <img class="img-fluid for-light" id="Org_Logo" src="" alt="" style="width: 252px;height: 66px;">
                         </a>
                         <div class="back-btn"><i class="fa fa-angle-left"></i></div>
                     </div>
@@ -346,7 +339,7 @@
                             <div class="sidebar-img-section">
                                 <div class="sidebar-img-content">
                                     <img class="img-fluid" src="../assets/images/side-bar.png" alt="">
-                                    <h4>Need Help ?</h4><a class="txt" href="https://pixelstrap.freshdesk.com/support/home">Raise ticket at "support@pixelstrap.com"</a><a class="btn btn-secondary" href="https://themeforest.net/user/pixelstrap/portfolio">Buy Now</a>
+                                    <h4>Feed Back</h4><a class="txt" href="#">Feedback is the breakfast of champions."</a><a class="btn btn-secondary" href="#">Give Feedback</a>
                                 </div>
                             </div>
                         </div>
@@ -367,7 +360,7 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-12 footer-copyright text-center">
-                    <p class="mb-0">Copyright 2024 © Property Hapa  </p>
+                    <p class="mb-0" id="companyname"></p>
                 </div>
             </div>
         </div>
@@ -394,7 +387,6 @@
     <script src="~/Dashboard/assets/js/chart/apex-chart/stock-prices.js"></script>
     <script src="~/Dashboard/assets/js/notify/bootstrap-notify.min.js"></script>
     <script src="~/Dashboard/assets/js/dashboard/default.js"></script>
-    <script src="~/Dashboard/assets/js/notify/index.js"></script>
     <script src="~/Dashboard/assets/js/datepicker/date-picker/datepicker.js"></script>
     <script src="~/Dashboard/assets/js/datepicker/date-picker/datepicker.en.js"></script>
     <script src="~/Dashboard/assets/js/datepicker/date-picker/datepicker.custom.js"></script>
@@ -410,8 +402,7 @@
     <!-- Plugins JS Ends-->
     <!-- Theme js-->
     <script src="~/Dashboard/assets/js/script.js"></script>
-  @*   <script src="~/Dashboard/assets/js/theme-customizer/customizer.js"></script> *@
-   @*   <script src="~/Dashboard/assets/js/theme-customizer/JavaScript.js"></script>  *@
+    <script src="~/Dashboard/assets/js/theme-customizer/customizer.js"></script> 
     <!-- login js-->
     <!-- Plugin used-->
     <!-- Plugins JS start-->
@@ -419,55 +410,24 @@
     <script src="~/Dashboard/assets/js/datatable/datatables/datatable.custom.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.all.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.2/js/toastr.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var organizationName = localStorage.getItem('organizationName');
+            var organizationLogo = localStorage.getItem('organizationLogo');
+            var organizationIcon = localStorage.getItem('organizationIcon');
+            if (organizationName != null)
+            {
+                document.title = "Dashboard" + " " + "-" +" "+ organizationName;
+                document.getElementById('companyname').innerHTML =  "Copyright 2024 ©" + " " + "-" + " " + organizationName;
+                var urls = '@Html.Raw(Configuration.GetSection("ImageURl")["URL"].ToString())';
+                var imageUrl = urls.concat(organizationLogo);
+                var imageiconUrl = urls.concat(organizationIcon);
+                document.querySelector("#Org_Logo").src = imageUrl;
+                jQuery('link[rel="icon"]').attr('href', imageUrl);
+                jQuery('link[rel="shortcut icon"]').attr('href', imageiconUrl);
+
+            }
+        });
+    </script>
 </body>
 </html>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Fetch organization name and logo from localStorage
-        var organizationName = localStorage.getItem('organizationName');
-        var organizationLogo = localStorage.getItem('organizationLogo');
-
-        // Update the greeting text with the organization name if available
-        if (organizationName) {
-            document.getElementById('greetingUserName').textContent = `${organizationName}`;
-        }
-
-        // Set organization logo as background image if available
-        if (organizationLogo) {
-            var cleanedOrganizationLogo = organizationLogo.replace(/^"|"$/g, '');
-            var fullLogoUrl = `https://localhost:7220/wwwroot/uploads/${cleanedOrganizationLogo}`;
-            var logoBox = document.getElementById('organizationLogoBox');
-            logoBox.style.backgroundImage = `url('${fullLogoUrl}')`;
-            logoBox.style.backgroundSize = 'cover';
-            logoBox.style.backgroundPosition = 'center';
-        }
-
-        // Apply primary and secondary colors
-        const primaryColor = localStorage.getItem('primaryColor');
-        const secondaryColor = localStorage.getItem('secondaryColor');
-
-        // Targets for primary color (background)
-        const elementsForPrimaryColor = document.querySelectorAll('.header-wrapper, .sidebar-wrapper, footer.footer, .logo-wrapper, .page-body-wrapper,.page-header');
-
-        elementsForPrimaryColor.forEach(function (element) {
-            if (primaryColor) {
-                element.style.backgroundColor = primaryColor;
-            }
-        });
-
-        // Targets for secondary color (font color)
-        const elementsForSecondaryColor = document.querySelectorAll('.header-wrapper,.sidebar-list .sidebar-wrapper,.page-body-wrapper,  .sidebar-link, .img, .profile-dropdown a, .sidebar-title span, footer.footer p');
-
-        elementsForSecondaryColor.forEach(function (element) {
-            if (secondaryColor) {
-                element.style.color = secondaryColor;
-            }
-        });
-
-
-        // Set SVG stroke colors to match the secondary color
-        document.querySelectorAll('svg').forEach(function (svg) {
-            svg.style.setProperty('--svg-icon-color', secondaryColor);
-        });
-    });
-</script>

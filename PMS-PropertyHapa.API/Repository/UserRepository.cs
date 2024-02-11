@@ -100,14 +100,10 @@ namespace MagicVilla_VillaAPI.Repository
                 OrganizationName = tenantOrganization?.OrganizationName,
                 PrimaryColor = tenantOrganization?.OrganizatioPrimaryColor,
                 SecondaryColor = tenantOrganization?.OrganizationSecondColor,
-                OrganizationLogo = tenantOrganization?.OrganizationLogo
+                OrganizationLogo = tenantOrganization?.OrganizationLogo,
+                OrganizationIcon = tenantOrganization?.OrganizationIcon
             };
         }
-
-
-
-
-
 
         public async Task<UserDTO> Register(RegisterationRequestDTO registerationRequestDTO)
         {

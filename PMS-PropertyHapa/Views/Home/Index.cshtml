@@ -5,30 +5,51 @@
 
 <div class="page-body">
     <div class="container-fluid">
-        <!-- Page Title and Breadcrumbs -->
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-sm-6">
+                    <h3>Dashboard</h3>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"> <a class="home-item" href="@Url.Action("Index","Home")"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item">Home</li>
+                        <li class="breadcrumb-item active">Dashboard</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="container-fluid default-dash">
         <div class="row">
-            <div class="col-12 col-sm-6">
+            <div class="col-12">
                 <div class="card profile-greeting">
                     <div class="card-body">
                         <div class="media">
                             <div class="media-body">
                                 <div class="greeting-user">
-                                    <h1>Hello</h1>
+                                    <h1>Hello, <span id="TittlName"></span></h1>
                                     <p>Welcome back, your dashboard is ready!</p>
                                 </div>
                             </div>
                         </div>
-                        <div class="cartoon-img">
-                            <img class="img-fluid" src="~/Dashboard/assets/images/images.svg" alt="Organization Logo">
-                        </div>
+                        <div class="cartoon-img"><img class="img-fluid" src="~/Dashboard/assets/images/images.svg" alt="" style="height:173px!Important"></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
+<script src="~/Dashboard/assets/js/jquery-3.5.1.min.js"></script>
+<script>
+    $(document).ready(function () 
+    {
+        var organizationName = localStorage.getItem('organizationName');
+        if (localStorage.getItem("organizationName") != null) 
+        {
+            $("#TittlName").text(organizationName);
+        }
+    });
+</script>
   
 

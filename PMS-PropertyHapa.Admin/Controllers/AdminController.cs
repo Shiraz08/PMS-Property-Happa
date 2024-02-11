@@ -1,12 +1,15 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using FluentFTP;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
+using NuGet.ProjectModel;
 using PMS_PropertyHapa.Admin.Data;
 using PMS_PropertyHapa.Models.DTO;
 using PMS_PropertyHapa.Models.Entities;
 using System.Net;
 using System.Net.Http.Headers;
+using static System.Net.WebRequestMethods;
 
 namespace PMS_PropertyHapa.Admin.Controllers
 {
@@ -73,7 +76,36 @@ namespace PMS_PropertyHapa.Admin.Controllers
                     var orgIconFileName = await ProcessFileUpload(model.OrganizationInfo.OrganizationIconFile, uploadsFolder);
                     var orgLogoFileName = await ProcessFileUpload(model.OrganizationInfo.OrganizationLogoFile, uploadsFolder);
 
+                    //Upload File On Server FTP
+                    string ftpServer = "ftp://UploadFiles@65.108.74.182/";
+                    string userName = "UploadFiles";
+                    string password = "Talha.Musa.@786";
+                    string sourceFilePathlogo = uploadsFolder + @"\" + orgLogoFileName;
+                    string sourceFilePathIcon = uploadsFolder + @"\" + orgIconFileName;
+                    //Logo Upload
+                    using (var fileStream = System.IO.File.OpenRead(sourceFilePathlogo))
+                    {
+                        var request = (FtpWebRequest)WebRequest.Create(new Uri(ftpServer + orgLogoFileName));
+                        request.Credentials = new NetworkCredential(userName, password);
+                        request.Method = WebRequestMethods.Ftp.UploadFile;
 
+                        using (var requestStream = request.GetRequestStream())
+                        {
+                            fileStream.CopyTo(requestStream);
+                        }
+                    }
+                    //Icon Upload
+                    using (var fileStreams = System.IO.File.OpenRead(sourceFilePathIcon))
+                    {
+                        var requests = (FtpWebRequest)WebRequest.Create(new Uri(ftpServer + orgIconFileName));
+                        requests.Credentials = new NetworkCredential(userName, password);
+                        requests.Method = WebRequestMethods.Ftp.UploadFile;
+
+                        using (var requestStream = requests.GetRequestStream())
+                        {
+                            fileStreams.CopyTo(requestStream);
+                        }
+                    }
                     await userManager.AddToRoleAsync(appUser, model.User.Group);
 
                     var newUserId = appUser.Id;
@@ -91,6 +123,9 @@ namespace PMS_PropertyHapa.Admin.Controllers
                     _context.TenantOrganizationInfo.Add(tenantOrgInfo);
                     await _context.SaveChangesAsync();
 
+                    //Delete File
+                    System.IO.File.Delete(sourceFilePathlogo);
+                    System.IO.File.Delete(sourceFilePathIcon);
                     return Json(true);
                 }
                 else
