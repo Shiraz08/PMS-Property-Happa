@@ -5,59 +5,77 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>@(Model.TenantId == 0 ? "Add" : "Edit") Tenant</h2>
+<div class="page-body">
+    <h2>@(Model.TenantId == null ? "Add" : "Edit") Tenant</h2>
 
-<form id="tenantForm">
-    <input type="hidden" id="TenantId" name="TenantId" value="@Model.TenantId" />
-    <div class="form-group">
-        <label for="FirstName">First Name</label>
-        <input type="text" class="form-control" id="FirstName" name="FirstName" value="@Model.FirstName" required />
+    <div id="tenantForm">
+        <input type="hidden" id="TenantId" name="TenantId" value="@Model.TenantId" />
+        <div class="col-sm-6 col-md-3">
+            <div class="mb-3">
+                <label for="FirstName">First Name</label>
+                <input type="text" class="form-control" id="FirstName" name="FirstName" value="@Model.FirstName" required />
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-3">
+            <div class="mb-3">
+                <label for="LastName">Last Name</label>
+                <input type="text" class="form-control" id="LastName" name="LastName" value="@Model.LastName" required />
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-3">
+            <div class="mb-3">
+                <label for="EmailAddress">Email</label>
+                <input type="email" class="form-control" id="EmailAddress" name="EmailAddress" value="@Model.EmailAddress" required />
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-3">
+            <div class="mb-3">
+                <label for="PhoneNumber">Phone Number</label>
+                <input type="number" class="form-control" id="PhoneNumber" name="PhoneNumber" value="@Model.PhoneNumber" required />
+            </div>
+        </div>
+        <!-- Add more fields as per your model -->
+        <div>
+            <button type="button" class="btn btn-primary" onclick="submitTenantForm()">@(Model.TenantId == null ? "Add" : "Edit") Tenant</button>
+        </div>
     </div>
-    <div class="form-group">
-        <label for="LastName">Last Name</label>
-        <input type="text" class="form-control" id="LastName" name="LastName" value="@Model.LastName" required />
-    </div>
-       <div class="form-group">
-        <label for="EmailAddress">Email</label>
-        <input type="email" class="form-control" id="EmailAddress" name="EmailAddress" value="@Model.EmailAddress" required />
-    </div>
-       <div class="form-group">
-        <label for="LastName">Phone Number</label>
-        <input type="number" class="form-control" id="PhoneNumber" name="PhoneNumber" value="@Model.PhoneNumber" required />
-    </div>
-    <!-- Add more fields as per your model -->
-    <button type="submit" class="btn btn-primary">@Model.TenantId == 0 ? "Add" : "Update" Tenant</button>
-</form>
+</div>
 
 <script>
-    $(document).ready(function () {
-        $('#tenantForm').submit(function (e) {
-            e.preventDefault();
+    function stringToGuid(str) {
+        return str.substring(0, 8) + '-' + str.substring(8, 12) + '-' + str.substring(12, 16) + '-' + str.substring(16, 20) + '-' + str.substring(20);
+    }
 
-            var tenantData = {
-                TenantId: $('#TenantId').val(),
-                FirstName: $('#FirstName').val(),
-                LastName: $('#LastName').val(),
-                EmailAddress: $('#EmailAddress').val(),
-                PhoneNumber: $('#PhoneNumber').val()
-                // Populate other fields similarly
-            };
+    function submitTenantForm() {
+        var userId = localStorage.getItem('userId');
 
-            var ajaxUrl = '@Model.TenantId == 0 ? "/Tenants/Create" : "/Tenants/Update"';
-            $.ajax({
-                url: ajaxUrl,
-                type: 'POST', 
-                contentType: 'application/json',
-                data: JSON.stringify(tenantData),
-                success: function (data) {
-                    if (data.success) {
-                        window.location.href = '/Tenants'; 
-                        toastr.success(data.message);
-                    } else {
-                        toastr.error(data.message);
-                    }
+        var appTenantId = stringToGuid(userId);
+        var tenantData = {
+            TenantId: $('#TenantId').val(),
+            FirstName: $('#FirstName').val(),
+            LastName: $('#LastName').val(),
+            EmailAddress: $('#EmailAddress').val(),
+            PhoneNumber: $('#PhoneNumber').val(),
+            AppTId: userId
+            // Populate other fields similarly
+        };
+
+        var ajaxUrl = '@(Model.TenantId == null ? "/Tenant/Create" : "/Tenant/Update")';
+        var method = '@(Model.TenantId == null ? "POST" : "POST")';
+        $.ajax({
+            url: ajaxUrl,
+            type: method,
+            contentType: 'application/json',
+            data: JSON.stringify(tenantData),
+            success: function (data) {
+                if (data.success) {
+                    window.location.href = '/Tenant/Index';
+                    toastr.success(data.message);
+                } else {
+                    toastr.error(data.message);
                 }
-            });
+            }
         });
-    });
+    }
 </script>
+

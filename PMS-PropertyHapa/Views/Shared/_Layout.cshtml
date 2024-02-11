@@ -9,7 +9,7 @@
     string displayName = "";
     string imagePath = "";
     var user = await UserManager.GetUserAsync(User);
-    var tenantOrgInfo = _context.TenantOrganizationInfo.Where(x => x.TenantUserId == new Guid(user.Id)).FirstOrDefault();
+  //  var tenantOrgInfo = _context.TenantOrganizationInfo.Where(x => x.TenantUserId == new Guid(user.Id)).FirstOrDefault();
     if (user == null)
     {
         displayName = User.Identity.Name;
@@ -205,6 +205,7 @@
                                     </a>
                                     <ul class="sidebar-submenu">
                                         <li><a href="@Url.Action("Index","User")">View App Tenant</a></li>
+                                        <li><a href="@Url.Action("Index","Tenant")">View Tenants</a></li>
                                     </ul>
                                 </li>
 

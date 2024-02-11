@@ -430,78 +430,128 @@ namespace PMS_PropertyHapa.API.Controllers.V1
 
         #region TenantCrud 
 
-        //[HttpGet]
-        //public async Task<ActionResult<IEnumerable<TenantModelDto>>> GetAllTenants()
-        //{
-        //    try
-        //    {
-        //        var tenants = await _userRepo.GetAllTenantsAsync();
-        //        return Ok(tenants);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, $"An error occurred: {ex.Message}");
-        //    }
-        //}
+        [HttpGet("Tenant")]
+        public async Task<ActionResult<IEnumerable<TenantModelDto>>> GetAllTenants()
+        {
+            try
+            {
+                var tenants = await _userRepo.GetAllTenantsAsync();
+                return Ok(tenants);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
 
 
 
-        //[HttpGet("{tenantId}")]
-        //public async Task<ActionResult<TenantModelDto>> GetTenantById(int tenantId)
-        //{
-        //    try
-        //    {
-        //        var tenant = await _userRepo.GetTenantByIdAsync(tenantId);
-        //        return Ok(tenant);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, $"An error occurred: {ex.Message}");
-        //    }
-        //}
+        [HttpGet("Tenant/{tenantId}")]
+        public async Task<IActionResult> GetTenantById(string tenantId)
+        {
+            try
+            {
+                var tenantDto = await _userRepo.GetTenantsByIdAsync(tenantId);
 
-        //[HttpPost]
-        //public async Task<ActionResult<bool>> CreateTenant(TenantModelDto tenant)
-        //{
-        //    try
-        //    {
-        //        var isSuccess = await _userRepo.CreateTenantAsync(tenant);
-        //        return Ok(isSuccess);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, $"An error occurred: {ex.Message}");
-        //    }
-        //}
+                if (tenantDto != null)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = tenantDto;
+                    return Ok(_response);
+                }
+                else
+                {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("No user found with this id.");
+                    return NotFound(_response);
+                }
+            }
+            catch (Exception ex)
+            {
+                _response.StatusCode = HttpStatusCode.NotFound;
+                _response.IsSuccess = false;
+                _response.ErrorMessages.Add("Error Occured");
+                return NotFound(_response);
+            }
+        }
 
-        //[HttpPut("{tenantId}")]
-        //public async Task<ActionResult<bool>> UpdateTenant(int tenantId, TenantModelDto tenant)
-        //{
-        //    try
-        //    {
-        //        tenant.TenantId = tenantId; // Ensure tenantId is set
-        //        var isSuccess = await _userRepo.UpdateTenantAsync(tenant);
-        //        return Ok(isSuccess);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, $"An error occurred: {ex.Message}");
-        //    }
-        //}
 
-        //[HttpDelete("{tenantId}")]
-        //public async Task<ActionResult<bool>> DeleteTenant(int tenantId)
-        //{
-        //    try
-        //    {
-        //        var isSuccess = await _userRepo.DeleteTenantAsync(tenantId);
-        //        return Ok(isSuccess);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, $"An error occurred: {ex.Message}");
-        //    }
-        //}
+        [HttpGet("GetSingleTenant/{tenantId}")]
+        public async Task<IActionResult> GetSingleTenant(int tenantId)
+        {
+            try
+            {
+                var tenantDto = await _userRepo.GetSingleTenantByIdAsync(tenantId);
+
+                if (tenantDto != null)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = tenantDto;
+                    return Ok(_response);
+                }
+                else
+                {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("No user found with this id.");
+                    return NotFound(_response);
+                }
+            }
+            catch (Exception ex)
+            {
+                _response.StatusCode = HttpStatusCode.NotFound;
+                _response.IsSuccess = false;
+                _response.ErrorMessages.Add("Error Occured");
+                return NotFound(_response);
+            }
+        }
+
+
+        [HttpPost("Tenant")]
+        public async Task<ActionResult<bool>> CreateTenant(TenantModelDto tenant)
+        {
+            try
+            {
+                var isSuccess = await _userRepo.CreateTenantAsync(tenant);
+                return Ok(isSuccess);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
+        [HttpPut("Tenant/{tenantId}")]
+        public async Task<ActionResult<bool>> UpdateTenant(int tenantId, TenantModelDto tenant)
+        {
+            try
+            {
+                tenant.TenantId = tenantId; // Ensure tenantId is set
+                var isSuccess = await _userRepo.UpdateTenantAsync(tenant);
+                return Ok(isSuccess);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
+        [HttpDelete("Tenant/{tenantId}")]
+        public async Task<ActionResult<bool>> DeleteTenant(string tenantId)
+        {
+            try
+            {
+                var isSuccess = await _userRepo.DeleteTenantAsync(tenantId);
+                return Ok(isSuccess);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
         #endregion
     }
 }

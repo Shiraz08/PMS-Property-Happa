@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using PMS_PropertyHapa.Models.DTO;
 using PMS_PropertyHapa.Services.IServices;
+using System.Security.Claims;
 
 namespace PMS_PropertyHapa.Controllers
 {
@@ -17,19 +19,35 @@ namespace PMS_PropertyHapa.Controllers
 
 
 
-        public async Task<IActionResult> GetTenant(int? tenantId)
+        public async Task<IActionResult> GetTenant(string tenantId)
         {
-            if (tenantId.HasValue)
+            if (!string.IsNullOrEmpty(tenantId))
             {
-                var tenant = await _authService.GetTenantByIdAsync(tenantId.Value);
-                return View(tenant);
+                var tenants = await _authService.GetTenantsByIdAsync(tenantId);
+
+                if (tenants != null && tenants.Count > 0)
+                {
+                
+                    return Json(new { data = tenants });
+                }
+                else
+                {
+                  
+                    return Json(new { data = new List<TenantModelDto>() });
+                }
             }
-            return View(new TenantModelDto()); // Return an empty tenant for adding
+            else
+            {
+               
+                return BadRequest("Tenant ID is required.");
+            }
         }
+
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] TenantModelDto tenant)
         {
+            tenant.AppTenantId = Guid.Parse(tenant.AppTid);
             await _authService.CreateTenantAsync(tenant);
             return Json(new { success = true, message = "Tenant added successfully" });
         }
@@ -37,12 +55,14 @@ namespace PMS_PropertyHapa.Controllers
         [HttpPost]
         public async Task<IActionResult> Update([FromBody] TenantModelDto tenant)
         {
+            tenant.AppTenantId = Guid.Parse(tenant.AppTid);
             await _authService.UpdateTenantAsync(tenant);
             return Json(new { success = true, message = "Tenant updated successfully" });
         }
 
+
         [HttpDelete]
-        public async Task<IActionResult> Delete(int tenantId)
+        public async Task<IActionResult> Delete(string tenantId)
         {
             await _authService.DeleteTenantAsync(tenantId);
             return Json(new { success = true, message = "Tenant deleted successfully" });
@@ -53,7 +73,30 @@ namespace PMS_PropertyHapa.Controllers
         }
         public IActionResult AddTenant()
         {
-            return View();
+            var model = new TenantModelDto(); 
+                                           
+            return View(model);
         }
+
+        public async Task<IActionResult> EditTenant(int tenantId)
+        {
+            TenantModelDto tenant = null;
+
+           
+            if (tenantId > 0)
+            {
+                tenant = await _authService.GetSingleTenantAsync(tenantId);
+
+                if (tenant == null)
+                {
+                    return NotFound(); 
+                }
+            }
+
+            return View("AddTenant", tenant);
+        }
+
+
+
     }
 }

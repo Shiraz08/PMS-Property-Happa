@@ -208,14 +208,70 @@ namespace PMS_PropertyHapa.Services
 
 
         #region Tenant Crud
-        public async Task<TenantModelDto> GetTenantByIdAsync(int tenantId)
+
+
+        public async Task<IEnumerable<TenantModelDto>> GetAllTenantsAsync()
         {
             try
             {
                 var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
                 {
                     ApiType = SD.ApiType.GET,
-                    Url = $"{villaUrl}/api/v1/UsersAuth/Tenants/{tenantId}"
+                    Url = $"{villaUrl}/api/v1/UsersAuth/Tenant" 
+                });
+
+                if (response != null && response.IsSuccess)
+                {
+                   
+                    return JsonConvert.DeserializeObject<IEnumerable<TenantModelDto>>(Convert.ToString(response.Result));
+                }
+                else
+                {
+                    throw new Exception("Failed to retrieve tenants data");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when fetching tenants data: {ex.Message}", ex);
+            }
+        }
+
+
+
+        public async Task<List<TenantModelDto>> GetTenantsByIdAsync(string tenantId)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.GET,
+                    Url = $"{villaUrl}/api/v1/UsersAuth/Tenant/{tenantId}"
+                });
+
+                if (response != null && response.IsSuccess)
+                {
+                    return JsonConvert.DeserializeObject<List<TenantModelDto>>(Convert.ToString(response.Result));
+                }
+                else
+                {
+                    throw new Exception("Failed to retrieve tenant data");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when fetching tenant data: {ex.Message}", ex);
+            }
+        }
+
+
+        public async Task<TenantModelDto> GetSingleTenantAsync(int tenantId)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.GET,
+                    Url = $"{villaUrl}/api/v1/UsersAuth/GetSingleTenant/{tenantId}"
                 });
 
                 if (response != null && response.IsSuccess)
@@ -233,6 +289,7 @@ namespace PMS_PropertyHapa.Services
             }
         }
 
+
         public async Task<bool> CreateTenantAsync(TenantModelDto tenant)
         {
             try
@@ -241,7 +298,7 @@ namespace PMS_PropertyHapa.Services
                 {
                     ApiType = SD.ApiType.POST,
                     Data = tenant,
-                    Url = $"{villaUrl}/api/v1/UsersAuth/Tenants"
+                    Url = $"{villaUrl}/api/v1/UsersAuth/Tenant"
                 });
 
                 return response.IsSuccess;
@@ -260,7 +317,7 @@ namespace PMS_PropertyHapa.Services
                 {
                     ApiType = SD.ApiType.PUT,
                     Data = tenant,
-                    Url = $"{villaUrl}/api/v1/UsersAuth/Tenants/{tenant.TenantId}"
+                    Url = $"{villaUrl}/api/v1/UsersAuth/Tenant/{tenant.TenantId}"
                 });
 
                 return response.IsSuccess;
@@ -271,14 +328,14 @@ namespace PMS_PropertyHapa.Services
             }
         }
 
-        public async Task<bool> DeleteTenantAsync(int tenantId)
+        public async Task<bool> DeleteTenantAsync(string tenantId)
         {
             try
             {
                 var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
                 {
                     ApiType = SD.ApiType.DELETE,
-                    Url = $"{villaUrl}/api/v1/UsersAuth/Tenants/{tenantId}"
+                    Url = $"{villaUrl}/api/v1/UsersAuth/Tenant/{tenantId}"
                 });
 
                 return response.IsSuccess;

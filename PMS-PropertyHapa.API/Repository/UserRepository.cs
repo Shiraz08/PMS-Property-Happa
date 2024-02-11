@@ -9,6 +9,8 @@ using NuGet.Protocol.Plugins;
 using PMS_PropertyHapa.API.Areas.Identity.Data;
 using PMS_PropertyHapa.Models;
 using PMS_PropertyHapa.Models.DTO;
+using PMS_PropertyHapa.Models.Entities;
+using PMS_PropertyHapa.Shared.Dapper;
 using PMS_PropertyHapa.Shared.Email;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -520,6 +522,8 @@ namespace MagicVilla_VillaAPI.Repository
                 return IdentityResult.Failed(new IdentityError { Description = "User not found" });
             }
 
+           
+
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
             var result = await _userManager.ResetPasswordAsync(user, token, model.Password);
 
@@ -576,7 +580,187 @@ namespace MagicVilla_VillaAPI.Repository
             }
             return encryptedEmail;
         }
+        #endregion
+
+
+
+
+
+
+
+
+
+
+
+        #region Tenant
+        public async Task<IEnumerable<TenantModelDto>> GetAllTenantsAsync()
+        {
+            var tenants = await _db.Tenant
+                                   .AsNoTracking()
+                                   .ToListAsync();
+        
+            var tenantDtos = _mapper.Map<IEnumerable<TenantModelDto>>(tenants);
+            return tenantDtos;
+        }
+
+
+        public async Task<List<TenantModelDto>> GetTenantsByIdAsync(string tenantId)
+        {
+            var tenants = await _db.Tenant
+                                   .AsNoTracking()
+                                   .Where(t => t.AppTenantId == Guid.Parse(tenantId))
+                                   .ToListAsync();
+
+            if (tenants == null || !tenants.Any()) return new List<TenantModelDto>();
+
+            // Manual mapping from Tenant to TenantModelDto
+            var tenantDtos = tenants.Select(tenant => new TenantModelDto
+            {
+                TenantId = tenant.TenantId,
+                FirstName = tenant.FirstName,
+                LastName = tenant.LastName,
+                EmailAddress = tenant.EmailAddress,
+                PhoneNumber = tenant.PhoneNumber,
+                EmergencyContactInfo = tenant.EmergencyContactInfo,
+                LeaseAgreementId = tenant.LeaseAgreementId,
+                TenantNationality = tenant.TenantNationality,
+                Gender = tenant.Gender,
+                DOB = tenant.DOB,
+                VAT = tenant.VAT,
+                LegalName = tenant.LegalName,
+                Account_Name = tenant.Account_Name,
+                Account_Holder = tenant.Account_Holder,
+                Account_IBAN = tenant.Account_IBAN,
+                Account_Swift = tenant.Account_Swift,
+                Account_Bank = tenant.Account_Bank,
+                Account_Currency = tenant.Account_Currency
+            }).ToList();
+
+            return tenantDtos;
+        }
+
+
+
+        public async Task<TenantModelDto> GetSingleTenantByIdAsync(int tenantId)
+        {
+            var tenant = await _db.Tenant.FirstOrDefaultAsync(t => t.TenantId == tenantId);
+
+            if (tenant == null)
+                return new TenantModelDto(); // Return an empty DTO or handle null case accordingly
+
+            // Map the single tenant to TenantModelDto
+            var tenantDto = new TenantModelDto
+            {
+                TenantId = tenant.TenantId,
+                FirstName = tenant.FirstName,
+                LastName = tenant.LastName,
+                EmailAddress = tenant.EmailAddress,
+                PhoneNumber = tenant.PhoneNumber,
+                EmergencyContactInfo = tenant.EmergencyContactInfo,
+                LeaseAgreementId = tenant.LeaseAgreementId,
+                TenantNationality = tenant.TenantNationality,
+                Gender = tenant.Gender,
+                DOB = tenant.DOB,
+                VAT = tenant.VAT,
+                LegalName = tenant.LegalName,
+                Account_Name = tenant.Account_Name,
+                Account_Holder = tenant.Account_Holder,
+                Account_IBAN = tenant.Account_IBAN,
+                Account_Swift = tenant.Account_Swift,
+                Account_Bank = tenant.Account_Bank,
+                Account_Currency = tenant.Account_Currency
+            };
+
+            return tenantDto;
+        }
+
+
+
+
+        public async Task<bool> CreateTenantAsync(TenantModelDto tenantDto)
+        {
+            var newTenant = new Tenant
+            {
+                FirstName = tenantDto.FirstName,
+                LastName = tenantDto.LastName,
+                EmailAddress = tenantDto.EmailAddress,
+                PhoneNumber = tenantDto.PhoneNumber,
+                EmergencyContactInfo = tenantDto.EmergencyContactInfo,
+                LeaseAgreementId = tenantDto.LeaseAgreementId,
+                TenantNationality = tenantDto.TenantNationality,
+                Gender = tenantDto.Gender,
+                DOB = tenantDto.DOB,
+                VAT = tenantDto.VAT,
+                Status = true,
+                LegalName = tenantDto.LegalName,
+                Account_Name = tenantDto.Account_Name,
+                Account_Holder = tenantDto.Account_Holder,
+                Account_IBAN = tenantDto.Account_IBAN,
+                Account_Swift = tenantDto.Account_Swift,
+                Account_Bank = tenantDto.Account_Bank,
+                Account_Currency = tenantDto.Account_Currency,
+                AppTenantId = tenantDto.AppTenantId
+            };
+
+            await _db.Tenant.AddAsync(newTenant);
+
+            var result = await _db.SaveChangesAsync();
+
+            return result > 0;
+        }
+
+
+        public async Task<bool> UpdateTenantAsync(TenantModelDto tenantDto)
+        {
+            var tenant = await _db.Tenant.FirstOrDefaultAsync(t => t.TenantId == tenantDto.TenantId);
+            if (tenant == null) return false;
+
+            var newTenant = new Tenant
+            {
+                FirstName = tenantDto.FirstName,
+                LastName = tenantDto.LastName,
+                EmailAddress = tenantDto.EmailAddress,
+                PhoneNumber = tenantDto.PhoneNumber,
+                EmergencyContactInfo = tenantDto.EmergencyContactInfo,
+                LeaseAgreementId = tenantDto.LeaseAgreementId,
+                TenantNationality = tenantDto.TenantNationality,
+                Gender = tenantDto.Gender,
+                DOB = tenantDto.DOB,
+                VAT = tenantDto.VAT,
+                Status = true,
+                LegalName = tenantDto.LegalName,
+                Account_Name = tenantDto.Account_Name,
+                Account_Holder = tenantDto.Account_Holder,
+                Account_IBAN = tenantDto.Account_IBAN,
+                Account_Swift = tenantDto.Account_Swift,
+                Account_Bank = tenantDto.Account_Bank,
+                Account_Currency = tenantDto.Account_Currency,
+                AppTenantId = tenantDto.AppTenantId
+            };
+
+            _db.Tenant.Update(newTenant);
+            var result = await _db.SaveChangesAsync();
+            return result > 0;
+        }
+
+        public async Task<bool> DeleteTenantAsync(string tenantId)
+        {
+            var tenant = await _db.Tenant.FirstOrDefaultAsync(t => t.TenantId == Convert.ToInt32(tenantId));
+            if (tenant == null) return false;
+
+            _db.Tenant.Remove(tenant);
+            var result = await _db.SaveChangesAsync();
+            return result > 0;
+        }
+
+
+
+        #endregion
     }
-    #endregion
+
+
+
+
+
 
 }

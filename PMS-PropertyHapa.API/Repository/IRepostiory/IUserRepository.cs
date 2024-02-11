@@ -42,5 +42,17 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
         Task<ProfileModel> GetProfileModelAsync(string userId);
 
         Task<IEnumerable<UserDTO>> GetAllUsersAsync();
+
+
+
+        #region Tenant
+        Task<IEnumerable<TenantModelDto>> GetAllTenantsAsync();
+        Task<List<TenantModelDto>> GetTenantsByIdAsync(string tenantId);
+        Task<bool> CreateTenantAsync(TenantModelDto tenantDto);
+        Task<bool> UpdateTenantAsync(TenantModelDto tenantDto);
+        Task<bool> DeleteTenantAsync(string tenantId);
+
+        Task<TenantModelDto> GetSingleTenantByIdAsync(int tenantId);
+        #endregion
     }
 }

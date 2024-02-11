@@ -6,7 +6,7 @@
 }
 
 <h1>Tenants</h1>
-<a href="/Tenants/AddTenant" class="btn btn-primary mb-3">Add New Tenant</a>
+<a href="/Tenant/AddTenant" class="btn btn-primary mb-3">Add New Tenant</a>
 
 <table id="tenantsTable" class="table table-bordered table-striped">
     <thead>
@@ -22,120 +22,102 @@
     </tbody>
 </table>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    $(document).ready(function () {
+        $(document).ready(function () {
+            debugger
+            var tenantId = localStorage.getItem('userId');
+            var ajaxUrl = `/Tenant/GetTenant/?tenantId=${encodeURIComponent(tenantId)}`;
         $('#tenantsTable').DataTable({
-            "ajax": {
-                "url": "/Tenant/GetTenant",
-                "type": "GET",
-                "datatype": "json"
-            },
-            "columns": [
-                { "data": "firstName", "autoWidth": true },
-                { "data": "lastName", "autoWidth": true },
-                { "data": "emailAddress", "autoWidth": true },
-                { "data": "phoneNumber", "autoWidth": true },
+                "ajax": {
+                    "url": ajaxUrl,
+                    "type": "GET",
+                    "datatype": "json"
+                },
+                "columns": [
+                    { "data": "FirstName", "autoWidth": true },
+                    { "data": "LastName", "autoWidth": true },
+                    { "data": "EmailAddress", "autoWidth": true },
+                    { "data": "PhoneNumber", "autoWidth": true },
                 {
                     "data": "tenantId",
-                    "render": function (data) {
-                        return `<button onclick="updateTenant(${data})" class="btn btn-success">Edit</button>
-                                    <button onclick="deleteTenant(${data})" class="btn btn-danger">Delete</button>`;
+                    "render": function (data, type, row) {
+                        return `<button onclick="editTenant(${row.TenantId})" class="btn btn-success edit-tenant">Edit</button>
+                <button data-tenant-id="${row.TenantId}" class="btn btn-danger delete-tenant">Delete</button>`;
                     },
+
                     "orderable": false
                 }
-            ],
-            "language": {
-                "emptyTable": "No data found, Please click on <b>Add New</b> Button"
-            }
+
+                ],
+                "language": {
+                    "emptyTable": "No data found, Please click on <b>Add New</b> Button"
+                }
+            });
         });
-    });
+
 
     function updateTenant(tenantId) {
-        window.location.href = `/Tenants/AddTenant?tenantId=${tenantId}`;
+        window.location.href = `/Tenant/AddTenant?tenantId=${tenantId}`;
     }
+
+    $('#tenantsTable').on('click', '.delete-tenant', function () {
+        var tenantId = $(this).data('tenant-id');
+        deleteTenant(tenantId);
+    });
 </script>
 <script>
-
-function addTenant() {
-    var tenantData = {
-        FirstName: $('#FirstName').val(),
-        LastName: $('#LastName').val(),
-        LastName: $('#EmailAddress').val(),
-        LastName: $('#PhoneNumber').val(),
-        // Populate other fields similarly
-    };
-
-    $.ajax({
-        url: '/Tenant/Create',
-        type: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify(tenantData),
-        success: function (data) {
-            if (data.success) {
-                $('#tenantsTable').DataTable().ajax.reload();
-                toastr.success(data.message);
-            } else {
-                toastr.error(data.message);
-            }
-        }
-    });
-}
-
-
-    function updateTenant(tenantId) {
-        var tenantData = {
-            TenantId: tenantId,
-            FirstName: $('#FirstName').val(),
-            LastName: $('#LastName').val(),
-            EmailAddress: $('#EmailAddress').val(),
-            PhoneNumber: $('#PhoneNumber').val(),
-        };
-
-        $.ajax({
-            url: '/Tenant/Update',
-            type: 'PUT',
-            contentType: 'application/json',
-            data: JSON.stringify(tenantData),
-            success: function (data) {
-                if (data.success) {
-                    $('#tenantsTable').DataTable().ajax.reload();
-                    toastr.success(data.message);
-                } else {
-                    toastr.error(data.message);
-                }
-            }
-        });
-    }
-
 
 
 
     function deleteTenant(tenantId) {
-        swal({
-            title: "Are you sure?",
-            text: "Once deleted, you will not be able to recover this tenant!",
-            icon: "warning",
-            buttons: true,
-            dangerMode: true,
-        })
-            .then((willDelete) => {
-                if (willDelete) {
-                    $.ajax({
-                        url: `/Tenant/Delete/${tenantId}`,
-                        type: 'DELETE',
-                        success: function (data) {
-                            if (data.success) {
-                                $('#tenantsTable').DataTable().ajax.reload();
-                                toastr.success(data.message);
-                            } else {
-                                toastr.error(data.message);
-                            }
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Once deleted, you will not be able to recover this tenant!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: `/Tenant/Delete/?tenantId=${encodeURIComponent(tenantId)}`,
+                    type: 'DELETE',
+                    success: function (data) {
+                        if (data.success) {
+                            $('#tenantsTable').DataTable().ajax.reload();
+                            Swal.fire(
+                                'Deleted!',
+                                'Your file has been deleted.',
+                                'success'
+                            );
+                        } else {
+                            Swal.fire(
+                                'Error!',
+                                'There was an issue deleting your tenant.',
+                                'error'
+                            );
                         }
-                    });
-                }
-            });
+                    },
+                    error: function () {
+                        Swal.fire(
+                            'Error!',
+                            'There was an issue deleting your tenant.',
+                            'error'
+                        );
+                    }
+                });
+            }
+        });
     }
 
 
 
+
+</script>
+<script>
+    function editTenant(tenantId) {
+        window.location.href = `/Tenant/EditTenant?tenantId=${tenantId}`;
+    }
 </script>

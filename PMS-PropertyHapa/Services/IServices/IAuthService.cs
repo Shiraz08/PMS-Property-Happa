@@ -24,11 +24,13 @@ namespace PMS_PropertyHapa.Services.IServices
         Task<IEnumerable<UserDTO>> GetAllUsersAsync();
 
 
-
-        Task<TenantModelDto> GetTenantByIdAsync(int tenantId);
+        Task<IEnumerable<TenantModelDto>> GetAllTenantsAsync();
+        Task<List<TenantModelDto>> GetTenantsByIdAsync(string tenantId);
         Task<bool> CreateTenantAsync(TenantModelDto tenant);
         Task<bool> UpdateTenantAsync(TenantModelDto tenant);
-        Task<bool> DeleteTenantAsync(int tenantId);
+        Task<bool> DeleteTenantAsync(string tenantId);
+
+        Task<TenantModelDto> GetSingleTenantAsync(int tenantId);
 
 
     }
