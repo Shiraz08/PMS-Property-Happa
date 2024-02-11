@@ -4,13 +4,16 @@
     ViewData["Title"] = "Add/Edit Tenant";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
+<style>
+    body {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+</style>
 <div class="mt-5 upperdiv">
-
-</div>
-<div class="page-body mt-5">
     <h2>@(Model.TenantId == null ? "Add" : "Edit") Tenant</h2>
-
+</div>
+<div class="page-body">
     <form id="tenantForm">
         <input type="hidden" id="TenantId" name="TenantId" value="@Model.TenantId" />
 
@@ -45,7 +48,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="DOB">Date of Birth</label>
-                    <input type="date" class="form-control" id="DOB" name="DOB" value="@Model.DOB" required />
+                    <input type="date" class="form-control" id="DOB" name="DOB" value="@Model.DOB" />
                 </div>
                 <div class="mb-3">
                     <label for="EmergencyContactInfo">Emergency Contact Info</label>
@@ -57,7 +60,7 @@
                 </div>
             </div>
 
-        
+
             <!-- Billing Information Section -->
             <div class="col-md-4">
                 <h3>Billing Information</h3>
@@ -140,7 +143,6 @@
             </div>
         </div>
 
-      
 
     </form>
 </div>
@@ -170,7 +172,6 @@
             '#EmailAddress',
             '#PhoneNumber',
             '#Gender',
-            '#DOB',
             '#EmergencyContactInfo',
             '#TenantNationality',
             '#Account_Name',
@@ -181,15 +182,15 @@
             '#Account_Currency',
             '#VAT',
             '#LegalName'
-           
+
         ];
 
         requiredFields.forEach(function (fieldId) {
             var fieldValue = $(fieldId).val().trim();
             if (!fieldValue) {
                 isValid = false;
-             
-                $(fieldId).addClass('is-invalid'); 
+
+                $(fieldId).addClass('is-invalid');
             } else {
                 $(fieldId).removeClass('is-invalid');
             }
@@ -254,6 +255,13 @@
         var gender = '@Model.Gender';
         if (gender) {
             document.querySelector("#Gender").value = gender;
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var country = '@Model.Country';
+        if (country) {
+            document.querySelector("#Country").value = country;
         }
     });
 </script>
