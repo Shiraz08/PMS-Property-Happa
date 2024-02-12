@@ -43,6 +43,12 @@
                             if (response.result.secondaryColor) {
                                 localStorage.setItem('secondaryColor', response.result.secondaryColor);
                             }
+                            if (response.result.organizationDescription) {
+                                localStorage.setItem('organizationDescription', response.result.organizationDescription);
+                            }
+                            if (response.result.tid) {
+                                localStorage.setItem('tid', response.result.tid);
+                            }
                             var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
                             Toast.fire({ icon: 'success', title: response.message });
                             window.location.href = "/Home/Index";

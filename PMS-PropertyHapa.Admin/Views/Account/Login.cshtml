@@ -40,7 +40,7 @@
     <p>Don't have an account?<a class="ms-2" href="/Account/Registration">Create Account</a></p>
 </form>
 
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
 <script>
     $(function () {
@@ -57,19 +57,33 @@
             }
         });
 
-        // Function to clear email field on login failure
-        function clearEmailField() {
-            $('#Email').val('');
-        }
+        $('#loginForm').submit(function (e) {
+            e.preventDefault();
+            var formData = {
+                Email: $('#Email').val(),
+                Password: $('#Password').val(),
+                Remember: $('#remember').prop('checked')
+            };
 
-     
-        $('.login-form').on('submit', function (e) {
-            var loginSuccess = true;
-
-            if (!loginSuccess) {
-                e.preventDefault(); 
-                clearEmailField();
-            }
+            $.ajax({
+                url: '/Account/Login',
+                type: 'POST',
+                data: formData,
+                success: function (response) {
+                    console.log(response);
+                   
+                    window.location.href = '/Dashboard';
+                },
+                error: function (xhr, status, error) {
+                    $('#Password').val('');
+                    var jsonResponse = xhr.responseJSON;
+                    if (jsonResponse.errors['login.Password']) {
+                    
+                        $('#Password').val('');
+                    }
+                }
+            });
         });
     });
 </script>
+

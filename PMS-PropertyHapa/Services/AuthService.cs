@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using PMS_PropertyHapa.Models;
 using PMS_PropertyHapa.Models.DTO;
+using PMS_PropertyHapa.Models.Entities;
 using PMS_PropertyHapa.Services.IServices;
 using PMS_PropertyHapa.Shared.Enum;
 using System.Net.Http;
@@ -59,19 +60,19 @@ namespace PMS_PropertyHapa.Services
                 multipartContent.Add(new StringContent(model.PostalCode ?? string.Empty), nameof(model.PostalCode));
                 multipartContent.Add(new StringContent(model.Country ?? string.Empty), nameof(model.Country));
                 multipartContent.Add(new StringContent(model.Status.ToString()), nameof(model.Status));
-           
+
                 if (!string.IsNullOrEmpty(model.ExistingPictureUrl))
                 {
                     multipartContent.Add(new StringContent(model.ExistingPictureUrl), nameof(model.ExistingPictureUrl));
                 }
 
- 
+
                 if (model.NewPicture != null)
                 {
                     multipartContent.Add(new StreamContent(model.NewPicture.OpenReadStream()), nameof(model.NewPicture), model.NewPicture.FileName);
                 }
 
-         
+
                 var apiResponse = await _baseService.SendAsync<APIResponse>(new APIRequest()
                 {
                     ApiType = SD.ApiType.POST,
@@ -79,7 +80,7 @@ namespace PMS_PropertyHapa.Services
                     Url = $"{villaUrl}/api/v1/UsersAuth/Update"
                 });
 
-           
+
                 return apiResponse.IsSuccess;
             }
         }
@@ -217,12 +218,12 @@ namespace PMS_PropertyHapa.Services
                 var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
                 {
                     ApiType = SD.ApiType.GET,
-                    Url = $"{villaUrl}/api/v1/Tenantauth/Tenant" 
+                    Url = $"{villaUrl}/api/v1/Tenantauth/Tenant"
                 });
 
                 if (response != null && response.IsSuccess)
                 {
-                   
+
                     return JsonConvert.DeserializeObject<IEnumerable<TenantModelDto>>(Convert.ToString(response.Result));
                 }
                 else
@@ -343,6 +344,61 @@ namespace PMS_PropertyHapa.Services
             catch (Exception ex)
             {
                 throw new Exception($"An error occurred when deleting tenant: {ex.Message}", ex);
+            }
+        }
+
+        #endregion
+
+
+
+        #region TenantOrganization 
+        public async Task<TenantOrganizationInfoDto> GetTenantOrganizationByIdAsync(int tenantId)
+        {
+            try
+            {
+                var apiRequest = new APIRequest()
+                {
+                    ApiType = SD.ApiType.GET,
+                    Url = $"{villaUrl}/api/v1/Tenantauth/TenantOrg/{tenantId}"
+                };
+
+                var response = await _baseService.SendAsync<APIResponse>(apiRequest);
+
+                if (response != null && response.IsSuccess)
+                {
+                    var tenantDto = JsonConvert.DeserializeObject<TenantOrganizationInfoDto>(response.Result.ToString());
+                    return tenantDto;
+                }
+                else
+                {
+                    var errorMessage = response?.ErrorMessages?.FirstOrDefault() ?? "Failed to retrieve tenant data";
+                    throw new Exception(errorMessage);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when fetching tenant data: {ex.Message}", ex);
+            }
+        }
+
+
+
+        public async Task<bool> UpdateTenantOrganizationAsync(TenantOrganizationInfoDto tenant)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.PUT,
+                    Data = tenant,
+                    Url = $"{villaUrl}/api/v1/Tenantauth/TenantOrg/{tenant.Id}"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when updating tenant: {ex.Message}", ex);
             }
         }
 
