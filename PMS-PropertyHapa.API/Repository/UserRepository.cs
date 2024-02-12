@@ -810,7 +810,7 @@ namespace MagicVilla_VillaAPI.Repository
 
         public async Task<bool> UpdateTenantOrgAsync(TenantOrganizationInfoDto tenantDto)
         {
-            if (tenantDto.Id > 0) return false;
+            if (tenantDto.Id < 0) return false;
 
             var newTenant = new TenantOrganizationInfo
             {
