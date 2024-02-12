@@ -98,10 +98,12 @@ namespace MagicVilla_VillaAPI.Repository
                 UserName = user.UserName,
                 UserId = user.Id,
                 OrganizationName = tenantOrganization?.OrganizationName,
+                OrganizationDescription = tenantOrganization?.OrganizationDescription,
                 PrimaryColor = tenantOrganization?.OrganizatioPrimaryColor,
                 SecondaryColor = tenantOrganization?.OrganizationSecondColor,
                 OrganizationLogo = tenantOrganization?.OrganizationLogo,
-                OrganizationIcon = tenantOrganization?.OrganizationIcon
+                OrganizationIcon = tenantOrganization?.OrganizationIcon,
+                Tid = tenantOrganization?.Id
             };
         }
 
@@ -779,6 +781,54 @@ namespace MagicVilla_VillaAPI.Repository
 
 
 
+        #endregion
+
+
+
+        #region TenantOrg
+        public async Task<TenantOrganizationInfoDto> GetTenantOrgByIdAsync(int tenantId)
+        {
+            var tenant = await _db.TenantOrganizationInfo.FirstOrDefaultAsync(t => t.Id == tenantId);
+
+            if (tenant == null)
+                return new TenantOrganizationInfoDto(); 
+
+            var tenantDto = new TenantOrganizationInfoDto
+            {
+                TenantUserId = tenant.TenantUserId, 
+                OrganizationName = tenant.OrganizationName,
+                OrganizationDescription = tenant.OrganizationDescription,
+                OrganizationIcon = tenant.OrganizationIcon, 
+                OrganizationLogo = tenant.OrganizationLogo, 
+                OrganizatioPrimaryColor = tenant.OrganizatioPrimaryColor,
+                OrganizationSecondColor = tenant.OrganizationSecondColor,
+            };
+
+            return tenantDto;
+        }
+
+
+        public async Task<bool> UpdateTenantOrgAsync(TenantOrganizationInfoDto tenantDto)
+        {
+            if (tenantDto.Id < 0) return false;
+
+            var newTenant = new TenantOrganizationInfo
+            {
+                Id = tenantDto.Id,
+                TenantUserId = tenantDto.TenantUserId,
+                OrganizationName = tenantDto.OrganizationName,
+                OrganizationDescription = tenantDto.OrganizationDescription,
+                OrganizationIcon = tenantDto.OrganizationIcon,
+                OrganizationLogo = tenantDto.OrganizationLogo,
+                OrganizatioPrimaryColor = tenantDto.OrganizatioPrimaryColor,
+                OrganizationSecondColor = tenantDto.OrganizationSecondColor,
+
+            };
+
+            _db.TenantOrganizationInfo.Update(newTenant);
+            var result = await _db.SaveChangesAsync();
+            return result > 0;
+        }
         #endregion
     }
 

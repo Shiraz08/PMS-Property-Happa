@@ -59,13 +59,11 @@ namespace PMS_PropertyHapa.Admin.Controllers
         {
             try
             {
-                ApplicationUser appUser = _context.Users.Where(x => x.Email == login.Email).FirstOrDefault();
+                ApplicationUser appUser = _context.Users.FirstOrDefault(x => x.Email == login.Email);
                 if (appUser != null)
                 {
                     try
                     {
-
-
                         await _signInManager.SignOutAsync();
                         Microsoft.AspNetCore.Identity.SignInResult result = await _signInManager.PasswordSignInAsync(appUser, login.Password, login.Remember, false);
 
@@ -74,18 +72,33 @@ namespace PMS_PropertyHapa.Admin.Controllers
 
                         if (result.IsLockedOut)
                             ModelState.AddModelError("", "Your account is locked out. Kindly wait for 10 minutes and try again");
+
+                        if (result.IsNotAllowed)
+                            ModelState.AddModelError("", "Login Failed: Your account is not allowed to log in.");
+
+                        if (!result.Succeeded)
+                            ModelState.Remove(nameof(login.Password)); 
                     }
-                    catch(Exception ex) { }
+                    catch (Exception ex)
+                    {
+                        ModelState.AddModelError("", "An error occurred while attempting to sign in.");
                     }
-                ModelState.AddModelError(nameof(login.Email), "Login Failed: Invalid Email or password");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Login Failed: Invalid Email or password");
+                    ModelState.AddModelError(nameof(login.Password), "Please enter the correct password.");
+                }
             }
             catch (Exception e)
             {
-
-                throw;
+                ModelState.AddModelError("", "An unexpected error occurred during login.");
             }
+
             return View(login);
         }
+
+
         public JsonResult DoesUserEmailExist(string email)
         {
             if (_context.Users.Any(o => o.Email == email))

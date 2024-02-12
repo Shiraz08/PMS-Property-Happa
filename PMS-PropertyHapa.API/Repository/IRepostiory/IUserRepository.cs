@@ -54,5 +54,10 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
 
         Task<TenantModelDto> GetSingleTenantByIdAsync(int tenantId);
         #endregion
+
+
+        Task<TenantOrganizationInfoDto> GetTenantOrgByIdAsync(int tenantId);
+
+        Task<bool> UpdateTenantOrgAsync(TenantOrganizationInfoDto tenantDto);
     }
 }

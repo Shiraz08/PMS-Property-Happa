@@ -155,6 +155,7 @@
                             <ul class="profile-dropdown onhover-show-div">
                                 <li><a href="@Url.Action("UpdateProfile", "auth")"><i data-feather="user"></i><span>Profile</span></a></li>
                                 <li><a href="@Url.Action("ChangePassword", "auth")"><i data-feather="user"></i><span>Change Password</span></a></li>
+                                <li><a type="button" class="btn btn-secondary" onclick="openModal()">Change Color Schema</a></li>
                                 <li><a href="@Url.Action("Logout","Account")"><i data-feather="log-in"> </i><span>Log Out</span></a></li>
                             </ul>
                         </li>
@@ -165,7 +166,45 @@
         <!-- Page Header Ends -->
         <!-- Page Body Start-->
         <div class="page-body-wrapper">
-         
+            <!-- Change Color Schema Modal-->
+            <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalCenterTitle">Change Organization Info</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- Form for TenantOrganizationInfoDTO -->
+                            <form id="tenantOrganizationInfoForm">
+                                <div class="form-group">
+                                    <label for="organizationName">Organization Name</label>
+                                    <input type="text" class="form-control" id="organizationName" name="organizationName" placeholder="Enter organization name">
+                                </div>
+                                <div class="form-group">
+                                    <label for="organizationDescription">Organization Description</label>
+                                    <textarea class="form-control" id="organizationDescription" name="organizationDescription" rows="3" placeholder="Enter organization description"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="organizatioPrimaryColor">Organization Primary Color</label>
+                                    <input type="color" class="form-control" id="organizatioPrimaryColor" name="organizatioPrimaryColor" placeholder="Select primary color">
+                                </div>
+                                <div class="form-group">
+                                    <label for="organizationSecondColor">Organization Secondary Color</label>
+                                    <input type="color" class="form-control" id="organizationSecondColor" name="organizationSecondColor" placeholder="Select secondary color">
+                                </div>
+
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-secondary" onclick="saveTenantOrganizationInfo()">Save Changes</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <div class="sidebar-wrapper">
                 <div>
@@ -194,6 +233,7 @@
                                                     <path fill-rule="evenodd" clip-rule="evenodd" d="M2.94995 14.2074C2.94995 8.91344 5.20495 7.14844 11.969 7.14844C18.733 7.14844 20.988 8.91344 20.988 14.2074C20.988 19.5004 18.733 21.2654 11.969 21.2654C5.20495 21.2654 2.94995 19.5004 2.94995 14.2074Z" stroke="#130F26" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
                                                 </g>
                                             </g>
+
                                         </svg><span>Manage App Tenant</span>
                                     </a>
                                     <ul class="sidebar-submenu">
@@ -415,10 +455,13 @@
             var organizationName = localStorage.getItem('organizationName');
             var organizationLogo = localStorage.getItem('organizationLogo');
             var organizationIcon = localStorage.getItem('organizationIcon');
-            if (organizationName != null)
-            {
-                document.title = "Dashboard" + " " + "-" +" "+ organizationName;
-                document.getElementById('companyname').innerHTML =  "Copyright 2024 ©" + " " + "-" + " " + organizationName;
+            var organizationDescription = localStorage.getItem('organizationDescription');
+            var tid = localStorage.getItem('tid');
+            var primaryColor = localStorage.getItem('primaryColor');
+            var secondaryColor = localStorage.getItem('secondaryColor');
+            if (organizationName != null) {
+                document.title = "Dashboard" + " " + "-" + " " + organizationName;
+                document.getElementById('companyname').innerHTML = "Copyright 2024 ©" + " " + "-" + " " + organizationName;
                 var urls = '@Html.Raw(Configuration.GetSection("ImageURl")["URL"].ToString())';
                 var imageUrl = urls.concat(organizationLogo);
                 var imageiconUrl = urls.concat(organizationIcon);
@@ -429,5 +472,97 @@
             }
         });
     </script>
+
+    <script>
+
+        function openModal() {
+          
+            var tenantId = localStorage.getItem('tid');
+            if (tenantId) {
+                fetchTenantOrganizationInfo(tenantId); 
+            }
+
+            $('#exampleModalCenter').modal('show');
+        }
+
+
+        $(document).ready(function () {
+
+            $('#exampleModalCenter').on('show.bs.modal', function (e) {
+
+                var tenantId = localStorage.getItem('tid');
+
+                if (tenantId) {
+                    fetchTenantOrganizationInfo(tenantId);
+                } else {
+                    console.error('Tenant ID not found in localStorage.');
+                }
+            });
+        });
+
+        function fetchTenantOrganizationInfo(tenantId) {
+            $.ajax({
+                url: '/Auth/GetTenantOrganizationInfo',
+                type: 'GET',
+                data: { tenantId: tenantId },
+                success: function (response) {
+         debugger
+                    var data = response.data;
+                    $('#organizationName').val(data.OrganizationName);
+                    $('#organizationDescription').val(data.OrganizationDescription);
+            
+                    $('#organizatioPrimaryColor').val(data.OrganizatioPrimaryColor);
+                    $('#organizationSecondColor').val(data.OrganizationSecondColor);
+
+                    console.log('Data fetched successfully:', data);
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error fetching data:', error);
+                }
+            });
+        }
+
+
+
+
+
+        function saveTenantOrganizationInfo() {
+            var tenantId = localStorage.getItem('tid');
+            var userId = localStorage.getItem('userId');
+            var organizationLogo = localStorage.getItem('organizationLogo');
+            var organizationIcon = localStorage.getItem('organizationIcon');
+            var tenantOrganizationInfoData = {
+                Id: tenantId,
+                OrganizationName: $('#organizationName').val(),
+                OrganizationDescription: $('#organizationDescription').val(),
+                OrganizationIcon: organizationIcon,
+                OrganizationLogo: organizationLogo,
+                OrganizatioPrimaryColor: $('#organizatioPrimaryColor').val(),
+                OrganizationSecondColor: $('#organizationSecondColor').val(),
+                TempTenantUserId: userId
+            };
+
+
+            $.ajax({
+                url: '/Auth/SaveTenantOrganizationInfo',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(tenantOrganizationInfoData),
+                success: function (response) {
+
+                    console.log('Success:', response);
+                    $('#exampleModalCenter').modal('hide');
+
+                },
+                error: function (xhr, status, error) {
+
+                    console.error('Error:', error);
+
+                }
+            });
+        }
+    </script>
+
+
 </body>
 </html>

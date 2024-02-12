@@ -297,146 +297,149 @@
 </div>
 
 <div class="page-body">
+<style>
+    body {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+</style>
+<div class="mt-5 upperdiv">
     <h2>@(Model.TenantId == null ? "Add" : "Edit") Tenant</h2>
-
+</div>
+<div class="page-body">
     <form id="tenantForm">
         <input type="hidden" id="TenantId" name="TenantId" value="@Model.TenantId" />
 
-        <!-- Tenant Information Section -->
-        <div class="section">
-            <h3>Tenant Information</h3>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label for="FirstName">First Name</label>
-                        <input type="text" class="form-control" id="FirstName" name="FirstName" value="@Model.FirstName" required />
-                    </div>
-                    <div class="mb-3">
-                        <label for="LastName">Last Name</label>
-                        <input type="text" class="form-control" id="LastName" name="LastName" value="@Model.LastName" required />
-                    </div>
-                    <div class="mb-3">
-                        <label for="EmailAddress">Email</label>
-                        <input type="email" class="form-control" id="EmailAddress" name="EmailAddress" value="@Model.EmailAddress" required />
-                    </div>
-                    <div class="mb-3">
-                        <label for="PhoneNumber">Phone Number</label>
-                        <input type="text" class="form-control" id="PhoneNumber" name="PhoneNumber" value="@Model.PhoneNumber" required />
-                    </div>
-                    <div class="mb-3">
-                        <label for="Gender">Gender</label>
-                        <select class="form-control" id="Gender" name="Gender" required>
-                            <option value="">Select Gender</option>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                            <option value="Other">Other</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="DOB">Date of Birth</label>
-                        <input type="date" class="form-control" id="DOB" name="DOB" value="@Model.DOB" required/>
-                    </div>
-                    <div class="mb-3">
-                        <label for="EmergencyContactInfo">Emergency Contact Info</label>
-                        <input type="text" class="form-control" id="EmergencyContactInfo" name="EmergencyContactInfo" value="@Model.EmergencyContactInfo" required/>
-                    </div>
-                    <div class="mb-3">
-                        <label for="TenantNationality">Tenant Nationality</label>
-                        <input type="text" class="form-control" id="TenantNationality" name="TenantNationality" value="@Model.TenantNationality" required/>
-                    </div>
+        <div class="row">
+            <!-- Tenant Information Section -->
+            <div class="col-md-4">
+                <h3>Tenant Information</h3>
+                <div class="mb-3">
+                    <label for="FirstName">First Name</label>
+                    <input type="text" class="form-control" id="FirstName" name="FirstName" value="@Model.FirstName" required />
                 </div>
+                <div class="mb-3">
+                    <label for="LastName">Last Name</label>
+                    <input type="text" class="form-control" id="LastName" name="LastName" value="@Model.LastName" required />
+                </div>
+                <div class="mb-3">
+                    <label for="EmailAddress">Email</label>
+                    <input type="email" class="form-control" id="EmailAddress" name="EmailAddress" value="@Model.EmailAddress" required />
+                </div>
+                <div class="mb-3">
+                    <label for="PhoneNumber">Phone Number</label>
+                    <input type="text" class="form-control" id="PhoneNumber" name="PhoneNumber" value="@Model.PhoneNumber" required />
+                </div>
+                <div class="mb-3">
+                    <label for="Gender">Gender</label>
+                    <select class="form-control" id="Gender" name="Gender" required>
+                        <option value="">Select Gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="DOB">Date of Birth</label>
+                    <input type="date" class="form-control" id="DOB" name="DOB" value="@Model.DOB" />
+                </div>
+                <div class="mb-3">
+                    <label for="EmergencyContactInfo">Emergency Contact Info</label>
+                    <input type="text" class="form-control" id="EmergencyContactInfo" name="EmergencyContactInfo" value="@Model.EmergencyContactInfo" required />
+                </div>
+                <div class="mb-3">
+                    <label for="TenantNationality">Tenant Nationality</label>
+                    <input type="text" class="form-control" id="TenantNationality" name="TenantNationality" value="@Model.TenantNationality" required />
+                </div>
+            </div>
+
+
+            <!-- Billing Information Section -->
+            <div class="col-md-4">
+                <h3>Billing Information</h3>
+                <div class="mb-3">
+                    <label for="Account_Name">Account Name</label>
+                    <input type="text" class="form-control" id="Account_Name" name="Account_Name" value="@Model.Account_Name" required />
+                </div>
+                <div class="mb-3">
+                    <label for="Account_Holder">Account Holder</label>
+                    <input type="text" class="form-control" id="Account_Holder" name="Account_Holder" value="@Model.Account_Holder" required />
+                </div>
+                <div class="mb-3">
+                    <label for="Account_IBAN">Account IBAN</label>
+                    <input type="text" class="form-control" id="Account_IBAN" name="Account_IBAN" value="@Model.Account_IBAN" required />
+                </div>
+                <div class="mb-3">
+                    <label for="Account_Swift">Account SWIFT/BIC</label>
+                    <input type="text" class="form-control" id="Account_Swift" name="Account_Swift" value="@Model.Account_Swift" required />
+                </div>
+                <div class="mb-3">
+                    <label for="Account_Bank">Account Bank</label>
+                    <input type="text" class="form-control" id="Account_Bank" name="Account_Bank" value="@Model.Account_Bank" required />
+                </div>
+                <div class="mb-3">
+                    <label for="Account_Currency">Account Currency</label>
+                    <input type="text" class="form-control" id="Account_Currency" name="Account_Currency" value="@Model.Account_Currency" required />
+                </div>
+                <div class="mb-3">
+                    <label for="VAT">VAT Number</label>
+                    <input type="text" class="form-control" id="VAT" name="VAT" value="@Model.VAT" required />
+                </div>
+                <div class="mb-3">
+                    <label for="LegalName">Legal Name</label>
+                    <input type="text" class="form-control" id="LegalName" name="LegalName" value="@Model.LegalName" required />
+                </div>
+            </div>
+
+            <!-- Address Information Section -->
+            <div class="col-md-4">
+                <h3>Address Information</h3>
+                <div class="mb-3">
+                    <label for="Address">Address</label>
+                    <input type="text" class="form-control" id="Address" name="Address" value="@Model.Address" />
+                </div>
+                <div class="mb-3">
+                    <label for="Address2">Address 2</label>
+                    <input type="text" class="form-control" id="Address2" name="Address2" value="@Model.Address2" />
+                </div>
+                <div class="mb-3">
+                    <label for="Locality">Locality</label>
+                    <input type="text" class="form-control" id="Locality" name="Locality" value="@Model.Locality" />
+                </div>
+                <div class="mb-3">
+                    <label for="Region">Region</label>
+                    <input type="text" class="form-control" id="Region" name="Region" value="@Model.Region" />
+                </div>
+                <div class="mb-3">
+                    <label for="PostalCode">Postal Code</label>
+                    <input type="text" class="form-control" id="PostalCode" name="PostalCode" value="@Model.PostalCode" />
+                </div>
+                <div class="mb-3">
+                    <label for="Country">Country</label>
+                    <select class="form-control" id="Country" name="Country">
+                        <option value="">Select Country</option>
+                        <option value="Germany">Germany</option>
+                        <option value="Canada">Canada</option>
+                        <option value="USA">USA</option>
+                        <option value="Australia">Australia</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="CountryCode">Country Code</label>
+                    <input type="text" class="form-control" id="CountryCode" name="CountryCode" value="@Model.CountryCode" />
+                </div>
+            </div>
+
+
+            <div class="text-center mb-3">
+                <button type="button" onclick="submitTenantForm()" class="btn btn-success">@(Model.TenantId == null ? "Add" : "Edit") Tenant</button>
             </div>
         </div>
 
-        <!-- Address Information Section -->
-        <div class="section">
-            <h3>Address Information</h3>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label for="Address">Address</label>
-                        <input type="text" class="form-control" id="Address" name="Address" value="@Model.Address" />
-                    </div>
-                    <div class="mb-3">
-                        <label for="Address2">Address 2</label>
-                        <input type="text" class="form-control" id="Address2" name="Address2" value="@Model.Address2" />
-                    </div>
-                    <div class="mb-3">
-                        <label for="Locality">Locality</label>
-                        <input type="text" class="form-control" id="Locality" name="Locality" value="@Model.Locality" />
-                    </div>
-                    <div class="mb-3">
-                        <label for="Region">Region</label>
-                        <input type="text" class="form-control" id="Region" name="Region" value="@Model.Region" />
-                    </div>
-                    <div class="mb-3">
-                        <label for="PostalCode">Postal Code</label>
-                        <input type="text" class="form-control" id="PostalCode" name="PostalCode" value="@Model.PostalCode" />
-                    </div>
-                    <div class="mb-3">
-                        <label for="Country">Country</label>
-                        <select class="form-control" id="Country" name="Country">
-                            <option value="">Select Country</option>
-                            <option value="Germany">Germany</option>
-                            <option value="Canada">Canada</option>
-                            <option value="USA">USA</option>
-                            <option value="Australia">Australia</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="CountryCode">Country Code</label>
-                        <input type="text" class="form-control" id="CountryCode" name="CountryCode" value="@Model.CountryCode" />
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Billing Information Section -->
-        <div class="section">
-            <h3>Billing Information</h3>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label for="Account_Name">Account Name</label>
-                        <input type="text" class="form-control" id="Account_Name" name="Account_Name" value="@Model.Account_Name" required/>
-                    </div>
-                    <div class="mb-3">
-                        <label for="Account_Holder">Account Holder</label>
-                        <input type="text" class="form-control" id="Account_Holder" name="Account_Holder" value="@Model.Account_Holder" required/>
-                    </div>
-                    <div class="mb-3">
-                        <label for="Account_IBAN">Account IBAN</label>
-                        <input type="text" class="form-control" id="Account_IBAN" name="Account_IBAN" value="@Model.Account_IBAN" required/>
-                    </div>
-                    <div class="mb-3">
-                        <label for="Account_Swift">Account SWIFT/BIC</label>
-                        <input type="text" class="form-control" id="Account_Swift" name="Account_Swift" value="@Model.Account_Swift" required/>
-                    </div>
-                    <div class="mb-3">
-                        <label for="Account_Bank">Account Bank</label>
-                        <input type="text" class="form-control" id="Account_Bank" name="Account_Bank" value="@Model.Account_Bank" required/>
-                    </div>
-                    <div class="mb-3">
-                        <label for="Account_Currency">Account Currency</label>
-                        <input type="text" class="form-control" id="Account_Currency" name="Account_Currency" value="@Model.Account_Currency" required/>
-                    </div>
-                    <div class="mb-3">
-                        <label for="VAT">VAT Number</label>
-                        <input type="text" class="form-control" id="VAT" name="VAT" value="@Model.VAT" required/>
-                    </div>
-                    <div class="mb-3">
-                        <label for="LegalName">Legal Name</label>
-                        <input type="text" class="form-control" id="LegalName" name="LegalName" value="@Model.LegalName" required/>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="text-center">
-            <button type="button" class="btn btn-primary" onclick="submitTenantForm()">@(Model.TenantId == null ? "Add" : "Edit") Tenant</button>
-        </div>
     </form>
 </div>
+
 
 
 
@@ -462,7 +465,6 @@
             '#EmailAddress',
             '#PhoneNumber',
             '#Gender',
-            '#DOB',
             '#EmergencyContactInfo',
             '#TenantNationality',
             '#Account_Name',
@@ -473,15 +475,15 @@
             '#Account_Currency',
             '#VAT',
             '#LegalName'
-           
+
         ];
 
         requiredFields.forEach(function (fieldId) {
             var fieldValue = $(fieldId).val().trim();
             if (!fieldValue) {
                 isValid = false;
-             
-                $(fieldId).addClass('is-invalid'); 
+
+                $(fieldId).addClass('is-invalid');
             } else {
                 $(fieldId).removeClass('is-invalid');
             }
@@ -516,12 +518,12 @@
             Region: $('#Region').val(),
             PostalCode: $('#PostalCode').val(),
             Country: $('#Country').val(),
-            Country: $('#CountryCode').val()
+            CountryCode: $('#CountryCode').val(),
             AppTId: userId
-          
         };
 
-        var ajaxUrl = '@(Model.TenantId == null ? "/Tenant/Create" : "/Tenant/Update")';
+
+        var ajaxUrl = '@(Model.TenantId == null ? Url.Action("Create", "Tenant") : Url.Action("Update", "Tenant"))';
         var method = '@(Model.TenantId == null ? "POST" : "POST")';
         $.ajax({
             url: ajaxUrl,
@@ -537,6 +539,7 @@
                 }
             }
         });
+
     }
 </script>
 
@@ -545,6 +548,13 @@
         var gender = '@Model.Gender';
         if (gender) {
             document.querySelector("#Gender").value = gender;
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var country = '@Model.Country';
+        if (country) {
+            document.querySelector("#Country").value = country;
         }
     });
 </script>

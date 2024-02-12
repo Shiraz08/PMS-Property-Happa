@@ -33,5 +33,11 @@ namespace PMS_PropertyHapa.Services.IServices
         Task<TenantModelDto> GetSingleTenantAsync(int tenantId);
 
 
+
+
+        Task<bool>UpdateTenantOrganizationAsync(TenantOrganizationInfoDto tenant);
+
+        Task<TenantOrganizationInfoDto> GetTenantOrganizationByIdAsync(int tenantId);
+
     }
 }

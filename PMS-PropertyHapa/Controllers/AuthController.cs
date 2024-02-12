@@ -292,7 +292,7 @@ namespace PMS_PropertyHapa.Controllers
             }
         }
 
-   
+
 
         public async Task<IActionResult> Logout()
         {
@@ -308,6 +308,43 @@ namespace PMS_PropertyHapa.Controllers
             return View();
         }
 
+
+
+
+        #region TenantDataFetching
+      
+
+        public async Task<IActionResult> GetTenantOrganizationInfo(int tenantId)
+        {
+            if (tenantId > 0)
+            {
+                var tenants = await _authService.GetTenantOrganizationByIdAsync(tenantId);
+
+                if (tenants != null)
+                {
+
+                    return Json(new { data = tenants });
+                }
+                else
+                {
+
+                    return Json(new { data = new TenantOrganizationInfoDto() });
+                }
+            }
+            else
+            {
+                return BadRequest("Tenant ID is required.");
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> SaveTenantOrganizationInfo([FromBody] TenantOrganizationInfoDto tenantOrganizationInfoDto)
+        {
+            tenantOrganizationInfoDto.TenantUserId = Guid.Parse(tenantOrganizationInfoDto.TempTenantUserId);
+            await _authService.UpdateTenantOrganizationAsync(tenantOrganizationInfoDto);
+            return Json(new { success = true, message = "Tenant updated successfully" });
+        }
+
+        #endregion
 
     }
 }

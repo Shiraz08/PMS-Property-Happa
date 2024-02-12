@@ -167,5 +167,58 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             }
         }
         #endregion
+
+
+
+
+        #region TenantOrg
+        [HttpGet("TenantOrg/{tenantId}")]
+        public async Task<IActionResult> GetTenantOrgById(int tenantId)
+        {
+            try
+            {
+                var tenantDto = await _userRepo.GetTenantOrgByIdAsync(tenantId);
+
+                if (tenantDto != null)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = tenantDto;
+                    return Ok(_response);
+                }
+                else
+                {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("No user found with this id.");
+                    return NotFound(_response);
+                }
+            }
+            catch (Exception ex)
+            {
+                _response.StatusCode = HttpStatusCode.NotFound;
+                _response.IsSuccess = false;
+                _response.ErrorMessages.Add("Error Occured");
+                return NotFound(_response);
+            }
+        }
+
+
+        [HttpPut("TenantOrg/{tenantId}")]
+        public async Task<ActionResult<bool>> UpdateTenantOrg(int tenantId, TenantOrganizationInfoDto tenant)
+        {
+            try
+            {
+                tenant.Id = tenantId; // Ensure tenantId is set
+                var isSuccess = await _userRepo.UpdateTenantOrgAsync(tenant);
+                return Ok(isSuccess);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
+        #endregion
     }
 }
