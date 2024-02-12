@@ -4,6 +4,297 @@
     ViewData["Title"] = "Add/Edit Tenant";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-sm-6">
+                    <h3>Edit Profile</h3>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index.html"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item">Dashboars</li>
+                        <li class="breadcrumb-item active">User Edit</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="edit-profile">
+            <div class="row">
+                <form>
+                <div class="col-xl-12">
+                    <div class="card">
+                        <div class="card-header pb-0">
+                            <h4 class="card-title mb-0">Edit Profile</h4>
+                            <div class="card-options"><a class="card-options-collapse" href="#" data-bs-toggle="card-collapse"><i class="fe fe-chevron-up"></i></a><a class="card-options-remove" href="#" data-bs-toggle="card-remove"><i class="fe fe-x"></i></a></div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Username</label>
+                                        <input class="form-control" id="UserName" name="UserName" disabled value="">
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Email Address</label>
+                                        <input class="form-control" id="Email" name="Email" required placeholder="your-email@domain.com">
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Phone Number</label>
+                                        <input class="form-control" type="text" id="PhoneNumber" name="PhoneNumber" placeholder="PhoneNumber" required>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Address</label>
+                                        <input class="form-control" type="text" id="Address" name="Address" placeholder="Address" required>
+
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Address 2</label>
+                                        <input class="form-control" type="text" placeholder="Address 2" id="Address2" name="Address2" required>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Locality</label>
+                                        <input class="form-control" type="text" id="Locality" name="Locality" placeholder="Locality" required>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">District</label>
+                                        <input class="form-control" type="text" id="District" name="District" placeholder="District" required>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Region</label>
+                                        <input class="form-control" type="text" id="Region" name="Region" placeholder="Region" required>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Postal Code</label>
+                                        <input class="form-control" type="text" id="PostalCode" name="PostalCode" placeholder="Postal Code" required>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Profile Image</label>
+                                        <input id="NewPicture" name="NewPicture" type="file" class="form-control mb-3" />
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Country</label>
+                                        <select class="form-control btn-square" id="Country" name="Country">
+                                            <option value="">--Select--</option>
+                                            <option value="Germany">Germany</option>
+                                            <option value="Canada">Canada</option>
+                                            <option value="USA">USA</option>
+                                            <option value="Australia">Australia</option>
+
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Container-fluid Ends-->
+                </div>
+                <div class="col-xl-12">
+                    <div class="card">
+                        <div class="card-header pb-0">
+                            <h4 class="card-title mb-0">Edit Profile</h4>
+                            <div class="card-options"><a class="card-options-collapse" href="#" data-bs-toggle="card-collapse"><i class="fe fe-chevron-up"></i></a><a class="card-options-remove" href="#" data-bs-toggle="card-remove"><i class="fe fe-x"></i></a></div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Username</label>
+                                        <input class="form-control" id="UserName" name="UserName" disabled value="">
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Email Address</label>
+                                        <input class="form-control" id="Email" name="Email" required placeholder="your-email@domain.com">
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Phone Number</label>
+                                        <input class="form-control" type="text" id="PhoneNumber" name="PhoneNumber" placeholder="PhoneNumber" required>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Address</label>
+                                        <input class="form-control" type="text" id="Address" name="Address" placeholder="Address" required>
+
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Address 2</label>
+                                        <input class="form-control" type="text" placeholder="Address 2" id="Address2" name="Address2" required>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Locality</label>
+                                        <input class="form-control" type="text" id="Locality" name="Locality" placeholder="Locality" required>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">District</label>
+                                        <input class="form-control" type="text" id="District" name="District" placeholder="District" required>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Region</label>
+                                        <input class="form-control" type="text" id="Region" name="Region" placeholder="Region" required>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Postal Code</label>
+                                        <input class="form-control" type="text" id="PostalCode" name="PostalCode" placeholder="Postal Code" required>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Profile Image</label>
+                                        <input id="NewPicture" name="NewPicture" type="file" class="form-control mb-3" />
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Country</label>
+                                        <select class="form-control btn-square" id="Country" name="Country">
+                                            <option value="">--Select--</option>
+                                            <option value="Germany">Germany</option>
+                                            <option value="Canada">Canada</option>
+                                            <option value="USA">USA</option>
+                                            <option value="Australia">Australia</option>
+
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Container-fluid Ends-->
+                </div>
+                <div class="col-xl-12">
+                    <div class="card">
+                        <div class="card-header pb-0">
+                            <h4 class="card-title mb-0">Edit Profile</h4>
+                            <div class="card-options"><a class="card-options-collapse" href="#" data-bs-toggle="card-collapse"><i class="fe fe-chevron-up"></i></a><a class="card-options-remove" href="#" data-bs-toggle="card-remove"><i class="fe fe-x"></i></a></div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Username</label>
+                                        <input class="form-control" id="UserName" name="UserName" disabled value="">
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Email Address</label>
+                                        <input class="form-control" id="Email" name="Email" required placeholder="your-email@domain.com">
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Phone Number</label>
+                                        <input class="form-control" type="text" id="PhoneNumber" name="PhoneNumber" placeholder="PhoneNumber" required>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Address</label>
+                                        <input class="form-control" type="text" id="Address" name="Address" placeholder="Address" required>
+
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Address 2</label>
+                                        <input class="form-control" type="text" placeholder="Address 2" id="Address2" name="Address2" required>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Locality</label>
+                                        <input class="form-control" type="text" id="Locality" name="Locality" placeholder="Locality" required>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">District</label>
+                                        <input class="form-control" type="text" id="District" name="District" placeholder="District" required>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Region</label>
+                                        <input class="form-control" type="text" id="Region" name="Region" placeholder="Region" required>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Postal Code</label>
+                                        <input class="form-control" type="text" id="PostalCode" name="PostalCode" placeholder="Postal Code" required>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Profile Image</label>
+                                        <input id="NewPicture" name="NewPicture" type="file" class="form-control mb-3" />
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Country</label>
+                                        <select class="form-control btn-square" id="Country" name="Country">
+                                            <option value="">--Select--</option>
+                                            <option value="Germany">Germany</option>
+                                            <option value="Canada">Canada</option>
+                                            <option value="USA">USA</option>
+                                            <option value="Australia">Australia</option>
+
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer text-end">
+                            <button class="btn btn-primary" type="submit">Update Profile</button>
+                        </div>
+                    </div>
+                    <!-- Container-fluid Ends-->
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="page-body">
     <h2>@(Model.TenantId == null ? "Add" : "Edit") Tenant</h2>
