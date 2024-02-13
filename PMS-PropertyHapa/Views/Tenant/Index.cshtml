@@ -5,6 +5,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+
 <div class="page-body">
     <div class="container-fluid">
         <div class="page-title">
@@ -31,7 +32,7 @@
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table" id="grouproles">
+                            <table class="table" id="tenantsTable">
                                 <thead>
                                     <tr>
                                         <th>First Name</th>
@@ -71,7 +72,6 @@
         </div>
     </div>
 </div>
-
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
@@ -79,7 +79,7 @@
     $(document).ready(function () {
         var tenantId = localStorage.getItem('userId');
         var ajaxUrl = `/Tenant/GetTenant/?tenantId=${encodeURIComponent(tenantId)}`;
-        $('#grouproles').DataTable({
+        $('#tenantsTable').DataTable({
             "ajax": {
                 "url": ajaxUrl,
                 "type": "GET",
@@ -115,9 +115,9 @@
                     "data": "tenantId",
                     "render": function (data, type, row) {
                         return `<div class="btn-container">
-                                        <button onclick="editTenant(${row.TenantId})" class="btn btn-sm btn-success edit-tenant">Edit</button>
-                                            <button data-tenant-id="${row.TenantId}" class="btn btn-sm btn-danger  delete-tenant">Delete</button>
-                                </div>`;
+                                            <button onclick="editTenant(${row.TenantId})" class="btn btn-sm btn-success edit-tenant">Edit</button>
+                                                <button data-tenant-id="${row.TenantId}" class="btn btn-sm btn-danger  delete-tenant">Delete</button>
+                                    </div>`;
                     },
                     "orderable": false
                 }
@@ -127,9 +127,9 @@
             },
             "initComplete": function () {
 
-                $('#grouproles thead th').css("min-width", "100px");
+                $('#tenantsTable thead th').css("min-width", "100px");
             },
-            "order": [] 
+            "order": []
         });
     });
 
@@ -137,7 +137,7 @@
         window.location.href = `/Tenant/AddTenant?tenantId=${tenantId}`;
     }
 
-    $('#grouproles').on('click', '.delete-tenant', function () {
+    $('#tenantsTable').on('click', '.delete-tenant', function () {
         var tenantId = $(this).data('tenant-id');
         deleteTenant(tenantId);
     });
@@ -163,7 +163,7 @@
                     type: 'DELETE',
                     success: function (data) {
                         if (data.success) {
-                            $('#grouproles').DataTable().ajax.reload();
+                            $('#tenantsTable').DataTable().ajax.reload();
                             Swal.fire(
                                 'Deleted!',
                                 'Your file has been deleted.',

@@ -3,15 +3,26 @@
     ViewData["Title"] = "Login";
     Layout = "~/Views/Shared/_IdentityLayout.cshtml";
 }
+<style>
+    .input-group {
+        position: relative;
+    }
 
+    .show-hide {
+        position: absolute;
+        right: 10px; /* Adjust as needed */
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+    }
+</style>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
 
 <form class="theme-form login-form needs-validation" novalidate="" asp-action="Login" method="post">
-    <h3>Admin Login</h3>
     <h4>Welcome back Admin! Log in to your account.</h4>
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-    <div class="form-group">
+    <div class="form-group" style="margin-top:30px">
         <label>Email Address</label>
         <div class="input-group">
             <span class="input-group-text"><i class="icon-email"></i></span>
@@ -23,21 +34,22 @@
         <div class="input-group">
             <span class="input-group-text"><i class="icon-lock"></i></span>
             <input id="Password" name="Password" type="password" class="form-control" placeholder="Password..." required="" />
-            <div class="show-hide" style="cursor: pointer;"><i class="bi bi-eye"></i></div>
+            <div class="input-group-append">
+                <div class="show-hide" style="cursor: pointer;"><i class="bi bi-eye"></i></div>
+            </div>
         </div>
     </div>
-    <div class="form-group">
+    <div>
         <div class="icheck-primary">
-            <input type="checkbox" id="remember" asp-for="Remember">
-            <label class="text-muted" for="remember" style="color:black!important">
-                Remember Me
-            </label>
+
+            <a class="link" href="/Account/ForgotPassword">Forgot Password?</a>
         </div>
     </div>
+
     <div class="form-group">
         <button class="btn btn-primary btn-block" type="submit">Sign in</button>
     </div>
-    <p>Don't have an account?<a class="ms-2" href="/Account/Registration">Create Account</a></p>
+ 
 </form>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>

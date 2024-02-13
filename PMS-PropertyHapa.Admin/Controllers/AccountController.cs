@@ -2,11 +2,14 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using NuGet.Protocol.Plugins;
 using PMS_PropertyHapa.Admin.Data;
 using PMS_PropertyHapa.Models.DTO;
 using PMS_PropertyHapa.Shared.Email;
 using PMS_PropertyHapa.Shared.Enum;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace PMS_PropertyHapa.Admin.Controllers
 {
@@ -18,7 +21,8 @@ namespace PMS_PropertyHapa.Admin.Controllers
         private PropertyHapaAdminContext _context;
         private readonly IUserStore<ApplicationUser> _userStore;
         private IWebHostEnvironment _environment;
- 
+        private readonly string EncryptionKey = "bXlTZWN1cmVLZXlIZXJlMTIzNDU2Nzg5";
+
         private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
         EmailSender _emailSender = new EmailSender();
         public AccountController(IWebHostEnvironment Environment, ILogger<HomeController> logger, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, PropertyHapaAdminContext context, IUserStore<ApplicationUser> userStore)
@@ -190,6 +194,11 @@ namespace PMS_PropertyHapa.Admin.Controllers
         }
 
 
+        public IActionResult ForgotPassword()
+        {
+            return View(); 
+        }
+
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
@@ -199,5 +208,139 @@ namespace PMS_PropertyHapa.Admin.Controllers
         {
             return View();
         }
+
+
+        [HttpPost]
+        public async Task<IActionResult> ForgotPasswordRequest(ForgetPassword model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == model.Email);
+            if (user == null)
+            {
+                ModelState.AddModelError("", "No user found with this email.");
+                return BadRequest(new { isSuccess = false });
+            }
+
+            try
+            {
+                // Encrypt the email
+                var encryptedEmail = await EncryptEmail(model.Email);
+
+                var baseUrl = $"https://localhost:7220";
+                var resetPasswordUrl = $"{baseUrl}/Account/ResetPassword?email={encryptedEmail}";
+
+                string emailContent = $"To reset your password, follow this link: {resetPasswordUrl}";
+                string subject = "Reset Password Request";
+                await _emailSender.SendEmailAsync(model.Email, subject, emailContent);
+
+                return Ok(new { isSuccess = true });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { isSuccess = false });
+            }
+        }
+
+
+        [HttpGet("Account/ResetPassword")]
+        public IActionResult ResetPassword(string email)
+        {
+            var model = new ResetPasswordDto { Email = email };
+            return View(model);
+        }
+
+        private async Task<string> EncryptEmail(string email)
+        {
+            byte[] clearBytes = Encoding.Unicode.GetBytes(email);
+            using (Aes encryptor = Aes.Create())
+            {
+                Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(EncryptionKey, new byte[] { 0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76 });
+                encryptor.Key = pdb.GetBytes(32);
+                encryptor.IV = pdb.GetBytes(16);
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    using (CryptoStream cs = new CryptoStream(ms, encryptor.CreateEncryptor(), CryptoStreamMode.Write))
+                    {
+                        cs.Write(clearBytes, 0, clearBytes.Length);
+                        cs.Close();
+                    }
+                    email = Convert.ToBase64String(ms.ToArray());
+                }
+            }
+            return email;
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordDto model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            string email;
+            try
+            {
+                email = await DecryptEmail(model.Email);
+            }
+            catch
+            {
+                return BadRequest("Invalid reset link.");
+            }
+
+            if (model.Password != model.ConfirmPassword)
+            {
+                return BadRequest("The password and confirmation password do not match.");
+            }
+
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            if (user == null)
+            {
+                return BadRequest("User not found.");
+            }
+
+            user.Password = model.Password;
+            user.LockoutEnabled = true;
+            user.Group = "Admin";
+
+            _context.Users.Update(user);
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                return StatusCode(500, "An error occurred while resetting the password.");
+            }
+
+            return Ok("Password has been reset successfully");
+        }
+
+        public async Task<string> DecryptEmail(string encryptedEmail)
+        {
+            encryptedEmail = encryptedEmail.Replace(" ", "+");
+            byte[] cipherBytes = Convert.FromBase64String(encryptedEmail);
+            using (Aes encryptor = Aes.Create())
+            {
+                Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(EncryptionKey, new byte[] { 0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76 });
+                encryptor.Key = pdb.GetBytes(32);
+                encryptor.IV = pdb.GetBytes(16);
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    using (CryptoStream cs = new CryptoStream(ms, encryptor.CreateDecryptor(), CryptoStreamMode.Write))
+                    {
+                        cs.Write(cipherBytes, 0, cipherBytes.Length);
+                        cs.Close();
+                    }
+                    encryptedEmail = Encoding.Unicode.GetString(ms.ToArray());
+                }
+            }
+            return encryptedEmail;
+        }
+
     }
 }
