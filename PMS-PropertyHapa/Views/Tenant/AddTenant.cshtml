@@ -13,8 +13,17 @@
                 </div>
                 <div class="col-12 col-sm-6">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="index.html"><i data-feather="home"></i></a></li>
-                        <li class="breadcrumb-item">Dashboard</li>
+                        @if (Model.TenantId == null)
+                        {
+                            <li class="breadcrumb-item"><a href="@Url.Action("AddTenant", "Tenant")"><i data-feather="home"></i></a></li>
+
+                        }
+                        else
+                        {
+                            <li class="breadcrumb-item"><a href="@Url.Action("EditTenant", "Tenant")"><i data-feather="home"></i></a></li>
+                        }
+
+                        <li class="breadcrumb-item">Tenant</li>
                         <li class="breadcrumb-item active">@(Model.TenantId == null ? "Add Tenant" : "Edit Tenant")</li>
                     </ol>
                 </div>
@@ -172,13 +181,13 @@
                                             <input type="text" class="form-control" id="Address" name="Address" value="@Model.Address" />
                                         </div>
                                     </div>
-                                      <div class="col-sm-6 col-md-3">
+                                    <div class="col-sm-6 col-md-3">
                                         <div class="mb-3">
                                             <label for="Address2">Address 2</label>
                                             <input type="text" class="form-control" id="Address2" name="Address2" value="@Model.Address2" />
                                         </div>
                                     </div>
-                                      <div class="col-sm-6 col-md-3">
+                                    <div class="col-sm-6 col-md-3">
                                         <div class="mb-3">
                                             <label for="Locality">Locality</label>
                                             <input type="text" class="form-control" id="Locality" name="Locality" value="@Model.Locality" />
@@ -190,7 +199,7 @@
                                             <input type="text" class="form-control" id="Region" name="Region" value="@Model.Region" />
                                         </div>
                                     </div>
-                                      <div class="col-sm-6 col-md-3">
+                                    <div class="col-sm-6 col-md-3">
                                         <div class="mb-3">
                                             <label for="PostalCode">Postal Code</label>
                                             <input type="text" class="form-control" id="PostalCode" name="PostalCode" value="@Model.PostalCode" />

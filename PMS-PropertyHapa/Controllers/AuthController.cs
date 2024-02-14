@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using NuGet.Protocol.Plugins;
 using PMS_PropertyHapa.Admin.Data;
 using PMS_PropertyHapa.Models;
@@ -341,10 +342,34 @@ namespace PMS_PropertyHapa.Controllers
         {
             tenantOrganizationInfoDto.TenantUserId = Guid.Parse(tenantOrganizationInfoDto.TempTenantUserId);
             await _authService.UpdateTenantOrganizationAsync(tenantOrganizationInfoDto);
-            return Json(new { success = true, message = "Tenant updated successfully" });
+            return Json(new { success = true, message = "Color Schema updated successfully" });
         }
 
         #endregion
 
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllFilterUsers(string searchText)
+        {
+            if (string.IsNullOrWhiteSpace(searchText))
+            {
+                return BadRequest("Search text is required.");
+            }
+
+            var filteredUsers = await _context.Users
+                .Where(u => u.UserName.Contains(searchText) || u.Email.Contains(searchText))
+                .Select(u => new
+                {
+                    u.Id,
+                    u.UserName,
+                    u.Email,
+                    u.PhoneNumber,
+                    u.AddedDate
+                })
+                .ToListAsync();
+
+            return Ok(filteredUsers);
+        }
     }
 }

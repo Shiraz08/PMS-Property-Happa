@@ -41,80 +41,66 @@ namespace PMS_PropertyHapa.Admin.Controllers
             return View();
         }
 
+
         [HttpPost]
         public async Task<JsonResult> Create(TenantViewModel model)
         {
-
-
-            ApplicationUser appUser = new ApplicationUser
+            if (model == null || model.User == null || model.OrganizationInfo == null)
             {
-                UserName = model.User.UserName,
-                Email = model.User.Email,
-                AddedBy = User.Identity?.Name,
-                AddedDate = DateTime.Now,
-                Status = true,
-                BirthDate = model.User.BirthDate,
-                PhoneNumber = model.User.PhoneNumber,
-                FirstName = model.User.FirstName,
-                LastName = model.User.LastName,
-                Country = model.User.Country,
-                Group = model.User.Group
-           
-            };
+                return Json(new { success = false, message = "Invalid model data." });
+            }
 
-            try
+            using (var transaction = _context.Database.BeginTransaction())
             {
-                var result = await userManager.CreateAsync(appUser, model.User.Password);
-                if (result.Succeeded)
+                try
                 {
-                    var uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "uploads");
-
-                    if (!Directory.Exists(uploadsFolder))
+                    var existingUser = await userManager.FindByNameAsync(model.User.UserName) ??
+                                       await userManager.FindByEmailAsync(model.User.Email);
+                    if (existingUser != null)
                     {
-                        Directory.CreateDirectory(uploadsFolder);
+                        return Json(new { success = false, message = "Username or email already exists." });
                     }
+
+                    var appUser = new ApplicationUser
+                    {
+                        UserName = model.User.UserName,
+                        Email = model.User.Email,
+                        AddedBy = User.Identity?.Name,
+                        AddedDate = DateTime.Now,
+                        Status = true,
+                        BirthDate = model.User.BirthDate,
+                        PhoneNumber = model.User.PhoneNumber,
+                        FirstName = model.User.FirstName,
+                        LastName = model.User.LastName,
+                        Country = model.User.Country,
+                        Group = model.User.Group
+                    };
+
+                    var createUserResult = await userManager.CreateAsync(appUser, model.User.Password);
+                    if (!createUserResult.Succeeded)
+                    {
+                        var errors = string.Join("; ", createUserResult.Errors.Select(e => e.Description));
+                        return Json(new { success = false, message = $"User creation failed: {errors}" });
+                    }
+
+                    var uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "uploads");
                     var orgIconFileName = await ProcessFileUpload(model.OrganizationInfo.OrganizationIconFile, uploadsFolder);
                     var orgLogoFileName = await ProcessFileUpload(model.OrganizationInfo.OrganizationLogoFile, uploadsFolder);
-
-                    //Upload File On Server FTP
-                    string ftpServer = "ftp://UploadFiles@65.108.74.182/";
-                    string userName = "UploadFiles";
-                    string password = "Talha.Musa.@786";
-                    string sourceFilePathlogo = uploadsFolder + @"\" + orgLogoFileName;
-                    string sourceFilePathIcon = uploadsFolder + @"\" + orgIconFileName;
-                    //Logo Upload
-                    using (var fileStream = System.IO.File.OpenRead(sourceFilePathlogo))
+                    if (orgIconFileName == null || orgLogoFileName == null)
                     {
-                        var request = (FtpWebRequest)WebRequest.Create(new Uri(ftpServer + orgLogoFileName));
-                        request.Credentials = new NetworkCredential(userName, password);
-                        request.Method = WebRequestMethods.Ftp.UploadFile;
-
-                        using (var requestStream = request.GetRequestStream())
-                        {
-                            fileStream.CopyTo(requestStream);
-                        }
+                        return Json(new { success = false, message = "File upload failed." });
                     }
-                    //Icon Upload
-                    using (var fileStreams = System.IO.File.OpenRead(sourceFilePathIcon))
-                    {
-                        var requests = (FtpWebRequest)WebRequest.Create(new Uri(ftpServer + orgIconFileName));
-                        requests.Credentials = new NetworkCredential(userName, password);
-                        requests.Method = WebRequestMethods.Ftp.UploadFile;
 
-                        using (var requestStream = requests.GetRequestStream())
-                        {
-                            fileStreams.CopyTo(requestStream);
-                        }
-                    }
+                    
+
                     await userManager.AddToRoleAsync(appUser, model.User.Group);
 
-                    var newUserId = appUser.Id;
-                    TenantOrganizationInfo tenantOrgInfo = new TenantOrganizationInfo()
+                    var tenantOrgInfo = new TenantOrganizationInfo
                     {
-                        TenantUserId = Guid.Parse(newUserId),
+                        TenantUserId = Guid.Parse(appUser.Id),
                         OrganizationName = model.OrganizationInfo.OrganizationName,
                         OrganizationDescription = model.OrganizationInfo.OrganizationDescription,
-                        OrganizationIcon = orgIconFileName, 
+                        OrganizationIcon = orgIconFileName,
                         OrganizationLogo = orgLogoFileName,
                         OrganizatioPrimaryColor = model.OrganizationInfo.OrganizatioPrimaryColor,
                         OrganizationSecondColor = model.OrganizationInfo.OrganizationSecondColor
@@ -122,22 +108,22 @@ namespace PMS_PropertyHapa.Admin.Controllers
 
                     _context.TenantOrganizationInfo.Add(tenantOrgInfo);
                     await _context.SaveChangesAsync();
+                    System.IO.File.Delete(Path.Combine(uploadsFolder, orgLogoFileName));
+                    System.IO.File.Delete(Path.Combine(uploadsFolder, orgIconFileName));
+                    transaction.Commit();
 
-                    //Delete File
-                    System.IO.File.Delete(sourceFilePathlogo);
-                    System.IO.File.Delete(sourceFilePathIcon);
-                    return Json(true);
+                    return Json(new { success = true });
                 }
-                else
+                catch (Exception ex)
                 {
-                    return Json(result.Errors.Select(x => x.Description).FirstOrDefault());
+                    transaction.Rollback();
+                    return Json(new { success = false, message = $"An error occurred: {ex.Message}" });
                 }
-            }
-            catch (Exception e)
-            {
-                return Json("An error occurred.");
             }
         }
+
+
+        
 
         private async Task<string> ProcessFileUpload(IFormFile file, string uploadsFolder)
         {

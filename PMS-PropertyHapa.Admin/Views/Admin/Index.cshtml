@@ -28,8 +28,8 @@
                 <div class="col-12">
                     <h3>App Tenant List</h3>
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a class="home-item" href="index.html"><i data-feather="home"></i></a></li>
-                        <li class="breadcrumb-item">Dashboard</li>
+                        <li class="breadcrumb-item"><a class="home-item" href="/Admin"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item">Admin</li>
                         <li class="breadcrumb-item active">App Tenant</li>
                     </ol>
                 </div>
@@ -617,21 +617,20 @@
             url: '/Admin/Create', 
             data: formData,
             contentType: false, 
-            processData: false, 
+            processData: false,
             success: function (response) {
-                debugger
-                if (response.success) {
+                if (response) {
                     var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
-                    Toast.fire({ icon: 'success', title: 'Tenant Created Successfully' });
+                    Toast.fire({ icon: 'success', title: 'Tenant created Successfully..!' });
                     Refresh();
                 } else {
                     var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
-                    Toast.fire({ icon: 'error', title: 'An error Occured' });
+                    Toast.fire({ icon: 'error', title: 'Failed to create Tenant' });
                 }
             },
             error: function (xhr, status, error) {
                 var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
-                Toast.fire({ icon: 'error', title: 'An error Occured' });
+                Toast.fire({ icon: 'error', title: 'An error Occurred' });
             }
         });
     }
