@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PMS_PropertyHapa.Admin.Data
+namespace PMS_PropertyHapa.Models.Roles
 {
     public class RoleEdit
     {

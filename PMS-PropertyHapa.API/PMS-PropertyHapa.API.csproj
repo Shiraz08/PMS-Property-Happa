@@ -30,6 +30,7 @@
 
 
 	<ItemGroup>
+	  <ProjectReference Include="..\PMS-PropertyHapa.MigrationsFiles\PMS-PropertyHapa.MigrationsFiles.csproj" />
 	  <ProjectReference Include="..\PMS-PropertyHapa.Models\PMS-PropertyHapa.Models.csproj" />
 	</ItemGroup>
 

@@ -2,7 +2,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using PMS_PropertyHapa.Admin.Data;
+using PMS_PropertyHapa.MigrationsFiles.Data;
+using PMS_PropertyHapa.MigrationsFiles.Data;
 using PMS_PropertyHapa.Models.Entities;
 
 namespace PMS_PropertyHapa.Admin.Controllers
@@ -10,10 +11,10 @@ namespace PMS_PropertyHapa.Admin.Controllers
     [Authorize]
     public class GroupRolesController : Controller
     {
-        private readonly PropertyHapaAdminContext _context;
+        private readonly ApiDbContext _context;
         public readonly RoleManager<IdentityRole> _roleManager;
 
-        public GroupRolesController(PropertyHapaAdminContext context, RoleManager<IdentityRole> roleManager)
+        public GroupRolesController(ApiDbContext context, RoleManager<IdentityRole> roleManager)
         {
             _context = context;
             _roleManager = roleManager;

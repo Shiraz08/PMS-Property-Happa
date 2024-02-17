@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
-using PMS_PropertyHapa.API.Areas.Identity.Data;
+using PMS_PropertyHapa.MigrationsFiles.Data;
 using PMS_PropertyHapa.Models.DTO;
 using PMS_PropertyHapa.Models.Entities;
+using PMS_PropertyHapa.Models.Roles;
 
 namespace PMS_PropertyHapa.API
 {

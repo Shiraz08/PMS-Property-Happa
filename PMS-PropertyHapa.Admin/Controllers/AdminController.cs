@@ -4,9 +4,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using NuGet.ProjectModel;
-using PMS_PropertyHapa.Admin.Data;
+using PMS_PropertyHapa.MigrationsFiles.Data;
+using PMS_PropertyHapa.MigrationsFiles.Data;
 using PMS_PropertyHapa.Models.DTO;
 using PMS_PropertyHapa.Models.Entities;
+using PMS_PropertyHapa.Models.Roles;
 using System.Net;
 using System.Net.Http.Headers;
 using static System.Net.WebRequestMethods;
@@ -20,11 +22,11 @@ namespace PMS_PropertyHapa.Admin.Controllers
         private IPasswordHasher<ApplicationUser> _passwordHasher;
         private UserManager<ApplicationUser> _UserManager;
         private SignInManager<ApplicationUser> _SignInManager;
-        private PropertyHapaAdminContext _context;
+        private ApiDbContext _context;
         private readonly IEmailSender _emailSender;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly Microsoft.AspNetCore.Hosting.IHostingEnvironment _hostingEnvironment;
-        public AdminController(UserManager<ApplicationUser> usrMgr, IPasswordHasher<ApplicationUser> passwordHash, UserManager<ApplicationUser> userMgr, SignInManager<ApplicationUser> signinMgr, IWebHostEnvironment webHostEnvironment, PropertyHapaAdminContext context, IEmailSender emailSender, Microsoft.AspNetCore.Hosting.IHostingEnvironment hostingEnvironment)
+        public AdminController(UserManager<ApplicationUser> usrMgr, IPasswordHasher<ApplicationUser> passwordHash, UserManager<ApplicationUser> userMgr, SignInManager<ApplicationUser> signinMgr, IWebHostEnvironment webHostEnvironment, ApiDbContext context, IEmailSender emailSender, Microsoft.AspNetCore.Hosting.IHostingEnvironment hostingEnvironment)
         {
             userManager = usrMgr;
             _passwordHasher = passwordHash;
@@ -209,7 +211,7 @@ namespace PMS_PropertyHapa.Admin.Controllers
                     user.Email = applicationUser.Email;
                     user.ModifiedBy = User.Identity?.Name;
                     user.ModifiedDate = DateTime.Now;
-                    user.BirthDate = bdate;
+                    user.BirthDate = (DateTime)bdate;
                     user.PhoneNumber = applicationUser.PhoneNumber;
                     user.FirstName = applicationUser.FirstName;
                     user.LastName = applicationUser.LastName;

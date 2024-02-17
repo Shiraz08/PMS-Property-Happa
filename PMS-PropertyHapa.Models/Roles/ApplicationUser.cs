@@ -1,6 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace PMS_PropertyHapa.Admin.Data
+namespace PMS_PropertyHapa.Models.Roles
 {
     public class ApplicationUser : IdentityUser
     {
@@ -13,6 +18,7 @@ namespace PMS_PropertyHapa.Admin.Data
         public int UserTypeId { get; set; }
         public string IP { get; set; }
         public string PhoneNumber { get; set; }
+        public DateTime BirthDate { get; set; }
         public string PasswordShow { get; set; }
         public string Picture { get; set; }
         public string Address { get; set; }
@@ -28,7 +34,6 @@ namespace PMS_PropertyHapa.Admin.Data
         public DateTime AddedDate { get; set; }
         public string AddedBy { get; set; }
         public DateTime ModifiedDate { get; set; }
-        public DateTime? BirthDate { get; set; }
         public string ModifiedBy { get; set; }
 
     }

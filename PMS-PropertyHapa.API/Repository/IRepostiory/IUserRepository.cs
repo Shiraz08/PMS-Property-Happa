@@ -1,7 +1,8 @@
 ﻿
 using Microsoft.AspNetCore.Identity;
-using PMS_PropertyHapa.API.Areas.Identity.Data;
+using PMS_PropertyHapa.MigrationsFiles.Data;
 using PMS_PropertyHapa.Models.DTO;
+using PMS_PropertyHapa.Models.Roles;
 
 namespace MagicVilla_VillaAPI.Repository.IRepostiory
 {

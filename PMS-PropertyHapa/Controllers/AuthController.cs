@@ -3,10 +3,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using NuGet.Protocol.Plugins;
-using PMS_PropertyHapa.Admin.Data;
+using PMS_PropertyHapa.MigrationsFiles.Data;
 using PMS_PropertyHapa.Models;
 using PMS_PropertyHapa.Models.DTO;
+using PMS_PropertyHapa.Models.Roles;
 using PMS_PropertyHapa.Services.IServices;
 using PMS_PropertyHapa.Shared.Enum;
 
@@ -19,10 +19,10 @@ namespace PMS_PropertyHapa.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
-        private PropertyHapaAdminContext _context;
+        private ApiDbContext _context;
         private readonly IUserStore<ApplicationUser> _userStore;
         private IWebHostEnvironment _environment;
-        public AuthController(IAuthService authService, ITokenProvider tokenProvider, IWebHostEnvironment Environment, ILogger<HomeController> logger, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, PropertyHapaAdminContext context, IUserStore<ApplicationUser> userStore)
+        public AuthController(IAuthService authService, ITokenProvider tokenProvider, IWebHostEnvironment Environment, ILogger<HomeController> logger, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, ApiDbContext context, IUserStore<ApplicationUser> userStore)
         {
             _authService = authService;
             _tokenProvider = tokenProvider;

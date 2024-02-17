@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using PMS_PropertyHapa.Shared.PasswordHash;
 using System.Security.Claims;
 
-namespace PMS_PropertyHapa.Admin.Data
+namespace PMS_PropertyHapa.Models.Roles   
 {
     public static class StaticRoles
     {

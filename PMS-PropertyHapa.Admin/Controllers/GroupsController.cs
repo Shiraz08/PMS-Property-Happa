@@ -3,8 +3,9 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using PMS_PropertyHapa.Admin.Data;
+using PMS_PropertyHapa.MigrationsFiles.Data;
 using PMS_PropertyHapa.Models.Entities;
+using PMS_PropertyHapa.Models.Roles;
 
 namespace PMS_PropertyHapa.Admin.Controllers
 {
@@ -15,11 +16,11 @@ namespace PMS_PropertyHapa.Admin.Controllers
         private UserManager<ApplicationUser> userManager;
         private UserManager<ApplicationUser> _UserManager;
         private SignInManager<ApplicationUser> _SignInManager;
-        private PropertyHapaAdminContext _context;
+        private ApiDbContext _context;
         private readonly IEmailSender _emailSender;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public GroupsController(RoleManager<IdentityRole> roleMgr, UserManager<ApplicationUser> userMrg, UserManager<ApplicationUser> userMgr, SignInManager<ApplicationUser> signinMgr, IWebHostEnvironment webHostEnvironment, PropertyHapaAdminContext context, IEmailSender emailSender)
+        public GroupsController(RoleManager<IdentityRole> roleMgr, UserManager<ApplicationUser> userMrg, UserManager<ApplicationUser> userMgr, SignInManager<ApplicationUser> signinMgr, IWebHostEnvironment webHostEnvironment, ApiDbContext context, IEmailSender emailSender)
         {
             roleManager = roleMgr;
             userManager = userMrg;

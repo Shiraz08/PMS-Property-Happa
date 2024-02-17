@@ -4,12 +4,12 @@ using Microsoft.AspNetCore.Mvc;
 using PMS_PropertyHapa.Models;
 using PMS_PropertyHapa.Models.DTO;
 using System.Net;
-using PMS_PropertyHapa.API.Areas.Identity.Data;
-using PMS_PropertyHapa.Shared.Email;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using System.Web;
 using System.Security.Claims;
 using System.Net.Http.Headers;
+using PMS_PropertyHapa.MigrationsFiles.Data;
+using PMS_PropertyHapa.Models.Roles;
 
 namespace PMS_PropertyHapa.API.Controllers.V1
 {

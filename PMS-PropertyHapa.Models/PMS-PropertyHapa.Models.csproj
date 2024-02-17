@@ -11,4 +11,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\PMS-PropertyHapa.Shared\PMS-PropertyHapa.Shared.csproj" />
+  </ItemGroup>
+
 </Project>

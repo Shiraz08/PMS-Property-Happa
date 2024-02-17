@@ -1,6 +1,6 @@
 ﻿using MagicVilla_VillaAPI.Repository.IRepostiory;
 using Microsoft.EntityFrameworkCore;
-using PMS_PropertyHapa.API.Areas.Identity.Data;
+using PMS_PropertyHapa.MigrationsFiles.Data;
 using System.Linq.Expressions;
 
 namespace MagicVilla_VillaAPI.Repository

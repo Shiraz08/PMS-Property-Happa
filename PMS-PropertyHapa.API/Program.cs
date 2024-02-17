@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using PMS_PropertyHapa.API.Middlewares;
-using PMS_PropertyHapa.API.Areas.Identity.Data;
 using PMS_PropertyHapa.API;
 using PMS_PropertyHapa.API.Filters;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -19,6 +18,8 @@ using Hangfire.SqlServer;
 using AutoMapper;
 using PMS_PropertyHapa.Shared.Dapper;
 using PMS_PropertyHapa.Shared.MappingProfiles;
+using PMS_PropertyHapa.MigrationsFiles.Data;
+using PMS_PropertyHapa.Models.Roles;
 
 var builder = WebApplication.CreateBuilder(args);
 

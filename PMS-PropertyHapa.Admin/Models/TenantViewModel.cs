@@ -1,4 +1,6 @@
-﻿using System;
+﻿using PMS_PropertyHapa.MigrationsFiles.Data;
+using PMS_PropertyHapa.Models.Roles;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -9,7 +11,7 @@ namespace PMS_PropertyHapa.Models.DTO
 {
     public class TenantViewModel
     {
-        public PMS_PropertyHapa.Admin.Data.ApplicationUser User { get; set; }
+        public ApplicationUser User { get; set; }
         public TenantOrganizationInfoDto2 OrganizationInfo { get; set; }
     }
 }

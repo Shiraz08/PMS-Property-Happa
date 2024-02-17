@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using NuGet.Protocol.Plugins;
-using PMS_PropertyHapa.Admin.Data;
+using PMS_PropertyHapa.MigrationsFiles.Data;
 using PMS_PropertyHapa.Models.DTO;
+using PMS_PropertyHapa.Models.Roles;
 using PMS_PropertyHapa.Shared.Email;
 using PMS_PropertyHapa.Shared.Enum;
 using System.Security.Cryptography;
@@ -18,14 +18,14 @@ namespace PMS_PropertyHapa.Admin.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly SignInManager<ApplicationUser> _signInManager; 
         private readonly UserManager<ApplicationUser> _userManager;
-        private PropertyHapaAdminContext _context;
+        private ApiDbContext _context;
         private readonly IUserStore<ApplicationUser> _userStore;
         private IWebHostEnvironment _environment;
         private readonly string EncryptionKey = "bXlTZWN1cmVLZXlIZXJlMTIzNDU2Nzg5";
 
         private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
         EmailSender _emailSender = new EmailSender();
-        public AccountController(IWebHostEnvironment Environment, ILogger<HomeController> logger, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, PropertyHapaAdminContext context, IUserStore<ApplicationUser> userStore)
+        public AccountController(IWebHostEnvironment Environment, ILogger<HomeController> logger, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, ApiDbContext context, IUserStore<ApplicationUser> userStore)
         {
             _logger = logger;
             _signInManager = signInManager;

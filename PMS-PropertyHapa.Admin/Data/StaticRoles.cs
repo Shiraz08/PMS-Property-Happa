@@ -1,9 +1,11 @@
 ﻿using Ecommerce.UI.Models.Claims;
 using Microsoft.AspNetCore.Identity;
+using PMS_PropertyHapa.MigrationsFiles.Data;
+using PMS_PropertyHapa.Models.Roles;
 using PMS_PropertyHapa.Shared.PasswordHash;
 using System.Security.Claims;
 
-namespace PMS_PropertyHapa.Admin.Data
+namespace PMS_PropertyHapa.Migration.Data
 {
     public static class StaticRoles
     {

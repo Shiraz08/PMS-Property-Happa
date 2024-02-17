@@ -2,21 +2,21 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json.Serialization;
 using PMS_PropertyHapa.Shared.Email;
-using PMS_PropertyHapa.Admin.Data;
+using PMS_PropertyHapa.MigrationsFiles.Data;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.JsonPatch.Internal;
 using PMS_PropertyHapa.Shared.Dapper;
 using AutoMapper;
 using PMS_PropertyHapa.Shared.MappingProfiles;
+using PMS_PropertyHapa.Models.Roles;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 var connectionString = builder.Configuration.GetConnectionString("DefaultSQLConnection") ?? throw new InvalidOperationException("Connection string 'DefaultSQLConnection' not found.");
-builder.Services.AddDbContext<PropertyHapaAdminContext>(options => options.UseSqlServer(connectionString));
-builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true).AddRoles<IdentityRole>().AddEntityFrameworkStores<PropertyHapaAdminContext>();
-builder.Services.AddDbContext<PropertyHapaAdminContext>(options =>
+builder.Services.AddDbContext<ApiDbContext>(options => options.UseSqlServer(connectionString));
+builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true).AddRoles<IdentityRole>().AddEntityFrameworkStores<ApiDbContext>();
+builder.Services.AddDbContext<ApiDbContext>(options =>
 {
     options.UseSqlServer(connectionString);
     options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);

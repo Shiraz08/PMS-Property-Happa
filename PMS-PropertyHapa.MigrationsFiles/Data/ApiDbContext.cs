@@ -1,14 +1,21 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using PMS_PropertyHapa.Models.Entities;
 using PMS_PropertyHapa.Models;
+using PMS_PropertyHapa.Models.Entities;
+using PMS_PropertyHapa.Models.Roles;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection.Emit;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace PMS_PropertyHapa.Admin.Data
+namespace PMS_PropertyHapa.MigrationsFiles.Data
 {
-    public class PropertyHapaAdminContext : IdentityDbContext<ApplicationUser>
+    public class ApiDbContext : IdentityDbContext<ApplicationUser>
     {
-        public PropertyHapaAdminContext(DbContextOptions<PropertyHapaAdminContext> options)
-            : base(options)
+        public ApiDbContext(DbContextOptions<ApiDbContext> options)
+    : base(options)
         {
         }
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
@@ -19,11 +26,9 @@ namespace PMS_PropertyHapa.Admin.Data
         public DbSet<TenantOrganizationInfo> TenantOrganizationInfo { get; set; }
         public DbSet<PropertyType> PropertyType { get; set; }
         public DbSet<PropertySubType> PropertySubType { get; set; }
-        protected override void OnModelCreating(ModelBuilder builder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(builder);
-
-
+            base.OnModelCreating(modelBuilder);
         }
     }
 }

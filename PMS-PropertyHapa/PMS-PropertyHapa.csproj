@@ -34,6 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\PMS-PropertyHapa.MigrationsFiles\PMS-PropertyHapa.MigrationsFiles.csproj" />
     <ProjectReference Include="..\PMS-PropertyHapa.Models\PMS-PropertyHapa.Models.csproj" />
     <ProjectReference Include="..\PMS-PropertyHapa.Shared\PMS-PropertyHapa.Shared.csproj" />
   </ItemGroup>
