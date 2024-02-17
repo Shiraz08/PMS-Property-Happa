@@ -75,23 +75,52 @@ namespace PMS_PropertyHapa.Admin.Controllers
                         Country = model.User.Country,
                         Group = model.User.Group
                     };
+                    var uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "uploads");
 
+                    if (!Directory.Exists(uploadsFolder))
+                    {
+                        Directory.CreateDirectory(uploadsFolder);
+                    }
+                    var orgIconFileName = await ProcessFileUpload(model.OrganizationInfo.OrganizationIconFile, uploadsFolder);
+                    var orgLogoFileName = await ProcessFileUpload(model.OrganizationInfo.OrganizationLogoFile, uploadsFolder);
+
+                    //Upload File On Server FTP
+                    string ftpServer = "ftp://UploadFiles@65.108.74.182/";
+                    string userName = "UploadFiles";
+                    string password = "Talha.Musa.@786";
+                    string sourceFilePathlogo = uploadsFolder + @"\" + orgLogoFileName;
+                    string sourceFilePathIcon = uploadsFolder + @"\" + orgIconFileName;
+                    //Logo Upload
+                    using (var fileStream = System.IO.File.OpenRead(sourceFilePathlogo))
+                    {
+                        var request = (FtpWebRequest)WebRequest.Create(new Uri(ftpServer + orgLogoFileName));
+                        request.Credentials = new NetworkCredential(userName, password);
+                        request.Method = WebRequestMethods.Ftp.UploadFile;
+
+                        using (var requestStream = request.GetRequestStream())
+                        {
+                            fileStream.CopyTo(requestStream);
+                        }
+                    }
+                    //Icon Upload
+                    using (var fileStreams = System.IO.File.OpenRead(sourceFilePathIcon))
+                    {
+                        var requests = (FtpWebRequest)WebRequest.Create(new Uri(ftpServer + orgIconFileName));
+                        requests.Credentials = new NetworkCredential(userName, password);
+                        requests.Method = WebRequestMethods.Ftp.UploadFile;
+
+                        using (var requestStream = requests.GetRequestStream())
+                        {
+                            fileStreams.CopyTo(requestStream);
+                        }
+                    }
                     var createUserResult = await userManager.CreateAsync(appUser, model.User.Password);
                     if (!createUserResult.Succeeded)
                     {
                         var errors = string.Join("; ", createUserResult.Errors.Select(e => e.Description));
                         return Json(new { success = false, message = $"User creation failed: {errors}" });
                     }
-
-                    var uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "uploads");
-                    var orgIconFileName = await ProcessFileUpload(model.OrganizationInfo.OrganizationIconFile, uploadsFolder);
-                    var orgLogoFileName = await ProcessFileUpload(model.OrganizationInfo.OrganizationLogoFile, uploadsFolder);
-                    if (orgIconFileName == null || orgLogoFileName == null)
-                    {
-                        return Json(new { success = false, message = "File upload failed." });
-                    }
-
-                    
+                   
 
                     await userManager.AddToRoleAsync(appUser, model.User.Group);
 

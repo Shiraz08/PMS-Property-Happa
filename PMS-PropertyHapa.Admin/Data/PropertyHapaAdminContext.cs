@@ -17,6 +17,8 @@ namespace PMS_PropertyHapa.Admin.Data
         public DbSet<TblAssignRole> TblAssignRoles { get; set; }
         public DbSet<TblRolePage> TblRolePages { get; set; }
         public DbSet<TenantOrganizationInfo> TenantOrganizationInfo { get; set; }
+        public DbSet<PropertyType> PropertyType { get; set; }
+        public DbSet<PropertySubType> PropertySubType { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
