@@ -27,8 +27,11 @@
     <!-- Plugins css start-->
     <link rel="stylesheet" type="text/css" href="~/Dashboard/assets/css/vendors/scrollbar.css">
     <link rel="stylesheet" type="text/css" href="~/Dashboard/assets/css/vendors/animate.css">
+    <link rel="stylesheet" type="text/css" href="~/Dashboard/assets/css/vendors/chartist.css">
     <link rel="stylesheet" type="text/css" href="~/Dashboard/assets/css/vendors/date-picker.css">
     <link rel="stylesheet" type="text/css" href="~/Dashboard/assets/css/vendors/photoswipe.css">
+    <link rel="stylesheet" type="text/css" href="~/Dashboard/assets/css/vendors/owlcarousel.css">
+    <link rel="stylesheet" type="text/css" href="~/Dashboard/assets/css/vendors/prism.css">
     <!-- Plugins css Ends-->
     <!-- Plugins css start-->
     <link rel="stylesheet" type="text/css" href="~/Dashboard/assets/css/vendors/scrollbar.css">
@@ -46,12 +49,12 @@
             padding: 3px 30px !important;
         }
 
-        .profile-greeting {
+/*         .profile-greeting {
             position: relative !important;
             background-color: var(--theme-deafult) !important;
             color: #fff !important;
             height: 154px !important;
-        }
+        } */
     </style>
 </head>
 <body>
@@ -170,6 +173,18 @@
                                 <li class="back-btn">
                                     <a href="index.html"><img class="img-fluid" src="~/Dashboard/assets/images/logo-icon.png" alt=""></a>
                                     <div class="mobile-back text-end"><span>Back</span><i class="fa fa-angle-right ps-2" aria-hidden="true">        </i></div>
+                                </li>
+                                <li class="sidebar-list">
+                                    <a class="sidebar-link sidebar-title link-nav" href="@Url.Action("Index","Dashboard")">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <g>
+                                                <g>
+                                                    <path d="M9.07861 16.1355H14.8936" stroke="#130F26" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M2.3999 13.713C2.3999 8.082 3.0139 8.475 6.3189 5.41C7.7649 4.246 10.0149 2 11.9579 2C13.8999 2 16.1949 4.235 17.6539 5.41C20.9589 8.475 21.5719 8.082 21.5719 13.713C21.5719 22 19.6129 22 11.9859 22C4.3589 22 2.3999 22 2.3999 13.713Z" stroke="#130F26" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                </g>
+                                            </g>
+                                        </svg><span>Dashboard</span>
+                                    </a>
                                 </li>
                                 <li class="sidebar-list">
                                     <a class="sidebar-link sidebar-title" href="#">
@@ -396,6 +411,19 @@
     <script src="~/Dashboard/assets/js/typeahead-search/typeahead-custom.js"></script>
     <script src="~/Dashboard/assets/js/height-equal.js"></script>
     <!-- Plugins JS Ends-->
+
+    <script src="~/Dashboard/assets/js/chart/chartjs/chart.min.js"></script>
+    <script src="~/Dashboard/assets/js/chart/chartist/chartist.js"></script>
+    <script src="~/Dashboard/assets/js/chart/chartist/chartist-plugin-tooltip.js"></script>
+    <script src="~/Dashboard/assets/js/prism/prism.min.js"></script>
+    <script src="~/Dashboard/assets/js/counter/jquery.waypoints.min.js"></script>
+    <script src="~/Dashboard/assets/js/counter/jquery.counterup.min.js"></script>
+    <script src="~/Dashboard/assets/js/counter/counter-custom.js"></script>
+    <script src="~/Dashboard/assets/js/owlcarousel/owl.carousel.js"></script>
+    <script src="~/Dashboard/assets/js/owlcarousel/owl-custom.js"></script>
+    <script src="~/Dashboard/assets/js/dashboard/dashboard_2.js"></script>
+    <script src="~/Dashboard/assets/js/tooltip-init.js"></script>
+
     <!-- Theme js-->
     <script src="~/Dashboard/assets/js/script.js"></script>
     <script src="~/Dashboard/assets/js/theme-customizer/customizer.js"></script>

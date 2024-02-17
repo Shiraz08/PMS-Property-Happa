@@ -72,7 +72,7 @@ namespace PMS_PropertyHapa.Admin.Controllers
                         Microsoft.AspNetCore.Identity.SignInResult result = await _signInManager.PasswordSignInAsync(appUser, login.Password, login.Remember, false);
 
                         if (result.Succeeded)
-                            return RedirectToAction("Index", "Home");
+                            return RedirectToAction("Index", "Dashboard");
 
                         if (result.IsLockedOut)
                             ModelState.AddModelError("", "Your account is locked out. Kindly wait for 10 minutes and try again");
