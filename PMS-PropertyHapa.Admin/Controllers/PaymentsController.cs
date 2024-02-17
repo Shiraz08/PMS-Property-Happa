@@ -2,17 +2,17 @@
 
 namespace PMS_PropertyHapa.Admin.Controllers
 {
-    public class ReportsController : Controller
+    public class PaymentsController : Controller
     {
-        public IActionResult RentReports()
+        public IActionResult PaidPayments()
         {
             return View();
         }
-        public IActionResult LeaseReports()
+        public IActionResult DuePayments()
         {
             return View();
         }
-        public IActionResult InvoiceReports()
+        public IActionResult UnPiadPayments()
         {
             return View();
         }

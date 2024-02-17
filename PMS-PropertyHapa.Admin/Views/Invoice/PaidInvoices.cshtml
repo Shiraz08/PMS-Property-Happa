@@ -1,0 +1,415 @@
+﻿
+@{
+    ViewData["Title"] = "PaidInvoices";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-sm-6">
+                    <h3>Paid Invoices</h3>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"> <a class="home-item" href="index.html"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item">Invoice</li>
+                        <li class="breadcrumb-item active">PaidInvoices </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid starts         -->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xl-3 xl-40 box-col-5">
+                <div class="job-sidebar md-sidebar">
+                    <a class="btn btn-primary md-sidebar-toggle" href="javascript:void(0)">job filter</a>
+                    <div class="md-sidebar-aside job-left-aside custom-scrollbar">
+                        <div class="default-according style-1 job-accordion" id="accordionoc">
+                            <div class="row">
+                                <div class="col-xl-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5 class="mb-0 p-0">
+                                                <button class="btn btn-link" data-bs-toggle="collapse" data-bs-target="#collapseicon" aria-expanded="true" aria-controls="collapseicon">Filter</button>
+                                            </h5>
+                                        </div>
+                                        <div class="collapse show" id="collapseicon" aria-labelledby="collapseicon" data-parent="#accordion">
+                                            <div class="card-body filter-cards-view animate-chk">
+                                                <div class="job-filter mb-3">
+                                                    <div class="faq-form">
+                                                        <input class="form-control" type="text" placeholder="Search.."><i class="search-icon" data-feather="search"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="job-filter">
+                                                    <div class="faq-form">
+                                                        <input class="form-control" type="text" placeholder="Building, Unit..."><i class="search-icon" data-feather="map-pin"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="checkbox-animated">
+                                                    <label class="d-block" for="chk-ani">
+                                                        <input class="checkbox_animated" id="chk-ani" type="checkbox"> Test 1
+                                                    </label>
+                                                    <label class="d-block" for="chk-ani1">
+                                                        <input class="checkbox_animated" id="chk-ani1" type="checkbox"> Test 2
+                                                    </label>
+                                                    <label class="d-block" for="chk-ani2">
+                                                        <input class="checkbox_animated" id="chk-ani2" type="checkbox"> Test 3
+                                                    </label>
+                                                    <label class="d-block" for="chk-ani3">
+                                                        <input class="checkbox_animated" id="chk-ani3" type="checkbox"> Test 4
+                                                    </label>
+                                                    <label class="d-block" for="chk-ani4">
+                                                        <input class="checkbox_animated" id="chk-ani4" type="checkbox"> Test 5
+                                                    </label>
+                                                    <label class="d-block" for="chk-ani5">
+                                                        <input class="checkbox_animated" id="chk-ani5" type="checkbox"> Test 6
+                                                    </label>
+                                                </div>
+                                                <button class="btn btn-primary text-center" type="button">Search</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-9 xl-60 box-col-7">
+                <div class="row">
+                    <div class="col-xl-6 xl-100 box-col-12">
+                        <div class="card">
+                            <div class="job-search">
+                                <div class="card-body">
+                                    <div class="media">
+                                        <img class="img-40 img-fluid m-r-20" src="../assets/images/job-search/1.jpg" alt="">
+                                        <div class="media-body">
+                                            <h6 class="f-w-600"><a href="job-details.html">UI/UX IT Frontend Developer</a><span class="badge badge-primary pull-right">New</span></h6>
+                                            <p>(L6) Salt Lake City, UT</p>
+                                            <ul class="rating">
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <p>We are looking for an experienced and zeta designer and/or frontend engineer with expertise in accessibility to join our team , 3+ years of experience working in as a Frontend Engineer or comparable role.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6 xl-100 box-col-12">
+                        <div class="card">
+                            <div class="job-search">
+                                <div class="card-body">
+                                    <div class="media">
+                                        <img class="img-40 img-fluid m-r-20" src="../assets/images/job-search/2.jpg" alt="">
+                                        <div class="media-body">
+                                            <h6 class="f-w-600"><a href="job-details.html">React/React Native Developer </a><span class="badge badge-primary pull-right">New</span></h6>
+                                            <p>San <span>Diego, CA </span></p>
+                                            <ul class="rating">
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <p>Ideally 2+ years experience with React. Bonus points if you have React Native experience. This is an incredibly exciting opportunity to gain commercial , Professional experience of React Native and other front end frameworks. Transform product wireframes into responsive, mobile user interface</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6 xl-100 box-col-12">
+                        <div class="card ribbon-vertical-left-wrapper">
+                            <div class="ribbon ribbon-bookmark ribbon-vertical-left ribbon-secondary"><i class="icofont icofont-love"></i></div>
+                            <div class="job-search">
+                                <div class="card-body">
+                                    <div class="media">
+                                        <img class="img-40 img-fluid m-r-20" src="../assets/images/job-search/3.jpg" alt="">
+                                        <div class="media-body">
+                                            <h6 class="f-w-600"><a href="job-details.html">Senior UX designer</a><span class="pull-right">2 days ago</span></h6>
+                                            <p>Minneapolis, MN</p>
+                                            <ul class="rating">
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <p>The designer will apply Lean UX and Design Thinking practices in a highly collaborative, fast-paced, distributed environment You have 4+ years of UX experience. You support UX leadership by providing continuous feedback regarding the evolution of team process standards</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6 xl-100 box-col-12">
+                        <div class="card">
+                            <div class="job-search">
+                                <div class="card-body">
+                                    <div class="media">
+                                        <img class="img-40 img-fluid m-r-20" src="../assets/images/job-search/4.jpg" alt="">
+                                        <div class="media-body">
+                                            <h6 class="f-w-600"><a href="job-details.html">Front end web developer</a><span class="pull-right">3 days ago</span></h6>
+                                            <p>Cisco <span>Lelystad, Netherlands </span></p>
+                                            <ul class="rating">
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <p>Insipidity the sufficient discretion imprudence resolution sir him decisively. Proceed how any engaged visitor. Explained propriety off out perpetual his you. Feel sold off felt nay rose met you. We so entreaties cultivated astonished is. Was sister for few longer mrs sudden talent become.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6 xl-100 box-col-12">
+                        <div class="card">
+                            <div class="job-search">
+                                <div class="card-body">
+                                    <div class="media">
+                                        <img class="img-40 img-fluid m-r-20" src="../assets/images/job-search/5.jpg" alt="">
+                                        <div class="media-body">
+                                            <h6 class="f-w-600"><a href="job-details.html">Graphic designer</a><span class="pull-right">3 days ago</span></h6>
+                                            <p>Infosys <span>Lelystad, Netherlands </span></p>
+                                            <ul class="rating">
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <p>Contented get distrusts certainty nay are frankness concealed ham. On unaffected resolution on considered of. No thought me husband or colonel forming effects. End sitting shewing who saw besides son musical adapted. Contrasted interested eat alteration pianoforte sympathize was.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6 xl-100 box-col-12">
+                        <div class="card">
+                            <div class="job-search">
+                                <div class="card-body">
+                                    <div class="media">
+                                        <img class="img-40 img-fluid m-r-20" src="../assets/images/job-search/6.jpg" alt="">
+                                        <div class="media-body">
+                                            <h6 class="f-w-600"><a href="job-details.html">Designer, CRM</a><span class="pull-right">3 days ago</span></h6>
+                                            <p>Citrix <span>Lelystad, Netherlands </span></p>
+                                            <ul class="rating">
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <p>Situation admitting promotion at or to perceived be. Mr acuteness we as estimable enjoyment up. An held late as felt know. Learn do allow solid to grave. Middleton suspicion age her attention. Chiefly several bed its wishing. Is so moments on chamber pressed to. Doubtful yet way properly answered.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6 xl-100 box-col-12">
+                        <div class="card ribbon-vertical-left-wrapper">
+                            <div class="ribbon ribbon-bookmark ribbon-vertical-left ribbon-secondary"><i class="icofont icofont-love"></i></div>
+                            <div class="job-search">
+                                <div class="card-body">
+                                    <div class="media">
+                                        <img class="img-40 img-fluid m-r-20" src="../assets/images/job-search/2.jpg" alt="">
+                                        <div class="media-body">
+                                            <h6 class="f-w-600"><a href="job-details.html">React/React Native Developer </a><span class="pull-right">5 days ago</span></h6>
+                                            <p>San <span>Diego, CA</span></p>
+                                            <ul class="rating">
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <p>Ideally 2+ years experience with React. Bonus points if you have React Native experience. This is an incredibly exciting opportunity to gain commercial , Professional experience of React Native and other front end frameworks. Transform product wireframes into responsive</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6 xl-100 box-col-12">
+                        <div class="card">
+                            <div class="job-search">
+                                <div class="card-body">
+                                    <div class="media">
+                                        <img class="img-40 img-fluid m-r-20" src="../assets/images/job-search/3.jpg" alt="">
+                                        <div class="media-body">
+                                            <h6 class="f-w-600"><a href="job-details.html">Senior UX designer</a><span class="pull-right">5 days ago</span></h6>
+                                            <p>Minneapolis, MN</p>
+                                            <ul class="rating">
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <p>The designer will apply Lean UX and Design Thinking practices in a highly collaborative, fast-paced, distributed environment You have 4+ years of UX experience. You support UX leadership by providing continuous feedback regarding the evolution of team process standards</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6 xl-100 box-col-12">
+                        <div class="card">
+                            <div class="job-search">
+                                <div class="card-body">
+                                    <div class="media">
+                                        <img class="img-40 img-fluid m-r-20" src="../assets/images/job-search/5.jpg" alt="">
+                                        <div class="media-body">
+                                            <h6 class="f-w-600"><a href="job-details.html">Graphic designer</a><span class="pull-right">3 days ago</span></h6>
+                                            <p>Infosys <span>Lelystad, Netherlands </span></p>
+                                            <ul class="rating">
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <p>Contented get distrusts certainty nay are frankness concealed ham. On unaffected resolution on considered of. No thought me husband or colonel forming effects. End sitting shewing who saw besides son musical adapted. Contrasted interested eat alteration pianoforte sympathize was.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6 xl-100 box-col-12">
+                        <div class="card">
+                            <div class="job-search">
+                                <div class="card-body">
+                                    <div class="media">
+                                        <img class="img-40 img-fluid m-r-20" src="../assets/images/job-search/6.jpg" alt="">
+                                        <div class="media-body">
+                                            <h6 class="f-w-600"><a href="job-details.html">Designer, CRM</a><span class="pull-right">3 days ago</span></h6>
+                                            <p>Citrix <span>Lelystad, Netherlands </span></p>
+                                            <ul class="rating">
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <p>Situation admitting promotion at or to perceived be. Mr acuteness we as estimable enjoyment up. An held late as felt know. Learn do allow solid to grave. Middleton suspicion age her attention. Chiefly several bed its wishing. Is so moments on chamber pressed to. Doubtful yet way properly answered.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6 xl-100 box-col-12">
+                        <div class="card">
+                            <div class="job-search">
+                                <div class="card-body">
+                                    <div class="media">
+                                        <img class="img-40 img-fluid m-r-20" src="../assets/images/job-search/1.jpg" alt="">
+                                        <div class="media-body">
+                                            <h6 class="f-w-600"><a href="job-details.html">UI/UX IT Frontend Developer</a><span class="badge badge-primary pull-right">New</span></h6>
+                                            <p>(L6) Salt Lake City, UT</p>
+                                            <ul class="rating">
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <p>We are looking for an experienced and zeta designer and/or frontend engineer with expertise in accessibility to join our team , 3+ years of experience working in as a Frontend Engineer or comparable role. You won’t be a team of one though — you’ll be collaborating closely with other...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6 xl-100 box-col-12">
+                        <div class="card">
+                            <div class="job-search">
+                                <div class="card-body">
+                                    <div class="media">
+                                        <img class="img-40 img-fluid m-r-20" src="../assets/images/job-search/2.jpg" alt="">
+                                        <div class="media-body">
+                                            <h6 class="f-w-600"><a href="job-details.html">React/React Native Developer </a><span class="badge badge-primary pull-right">New</span></h6>
+                                            <p>San <span>Diego, CA </span></p>
+                                            <ul class="rating">
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <p>Ideally 2+ years experience with React. Bonus points if you have React Native experience. This is an incredibly exciting opportunity to gain commercial , Professional experience of React Native and other front end frameworks. Transform product wireframes into responsive, mobile user interface</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6 xl-100 box-col-12">
+                        <div class="card">
+                            <div class="job-search">
+                                <div class="card-body">
+                                    <div class="media">
+                                        <img class="img-40 img-fluid m-r-20" src="../assets/images/job-search/4.jpg" alt="">
+                                        <div class="media-body">
+                                            <h6 class="f-w-600"><a href="job-details.html">Front end web developer</a><span class="pull-right">3 days ago</span></h6>
+                                            <p>Cisco <span>Lelystad, Netherlands </span></p>
+                                            <ul class="rating">
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <p>Insipidity the sufficient discretion imprudence resolution sir him decisively. Proceed how any engaged visitor. Explained propriety off out perpetual his you. Feel sold off felt nay rose met you. We so entreaties cultivated astonished is. Was sister for few longer mrs sudden talent become.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6 xl-100 box-col-12">
+                        <div class="card ribbon-vertical-left-wrapper">
+                            <div class="ribbon ribbon-bookmark ribbon-vertical-left ribbon-secondary"><i class="icofont icofont-love"></i></div>
+                            <div class="job-search">
+                                <div class="card-body">
+                                    <div class="media">
+                                        <img class="img-40 img-fluid m-r-20" src="../assets/images/job-search/3.jpg" alt="">
+                                        <div class="media-body">
+                                            <h6 class="f-w-600"><a href="job-details.html">Senior UX designer</a><span class="pull-right">2 days ago</span></h6>
+                                            <p>Minneapolis, MN</p>
+                                            <ul class="rating">
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                                <li><i class="fa fa-star font-warning"></i></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <p>The designer will apply Lean UX and Design Thinking practices in a highly collaborative, fast-paced, distributed environment You have 4+ years of UX experience. You support UX leadership by providing continuous feedback regarding the evolution of team process standards</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
