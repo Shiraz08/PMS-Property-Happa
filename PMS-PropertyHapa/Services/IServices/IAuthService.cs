@@ -35,6 +35,34 @@ namespace PMS_PropertyHapa.Services.IServices
 
 
 
+
+
+        Task<List<PropertyTypeDto>> GetAllPropertyTypesAsync();
+        Task<List<PropertyTypeDto>> GetPropertyTypeByIdAsync(string tenantId);
+        Task<bool> CreatePropertyTypeAsync(PropertyTypeDto propertyType);
+        Task<bool> UpdatePropertyTypeAsync(PropertyTypeDto propertyType);
+        Task<bool> DeletePropertyTypeAsync(int propertytypeId);
+
+        Task<PropertyTypeDto> GetSinglePropertyTypeAsync(int propertytypeId);
+
+
+
+
+
+
+        Task<List<PropertySubTypeDto>> GetAllPropertySubTypesAsync();
+        Task<List<PropertySubTypeDto>> GetPropertySubTypeByIdAsync(int propertytypeId);
+        Task<bool> CreatePropertySubTypeAsync(PropertySubTypeDto propertyType);
+        Task<bool> UpdatePropertySubTypeAsync(PropertySubTypeDto propertyType);
+        Task<bool> DeletePropertySubTypeAsync(int propertysubtypeId);
+
+        Task<PropertySubTypeDto> GetSinglePropertySubTypeAsync(int propertysubtypeId);
+
+        Task<List<PropertyTypeDto>> GetAllPropertyTypes();
+
+
+
+
         Task<bool>UpdateTenantOrganizationAsync(TenantOrganizationInfoDto tenant);
 
         Task<TenantOrganizationInfoDto> GetTenantOrganizationByIdAsync(int tenantId);

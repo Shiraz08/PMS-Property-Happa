@@ -580,11 +580,362 @@ namespace MagicVilla_VillaAPI.Repository
 
 
 
+        #region PropertyType
+
+
+        public async Task<List<PropertyTypeDto>> GetAllPropertyTypes()
+        {
+            try
+            {
+                var propertyTypes = await _db.PropertyType
+                                             .AsNoTracking()
+                                             .ToListAsync();
+
+                var propertyTypeDtos = propertyTypes.Select(tenant => new PropertyTypeDto
+                {
+                    PropertyTypeId = tenant.PropertyTypeId,
+                    PropertyTypeName = tenant.PropertyTypeName,
+                    Icon_String = tenant.Icon_String,
+                    Icon_SVG = tenant.Icon_SVG,
+                    AppTenantId = tenant.AppTenantId,
+                    Status = tenant.Status,
+                    IsDeleted = tenant.IsDeleted,
+                    AddedDate = tenant.AddedDate,
+                    AddedBy = tenant.AddedBy,
+                    ModifiedDate = tenant.ModifiedDate,
+                    ModifiedBy = tenant.ModifiedBy
+                }).ToList();
+
+
+                return propertyTypeDtos;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping property types: {ex.Message}");
+                throw;
+            }
+        }
+
+
+        public async Task<List<PropertyTypeDto>> GetAllPropertyTypesAsync()
+        {
+            try
+            {
+                var propertyTypes = await _db.PropertyType
+                                             .AsNoTracking()
+                                             .ToListAsync();
+
+                var propertyTypeDtos = propertyTypes.Select(tenant => new PropertyTypeDto
+                {
+                    PropertyTypeId = tenant.PropertyTypeId,
+                    PropertyTypeName = tenant.PropertyTypeName,
+                    Icon_String = tenant.Icon_String,
+                    Icon_SVG = tenant.Icon_SVG,
+                    AppTenantId = tenant.AppTenantId,
+                    Status = tenant.Status,
+                    IsDeleted = tenant.IsDeleted,
+                    AddedDate = tenant.AddedDate,
+                    AddedBy = tenant.AddedBy,
+                    ModifiedDate = tenant.ModifiedDate,
+                    ModifiedBy = tenant.ModifiedBy
+                }).ToList();
+
+
+                return propertyTypeDtos;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping property types: {ex.Message}");
+                throw; 
+            }
+        }
+
+
+
+        public async Task<List<PropertyTypeDto>> GetPropertyTypeByIdAsync(string tenantId)
+        {
+            var tenants = await _db.PropertyType
+                                   .AsNoTracking()
+                                   .Where(t => t.AppTenantId == Guid.Parse(tenantId))
+                                   .ToListAsync();
+
+            if (tenants == null || !tenants.Any()) return new List<PropertyTypeDto>();
+
+            var tenantDtos = tenants.Select(tenant => new PropertyTypeDto
+            {
+                PropertyTypeId = tenant.PropertyTypeId,
+                PropertyTypeName = tenant.PropertyTypeName,
+                Icon_String = tenant.Icon_String,
+                Icon_SVG = tenant.Icon_SVG,
+                AppTenantId = tenant.AppTenantId,
+                Status = tenant.Status,
+                IsDeleted = tenant.IsDeleted,
+                AddedDate = tenant.AddedDate,
+                AddedBy = tenant.AddedBy,
+                ModifiedDate = tenant.ModifiedDate,
+                ModifiedBy = tenant.ModifiedBy
+            }).ToList();
+
+            return tenantDtos;
+        }
+
+
+
+        public async Task<PropertyTypeDto> GetSinglePropertyTypeByIdAsync(int propertytypeId)
+        {
+            var tenant = await _db.PropertyType.FirstOrDefaultAsync(t => t.PropertyTypeId == propertytypeId);
+
+            if (tenant == null)
+                return new PropertyTypeDto(); 
+
+            var tenantDto = new PropertyTypeDto
+            {
+                PropertyTypeId = tenant.PropertyTypeId,
+                PropertyTypeName = tenant.PropertyTypeName,
+                Icon_String = tenant.Icon_String,
+                Icon_SVG = tenant.Icon_SVG,
+                AppTenantId = tenant.AppTenantId,
+                Status = tenant.Status,
+                IsDeleted = tenant.IsDeleted,
+                AddedDate = tenant.AddedDate,
+                AddedBy = tenant.AddedBy,
+                ModifiedDate = tenant.ModifiedDate,
+                ModifiedBy = tenant.ModifiedBy
+            };
+
+            return tenantDto;
+        }
 
 
 
 
+        public async Task<bool> CreatePropertyTypeAsync(PropertyTypeDto tenant)
+        {
+            var newTenant = new PropertyType
+            {
+                PropertyTypeId = tenant.PropertyTypeId,
+                PropertyTypeName = tenant.PropertyTypeName,
+                Icon_String = tenant.Icon_String,
+                Icon_SVG = tenant.Icon_SVG,
+                AppTenantId = tenant.AppTenantId,
+                Status = tenant.Status,
+                IsDeleted = tenant.IsDeleted,
+                AddedDate = tenant.AddedDate,
+                AddedBy = tenant.AddedBy,
+                ModifiedDate = tenant.ModifiedDate,
+                ModifiedBy = tenant.ModifiedBy
+            };
 
+            await _db.PropertyType.AddAsync(newTenant);
+
+            var result = await _db.SaveChangesAsync();
+
+            return result > 0;
+        }
+
+
+        public async Task<bool> UpdatePropertyTypeAsync(PropertyTypeDto tenant)
+        {
+            var propertyType = await _db.PropertyType.FirstOrDefaultAsync(t => t.PropertyTypeId == tenant.PropertyTypeId);
+            if (tenant == null) return false;
+
+            var newTenant = new PropertyType
+            {
+                PropertyTypeId = tenant.PropertyTypeId,
+                PropertyTypeName = tenant.PropertyTypeName,
+                Icon_String = tenant.Icon_String,
+                Icon_SVG = tenant.Icon_SVG,
+                AppTenantId = tenant.AppTenantId,
+                Status = tenant.Status,
+                IsDeleted = tenant.IsDeleted,
+                AddedDate = tenant.AddedDate,
+                AddedBy = tenant.AddedBy,
+                ModifiedDate = tenant.ModifiedDate,
+                ModifiedBy = tenant.ModifiedBy
+            };
+
+            _db.PropertyType.Update(newTenant);
+            var result = await _db.SaveChangesAsync();
+            return result > 0;
+        }
+
+        public async Task<bool> DeletePropertyTypeAsync(int tenantId)
+        {
+            var tenant = await _db.PropertyType.FirstOrDefaultAsync(t => t.PropertyTypeId == tenantId);
+            if (tenant == null) return false;
+
+            _db.PropertyType.Remove(tenant);
+            var result = await _db.SaveChangesAsync();
+            return result > 0;
+        }
+
+
+
+        #endregion
+
+
+
+        #region PropertySubType
+        public async Task<List<PropertySubTypeDto>> GetAllPropertySubTypesAsync()
+        {
+            try
+            {
+                var propertyTypes = await _db.PropertySubType
+                                             .AsNoTracking()
+                                             .ToListAsync();
+
+                var propertyTypeDtos = propertyTypes.Select(tenant => new PropertySubTypeDto
+                {
+                    PropertySubTypeId = tenant.PropertySubTypeId,
+                    PropertyTypeId = tenant.PropertyTypeId,
+                    PropertySubTypeName = tenant.PropertySubTypeName,
+                    Icon_String = tenant.Icon_String,
+                    Icon_SVG = tenant.Icon_SVG,
+                    AppTenantId = tenant.AppTenantId,
+                    Status = tenant.Status,
+                    IsDeleted = tenant.IsDeleted,
+                    AddedDate = tenant.AddedDate,
+                    AddedBy = tenant.AddedBy,
+                    ModifiedDate = tenant.ModifiedDate,
+                    ModifiedBy = tenant.ModifiedBy
+                }).ToList();
+
+
+                return propertyTypeDtos;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping property types: {ex.Message}");
+                throw;
+            }
+        }
+
+
+
+        public async Task<List<PropertySubTypeDto>> GetPropertySubTypeByIdAsync(int propertytypeId)
+        {
+            var tenants = await _db.PropertySubType
+                                   .AsNoTracking()
+                                   .Where(t => t.PropertyTypeId == propertytypeId)
+                                   .ToListAsync();
+
+            if (tenants == null || !tenants.Any()) return new List<PropertySubTypeDto>();
+
+            var tenantDtos = tenants.Select(tenant => new PropertySubTypeDto
+            {
+                PropertySubTypeId = tenant.PropertySubTypeId,
+                PropertyTypeId = tenant.PropertyTypeId,
+                PropertySubTypeName = tenant.PropertySubTypeName,
+                Icon_String = tenant.Icon_String,
+                Icon_SVG = tenant.Icon_SVG,
+                AppTenantId = tenant.AppTenantId,
+                Status = tenant.Status,
+                IsDeleted = tenant.IsDeleted,
+                AddedDate = tenant.AddedDate,
+                AddedBy = tenant.AddedBy,
+                ModifiedDate = tenant.ModifiedDate,
+                ModifiedBy = tenant.ModifiedBy
+            }).ToList();
+
+            return tenantDtos;
+        }
+
+
+
+        public async Task<PropertySubTypeDto> GetSinglePropertySubTypeByIdAsync(int propertysubtypeId)
+        {
+            var tenant = await _db.PropertySubType.FirstOrDefaultAsync(t => t.PropertySubTypeId == propertysubtypeId);
+
+            if (tenant == null)
+                return new PropertySubTypeDto();
+
+            var tenantDto = new PropertySubTypeDto
+            {
+                PropertySubTypeId = tenant.PropertySubTypeId,
+                PropertyTypeId = tenant.PropertyTypeId,
+                PropertySubTypeName = tenant.PropertySubTypeName,
+                Icon_String = tenant.Icon_String,
+                Icon_SVG = tenant.Icon_SVG,
+                AppTenantId = tenant.AppTenantId,
+                Status = tenant.Status,
+                IsDeleted = tenant.IsDeleted,
+                AddedDate = tenant.AddedDate,
+                AddedBy = tenant.AddedBy,
+                ModifiedDate = tenant.ModifiedDate,
+                ModifiedBy = tenant.ModifiedBy
+            };
+
+            return tenantDto;
+        }
+
+
+
+
+        public async Task<bool> CreatePropertySubTypeAsync(PropertySubTypeDto tenant)
+        {
+            var newTenant = new PropertySubType
+            {
+                PropertySubTypeId = tenant.PropertySubTypeId,
+                PropertyTypeId = tenant.PropertyTypeId,
+                PropertySubTypeName = tenant.PropertySubTypeName,
+                Icon_String = tenant.Icon_String,
+                Icon_SVG = tenant.Icon_SVG,
+                AppTenantId = tenant.AppTenantId,
+                Status = tenant.Status,
+                IsDeleted = tenant.IsDeleted,
+                AddedDate = tenant.AddedDate,
+                AddedBy = tenant.AddedBy,
+                ModifiedDate = tenant.ModifiedDate,
+                ModifiedBy = tenant.ModifiedBy
+            };
+
+            await _db.PropertySubType.AddAsync(newTenant);
+
+            var result = await _db.SaveChangesAsync();
+
+            return result > 0;
+        }
+
+
+        public async Task<bool> UpdatePropertySubTypeAsync(PropertySubTypeDto tenant)
+        {
+            var propertyType = await _db.PropertySubType.FirstOrDefaultAsync(t => t.PropertySubTypeId == tenant.PropertySubTypeId);
+            if (tenant == null) return false;
+
+            var newTenant = new PropertySubType
+            {
+                PropertySubTypeId = tenant.PropertySubTypeId,
+                PropertyTypeId = tenant.PropertyTypeId,
+                PropertySubTypeName = tenant.PropertySubTypeName,
+                Icon_String = tenant.Icon_String,
+                Icon_SVG = tenant.Icon_SVG,
+                AppTenantId = tenant.AppTenantId,
+                Status = tenant.Status,
+                IsDeleted = tenant.IsDeleted,
+                AddedDate = tenant.AddedDate,
+                AddedBy = tenant.AddedBy,
+                ModifiedDate = tenant.ModifiedDate,
+                ModifiedBy = tenant.ModifiedBy
+            };
+
+            _db.PropertySubType.Update(newTenant);
+            var result = await _db.SaveChangesAsync();
+            return result > 0;
+        }
+
+        public async Task<bool> DeletePropertySubTypeAsync(int propertysubtypeId)
+        {
+            var tenant = await _db.PropertySubType.FirstOrDefaultAsync(t => t.PropertySubTypeId == propertysubtypeId);
+            if (tenant == null) return false;
+
+            _db.PropertySubType.Remove(tenant);
+            var result = await _db.SaveChangesAsync();
+            return result > 0;
+        }
+
+
+
+        #endregion
 
 
         #region Tenant
@@ -593,8 +944,37 @@ namespace MagicVilla_VillaAPI.Repository
             var tenants = await _db.Tenant
                                    .AsNoTracking()
                                    .ToListAsync();
-        
-            var tenantDtos = _mapper.Map<IEnumerable<TenantModelDto>>(tenants);
+
+            var tenantDtos = tenants.Select(tenant => new TenantModelDto
+            {
+                TenantId = tenant.TenantId,
+                FirstName = tenant.FirstName,
+                LastName = tenant.LastName,
+                EmailAddress = tenant.EmailAddress,
+                PhoneNumber = tenant.PhoneNumber,
+                EmergencyContactInfo = tenant.EmergencyContactInfo,
+                LeaseAgreementId = tenant.LeaseAgreementId,
+                TenantNationality = tenant.TenantNationality,
+                Gender = tenant.Gender,
+                DOB = tenant.DOB,
+                VAT = tenant.VAT,
+                LegalName = tenant.LegalName,
+                Account_Name = tenant.Account_Name,
+                Account_Holder = tenant.Account_Holder,
+                Account_IBAN = tenant.Account_IBAN,
+                Account_Swift = tenant.Account_Swift,
+                Account_Bank = tenant.Account_Bank,
+                Account_Currency = tenant.Account_Currency,
+                Address = tenant.Address,
+                Address2 = tenant.Address2,
+                Locality = tenant.Locality,
+                Region = tenant.Region,
+                PostalCode = tenant.PostalCode,
+                Country = tenant.Country,
+                CountryCode = tenant.CountryCode
+            }).ToList();
+
+
             return tenantDtos;
         }
 
