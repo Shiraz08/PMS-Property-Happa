@@ -57,8 +57,35 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
         #endregion
 
 
+
+        #region PropertyType
+        Task<List<PropertyTypeDto>> GetAllPropertyTypesAsync();
+        Task<List<PropertyTypeDto>> GetPropertyTypeByIdAsync(string tenantId);
+        Task<bool> CreatePropertyTypeAsync(PropertyTypeDto tenantDto);
+        Task<bool> UpdatePropertyTypeAsync(PropertyTypeDto tenantDto);
+        Task<bool> DeletePropertyTypeAsync(int tenantId);
+
+        Task<PropertyTypeDto> GetSinglePropertyTypeByIdAsync(int tenantId);
+        #endregion
+
+
+
+        #region PropertySubType
+
+        Task<List<PropertyTypeDto>> GetAllPropertyTypes();
+        Task<List<PropertySubTypeDto>> GetAllPropertySubTypesAsync();
+        Task<List<PropertySubTypeDto>> GetPropertySubTypeByIdAsync(int propertytypeId);
+        Task<bool> CreatePropertySubTypeAsync(PropertySubTypeDto tenantDto);
+        Task<bool> UpdatePropertySubTypeAsync(PropertySubTypeDto tenantDto);
+        Task<bool> DeletePropertySubTypeAsync(int propertysubtypeId);
+
+        Task<PropertySubTypeDto> GetSinglePropertySubTypeByIdAsync(int propertysubtypeId);
+        #endregion
+
+
         Task<TenantOrganizationInfoDto> GetTenantOrgByIdAsync(int tenantId);
 
         Task<bool> UpdateTenantOrgAsync(TenantOrganizationInfoDto tenantDto);
+
     }
 }

@@ -403,5 +403,316 @@ namespace PMS_PropertyHapa.Services
         }
 
         #endregion
+
+
+        #region PropertyType Crud
+
+
+        public async Task<List<PropertyTypeDto>> GetAllPropertyTypesAsync()
+        {
+            try
+            {
+                var apiResponse = await _baseService.SendAsync<APIResponse>(new APIRequest
+                {
+                    ApiType = SD.ApiType.GET,
+                    Url = $"{villaUrl}/api/v1/PropertySubTypeauth/AllPropertyType"
+                });
+
+                if (apiResponse != null && apiResponse.IsSuccess)
+                {
+                    var propertyTypes = JsonConvert.DeserializeObject<List<PropertyTypeDto>>(Convert.ToString(apiResponse.Result));
+                    return propertyTypes;
+                }
+                else
+                {
+                    throw new Exception("Failed to retrieve property types data");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when fetching property types data: {ex.Message}", ex);
+            }
+        }
+
+
+        public async Task<List<PropertyTypeDto>> GetPropertyTypeByIdAsync(string tenantId)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.GET,
+                    Url = $"{villaUrl}/api/v1/PropertyTypeauth/PropertyType/{tenantId}"
+                });
+
+                if (response != null && response.IsSuccess)
+                {
+                    return JsonConvert.DeserializeObject<List<PropertyTypeDto>>(Convert.ToString(response.Result));
+                }
+                else
+                {
+                    throw new Exception("Failed to retrieve property type data");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when fetching property type data: {ex.Message}", ex);
+            }
+        }
+
+
+        public async Task<PropertyTypeDto> GetSinglePropertyTypeAsync(int propertytypeId)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.GET,
+                    Url = $"{villaUrl}/api/v1/PropertyTypeauth/GetSinglePropertyType/{propertytypeId}"
+                });
+
+                if (response != null && response.IsSuccess)
+                {
+                    return JsonConvert.DeserializeObject<PropertyTypeDto>(Convert.ToString(response.Result));
+                }
+                else
+                {
+                    throw new Exception("Failed to retrieve property type data");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when fetching tenant data: {ex.Message}", ex);
+            }
+        }
+
+
+        public async Task<bool> CreatePropertyTypeAsync(PropertyTypeDto propertyType)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Data = propertyType,
+                    Url = $"{villaUrl}/api/v1/PropertyTypeauth/PropertyType"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when creating tenant: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<bool> UpdatePropertyTypeAsync(PropertyTypeDto propertyType)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.PUT,
+                    Data = propertyType,
+                    Url = $"{villaUrl}/api/v1/PropertyTypeauth/PropertyType/{propertyType.PropertyTypeId}"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when updating property type: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<bool> DeletePropertyTypeAsync(int propertytypeId)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.DELETE,
+                    Url = $"{villaUrl}/api/v1/PropertyTypeauth/PropertyType/{propertytypeId}"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when deleting tenant: {ex.Message}", ex);
+            }
+        }
+
+        #endregion
+
+
+
+
+        #region Property SubType Crud
+
+
+        public async Task<List<PropertyTypeDto>> GetAllPropertyTypes()
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.GET,
+                    Url = $"{villaUrl}/api/v1/PropertySubTypeauth/AllPropertyType"
+                });
+
+                if (response != null && response.IsSuccess)
+                {
+                    return JsonConvert.DeserializeObject<List<PropertyTypeDto>>(Convert.ToString(response.Result));
+                }
+                else
+                {
+                    throw new Exception("Failed to retrieve property types data");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when fetching property types data: {ex.Message}", ex);
+            }
+        }
+
+
+        public async Task<List<PropertySubTypeDto>> GetAllPropertySubTypesAsync()
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.GET,
+                    Url = $"{villaUrl}/api/v1/PropertyTypeauth/PropertySubType"
+                });
+
+                if (response != null && response.IsSuccess)
+                {
+
+                    return JsonConvert.DeserializeObject<List<PropertySubTypeDto>>(Convert.ToString(response.Result));
+                }
+                else
+                {
+                    throw new Exception("Failed to retrieve tenants data");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when fetching tenants data: {ex.Message}", ex);
+            }
+        }
+
+
+
+        public async Task<List<PropertySubTypeDto>> GetPropertySubTypeByIdAsync(int propertyTypeId)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.GET,
+                    Url = $"{villaUrl}/api/v1/PropertySubTypeauth/PropertySubType/{propertyTypeId}"
+                });
+
+                if (response != null && response.IsSuccess)
+                {
+                    return JsonConvert.DeserializeObject<List<PropertySubTypeDto>>(Convert.ToString(response.Result));
+                }
+                else
+                {
+                    throw new Exception("Failed to retrieve property sub type data");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when fetching property sub type data: {ex.Message}", ex);
+            }
+        }
+
+
+        public async Task<PropertySubTypeDto> GetSinglePropertySubTypeAsync(int propertysubtypeId)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.GET,
+                    Url = $"{villaUrl}/api/v1/PropertySubTypeauth/GetSinglePropertySubType/{propertysubtypeId}"
+                });
+
+                if (response != null && response.IsSuccess)
+                {
+                    return JsonConvert.DeserializeObject<PropertySubTypeDto>(Convert.ToString(response.Result));
+                }
+                else
+                {
+                    throw new Exception("Failed to retrieve property type data");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when fetching tenant data: {ex.Message}", ex);
+            }
+        }
+
+
+        public async Task<bool> CreatePropertySubTypeAsync(PropertySubTypeDto propertyType)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Data = propertyType,
+                    Url = $"{villaUrl}/api/v1/PropertySubTypeauth/PropertySubType"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when creating tenant: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<bool> UpdatePropertySubTypeAsync(PropertySubTypeDto propertyType)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.PUT,
+                    Data = propertyType,
+                    Url = $"{villaUrl}/api/v1/PropertySubTypeauth/PropertySubType/{propertyType.PropertySubTypeName}"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when updating property sub type: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<bool> DeletePropertySubTypeAsync(int propertysubtypeId)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.DELETE,
+                    Url = $"{villaUrl}/api/v1/PropertySubTypeauth/PropertySubType/{propertysubtypeId}"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when deleting tenant: {ex.Message}", ex);
+            }
+        }
+
+        #endregion
     }
 }

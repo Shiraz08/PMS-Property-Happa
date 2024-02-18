@@ -13,6 +13,9 @@ namespace PMS_PropertyHapa.API
             CreateMap<ApplicationUser, UserDTO>().ReverseMap();
 
             CreateMap<Tenant, TenantModelDto>().ReverseMap();
+
+            CreateMap<PropertyType, PropertyTypeDto>().ReverseMap();
+            CreateMap<PropertySubType, PropertySubTypeDto>().ReverseMap();
         }
     }
 }
