@@ -77,6 +77,7 @@ namespace PMS_PropertyHapa.Controllers
         }
 
 
+
         [HttpDelete]
         public async Task<IActionResult> Delete(int propertysubTypeId)
         {
