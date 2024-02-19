@@ -1,7 +1,8 @@
-﻿@model PMS_PropertyHapa.Models.DTO.PropertySubTypeDto
+﻿@using System.Text.Json
+@model PMS_PropertyHapa.Models.DTO.PropertySubTypeDto
 
 @{
-    ViewData["Title"] = "Add/Edit Property Subtype";
+    ViewData["Title"] = Model?.PropertySubTypeId == 0 ? "Add Property Subtype" : "Edit Property Subtype";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -10,20 +11,13 @@
         <div class="page-title">
             <div class="row">
                 <div class="col-12 col-sm-6">
-                    <h3>@(Model?.PropertySubTypeId == 0 ? "Add Property Subtype" : "Edit Property Subtype")</h3>
+                    <h3>@(ViewData["Title"])</h3>
                 </div>
                 <div class="col-12 col-sm-6">
                     <ol class="breadcrumb">
-                        @if (Model?.PropertySubTypeId == 0)
-                        {
-                            <li class="breadcrumb-item"><a href="@Url.Action("Index", "PropertySubTypes")"><i data-feather="home"></i></a></li>
-                        }
-                        else
-                        {
-                            <li class="breadcrumb-item"><a href="@Url.Action("Index", "PropertySubTypes")"><i data-feather="home"></i></a></li>
-                        }
+                        <li class="breadcrumb-item"><a href="@Url.Action("Index", "PropertySubTypes")"><i data-feather="home"></i></a></li>
                         <li class="breadcrumb-item">PropertySubType</li>
-                        <li class="breadcrumb-item active">@(Model?.PropertySubTypeId == 0 ? "Add PropertySubType" : "Edit PropertySubType")</li>
+                        <li class="breadcrumb-item active">@ViewData["Title"]</li>
                     </ol>
                 </div>
             </div>
@@ -31,61 +25,53 @@
 
         <div class="edit-profile">
             <div class="row">
-                <form id="propertySubTypeForm">
+                <form id="propertySubTypeForm" enctype="multipart/form-data">
                     <div class="col-xl-12">
                         <div class="card">
                             <div class="card-header pb-0">
                                 <h4 class="card-title mb-0">Property Subtype Information</h4>
-                                <div class="card-options"><a class="card-options-collapse" href="#" data-bs-toggle="card-collapse"><i class="fe fe-chevron-up"></i></a><a class="card-options-remove" href="#" data-bs-toggle="card-remove"><i class="fe fe-x"></i></a></div>
+                                <div class="card-options">
+                                    <a class="card-options-collapse" href="#" data-bs-toggle="card-collapse"><i class="fe fe-chevron-up"></i></a>
+                                    <a class="card-options-remove" href="#" data-bs-toggle="card-remove"><i class="fe fe-x"></i></a>
+                                </div>
                             </div>
                             <div class="card-body">
                                 <div class="row">
-                                    @if (Model != null)
-                                    {
-                                        <input type="hidden" id="PropertySubTypeId" name="PropertySubTypeId" value="@Model.PropertySubTypeId" />
+                                    <input type="hidden" id="PropertySubTypeId" name="PropertySubTypeId" value="@Model.PropertySubTypeId" />
 
-                                        <!-- Property Subtype Name -->
-                                        <div class="col-sm-6">
-                                            <div class="mb-3">
-                                                <label for="PropertyTypeId" class="form-label">Property Sub Type Name</label>
-                                                <select class="form-control" id="PropertyTypeId" name="PropertyTypeId" required>
-                                                    <option value="" disabled selected hidden>Select Property Type</option>
-                                                </select>
-                                            </div>
+                                    <div class="col-sm-6">
+                                        <div class="mb-3">
+                                            <label for="PropertyTypeId" class="form-label">Property Sub Type Name</label>
+                                            <select class="form-control" id="PropertyTypeId" name="PropertyTypeId" required>
+                                                <option value="" disabled selected hidden>Select Property Type</option>
+                                            </select>
                                         </div>
+                                    </div>
 
-                                        <!-- Icon String -->
-                                        <div class="col-sm-6">
-                                            <div class="mb-3">
-                                                <label for="Icon_String" class="form-label">Icon String</label>
-                                                <input type="text" class="form-control" id="Icon_String" name="Icon_String" value="@Model.Icon_String" />
-                                            </div>
+                                    <div class="col-sm-6">
+                                        <div class="mb-3">
+                                            <label for="Icon_SVG2" class="form-label">Icon SVG</label>
+                                            <input type="file" class="form-control" id="Icon_SVG2" name="Icon_SVG2" />
                                         </div>
-                                        <!-- Icon SVG -->
-                                        <div class="col-sm-6">
-                                            <div class="mb-3">
-                                                <label for="Icon_SVG" class="form-label">Icon SVG</label>
-                                                <input type="text" class="form-control" id="Icon_SVG" name="Icon_SVG" value="@Model.Icon_SVG" />
-                                            </div>
+                                    </div>
+
+                                    <div class="col-sm-6">
+                                        <div class="mb-3">
+                                            <label for="Status" class="form-label">Status</label>
+                                            <select class="form-control" id="Status" name="Status" required>
+                                                <option value="" disabled selected hidden>Select Status</option>
+                                                <option value="true">Active</option>
+                                                <option value="false">Inactive</option>
+                                            </select>
                                         </div>
-                                        <!-- Status -->
-                                        <div class="col-sm-6">
-                                            <div class="mb-3">
-                                                <label for="Status" class="form-label">Status</label>
-                                                <select class="form-control" id="Status" name="Status" required>
-                                                    <option value="" disabled selected hidden>Select Status</option>
-                                                    <option value="true">Active</option>
-                                                    <option value="false">Inactive</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    }
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="card-footer text-end">
-                            <button type="button" id="submitBtn" onclick="submitPropertySubTypeForm()" class="btn btn-primary">@((Model?.PropertySubTypeId == null || Model?.PropertySubTypeId == 0) ? "Add" : "Edit") Property Subtype</button>
+                            <div class="card-footer text-end">
+                                <button type="button" id="submitBtn" onclick="submitPropertySubTypeForm()" class="btn btn-primary">
+                                    @((Model?.PropertySubTypeId == null || Model?.PropertySubTypeId == 0) ? "Add" : "Edit") Property Subtype
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </form>
@@ -94,68 +80,91 @@
     </div>
 </div>
 
+@{
+    var selectedPropertyTypeIdJson = JsonSerializer.Serialize(Model?.PropertyTypeId ?? 0);
+}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
     $(document).ready(function () {
-        // AJAX request to fetch property types
+        var selectedPropertyTypeId = @Html.Raw(selectedPropertyTypeIdJson);
+        initializeForm(selectedPropertyTypeId);
+        loadPropertyTypes(); // Call the function to load property types
+    });
+
+    function initializeForm(selectedPropertyTypeId) {
+        // Existing code for initializing the form
+    }
+
+    function loadPropertyTypes() {
         $.ajax({
             url: '@Url.Action("GetPropertyTypeAll", "PropertySubTypes")',
             type: 'GET',
-            dataType: 'json', // Expecting JSON response
+            dataType: 'json',
             success: function (response) {
-                console.log('Success:', response);
-                var dropdown = $('#PropertyTypeId');
-                dropdown.empty();
-                dropdown.append('<option value="" disabled selected hidden>Select Property Type</option>');
-                // Iterate over the response.data array
+                var propertyTypeIdDropdown = $('#PropertyTypeId');
+                propertyTypeIdDropdown.empty();
+                propertyTypeIdDropdown.append('<option value="" disabled selected hidden>Select Property Type</option>');
                 $.each(response.data, function (index, propertyType) {
-                    // Append each property type to the dropdown
-                    dropdown.append($('<option></option>').attr('value', propertyType.propertyTypeId).text(propertyType.propertyTypeName));
+                    var option = new Option(propertyType.PropertyTypeName, propertyType.PropertyTypeId);
+                    propertyTypeIdDropdown.append(option);
                 });
             },
             error: function (xhr, status, error) {
-                console.error('Error:', error);
+                console.error('AJAX error fetching property types:', error);
             }
         });
-    });
-
+    }
     function submitPropertySubTypeForm() {
-        var propertySubTypeData = {
-            PropertySubTypeId: $('#PropertySubTypeId').val(),
-            PropertyTypeId: $('#PropertyTypeId').val(),
-            Icon_String: $('#Icon_String').val(),
-            Icon_SVG: $('#Icon_SVG').val(),
-            Status: $('#Status').val() === "true"
-        };
+        var formData = new FormData($('#propertySubTypeForm')[0]);
+        formData.append('Status', $('#Status').val());
+        formData.append("Icon_SVG2", $('#Icon_SVG2')[0].files[0]);
+        var userId = localStorage.getItem('userId');
+        var userName = localStorage.getItem('userName');
 
-        var ajaxUrl = '';
+        if (@(Model != null && Model.PropertySubTypeId == 0 ? "true" : "false")) {
+            formData.append("AddedBy", userName);
+            var addedDate = new Date().toISOString().slice(0, 10);
+            formData.append("AddedDate", addedDate);
+            formData.append("TenantId", userId);
+        } else {
+            formData.append("ModifiedBy", userName);
+            var modifiedDate = new Date().toISOString().slice(0, 10);
+            formData.append("ModifiedDate", modifiedDate);
+            formData.append("TenantId", userId);
+        }
+
+        var url = '';
         var method = '';
 
         if (@(Model?.PropertySubTypeId == null || Model?.PropertySubTypeId == 0 ? "true" : "false")) {
-            ajaxUrl = '/PropertySubTypes/Create';
+            url = '@Url.Action("Create", "PropertySubTypes")';
             method = 'POST';
         } else {
-            ajaxUrl = '/PropertySubTypes/Update';
+            url = '@Url.Action("Update", "PropertySubTypes")';
             method = 'POST';
         }
 
         $.ajax({
-            url: ajaxUrl,
+            url: url,
             type: method,
-            contentType: 'application/json',
-            data: JSON.stringify(propertySubTypeData),
+            data: formData,
+            processData: false,
+            contentType: false,
             success: function (response) {
                 if (response.success) {
-                    window.location.href = '/PropertySubTypes/Index';
-                    toastr.success(response.message);
+                    window.location.href = '@Url.Action("Index", "PropertySubTypes")';
+                    var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
+                    Toast.fire({ icon: 'success', title: 'Updated Successfully' });
                 } else {
-                    toastr.error(response.message);
+                    var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
+                    Toast.fire({ icon: 'error', title: 'An error occurred' });
                 }
             },
             error: function (xhr, status, error) {
-                toastr.error("Error occurred while processing the request.");
+                var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
+                Toast.fire({ icon: 'error', title: 'An error occurred' });
             }
         });
     }
-</script>
 
+</script>

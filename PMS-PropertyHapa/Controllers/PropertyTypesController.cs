@@ -4,7 +4,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using PMS_PropertyHapa.Models.DTO;
+using PMS_PropertyHapa.Models.Entities;
 using PMS_PropertyHapa.Services.IServices;
+using PMS_PropertyHapa.Shared.ImageUpload;
 using System.Security.Claims;
 
 namespace PMS_PropertyHapa.Controllers
@@ -30,6 +32,15 @@ namespace PMS_PropertyHapa.Controllers
 
                 if (propertyTypes != null && propertyTypes.Any())
                 {
+                    if (!string.IsNullOrEmpty(propertyTypes.FirstOrDefault().Icon_SVG))
+                    {
+                        foreach(var item in propertyTypes)
+                        {
+                            byte[] imageBytes = await Base64ImageConverter.ConvertFromBase64StringAsync(item.Icon_SVG);
+                            item.Icon_SVG2 = ConvertToFormFile(imageBytes, "Icon_SVG2");
+
+                        }
+                    }
                     return Json(new { data = propertyTypes });
                 }
                 else
@@ -43,20 +54,44 @@ namespace PMS_PropertyHapa.Controllers
             }
         }
 
+        private FormFile ConvertToFormFile(byte[] fileBytes, string fileName)
+        {
+            var ms = new MemoryStream(fileBytes);
+            return new FormFile(ms, 0, ms.Length, null, fileName);
+        }
 
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] PropertyTypeDto propertyType)
+        public async Task<IActionResult> Create([FromForm] PropertyTypeDto propertyType)
         {
             propertyType.AppTenantId = Guid.Parse(propertyType.TenantId);
+
+            if (propertyType.Icon_SVG2 != null)
+            {
+                var (fileName, base64String) = await ImageUploadUtility.UploadImageAsync(propertyType.Icon_SVG2, "uploads");
+                propertyType.Icon_String = fileName;
+                propertyType.Icon_SVG = base64String;
+            }
+
+            propertyType.Icon_SVG2 = null;
             await _authService.CreatePropertyTypeAsync(propertyType);
             return Json(new { success = true, message = "Property Type added successfully" });
         }
 
+
         [HttpPost]
-        public async Task<IActionResult> Update([FromBody] PropertyTypeDto propertyType)
+        public async Task<IActionResult> Update([FromForm] PropertyTypeDto propertyType, IFormFile iconSVG)
         {
             propertyType.AppTenantId = Guid.Parse(propertyType.TenantId);
+
+            if (iconSVG != null)
+            {
+                var (fileName, base64String) = await ImageUploadUtility.UploadImageAsync(iconSVG, "uploads");
+                propertyType.Icon_String = fileName;
+                propertyType.Icon_SVG = base64String;
+            }
+
+            propertyType.Icon_SVG2 = null;
             await _authService.UpdatePropertyTypeAsync(propertyType);
             return Json(new { success = true, message = "Property Type updated successfully" });
         }

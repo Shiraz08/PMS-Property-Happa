@@ -1,10 +1,13 @@
-﻿@using PMS_PropertyHapa.Models.DTO;
-@model PropertySubTypeDto
+﻿@model PMS_PropertyHapa.Models.DTO.PropertySubTypeDto
 
 @{
     ViewData["Title"] = "Property Subtypes";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
 <div class="page-body">
     <div class="container-fluid">
@@ -12,22 +15,14 @@
             <div class="row">
                 <div class="col-12">
                     <h3>Property Subtypes List</h3>
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a class="home-item" href="/Home/Index"><i data-feather="home"></i></a></li>
-                        <li class="breadcrumb-item active">Property Subtype</li>
-                    </ol>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="container-fluid">
         <div class="row">
             <div class="col-12">
                 <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <h4 class="card-title">
-                            <a href="/PropertySubTypes/AddPropertySubType" class="btn btn-success mb-3">Add New Property Subtype</a>
-                        </h4>
+                    <div class="card-header">
+                        <a href="/PropertySubTypes/AddPropertySubType" class="btn btn-success">Add New Property Subtype</a>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -37,7 +32,6 @@
                                         <th>Property Subtype ID</th>
                                         <th>Property Type ID</th>
                                         <th>Property Subtype Name</th>
-                                        <th>Icon String</th>
                                         <th>Icon SVG</th>
                                         <th>Status</th>
                                         <th>Added Date</th>
@@ -46,6 +40,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    <!-- Content will be loaded by JavaScript -->
                                 </tbody>
                             </table>
                         </div>
@@ -56,82 +51,83 @@
     </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-
 <script>
     $(document).ready(function () {
-        $('#propertySubTypesTable').DataTable({
-            "ajax": {
-                "url": `/PropertySubTypes/GetPropertySubType?propertyTypeId=${encodeURIComponent(localStorage.getItem('userId'))}`,
-                "dataSrc": "data"
-            },
-            "columns": [
-                { "data": "PropertySubTypeId" },
-                { "data": "PropertyTypeId" },
-                { "data": "PropertySubTypeName" },
-                { "data": "Icon_String" },
-                { "data": "Icon_SVG" },
-                {
-                    "data": "Status",
-                    "render": function (data) {
-                        return data ? 'Active' : 'Inactive';
-                    }
+        fetchData();
+
+        function fetchData(search = '', page = 1, sortField = 'PropertySubTypeId', sortOrder = 'asc') {
+            var tenantId = localStorage.getItem('userId');
+
+            $.ajax({
+                url: `/PropertySubTypes/GetPropertySubTypeData?tenantId=${encodeURIComponent(tenantId)}`,
+                type: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    populateTable(response.data);
+                   
                 },
-                {
-                    "data": "AddedDate",
-                    "render": function (data) {
-                        return data ? new Date(data).toLocaleDateString() : '-----';
-                    }
-                },
-                {
-                    "data": "ModifiedDate",
-                    "render": function (data) {
-                        return data ? new Date(data).toLocaleDateString() : '-----';
-                    }
-                },
-                {
-                    "data": null,
-                    "render": function (data, type, row) {
-                        return `<div class="btn-container">
-                                            <a href="/PropertySubTypes/EditPropertySubType?propertySubTypeId=${row.PropertySubTypeId}" class="btn btn-sm btn-success">Edit</a>
-                                            <button class="btn btn-sm btn-danger delete-propertysubtype" onclick="deletePropertySubType('${row.PropertySubTypeId}')">Delete</button>
-                                      </div>`;
-                    }
+                error: function (xhr, status, error) {
+                    console.error('Error fetching property subtypes:', error);
                 }
-            ]
+            });
+        }
+
+        function populateTable(data) {
+            var table = $('#propertySubTypesTable').DataTable();
+            table.clear(); 
+
+            data.forEach(function (row) {
+                table.row.add([
+                    row.PropertySubTypeId,
+                    row.PropertyTypeId,
+                    row.PropertySubTypeName,
+                    row.Icon_SVG,
+                    row.Status ? 'Active' : 'Inactive',
+                    row.AddedDate ? new Date(row.AddedDate).toLocaleDateString() : '-----',
+                    row.ModifiedDate ? new Date(row.ModifiedDate).toLocaleDateString() : '-----',
+                    `<a href="/PropertySubTypes/EditPropertySubType?propertySubTypeId=${row.PropertySubTypeId}" class="btn btn-sm btn-success" style="margin-right: 5px; display: inline-block;">Edit</a>` +
+                    `<button class="btn btn-sm btn-danger" onclick="deletePropertySubType('${row.PropertySubTypeId}')" style="display: inline-block;">Delete</button>`
+                ]).draw(false);
+            });
+        }
+
+        function deletePropertySubType(propertySubTypeId) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'Once deleted, you will not be able to recover this property subtype!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: `/PropertySubTypes/Delete?propertysubTypeId=${encodeURIComponent(propertySubTypeId)}`,
+                        type: 'DELETE',
+                        success: function (response) {
+                            if (response.success) {
+                                fetchData(); 
+                                Swal.fire('Deleted!', 'The property subtype has been deleted.', 'success');
+                            } else {
+                                Swal.fire('Error!', response.message, 'error');
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            Swal.fire('Error!', 'There was an issue deleting the property subtype.', 'error');
+                        }
+                    });
+                }
+            });
+        }
+
+        $('#propertySubTypesTable').DataTable({
+            "paging": true,
+            "ordering": true,
+            "info": true,
+            "searching": true,
+            "destroy": true, 
         });
     });
-
-    function deletePropertySubType(propertySubTypeId) {
-        Swal.fire({
-            title: 'Are you sure?',
-            text: 'Once deleted, you will not be able to recover this property subtype!',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: `/PropertySubTypes/Delete?propertysubTypeId=${encodeURIComponent(propertySubTypeId)}`,
-                    type: 'DELETE',
-                    success: function (response) {
-                        if (response.success) {
-                            $('#propertySubTypesTable').DataTable().ajax.reload();
-                            Swal.fire('Deleted!', 'The property subtype has been deleted.', 'success');
-                        } else {
-                            Swal.fire('Error!', response.message, 'error');
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        Swal.fire('Error!', 'There was an issue deleting the property subtype.', 'error');
-                    }
-                });
-            }
-        });
-    }
-
 </script>
+

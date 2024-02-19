@@ -350,7 +350,7 @@ namespace MagicVilla_VillaAPI.Repository
 
         public async Task<IEnumerable<UserDTO>> GetAllUsersAsync()
         {
-        
+
             var users = await _userManager.Users.ToListAsync();
 
             var userDTOs = users.Select(u => new UserDTO
@@ -517,7 +517,7 @@ namespace MagicVilla_VillaAPI.Repository
                 return IdentityResult.Failed(new IdentityError { Description = "User not found" });
             }
 
-           
+
 
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
             var result = await _userManager.ResetPasswordAsync(user, token, model.Password);
@@ -646,7 +646,7 @@ namespace MagicVilla_VillaAPI.Repository
             catch (Exception ex)
             {
                 Console.WriteLine($"An error occurred while mapping property types: {ex.Message}");
-                throw; 
+                throw;
             }
         }
 
@@ -686,7 +686,7 @@ namespace MagicVilla_VillaAPI.Repository
             var tenant = await _db.PropertyType.FirstOrDefaultAsync(t => t.PropertyTypeId == propertytypeId);
 
             if (tenant == null)
-                return new PropertyTypeDto(); 
+                return new PropertyTypeDto();
 
             var tenantDto = new PropertyTypeDto
             {
@@ -776,6 +776,43 @@ namespace MagicVilla_VillaAPI.Repository
 
 
         #region PropertySubType
+
+        public async Task<List<PropertySubTypeDto>> GetPropertySubTypeByIdAllAsync(string tenantId)
+        {
+            try
+            {
+                var propertyTypes = await _db.PropertySubType
+                                             .AsNoTracking()
+                                                .Where(t => t.AppTenantId == Guid.Parse(tenantId))
+                                             .ToListAsync();
+
+                var propertyTypeDtos = propertyTypes.Select(tenant => new PropertySubTypeDto
+                {
+                    PropertySubTypeId = tenant.PropertySubTypeId,
+                    PropertyTypeId = tenant.PropertyTypeId,
+                    PropertySubTypeName = tenant.PropertySubTypeName,
+                    Icon_String = tenant.Icon_String,
+                    Icon_SVG = tenant.Icon_SVG,
+                    AppTenantId = tenant.AppTenantId,
+                    Status = tenant.Status,
+                    IsDeleted = tenant.IsDeleted,
+                    AddedDate = tenant.AddedDate,
+                    AddedBy = tenant.AddedBy,
+                    ModifiedDate = tenant.ModifiedDate,
+                    ModifiedBy = tenant.ModifiedBy
+                }).ToList();
+
+
+                return propertyTypeDtos;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping property types: {ex.Message}");
+                throw;
+            }
+        }
+
+
         public async Task<List<PropertySubTypeDto>> GetAllPropertySubTypesAsync()
         {
             try
@@ -899,14 +936,14 @@ namespace MagicVilla_VillaAPI.Repository
 
         public async Task<bool> UpdatePropertySubTypeAsync(PropertySubTypeDto tenant)
         {
-            var propertyType = await _db.PropertySubType.FirstOrDefaultAsync(t => t.PropertySubTypeId == tenant.PropertySubTypeId);
+            var propertyType = await _db.PropertyType.FirstOrDefaultAsync(t => t.PropertyTypeId == tenant.PropertyTypeId);
             if (tenant == null) return false;
 
             var newTenant = new PropertySubType
             {
                 PropertySubTypeId = tenant.PropertySubTypeId,
                 PropertyTypeId = tenant.PropertyTypeId,
-                PropertySubTypeName = tenant.PropertySubTypeName,
+                PropertySubTypeName = propertyType.PropertyTypeName,
                 Icon_String = tenant.Icon_String,
                 Icon_SVG = tenant.Icon_SVG,
                 AppTenantId = tenant.AppTenantId,
@@ -1168,15 +1205,15 @@ namespace MagicVilla_VillaAPI.Repository
             var tenant = await _db.TenantOrganizationInfo.FirstOrDefaultAsync(t => t.Id == tenantId);
 
             if (tenant == null)
-                return new TenantOrganizationInfoDto(); 
+                return new TenantOrganizationInfoDto();
 
             var tenantDto = new TenantOrganizationInfoDto
             {
-                TenantUserId = tenant.TenantUserId, 
+                TenantUserId = tenant.TenantUserId,
                 OrganizationName = tenant.OrganizationName,
                 OrganizationDescription = tenant.OrganizationDescription,
-                OrganizationIcon = tenant.OrganizationIcon, 
-                OrganizationLogo = tenant.OrganizationLogo, 
+                OrganizationIcon = tenant.OrganizationIcon,
+                OrganizationLogo = tenant.OrganizationLogo,
                 OrganizatioPrimaryColor = tenant.OrganizatioPrimaryColor,
                 OrganizationSecondColor = tenant.OrganizationSecondColor,
             };

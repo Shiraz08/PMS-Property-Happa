@@ -60,7 +60,7 @@ namespace PMS_PropertyHapa.Services.IServices
 
         Task<List<PropertyTypeDto>> GetAllPropertyTypes();
 
-
+        Task<List<PropertySubTypeDto>> GetPropertySubTypeByIdAllAsync(string tenantId);
 
 
         Task<bool>UpdateTenantOrganizationAsync(TenantOrganizationInfoDto tenant);

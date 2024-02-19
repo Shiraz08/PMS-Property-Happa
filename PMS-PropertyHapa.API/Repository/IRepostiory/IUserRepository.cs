@@ -72,6 +72,7 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
 
         #region PropertySubType
 
+        Task<List<PropertySubTypeDto>> GetPropertySubTypeByIdAllAsync(string tenantId);
         Task<List<PropertyTypeDto>> GetAllPropertyTypes();
         Task<List<PropertySubTypeDto>> GetAllPropertySubTypesAsync();
         Task<List<PropertySubTypeDto>> GetPropertySubTypeByIdAsync(int propertytypeId);

@@ -603,7 +603,30 @@ namespace PMS_PropertyHapa.Services
             }
         }
 
+        public async Task<List<PropertySubTypeDto>> GetPropertySubTypeByIdAllAsync(string tenantId)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.GET,
+                    Url = $"{villaUrl}/api/v1/PropertySubTypeauth/PropertySubTypeAll/{tenantId}"
+                });
 
+                if (response != null && response.IsSuccess)
+                {
+                    return JsonConvert.DeserializeObject<List<PropertySubTypeDto>>(Convert.ToString(response.Result));
+                }
+                else
+                {
+                    throw new Exception("Failed to retrieve property type data");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when fetching property type data: {ex.Message}", ex);
+            }
+        }
 
         public async Task<List<PropertySubTypeDto>> GetPropertySubTypeByIdAsync(int propertyTypeId)
         {
@@ -684,7 +707,7 @@ namespace PMS_PropertyHapa.Services
                 {
                     ApiType = SD.ApiType.PUT,
                     Data = propertyType,
-                    Url = $"{villaUrl}/api/v1/PropertySubTypeauth/PropertySubType/{propertyType.PropertySubTypeName}"
+                    Url = $"{villaUrl}/api/v1/PropertySubTypeauth/PropertySubType/{propertyType.PropertySubTypeId}"
                 });
 
                 return response.IsSuccess;

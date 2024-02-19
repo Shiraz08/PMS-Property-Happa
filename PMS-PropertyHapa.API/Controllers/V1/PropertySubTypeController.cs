@@ -90,7 +90,36 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             }
         }
 
+        [HttpGet("PropertySubTypeAll/{tenantId}")]
+        public async Task<IActionResult> GetPropertyTypeByIdAll(string tenantId)
+        {
+            try
+            {
+                var propertyTypeDto = await _userRepo.GetPropertySubTypeByIdAllAsync(tenantId);
 
+                if (propertyTypeDto != null)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = propertyTypeDto;
+                    return Ok(_response);
+                }
+                else
+                {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("No propertySubType found with this id.");
+                    return NotFound(_response);
+                }
+            }
+            catch (Exception ex)
+            {
+                _response.StatusCode = HttpStatusCode.NotFound;
+                _response.IsSuccess = false;
+                _response.ErrorMessages.Add("Error Occured");
+                return NotFound(_response);
+            }
+        }
 
         [HttpGet("PropertySubType")]
         public async Task<ActionResult<PropertySubTypeDto>> GetAllPropertySubTypes()
@@ -187,11 +216,10 @@ namespace PMS_PropertyHapa.API.Controllers.V1
         }
 
         [HttpPut("PropertySubType/{propertysubtypeId}")]
-        public async Task<ActionResult<bool>> UpdatePropertySubType(int tenantId, PropertySubTypeDto tenant)
+        public async Task<ActionResult<bool>> UpdatePropertySubType(PropertySubTypeDto tenant)
         {
             try
             {
-                tenant.PropertySubTypeId = tenantId; // Ensure tenantId is set
                 var isSuccess = await _userRepo.UpdatePropertySubTypeAsync(tenant);
                 return Ok(isSuccess);
             }

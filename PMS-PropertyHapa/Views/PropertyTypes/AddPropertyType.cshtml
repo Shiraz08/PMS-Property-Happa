@@ -10,21 +10,20 @@
         <div class="page-title">
             <div class="row">
                 <div class="col-12 col-sm-6">
-                    <h3>@(Model?.PropertyTypeId == null ? "Add Property Type" : "Edit Property Type")</h3>
+                    <h3>@(Model?.PropertyTypeId == 0 ? "Add Property Type" : "Edit Property Type")</h3>
                 </div>
                 <div class="col-12 col-sm-6">
                     <ol class="breadcrumb">
-                        @if (Model?.PropertyTypeId == null)
+                        @if (Model?.PropertyTypeId == 0)
                         {
                             <li class="breadcrumb-item"><a href="@Url.Action("Create", "PropertyTypes")"><i data-feather="home"></i></a></li>
-
                         }
                         else
                         {
                             <li class="breadcrumb-item"><a href="@Url.Action("Update", "PropertyTypes")"><i data-feather="home"></i></a></li>
                         }
                         <li class="breadcrumb-item">PropertyType</li>
-                        <li class="breadcrumb-item active">@(Model?.PropertyTypeId == null ? "Add PropertyType" : "Edit PropertyType")</li>
+                        <li class="breadcrumb-item active">@(Model?.PropertyTypeId == 0 ? "Add PropertyType" : "Edit PropertyType")</li>
                     </ol>
                 </div>
             </div>
@@ -32,7 +31,7 @@
 
         <div class="edit-profile">
             <div class="row">
-                <form id="propertyTypeForm">
+                <form id="propertyTypeForm" enctype="multipart/form-data">
                     <div class="col-xl-12">
                         <div class="card">
                             <div class="card-header pb-0">
@@ -57,19 +56,14 @@
                                                     <option value="E">E</option>
                                                 </select>
                                             </div>
+
                                         </div>
-                                        <!-- Icon String -->
-                                        <div class="col-sm-6">
-                                            <div class="mb-3">
-                                                <label for="Icon_String" class="form-label">Icon String</label>
-                                                <input type="text" class="form-control" id="Icon_String" name="Icon_String" value="@Model.Icon_String" />
-                                            </div>
-                                        </div>
+
                                         <!-- Icon SVG -->
                                         <div class="col-sm-6">
                                             <div class="mb-3">
-                                                <label for="Icon_SVG" class="form-label">Icon SVG</label>
-                                                <input type="text" class="form-control" id="Icon_SVG" name="Icon_SVG" value="@Model.Icon_SVG" />
+                                                <label for="Icon_SVG2" class="form-label">Icon SVG</label>
+                                                <input type="file" class="form-control" id="Icon_SVG2" name="Icon_SVG2" />
                                             </div>
                                         </div>
                                         <!-- Status -->
@@ -90,7 +84,6 @@
 
                         <div class="card-footer text-end">
                             <button type="button" id="submitBtn" onclick="submitPropertyTypeForm()" class="btn btn-primary">@((Model?.PropertyTypeId == null || Model?.PropertyTypeId == 0) ? "Add" : "Edit") Property Type</button>
-
                         </div>
                     </div>
                 </form>
@@ -99,33 +92,30 @@
     </div>
 </div>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 <script>
     function submitPropertyTypeForm() {
-        var propertyTypeData = {
-            PropertyTypeId: $('#PropertyTypeId').val(),
-            PropertyTypeName: $('#PropertyTypeName').val(),
-            Icon_String: $('#Icon_String').val(),
-            Icon_SVG: $('#Icon_SVG').val(),
-            Status: $('#Status').val() === "true"
-        };
+        var propertyTypeFormData = new FormData();
+        propertyTypeFormData.append("PropertyTypeId", $('#PropertyTypeId').val());
+        propertyTypeFormData.append("PropertyTypeName", $('#PropertyTypeName').val());
+        propertyTypeFormData.append("Icon_SVG2", $('#Icon_SVG2')[0].files[0]);
+        propertyTypeFormData.append("Status", $('#Status').val());
 
         var userId = localStorage.getItem('userId');
         var userName = localStorage.getItem('userName');
 
         if (@(Model != null && Model.PropertyTypeId == 0 ? "true" : "false")) {
-            propertyTypeData.AddedBy = userName;
+            propertyTypeFormData.append("AddedBy", userName);
             var addedDate = new Date().toISOString().slice(0, 10);
-            propertyTypeData.AddedDate = addedDate;
-            propertyTypeData.TenantId = userId;
+            propertyTypeFormData.append("AddedDate", addedDate);
+            propertyTypeFormData.append("TenantId", userId);
         } else {
-            propertyTypeData.ModifiedBy = userName;
+            propertyTypeFormData.append("ModifiedBy", userName);
             var modifiedDate = new Date().toISOString().slice(0, 10);
-            propertyTypeData.ModifiedDate = modifiedDate;
-            propertyTypeData.TenantId = userId;
-            propertyTypeData.AddedDate = propertyTypeData.AddedDate;
+            propertyTypeFormData.append("ModifiedDate", modifiedDate);
+            propertyTypeFormData.append("TenantId", userId);
         }
-
 
         var ajaxUrl = '';
         var method = '';
@@ -138,55 +128,40 @@
             method = 'POST';
         }
 
-
         $.ajax({
             url: ajaxUrl,
             type: method,
-            contentType: 'application/json',
-            data: JSON.stringify(propertyTypeData),
+            processData: false,
+            contentType: false,
+            data: propertyTypeFormData,
             success: function (response) {
                 if (response.success) {
                     window.location.href = '/PropertyTypes/Index';
-                    toastr.success(response.message);
+                    var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
+                    Toast.fire({ icon: 'success', title: 'Updated Successfully' });
                 } else {
-                    toastr.error(response.message);
+                    var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
+                    Toast.fire({ icon: 'error', title: 'An error occurred' });
                 }
             },
             error: function (xhr, status, error) {
-                toastr.error("Error occurred while processing the request.");
+                var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
+                Toast.fire({ icon: 'error', title: 'An error occurred' });
             }
         });
     }
 
-    $(document).ready(function () {
-        var userId = localStorage.getItem('userId');
-        var userName = localStorage.getItem('userName');
+        $(document).ready(function () {
+            var status = "@Model?.Status";
+            if (status !== "") {
+                $("#Status").val(status.toLowerCase()); // Convert to lowercase to match "true" or "false"
+            }
 
-        if (@(Model != null && Model.PropertyTypeId == 0 ? "true" : "false")) {
-            var addedDate = new Date().toISOString().slice(0, 10);
-            $('#AddedDate').val(addedDate);
-            $('#AddedBy').val(userName);
-            $('#TenantId').val(userId);
-        } else {
-            var modifiedDate = new Date().toISOString().slice(0, 10);
-            $('#ModifiedDate').val(modifiedDate);
-            $('#ModifiedBy').val(userName);
-            $('#TenantId').val(userId);
-        }
-    });
+            var propertyTypeName = "@Model?.PropertyTypeName";
+            if (propertyTypeName !== "") {
+                $("#PropertyTypeName").val(propertyTypeName);
+            }
+        });
 
-
-    $(document).ready(function () {
-        // Set selected value for PropertyTypeName
-        var propertyTypeName = "@(Model?.PropertyTypeName)";
-        if (propertyTypeName) {
-            $("#PropertyTypeName").val(propertyTypeName);
-        }
-
-        // Set selected value for Status
-        var status = "@(Model?.Status)";
-        if (status !== "") {
-            $("#Status").val(status);
-        }
-    });
 </script>
+

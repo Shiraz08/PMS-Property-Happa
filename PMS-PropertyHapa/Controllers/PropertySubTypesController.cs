@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using PMS_PropertyHapa.Models.DTO;
 using PMS_PropertyHapa.Services.IServices;
+using PMS_PropertyHapa.Shared.ImageUpload;
 using System.Security.Claims;
 
 namespace PMS_PropertyHapa.Controllers
@@ -36,6 +37,27 @@ namespace PMS_PropertyHapa.Controllers
         }
 
 
+        public async Task<IActionResult> GetPropertySubTypeData(string tenantId)
+        {
+            if (!string.IsNullOrEmpty(tenantId))
+            {
+                var propertyTypes = await _authService.GetPropertySubTypeByIdAllAsync(tenantId);
+
+                if (propertyTypes != null && propertyTypes.Any())
+                {
+                    return Json(new { data = propertyTypes });
+                }
+                else
+                {
+                    return Json(new { data = new List<PropertySubTypeDto>() });
+                }
+            }
+            else
+            {
+                return BadRequest("Tenant ID is required.");
+            }
+        }
+
 
         public async Task<IActionResult> GetPropertySubType(int propertyTypeId)
         {
@@ -59,19 +81,35 @@ namespace PMS_PropertyHapa.Controllers
         }
 
 
-
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] PropertySubTypeDto propertyType)
+        public async Task<IActionResult> Create([FromForm] PropertySubTypeDto propertyType)
         {
             propertyType.AppTenantId = Guid.Parse(propertyType.TenantId);
+
+            if (propertyType.Icon_SVG2 != null)
+            {
+                var (fileName, base64String) = await ImageUploadUtility.UploadImageAsync(propertyType.Icon_SVG2, "uploads");
+                propertyType.Icon_String = fileName;
+                propertyType.Icon_SVG = base64String;
+            }
+
+            propertyType.Icon_SVG2 = null;
             await _authService.CreatePropertySubTypeAsync(propertyType);
             return Json(new { success = true, message = "Property Type added successfully" });
         }
 
         [HttpPost]
-        public async Task<IActionResult> Update([FromBody] PropertySubTypeDto propertyType)
+        public async Task<IActionResult> Update([FromForm] PropertySubTypeDto propertyType)
         {
             propertyType.AppTenantId = Guid.Parse(propertyType.TenantId);
+
+            if (propertyType.Icon_SVG2 != null)
+            {
+                var (fileName, base64String) = await ImageUploadUtility.UploadImageAsync(propertyType.Icon_SVG2, "wwwroot/uploads");
+                propertyType.Icon_String = fileName;
+                propertyType.Icon_SVG = base64String;
+            }
+            propertyType.Icon_SVG2 = null;
             await _authService.UpdatePropertySubTypeAsync(propertyType);
             return Json(new { success = true, message = "Property SubType updated successfully" });
         }
