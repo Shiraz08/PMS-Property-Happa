@@ -35,7 +35,6 @@
                                         <th>Icon SVG</th>
                                         <th>Status</th>
                                         <th>Added Date</th>
-                                        <th>Modified Date</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -80,11 +79,10 @@
                 table.row.add([
                     row.PropertySubTypeId,
                     row.PropertyTypeId,
-                    row.PropertySubTypeName,
-                    row.Icon_SVG,
+                    row.PropertySubTypeName,                    
+                    '<img src="data:image;base64,' + row.Icon_SVG + '" height="50px" width="100px" />',
                     row.Status ? 'Active' : 'Inactive',
                     row.AddedDate ? new Date(row.AddedDate).toLocaleDateString() : '-----',
-                    row.ModifiedDate ? new Date(row.ModifiedDate).toLocaleDateString() : '-----',
                     `<a href="/PropertySubTypes/EditPropertySubType?propertySubTypeId=${row.PropertySubTypeId}" class="btn btn-sm btn-success" style="margin-right: 5px; display: inline-block;">Edit</a>` +
                     `<button class="btn btn-sm btn-danger" onclick="deletePropertySubType('${row.PropertySubTypeId}')" style="display: inline-block;">Delete</button>`
                 ]).draw(false);

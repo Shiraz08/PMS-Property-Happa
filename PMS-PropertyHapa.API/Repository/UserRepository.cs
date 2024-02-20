@@ -720,7 +720,7 @@ namespace MagicVilla_VillaAPI.Repository
                 AppTenantId = tenant.AppTenantId,
                 Status = tenant.Status,
                 IsDeleted = tenant.IsDeleted,
-                AddedDate = tenant.AddedDate,
+                AddedDate = DateTime.Now,
                 AddedBy = tenant.AddedBy,
                 ModifiedDate = tenant.ModifiedDate,
                 ModifiedBy = tenant.ModifiedBy
@@ -737,27 +737,28 @@ namespace MagicVilla_VillaAPI.Repository
         public async Task<bool> UpdatePropertyTypeAsync(PropertyTypeDto tenant)
         {
             var propertyType = await _db.PropertyType.FirstOrDefaultAsync(t => t.PropertyTypeId == tenant.PropertyTypeId);
-            if (tenant == null) return false;
 
-            var newTenant = new PropertyType
+            if (propertyType == null)
             {
-                PropertyTypeId = tenant.PropertyTypeId,
-                PropertyTypeName = tenant.PropertyTypeName,
-                Icon_String = tenant.Icon_String,
-                Icon_SVG = tenant.Icon_SVG,
-                AppTenantId = tenant.AppTenantId,
-                Status = tenant.Status,
-                IsDeleted = tenant.IsDeleted,
-                AddedDate = tenant.AddedDate,
-                AddedBy = tenant.AddedBy,
-                ModifiedDate = tenant.ModifiedDate,
-                ModifiedBy = tenant.ModifiedBy
-            };
+                return false;
+            }
 
-            _db.PropertyType.Update(newTenant);
+            propertyType.PropertyTypeName = tenant.PropertyTypeName;
+            propertyType.Icon_String = tenant.Icon_String;
+            propertyType.Icon_SVG = tenant.Icon_SVG;
+            propertyType.AppTenantId = tenant.AppTenantId;
+            propertyType.Status = tenant.Status;
+            propertyType.IsDeleted = tenant.IsDeleted;
+            propertyType.ModifiedDate = DateTime.Now;
+            propertyType.ModifiedBy = tenant.ModifiedBy;
+
+            _db.PropertyType.Update(propertyType);
+
             var result = await _db.SaveChangesAsync();
+
             return result > 0;
         }
+
 
         public async Task<bool> DeletePropertyTypeAsync(int tenantId)
         {

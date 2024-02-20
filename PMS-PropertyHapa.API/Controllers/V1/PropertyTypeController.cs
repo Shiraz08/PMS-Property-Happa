@@ -148,12 +148,12 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             }
         }
 
-        [HttpPut("PropertyType/{propertytypeId}")]
-        public async Task<ActionResult<bool>> UpdatePropertyType(int tenantId, PropertyTypeDto tenant)
+        [HttpPut("PropertyType/{PropertyTypeId}")]
+        public async Task<ActionResult<bool>> UpdatePropertyType(int PropertyTypeId, PropertyTypeDto tenant)
         {
             try
             {
-                tenant.PropertyTypeId = tenantId; // Ensure tenantId is set
+                tenant.PropertyTypeId = PropertyTypeId; // Ensure tenantId is set
                 var isSuccess = await _userRepo.UpdatePropertyTypeAsync(tenant);
                 return Ok(isSuccess);
             }

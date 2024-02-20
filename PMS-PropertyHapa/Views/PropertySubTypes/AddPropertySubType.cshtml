@@ -5,7 +5,9 @@
     ViewData["Title"] = Model?.PropertySubTypeId == 0 ? "Add Property Subtype" : "Edit Property Subtype";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
+<div id="loadingSpinner" class="spinner-border text-primary" role="status" style="display: none;">
+    <span class="visually-hidden">Loading...</span>
+</div>
 <div class="page-body">
     <div class="container-fluid">
         <div class="page-title">
@@ -87,27 +89,39 @@
 <script>
     $(document).ready(function () {
         var selectedPropertyTypeId = @Html.Raw(selectedPropertyTypeIdJson);
-        initializeForm(selectedPropertyTypeId);
-        loadPropertyTypes(); // Call the function to load property types
+        var selectedStatus = @Html.Raw(JsonSerializer.Serialize(Model?.Status.ToString().ToLower() ?? ""));
+
+        if (selectedStatus !== "") {
+            $('#Status').val(selectedStatus);
+        }
+
+        loadPropertyTypes(selectedPropertyTypeId);
     });
 
-    function initializeForm(selectedPropertyTypeId) {
-        // Existing code for initializing the form
-    }
 
-    function loadPropertyTypes() {
+ 
+    var IconSVG;
+    var propertytypeId;
+    function loadPropertyTypes(selectedPropertyTypeId) {
         $.ajax({
             url: '@Url.Action("GetPropertyTypeAll", "PropertySubTypes")',
             type: 'GET',
             dataType: 'json',
+            beforeSend: function () {
+                $('#loadingSpinner').show();
+            },
             success: function (response) {
                 var propertyTypeIdDropdown = $('#PropertyTypeId');
                 propertyTypeIdDropdown.empty();
                 propertyTypeIdDropdown.append('<option value="" disabled selected hidden>Select Property Type</option>');
                 $.each(response.data, function (index, propertyType) {
-                    var option = new Option(propertyType.PropertyTypeName, propertyType.PropertyTypeId);
+                    var isSelected = propertyType.PropertyTypeId == selectedPropertyTypeId;
+                    var option = new Option(propertyType.PropertyTypeName, propertyType.PropertyTypeId, isSelected, isSelected);
                     propertyTypeIdDropdown.append(option);
                 });
+            },
+            complete: function () {
+                $('#loadingSpinner').hide();
             },
             error: function (xhr, status, error) {
                 console.error('AJAX error fetching property types:', error);
@@ -115,6 +129,7 @@
         });
     }
     function submitPropertySubTypeForm() {
+        debugger
         var formData = new FormData($('#propertySubTypeForm')[0]);
         formData.append('Status', $('#Status').val());
         formData.append("Icon_SVG2", $('#Icon_SVG2')[0].files[0]);
@@ -131,6 +146,7 @@
             var modifiedDate = new Date().toISOString().slice(0, 10);
             formData.append("ModifiedDate", modifiedDate);
             formData.append("TenantId", userId);
+            formData.append("Icon_SVG", IconSVG);
         }
 
         var url = '';

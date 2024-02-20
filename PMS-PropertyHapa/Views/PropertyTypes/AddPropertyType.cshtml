@@ -31,6 +31,7 @@
 
         <div class="edit-profile">
             <div class="row">
+
                 <form id="propertyTypeForm" enctype="multipart/form-data">
                     <div class="col-xl-12">
                         <div class="card">
@@ -48,7 +49,7 @@
                                             <div class="mb-3">
                                                 <label for="PropertyTypeName" class="form-label">Property Type Name</label>
                                                 <select class="form-control" id="PropertyTypeName" name="PropertyTypeName" required>
-                                                    <option value="" disabled selected hidden>Select Property Type</option>
+                                                    <option value="" selected disabled>Select Property Type</option>
                                                     <option value="A">A</option>
                                                     <option value="B">B</option>
                                                     <option value="C">C</option>
@@ -71,12 +72,13 @@
                                             <div class="mb-3">
                                                 <label for="Status" class="form-label">Status</label>
                                                 <select class="form-control" id="Status" name="Status" required>
-                                                    <option value="" disabled selected hidden>Select Status</option>
+                                                    <option value="" selected disabled>Select Status</option>
                                                     <option value="true">Active</option>
                                                     <option value="false">Inactive</option>
                                                 </select>
                                             </div>
                                         </div>
+
                                     }
                                 </div>
                             </div>
@@ -91,6 +93,7 @@
         </div>
     </div>
 </div>
+
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
@@ -110,13 +113,15 @@
             var addedDate = new Date().toISOString().slice(0, 10);
             propertyTypeFormData.append("AddedDate", addedDate);
             propertyTypeFormData.append("TenantId", userId);
+            propertyTypeFormData.append("Icon_SVG", fetchiconsvg);
         } else {
             propertyTypeFormData.append("ModifiedBy", userName);
             var modifiedDate = new Date().toISOString().slice(0, 10);
             propertyTypeFormData.append("ModifiedDate", modifiedDate);
             propertyTypeFormData.append("TenantId", userId);
+            propertyTypeFormData.append("Icon_SVG", fetchiconsvg);
         }
-
+        
         var ajaxUrl = '';
         var method = '';
 
@@ -150,18 +155,33 @@
             }
         });
     }
+    var fetchiconsvg;
+    $(document).ready(function () {
+        // Set default status dropdown
+        $("#Status").val(""); // Select the disabled option by default
 
-        $(document).ready(function () {
-            var status = "@Model?.Status";
-            if (status !== "") {
-                $("#Status").val(status.toLowerCase()); // Convert to lowercase to match "true" or "false"
-            }
+        // Display Icon_SVG2 if available, else display Icon_SVG
+        var iconSVG = "@Model?.Icon_SVG";
+        var iconSVG2 = "@Model?.Icon_SVG2";
+        fetchiconsvg = "@Model?.Icon_SVG";
+        if (iconSVG2 !== "") {
+            // If Icon_SVG2 has an image, display it
+            $("#iconImageContainer").html('<img src="data:image;base64,' + iconSVG2 + '" height="130px" width="150px" />');
+        } else {
+            $("#iconImageContainer").html('<img src="data:image;base64,' + iconSVG + '" height="130px" width="150px" />');
+        }
 
-            var propertyTypeName = "@Model?.PropertyTypeName";
-            if (propertyTypeName !== "") {
-                $("#PropertyTypeName").val(propertyTypeName);
-            }
-        });
+        // Set selected status and property type name if available
+        var status = "@Model?.Status";
+        if (status !== "") {
+            $("#Status").val(status.toLowerCase()); // Convert to lowercase to match "true" or "false"
+        }
+
+        var propertyTypeName = "@Model?.PropertyTypeName";
+        if (propertyTypeName !== "") {
+            $("#PropertyTypeName").val(propertyTypeName);
+        }
+    });
 
 </script>
 

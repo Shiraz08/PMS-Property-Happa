@@ -39,7 +39,6 @@
                                         <th>Icon SVG</th>
                                         <th>Status</th>
                                         <th>Added Date</th>
-                                        <th>Modified Date</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -68,7 +67,12 @@
             "columns": [
                 { "data": "PropertyTypeId" },
                 { "data": "PropertyTypeName" },
-                { "data": "Icon_SVG" },
+                {
+                    "data": "Icon_SVG",
+                    "render": function (data) {
+                        return '<img src="data:image;base64,' + data + '" height="50px" width="100px" />';
+                    }
+                },
                 {
                     "data": "Status",
                     "render": function (data) {
@@ -81,12 +85,7 @@
                         return data ? new Date(data).toLocaleDateString() : '-----';
                     }
                 },
-                {
-                    "data": "ModifiedDate",
-                    "render": function (data) {
-                        return data ? new Date(data).toLocaleDateString() : '-----';
-                    }
-                },
+               
                 {
                     "data": null,
                     "render": function (data, type, row) {
