@@ -44,44 +44,20 @@ namespace PMS_PropertyHapa.Services
 
         public async Task<bool> UpdateProfileAsync(ProfileModel model)
         {
-            using (var multipartContent = new MultipartFormDataContent())
+            try
             {
-                // Adding string properties to the multipart/form-data
-                multipartContent.Add(new StringContent(model.UserId), nameof(model.UserId));
-                multipartContent.Add(new StringContent(model.Name ?? string.Empty), nameof(model.Name));
-                multipartContent.Add(new StringContent(model.UserName ?? string.Empty), nameof(model.UserName));
-                multipartContent.Add(new StringContent(model.Email ?? string.Empty), nameof(model.Email));
-                multipartContent.Add(new StringContent(model.PhoneNumber ?? string.Empty), nameof(model.PhoneNumber));
-                multipartContent.Add(new StringContent(model.Address ?? string.Empty), nameof(model.Address));
-                multipartContent.Add(new StringContent(model.Address2 ?? string.Empty), nameof(model.Address2));
-                multipartContent.Add(new StringContent(model.Locality ?? string.Empty), nameof(model.Locality));
-                multipartContent.Add(new StringContent(model.District ?? string.Empty), nameof(model.District));
-                multipartContent.Add(new StringContent(model.Region ?? string.Empty), nameof(model.Region));
-                multipartContent.Add(new StringContent(model.PostalCode ?? string.Empty), nameof(model.PostalCode));
-                multipartContent.Add(new StringContent(model.Country ?? string.Empty), nameof(model.Country));
-                multipartContent.Add(new StringContent(model.Status.ToString()), nameof(model.Status));
-
-                if (!string.IsNullOrEmpty(model.ExistingPictureUrl))
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
                 {
-                    multipartContent.Add(new StringContent(model.ExistingPictureUrl), nameof(model.ExistingPictureUrl));
-                }
-
-
-                if (model.NewPicture != null)
-                {
-                    multipartContent.Add(new StreamContent(model.NewPicture.OpenReadStream()), nameof(model.NewPicture), model.NewPicture.FileName);
-                }
-
-
-                var apiResponse = await _baseService.SendAsync<APIResponse>(new APIRequest()
-                {
-                    ApiType = SD.ApiType.POST,
-                    Data = multipartContent,
+                    ApiType = SD.ApiType.PUT,
+                    Data = model,
                     Url = $"{villaUrl}/api/v1/UsersAuth/Update"
                 });
 
-
-                return apiResponse.IsSuccess;
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when updating profile: {ex.Message}", ex);
             }
         }
 

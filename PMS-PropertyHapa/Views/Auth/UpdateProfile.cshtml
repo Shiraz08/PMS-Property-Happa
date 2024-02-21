@@ -46,14 +46,14 @@
                             <div class="row mb-2">
                                 <div class="profile-title">
                                     <div class="media">
-                                        <img class="img-70 rounded-circle" alt="" src="../assets/images/user/7.jpg">
-                                        <div id="profile-picture-container" class="img-70"></div>
+                                        <img src="" id="NewPictureBase64" class="rounded-circle" width="270" height="270" />
                                         <div class="media-body">
                                             <h3 class="mb-1 f-20 txt-primary">@Model.UserName</h3>
                                             <p class="f-12">@Model.Email</p>
                                         </div>
                                     </div>
                                 </div>
+
                             </div>
                         </div>
                     </div>
@@ -176,6 +176,7 @@
                     $('#UserName').val(response.result.UserName);
                     $('#Email').val(response.result.Email);
                     $('#PhoneNumber').val(response.result.PhoneNumber);
+                    $('#NewPictureBase64').attr('src', 'data:image;base64,' + response.result.NewPictureBase64);
                     $('#Address').val(response.result.Address);
                     $('#Address2').val(response.result.Address2);
                     $('#Locality').val(response.result.Locality);

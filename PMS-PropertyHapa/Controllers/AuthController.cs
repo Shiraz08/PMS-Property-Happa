@@ -6,9 +6,11 @@ using Microsoft.EntityFrameworkCore;
 using PMS_PropertyHapa.MigrationsFiles.Data;
 using PMS_PropertyHapa.Models;
 using PMS_PropertyHapa.Models.DTO;
+using PMS_PropertyHapa.Models.Entities;
 using PMS_PropertyHapa.Models.Roles;
 using PMS_PropertyHapa.Services.IServices;
 using PMS_PropertyHapa.Shared.Enum;
+using PMS_PropertyHapa.Shared.ImageUpload;
 
 namespace PMS_PropertyHapa.Controllers
 {
@@ -106,7 +108,14 @@ namespace PMS_PropertyHapa.Controllers
             {
                 return View(model);
             }
+            if (model.NewPicture != null)
+            {
+                var (fileName, base64String) = await ImageUploadUtility.UploadImageAsync(model.NewPicture, "uploads");
+                model.Picture = fileName;
+                model.NewPictureBase64 = base64String;
+            }
 
+            model.NewPicture = null;
             var success = await _authService.UpdateProfileAsync(model);
 
             if (success)

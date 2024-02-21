@@ -258,8 +258,8 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             }
         }
 
-        [HttpPost("Update")]
-        public async Task<IActionResult> UpdateProfile([FromForm] ProfileModel model)
+        [HttpPut("Update")]
+        public async Task<IActionResult> UpdateProfile(ProfileModel model)
         {
             var user = await _userManager.FindByIdAsync(model.UserId);
             if (user == null)
@@ -267,46 +267,28 @@ namespace PMS_PropertyHapa.API.Controllers.V1
                 return NotFound();
             }
 
-           
-
             // Update basic information
             user.Email = model.Email;
             user.PhoneNumber = model.PhoneNumber;
-
             user.Address = model.Address;
             user.Address2 = model.Address2;
             user.Locality = model.Locality;
             user.District = model.District;
             user.Region = model.Region;
             user.PostalCode = model.PostalCode;
-            user.Picture = model.Picture;
             user.Country = model.Country;
-            user.Status = true;
+            user.Status = model.Status;
 
-            if (model.NewPicture != null)
+            if (!string.IsNullOrEmpty(model.NewPictureBase64))
             {
-                var uploadsFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
-                if (!Directory.Exists(uploadsFolderPath))
-                {
-                    Directory.CreateDirectory(uploadsFolderPath);
-                }
-
-                var originalFileName = model.NewPicture.FileName;
-                var safeFileName = WebUtility.HtmlEncode(originalFileName);
-                var filePath = Path.Combine(uploadsFolderPath, safeFileName);
-
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await model.NewPicture.CopyToAsync(stream);
-                }
-                user.Picture = $"/uploads/{safeFileName}";
+                // Handle updating profile picture with base64 string
+                user.Picture = model.NewPictureBase64;
             }
 
             var result = await _userManager.UpdateAsync(user);
             if (result.Succeeded)
             {
                 return Ok(new { pictureUrl = user.Picture });
-
             }
 
             return BadRequest(result.Errors);

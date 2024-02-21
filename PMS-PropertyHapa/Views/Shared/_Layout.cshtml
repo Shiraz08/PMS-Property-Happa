@@ -26,6 +26,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- Include Bootstrap CSS and JS for modal (optional) -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -150,7 +154,7 @@
                             <ul class="profile-dropdown onhover-show-div">
                                 <li><a href="@Url.Action("UpdateProfile", "auth")"><i data-feather="user"></i><span>Profile</span></a></li>
                                 <li><a href="@Url.Action("ChangePassword", "auth")"><i data-feather="user"></i><span>Change Password</span></a></li>
-                                <li><a onclick="openModal()">Change Color Schema</a></li>
+                                <li><a href="#" id="changeColorSchemaButton">Change Color Schema</a></li>
                                 <li><a href="@Url.Action("Login","auth")"><i data-feather="log-in"> </i><span>Log Out</span></a></li>
                             </ul>
                         </li>
@@ -167,7 +171,7 @@
                 <div>
                     <div class="logo-wrapper">
                         <a href="@Url.Action("Index","Home")">
-                            <img class="img-fluid for-light" id="Org_Logo" src="" alt="" style="width: 252px;height: 66px;">
+                            <img class="img-fluid for-light" id="NewPictureBase64" src="" alt="" style="width: 252px;height: 66px;">
                         </a>
                         <div class="back-btn"><i class="fa fa-angle-left"></i></div>
                     </div>
@@ -456,6 +460,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.2/js/toastr.min.js"></script>
     <script>
         $(document).ready(function () {
+            debugger;
             var organizationName = localStorage.getItem('organizationName');
             var organizationLogo = localStorage.getItem('organizationLogo');
             var organizationIcon = localStorage.getItem('organizationIcon');
@@ -463,18 +468,102 @@
             var tid = localStorage.getItem('tid');
             var primaryColor = localStorage.getItem('primaryColor');
             var secondaryColor = localStorage.getItem('secondaryColor');
+            if(organizationLogo != null)
+            {
+                $('#NewPictureBase64').attr('src', 'data:image;base64,' + organizationLogo);
+            }
             if (organizationName != null) {
                 document.title = "Dashboard" + " " + "-" + " " + organizationName;
                 document.getElementById('companyname').innerHTML = "Copyright 2024 ©" + " " + "-" + " " + organizationName;
                 var urls = '@Html.Raw(Configuration.GetSection("ImageURl")["URL"].ToString())';
                 var imageUrl = urls.concat(organizationLogo);
                 var imageiconUrl = urls.concat(organizationIcon);
-                document.querySelector("#Org_Logo").src = imageUrl;
-                jQuery('link[rel="icon"]').attr('href', imageUrl);
-                jQuery('link[rel="shortcut icon"]').attr('href', imageiconUrl);
 
             }
         });
     </script>
+
+    <script>
+        $(document).ready(function () {
+           
+            function openModal() {
+                $('#exampleModalCenter').modal('show');
+            }
+
+            $('#changeColorSchemaButton').click(function (e) {
+                e.preventDefault();
+                openModal();
+            });
+        });
+
+        function closeModal() {
+            $('#exampleModalCenter').modal('hide');
+        }
+
+
+        function fetchTenantOrganizationInfo(tenantId) {
+            $.ajax({
+                url: '/Auth/GetTenantOrganizationInfo',
+                type: 'GET',
+                data: { tenantId: tenantId },
+                success: function (response) {
+                    debugger
+                    var data = response.data;
+                    $('#organizationName').val(data.OrganizationName);
+                    $('#organizationDescription').val(data.OrganizationDescription);
+
+                    $('#organizatioPrimaryColor').val(data.OrganizatioPrimaryColor);
+                    $('#organizationSecondColor').val(data.OrganizationSecondColor);
+
+                    console.log('Data fetched successfully:', data);
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error fetching data:', error);
+                }
+            });
+        }
+
+
+
+        function saveTenantOrganizationInfo() {
+            var tenantId = localStorage.getItem('tid');
+            var userId = localStorage.getItem('userId');
+            var organizationLogo = localStorage.getItem('organizationLogo');
+            var organizationIcon = localStorage.getItem('organizationIcon');
+            var tenantOrganizationInfoData = {
+                Id: tenantId,
+                OrganizationName: $('#organizationName').val(),
+                OrganizationDescription: $('#organizationDescription').val(),
+                OrganizationIcon: organizationIcon,
+                OrganizationLogo: organizationLogo,
+                OrganizatioPrimaryColor: $('#organizationPrimaryColor').val(),
+                OrganizationSecondColor: $('#organizationSecondaryColor').val(),
+                TempTenantUserId: userId
+            };
+
+            $.ajax({
+                url: '/Auth/SaveTenantOrganizationInfo',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(tenantOrganizationInfoData),
+                success: function (response) {
+                    debugger;
+                    var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
+                    Toast.fire({ icon: 'success', title: response.message });
+                    console.log('Success:', response);
+                    $('#exampleModalCenter').modal('hide');
+                    setTimeout(function () {
+                        window.location.reload(true);
+                    }, 3200);
+
+                },
+                error: function (xhr, status, error) {
+
+                    console.error('Error:', error);
+
+                }
+            });
+    </script>
+
 </body>
 </html>

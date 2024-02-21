@@ -472,6 +472,7 @@ namespace MagicVilla_VillaAPI.Repository
                 Address2 = user.Address2,
                 Locality = user.Locality,
                 District = user.District,
+                NewPictureBase64 = user.Picture,
                 Picture = user.Picture,
                 Region = user.Region,
                 PostalCode = user.PostalCode,

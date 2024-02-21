@@ -9,6 +9,7 @@ using PMS_PropertyHapa.MigrationsFiles.Data;
 using PMS_PropertyHapa.Models.DTO;
 using PMS_PropertyHapa.Models.Entities;
 using PMS_PropertyHapa.Models.Roles;
+using PMS_PropertyHapa.Shared.ImageUpload;
 using System.Net;
 using System.Net.Http.Headers;
 using static System.Net.WebRequestMethods;
@@ -126,13 +127,23 @@ namespace PMS_PropertyHapa.Admin.Controllers
 
                     await userManager.AddToRoleAsync(appUser, model.User.Group);
 
+
+
+                    if (model.OrganizationInfo.OrganizationLogoFile != null)
+                    {
+                        var (fileName, base64String) = await ImageUploadUtility.UploadImageAsync(model.OrganizationInfo.OrganizationLogoFile, "uploads");
+                       
+                        model.OrganizationInfo.OrganizationLogo = base64String;
+                    }
+
+
                     var tenantOrgInfo = new TenantOrganizationInfo
                     {
                         TenantUserId = Guid.Parse(appUser.Id),
                         OrganizationName = model.OrganizationInfo.OrganizationName,
                         OrganizationDescription = model.OrganizationInfo.OrganizationDescription,
                         OrganizationIcon = orgIconFileName,
-                        OrganizationLogo = orgLogoFileName,
+                        OrganizationLogo = model.OrganizationInfo.OrganizationLogo,
                         OrganizatioPrimaryColor = model.OrganizationInfo.OrganizatioPrimaryColor,
                         OrganizationSecondColor = model.OrganizationInfo.OrganizationSecondColor
                     };
