@@ -466,6 +466,11 @@
             var organizationIcon = localStorage.getItem('organizationIcon');
             var organizationDescription = localStorage.getItem('organizationDescription');
             var tid = localStorage.getItem('tid');
+            if (tid) {
+                fetchTenantOrganizationInfo(tid);
+            } else {
+                console.error('Tenant ID not found');
+            }
             var primaryColor = localStorage.getItem('primaryColor');
             var secondaryColor = localStorage.getItem('secondaryColor');
             if(organizationLogo != null)
@@ -501,11 +506,11 @@
         }
 
 
-        function fetchTenantOrganizationInfo(tenantId) {
+        function fetchTenantOrganizationInfo(tid) {
             $.ajax({
                 url: '/Auth/GetTenantOrganizationInfo',
                 type: 'GET',
-                data: { tenantId: tenantId },
+                data: { tenantId: tid },
                 success: function (response) {
                     debugger
                     var data = response.data;
@@ -542,27 +547,19 @@
             };
 
             $.ajax({
-                url: '/Auth/SaveTenantOrganizationInfo',
+                url: '/Auth/SaveTenantOrganizationInfo', 
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify(tenantOrganizationInfoData),
                 success: function (response) {
-                    debugger;
-                    var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
-                    Toast.fire({ icon: 'success', title: response.message });
                     console.log('Success:', response);
-                    $('#exampleModalCenter').modal('hide');
-                    setTimeout(function () {
-                        window.location.reload(true);
-                    }, 3200);
-
                 },
                 error: function (xhr, status, error) {
-
                     console.error('Error:', error);
-
                 }
             });
+        }
+
     </script>
 
 </body>
