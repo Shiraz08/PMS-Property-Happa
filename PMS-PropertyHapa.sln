@@ -13,7 +13,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PMS-PropertyHapa.Shared", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PMS-PropertyHapa.Admin", "PMS-PropertyHapa.Admin\PMS-PropertyHapa.Admin.csproj", "{6A7B963A-6739-4F05-9F33-723601350ADB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PMS-PropertyHapa.MigrationsFiles", "PMS-PropertyHapa.MigrationsFiles\PMS-PropertyHapa.MigrationsFiles.csproj", "{59264DFB-16F8-4AE6-A6AC-5775A725A17F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PMS-PropertyHapa.MigrationsFiles", "PMS-PropertyHapa.MigrationsFiles\PMS-PropertyHapa.MigrationsFiles.csproj", "{59264DFB-16F8-4AE6-A6AC-5775A725A17F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PMS-PropertyHapa.Staff", "PMS-PropertyHapa.Staff\PMS-PropertyHapa.Staff.csproj", "{F8913E4D-8B4A-42DE-BFD5-7FB69B04EC9E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PMS-PropertyHapa.Owner", "PMS-PropertyHapa.Owner\PMS-PropertyHapa.Owner.csproj", "{BD428F73-F166-494C-AF78-03976C497072}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PMS-PropertyHapa.Tenant", "PMS-PropertyHapa.Tenant\PMS-PropertyHapa.Tenant.csproj", "{99FC5242-D8C3-43E6-B45A-667568456DA3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +51,18 @@ Global
 		{59264DFB-16F8-4AE6-A6AC-5775A725A17F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{59264DFB-16F8-4AE6-A6AC-5775A725A17F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{59264DFB-16F8-4AE6-A6AC-5775A725A17F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8913E4D-8B4A-42DE-BFD5-7FB69B04EC9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8913E4D-8B4A-42DE-BFD5-7FB69B04EC9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8913E4D-8B4A-42DE-BFD5-7FB69B04EC9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8913E4D-8B4A-42DE-BFD5-7FB69B04EC9E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD428F73-F166-494C-AF78-03976C497072}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD428F73-F166-494C-AF78-03976C497072}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD428F73-F166-494C-AF78-03976C497072}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD428F73-F166-494C-AF78-03976C497072}.Release|Any CPU.Build.0 = Release|Any CPU
+		{99FC5242-D8C3-43E6-B45A-667568456DA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99FC5242-D8C3-43E6-B45A-667568456DA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99FC5242-D8C3-43E6-B45A-667568456DA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99FC5242-D8C3-43E6-B45A-667568456DA3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
