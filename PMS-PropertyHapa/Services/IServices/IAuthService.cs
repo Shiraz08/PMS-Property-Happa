@@ -33,7 +33,7 @@ namespace PMS_PropertyHapa.Services.IServices
         Task<TenantModelDto> GetSingleTenantAsync(int tenantId);
 
 
-
+        Task<bool> CreateAssetAsync(AssetDTO asset);
 
 
 

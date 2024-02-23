@@ -286,6 +286,30 @@ namespace PMS_PropertyHapa.Services
             }
         }
 
+
+
+        public async Task<bool> CreateAssetAsync(AssetDTO asset)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Data = asset,
+                    Url = $"{villaUrl}/api/v1/Tenantauth/Tenant"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when creating tenant: {ex.Message}", ex);
+            }
+        }
+
+
+
+
         public async Task<bool> UpdateTenantAsync(TenantModelDto tenant)
         {
             try
