@@ -53,12 +53,22 @@ namespace PMS_PropertyHapa.Controllers
             var response = await _authService.LoginAsync<APIResponse>(obj);
             if (response != null && response.IsSuccess)
             {
-                //Usama
-                //Make api which get user data by email
-                //var users = await _authService.GetAllUsersAsync();
-                //var appUser = users.Where(x => x.email == obj.Email).FirstOrDefault();
-                //Microsoft.AspNetCore.Identity.SignInResult result = await _signInManager.PasswordSignInAsync(appUser, obj.Password, obj.Remember, false);
-                return Json(new { success = true, message = "Logged In Successfully..!", result = response.Result });
+                var appUser = await _userManager.FindByEmailAsync(obj.Email);
+                if (appUser != null)
+                {
+                    if (await _userManager.IsInRoleAsync(appUser, "Owner"))
+                    {
+                        return Json(new { success = true, message = "Logged In Successfully..!", result = response.Result });
+                    }
+                    else
+                    {
+                        return Json(new { success = false, message = "Only owners are allowed to log in." });
+                    }
+                }
+                else
+                {
+                    return Json(new { success = false, message = "User not found." });
+                }
             }
             else
             {
@@ -66,7 +76,6 @@ namespace PMS_PropertyHapa.Controllers
                 return Json(new { success = false, message = errorMessage });
             }
         }
-
 
         [HttpGet]
         public async Task<IActionResult> GetProfile(string userId)

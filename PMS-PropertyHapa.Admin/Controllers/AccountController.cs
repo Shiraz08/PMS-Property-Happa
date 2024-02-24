@@ -72,7 +72,16 @@ namespace PMS_PropertyHapa.Admin.Controllers
                         Microsoft.AspNetCore.Identity.SignInResult result = await _signInManager.PasswordSignInAsync(appUser, login.Password, login.Remember, false);
 
                         if (result.Succeeded)
-                            return RedirectToAction("Index", "Dashboard");
+
+                            if (await _userManager.IsInRoleAsync(appUser, "Admin"))
+                            {
+                                return RedirectToAction("Index", "Dashboard");
+                            }
+                            else
+                            {
+                                ModelState.AddModelError("", "Login Failed: Only administrators are allowed to log in.");
+                                await _signInManager.SignOutAsync(); 
+                            }
 
                         if (result.IsLockedOut)
                             ModelState.AddModelError("", "Your account is locked out. Kindly wait for 10 minutes and try again");

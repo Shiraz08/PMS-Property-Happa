@@ -46,6 +46,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
         }
 
 
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginRequestDTO obj)
@@ -53,12 +54,23 @@ namespace PMS_PropertyHapa.Staff.Controllers
             var response = await _authService.LoginAsync<APIResponse>(obj);
             if (response != null && response.IsSuccess)
             {
-                //Usama
-                //Make api which get user data by email
-                //var users = await _authService.GetAllUsersAsync();
-                //var appUser = users.Where(x => x.email == obj.Email).FirstOrDefault();
-                //Microsoft.AspNetCore.Identity.SignInResult result = await _signInManager.PasswordSignInAsync(appUser, obj.Password, obj.Remember, false);
-                return Json(new { success = true, message = "Logged In Successfully..!", result = response.Result });
+
+                var appUser = await _userManager.FindByEmailAsync(obj.Email);
+                if (appUser != null)
+                {
+                    if (await _userManager.IsInRoleAsync(appUser, "Staff"))
+                    {
+                        return Json(new { success = true, message = "Logged In Successfully as Staff..!", result = response.Result });
+                    }
+                    else
+                    {
+                        return Json(new { success = false, message = "Only staff members are allowed to log in." });
+                    }
+                }
+                else
+                {
+                    return Json(new { success = false, message = "Only staff members are allowed to log in." });
+                }
             }
             else
             {
@@ -66,6 +78,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
                 return Json(new { success = false, message = errorMessage });
             }
         }
+
 
 
         [HttpGet]
@@ -323,7 +336,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
 
         #region TenantDataFetching
-      
+
 
         public async Task<IActionResult> GetTenantOrganizationInfo(int tenantId)
         {
