@@ -19,18 +19,25 @@ namespace PMS_PropertyHapa.Controllers
         }
 
 
-
-        [HttpPost] 
+        [HttpPost]
         public async Task<IActionResult> AddAsset([FromBody] AssetDTO assetDTO)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-           await _authService.CreateAssetAsync(assetDTO); 
-           return Json(new { success = true, message = "Asset added successfully" });
-            
+
+            try
+            {
+                await _authService.CreateAssetAsync(assetDTO);
+                return Ok(new { success = true, message = "Asset added successfully" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "An error occurred while adding the asset." });
+            }
         }
+
 
 
         public IActionResult Index()

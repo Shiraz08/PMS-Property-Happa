@@ -19,17 +19,10 @@ namespace PMS_PropertyHapa.Models.DTO
         public string Country { get; set; }
         public string Zipcode { get; set; }
 
-        public string UnitName { get; set; }
-        public int Beds { get; set; }
-        public int Bath { get; set; }
-        public int Size { get; set; }
-        public decimal Rent { get; set; }
-        public int Room { get; set; }
+        public List<UnitDTO> Units { get; set; } = new List<UnitDTO>();
 
         public string SelectedBankAccountOption { get; set; }
-
         public string SelectedReserveFundsOption { get; set; }
-
         public string SelectedOwnershipOption { get; set; }
 
         public string OwnerName { get; set; }
@@ -39,5 +32,14 @@ namespace PMS_PropertyHapa.Models.DTO
         public string OwnerZipcode { get; set; }
         public string OwnerCity { get; set; }
         public string OwnerCountry { get; set; }
+    }
+
+    public class UnitDTO
+    {
+        public string UnitName { get; set; }
+        public int Beds { get; set; }
+        public int Bath { get; set; }
+        public int Size { get; set; }
+        public decimal Rent { get; set; }
     }
 }
