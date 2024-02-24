@@ -1,9 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using PMS_PropertyHapa.Staff.Models;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis.Options;
+using Newtonsoft.Json.Linq;
+using PMS_PropertyHapa.Models;
 using System.Diagnostics;
+using System.Numerics;
+using System.Xml.Linq;
 
-namespace PMS_PropertyHapa.Staff.Controllers
+namespace PMS_PropertyHapa.Staff.Auth.Controllers
 {
+    //[Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

@@ -1,0 +1,217 @@
+﻿@model PMS_PropertyHapa.Models.Roles.ApplicationUser
+@{
+	ViewData["Title"] = "Update User";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12">
+                    <h3>Update Profile</h3>
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a class="home-item" href="index.html"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item">Dashboard</li>
+                        <li class="breadcrumb-item active">Update Profile</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="personalDetails" role="tabpanel">
+                                <div class="live-preview">
+                                    <div class="row gy-4">
+                                        <input asp-for="Id" class="form-control" type="hidden" />
+                                        <!--end col-->
+                                        <div class="col-xxl-3 col-md-6">
+                                            <div>
+                                                <label>First Name:&nbsp;<span style="color:red!important"><b>*</b></span></label>
+                                                <input asp-for="FirstName" class="form-control" />
+                                                <span asp-validation-for="FirstName" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <!--end col-->
+                                        <div class="col-xxl-3 col-md-6">
+                                            <div>
+                                                <label asp-for="LastName"></label>
+                                                <input asp-for="LastName" class="form-control" />
+                                                <span asp-validation-for="LastName" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <!--end col-->
+                                        <!--end col-->
+                                        <div class="col-xxl-3 col-md-6">
+                                            <div>
+                                                <label>Email:&nbsp;<span style="color:red!important"><b>*</b></span></label>
+                                                <div class="form-icon right">
+                                                    <input type="email" class="form-control form-control-icon" asp-for="Email" placeholder="example@gmail.com">
+                                                    <i class="ri-mail-unread-line"></i>
+                                                </div>
+                                                <span asp-validation-for="Email" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <!--end col-->
+                                        <div class="col-xxl-3 col-md-6">
+                                            <div>
+                                                <label asp-for="BirthDate"></label>
+                                                <div class="form-icon right">
+                                                    <input asp-for="BirthDate" id="BirthDate" type="text" class="form-control form-control-icon" autocomplete="off" placeholder="Please Select Date" />
+                                                    <i class="ri-calendar-todo-line"></i>
+                                                </div>
+                                                <span asp-validation-for="BirthDate" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-xxl-3 col-md-6">
+                                            <div>
+                                                <label>PhoneNumber:&nbsp;<span style="color:red!important"><b>*</b></span></label>
+                                                <div class="form-icon right">
+                                                    <input asp-for="PhoneNumber" class="form-control form-control-icon" placeholder="Please Enter Phone Number" type="number" />
+                                                    <i class="ri-phone-line"></i>
+                                                </div>
+                                                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-xxl-3 col-md-6">
+                                            <div style="padding-top: 26px;">
+                                                <button type="button" onclick="ProfileUpdate();" class="btn btn-success">Update Profile</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--end row-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.2/js/toastr.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#BirthDate").datepicker({
+            dateFormat: 'mm/dd/yy', 
+            changeMonth: true,
+            changeYear: true,
+            yearRange: '-99:-18'
+        });
+    });
+    function CheckValidation() 
+    {
+        if ($('#FirstName').val() == '') { $('#FirstName').css('border-color', 'red'); var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 }); Toast.fire({ icon: 'error', title: 'Required Fields are Mandatory...!' }); } else { $('#FirstName').css('border-color', '#ced4da') }
+        if ($('#Email').val() == '') { $('#Email').css('border-color', 'red'); var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 }); Toast.fire({ icon: 'error', title: 'Required Fields are Mandatory...!' }); } else { $('#Email').css('border-color', '#ced4da') }
+        if ($('#PhoneNumber').val() == '') { $('#PhoneNumber').css('border-color', 'red'); var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 }); Toast.fire({ icon: 'error', title: 'Required Fields are Mandatory...!' }); } else { $('#PhoneNumber').css('border-color', '#ced4da') }
+        if ( $('#FirstName').val() == '' || $('#Email').val() == '' || $('#PhoneNumber').val() == '') {
+            return false;
+        }
+        else
+        {
+
+           return true;
+        }
+    }
+    function ProfileUpdate() 
+    { 
+        var result = CheckValidation();
+        if (result == true) 
+        {
+            debugger
+            var fileDatas = new FormData();
+            fileDatas.append("FirstName", $('#FirstName').val());
+            fileDatas.append("LastName", $('#LastName').val());
+            fileDatas.append("Email", $('#Email').val());
+            fileDatas.append("PhoneNumber", $('#PhoneNumber').val());
+            fileDatas.append("BirthDate", $('#BirthDate').val());
+            fileDatas.append("Id", $('#Id').val());
+            $.ajax({
+                type: 'POST',
+                url: '/Admin/Update',
+                processData: false,
+                contentType: false,
+                data: fileDatas,
+                success: function (response) {
+                    var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
+                    Toast.fire({ icon: 'success', title: 'Profile Update Successfully..!' });
+                    if(response == "yes")
+                    {
+                        setTimeout(function () {
+                        	window.location.href = '@Url.Action("Index", "Admin")';
+                        }, 2000);
+                    }
+                },
+                failure: function (response) {
+                    $('#result').html(response);
+                }
+            });
+        }
+    }
+        function getCountry()
+    {
+        $.ajax({
+            type: "GET",
+            url: "/LookUp/CountryDropDown",
+            data: "{}",
+            success: function (data) {
+                var s = '<option value="">Please Select a Country</option>';
+                for (var i = 0; i < data.length; i++) {
+                    s += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
+                }
+                $("#Country").html(s);
+                $('#Country option[value=' + @ViewBag.Country+']').attr('selected', true);
+            }
+        });
+
+    }
+
+    function getShop()
+    {
+        $.ajax({
+            type: "GET",
+            url: "/LookUp/ShopDropDown",
+            data: "{}",
+            success: function (data) {
+                var s = '<option value="">Please Select a Shop</option>';
+                for (var i = 0; i < data.length; i++) {
+                    s += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
+                }
+                $("#Shop").html(s);
+                $('#Shop option[value=' + @ViewBag.Shop+']').attr('selected', true);
+            }
+        });
+    }
+
+    function getGroups()
+    {
+        $.ajax({
+            type: "GET",
+            url: "/LookUp/AspnetRolesDropDown",
+            data: "{}",
+            success: function (data) {
+                var s = '<option value="">Please Select a Role</option>';
+                for (var i = 0; i < data.length; i++) {
+                    s += '<option value="' + data[i].Text + '">' + data[i].Text + '</option>';
+                }
+                $("#Group").html(s);
+              //  $("#Group option:contains(@ViewBag.Type)").attr('selected', 'selected');
+               //$('#Group option[value=' + @ViewBag.Type +']').attr('selected', true);
+                $('#Group option[value=@ViewBag.Group]').attr('selected', 'selected');
+            }
+        });
+
+    }
+</script>

@@ -1,0 +1,251 @@
+﻿@model PMS_PropertyHapa.Models.DTO.ProfileModel
+@{
+    ViewData["Title"] = "Profile";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    #profile-picture-container {
+        width: 200px !important;
+        height: 200px !important;
+        background-size: cover;
+        background-position: center;
+        border-radius: 30px !important
+    }
+</style>
+
+
+<!-- Page Sidebar Ends-->
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-sm-6">
+                    <h3>Edit Profile</h3>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/auth/UpdateProfile"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item">Auth</li>
+                        <li class="breadcrumb-item active">UpdateProfile</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="edit-profile">
+            <div class="row">
+                <div class="col-xl-4">
+                    <div class="card">
+                        <div class="card-header pb-0">
+                            <h4 class="card-title mb-0">My Profile</h4>
+                            <div class="card-options"><a class="card-options-collapse" href="#" data-bs-toggle="card-collapse"><i class="fe fe-chevron-up"></i></a><a class="card-options-remove" href="#" data-bs-toggle="card-remove"><i class="fe fe-x"></i></a></div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-2">
+                                <div class="profile-title">
+                                    <div class="media">
+                                        <img src="" id="NewPictureBase64" class="rounded-circle" width="270" height="270" />
+                                        <div class="media-body">
+                                            <h3 class="mb-1 f-20 txt-primary">@Model.UserName</h3>
+                                            <p class="f-12">@Model.Email</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-8">
+                    <form class="card">
+                        <div class="card-header pb-0">
+                            <h4 class="card-title mb-0">Edit Profile</h4>
+                            <div class="card-options"><a class="card-options-collapse" href="#" data-bs-toggle="card-collapse"><i class="fe fe-chevron-up"></i></a><a class="card-options-remove" href="#" data-bs-toggle="card-remove"><i class="fe fe-x"></i></a></div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Username</label>
+                                        <input class="form-control" id="UserName" name="UserName" disabled value="@Model.UserName">
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Email Address</label>
+                                        <input class="form-control" id="Email" name="Email" required placeholder="your-email@domain.com">
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Phone Number</label>
+                                        <input class="form-control" type="text" id="PhoneNumber" name="PhoneNumber" placeholder="PhoneNumber" required>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Address</label>
+                                        <input class="form-control" type="text" id="Address" name="Address" placeholder="Address" required>
+
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Address 2</label>
+                                        <input class="form-control" type="text" placeholder="Address 2" id="Address2" name="Address2" required>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Locality</label>
+                                        <input class="form-control" type="text" id="Locality" name="Locality" placeholder="Locality" required>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">District</label>
+                                        <input class="form-control" type="text" id="District" name="District" placeholder="District" required>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Region</label>
+                                        <input class="form-control" type="text" id="Region" name="Region" placeholder="Region" required>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Postal Code</label>
+                                        <input class="form-control" type="text" id="PostalCode" name="PostalCode" placeholder="Postal Code" required>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Profile Image</label>
+                                        <input id="NewPicture" name="NewPicture" type="file" class="form-control mb-3" />
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
+                                        <label class="form-label">Country</label>
+                                        <select class="form-control btn-square" id="Country" name="Country">
+                                            <option value="">--Select--</option>
+                                            <option value="Germany">Germany</option>
+                                            <option value="Canada">Canada</option>
+                                            <option value="USA">USA</option>
+                                            <option value="Australia">Australia</option>
+
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer text-end">
+                            <button class="btn btn-primary" type="submit">Update Profile</button>
+                        </div>
+                    </form>
+                    <!-- Container-fluid Ends-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        var userId = localStorage.getItem('userId');
+        var userName = localStorage.getItem('userName');
+        var imageName;
+        var imageDirectory = '@Url.Content(Model.Picture)';
+        $('#displayUserName').text(`Welcome, ${userName}`);
+        $.ajax({
+            url: `/Auth/GetProfile?userId=${encodeURIComponent(userId)}`, // Append userId
+            type: 'GET',
+            dataType: 'json',
+            success: function (response)
+            {
+                if (response.success == true) 
+                {
+                    debugger
+                    $('#Name').val(response.result.Name);
+                    $('#UserName').val(response.result.UserName);
+                    $('#Email').val(response.result.Email);
+                    $('#PhoneNumber').val(response.result.PhoneNumber);
+                    $('#NewPictureBase64').attr('src', 'data:image;base64,' + response.result.NewPictureBase64);
+                    $('#Address').val(response.result.Address);
+                    $('#Address2').val(response.result.Address2);
+                    $('#Locality').val(response.result.Locality);
+                    $('#District').val(response.result.District);
+                    $('#Region').val(response.result.Region);
+                    $('#PostalCode').val(response.result.PostalCode);
+                    $('#Country').val(response.result.Country);
+                    if (response.result.Picture) {
+                        var imageUrl = 'https://localhost:7178' + response.result.Picture;
+                        $('#profile-picture-container').css('background-image', 'url(' + imageUrl + ')');
+                        var imageName = response.result.Picture.split('/').pop();
+                        $('#imageName').text(imageName);
+
+                    } else {
+                        var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
+                        Toast.fire({ icon: 'error', title: 'No profile picture available' });
+                    }
+
+                }
+            },
+            error: function (error) {
+                console.log('Error fetching profile:', error);
+                var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
+                Toast.fire({ icon: 'error', title: 'Error Fetching Profile' });
+            }
+        });
+
+        $("#NewPicture").change(function () {
+            if (this.files && this.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#profile-picture-container').css('background-image', 'url(' + e.target.result + ')');
+                };
+                reader.readAsDataURL(this.files[0]);
+            }
+        });
+
+    });
+
+    $('form').submit(function (e) {
+
+        e.preventDefault();
+
+        var formData = new FormData(this);
+        var userId = localStorage.getItem('userId');
+        var userName = localStorage.getItem('userName');
+        formData.append('UserId', userId);
+        formData.append('UserName', userName);
+        $.ajax({
+            url: "/Auth/UpdateProfile",
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                console.log(response);
+                var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
+                Toast.fire({ icon: 'success', title: 'Profile updated successfully' });
+                var imageUrl = 'https://localhost:7178/wwwroot' + response.pictureUrl;
+                $('#profile-picture-container').css('background-image', 'url(' + imagePath + ')');
+                imageName = response.pictureUrl.split('/').pop();
+                $('#imageName').text(imageName);
+            },
+            error: function (xhr, status, error) {
+                var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
+                Toast.fire({ icon: 'error', title: 'Error updating profile' });
+                console.error(xhr.responseText);
+            }
+        });
+    });
+
+</script>

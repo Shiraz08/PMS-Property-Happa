@@ -1,4 +1,4 @@
-namespace PMS_PropertyHapa.Staff.Models
+namespace PMS_PropertyHapa.Models
 {
     public class ErrorViewModel
     {

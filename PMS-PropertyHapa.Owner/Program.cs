@@ -4,8 +4,23 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PMS_PropertyHapa.MigrationsFiles.Data;
 using PMS_PropertyHapa.Models.Roles;
+using PMS_PropertyHapa.Owner.Extensions;
+using PMS_PropertyHapa.Owner;
+using PMS_PropertyHapa.Owner.Services.IServices;
+using PMS_PropertyHapa.Owner.Services;
+using MagicVilla_Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddControllersWithViews(u => u.Filters.Add(new AuthExceptionRedirection()));
+builder.Services.AddAutoMapper(typeof(MappingConfig));
+builder.Services.AddHttpClient<IAuthService, AuthService>();
+builder.Services.AddSingleton<IApiMessageRequestBuilder, ApiMessageRequestBuilder>();
+builder.Services.AddScoped<IBaseService, BaseService>();
+builder.Services.AddScoped<ITokenProvider, TokenProvider>();
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddDistributedMemoryCache();
 // Add services to the container.
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddDistributedMemoryCache();

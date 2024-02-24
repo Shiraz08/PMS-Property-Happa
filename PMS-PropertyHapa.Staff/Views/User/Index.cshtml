@@ -1,0 +1,413 @@
+﻿@model PMS_PropertyHapa.Models.DTO.UserDTO
+@{
+    ViewData["Title"] = "Add Tenant";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+.custom-hover-nav-tabs .nav-item .nav-link {
+    width: 120px;
+    height: 45px;
+    position: relative;
+    border-radius: 0;
+    padding-top: 11px;
+    font-size: 16px;
+
+}
+.nav-pills {
+    --vz-nav-pills-border-radius: 0.25rem;
+    --vz-nav-pills-link-active-color: #fff;
+    --vz-nav-pills-link-active-bg: #0ab39c;
+}
+</style>
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12">
+                    <h3>App Tenant List</h3>
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a class="home-item" href="/User/Index"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item">User</li>
+                        <li class="breadcrumb-item active">App Tenant</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+       @*  <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header align-items-center d-flex">
+                        <h4 class="card-title mb-0 flex-grow-1">Create New Tenant</h4>
+                    </div>
+                 
+                </div>
+            </div>               
+        </div> *@
+        <div class="row">
+            <div class="col-xl-12 col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="card">
+                                    <div class="card-header align-items-center d-flex">
+                                        <h4 class="card-title mb-0 flex-grow-1">Tenant List</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="live-preview">
+                                            <div class="row gy-4">
+                                                <!--end col-->
+                                                <div class="col-xxl-5 col-md-5">
+                                                    <div>
+                                                        <input type="text" name="Searchtext" id="Searchtext" class="form-control" placeholder="Search By Name & Email" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-xxl-1 col-md-1">
+                                                    <div>
+                                                        <button type="button" onclick="SearchFilter();" class="btn btn-success">Search</button>
+                                                    </div>
+                                                </div>
+                                                <div class="col-xxl-2 col-md-2 ml-4">
+                                                    <div>
+                                                        <button type="button" onclick="Refresh();" class="btn btn-success">Reset Filter</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!--end row-->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>                <!--end col-->
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="tab-content text-muted">
+                            <div class="tab-pane show active" id="All-hover-All">
+                                <div class="table-responsive">
+                                    <table class="table align-middle table-hover table-nowrap table-striped-columns">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th scope="col">User Name</th>
+                                                <th scope="col">Email</th>
+                                                <th scope="col">Phone Number</th>
+                                                <th scope="col">Created Date</th>
+                                                <th scope="col">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="Allusertbody">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div><!-- end card-body -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.2/js/toastr.min.js"></script>
+<script src="~/js/site.js"></script>
+<script>
+    $(document).ready(function () {
+        window.alert = function () { }
+         getGroups();
+        getalluser();
+    });
+    function DeleteRole(Id) {
+        debugger;
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/Auth/DeleteUser',
+                    data: {
+                        "Id": Id
+                    },
+                    success: function (response) {
+                    var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
+                        Toast.fire({ icon: 'success', title: 'Tenant Delete Successfully..!' });
+                        getalluser();
+                    },
+                    failure: function (response) {
+                        $('#result').html(response);
+                    } 
+                });
+            }
+        })
+    }
+    function getalluser() {
+        $.ajax({
+            type: 'GET',
+            url: '/User/GetAllUsers',
+            success: function (response) {
+                var allHtml = '';
+                $.each(response, function (index, item) {
+                    allHtml += '<tr>';
+                    allHtml += '<td>' + item.userName + '</td>'; // Adjust to match C# DTO if necessary
+                    allHtml += '<td>' + item.email + '</td>'; // Adjust to match C# DTO if necessary
+                    allHtml += '<td>' + item.phoneNumber + '</td>'; // Adjust to match C# DTO if necessary
+                    if (item.createdOn == null) {
+                        allHtml += '<td>-----</td>';
+                    } else {
+                        allHtml += '<td>' + formatDate(item.createdOn) + '</td>'; // Adjust to match C# DTO if necessary
+                    }
+                    allHtml += '<td><div class="d-flex gap-2"><div class="edit">';
+                    allHtml += '<button class="btn btn-sm btn-success edit-item-btn" data-bs-toggle="modal" data-bs-target="#EditUser" onclick="EditUser(\'' + item.id + '\')">Edit User</button></div>';
+                    allHtml += '<div class="remove"><button class="btn btn-sm btn-danger remove-item-btn" onclick="DeleteRole(\'' + item.id + '\')">Delete User</button></div></td>';
+                    allHtml += '</tr>';
+                });
+                $('#Allusertbody').empty().append(allHtml);
+            },
+            error: function (xhr, status, error) {
+                console.error("Error fetching users: " + error);
+                $('#result').html("Error fetching users: " + error);
+            }
+        });
+    }
+
+    function SearchFilter()
+    {
+          var result = FilterValidation();
+          if(result == true)
+          {
+            $.ajax({
+            type: 'GET',
+            url: '/Auth/GetAllFilterUsers',
+            data : { "Searchtext": $('#Searchtext').val(), "Shop": $('#shops').val() },
+            success: function (response) {
+                var All = '';
+                // All users
+                $.each(response, function (key, item) {
+                    All += '<tr>';
+                    All += '<td>' + item.UserName + '</td>';
+                    All += '<td>' + item.Email + '</td>';
+                    All += '<td>' + item.PhoneNumber + '</td>';
+                    if (item.AddedDate == null) {
+                        All += '<td>-----</td>';
+                    }
+                    else {
+                        All += '<td>' + formatDate(item.AddedDate) + '</td>';
+                    }
+                        All += '<td><div class="d-flex gap-2"><div class="edit"><button class="btn btn-sm btn-success edit-item-btn" data-bs-toggle="modal" data-bs-target="#EditUser" onclick="EditUser(\'' + item.Id + '\')">Edit User</button></div><div class="remove"></div><button class="btn btn-sm btn-danger remove-item-btn" onclick="DeleteRole(\'' + item.Id + '\')">Delete User</button> </div></td>';
+                    All += '</tr>';
+                });
+                $('#Allusertbody').empty().append(All);
+            },
+            failure: function (response) {
+                $('#result').html(response);
+            }
+        });
+          }
+    }
+    function EditUser(Id) {
+
+        $('#Id').val(Id);
+        window.location.href = '@Url.Action("Update", "Admin")/' + Id;
+    }
+    function formatDate(date) {
+        debugger
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        return [day, month, year].join('-');
+    }
+    function FilterValidation() {
+        if ($('#Searchtext').val() == ''  && $('#shops').val() == '') 
+        {
+            var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
+            Toast.fire({ icon: 'error', title: 'Use At-least One Filter Action..!' });
+            return false; 
+        }
+        else 
+        {
+             return true; 
+        }
+    }
+    function CheckValidation() {
+        if ($('#FirstName').val() == '') { $('#FirstName').css('border-color', 'red'); var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 }); Toast.fire({ icon: 'error', title: 'Required Fields are Mandatory...!' }); } else { $('#FirstName').css('border-color', '#ced4da') }
+        if ($('#UserName').val() == '') { $('#UserName').css('border-color', 'red'); var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 }); Toast.fire({ icon: 'error', title: 'Required Fields are Mandatory...!' }); } else { $('#UserName').css('border-color', '#ced4da') }
+        if ($('#Email').val() == '') { $('#Email').css('border-color', 'red'); var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 }); Toast.fire({ icon: 'error', title: 'Required Fields are Mandatory...!' }); } else { $('#Email').css('border-color', '#ced4da') }
+        if ($('#PhoneNumber').val() == '') { $('#PhoneNumber').css('border-color', 'red'); var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 }); Toast.fire({ icon: 'error', title: 'Required Fields are Mandatory...!' }); } else { $('#PhoneNumber').css('border-color', '#ced4da') }
+        if ($('#Password').val() == '') { $('#Password').css('border-color', 'red'); var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 }); Toast.fire({ icon: 'error', title: 'Required Fields are Mandatory...!' }); } else { $('#Password').css('border-color', '#ced4da') }
+        if ($('#Group').val() == '') { $('#Group').css('border-color', 'red'); var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 }); Toast.fire({ icon: 'error', title: 'Required Fields are Mandatory...!' }); } else { $('#Group').css('border-color', '#ced4da') }
+        if ($('#Group').val() == '' || $('#Password').val() == '' || $('#FirstName').val() == '' || $('#UserName').val() == '' || $('#Email').val() == '' || $('#PhoneNumber').val() == '') {
+            return false;
+        }
+        else {
+            var result = validates($('#Password').val());
+            if (result == false) {
+                var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 5000 });
+                Toast.fire({ icon: 'error', title: 'The password must contain at least 1 number, at least 1 lower case letter, and at least 1 upper case letter' });
+                return false;
+            }
+            else {
+                return true;
+            }
+
+        }
+    }
+    function ProfileUpdate() {
+        var result = CheckValidation();
+        var email = $("#Email").val().trim();
+        if (result == true) {
+            $.ajax({
+                type: 'POST',
+                url: '/Auth/CheckEmailExist',
+                data: {
+                    "Email": email
+                },
+                success: function (response) {
+                    if (response == true) {
+                        var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
+                        Toast.fire({ icon: 'error', title: 'Email Already Exist, Please Enter a new Email...!' });
+                        $('#Email').css('border-color', 'red');
+                        return false;
+                    }
+                    else {
+                        $('#Email').css('border-color', '#ced4da');
+                        var fileData = new FormData();
+                        fileData.append("FirstName", $('#FirstName').val());
+                        fileData.append("LastName", $('#LastName').val());
+                        fileData.append("Email", $('#Email').val());
+                        fileData.append("PhoneNumber", $('#PhoneNumber').val());
+                        fileData.append("BirthDate", $('#BirthDate').val());
+                        fileData.append("UserName", $('#UserName').val());
+                        fileData.append("Password", $('#Password').val());
+                        fileData.append("Group", $('select#Group option:selected').val());
+                        $.ajax({
+                            type: 'POST',
+                            url: '/Admin/Create',
+                            contentType: false,
+                            processData: false,
+                            data: fileData,
+                            success: function (response) {
+
+                                if (response == true) {
+                                    var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
+                                    Toast.fire({ icon: 'success', title: 'Tenant Create Successfully..!' });
+                                    $("#FirstName").val('');
+                                    $("#LastName").val('');
+                                    $("#Email").val('');
+                                    $("#PhoneNumber").val('');
+                                    $("#BirthDate").val('');
+                                    $("#UserName").val('');
+                                    $("#Password").val('');
+                                    $("#Group").val('');
+						// setTimeout(function () {
+						// 	window.location.href = '@Url.Action("Index", "Admin")';
+						// }, 2000);
+                                }
+                                else {
+                                    var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
+                                    Toast.fire({ icon: 'error', title: response });
+                                }
+
+                            },
+                            failure: function (response) {
+                                $('#result').html(response);
+                            }
+                        });
+                    }
+                }
+            });
+        }
+    }
+    $("#Email").change(function () {
+        var email = $("#Email").val().trim();
+        $.ajax({
+            type: 'POST',
+            url: '/Auth/DoesEmailExist',
+            data: {
+                "Email": email
+            },
+            success: function (response) {
+                if (response == true) {
+                    var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
+                    Toast.fire({ icon: 'error', title: 'Email Already Exist, Please Enter a new Email...!' });
+                    $('#Email').css('border-color', 'red');
+                    return false;
+                }
+                else {
+                    $('#Email').css('border-color', '#ced4da');
+                }
+            },
+            failure: function (response) {
+            }
+        });
+    });
+    function getCountry() {
+        $.ajax({
+            type: "GET",
+            url: "/LookUp/CountryDropDown",
+            data: "{}",
+            success: function (data) {
+                var s = '<option value="">Please Select a Country</option>';
+                for (var i = 0; i < data.length; i++) {
+                    s += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
+                }
+                $("#Country").html(s);
+            }
+        });
+
+    }
+    function getShop() {
+        $.ajax({
+            type: "GET",
+            url: "/LookUp/ShopDropDown",
+            data: "{}",
+            success: function (data) {
+                var s = '<option value="">Please Select a Shop</option>';
+                for (var i = 0; i < data.length; i++) {
+                    s += '<option value="' + data[i].Value + '">' + data[i].Text + '</option>';
+                }
+                $("#Shop").html(s);
+                 $("#shops").html(s);
+                
+            }
+        });
+    }
+    function getGroups() {
+        $.ajax({
+            type: "GET",
+            url: "/LookUp/AspnetRolesDropDown",
+            data: "{}",
+            success: function (data) {
+                var s = '<option value="">Please Select a Role</option>';
+                for (var i = 0; i < data.length; i++) {
+                    s += '<option value="' + data[i].Text + '">' + data[i].Text + '</option>';
+                }
+                $("#Group").html(s);
+            }
+        });
+
+    }
+    function Refresh()
+    {
+        window.location.reload();
+    }
+</script>
