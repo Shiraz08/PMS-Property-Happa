@@ -73,13 +73,13 @@ namespace PMS_PropertyHapa.Admin.Controllers
 
                         if (result.Succeeded)
 
-                            if (await _userManager.IsInRoleAsync(appUser, "Admin"))
+                            if (await _userManager.IsInRoleAsync(appUser, "SuperAdmin"))
                             {
                                 return RedirectToAction("Index", "Dashboard");
                             }
                             else
                             {
-                                ModelState.AddModelError("", "Login Failed: Only administrators are allowed to log in.");
+                                ModelState.AddModelError("", "Login Failed: Only Super Admin are allowed to log in.");
                                 await _signInManager.SignOutAsync(); 
                             }
 

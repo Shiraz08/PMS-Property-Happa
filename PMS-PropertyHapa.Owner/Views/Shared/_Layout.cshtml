@@ -1,45 +1,15 @@
-﻿@using Microsoft.AspNetCore.Identity
-@using PMS_PropertyHapa.Models.Roles
-@inject SignInManager<ApplicationUser> SignInManager
-@inject UserManager<ApplicationUser> UserManager
-@using Microsoft.AspNetCore.Http
-@inject IHttpContextAccessor Accessor
-@using Microsoft.Extensions.Configuration
-@inject IConfiguration Configuration
-
-@{
-    string displayName = "";
-    string imagePath = "";
-    var user = await UserManager.GetUserAsync(User);
-    if (user == null)
-    {
-        displayName = User.Identity.Name;
-        imagePath = "";
-    }
-    else
-    {
-        displayName = user.UserName;
-        imagePath = user.Picture;
-    }
-    var ImageURL = Configuration.GetSection("ImageURl")["URL"].ToString();
-}
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <!-- Include Bootstrap CSS and JS for modal (optional) -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="keywords" content="">
-    <meta name="author" content="">
-
-    <link rel="icon" href="" type="image/x-icon" id="Org_icon">
-    <link rel="shortcut icon" href="" type="image/x-icon" id="Org_iconshort">
-    <title>Owner Portal</title>
+    <meta name="description" content="Zeta admin is super flexible, powerful, clean &amp; modern responsive bootstrap 5 admin template with unlimited possibilities.">
+    <meta name="keywords" content="admin template, Zeta admin template, dashboard template, flat admin template, responsive admin template, web app">
+    <meta name="author" content="pixelstrap">
+    <link rel="icon" href="~/Dashboard/assets/images/logo/favicon-icon.png" type="image/x-icon">
+    <link rel="shortcut icon" href="~/Dashboard/assets/images/logo/favicon-icon.png" type="image/x-icon">
+    <title>Zeta admin dashboard </title>
     <!-- Google font-->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
@@ -55,17 +25,9 @@
     <!-- Feather icon-->
     <link rel="stylesheet" type="text/css" href="~/Dashboard/assets/css/vendors/feather-icon.css">
     <!-- Plugins css start-->
-    <link rel="stylesheet" type="text/css" href="~/Dashboard/assets/css/vendors/scrollbar.css">
     <link rel="stylesheet" type="text/css" href="~/Dashboard/assets/css/vendors/animate.css">
-    <link rel="stylesheet" type="text/css" href="~/Dashboard/assets/css/vendors/chartist.css">
-    <link rel="stylesheet" type="text/css" href="~/Dashboard/assets/css/vendors/date-picker.css">
-    <link rel="stylesheet" type="text/css" href="~/Dashboard/assets/css/vendors/photoswipe.css">
     <link rel="stylesheet" type="text/css" href="~/Dashboard/assets/css/vendors/owlcarousel.css">
-    <link rel="stylesheet" type="text/css" href="~/Dashboard/assets/css/vendors/prism.css">
     <!-- Plugins css Ends-->
-    <!-- Plugins css start-->
-    <link rel="stylesheet" type="text/css" href="~/Dashboard/assets/css/vendors/scrollbar.css">
-    <link rel="stylesheet" type="text/css" href="~/Dashboard/assets/css/vendors/datatables.css">
     <!-- Bootstrap css-->
     <link rel="stylesheet" type="text/css" href="~/Dashboard/assets/css/vendors/bootstrap.css">
     <!-- App css-->
@@ -73,494 +35,96 @@
     <link id="color" rel="stylesheet" href="~/Dashboard/assets/css/color-1.css" media="screen">
     <!-- Responsive css-->
     <link rel="stylesheet" type="text/css" href="~/Dashboard/assets/css/responsive.css">
-    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.min.css" rel="stylesheet">
     <style>
-        .page-wrapper.compact-wrapper .page-body-wrapper div.sidebar-wrapper .logo-wrapper, .page-wrapper.compact-wrapper .page-body-wrapper div.sidebar-wrapper .logo-icon-wrapper {
-            padding: 3px 30px !important;
+        .landing-page .title {
+             margin-bottom: 0px!important; 
+        }
+
+        .total-transactions .report-sec .report-perfom {
+            padding: 20px 0 0;
+            margin-top: 20px !important;
+            padding-left: 60px !important;
+            text-align: center;
+            border-top: 1px solid rgba(30,47,101,0.1);
+        }
+
+        .landing-page .section-py-space {
+            padding-top: 4px!important; 
+             padding-bottom: 4px!important; 
+        }
+
+        .landing-page .color-theme {
+            background-color: #6362e7;
+        }
+
+        .landing-page .title h1 {
+            font-size: 30px;
+            font-weight: 500;
+            color: white!important;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            width: -webkit-fit-content;
+            width: -moz-fit-content;
+            width: fit-content;
+            text-align: center;
+            margin: auto;
+            white-space: nowrap;
+            padding-bottom: 0;
         }
     </style>
 </head>
-<body>
-    <!-- Loader starts-->
-    <div class="loader-wrapper">
-        <div class="loader">
-            <div class="loader-bar"></div>
-            <div class="loader-bar"></div>
-            <div class="loader-bar"></div>
-            <div class="loader-bar"></div>
-            <div class="loader-bar"></div>
-            <div class="loader-ball"></div>
-        </div>
-    </div>
-    <!-- Loader ends-->
+<body class="landing-wrraper">
     <!-- tap on top starts-->
     <div class="tap-top"><i data-feather="chevrons-up"></i></div>
     <!-- tap on tap ends-->
     <!-- page-wrapper Start-->
-    <div class="page-wrapper compact-wrapper" id="pageWrapper">
-        <!-- Page Header Start-->
-        <div class="page-header">
-            <div class="header-wrapper row m-0">
-                <div class="header-logo-wrapper col-auto p-0">
-                    <div class="logo-wrapper"><a href="index.html"><img class="img-fluid" src="~/Dashboard/assets/images/logo/logo.png" alt=""></a></div>
-                    <div class="toggle-sidebar">
-                        <div class="status_toggle sidebar-toggle d-flex">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <g>
-                                    <g>
-                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M21.0003 6.6738C21.0003 8.7024 19.3551 10.3476 17.3265 10.3476C15.2979 10.3476 13.6536 8.7024 13.6536 6.6738C13.6536 4.6452 15.2979 3 17.3265 3C19.3551 3 21.0003 4.6452 21.0003 6.6738Z" stroke="#130F26" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M10.3467 6.6738C10.3467 8.7024 8.7024 10.3476 6.6729 10.3476C4.6452 10.3476 3 8.7024 3 6.6738C3 4.6452 4.6452 3 6.6729 3C8.7024 3 10.3467 4.6452 10.3467 6.6738Z" stroke="#130F26" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M21.0003 17.2619C21.0003 19.2905 19.3551 20.9348 17.3265 20.9348C15.2979 20.9348 13.6536 19.2905 13.6536 17.2619C13.6536 15.2333 15.2979 13.5881 17.3265 13.5881C19.3551 13.5881 21.0003 15.2333 21.0003 17.2619Z" stroke="#130F26" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M10.3467 17.2619C10.3467 19.2905 8.7024 20.9348 6.6729 20.9348C4.6452 20.9348 3 19.2905 3 17.2619C3 15.2333 4.6452 13.5881 6.6729 13.5881C8.7024 13.5881 10.3467 15.2333 10.3467 17.2619Z" stroke="#130F26" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                    </g>
-                                </g>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-                <div class="left-side-header col ps-0 d-none d-md-block">
-                    <div class="input-group">
-                    </div>
-                </div>
-                <div class="nav-right col-10 col-sm-6 pull-right right-header p-0">
-                    <ul class="nav-menus">
-                        <li class="maximize">
-                            <a class="text-dark" href="#!" onclick="javascript:toggleFullScreen()">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <g>
-                                        <g>
-                                            <path d="M2.99609 8.71995C3.56609 5.23995 5.28609 3.51995 8.76609 2.94995" stroke="#130F26" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                            <path d="M8.76616 20.99C5.28616 20.41 3.56616 18.7 2.99616 15.22L2.99516 15.224C2.87416 14.504 2.80516 13.694 2.78516 12.804" stroke="#130F26" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                            <path d="M21.2446 12.804C21.2246 13.694 21.1546 14.504 21.0346 15.224L21.0366 15.22C20.4656 18.7 18.7456 20.41 15.2656 20.99" stroke="#130F26" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                            <path d="M15.2661 2.94995C18.7461 3.51995 20.4661 5.23995 21.0361 8.71995" stroke="#130F26" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                        </g>
-                                    </g>
-                                </svg>
-                            </a>
-                        </li>
-                        <li class="profile-nav onhover-dropdown pe-0 py-0 me-0">
-                            <div class="media profile-media">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <g>
-                                        <g>
-                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M9.55851 21.4562C5.88651 21.4562 2.74951 20.9012 2.74951 18.6772C2.74951 16.4532 5.86651 14.4492 9.55851 14.4492C13.2305 14.4492 16.3665 16.4342 16.3665 18.6572C16.3665 20.8802 13.2505 21.4562 9.55851 21.4562Z" stroke="#130F26" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M9.55849 11.2776C11.9685 11.2776 13.9225 9.32356 13.9225 6.91356C13.9225 4.50356 11.9685 2.54956 9.55849 2.54956C7.14849 2.54956 5.19449 4.50356 5.19449 6.91356C5.18549 9.31556 7.12649 11.2696 9.52749 11.2776H9.55849Z" stroke="#130F26" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                            <path d="M16.8013 10.0789C18.2043 9.70388 19.2383 8.42488 19.2383 6.90288C19.2393 5.31488 18.1123 3.98888 16.6143 3.68188" stroke="#130F26" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                            <path d="M17.4608 13.6536C19.4488 13.6536 21.1468 15.0016 21.1468 16.2046C21.1468 16.9136 20.5618 17.6416 19.6718 17.8506" stroke="#130F26" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                        </g>
-                                    </g>
-                                </svg>
-                            </div>
-                            <ul class="profile-dropdown onhover-show-div">
-                                <li><a href="@Url.Action("UpdateProfile", "auth")"><i data-feather="user"></i><span>Profile</span></a></li>
-                                <li><a href="@Url.Action("ChangePassword", "auth")"><i data-feather="user"></i><span>Change Password</span></a></li>
-                                <li><a href="#" id="changeColorSchemaButton">Change Color Schema</a></li>
-                                <li><a href="@Url.Action("Login","auth")"><i data-feather="log-in"> </i><span>Log Out</span></a></li>
+    <div class="page-wrapper landing-page">
+        <!-- header start-->
+        <header class="landing-header">
+            <div class="custom-container">
+                <div class="row">
+                    <div class="col-12">
+                        <nav class="navbar navbar-light p-0" id="navbar-example2">
+                            <a class="navbar-brand" href="javascript:void(0)"> <img class="img-fluid" src="~/Dashboard/assets/images/logo/logo_dark.png" alt=""></a>
+                            <ul class="landing-menu nav nav-pills">
+                                <li class="nav-item menu-back">back<i class="fa fa-angle-right"></i></li>
+                                <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
+                                <li class="nav-item"><a class="nav-link" href="#framework">Frameworks</a></li>
+                                <li class="nav-item"><a class="nav-link" href="#core-feature">Core Feature</a></li>
+                                <li class="nav-item"><a class="nav-link" href="#Applications">Applications</a></li>
+                                <li class="nav-item"><a class="nav-link" href="http://docs.pixelstrap.com/zeta/document/">Documentation</a></li>
+                                <li class="nav-item"><a class="nav-link" href="https://docs.google.com/forms/d/e/1FAIpQLSe6hKUXw_By-pg7yabL0FxoTM02ZPTxoXy8PE3yboRuUCuyeA/viewform?">Hire US</a></li>
                             </ul>
-                        </li>
-                    </ul>
+                            <div class="buy-block">
+                                <div class="toggle-menu"><i class="fa fa-bars"></i></div>
+                            </div>
+                        </nav>
+                    </div>
                 </div>
             </div>
-        </div>
-        <!-- Page Header Ends -->
-        <!-- Page Body Start-->
-        <div class="page-body-wrapper">
-
-
-            <div class="sidebar-wrapper">
-                <div>
-                    <div class="logo-wrapper">
-                        <a href="@Url.Action("Index","Home")">
-                            <img class="img-fluid for-light" id="NewPictureBase64" src="" alt="" style="width: 252px;height: 66px;">
-                        </a>
-                        <div class="back-btn"><i class="fa fa-angle-left"></i></div>
-                    </div>
-                    <div class="logo-icon-wrapper"><a href="@Url.Action("Index","Home")"><img class="img-fluid" src="~/Dashboard/assets/images/logo-icon.png" alt=""></a></div>
-                    <nav class="sidebar-main">
-                        <div class="left-arrow" id="left-arrow"><i data-feather="arrow-left"></i></div>
-                        <div id="sidebar-menu">
-                            <ul class="sidebar-links" id="simple-bar">
-                                <li class="back-btn">
-                                    <a href="index.html"><img class="img-fluid" src="~/Dashboard/assets/images/logo-icon.png" alt=""></a>
-                                    <div class="mobile-back text-end"><span>Back</span><i class="fa fa-angle-right ps-2" aria-hidden="true">        </i></div>
-                                </li>
-                                <li class="sidebar-list">
-                                    <a class="sidebar-link sidebar-title link-nav" href="@Url.Action("Index","Home")">
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <g>
-                                                <g>
-                                                    <path d="M9.07861 16.1355H14.8936" stroke="#130F26" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M2.3999 13.713C2.3999 8.082 3.0139 8.475 6.3189 5.41C7.7649 4.246 10.0149 2 11.9579 2C13.8999 2 16.1949 4.235 17.6539 5.41C20.9589 8.475 21.5719 8.082 21.5719 13.713C21.5719 22 19.6129 22 11.9859 22C4.3589 22 2.3999 22 2.3999 13.713Z" stroke="#130F26" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                </g>
-                                            </g>
-                                        </svg><span>Dashboard</span>
-                                    </a>
-                                </li>
-                                <li class="sidebar-list">
-                                    <a class="sidebar-link sidebar-title" href="#">
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <g>
-                                                <g>
-                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M9.92234 21.8083C6.10834 21.8083 2.85034 21.2313 2.85034 18.9213C2.85034 16.6113 6.08734 14.5103 9.92234 14.5103C13.7363 14.5103 16.9943 16.5913 16.9943 18.9003C16.9943 21.2093 13.7573 21.8083 9.92234 21.8083Z" stroke="#130F26" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M9.92231 11.2159C12.4253 11.2159 14.4553 9.1859 14.4553 6.6829C14.4553 4.1789 12.4253 2.1499 9.92231 2.1499C7.41931 2.1499 5.38931 4.1789 5.38931 6.6829C5.38031 9.1769 7.39631 11.2069 9.89031 11.2159H9.92231Z" stroke="#130F26" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                    <path d="M19.1313 8.12891V12.1389" stroke="#130F26" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                    <path d="M21.1776 10.1338H17.0876" stroke="#130F26" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                </g>
-                                            </g>
-                                        </svg><span>Landlord</span>
-                                    </a>
-                                    <ul class="sidebar-submenu">
-                                        <li><a href="@Url.Action("Index","Landlord")">View Landlord</a></li>
-                                        <li><a href="@Url.Action("AddLandlord","Landlord")">Add Landlord</a></li>
-                                    </ul>
-                                </li>
-                                <li class="sidebar-list">
-                                    <a class="sidebar-link sidebar-title" href="#">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg><span>Assests</span>
-                                    </a>
-                                    <ul class="sidebar-submenu">
-                                        <li><a href="@Url.Action("Index","Assests")">View Assests</a></li>
-                                        <li><a href="@Url.Action("AddAssest","Assests")">Add Assests</a></li>
-                                    </ul>
-                                </li>
-                                <li class="sidebar-list">
-                                    <a class="sidebar-link sidebar-title" href="#">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-aperture"><circle cx="12" cy="12" r="10"></circle><line x1="14.31" y1="8" x2="20.05" y2="17.94"></line><line x1="9.69" y1="8" x2="21.17" y2="8"></line><line x1="7.38" y1="12" x2="13.12" y2="2.06"></line><line x1="9.69" y1="16" x2="3.95" y2="6.06"></line><line x1="14.31" y1="16" x2="2.83" y2="16"></line><line x1="16.62" y1="12" x2="10.88" y2="21.94"></line></svg><span>Application</span>
-                                    </a>
-                                    <ul class="sidebar-submenu">
-                                        <li><a href="@Url.Action("AddApplication","Applications")">Add Application</a></li>
-                                        <li><a href="@Url.Action("ViewApplication","Applications")">View Application</a></li>
-                                    </ul>
-                                </li>
-                                <li class="sidebar-list">
-                                    <a class="sidebar-link sidebar-title" href="#">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clipboard"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg><span>Lease</span>
-                                    </a>
-                                    <ul class="sidebar-submenu">
-                                        <li><a href="@Url.Action("Index","Lease")">View Lease</a></li>
-                                        <li><a href="@Url.Action("AddLease","Lease")">Add Lease</a></li>
-                                    </ul>
-                                </li>
-                                <li class="sidebar-list">
-                                    <a class="sidebar-link sidebar-title" href="#">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-users"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg><span>Tenant</span>
-                                    </a>
-                                    <ul class="sidebar-submenu">
-                                        <li><a href="@Url.Action("Index","Tenant")">View Tenant</a></li>
-                                        <li><a href="@Url.Action("AddTenant","Tenant")">Add Tenant</a></li>
-                                    </ul>
-                                </li>
-                                <li class="sidebar-list">
-                                    <a class="sidebar-link sidebar-title" href="#">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-layers"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg><span>Maintance</span>
-                                    </a>
-                                    <ul class="sidebar-submenu">
-                                        <li><a href="@Url.Action("Index","Maintance")">View Maintance</a></li>
-                                        <li><a href="@Url.Action("AddMaintance","Maintance")">Add Maintance</a></li>
-                                    </ul>
-                                </li>
-                                <li class="sidebar-list">
-                                    <a class="sidebar-link sidebar-title" href="#">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-book-open"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
-                                        <span> Vendor</span>
-                                    </a>
-                                    <ul class="sidebar-submenu">
-                                        <li><a href="@Url.Action("Index","Vendor")">View  Vendor</a></li>
-                                        <li><a href="@Url.Action("AddVendor","Vendor")">Add  Vendor</a></li>
-                                    </ul>
-                                </li>
-                                <li class="sidebar-list">
-                                    <a class="sidebar-link sidebar-title" href="#">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-book"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg><span>Accounting</span>
-                                    </a>
-                                    <ul class="sidebar-submenu">
-                                        <li><a href="@Url.Action("Rent","Accounting")">View Rent</a></li>
-                                        <li><a href="@Url.Action("AssestExpense","Accounting")">View Assest Expense</a></li>
-                                        <li><a href="@Url.Action("Deposit","Accounting")">View Deposit</a></li>
-                                        <li><a href="@Url.Action("Billing","Accounting")">View Billing</a></li>
-                                        <li><a href="@Url.Action("Invoices","Accounting")">View Invoices</a></li>
-                                    </ul>
-                                </li>
-                                <li class="sidebar-list">
-                                    <a class="sidebar-link sidebar-title" href="#">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-aperture"><circle cx="12" cy="12" r="10"></circle><line x1="14.31" y1="8" x2="20.05" y2="17.94"></line><line x1="9.69" y1="8" x2="21.17" y2="8"></line><line x1="7.38" y1="12" x2="13.12" y2="2.06"></line><line x1="9.69" y1="16" x2="3.95" y2="6.06"></line><line x1="14.31" y1="16" x2="2.83" y2="16"></line><line x1="16.62" y1="12" x2="10.88" y2="21.94"></line></svg><span>Task</span>
-                                    </a>
-                                    <ul class="sidebar-submenu">
-                                        <li><a href="@Url.Action("AddTask","Task")">Add Task</a></li>
-                                        <li><a href="@Url.Action("ViewTask","Task")">View Task</a></li>
-                                    </ul>
-                                </li>
-                                <li class="sidebar-list">
-                                    <a class="sidebar-link sidebar-title" href="#">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-activity"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg><span>Communication</span>
-                                    </a>
-                                    <ul class="sidebar-submenu">
-                                        <li><a href="@Url.Action("SMS","Communication")">Add SMS</a></li>
-                                        <li><a href="@Url.Action("Email","Communication")">Add Email</a></li>
-                                    </ul>
-                                </li>
-                                <li class="sidebar-list">
-                                    <a class="sidebar-link sidebar-title" href="#">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg><span> Reports</span>
-                                    </a>
-                                    <ul class="sidebar-submenu">
-                                        <li><a href="@Url.Action("RentReports","Reports")">View Rent Report</a></li>
-                                        <li><a href="@Url.Action("LeaseReports","Reports")">View Lease Report</a></li>
-                                        <li><a href="@Url.Action("InvoiceReports","Reports")">View Invoice Report</a></li>
-                                    </ul>
-                                </li>
-                                <li class="sidebar-list">
-                                    <a class="sidebar-link sidebar-title" href="#">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg><span>Documents</span>
-                                    </a>
-                                    <ul class="sidebar-submenu">
-                                        <li><a href="@Url.Action("SearchDocuments","Documents")">Search Documents</a></li>
-                                    </ul>
-                                </li>
-                                <li class="sidebar-list">
-                                    <a class="sidebar-link sidebar-title" href="#">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-aperture"><circle cx="12" cy="12" r="10"></circle><line x1="14.31" y1="8" x2="20.05" y2="17.94"></line><line x1="9.69" y1="8" x2="21.17" y2="8"></line><line x1="7.38" y1="12" x2="13.12" y2="2.06"></line><line x1="9.69" y1="16" x2="3.95" y2="6.06"></line><line x1="14.31" y1="16" x2="2.83" y2="16"></line><line x1="16.62" y1="12" x2="10.88" y2="21.94"></line></svg><span> Integration</span>
-                                    </a>
-                                    <ul class="sidebar-submenu">
-                                        <li><a href="@Url.Action("PaymentIntegration","Services")">Payment Integration</a></li>
-                                        <li><a href="@Url.Action("QuickBookIntegration","Services")">QuickBook Integration</a></li>
-                                    </ul>
-                                </li>
-                                <li class="sidebar-list">
-                                    <a class="sidebar-link sidebar-title" href="#">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-aperture"><circle cx="12" cy="12" r="10"></circle><line x1="14.31" y1="8" x2="20.05" y2="17.94"></line><line x1="9.69" y1="8" x2="21.17" y2="8"></line><line x1="7.38" y1="12" x2="13.12" y2="2.06"></line><line x1="9.69" y1="16" x2="3.95" y2="6.06"></line><line x1="14.31" y1="16" x2="2.83" y2="16"></line><line x1="16.62" y1="12" x2="10.88" y2="21.94"></line></svg><span>Support Center</span>
-                                    </a>
-                                    <ul class="sidebar-submenu">
-                                        <li><a href="@Url.Action("AddTickets","SupportCenter")">Add Tickets</a></li>
-                                        <li><a href="@Url.Action("ViewTickets","SupportCenter")">View Tickets</a></li>
-                                    </ul>
-                                </li>
-                            </ul>
-                            <div class="sidebar-img-section">
-                                <div class="sidebar-img-content">
-                                    <img class="img-fluid" src="../assets/images/side-bar.png" alt="">
-                                    <h4>Feed Back</h4><a class="txt" href="#">Feedback is the breakfast of champions."</a><a class="btn btn-secondary" href="#">Give Feedback</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="right-arrow" id="right-arrow"><i data-feather="arrow-right"></i></div>
-                    </nav>
-                </div>
-            </div>
-            <!-- Page Sidebar Ends-->
+        </header>
+        <section class="core-feature section-py-space" id="core-feature" style="padding-top:150px!important">
             @RenderBody()
-        </div>
-
-    </div>
-    </div>
-    <!-- Container-fluid Ends-->
-    </div>
-    <!-- footer start-->
-    <footer class="footer">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-12 footer-copyright text-center">
-                    <p class="mb-0" id="companyname"></p>
-                </div>
+        </section>
+        <section class="color-theme section-py-space">
+            <div class="title">
+                <h1>Property Hapa</h1>
             </div>
-        </div>
-    </footer>
+        </section>
     </div>
-    </div>
-    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3 class="modal-title" id="exampleModalCenterTitle">Change Organization Info</h3>
-                    <button type="button" onclick="closeModal()" aria-label="close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <!-- Form for TenantOrganizationInfoDTO -->
-                    <form id="tenantOrganizationInfoForm">
-                        <div class="form-group">
-                            <label for="organizationName">Organization Name</label>
-                            <input type="text" class="form-control" id="organizationName" name="organizationName" placeholder="Enter organization name">
-                        </div>
-                        <div class="form-group">
-                            <label for="organizationDescription">Organization Description</label>
-                            <textarea class="form-control" id="organizationDescription" name="organizationDescription" rows="3" placeholder="Enter organization description"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="organizationPrimaryColor">Organization Primary Color</label>
-                            <input type="color" class="form-control" id="organizationPrimaryColor" name="organizationPrimaryColor">
-                        </div>
-                        <div class="form-group">
-                            <label for="organizationSecondaryColor">Organization Secondary Color</label>
-                            <input type="color" class="form-control" id="organizationSecondaryColor" name="organizationSecondaryColor">
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" onclick="closeModal()" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-success" onclick="saveTenantOrganizationInfo()">Save Changes</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- latest jquery-->
     <script src="~/Dashboard/assets/js/jquery-3.5.1.min.js"></script>
-    <!-- Bootstrap js-->
     <script src="~/Dashboard/assets/js/bootstrap/bootstrap.bundle.min.js"></script>
-    <!-- feather icon js-->
     <script src="~/Dashboard/assets/js/icons/feather-icon/feather.min.js"></script>
     <script src="~/Dashboard/assets/js/icons/feather-icon/feather-icon.js"></script>
-    <!-- scrollbar js-->
-    <script src="~/Dashboard/assets/js/scrollbar/simplebar.js"></script>
-    <script src="~/Dashboard/assets/js/scrollbar/custom.js"></script>
-    <!-- Sidebar jquery-->
     <script src="~/Dashboard/assets/js/config.js"></script>
-    <!-- Plugins JS start-->
-    <script src="~/Dashboard/assets/js/sidebar-menu.js"></script>
-    <script src="~/Dashboard/assets/js/chart/knob/knob.min.js"></script>
-    <script src="~/Dashboard/assets/js/chart/knob/knob-chart.js"></script>
-    <script src="~/Dashboard/assets/js/chart/apex-chart/apex-chart.js"></script>
-    <script src="~/Dashboard/assets/js/chart/apex-chart/stock-prices.js"></script>
-    <script src="~/Dashboard/assets/js/notify/bootstrap-notify.min.js"></script>
-    <script src="~/Dashboard/assets/js/dashboard/default.js"></script>
-    <script src="~/Dashboard/assets/js/datepicker/date-picker/datepicker.js"></script>
-    <script src="~/Dashboard/assets/js/datepicker/date-picker/datepicker.en.js"></script>
-    <script src="~/Dashboard/assets/js/datepicker/date-picker/datepicker.custom.js"></script>
-    <script src="~/Dashboard/assets/js/photoswipe/photoswipe.min.js"></script>
-    <script src="~/Dashboard/assets/js/photoswipe/photoswipe-ui-default.min.js"></script>
-    <script src="~/Dashboard/assets/js/photoswipe/photoswipe.js"></script>
-    <script src="~/Dashboard/assets/js/typeahead/handlebars.js"></script>
-    <script src="~/Dashboard/assets/js/typeahead/typeahead.bundle.js"></script>
-    <script src="~/Dashboard/assets/js/typeahead/typeahead.custom.js"></script>
-    <script src="~/Dashboard/assets/js/typeahead-search/handlebars.js"></script>
-    <script src="~/Dashboard/assets/js/typeahead-search/typeahead-custom.js"></script>
-    <script src="~/Dashboard/assets/js/height-equal.js"></script>
-    <script src="~/Dashboard/assets/js/chart/chartjs/chart.min.js"></script>
-    <script src="~/Dashboard/assets/js/chart/chartist/chartist.js"></script>
-    <script src="~/Dashboard/assets/js/chart/chartist/chartist-plugin-tooltip.js"></script>
-    <script src="~/Dashboard/assets/js/prism/prism.min.js"></script>
-    <script src="~/Dashboard/assets/js/counter/jquery.waypoints.min.js"></script>
-    <script src="~/Dashboard/assets/js/counter/jquery.counterup.min.js"></script>
-    <script src="~/Dashboard/assets/js/counter/counter-custom.js"></script>
+    <script src="~/Dashboard/assets/js/animation/scroll-reveal/scrollreveal.min.js"></script>
+    <script src="~/Dashboard/assets/js/modernizr.js"></script>
+    <script src="~/Dashboard/assets/js/animation/scroll-reveal/reveal-custom.js"></script>
     <script src="~/Dashboard/assets/js/owlcarousel/owl.carousel.js"></script>
     <script src="~/Dashboard/assets/js/owlcarousel/owl-custom.js"></script>
-    <script src="~/Dashboard/assets/js/dashboard/dashboard_2.js"></script>
-    <script src="~/Dashboard/assets/js/tooltip-init.js"></script>
-    <!-- Plugins JS Ends-->
-    <!-- Theme js-->
+    <script src="~/Dashboard/assets/js/animation/wow/wow.min.js"></script>
+    <script src="~/Dashboard/assets/js/landing_sticky.js"></script>
+    <script src="~/Dashboard/assets/js/landing.js"></script>
     <script src="~/Dashboard/assets/js/script.js"></script>
-    <script src="~/Dashboard/assets/js/theme-customizer/customizer.js"></script>
-    <!-- login js-->
-    <!-- Plugin used-->
-    <!-- Plugins JS start-->
-    <script src="~/Dashboard/assets/js/datatable/datatables/jquery.dataTables.min.js"></script>
-    <script src="~/Dashboard/assets/js/datatable/datatables/datatable.custom.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.all.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.2/js/toastr.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            debugger;
-            var organizationName = localStorage.getItem('organizationName');
-            var organizationLogo = localStorage.getItem('organizationLogo');
-            var organizationIcon = localStorage.getItem('organizationIcon');
-            var organizationDescription = localStorage.getItem('organizationDescription');
-            var tid = localStorage.getItem('tid');
-            if (tid) {
-                fetchTenantOrganizationInfo(tid);
-            } else {
-                console.error('Tenant ID not found');
-            }
-            var primaryColor = localStorage.getItem('primaryColor');
-            var secondaryColor = localStorage.getItem('secondaryColor');
-            if(organizationLogo != null)
-            {
-                $('#NewPictureBase64').attr('src', 'data:image;base64,' + organizationLogo);
-            }
-            if (organizationName != null) {
-                document.title = "Dashboard" + " " + "-" + " " + organizationName;
-                document.getElementById('companyname').innerHTML = "Copyright 2024 ©" + " " + "-" + " " + organizationName;
-                var urls = '@Html.Raw(Configuration.GetSection("ImageURl")["URL"].ToString())';
-                var imageUrl = urls.concat(organizationLogo);
-                var imageiconUrl = urls.concat(organizationIcon);
-
-            }
-        });
-    </script>
-
-    <script>
-        $(document).ready(function () {
-           
-            function openModal() {
-                $('#exampleModalCenter').modal('show');
-            }
-
-            $('#changeColorSchemaButton').click(function (e) {
-                e.preventDefault();
-                openModal();
-            });
-        });
-
-        function closeModal() {
-            $('#exampleModalCenter').modal('hide');
-        }
-
-
-        function fetchTenantOrganizationInfo(tid) {
-            $.ajax({
-                url: '/Auth/GetTenantOrganizationInfo',
-                type: 'GET',
-                data: { tenantId: tid },
-                success: function (response) {
-                    debugger
-                    var data = response.data;
-                    $('#organizationName').val(data.OrganizationName);
-                    $('#organizationDescription').val(data.OrganizationDescription);
-
-                    $('#organizatioPrimaryColor').val(data.OrganizatioPrimaryColor);
-                    $('#organizationSecondColor').val(data.OrganizationSecondColor);
-
-                    console.log('Data fetched successfully:', data);
-                },
-                error: function (xhr, status, error) {
-                    console.error('Error fetching data:', error);
-                }
-            });
-        }
-
-
-
-        function saveTenantOrganizationInfo() {
-            var tenantId = localStorage.getItem('tid');
-            var userId = localStorage.getItem('userId');
-            var organizationLogo = localStorage.getItem('organizationLogo');
-            var organizationIcon = localStorage.getItem('organizationIcon');
-            var tenantOrganizationInfoData = {
-                Id: tenantId,
-                OrganizationName: $('#organizationName').val(),
-                OrganizationDescription: $('#organizationDescription').val(),
-                OrganizationIcon: organizationIcon,
-                OrganizationLogo: organizationLogo,
-                OrganizatioPrimaryColor: $('#organizationPrimaryColor').val(),
-                OrganizationSecondColor: $('#organizationSecondaryColor').val(),
-                TempTenantUserId: userId
-            };
-
-            $.ajax({
-                url: '/Auth/SaveTenantOrganizationInfo', 
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(tenantOrganizationInfoData),
-                success: function (response) {
-                    console.log('Success:', response);
-                },
-                error: function (xhr, status, error) {
-                    console.error('Error:', error);
-                }
-            });
-        }
-
-    </script>
-
 </body>
 </html>
