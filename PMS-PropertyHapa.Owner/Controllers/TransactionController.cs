@@ -2,7 +2,7 @@
 
 namespace PMS_PropertyHapa.Owner.Controllers
 {
-    public class AnnouncementsController : Controller
+    public class TransactionController : Controller
     {
         public IActionResult Index()
         {

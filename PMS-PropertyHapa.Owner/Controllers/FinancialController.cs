@@ -2,7 +2,7 @@
 
 namespace PMS_PropertyHapa.Owner.Controllers
 {
-    public class InsuranceController : Controller
+    public class FinancialController : Controller
     {
         public IActionResult Index()
         {

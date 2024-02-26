@@ -2,7 +2,7 @@
 
 namespace PMS_PropertyHapa.Owner.Controllers
 {
-    public class PaymentsController : Controller
+    public class ReportsController : Controller
     {
         public IActionResult Index()
         {
