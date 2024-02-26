@@ -13,7 +13,7 @@ using PMS_PropertyHapa.Tenant.Services.IServices;
 using PMS_PropertyHapa.Shared.Enum;
 using PMS_PropertyHapa.Shared.ImageUpload;
 
-namespace PMS_PropertyHapa.Controllers
+namespace PMS_PropertyHapa.Tenant.Controllers
 {
     public class AuthController : Controller
     {
