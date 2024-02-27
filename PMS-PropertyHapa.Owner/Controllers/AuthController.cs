@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -47,34 +48,53 @@ namespace PMS_PropertyHapa.Controllers
 
 
         [HttpPost]
+        [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginRequestDTO obj)
+        public async Task<IActionResult> Login(LoginRequestDTO login)
         {
-            var response = await _authService.LoginAsync<APIResponse>(obj);
-            if (response != null && response.IsSuccess)
+            try
             {
-                var appUser = await _userManager.FindByEmailAsync(obj.Email);
+                ApplicationUser appUser = _context.Users.FirstOrDefault(x => x.Email == login.Email);
                 if (appUser != null)
                 {
-                    if (await _userManager.IsInRoleAsync(appUser, "Owner"))
+                    try
                     {
-                        return Json(new { success = true, message = "Logged In Successfully..!", result = response.Result });
+                        await _signInManager.SignOutAsync();
+                        Microsoft.AspNetCore.Identity.SignInResult result = await _signInManager.PasswordSignInAsync(appUser, login.Password, login.Remember, false);
+
+                        if (result.Succeeded)
+
+                            if (await _userManager.IsInRoleAsync(appUser, "Owner Merchant Account"))
+                            {
+                                return RedirectToAction("Index", "Home");
+                            }
+                            else
+                            {
+                                ModelState.AddModelError("", "Login Failed: Only Owner are allowed to log in.");
+                                await _signInManager.SignOutAsync();
+                            }
+
+
+                        if (!result.Succeeded)
+                            ModelState.Remove(nameof(login.Password));
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        return Json(new { success = false, message = "Only owners are allowed to log in." });
+                        ModelState.AddModelError("", "An error occurred while attempting to sign in.");
                     }
                 }
                 else
                 {
-                    return Json(new { success = false, message = "User not found." });
+                    ModelState.AddModelError("", "Login Failed: Invalid Email or password");
+                    ModelState.AddModelError(nameof(login.Password), "Please enter the correct password.");
                 }
             }
-            else
+            catch (Exception e)
             {
-                var errorMessage = response?.ErrorMessages?.FirstOrDefault() ?? "An unexpected error occurred.";
-                return Json(new { success = false, message = errorMessage });
+                ModelState.AddModelError("", "An unexpected error occurred during login.");
             }
+
+            return View(login);
         }
 
         [HttpGet]

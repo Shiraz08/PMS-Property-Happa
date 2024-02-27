@@ -1,16 +1,20 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using PMS_PropertyHapa.MigrationsFiles.Data;
+using PMS_PropertyHapa.Models.Roles;
+using PMS_PropertyHapa.Shared.Email;
 using PMS_PropertyHapa.Tenant.Models;
 using System.Diagnostics;
 
 namespace PMS_PropertyHapa.Tenant.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(IWebHostEnvironment Environment)
         {
-            _logger = logger;
         }
 
         public IActionResult Index()
@@ -18,15 +22,11 @@ namespace PMS_PropertyHapa.Tenant.Controllers
             return View();
         }
 
+
         public IActionResult Privacy()
         {
             return View();
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
     }
 }

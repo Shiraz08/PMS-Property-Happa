@@ -53,89 +53,50 @@ namespace PMS_PropertyHapa.Admin.Controllers
                 return Json(new { success = false, message = "Invalid model data." });
             }
 
+            var existingUser = await userManager.FindByNameAsync(model.User.UserName) ??
+                               await userManager.FindByEmailAsync(model.User.Email);
+            if (existingUser != null)
+            {
+                return Json(new { success = false, message = "Username or email already exists." });
+            }
+
+            var appUser = new ApplicationUser
+            {
+                UserName = model.User.UserName,
+                Email = model.User.Email,
+                AddedBy = User.Identity?.Name,
+                AddedDate = DateTime.Now,
+                Status = true,
+                BirthDate = model.User.BirthDate,
+                NormalizedUserName = model.User.NormalizedUserName,
+                PhoneNumber = model.User.PhoneNumber,
+                FirstName = model.User.FirstName,
+                LastName = model.User.LastName,
+                Country = model.User.Country,
+                Group = model.User.Group
+            };
+
+            var uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "uploads");
+            if (!Directory.Exists(uploadsFolder))
+            {
+                Directory.CreateDirectory(uploadsFolder);
+            }
+
+            var orgIconFileName = await ProcessFileUpload(model.OrganizationInfo.OrganizationIconFile, uploadsFolder);
+            var orgLogoFileName = await ProcessFileUpload(model.OrganizationInfo.OrganizationLogoFile, uploadsFolder);
+
             using (var transaction = _context.Database.BeginTransaction())
             {
                 try
                 {
-                    var existingUser = await userManager.FindByNameAsync(model.User.UserName) ??
-                                       await userManager.FindByEmailAsync(model.User.Email);
-                    if (existingUser != null)
-                    {
-                        return Json(new { success = false, message = "Username or email already exists." });
-                    }
-
-                    var appUser = new ApplicationUser
-                    {
-                        UserName = model.User.UserName,
-                        Email = model.User.Email,
-                        AddedBy = User.Identity?.Name,
-                        AddedDate = DateTime.Now,
-                        Status = true,
-                        BirthDate = model.User.BirthDate,
-                        PhoneNumber = model.User.PhoneNumber,
-                        FirstName = model.User.FirstName,
-                        LastName = model.User.LastName,
-                        Country = model.User.Country,
-                        Group = model.User.Group
-                    };
-                    var uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "uploads");
-
-                    if (!Directory.Exists(uploadsFolder))
-                    {
-                        Directory.CreateDirectory(uploadsFolder);
-                    }
-                    var orgIconFileName = await ProcessFileUpload(model.OrganizationInfo.OrganizationIconFile, uploadsFolder);
-                    var orgLogoFileName = await ProcessFileUpload(model.OrganizationInfo.OrganizationLogoFile, uploadsFolder);
-
-                    //Upload File On Server FTP
-                    string ftpServer = "ftp://UploadFiles@65.108.74.182/";
-                    string userName = "UploadFiles";
-                    string password = "Talha.Musa.@786";
-                    string sourceFilePathlogo = uploadsFolder + @"\" + orgLogoFileName;
-                    string sourceFilePathIcon = uploadsFolder + @"\" + orgIconFileName;
-                    //Logo Upload
-                    using (var fileStream = System.IO.File.OpenRead(sourceFilePathlogo))
-                    {
-                        var request = (FtpWebRequest)WebRequest.Create(new Uri(ftpServer + orgLogoFileName));
-                        request.Credentials = new NetworkCredential(userName, password);
-                        request.Method = WebRequestMethods.Ftp.UploadFile;
-
-                        using (var requestStream = request.GetRequestStream())
-                        {
-                            fileStream.CopyTo(requestStream);
-                        }
-                    }
-                    //Icon Upload
-                    using (var fileStreams = System.IO.File.OpenRead(sourceFilePathIcon))
-                    {
-                        var requests = (FtpWebRequest)WebRequest.Create(new Uri(ftpServer + orgIconFileName));
-                        requests.Credentials = new NetworkCredential(userName, password);
-                        requests.Method = WebRequestMethods.Ftp.UploadFile;
-
-                        using (var requestStream = requests.GetRequestStream())
-                        {
-                            fileStreams.CopyTo(requestStream);
-                        }
-                    }
                     var createUserResult = await userManager.CreateAsync(appUser, model.User.Password);
                     if (!createUserResult.Succeeded)
                     {
                         var errors = string.Join("; ", createUserResult.Errors.Select(e => e.Description));
                         return Json(new { success = false, message = $"User creation failed: {errors}" });
                     }
-                   
 
                     await userManager.AddToRoleAsync(appUser, model.User.Group);
-
-
-
-                    if (model.OrganizationInfo.OrganizationLogoFile != null)
-                    {
-                        var (fileName, base64String) = await ImageUploadUtility.UploadImageAsync(model.OrganizationInfo.OrganizationLogoFile, "uploads");
-                       
-                        model.OrganizationInfo.OrganizationLogo = base64String;
-                    }
-
 
                     var tenantOrgInfo = new TenantOrganizationInfo
                     {
@@ -143,15 +104,17 @@ namespace PMS_PropertyHapa.Admin.Controllers
                         OrganizationName = model.OrganizationInfo.OrganizationName,
                         OrganizationDescription = model.OrganizationInfo.OrganizationDescription,
                         OrganizationIcon = orgIconFileName,
-                        OrganizationLogo = model.OrganizationInfo.OrganizationLogo,
+                        OrganizationLogo = orgLogoFileName,
                         OrganizatioPrimaryColor = model.OrganizationInfo.OrganizatioPrimaryColor,
                         OrganizationSecondColor = model.OrganizationInfo.OrganizationSecondColor
                     };
 
                     _context.TenantOrganizationInfo.Add(tenantOrgInfo);
                     await _context.SaveChangesAsync();
+
                     System.IO.File.Delete(Path.Combine(uploadsFolder, orgLogoFileName));
                     System.IO.File.Delete(Path.Combine(uploadsFolder, orgIconFileName));
+
                     transaction.Commit();
 
                     return Json(new { success = true });
@@ -165,7 +128,7 @@ namespace PMS_PropertyHapa.Admin.Controllers
         }
 
 
-        
+
 
         private async Task<string> ProcessFileUpload(IFormFile file, string uploadsFolder)
         {

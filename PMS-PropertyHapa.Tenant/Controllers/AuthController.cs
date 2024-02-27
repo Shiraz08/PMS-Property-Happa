@@ -12,6 +12,7 @@ using PMS_PropertyHapa.Tenant.Controllers;
 using PMS_PropertyHapa.Tenant.Services.IServices;
 using PMS_PropertyHapa.Shared.Enum;
 using PMS_PropertyHapa.Shared.ImageUpload;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PMS_PropertyHapa.Tenant.Controllers
 {
@@ -45,33 +46,54 @@ namespace PMS_PropertyHapa.Tenant.Controllers
             return View(obj);
         }
 
-
         [HttpPost]
+        [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginRequestDTO obj)
+        public async Task<IActionResult> Login(LoginRequestDTO login)
         {
-            var response = await _authService.LoginAsync<APIResponse>(obj);
-            if (response != null && response.IsSuccess)
+            try
             {
-          
-                var appUser = await _userManager.FindByEmailAsync(obj.Email);
-                if (appUser != null && await _userManager.IsInRoleAsync(appUser, "Tenant"))
+                ApplicationUser appUser = _context.Users.FirstOrDefault(x => x.Email == login.Email);
+                if (appUser != null)
                 {
-                  
-                    return Json(new { success = true, message = "Logged In Successfully..!", result = response.Result });
+                    try
+                    {
+                        await _signInManager.SignOutAsync();
+                        var result = await _signInManager.PasswordSignInAsync(appUser, login.Password, login.Remember, lockoutOnFailure: false);
+
+                        if (result.Succeeded)
+                        {
+                            var isTenant = await _userManager.IsInRoleAsync(appUser, "Tenant");
+                            if (isTenant)
+                            {
+                                return Json(new { success = true, message = "Login successful.", redirectTo = Url.Action("Index", "Home") });
+                            }
+                            else
+                            {
+                                return Json(new { success = false, message = "Login Failed: Only Tenants are allowed to log in." });
+                            }
+                        }
+                        else
+                        {
+                            return Json(new { success = false, message = "Login Failed: Invalid email or password." });
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        return Json(new { success = false, message = "An error occurred while attempting to sign in." });
+                    }
                 }
                 else
                 {
-                   
-                    return Json(new { success = false, message = "Only tenants are allowed to login." });
+                    return Json(new { success = false, message = "Login Failed: Invalid email or password." });
                 }
             }
-            else
+            catch (Exception e)
             {
-                var errorMessage = response?.ErrorMessages?.FirstOrDefault() ?? "An unexpected error occurred.";
-                return Json(new { success = false, message = errorMessage });
+                return Json(new { success = false, message = "An unexpected error occurred during login." });
             }
         }
+
 
 
         [HttpGet]

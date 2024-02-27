@@ -51,7 +51,7 @@ builder.Services.AddSession(options =>
 
 
 builder.Services.AddDbContext<ApiDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("PMS_PropertyHapaContextConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultSQLConnection")));
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<ApiDbContext>()
