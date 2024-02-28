@@ -59,42 +59,48 @@ namespace PMS_PropertyHapa.Tenant.Controllers
                     try
                     {
                         await _signInManager.SignOutAsync();
-                        var result = await _signInManager.PasswordSignInAsync(appUser, login.Password, login.Remember, lockoutOnFailure: false);
+                        Microsoft.AspNetCore.Identity.SignInResult result = await _signInManager.PasswordSignInAsync(appUser, login.Password, login.Remember, false);
 
                         if (result.Succeeded)
-                        {
-                            var isTenant = await _userManager.IsInRoleAsync(appUser, "Tenant");
-                            if (isTenant)
+
+                            if (await _userManager.IsInRoleAsync(appUser, "Tenant"))
                             {
-                                return Json(new { success = true, message = "Login successful.", redirectTo = Url.Action("Index", "Home") });
+                                return Json(true);
                             }
                             else
                             {
-                                return Json(new { success = false, message = "Login Failed: Only Tenants are allowed to log in." });
+                                ModelState.AddModelError("", "Login Failed: Only Tenant are allowed to log in.");
+                                await _signInManager.SignOutAsync();
                             }
-                        }
-                        else
-                        {
-                            return Json(new { success = false, message = "Login Failed: Invalid email or password." });
-                        }
+
+
+                        if (!result.Succeeded)
+                            ModelState.Remove(nameof(login.Password));
                     }
                     catch (Exception ex)
                     {
-                        return Json(new { success = false, message = "An error occurred while attempting to sign in." });
+                        ModelState.AddModelError("", "An error occurred while attempting to sign in.");
                     }
                 }
                 else
                 {
-                    return Json(new { success = false, message = "Login Failed: Invalid email or password." });
+                    ModelState.AddModelError("", "Login Failed: Invalid Email or password");
+                    ModelState.AddModelError(nameof(login.Password), "Please enter the correct password.");
                 }
             }
             catch (Exception e)
             {
-                return Json(new { success = false, message = "An unexpected error occurred during login." });
+                ModelState.AddModelError("", "An unexpected error occurred during login.");
             }
+
+            return View(login);
         }
 
-
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Login", "Auth");
+        }
 
         [HttpGet]
         public async Task<IActionResult> GetProfile(string userId)
@@ -331,16 +337,6 @@ namespace PMS_PropertyHapa.Tenant.Controllers
             }
         }
 
-
-
-        public async Task<IActionResult> Logout()
-        {
-            await HttpContext.SignOutAsync();
-            var token = _tokenProvider.GetToken();
-            await _authService.LogoutAsync<APIResponse>(token);
-            _tokenProvider.ClearToken();
-            return RedirectToAction("Index", "Home");
-        }
 
         public IActionResult AccessDenied()
         {

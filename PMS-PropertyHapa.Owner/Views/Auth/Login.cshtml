@@ -41,12 +41,15 @@
                     url: '@Url.Action("Login", "Auth")',
                     type: 'POST',
                     data: formData,
-                    success: function (response) {
-                        if (response.success) {
-                            Swal.fire('Success', 'You are logged in!', 'success');
+                    success: function (response) 
+                    {
+                        if (response == true) {
+                            var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
+                            Toast.fire({ icon: 'success', title: 'You are logged in!' });
                             window.location.href = '@Url.Action("Index", "Home")';
                         } else {
-                            Swal.fire('Error', response.message, 'error');
+                            var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
+                            Toast.fire({ icon: 'success', title: response.message });
                         }
                     },
                     error: function (xhr, status, error) {

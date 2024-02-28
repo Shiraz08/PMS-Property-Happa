@@ -64,9 +64,9 @@ namespace PMS_PropertyHapa.Controllers
 
                         if (result.Succeeded)
 
-                            if (await _userManager.IsInRoleAsync(appUser, "Owner Merchant Account"))
+                            if (await _userManager.IsInRoleAsync(appUser, "Owner"))
                             {
-                                return RedirectToAction("Index", "Home");
+                                return Json(true);
                             }
                             else
                             {
@@ -128,7 +128,11 @@ namespace PMS_PropertyHapa.Controllers
         }
 
 
-
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Login", "Auth");
+        }
 
         // Action to update profile information
         [HttpPost]
@@ -334,14 +338,14 @@ namespace PMS_PropertyHapa.Controllers
 
 
 
-        public async Task<IActionResult> Logout()
-        {
-            await HttpContext.SignOutAsync();
-            var token = _tokenProvider.GetToken();
-            await _authService.LogoutAsync<APIResponse>(token);
-            _tokenProvider.ClearToken();
-            return RedirectToAction("Index", "Home");
-        }
+        //public async Task<IActionResult> Logout()
+        //{
+        //    await HttpContext.SignOutAsync();
+        //    var token = _tokenProvider.GetToken();
+        //    await _authService.LogoutAsync<APIResponse>(token);
+        //    _tokenProvider.ClearToken();
+        //    return RedirectToAction("Index", "Home");
+        //}
 
         public IActionResult AccessDenied()
         {
