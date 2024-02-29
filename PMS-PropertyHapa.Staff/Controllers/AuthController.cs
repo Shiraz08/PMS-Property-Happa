@@ -54,23 +54,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
             var response = await _authService.LoginAsync<APIResponse>(obj);
             if (response != null && response.IsSuccess)
             {
-
-                var appUser = await _userManager.FindByEmailAsync(obj.Email);
-                if (appUser != null)
-                {
-                    if (await _userManager.IsInRoleAsync(appUser, "Staff"))
-                    {
-                        return Json(new { success = true, message = "Logged In Successfully as Staff..!", result = response.Result });
-                    }
-                    else
-                    {
-                        return Json(new { success = false, message = "Only staff members are allowed to log in." });
-                    }
-                }
-                else
-                {
-                    return Json(new { success = false, message = "Only staff members are allowed to log in." });
-                }
+                return Json(new { success = true, message = "Logged In Successfully..!", result = response.Result });
             }
             else
             {

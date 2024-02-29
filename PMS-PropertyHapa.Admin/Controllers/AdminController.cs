@@ -45,6 +45,7 @@ namespace PMS_PropertyHapa.Admin.Controllers
         }
 
 
+
         [HttpPost]
         public async Task<JsonResult> Create(TenantViewModel model)
         {
@@ -53,81 +54,86 @@ namespace PMS_PropertyHapa.Admin.Controllers
                 return Json(new { success = false, message = "Invalid model data." });
             }
 
-            var existingUser = await userManager.FindByNameAsync(model.User.UserName) ??
-                               await userManager.FindByEmailAsync(model.User.Email);
-            if (existingUser != null)
+            try
             {
-                return Json(new { success = false, message = "Username or email already exists." });
-            }
-
-            var appUser = new ApplicationUser
-            {
-                UserName = model.User.UserName,
-                Email = model.User.Email,
-                AddedBy = User.Identity?.Name,
-                AddedDate = DateTime.Now,
-                Status = true,
-                BirthDate = model.User.BirthDate,
-                NormalizedUserName = model.User.NormalizedUserName,
-                PhoneNumber = model.User.PhoneNumber,
-                FirstName = model.User.FirstName,
-                LastName = model.User.LastName,
-                Country = model.User.Country,
-                Group = model.User.Group
-            };
-
-            var uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "uploads");
-            if (!Directory.Exists(uploadsFolder))
-            {
-                Directory.CreateDirectory(uploadsFolder);
-            }
-
-            var orgIconFileName = await ProcessFileUpload(model.OrganizationInfo.OrganizationIconFile, uploadsFolder);
-            var orgLogoFileName = await ProcessFileUpload(model.OrganizationInfo.OrganizationLogoFile, uploadsFolder);
-
-            using (var transaction = _context.Database.BeginTransaction())
-            {
-                try
+                var existingUser = await userManager.FindByNameAsync(model.User.UserName) ??
+                                   await userManager.FindByEmailAsync(model.User.Email);
+                if (existingUser != null)
                 {
-                    var createUserResult = await userManager.CreateAsync(appUser, model.User.Password);
-                    if (!createUserResult.Succeeded)
+                    return Json(new { success = false, message = "Username or email already exists." });
+                }
+
+                // Create a new ApplicationUser
+                var appUser = new ApplicationUser
+                {
+                    UserName = model.User.UserName,
+                    Email = model.User.Email,
+                    AddedBy = User.Identity?.Name,
+                    AddedDate = DateTime.Now,
+                    Status = true,
+                    BirthDate = model.User.BirthDate,
+                    NormalizedUserName = model.User.NormalizedUserName,
+                    PhoneNumber = model.User.PhoneNumber,
+                    FirstName = model.User.FirstName,
+                    LastName = model.User.LastName,
+                    Country = model.User.Country,
+                    Group = model.User.Group
+                };
+
+                var uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "uploads");
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    Directory.CreateDirectory(uploadsFolder);
+                }
+
+                var (logoFileName, base64String) = await ImageUploadUtility.UploadImageAsync(model.OrganizationInfo.OrganizationLogoFile, "uploads");
+                var (iconFileName, base64String2) = await ImageUploadUtility.UploadImageAsync(model.OrganizationInfo.OrganizationIconFile, "uploads");
+
+                using (var transaction = _context.Database.BeginTransaction())
+                {
+                    try
                     {
-                        var errors = string.Join("; ", createUserResult.Errors.Select(e => e.Description));
-                        return Json(new { success = false, message = $"User creation failed: {errors}" });
+                       
+                        var createUserResult = await userManager.CreateAsync(appUser, model.User.Password);
+                        if (!createUserResult.Succeeded)
+                        {
+                            var errors = string.Join("; ", createUserResult.Errors.Select(e => e.Description));
+                            return Json(new { success = false, message = $"User creation failed: {errors}" });
+                        }
+
+                        await userManager.AddToRoleAsync(appUser, model.User.Group);
+
+                        
+                        var tenantOrgInfo = new TenantOrganizationInfo
+                        {
+                            TenantUserId = Guid.Parse(appUser.Id),
+                            OrganizationName = model.OrganizationInfo.OrganizationName,
+                            OrganizationDescription = model.OrganizationInfo.OrganizationDescription,
+                            OrganizationIcon = base64String2,
+                            OrganizationLogo = base64String,
+                            OrganizatioPrimaryColor = model.OrganizationInfo.OrganizatioPrimaryColor,
+                            OrganizationSecondColor = model.OrganizationInfo.OrganizationSecondColor
+                        };
+
+                        _context.TenantOrganizationInfo.Add(tenantOrgInfo);
+                        await _context.SaveChangesAsync();
+
+                        transaction.Commit();
+
+                        return Json(new { success = true });
                     }
-
-                    await userManager.AddToRoleAsync(appUser, model.User.Group);
-
-                    var tenantOrgInfo = new TenantOrganizationInfo
+                    catch (Exception ex)
                     {
-                        TenantUserId = Guid.Parse(appUser.Id),
-                        OrganizationName = model.OrganizationInfo.OrganizationName,
-                        OrganizationDescription = model.OrganizationInfo.OrganizationDescription,
-                        OrganizationIcon = orgIconFileName,
-                        OrganizationLogo = orgLogoFileName,
-                        OrganizatioPrimaryColor = model.OrganizationInfo.OrganizatioPrimaryColor,
-                        OrganizationSecondColor = model.OrganizationInfo.OrganizationSecondColor
-                    };
-
-                    _context.TenantOrganizationInfo.Add(tenantOrgInfo);
-                    await _context.SaveChangesAsync();
-
-                    System.IO.File.Delete(Path.Combine(uploadsFolder, orgLogoFileName));
-                    System.IO.File.Delete(Path.Combine(uploadsFolder, orgIconFileName));
-
-                    transaction.Commit();
-
-                    return Json(new { success = true });
+                        transaction.Rollback();
+                        return Json(new { success = false, message = $"An error occurred: {ex.Message}" });
+                    }
                 }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-                    return Json(new { success = false, message = $"An error occurred: {ex.Message}" });
-                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = $"An unexpected error occurred: {ex.Message}" });
             }
         }
-
-
 
 
         private async Task<string> ProcessFileUpload(IFormFile file, string uploadsFolder)

@@ -114,11 +114,12 @@
                 {
                     "data": "tenantId",
                     "render": function (data, type, row) {
-                        return `<div class="btn-container">
-                                            <button onclick="editTenant(${row.TenantId})" class="btn btn-sm btn-success edit-tenant">Edit</button>
-                                                <button data-tenant-id="${row.TenantId}" class="btn btn-sm btn-danger  delete-tenant">Delete</button>
-                                    </div>`;
+                        return `<div style="display: flex; align-items: center;">
+                    <button onclick="editTenant(${row.TenantId})" class="btn btn-sm btn-success edit-tenant">Edit</button>
+                    <button data-tenant-id="${row.TenantId}" style="margin-left: 10px;" class="btn btn-sm btn-danger delete-tenant">Delete</button>
+                </div>`;
                     },
+
                     "orderable": false
                 }
             ],

@@ -41,17 +41,21 @@
                     url: '@Url.Action("Login", "Auth")',
                     type: 'POST',
                     data: formData,
-                    success: function (response) 
-                    {
-                        if (response == true) {
+                    success: function (response) {
+                        if (response.success) {
+                            debugger;
+                            if (response.organization && response.organization.logo) {
+                                localStorage.setItem('organizationLogo', response.organization.logo);
+                            }
                             var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
                             Toast.fire({ icon: 'success', title: 'You are logged in!' });
                             window.location.href = '@Url.Action("Index", "Home")';
                         } else {
                             var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
-                            Toast.fire({ icon: 'success', title: response.message });
+                            Toast.fire({ icon: 'error', title: response.message });
                         }
                     },
+
                     error: function (xhr, status, error) {
                         Swal.fire('Error', 'An error occurred during login.', 'error');
                     }

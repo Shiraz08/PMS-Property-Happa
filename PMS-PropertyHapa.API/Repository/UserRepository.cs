@@ -1150,40 +1150,38 @@ namespace MagicVilla_VillaAPI.Repository
             var tenant = await _db.Tenant.FirstOrDefaultAsync(t => t.TenantId == tenantDto.TenantId);
             if (tenant == null) return false;
 
-            var newTenant = new Tenant
-            {
-                FirstName = tenantDto.FirstName,
-                LastName = tenantDto.LastName,
-                EmailAddress = tenantDto.EmailAddress,
-                PhoneNumber = tenantDto.PhoneNumber,
-                EmergencyContactInfo = tenantDto.EmergencyContactInfo,
-                LeaseAgreementId = tenantDto.LeaseAgreementId,
-                TenantNationality = tenantDto.TenantNationality,
-                Gender = tenantDto.Gender,
-                DOB = tenantDto.DOB,
-                VAT = tenantDto.VAT,
-                Status = true,
-                LegalName = tenantDto.LegalName,
-                Account_Name = tenantDto.Account_Name,
-                Account_Holder = tenantDto.Account_Holder,
-                Account_IBAN = tenantDto.Account_IBAN,
-                Account_Swift = tenantDto.Account_Swift,
-                Account_Bank = tenantDto.Account_Bank,
-                Account_Currency = tenantDto.Account_Currency,
-                AppTenantId = tenantDto.AppTenantId,
-                Address = tenantDto.Address,
-                Address2 = tenantDto.Address2,
-                Locality = tenantDto.Locality,
-                Region = tenantDto.Region,
-                PostalCode = tenantDto.PostalCode,
-                Country = tenantDto.Country,
-                CountryCode = tenantDto.CountryCode
-            };
+            tenant.FirstName = tenantDto.FirstName;
+            tenant.LastName = tenantDto.LastName;
+            tenant.EmailAddress = tenantDto.EmailAddress;
+            tenant.PhoneNumber = tenantDto.PhoneNumber;
+            tenant.EmergencyContactInfo = tenantDto.EmergencyContactInfo;
+            tenant.LeaseAgreementId = tenantDto.LeaseAgreementId;
+            tenant.TenantNationality = tenantDto.TenantNationality;
+            tenant.Gender = tenantDto.Gender;
+            tenant.DOB = tenantDto.DOB;
+            tenant.VAT = tenantDto.VAT;
+            tenant.Status = true; 
+            tenant.LegalName = tenantDto.LegalName;
+            tenant.Account_Name = tenantDto.Account_Name;
+            tenant.Account_Holder = tenantDto.Account_Holder;
+            tenant.Account_IBAN = tenantDto.Account_IBAN;
+            tenant.Account_Swift = tenantDto.Account_Swift;
+            tenant.Account_Bank = tenantDto.Account_Bank;
+            tenant.Account_Currency = tenantDto.Account_Currency;
+            tenant.AppTenantId = tenantDto.AppTenantId;
+            tenant.Address = tenantDto.Address;
+            tenant.Address2 = tenantDto.Address2;
+            tenant.Locality = tenantDto.Locality;
+            tenant.Region = tenantDto.Region;
+            tenant.PostalCode = tenantDto.PostalCode;
+            tenant.Country = tenantDto.Country;
+            tenant.CountryCode = tenantDto.CountryCode;
 
-            _db.Tenant.Update(newTenant);
+            _db.Tenant.Update(tenant);
             var result = await _db.SaveChangesAsync();
             return result > 0;
         }
+
 
         public async Task<bool> DeleteTenantAsync(string tenantId)
         {

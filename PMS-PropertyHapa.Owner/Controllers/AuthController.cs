@@ -64,9 +64,13 @@ namespace PMS_PropertyHapa.Controllers
 
                         if (result.Succeeded)
 
-                            if (await _userManager.IsInRoleAsync(appUser, "Owner"))
+                            if (await _userManager.IsInRoleAsync(appUser, "Owner Merchant Account"))
                             {
-                                return Json(true);
+                                var logo = await _context.TenantOrganizationInfo
+                                              .AsNoTracking()
+                                              .FirstOrDefaultAsync(to => to.TenantUserId == Guid.Parse(appUser.Id));
+
+                                return Json(new { success = true, message = "Logged In Successfully..!", organization = new { logo = logo?.OrganizationLogo } });
                             }
                             else
                             {

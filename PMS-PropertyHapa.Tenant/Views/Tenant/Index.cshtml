@@ -1,0 +1,201 @@
+﻿@using PMS_PropertyHapa.Models.DTO;
+@model TenantModelDto
+@{
+    ViewData["Title"] = "Tenants";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12">
+                    <h3>Tenant List</h3>
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a class="home-item" href="/Tenant/Index"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item">Tenant</li>
+                        <li class="breadcrumb-item active">Index</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h4 class="card-title">
+                            <a href="/Tenant/AddTenant" class="btn btn-success mb-3">Add New Tenant</a>
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table" id="tenantsTable">
+                                <thead>
+                                    <tr>
+                                        <th>First Name</th>
+                                        <th>Last Name</th>
+                                        <th>Email Address</th>
+                                        <th>Phone Number</th>
+                                        <th>Emergency Contact Info</th>
+                                        <th>Lease Agreement Id</th>
+                                        <th>Tenant Nationality</th>
+                                        <th>Gender</th>
+                                        <th>DOB</th>
+                                        <th>VAT</th>
+                                        <th>Legal Name</th>
+                                        <th>Account Name</th>
+                                        <th>Account Holder</th>
+                                        <th>Account IBAN</th>
+                                        <th>Account Swift</th>
+                                        <th>Account Bank</th>
+                                        <th>Account Currency</th>
+                                        <th>Address</th>
+                                        <th>Address2</th>
+                                        <th>Locality</th>
+                                        <th>Region</th>
+                                        <th>Postal Code</th>
+                                        <th>Country</th>
+                                        <th>Country Code</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+<script>
+    $(document).ready(function () {
+        var tenantId = localStorage.getItem('userId');
+        var ajaxUrl = `/Tenant/GetTenant/?tenantId=${encodeURIComponent(tenantId)}`;
+        $('#tenantsTable').DataTable({
+            "ajax": {
+                "url": ajaxUrl,
+                "type": "GET",
+                "datatype": "json"
+            },
+            "deferRender": true,
+            "columns": [
+                { "data": "FirstName", "width": "60%" },
+                { "data": "LastName", "width": "60%" },
+                { "data": "EmailAddress", "width": "60%" },
+                { "data": "PhoneNumber", "width": "60%" },
+                { "data": "EmergencyContactInfo", "width": "60%" },
+                { "data": "LeaseAgreementId", "width": "60%" },
+                { "data": "TenantNationality", "width": "60%" },
+                { "data": "Gender", "width": "60%" },
+                { "data": "DOB", "width": "60%" },
+                { "data": "VAT", "width": "60%" },
+                { "data": "LegalName", "width": "60%" },
+                { "data": "Account_Name", "width": "60%" },
+                { "data": "Account_Holder", "width": "60%" },
+                { "data": "Account_IBAN", "width": "60%" },
+                { "data": "Account_Swift", "width": "60%" },
+                { "data": "Account_Bank", "width": "60%" },
+                { "data": "Account_Currency", "width": "60%" },
+                { "data": "Address", "width": "60%" },
+                { "data": "Address2", "width": "60%" },
+                { "data": "Locality", "width": "60%" },
+                { "data": "Region", "width": "60%" },
+                { "data": "PostalCode", "width": "60%" },
+                { "data": "Country", "width": "60%" },
+                { "data": "CountryCode", "width": "60%" },
+                {
+                    "data": "tenantId",
+                    "render": function (data, type, row) {
+                        return `<div style="display: flex; align-items: center;">
+                    <button onclick="editTenant(${row.TenantId})" class="btn btn-sm btn-success edit-tenant">Edit</button>
+                    <button data-tenant-id="${row.TenantId}" style="margin-left: 10px;" class="btn btn-sm btn-danger delete-tenant">Delete</button>
+                </div>`;
+                    },
+
+                    "orderable": false
+                }
+            ],
+            "language": {
+                "emptyTable": "No data found, Please click on <b>Add New</b> Button"
+            },
+            "initComplete": function () {
+
+                $('#tenantsTable thead th').css("min-width", "100px");
+            },
+            "order": []
+        });
+    });
+
+    function updateTenant(tenantId) {
+        window.location.href = `/Tenant/AddTenant?tenantId=${tenantId}`;
+    }
+
+    $('#tenantsTable').on('click', '.delete-tenant', function () {
+        var tenantId = $(this).data('tenant-id');
+        deleteTenant(tenantId);
+    });
+
+</script>
+<script>
+
+
+
+    function deleteTenant(tenantId) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Once deleted, you will not be able to recover this tenant!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: `/Tenant/Delete/?tenantId=${encodeURIComponent(tenantId)}`,
+                    type: 'DELETE',
+                    success: function (data) {
+                        if (data.success) {
+                            $('#tenantsTable').DataTable().ajax.reload();
+                            Swal.fire(
+                                'Deleted!',
+                                'Your file has been deleted.',
+                                'success'
+                            );
+                        } else {
+                            Swal.fire(
+                                'Error!',
+                                'There was an issue deleting your tenant.',
+                                'error'
+                            );
+                        }
+                    },
+                    error: function () {
+                        Swal.fire(
+                            'Error!',
+                            'There was an issue deleting your tenant.',
+                            'error'
+                        );
+                    }
+                });
+            }
+        });
+    }
+
+
+
+
+</script>
+<script>
+    function editTenant(tenantId) {
+        window.location.href = `/Tenant/EditTenant?tenantId=${tenantId}`;
+    }
+</script>

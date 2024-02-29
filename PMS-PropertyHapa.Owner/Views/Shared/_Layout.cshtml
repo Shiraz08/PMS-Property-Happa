@@ -96,7 +96,11 @@
                 <div class="row">
                     <div class="col-12">
                         <nav class="navbar navbar-light p-0" id="navbar-example2">
-                            <a class="navbar-brand" href="@Url.Action("Index","Home")"> <img class="img-fluid" src="~/Dashboard/assets/images/logo/logo.png" alt="" style="width: 108px;height: 56px;padding-left: 9px;"></a>
+                            <a class="navbar-brand" href="@Url.Action("Index","Home")">
+                                <div id="organizationLogoContainer">
+                                    <img id="organizationLogoImg" class="img-fluid" src="" height="108px" width="56px" alt="Organization Logo">
+                                </div>
+                            </a>
                             <ul class="landing-menu nav nav-pills">
                                 <li class="nav-item menu-back">back<i class="fa fa-angle-right"></i></li>
                                 <li class="nav-item"><a class="nav-link" href="@Url.Action("Index","Home")">HOME</a></li>
@@ -186,5 +190,22 @@
     <script src="~/Dashboard/assets/js/datatable/datatable-extension/custom.js"></script>
     <script src="~/Dashboard/assets/js/theme-customizer/customizer.js"></script>
 
+    <script>
+
+
+        var organizationLogoBase64 = localStorage.getItem('organizationLogo');
+
+
+        if (organizationLogoBase64) {
+
+            var organizationLogoDataURI = 'data:image;base64,' + organizationLogoBase64;
+
+            document.getElementById('organizationLogoImg').src = organizationLogoDataURI;
+        } else {
+            document.getElementById('organizationLogoContainer').style.display = 'none';
+        }
+
+
+    </script>
 </body>
 </html>
