@@ -1,12 +1,45 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using PMS_PropertyHapa.MigrationsFiles.Data;
+using PMS_PropertyHapa.Staff.Models;
+using PMS_PropertyHapa.Models.DTO;
+using PMS_PropertyHapa.Models.Entities;
+using PMS_PropertyHapa.Models.Roles;
+using PMS_PropertyHapa.Shared.Enum;
+using PMS_PropertyHapa.Shared.ImageUpload;
+using PMS_PropertyHapa.Staff.Auth.Controllers;
+using PMS_PropertyHapa.Staff.Services.IServices;
 
 namespace PMS_PropertyHapa.Staff.Controllers
 {
     public class LandlordController : Controller
     {
+        private readonly IAuthService _authService;
+        private readonly ITokenProvider _tokenProvider;
+        private readonly ILogger<HomeController> _logger;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private ApiDbContext _context;
+        private readonly IUserStore<ApplicationUser> _userStore;
+        private IWebHostEnvironment _environment;
+        public LandlordController(IAuthService authService, ITokenProvider tokenProvider, IWebHostEnvironment Environment, ILogger<HomeController> logger, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, ApiDbContext context, IUserStore<ApplicationUser> userStore)
+        {
+            _authService = authService;
+            _tokenProvider = tokenProvider;
+            _logger = logger;
+            _signInManager = signInManager;
+            _userManager = userManager;
+            _context = context;
+            _userStore = userStore;
+            _environment = Environment;
+        }
         public IActionResult Index()
         {
-            return View();
+            var list = _context.Owner.AsNoTracking().ToList();
+            return View(list);
         } 
         public IActionResult AddLandlord()
         {

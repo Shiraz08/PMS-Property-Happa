@@ -1,157 +1,224 @@
-﻿
+﻿@model IEnumerable<PMS_PropertyHapa.Models.Entities.Owner>
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<!-- Page Sidebar Ends-->
 <div class="page-body">
     <div class="container-fluid">
         <div class="page-title">
             <div class="row">
-                <div class="col-12">
-                    <h3>Coming Soon</h3>
+                <div class="col-12 col-sm-6">
+                    <h3>Owner List</h3>
+                </div>
+                <div class="col-12 col-sm-6">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a class="home-item" href="index.html"><i data-feather="home"></i></a></li>
-                        <li class="breadcrumb-item">Coming Soon</li>
-                        <li class="breadcrumb-item active">Coming Soon</li>
+                        <li class="breadcrumb-item"><a href="index.html"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item">Owner</li>
+                        <li class="breadcrumb-item active">List</li>
                     </ol>
                 </div>
             </div>
         </div>
     </div>
+    <!-- Container-fluid starts-->
     <div class="container-fluid">
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <h4 class="card-title">
-                            Coming Soon
-                        </h4>
+        <div class="email-wrap bookmark-wrap">
+            <div class="row">
+                <div class="col-xl-9 col-md-12 box-col-9 xl-70">
+                    <div class="email-right-aside bookmark-tabcontent contacts-tabs">
+                        <div class="card email-body radius-left">
+                            <div class="ps-0">
+                                <div class="tab-content">
+                                    <div class="tab-pane fade active show" id="pills-personal" role="tabpanel" aria-labelledby="pills-personal-tab">
+                                        <div class="card mb-0">
+                                            <div class="card-header d-flex">
+                                                <h5>Owner</h5><span class="f-14 pull-right mt-0">@Model.Count() List</span>
+                                            </div>
+                                            <div class="card-body p-0">
+                                                <div class="row list-persons" id="addcon">
+                                                    <div class="col-xl-4 xl-50 col-md-5 box-col-6">
+                                                        <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                                                            @foreach (var item in Model)
+                                                            {
+                                                                <a class="contact-tab-@item.OwnerId nav-link" id="v-pills-@item.OwnerId-tab" data-bs-toggle="pill" onclick="activeDiv(@item.OwnerId)" href="#v-pills-@item.OwnerId" role="tab" aria-controls="v-pills-@item.OwnerId" aria-selected="true">
+                                                                    <div class="media">
+                                                                        <img class="img-50 img-fluid m-r-20 rounded-circle update_img_0" src="@item.Picture" alt="">
+                                                                        <div class="media-body">
+                                                                            <h6> <span class="first_name_0">@item.FirstName </span><span class="last_name_0">@item.LastName</span></h6>
+                                                                            <p class="email_add_0">@item.EmailAddress</p>
+                                                                        </div>
+                                                                    </div>
+                                                                </a>
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xl-8 xl-50 col-md-7 box-col-6">
+                                                        <div class="tab-content" id="v-pills-tabContent">
+                                                            @foreach (var item in Model)
+                                                            {
+                                                                <div class="tab-pane contact-tab-@item.OwnerId tab-content-child fade" id="v-pills-@item.OwnerId" role="tabpanel" aria-labelledby="v-pills-@item.OwnerId-tab">
+                                                                    <div class="profile-mail">
+                                                                        <div class="media align-items-center">
+                                                                            <img class="img-100 img-fluid m-r-20 rounded-circle update_img_0" src="@item.Picture" alt="">
+                                                                            <input class="updateimg" type="file" name="img" onchange="readURL(this,0)">
+                                                                            <div class="media-body mt-0">
+                                                                                <h5><span class="first_name_0">@item.FirstName </span><span class="last_name_0">@item.LastName</span></h5>
+                                                                                <p class="email_add_0">@item.EmailAddress</p>
+                                                                                <ul>
+                                                                                    <li><a href="javascript:void(0)">Edit</a></li>
+                                                                                    <li><a href="javascript:void(0)">Delete</a></li>
+                                                                                </ul>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="email-general">
+                                                                            <h6 class="mb-3">General</h6>
+                                                                            <ul>
+                                                                                <li>Name <span class="font-primary first_name_0">Bucky</span></li>
+                                                                                <li>Gender <span class="font-primary">Male</span></li>
+                                                                                <li>Birthday<span class="font-primary"> <span class="birth_day_0">18</span><span class="birth_month_0 ms-1">May</span><span class="birth_year_0 ms-1">1994</span></span></li>
+                                                                                <li>Personality<span class="font-primary personality_0">Cool</span></li>
+                                                                                <li>City<span class="font-primary city_0">moline acres</span></li>
+                                                                                <li>Mobile No<span class="font-primary mobile_num_0">+0 1800 76855</span></li>
+                                                                                <li>Email Address <span class="font-primary email_add_0">barnes@gmail.com </span></li>
+                                                                                <li>Website<span class="font-primary url_add_0">www.test.com</span></li>
+                                                                                <li>Interest<span class="font-primary interest_0">photography</span></li>
+                                                                            </ul>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table" id="grouproles">
-                                <thead>
-                                    <tr>
-                                        <th style="width:290px!Important;text-align:center">.........</th>
-                                        <th style="width:290px!Important;text-align:center">.........</th>
-                                        <th style="width:290px!Important;text-align:center">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                </div>
+                <div class="col-xl-3 box-col-3 xl-30">
+                    <div class="email-sidebar">
+                        <a class="btn btn-primary email-aside-toggle" href="javascript:void(0)">contact filter    </a>
+                        <div class="email-left-aside">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="email-app-sidebar left-bookmark">
+                                        <div class="media">
+                                            <div class="media-size-email"><img class="me-3 rounded-circle" src="../assets/images/user/user.png" alt=""></div>
+                                            <div class="media-body">
+                                                <a href="user-profile.html">
+                                                    <h6 class="f-w-700">MARK JENCO</h6>
+                                                </a>
+                                                <p>Markjecno@gmail.com</p>
+                                            </div>
+                                        </div>
+                                        <ul class="nav main-menu contact-options" role="tablist">
+                                            <li class="nav-item">
+                                                <button class="btn-primary badge-light btn-block btn-mail w-100" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="me-2" data-feather="users"></i> New Contacts</button>
+                                                <div class="modal fade modal-bookmark" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog modal-lg" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="exampleModalLabel">Add Contact</h5>
+                                                                <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <form class="form-bookmark needs-validation" id="bookmark-form" novalidate="">
+                                                                    <div class="row g-2">
+                                                                        <div class="col-md-12 mt-0 m-b-20">
+                                                                            <label for="con-name">Name</label>
+                                                                            <div class="row">
+                                                                                <div class="col-sm-6">
+                                                                                    <input class="form-control" id="con-name" type="text" required="" placeholder="First Name" autocomplete="off">
+                                                                                </div>
+                                                                                <div class="col-sm-6">
+                                                                                    <input class="form-control" id="con-last" type="text" required="" placeholder="Last Name" autocomplete="off">
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-12 mt-0 m-b-20">
+                                                                            <label for="con-mail">Email Address</label>
+                                                                            <input class="form-control" id="con-mail" type="text" required="" autocomplete="off">
+                                                                        </div>
+                                                                        <div class="col-md-12 my-0 m-b-20">
+                                                                            <label for="con-phone">Phone</label>
+                                                                            <div class="row">
+                                                                                <div class="col-sm-6">
+                                                                                    <input class="form-control" id="con-phone" type="number" required="" autocomplete="off">
+                                                                                </div>
+                                                                                <div class="col-sm-6">
+                                                                                    <select class="form-control" id="con-select">
+                                                                                        <option>Mobile</option>
+                                                                                        <option>Work</option>
+                                                                                        <option>Others</option>
+                                                                                    </select>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <input id="index_var" type="hidden" value="5">
+                                                                    <button class="btn btn-secondary" type="submit" onclick="submitContact()">Save</button>
+                                                                    <button class="btn btn-primary" type="button" data-bs-dismiss="modal">Cancel</button>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li class="nav-item"><span class="main-title"> Views</span></li>
+                                            <li><a id="pills-personal-tab" data-bs-toggle="pill" href="#pills-personal" role="tab" aria-controls="pills-personal" aria-selected="true"><span class="title"> Personal</span></a></li>
+                                            <li>
+                                                <button class="btn btn-category" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal1"><span class="title"> + Add Category</span></button>
+                                                <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+                                                    <div class="modal-dialog" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="exampleModalLabel1">Add Category</h5>
+                                                                <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <form class="form-bookmark">
+                                                                    <div class="row g-2">
+                                                                        <div class="mb-3 col-md-12">
+                                                                            <input class="form-control" type="text" required="" placeholder="Enter category name" autocomplete="off">
+                                                                        </div>
+                                                                    </div>
+                                                                    <button class="btn btn-secondary" type="button">Save</button>
+                                                                    <button class="btn btn-primary" type="button" data-bs-dismiss="modal">Cancel</button>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li><a class="show" id="pills-organization-tab" data-bs-toggle="pill" href="#pills-organization" role="tab" aria-controls="pills-organization" aria-selected="false"><span class="title"> Organization</span></a></li>
+                                            <li><a href="javascript:void(0)"><span class="title">Follow up</span></a></li>
+                                            <li><a href="javascript:void(0)"><span class="title">Favorites</span></a></li>
+                                            <li><a href="javascript:void(0)"><span class="title">Ideas</span></a></li>
+                                            <li><a href="javascript:void(0)"><span class="title">Important</span></a></li>
+                                            <li><a href="javascript:void(0)"><span class="title">Business</span></a></li>
+                                            <li><a href="javascript:void(0)"><span class="title">Holidays</span></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <!-- Container-fluid Ends-->
 </div>
-
-
+<script>
+    $(document).ready(function ()
+    {
+        $('.contacts-tabs .nav-link ').removeClass('active show');
+        $('.contacts-tabs .tab-content .tab-content-child ').removeClass('active show');
+        $('.contact-tab-' + @Model.Take(1).Select(x=>x.OwnerId).FirstOrDefault()).addClass('active show');
+    });
+</script>

@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PMS_PropertyHapa.Models.Entities
 {
     public class Owner : AddressEntities
     {
+        [Key]
         public int OwnerId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
