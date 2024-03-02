@@ -39,6 +39,36 @@ namespace PMS_PropertyHapa.Staff.Controllers
         }
 
 
+        [HttpPost]
+        public async Task<IActionResult> UpdateAsset([FromBody] AssetDTO assetDTO)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                await _authService.UpdateAssetAsync(assetDTO);
+                return Ok(new { success = true, message = "Asset added successfully" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "An error occurred while adding the asset." });
+            }
+        }
+
+
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteAsset(int propertyId)
+        {
+            await _authService.DeleteAssetAsync(propertyId);
+            return Json(new { success = true, message = "Tenant deleted successfully" });
+        }
+
+
+
 
         public IActionResult Index()
         {

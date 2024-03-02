@@ -8,6 +8,18 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Content Remove="Views\Groups\Create.cshtml" />
+	  <Content Remove="Views\Groups\Index.cshtml" />
+	  <Content Remove="Views\Groups\Update.cshtml" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="Views\Groups\Create.cshtml" />
+	  <None Include="Views\Groups\Index.cshtml" />
+	  <None Include="Views\Groups\Update.cshtml" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.26" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.26" />

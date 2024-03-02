@@ -298,7 +298,7 @@ namespace PMS_PropertyHapa.Staff.Services
                 {
                     ApiType = SD.ApiType.POST,
                     Data = asset,
-                    Url = $"{villaUrl}/api/v1/Tenantauth/Tenant"
+                    Url = $"{villaUrl}/api/v1/Assetauth/Asset"
                 });
 
                 return response.IsSuccess;
@@ -308,6 +308,46 @@ namespace PMS_PropertyHapa.Staff.Services
                 throw new Exception($"An error occurred when creating tenant: {ex.Message}", ex);
             }
         }
+
+
+        public async Task<bool> UpdateAssetAsync(AssetDTO asset)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Data = asset,
+                    Url = $"{villaUrl}/api/v1/Assetauth/Asset/Update"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when creating tenant: {ex.Message}", ex);
+            }
+        }
+
+
+        public async Task<bool> DeleteAssetAsync(int propertyId)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.DELETE,
+                    Url = $"{villaUrl}/api/v1/Assetauth/Asset/Delete/{propertyId}"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when deleting tenant: {ex.Message}", ex);
+            }
+        }
+
 
 
 

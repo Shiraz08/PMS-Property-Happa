@@ -47,6 +47,14 @@ namespace PMS_PropertyHapa.Controllers
         }
 
 
+        [HttpGet]
+        public IActionResult ManageProperty()
+        {
+            return View();
+        }
+
+
+
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]

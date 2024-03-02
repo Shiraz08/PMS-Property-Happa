@@ -1,0 +1,517 @@
+﻿@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityRole>
+@{
+    ViewData["Title"] = "Groups";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12">
+                    <h3>Roles List</h3>
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a class="home-item" href="/Groups"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item">Role</li>
+                        <li class="breadcrumb-item active">Roles</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h4 class="card-title">
+                            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#AddRole">
+                                <i class="ri-add-line align-bottom me-1"></i> Add New Role
+                            </button>
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table" id="grouproles">
+                                <thead>
+                                    <tr>
+                                        <th style="width:290px!Important">Role Name</th>
+                                        <th style="width:290px!Important">Assign App Pages</th>
+                                        <th style="width:290px!Important">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+         
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@* Add Model*@
+<div class="modal fade" id="AddRole" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add New Role</h5>
+                <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="name">Role Name:</label>
+                    <input name="Rolename" id="Rolename" class="form-control" placeholder="Enter Group Name" type="text" onkeypress="InputAlphaNoOnlyvalidation(event)" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="hstack gap-2 justify-content-end">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-success" id="addbtn" onclick="Addrole();">Add Role</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@*Edit Model*@
+<div class="modal fade" id="EditRole" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Group</h5>
+                <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="name">Group Name:</label>
+                    <input name="Id" id="Id" type="hidden"/>
+                    <input name="EditRolename" id="EditRolename" class="form-control" placeholder="Enter Group Name" type="text"  onkeypress="InputAlphaNoOnlyvalidation(event)" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="hstack gap-2 justify-content-end">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-success" id="editbtn" onclick="EditRoles();">Edit Role</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@*Assign Roles Model*@
+<div class="modal fade" id="AssignRole" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="AssignRolelables">Assign Roles</h5> &nbsp;
+@*                                                         <div class="row">
+                                          <div class="col-lg-12">
+                                                 <input type="button" class="btn btn-success" value="Check All" onclick="checkallcheckboxes();"/>
+                                            </div>
+                                        </div> *@
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="close-modal"></button>
+            </div>
+            <div class="modal-body">
+                <input name="groupid" id="groupid" type="hidden" />
+                <input name="groupname" id="groupname" type="hidden" />
+                            <div class="card-body" id="Showrolespagescheckboxes">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="live-preview">
+                                        <div class="row">
+                                            <div class="col-lg-2">
+                                                <div class="mt-2 mt-lg-0">
+                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Users Pages</label>
+                                                    <div id="Show_Identity_checkboxes"> </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <div class="mt-2 mt-lg-0">
+                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Accounting</label>
+                                                    <div id="Show_Accounting_checkboxes"> </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <div class="mt-2 mt-lg-0">
+                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Assests</label>
+                                                    <div id="Show_Assests_checkboxes"> </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <div class="mt-2 mt-lg-0">
+                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Communication</label>
+                                                    <div id="Show_Communication_checkboxes"> </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <div class="mt-2 mt-lg-0">
+                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Documents</label>
+                                                    <div id="Show_Documents_checkboxes"> </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <div class="mt-2 mt-lg-0">
+                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Expense</label>
+                                                    <div id="Show_Expense_checkboxes"> </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-2">
+                                                <div class="mt-2 mt-lg-0">
+                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Landlord</label>
+                                                    <div id="Show_Landlord_checkboxes"> </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <div class="mt-2 mt-lg-0">
+                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Lease</label>
+                                                    <div id="Show_Lease_checkboxes"> </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <div class="mt-2 mt-lg-0">
+                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Maintance</label>
+                                                    <div id="Show_Maintance_checkboxes"> </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <div class="mt-2 mt-lg-0">
+                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Reports</label>
+                                                    <div id="Show_Reports_checkboxes"> </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <div class="mt-2 mt-lg-0">
+                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Services</label>
+                                                    <div id="Show_Services_checkboxes"> </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <div class="mt-2 mt-lg-0">
+                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Tenant</label>
+                                                    <div id="Show_Tenant_checkboxes"> </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-2">
+                                                <div class="mt-2 mt-lg-0">
+                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Vendor</label>
+                                                    <div id="Show_Vendor_checkboxes"> </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+            </div>
+            <div class="modal-footer">
+                <div class="hstack gap-2 justify-content-end">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-success" onclick="saverolespages();">Assign Role</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+    function checkallcheckboxes()
+    {
+        $('input:checkbox').prop('checked', true);
+    }
+    function getRolePages() {
+
+        $.ajax({
+            type: 'GET',
+            url: '/Groups/GetRolePages',
+            processData: false,
+            contentType: false,
+            success: function (response)
+            {
+                var Identity     = '';
+                var Accounting   = '';
+                var Assests      = '';
+                var Communication = '';
+                var Documents    = '';
+                var Expense      = '';
+                var Landlord     = '';
+                var Lease        = '';
+                var Maintance    = '';
+                var Reports      = '';
+                var Services     = '';
+                var Tenant       = '';
+                var Vendor       = '';
+
+                $.each(response, function (key, item) 
+                {
+                    if (item.RoleKey == "Identity") {
+                        Identity += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
+                    }
+                    if (item.RoleKey == "Accounting") {
+                        Accounting += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
+                    }
+                    if (item.RoleKey == "Assests") {
+                        Assests += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
+                    }
+                    if (item.RoleKey == "Communication") {
+                        Communication += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
+                    }
+                    if (item.RoleKey == "Documents") {
+                        Documents += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
+                    }
+                    if (item.RoleKey == "Expense") {
+                        Expense += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
+                    }
+
+                    if (item.RoleKey == "Landlord") {
+                        Landlord += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
+                    }
+                    if (item.RoleKey == "Lease") {
+                        Lease += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
+                    }
+                    if (item.RoleKey == "Maintance") {
+                        Maintance += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
+                    }
+                    if (item.RoleKey == "Reports") {
+                        Reports += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
+                    }
+                    if (item.RoleKey == "Services") {
+                        Services += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
+                    }
+                    if (item.RoleKey == "Tenant") {
+                        Tenant += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
+                    }
+
+                    if (item.RoleKey == "Vendor") {
+                        Vendor += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
+                    }
+
+                });
+                $('#Show_Identity_checkboxes').empty().append(Identity);
+                $('#Show_Accounting_checkboxes').empty().append(Accounting);
+                $('#Show_Assests_checkboxes').empty().append(Assests);
+                $('#Show_Communication_checkboxes').empty().append(Communication);
+                $('#Show_Documents_checkboxes').empty().append(Documents);
+                $('#Show_Expense_checkboxes').empty().append(Expense);
+                $('#Show_Landlord_checkboxes').empty().append(Landlord);
+                $('#Show_Lease_checkboxes').empty().append(Lease);
+                $('#Show_Maintance_checkboxes').empty().append(Maintance);
+                $('#Show_Reports_checkboxes').empty().append(Reports);
+                $('#Show_Services_checkboxes').empty().append(Services);
+                $('#Show_Tenant_checkboxes').empty().append(Tenant);
+                $('#Show_Vendor_checkboxes').empty().append(Vendor);
+            }, 
+            failure: function (response) {
+                $('#result').html(response);
+            }
+        });
+    }
+    $(document).ready(function () {
+        getroles();
+        getRolePages();
+    });
+     function CheckValidation() 
+     {
+        if ($('#Rolename').val() == '') { $('#Rolename').css('border-color', 'red'); var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 }); Toast.fire({ icon: 'error', title: 'Required Fields are Mandatory...!' }); } else { $('#Rolename').css('border-color', '#ced4da') }
+        if ($('#Rolename').val() == '') {
+            return false;
+        }
+        else 
+        {
+           return true;
+        }
+    }
+     function CheckEditValidation() 
+     {
+        if ($('#EditRolename').val() == '') { $('#EditRolename').css('border-color', 'red'); var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 }); Toast.fire({ icon: 'error', title: 'Required Fields are Mandatory...!' }); } else { $('#EditRolename').css('border-color', '#ced4da') }
+        if ($('#EditRolename').val() == '') {
+            return false;
+        }
+        else 
+        {
+           return true;
+        }
+    }
+    function Addrole()
+    {
+        var result = CheckValidation();
+        if (result == true)
+        {
+            var rolesname = $('#Rolename').val();
+            $.ajax({
+                type: 'POST',
+                url: '/Groups/Create',
+                data: { "name": rolesname },
+                success: function (response) {
+                    var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
+                    Toast.fire({ icon: 'success', title: 'Groups Create Successfully..!' });
+                    $("#Rolename").val('');
+                    $('#AddRole').modal('hide');
+                    getroles();
+                },
+                failure: function (response) {
+                    $('#result').html(response);
+                }
+            });
+        }
+    }
+    function getroles() 
+    { 
+         
+        $.ajax({
+            type: 'GET',
+            url: '/Groups/Getroles',
+            processData: false,
+            contentType: false,  
+            success: function (response) 
+            {
+                debugger
+                var op = '';
+                $.each(response, function (key, item) {
+                    debugger 
+                    op += '<tr>';
+                    op += '<td class="name">' + item.Name + '</td>';
+                    if (item.Name == "SuperAdmin")
+                    op += '<td ></td>';
+                    else
+                        op += '<td><button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#AssignRole" onclick="AssignRole(\'' + item.Id + '\',\'' + item.Name + '\')">Assign Role</button></td>';
+                    if (item.Name != "SuperAdmin" && item.Name != "User")
+                        op += '<td><div class="d-flex gap-2"><div class="edit"><button class="btn btn-sm btn-success edit-item-btn" data-bs-toggle="modal" data-bs-target="#EditRole" onclick="EditRole(\'' + item.Id + '\',\'' + item.Name + '\')">Edit Role</button></div><div class="remove"></div><button class="btn btn-sm btn-danger remove-item-btn" onclick="DeleteRole(\'' + item.Id + '\')">Delete Role</button> </div></td>';
+                    else
+                        op += '<td ></td>';
+                    op += '</tr>';
+                  }); 
+
+                op = op.replace(/^\s*|\s*$/g, '');
+                op = op.replace(/\\r\\n/gm, '');
+                var expr = "</tr>\\s*<tr";
+                var regEx = new RegExp(expr, "gm");
+                var newRows = op.replace(regEx, "</tr><tr");
+                $("#grouproles").DataTable().clear().rows.add($(newRows)).draw();
+            },
+            failure: function (response) {
+                $('#result').html(response);
+            }
+        });
+    } 
+    function EditRole(Id, Name) {
+
+        $('#Id').val(Id);
+        $('#EditRolename').val(Name);
+    }
+    function AssignRole(Id, Name) {
+         $('#groupid').val(Id);
+        $('#groupname').val(Name);
+        $.ajax({
+            type: 'GET',
+            url: '/Groups/GetSelectedRolePages',
+            data: { "Id": $('#groupid').val() },
+            success: function (response) 
+            { 
+                if(response == null)
+                {
+                    $(".uncheck").prop("checked", false);
+                }
+                else
+                {
+                    $(".uncheck").prop("checked", false);
+                    var keywords = response.split(",");
+                    $.each(keywords, function (key, item) {
+                        $("#" + item).prop('checked', true);
+                    });
+                }
+            },
+            failure: function (response) {
+                $('#result').html(response);
+            }
+        });
+
+        $('#AssignRole').modal('show');
+    }
+    function DeleteRole(Id) {
+        debugger;
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/Groups/Delete',
+                    data: {
+                        "Id": Id
+                    },
+                    success: function (response) {
+                    var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
+                        Toast.fire({ icon: 'success', title: 'Role Delete Successfully..!' });
+                        getroles();
+                    },
+                    failure: function (response) {
+                        $('#result').html(response);
+                    } 
+                });
+            }
+        })
+    }
+    function EditRoles()
+    {
+        var result = CheckEditValidation();
+        if (result == true)
+        {
+            $.ajax({
+                type: 'POST',
+                url: '/Groups/EditRole',
+                data: { "Id": $('#Id').val(), "EditRolename": $('#EditRolename').val() },
+                success: function (response) {
+                    $('#EditRole').modal('hide');
+                    var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
+                    Toast.fire({ icon: 'success', title: 'Role Update Successfully..!' });
+                    getroles();
+                },
+                failure: function (response) {
+                    $('#result').html(response);
+                }
+            });
+        }
+    }
+    function saverolespages() {
+
+        var selectedname = [];
+        $('#Showrolespagescheckboxes input:checked').each(function () {
+            selectedname.push($(this).attr('name'));
+        });
+
+        var selectedid = [];
+        $('#Showrolespagescheckboxes input:checked').each(function () {
+            selectedid.push($(this).attr('id'));
+        });
+        $.ajax({
+            type: 'POST',
+            url: '/Groups/SaveRolesPages',
+            data: { "groupid": $('#groupid').val(), "groupname": $('#groupname').val(), "selectedid": selectedid, "selectedname": selectedname },
+            success: function (response) { 
+                $('#AssignRole').modal('hide');
+                var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
+                Toast.fire({ icon: 'success', title: 'Roles Add Successfully..!' });
+                $('input:checkbox').removeAttr('checked');
+                getroles();
+            },
+            failure: function (response) {
+                $('#result').html(response);
+            }
+        });
+    }
+</script>
+

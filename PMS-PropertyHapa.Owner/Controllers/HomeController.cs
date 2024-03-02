@@ -18,6 +18,13 @@ namespace PMS_PropertyHapa.Owner.Controllers
             return View();
         }
 
+
+        [HttpGet]
+        public IActionResult Settings()
+        {
+            return View();
+        }
+
         public IActionResult Privacy()
         {
             return View();

@@ -46,8 +46,8 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
         Task<PropertyTypeDto> GetSinglePropertyTypeAsync(int propertytypeId);
 
 
-
-
+        Task<bool> DeleteAssetAsync(int propertyId);
+        Task<bool> UpdateAssetAsync(AssetDTO asset);
 
 
         Task<List<PropertySubTypeDto>> GetAllPropertySubTypesAsync();

@@ -9,6 +9,8 @@ using PMS_PropertyHapa.Owner;
 using PMS_PropertyHapa.Owner.Services.IServices;
 using PMS_PropertyHapa.Owner.Services;
 using MagicVilla_Web.Services;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using PMS_PropertyHapa.Shared.Email;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +23,7 @@ builder.Services.AddScoped<ITokenProvider, TokenProvider>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddDistributedMemoryCache();
+builder.Services.AddTransient<IEmailSender, EmailSender>();
 // Add services to the container.
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddDistributedMemoryCache();
