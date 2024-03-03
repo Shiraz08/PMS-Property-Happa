@@ -479,10 +479,10 @@
 
 
 <script>
-    var currentStep = 1;
-    var totalSteps = 6;
+  
     $(document).ready(function () {
-      
+        var currentStep = 1;
+        var totalSteps = 6;
 
         function navigateToStep(step) {
             $('.step-section').hide();
@@ -495,264 +495,43 @@
             $('.f1-step').removeClass('active');
             $('#stepIndicator' + step).addClass('active');
 
+            // Toggle visibility of the 'Previous' button
             if (step === 1) {
                 $('.btn-previous').hide();
             } else {
                 $('.btn-previous').show();
             }
 
-            // Update button text and action without using 'onclick'
-            if (step == totalSteps) {
-                $('.btn-next').text('Submit').attr('type', 'submit').off('click').on('click', function (e) {
-                    // Prevent default form submission if you need to perform custom validation or AJAX submission
-                    e.preventDefault();
-                    // Call your form submission logic here, if custom action is required
-                    // submitForm();
+            // Adjust the 'Next' button text and action
+            if (step < totalSteps) {
+                $('.btn-next').show().text('Next').attr('type', 'button').off('click').on('click', function () {
+                    if (validateCurrentStep()) {
+                        navigateToStep(currentStep + 1);
+                    }
                 });
+                $('#submitForm').hide();
             } else {
-                $('.btn-next').text('Next').attr('type', 'button').off('click').on('click', function () {
-                    navigateToStep(currentStep + 1);
+                $('.btn-next').hide(); // Hide 'Next' button on the final step
+                $('#submitForm').show().text('Submit').off('click').on('click', function (e) {
+                    e.preventDefault(); // Prevent default form submission
+                    if (validateCurrentStep()) {
+                        submitForm(); // Custom form submission logic
+                    }
                 });
             }
         }
 
-        $('.btn-next').click(function () {
-            if (currentStep < totalSteps) {
-                if (validateCurrentStep()) {
-                    navigateToStep(currentStep + 1);
-                }
-            } else {
+       
 
-                $('#multiStepForm').submit();
-            }
-        });
+        navigateToStep(currentStep);
+
+
 
 
         $('.btn-previous').click(function () {
             if (currentStep > 1) {
                 navigateToStep(currentStep - 1);
             }
-        });
-
-        navigateToStep(1);
-
-        function displaySubtypes(type) {
-            var subtypesHtml = '';
-            if (type === 'residential') {
-                // Residential Subtypes
-                subtypesHtml = `
-                <div class="row">
-                    <div class="small-square-card-container">
-                        <div class="card property-subtype-card small-square-card" data-subtype="single-family">
-                            <div class="card-body text-center">
-                                <i class="fa fa-home fa-2x"></i>
-                                <h5 class="card-title mt-2">Single Family</h5>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="small-square-card-container">
-                        <div class="card property-subtype-card small-square-card" data-subtype="multi-family">
-                            <div class="card-body text-center">
-                                <i class="fa fa-building fa-2x"></i>
-                                <h5 class="card-title mt-2">Multi Family</h5>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="small-square-card-container">
-                        <div class="card property-subtype-card small-square-card" data-subtype="condo">
-                            <div class="card-body text-center">
-                                <i class="fa fa-building-o fa-2x"></i>
-                                <h5 class="card-title mt-2">Condo</h5>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="small-square-card-container">
-                        <div class="card property-subtype-card small-square-card" data-subtype="townhome">
-                            <div class="card-body text-center">
-                                <i class="fa fa-home fa-2x"></i>
-                                <h5 class="card-title mt-2">Townhome</h5>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="small-square-card-container">
-                        <div class="card property-subtype-card small-square-card" data-subtype="other">
-                            <div class="card-body text-center">
-                                <i class="fa fa-building fa-2x"></i>
-                                <h5 class="card-title mt-2">Other</h5>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            } else if (type === 'commercial') {
-                // Commercial Subtypes
-                subtypesHtml = `
-                <div class="row">
-                    <div class="small-square-card-container">
-                        <div class="card property-subtype-card small-square-card" data-subtype="industrial">
-                            <div class="card-body text-center">
-                                <i class="fa fa-industry fa-2x"></i>
-                                <h5 class="card-title">Industrial</h5>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="small-square-card-container">
-                        <div class="card property-subtype-card small-square-card" data-subtype="office">
-                            <div class="card-body text-center">
-                                <i class="fa fa-building fa-2x"></i>
-                                <h5 class="card-title">Office</h5>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="small-square-card-container">
-                        <div class="card property-subtype-card small-square-card" data-subtype="retail">
-                            <div class="card-body text-center">
-                                <i class="fa fa-shopping-bag fa-2x"></i>
-                                <h5 class="card-title">Retail</h5>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="small-square-card-container">
-                        <div class="card property-subtype-card small-square-card" data-subtype="shopping-center">
-                            <div class="card-body text-center">
-                                <i class="fa fa-shopping-cart fa-2x"></i>
-                                <h5 class="card-title">Shopping Center</h5>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="small-square-card-container">
-                        <div class="card property-subtype-card small-square-card" data-subtype="storage">
-                            <div class="card-body text-center">
-                                <i class="fa fa-warehouse fa-2x"></i>
-                                <h5 class="card-title">Storage</h5>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="small-square-card-container">
-                        <div class="card property-subtype-card small-square-card" data-subtype="other">
-                            <div class="card-body text-center">
-                                <i class="fa fa-building fa-2x"></i>
-                                <h5 class="card-title">Other</h5>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            }
-            $('#subtypeSelection').html(subtypesHtml).show();
-
-            $('.property-subtype-card').off('click').on('click', function () {
-                $('.property-subtype-card').removeClass('selected');
-                $(this).addClass('selected');
-            });
-
-            var unitFieldsHtml = '';
-            if (type === 'residential') {
-
-                unitFieldsHtml = `
-                       <div class="row">
-                <div class="col-md-4">
-                    <div class="mb-2">
-                        <label class="sr-only" for="unitName">Unit Name</label>
-                        <input class="form-control" id="unitName" type="text" name="unitName" placeholder="Unit Name" required="">
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="mb-2">
-                        <label class="sr-only" for="beds">Beds</label>
-                        <input class="form-control" id="beds" type="number" name="beds" placeholder="Beds" required="">
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="mb-2">
-                        <label class="sr-only" for="bath">Bath</label>
-                        <input class="form-control" id="bath" type="number" name="bath" placeholder="Bath" required="">
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="mb-2">
-                        <label class="sr-only" for="size">Size</label>
-                        <input class="form-control" id="size" type="number" name="size" placeholder="Size" required="">
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="mb-2">
-                        <label class="sr-only" for="rent">Rent</label>
-                        <input class="form-control" id="rent" type="number" name="rent" placeholder="Rent" required="">
-                    </div>
-                </div>
-            </div>
-
-                `;
-            } else if (type === 'commercial') {
-                // Commercial unit fields
-                unitFieldsHtml = `
-                                <div class="row">
-                    <div class="col-md-4">
-                        <div class="mb-2">
-                            <label class="sr-only" for="unitName">Unit Name</label>
-                            <input class="form-control" id="unitName" type="text" name="unitName" placeholder="Unit Name" required="">
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="mb-2">
-                            <label class="sr-only" for="beds">Beds</label>
-                            <input class="form-control" id="beds" type="number" name="beds" placeholder="Beds" required="">
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="mb-2">
-                            <label class="sr-only" for="bath">Bath</label>
-                            <input class="form-control" id="bath" type="number" name="bath" placeholder="Bath" required="">
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="mb-2">
-                            <label class="sr-only" for="size">Size</label>
-                            <input class="form-control" id="size" type="number" name="size" placeholder="Size" required="">
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="mb-2">
-                            <label class="sr-only" for="rent">Rent</label>
-                            <input class="form-control" id="rent" type="number" name="rent" placeholder="Rent" required="">
-                        </div>
-                    </div>
-                </div>
-                `;
-            }
-
-            $('#unitFields').html(unitFieldsHtml);
-
-        }
-
-
-
-        $('.property-type-card').click(function () {
-            var type = $(this).data('type');
-
-            $('.property-type-card').removeClass('selected');
-            $(this).addClass('selected');
-            displaySubtypes(type);
-        });
-
-        $(document).on('click', '.property-subtype-card', function () {
-
-            $('.property-subtype-card').removeClass('selected');
-
-            $(this).addClass('selected');
-        });
-
-    
-        $('.property-type-card').click(function () {
-            var type = $(this).data('type');
-            $('#SelectedPropertyType').val(type);
-            // Rest of the code to display subtypes
-        });
-
-        $(document).on('click', '.property-subtype-card', function () {
-            var subtype = $(this).data('subtype');
-            $('#SelectedSubtype').val(subtype);
         });
 
 
@@ -822,190 +601,399 @@
         }
 
 
-
-     
-    });
-
-    $('.bank-account-option').click(function () {
-        var option = $(this).data('option');
-        $('#SelectedBankAccountOption').val(option);
-    });
-
-    $('.reserve-funds-card').click(function () {
-        var option = $(this).data('option');
-        $('#SelectedReserveFundsOption').val(option);
-    });
-
-    $('.ownership-card').click(function () {
-        var option = $(this).data('option');
-        $('#SelectedOwnershipOption').val(option);
-    });
-
-
-
-
-    $('.reserve-funds-card').click(function () {
-
-        $('.reserve-funds-card').removeClass('selected');
-
-        $(this).addClass('selected');
-    });
+        function submitForm() {
+            debugger;
+            if (currentStep === totalSteps) {
+                var formData = collectFormData();
+                $.ajax({
+                    url: '/Assets/AddAsset',
+                    type: 'POST',
+                    contentType: 'application/json; charset=utf-8',
+                    data: JSON.stringify(formData),
+                    success: function (response) {
+                        console.log("Success:", response);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error:", error);
+                    }
+                });
+            } else {
+                console.error("Attempted to submit form at step " + currentStep + " which is not the final step.");
+            }
+        }
 
 
+        
 
-    $(document).ready(function () {
+        function collectFormData() {
+            var formData = {
+                SelectedPropertyType: $('#SelectedPropertyType').val(),
+                SelectedSubtype: $('#SelectedSubtype').val(),
+                Street1: $('#street1').val(),
+                Street2: $('#street2').val(),
+                City: $('#city').val(),
+                State: $('#state').val(),
+                Country: $('#country').val(),
+                Zipcode: $('#zipcode').val(),
+                Units: collectUnitsData(),
+                SelectedBankAccountOption: $('#SelectedBankAccountOption').val(),
+                SelectedReserveFundsOption: $('#SelectedReserveFundsOption').val(),
+                SelectedOwnershipOption: $('#SelectedOwnershipOption').val(),
+                OwnerName: $('#OwnerName').val(),
+                OwnerCompanyName: $('#OwnerCompanyName').val(),
+                OwnerAddress: $('#OwnerAddress').val(),
+                OwnerStreet: $('#OwnerStreet').val(),
+                OwnerZipcode: $('#OwnerZipcode').val(),
+                OwnerCity: $('#OwnerCity').val(),
+                OwnerCountry: $('#OwnerCountry').val(),
+            };
+
+            return formData;
+        }
+
+
+
+        navigateToStep(currentStep);
+
+        function displaySubtypes(type) {
+            var subtypesHtml = '';
+            if (type === 'residential') {
+                // Residential Subtypes
+                subtypesHtml = `
+                            <div class="row">
+                                <div class="small-square-card-container">
+                                    <div class="card property-subtype-card small-square-card" data-subtype="single-family">
+                                        <div class="card-body text-center">
+                                            <i class="fa fa-home fa-2x"></i>
+                                            <h5 class="card-title mt-2">Single Family</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="small-square-card-container">
+                                    <div class="card property-subtype-card small-square-card" data-subtype="multi-family">
+                                        <div class="card-body text-center">
+                                            <i class="fa fa-building fa-2x"></i>
+                                            <h5 class="card-title mt-2">Multi Family</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="small-square-card-container">
+                                    <div class="card property-subtype-card small-square-card" data-subtype="condo">
+                                        <div class="card-body text-center">
+                                            <i class="fa fa-building-o fa-2x"></i>
+                                            <h5 class="card-title mt-2">Condo</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="small-square-card-container">
+                                    <div class="card property-subtype-card small-square-card" data-subtype="townhome">
+                                        <div class="card-body text-center">
+                                            <i class="fa fa-home fa-2x"></i>
+                                            <h5 class="card-title mt-2">Townhome</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="small-square-card-container">
+                                    <div class="card property-subtype-card small-square-card" data-subtype="other">
+                                        <div class="card-body text-center">
+                                            <i class="fa fa-building fa-2x"></i>
+                                            <h5 class="card-title mt-2">Other</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+            } else if (type === 'commercial') {
+                // Commercial Subtypes
+                subtypesHtml = `
+                            <div class="row">
+                                <div class="small-square-card-container">
+                                    <div class="card property-subtype-card small-square-card" data-subtype="industrial">
+                                        <div class="card-body text-center">
+                                            <i class="fa fa-industry fa-2x"></i>
+                                            <h5 class="card-title">Industrial</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="small-square-card-container">
+                                    <div class="card property-subtype-card small-square-card" data-subtype="office">
+                                        <div class="card-body text-center">
+                                            <i class="fa fa-building fa-2x"></i>
+                                            <h5 class="card-title">Office</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="small-square-card-container">
+                                    <div class="card property-subtype-card small-square-card" data-subtype="retail">
+                                        <div class="card-body text-center">
+                                            <i class="fa fa-shopping-bag fa-2x"></i>
+                                            <h5 class="card-title">Retail</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="small-square-card-container">
+                                    <div class="card property-subtype-card small-square-card" data-subtype="shopping-center">
+                                        <div class="card-body text-center">
+                                            <i class="fa fa-shopping-cart fa-2x"></i>
+                                            <h5 class="card-title">Shopping Center</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="small-square-card-container">
+                                    <div class="card property-subtype-card small-square-card" data-subtype="storage">
+                                        <div class="card-body text-center">
+                                            <i class="fa fa-warehouse fa-2x"></i>
+                                            <h5 class="card-title">Storage</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="small-square-card-container">
+                                    <div class="card property-subtype-card small-square-card" data-subtype="other">
+                                        <div class="card-body text-center">
+                                            <i class="fa fa-building fa-2x"></i>
+                                            <h5 class="card-title">Other</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+            }
+            $('#subtypeSelection').html(subtypesHtml).show();
+
+            $('.property-subtype-card').off('click').on('click', function () {
+                $('.property-subtype-card').removeClass('selected');
+                $(this).addClass('selected');
+            });
+
+            var unitFieldsHtml = '';
+            if (type === 'residential') {
+
+                unitFieldsHtml = `
+                                   <div class="row">
+                            <div class="col-md-4">
+                                <div class="mb-2">
+                                    <label class="sr-only" for="unitName">Unit Name</label>
+                                    <input class="form-control" id="unitName" type="text" name="unitName" placeholder="Unit Name" required="">
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="mb-2">
+                                    <label class="sr-only" for="beds">Beds</label>
+                                    <input class="form-control" id="beds" type="number" name="beds" placeholder="Beds" required="">
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="mb-2">
+                                    <label class="sr-only" for="bath">Bath</label>
+                                    <input class="form-control" id="bath" type="number" name="bath" placeholder="Bath" required="">
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="mb-2">
+                                    <label class="sr-only" for="size">Size</label>
+                                    <input class="form-control" id="size" type="number" name="size" placeholder="Size" required="">
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="mb-2">
+                                    <label class="sr-only" for="rent">Rent</label>
+                                    <input class="form-control" id="rent" type="number" name="rent" placeholder="Rent" required="">
+                                </div>
+                            </div>
+                        </div>
+
+                            `;
+            } else if (type === 'commercial') {
+                // Commercial unit fields
+                unitFieldsHtml = `
+                                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="mb-2">
+                                        <label class="sr-only" for="unitName">Unit Name</label>
+                                        <input class="form-control" id="unitName" type="text" name="unitName" placeholder="Unit Name" required="">
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="mb-2">
+                                        <label class="sr-only" for="beds">Beds</label>
+                                        <input class="form-control" id="beds" type="number" name="beds" placeholder="Beds" required="">
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="mb-2">
+                                        <label class="sr-only" for="bath">Bath</label>
+                                        <input class="form-control" id="bath" type="number" name="bath" placeholder="Bath" required="">
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="mb-2">
+                                        <label class="sr-only" for="size">Size</label>
+                                        <input class="form-control" id="size" type="number" name="size" placeholder="Size" required="">
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="mb-2">
+                                        <label class="sr-only" for="rent">Rent</label>
+                                        <input class="form-control" id="rent" type="number" name="rent" placeholder="Rent" required="">
+                                    </div>
+                                </div>
+                            </div>
+                            `;
+            }
+
+            $('#unitFields').html(unitFieldsHtml);
+
+        }
+
+
+
+        $('.property-type-card').click(function () {
+            var type = $(this).data('type');
+
+            $('.property-type-card').removeClass('selected');
+            $(this).addClass('selected');
+            displaySubtypes(type);
+        });
+
+        $(document).on('click', '.property-subtype-card', function () {
+
+            $('.property-subtype-card').removeClass('selected');
+
+            $(this).addClass('selected');
+        });
+
+
+        $('.property-type-card').click(function () {
+            var type = $(this).data('type');
+            $('#SelectedPropertyType').val(type);
+            // Rest of the code to display subtypes
+        });
+
+        $(document).on('click', '.property-subtype-card', function () {
+            var subtype = $(this).data('subtype');
+            $('#SelectedSubtype').val(subtype);
+        });
+
+
+
+
+
+
+        $('.bank-account-option').click(function () {
+            var option = $(this).data('option');
+            $('#SelectedBankAccountOption').val(option);
+        });
+
+        $('.reserve-funds-card').click(function () {
+            var option = $(this).data('option');
+            $('#SelectedReserveFundsOption').val(option);
+        });
+
+        $('.ownership-card').click(function () {
+            var option = $(this).data('option');
+            $('#SelectedOwnershipOption').val(option);
+        });
+
+
+
+
+        $('.reserve-funds-card').click(function () {
+
+            $('.reserve-funds-card').removeClass('selected');
+
+            $(this).addClass('selected');
+        });
+
 
         $('.bank-account-option').click(function () {
 
             $('.bank-account-option').removeClass('selected');
             $(this).addClass('selected');
         });
-    });
-
-
-    $('.ownership-card').click(function () {
-
-        $('.ownership-card').removeClass('selected');
-
-        $(this).addClass('selected');
-
-        if ($(this).data('option') === 'owned-by-someone-else') {
-            $('#addOwnerSection').show();
-        } else {
-            $('#addOwnerSection').hide();
-        }
-    });
-
-    $('.add-owner-card').click(function () {
-        $('#addOwnerModal').modal('show');
-    });
-
-
-    $('.close').click(function () {
-        $('#addOwnerModal').modal('hide');
-    });
-
-    $('.closebutton').click(function () {
-        $('#addOwnerModal').modal('hide');
-    });
 
 
 
-    $('#closeModal').click(function () {
-        $('#addOwnerModal').modal('hide');
-    });
+        $('.ownership-card').click(function () {
 
-    $('#addOwnerModal').on('click', function (event) {
-        if ($(event.target).is('.modal')) {
-            $('#addOwnerModal').modal('hide');
-        }
-    });
+            $('.ownership-card').removeClass('selected');
 
+            $(this).addClass('selected');
 
-    function collectFormData() {
-        var units = collectUnitsData(); 
-
-        var assetDTO = {
-            SelectedPropertyType: $('#SelectedPropertyType').val(),
-            SelectedSubtype: $('#SelectedSubtype').val(),
-            Street1: $('#street1').val(),
-            Street2: $('#street2').val(),
-            City: $('#city').val(),
-            State: $('#state').val(),
-            Country: $('#country').val(),
-            Zipcode: $('#zipcode').val(),
-            Units: units,
-            SelectedBankAccountOption: $('#SelectedBankAccountOption').val(),
-            SelectedReserveFundsOption: $('#SelectedReserveFundsOption').val(),
-            SelectedOwnershipOption: $('#SelectedOwnershipOption').val(),
-            OwnerName: $('#OwnerName').val(),
-            OwnerCompanyName: $('#OwnerCompanyName').val(),
-            OwnerAddress: $('#OwnerAddress').val(),
-            OwnerStreet: $('#OwnerStreet').val(),
-            OwnerZipcode: $('#OwnerZipcode').val(),
-            OwnerCity: $('#OwnerCity').val(),
-            OwnerCountry: $('#OwnerCountry').val()
-        };
-
-        return assetDTO;
-    }
-
-
-
-    $('#submitForm').click(function (event) {
-        event.preventDefault();
-        debugger;
-        // Manually construct the JSON object from the form data
-        var formData = collectFormData();
-
-        if (currentStep === totalSteps) {
-            $.ajax({
-                url: '@Url.Action("AddAsset", "Assests")',
-                type: 'POST',
-                contentType: 'application/json; charset=utf-8',
-                data: JSON.stringify(formData),
-                success: function (response) {
-                    console.log("Success:", response);
-                    window.location.href = '/SuccessPage';
-                },
-                error: function (xhr, status, error) {
-                    console.error("Error:", error);
-                }
-            });
-
-        } else {
-            navigateToStep(currentStep + 1);
-        }
-    });
-
-
-
-
-
-    function collectUnitsData() {
-        var units = [];
-        $('#unitFieldsContainer .unit-fields').each(function () {
-            var unit = {
-                UnitName: $(this).find('[name="unitName"]').val(),
-                Beds: parseInt($(this).find('[name="beds"]').val(), 10),
-                Bath: parseInt($(this).find('[name="bath"]').val(), 10),
-                Size: parseInt($(this).find('[name="size"]').val(), 10),
-                Rent: parseFloat($(this).find('[name="rent"]').val())
-            };
-            units.push(unit);
+            if ($(this).data('option') === 'owned-by-someone-else') {
+                $('#addOwnerSection').show();
+            } else {
+                $('#addOwnerSection').hide();
+            }
         });
-        return units;
-    }
+
+        $('.add-owner-card').click(function () {
+            $('#addOwnerModal').modal('show');
+        });
+
+
+        $('.close').click(function () {
+            $('#addOwnerModal').modal('hide');
+        });
+
+        $('.closebutton').click(function () {
+            $('#addOwnerModal').modal('hide');
+        });
 
 
 
+        $('#closeModal').click(function () {
+            $('#addOwnerModal').modal('hide');
+        });
 
-    $(document).ready(function () {
+        $('#addOwnerModal').on('click', function (event) {
+            if ($(event.target).is('.modal')) {
+                $('#addOwnerModal').modal('hide');
+            }
+        });
+
+
+
+        function collectUnitsData() {
+            var units = [];
+            $('#unitFieldsContainer').each(function () {
+                var unit = {
+                    UnitName: $(this).find('.unitName').val(),
+                    Beds: parseInt($(this).find('.beds').val(), 10),
+                    Bath: parseInt($(this).find('.bath').val(), 10),
+                    Size: parseInt($(this).find('.size').val(), 10),
+                    Rent: parseFloat($(this).find('.rent').val())
+                };
+                units.push(unit);
+            });
+            return units;
+        }
+
+
 
         function addUnitFields() {
             var unitIndex = $('#unitFieldsContainer .unit-fields').length + 1;
             var unitFieldsHtml = `
-                    <div class="unit-fields" id="unitFields${unitIndex}">
-                        <hr>
-                        <h5>Unit ${unitIndex}</h5>
-                        <div class="form-row">
-                            <div class="col">
-                                <input type="text" class="form-control" placeholder="Unit Name" name="unitName[]">
-                            </div>
-                            <div class="col">
-                                <input type="number" class="form-control" placeholder="Beds" name="beds[]">
-                            </div>
-                            <div class="col">
-                                <input type="number" class="form-control" placeholder="Bath" name="bath[]">
-                            </div>
-                            <div class="col">
-                                <input type="number" class="form-control" placeholder="Size" name="size[]">
-                            </div>
-                            <div class="col">
-                                <input type="number" class="form-control" placeholder="Rent" name="rent[]">
-                            </div>
-                        </div>
-                    </div>`;
+                                <div class="unit-fields" id="unitFields${unitIndex}">
+                                    <hr>
+                                    <h5>Unit ${unitIndex}</h5>
+                                    <div class="form-row">
+                                        <div class="col">
+                                            <input type="text" class="form-control" placeholder="Unit Name" name="unitName[]">
+                                        </div>
+                                        <div class="col">
+                                            <input type="number" class="form-control" placeholder="Beds" name="beds[]">
+                                        </div>
+                                        <div class="col">
+                                            <input type="number" class="form-control" placeholder="Bath" name="bath[]">
+                                        </div>
+                                        <div class="col">
+                                            <input type="number" class="form-control" placeholder="Size" name="size[]">
+                                        </div>
+                                        <div class="col">
+                                            <input type="number" class="form-control" placeholder="Rent" name="rent[]">
+                                        </div>
+                                    </div>
+                                </div>`;
             $('#unitFieldsContainer').append(unitFieldsHtml);
         }
         addUnitFields();
@@ -1013,14 +1001,18 @@
         $('#addAnotherUnit').click(function () {
             addUnitFields();
         });
+
+
+
+        $('#saveOwner').click(function () {
+            console.log("Saving owner...");
+
+            $('#addOwnerModal').modal('hide');
+        });
+
+
+        $('#submitForm').hide();
+
     });
-
-
-    $('#saveOwner').click(function () {
-        console.log("Saving owner...");
-
-        $('#addOwnerModal').modal('hide');
-    });
-
 
 </script>

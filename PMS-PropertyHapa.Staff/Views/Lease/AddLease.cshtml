@@ -1,8 +1,1047 @@
-﻿
+﻿@using PMS_PropertyHapa.Models.DTO;
+@model AssetDTO
+
 @{
     ViewData["Title"] = "AddLease";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>AddLease</h1>
+
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+    <style>
+
+        .lime-underline {
+            height: 4px;
+            background-color: black;
+            width: 100%;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+
+        .thick-black-underline {
+            height: 2px; 
+            background-color: black;
+            width: 100%;
+            margin: 20px 0;
+        }
+
+        #step2 .row {
+            flex-wrap: nowrap; 
+        }
+
+        #step2 .col-md-6 {
+            flex: 0 0 50%; 
+            max-width: 50%;
+        }
+
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .small-square-card-container {
+            margin: auto;
+            flex: 0 0 18%;
+            max-width: 18%; 
+            padding: 0 5px; 
+        }
+
+        .small-square-card,
+        .property-subtype-card {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            border-radius: 5px;
+            margin-top: 5px;
+            font-size: 0.8rem; 
+        }
+
+            .small-square-card::before,
+            .property-subtype-card::before {
+                content: '';
+                display: block;
+                padding-top: 100%; 
+            }
+
+            .small-square-card .card-body,
+            .property-subtype-card .card-body {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                text-align: center;
+            }
+
+            .small-square-card i,
+            .property-subtype-card i {
+                font-size: 1rem; 
+            }
+
+        .selected {
+            border: 3px solid #007bff;
+            background-color: #e9ecef;
+        }
+
+        @@media (max-width: 768px) {
+            .small-square-card-container {
+                flex: 0 0 100%;
+                max-width: 100%;
+                padding: 0 5px;
+                margin-bottom: 20px; 
+            }
+
+            .row {
+                gap: 5px; 
+            }
+
+            .small-square-card,
+            .property-subtype-card {
+                margin-top: 10px; 
+                font-size: 0.9rem; 
+            }
+
+            .f1-steps {
+                flex-direction: column; 
+            }
+
+            .f1-step-icon {
+                font-size: 1rem;
+            }
+
+            .card-body {
+                padding: 10px;
+            }
+
+            .form-navigation,
+            .modal-footer {
+                flex-direction: column-reverse;
+            }
+
+            .btn-next,
+            .btn-previous,
+            .closebutton,
+            #saveOwner {
+                width: 100%;
+                margin-top: 10px;
+            }
+
+            .modal-dialog {
+                margin: 20px;
+            }
+
+            .modal-content {
+                padding: 10px;
+            }
+            @@media (max-width: 768px) {
+                .row {
+                    justify-content: center; 
+                }
+                @@media (max-width: 768px) and (min-width: 576px) {
+                    .row {
+                        justify-content: space-between; 
+                    }
+                }
+                @@media (max-width: 576px) {
+                    .row {
+                        justify-content: center; 
+                    }
+                }
+            }
+        }
+
+
+        
+@@media (max-width: 768px) {
+    .f1-progress {
+        display: none;
+    }
+    .small-square-card-container, .row {
+        flex: 0 0 100%; 
+        max-width: 100%;
+        padding: 0 15px; 
+        margin-bottom: 20px; 
+    }
+    .row {
+        gap: 5px; 
+    }
+    .small-square-card, .property-subtype-card {
+        margin-top: 10px;
+        font-size: 0.9rem; 
+    }
+    .form-navigation, .modal-footer {
+        flex-direction: column-reverse;
+    }
+    .btn-next, .btn-previous, .closebutton, #saveOwner {
+        width: 100%;
+        margin-top: 10px;
+    }
+    .modal-dialog {
+        margin: 20px;
+    }
+    .modal-content {
+        padding: 10px;
+    }
+}
+
+
+    </style>
+
+
+
+</head>
+
+<!-- Page Sidebar Ends-->
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row align-items-center justify-content-between">
+                <!-- Adjusted for alignment and distribution -->
+                <div class="col-auto">
+                    <!-- col-auto adjusts the width to its content -->
+                    <h3>Add New Lease</h3>
+                </div>
+                <div class="col-auto">
+                    <!-- col-auto adjusts the width to its content -->
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb mb-0">
+                            <!-- mb-0 removes the bottom margin -->
+                            <li class="breadcrumb-item">
+                                <a href="index.html">
+                                    <i data-feather="home"></i>
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item">Lease</li>
+                            <li class="breadcrumb-item active" aria-current="page">Create</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header pb-0">
+                    </div>
+                    <div class="card-body">
+                        <form class="f1" method="post" id="multiStepForm">
+                            <div class="f1-steps" style="display: flex; justify-content: space-between;">
+                                <div class="f1-progress" style="position: absolute; width: 100%; bottom: 0;">
+                                    <div class="f1-progress-line" id="progressLine">
+                                        <div class="f1-progress-indicator" style="width: 0%; background-color: red; height: 100%;"></div>
+                                    </div>
+
+                                </div>
+                                <div class="f1-step active" id="stepIndicator1" style="flex: 1; text-align: center;">
+                                    <div class="f1-step-icon"><i>1</i></div>
+                                    <p>Overview</p>
+                                </div>
+                                <div class="f1-step active" id="stepIndicator2" style="flex: 1; text-align: center;">
+                                    <div class="f1-step-icon"><i>2</i></div>
+                                    <p>Tenants</p>
+                                </div>
+                                <div class="f1-step active" id="stepIndicator3" style="flex: 1; text-align: center;">
+                                    <div class="f1-step-icon"><i>3</i></div>
+                                    <p>Rent</p>
+                                </div>
+                                <div class="f1-step active" id="stepIndicator4" style="flex: 1; text-align: center;">
+                                    <div class="f1-step-icon"><i>4</i></div>
+                                    <p>Deposit</p>
+                                </div>
+                                <div class="f1-step active" id="stepIndicator5" style="flex: 1; text-align: center;">
+                                    <div class="f1-step-icon"><i>5</i></div>
+                                    <p>Late Fees</p>
+                                </div>
+                                <div class="f1-step" id="stepIndicator6" style="flex: 1; text-align: center;">
+                                    <div class="f1-step-icon"><i>6</i></div>
+                                    <p>Status</p>
+                                </div>
+                            </div>
+                            <fieldset id="step1" class="step-section active">
+                                <div class="container">
+                                    <h3 class="text-center my-4">New Lease</h3>
+
+                                    <div class="d-flex flex-column align-items-center">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="propertyDropdown" class="form-label">Choose Property</label>
+                                            <select id="propertyDropdown" class="form-select">
+                                                <!-- Random property options -->
+                                                <option value="property1">Property 1</option>
+                                                <option value="property2">Property 2</option>
+                                                <option value="property3">Property 3</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-md-6 mb-3">
+                                            <label for="unitDropdown" class="form-label">Choose Units</label>
+                                            <select id="unitDropdown" class="form-select">
+                                                <!-- Random unit options -->
+                                                <option value="unit1">Unit 1</option>
+                                                <option value="unit2">Unit 2</option>
+                                                <option value="unit3">Unit 3</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="thick-black-underline w-100 my-3"></div>
+
+                                        <h4 class="text-center my-3">Lease Terms</h4>
+                                        <div class="d-flex flex-wrap justify-content-center">
+                                            <!-- Fixed Term Card -->
+                                            <div class="card m-2" style="width: 10rem; height: 10rem;" id="fixedTermCard">
+                                                <div class="card-body d-flex justify-content-center align-items-center">
+                                                    <h5 class="card-title text-center">Fixed Term</h5>
+                                                </div>
+                                            </div>
+                                            <!-- Month-to-Month Card -->
+                                            <div class="card m-2" style="width: 10rem; height: 10rem;" id="monthToMonthCard">
+                                                <div class="card-body d-flex justify-content-center align-items-center">
+                                                    <h5 class="card-title text-center">Month-to-Month</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="row">
+                                            <div class="d-flex justify-content-between align-items-center w-100 my-3">
+                                                <div class="form-group w-40 pr-1">
+                                                    <label for="startDate">Start Date</label>
+                                                    <input type="date" id="startDate" class="form-control">
+                                                </div>
+
+                                                <div class="form-group w-40 pl-1">
+                                                    <label for="endDate">End Date</label>
+                                                    <input type="date" id="endDate" class="form-control">
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+
+                                        <div class="custom-control custom-switch my-3">
+                                            <input type="checkbox" class="custom-control-input" id="customSwitch1">
+                                            <label class="custom-control-label" for="customSwitch1">Roll over to month to month at the end of the term</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+
+
+                            <fieldset id="step2" class="step-section">
+                                <!-- ...existing code... -->
+                                <div class="container my-4">
+                                    <div class="d-flex justify-content-center">
+                                        <div class="card" style="width: 10rem; height: 10rem; cursor: pointer;" id="addTenantCard" data-toggle="modal" data-target="#addTenantModal">
+                                            <div class="card-body d-flex justify-content-center align-items-center flex-column">
+                                                <i class="fa fa-plus fa-2x"></i>
+                                                <p class="card-title mt-2">Add Tenant</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- ...existing code... -->
+                            </fieldset>
+
+
+
+
+                            <fieldset id="step3" class="step-section">
+                                <h2 class="text-center mb-5">Rent Charges</h2>
+                                <div class="container charge-section">
+                                    <div class="text-center">
+                                        <hr class="my-4 mb-2 mt-2" style="width: 100%; border-top: 2px solid #000;" />
+
+                                        <p>When do you want to start charging rent?</p>
+                                        <input type="date" class="form-control w-25 d-inline-block mb-3" id="firstRentDate">
+
+                                        <p>How often do you charge rent?</p>
+                                        <select class="form-control w-25 d-inline-block mb-3" id="rentFrequency">
+                                            <option value="" disabled selected>Please select a value</option>
+                                            <option value="daily">Daily</option>
+                                            <option value="weekly">Weekly</option>
+                                            <option value="monthly" selected>Monthly</option>
+                                        </select>
+
+                                        <p>What are your rent charges?</p>
+                                        <div class="form-row d-flex flex-wrap justify-content-center mb-3">
+                                            <div class="row">
+                                                <div class="col-sm-3">
+                                                    <select class="form-control">
+                                                        <option value="" disabled selected hidden>Select</option>
+                                                        <option value="rental">Rental Income</option>
+                                                        <option value="storage">Storage Rent</option>
+                                                        <!-- Add more options here -->
+                                                    </select>
+                                                </div>
+                                                <div class="col-sm-3">
+                                                    <input type="text" class="form-control" placeholder="Add description">
+                                                </div>
+                                                <div class="col-sm-3">
+                                                    <!-- Adjusted from col-sm-3 to col-sm-4 for better alignment -->
+                                                    <input type="text" class="form-control" placeholder="Amount">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-2">
+                                                    <!-- Adjusted for alignment and to accommodate the button properly -->
+                                                    <button class="btn btn-danger" onclick="removeCharge(this)">×</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="text-center mb-3">
+                                    <button class="btn btn-primary" id="addAnotherCharge">Schedule Rent Increase</button>
+                                </div>
+                            </fieldset>
+
+                            <fieldset id="step4" class="step-section">
+                                <h4 class="text-center my-3">Security Funds</h4>
+                                <p class="text-center my-3">Will you be holding a security deposit on these lease?</p>
+                                <div class="d-flex flex-wrap justify-content-center">
+                                    <!-- Yes Card -->
+                                    <div class="card m-2" style="width: 10rem; height: 10rem;" id="yesSecurityFund">
+                                        <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                                            <i class="fas fa-check fa-2x"></i>
+                                            <h5 class="card-title text-center">Yes</h5>
+                                        </div>
+                                    </div>
+                                    <!-- No Card -->
+                                    <div class="card m-2" style="width: 10rem; height: 10rem;" id="noSecurityFund">
+                                        <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                                            <i class="fas fa-times fa-2x"></i>
+                                            <h5 class="card-title text-center">No</h5>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex flex-wrap justify-content-center">
+                                    <div id="additionalDataSection" style="display: none;">
+                                        <div class="row justify-content-center">
+                                            <div class="col-sm-12 text-center">
+                                                <p>Tell us more about the security deposits you are holding</p>
+                                                <input type="date" class="form-control w-25 d-inline-block mb-3" id="firstRentDate">
+                                            </div>
+                                        </div>
+                                        <div class="deposit-details-container">
+                                            <div class="row deposit-detail">
+                                                <div class="col-sm-4">
+                                                    <p class="mb-1">What is this for</p>
+                                                    <select class="form-control">
+                                                        <option value="" disabled selected hidden>Select</option>
+                                                        <option value="rental">Accounts Payable</option>
+                                                        <option value="storage">Storage Rent</option>
+                                                        <!-- Add more options here -->
+                                                    </select>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <p class="mb-1">Add description</p>
+                                                    <input type="text" class="form-control" placeholder="Add description">
+                                                </div>
+                                                <div class="col-sm-3">
+                                                    <p class="mb-1">Amount</p>
+                                                    <input type="text" class="form-control" placeholder="Amount">
+                                                </div>
+                                                <div class="col-sm-1">
+                                                    <button type="button" class="btn-sm btn-remove-row btn btn-danger">&times;</button>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="text-left my-3">
+                                            <div class="row">
+                                                <div class="col-12 d-flex justify-content-start ml-3">
+                                                    <button class="btn btn-primary" id="addDepositDetail">+</button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                            <div id="step5" class="step-section">
+                                <h4 class="text-center my-3">Late Fees</h4>
+                                <p class="text-center my-3">Do you charge late fees for late rent?</p>
+                                <div class="d-flex flex-wrap justify-content-center">
+                                    <!-- Yes Card -->
+                                    <div class="card m-2" style="width: 10rem; height: 10rem; cursor:pointer;" id="yesLateFees">
+                                        <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                                            <i class="fas fa-check fa-2x"></i>
+                                            <h5 class="card-title text-center">Yes</h5>
+                                        </div>
+                                    </div>
+                                    <!-- No Card -->
+                                    <div class="card m-2" style="width: 10rem; height: 10rem; cursor:pointer;" id="noLateFees">
+                                        <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                                            <i class="fas fa-times fa-2x"></i>
+                                            <h5 class="card-title text-center">No</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="lateFeesOptions" class="mt-4" style="display: none;">
+                                    <div class="container">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="lateFeePolicy" id="usePropertyPolicy" value="usePropertyPolicy">
+                                                    <label class="form-check-label" for="usePropertyPolicy">
+                                                        Use property late fees policy
+                                                    </label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="lateFeePolicy" id="specifyPolicy" value="specifyPolicy">
+                                                    <label class="form-check-label" for="specifyPolicy">
+                                                        Specify late fees policy for this lease
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="specifyPolicyFields" style="display: none;" class="mb-4">
+                                        <div class="row justify-content-center mt-3">
+                                            <div class="col-sm-3">
+                                                <select class="form-control">
+                                                    <option value="" disabled selected hidden>Select</option>
+                                                    <option value="rental">Accounts Payable</option>
+                                                    <option value="storage">Storage Rent</option>
+                                                    <!-- Add more options here -->
+                                                </select>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <input type="text" class="form-control" placeholder="Description" id="description">
+                                            </div>
+                                            <div class="col-md-3">
+                                                <input type="text" class="form-control" placeholder="Amount" id="amount">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+
+
+
+                            <fieldset id="step6" class="step-section">
+                                <h4 class="text-center my-3">Define Your Lease</h4>
+                                <p class="text-center my-3">Is the Lease Signed?</p>
+                                <div class="d-flex flex-wrap justify-content-center">
+                                    <!-- Signed Card -->
+                                    <div class="card m-2" style="width: 10rem; height: 10rem; cursor:pointer;" id="Signed">
+                                        <div class="card-body d-flex justify-content-center align-items-center flex-column">
+                                            <i class="fas fa-signature fa-2x"></i>
+                                            <h5 class="card-title text-center">Signed</h5>
+                                        </div>
+                                    </div>
+                                    <!-- Not Signed Card -->
+                                    <div class="card m-2" style="width: 10rem; height: 10rem; cursor:pointer;" id="UnSigned">
+                                        <div class="card-body d-flex justify-content-center align-items-center flex-column">
+                                            <i class="fas fa-times fa-2x"></i>
+                                            <h5 class="card-title text-center">Not Signed</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+
+
+
+                            <!-- Hidden inputs for AssetDTO -->
+                            <input type="hidden" name="SelectedPropertyType" id="SelectedPropertyType">
+                            <input type="hidden" name="SelectedSubtype" id="SelectedSubtype">
+                            <input type="hidden" name="SelectedBankAccountOption" id="SelectedBankAccountOption">
+                            <input type="hidden" name="SelectedReserveFundsOption" id="SelectedReserveFundsOption">
+                            <input type="hidden" name="SelectedOwnershipOption" id="SelectedOwnershipOption">
+                            <!-- Hidden inputs for owner details -->
+                            <input type="hidden" name="OwnerName" id="OwnerName">
+                            <input type="hidden" name="OwnerCompanyName" id="OwnerCompanyName">
+                            <input type="hidden" name="OwnerAddress" id="OwnerAddress">
+                            <input type="hidden" name="OwnerStreet" id="OwnerStreet">
+                            <input type="hidden" name="OwnerZipcode" id="OwnerZipcode">
+                            <input type="hidden" name="OwnerCity" id="OwnerCity">
+                            <input type="hidden" name="OwnerCountry" id="OwnerCountry">
+
+
+
+                            <div class="form-navigation" style="text-align: right;">
+                                <button type="button" class="btn btn-secondary btn-previous" style="display:none;">Previous</button>
+                                <button type="button" id="submitForm" class="btn btn-primary btn-next">Next</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="row">
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+</div>
+
+
+<div id="addOwnerModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Owner</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="ownerForm">
+                    <div class="form-group">
+                        <label for="ownerName">Owner Name</label>
+                        <input type="text" class="form-control" id="ownerName" placeholder="Enter owner name">
+                    </div>
+                    <div class="form-group">
+                        <label for="ownerCompanyName">Owner Company Name</label>
+                        <input type="text" class="form-control" id="ownerCompanyName" placeholder="Enter company name">
+                    </div>
+                    <div class="form-group">
+                        <label for="ownerAddress">Owner Address</label>
+                        <input type="text" class="form-control" id="ownerAddress" placeholder="Enter address">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="ownerStreet">Street</label>
+                            <input type="text" class="form-control" id="ownerStreet" placeholder="Enter street">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="ownerZipcode">Zip Code</label>
+                            <input type="text" class="form-control" id="ownerZipcode" placeholder="Enter zipcode">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="ownerCity">City</label>
+                            <input type="text" class="form-control" id="ownerCity" placeholder="Enter city">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="ownerCountry">Country</label>
+                            <input type="text" class="form-control" id="ownerCountry" placeholder="Enter country">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary closebutton" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="saveOwner">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="addTenantModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="addTenantModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addTenantModalLabel">Add Tenant</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card" style="width: 100%; height: 100vh;">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h4 class="card-title">
+                                    <a href="/Tenant/AddTenant" class="btn btn-success mb-3">Add New Tenant</a>
+                                </h4>
+                            </div>
+                            <div class="card-body" style="overflow-y: auto;">
+                                <div class="table-responsive">
+                                    <table class="table" id="tenantsTable">
+                                        <thead>
+                                            <tr>
+                                                <th>First Name</th>
+                                                <th>Last Name</th>
+                                                <th>Email Address</th>
+                                                <th>Phone Number</th>
+                                                <th>Emergency Contact Info</th>
+                                                <th>Lease Agreement Id</th>
+                                                <th>Tenant Nationality</th>
+                                                <th>Gender</th>
+                                                <th>DOB</th>
+                                                <th>VAT</th>
+                                                <th>Legal Name</th>
+                                                <th>Account Name</th>
+                                                <th>Account Holder</th>
+                                                <th>Account IBAN</th>
+                                                <th>Account Swift</th>
+                                                <th>Account Bank</th>
+                                                <th>Account Currency</th>
+                                                <th>Address</th>
+                                                <th>Address2</th>
+                                                <th>Locality</th>
+                                                <th>Region</th>
+                                                <th>Postal Code</th>
+                                                <th>Country</th>
+                                                <th>Country Code</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        var currentStep = 1;
+        var maxSteps = 6;
+        updateProgressBar(currentStep); // Initialize the progress bar
+
+        // Next button click event
+        $('.btn-next').on('click', function () {
+            if (currentStep < maxSteps) {
+                currentStep++;
+                updateStepVisibility(currentStep);
+                updateProgressBar(currentStep);
+            }
+        });
+
+        // Previous button click event
+        $('.btn-previous').on('click', function () {
+            if (currentStep > 1) {
+                currentStep--;
+                updateStepVisibility(currentStep);
+                updateProgressBar(currentStep);
+            }
+        });
+
+        function updateStepVisibility(step) {
+            // Hide all sections and show the current step
+            $('.step-section').hide().eq(step - 1).show();
+            // Update active step indicator
+            $('.f1-step').removeClass('active').eq(step - 1).addClass('active');
+            // Hide the Previous button on the first step
+            if (step === 1) {
+                $('.btn-previous').hide();
+            } else {
+                $('.btn-previous').show();
+            }
+            // Change button text on the last step
+            if (step === maxSteps) {
+                $('#submitForm').text('Submit');
+            } else {
+                $('#submitForm').text('Next');
+            }
+        }
+
+        function updateProgressBar(step) {
+            // Update the progress bar width based on the current step
+            var progressPercentage = (step / maxSteps) * 100;
+            $('#progressLine .f1-progress-indicator').css('width', progressPercentage + '%');
+        }
+
+        // Initialize visibility and progress bar
+        updateStepVisibility(currentStep);
+    });
+
+
+
+
+
+
+
+
+
+    $(document).ready(function () {
+        // Click event for Fixed Term card
+        $('#fixedTermCard').on('click', function () {
+            // Toggle 'selected' class
+            $(this).toggleClass('selected');
+            // If the Month-to-Month card is selected, deselect it
+            $('#monthToMonthCard').removeClass('selected');
+        });
+
+        // Click event for Month-to-Month card
+        $('#monthToMonthCard').on('click', function () {
+            // Toggle 'selected' class
+            $(this).toggleClass('selected');
+            // If the Fixed Term card is selected, deselect it
+            $('#fixedTermCard').removeClass('selected');
+        });
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+    $(document).ready(function () {
+        // Function to initialize the DataTable
+        function initializeTenantsTable() {
+            var tenantId = localStorage.getItem('userId');
+            var ajaxUrl = `/Tenant/GetTenant/?tenantId=${encodeURIComponent(tenantId)}`;
+            $('#tenantsTable').DataTable({
+                "ajax": {
+                    "url": ajaxUrl,
+                    "type": "GET",
+                    "datatype": "json"
+                },
+                "deferRender": true,
+                "columns": [
+                    { "data": "FirstName", "width": "60%" },
+                    { "data": "LastName", "width": "60%" },
+                    { "data": "EmailAddress", "width": "60%" },
+                    { "data": "PhoneNumber", "width": "60%" },
+                    { "data": "EmergencyContactInfo", "width": "60%" },
+                    { "data": "LeaseAgreementId", "width": "60%" },
+                    { "data": "TenantNationality", "width": "60%" },
+                    { "data": "Gender", "width": "60%" },
+                    { "data": "DOB", "width": "60%" },
+                    { "data": "VAT", "width": "60%" },
+                    { "data": "LegalName", "width": "60%" },
+                    { "data": "Account_Name", "width": "60%" },
+                    { "data": "Account_Holder", "width": "60%" },
+                    { "data": "Account_IBAN", "width": "60%" },
+                    { "data": "Account_Swift", "width": "60%" },
+                    { "data": "Account_Bank", "width": "60%" },
+                    { "data": "Account_Currency", "width": "60%" },
+                    { "data": "Address", "width": "60%" },
+                    { "data": "Address2", "width": "60%" },
+                    { "data": "Locality", "width": "60%" },
+                    { "data": "Region", "width": "60%" },
+                    { "data": "PostalCode", "width": "60%" },
+                    { "data": "Country", "width": "60%" },
+                    { "data": "CountryCode", "width": "60%" },
+                    {
+                        "data": "tenantId",
+                        "render": function (data, type, row) {
+                            return `<div style="display: flex; align-items: center;">
+                                                                                <button onclick="editTenant(${row.TenantId})" class="btn btn-sm btn-success edit-tenant">Edit</button>
+                                                                                <button data-tenant-id="${row.TenantId}" style="margin-left: 10px;" class="btn btn-sm btn-danger delete-tenant">Delete</button>
+                                                                            </div>`;
+                        },
+
+                        "orderable": false
+                    }
+                ],
+                "language": {
+                    "emptyTable": "No data found, Please click on <b>Add New</b> Button"
+                },
+                "initComplete": function () {
+
+                    $('#tenantsTable thead th').css("min-width", "100px");
+                },
+                "order": []
+            });
+
+        }
+
+
+
+
+        $('#addTenantCard').on('click', function () {
+
+            if (!$.fn.DataTable.isDataTable('#tenantsTable')) {
+
+                initializeTenantsTable();
+            } else {
+
+                $('#tenantsTable').DataTable().ajax.reload();
+            }
+        });
+    });
+
+
+
+
+
+
+
+    function updateTenant(tenantId) {
+        window.location.href = `/Tenant/AddTenant?tenantId=${tenantId}`;
+    }
+
+    $('#tenantsTable').on('click', '.delete-tenant', function () {
+        var tenantId = $(this).data('tenant-id');
+        deleteTenant(tenantId);
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    $(document).ready(function () {
+        $('#addAnotherCharge').on('click', function (event) {
+            event.preventDefault();
+
+            var chargeSections = $('.charge-section');
+            var lastChargeSection = chargeSections.last();
+            var newChargeSection = lastChargeSection.clone(true, true);
+
+            newChargeSection.find('input').val('');
+            newChargeSection.find('select').prop('selectedIndex', 0);
+
+            if (chargeSections.length >= 1) {
+                $('<div class="lime-underline" style="height: 4px; background-color: lime; width: 100%; margin-bottom:20px"></div>').insertBefore(newChargeSection);
+            }
+
+            var deleteButton = $('<button type="button" class="btn btn-danger">×</button>')
+                .click(function (event) {
+                    event.preventDefault();
+                    $(this).closest('.charge-section').prev('.lime-underline').remove();
+                    $(this).closest('.charge-section').remove();
+                });
+
+            newChargeSection.find('.col-sm-2').html(deleteButton);
+
+            lastChargeSection.after(newChargeSection);
+        });
+
+        $('.charge-section').first().find('.btn-danger').hide();
+    });
+
+
+
+    $(document).ready(function () {
+        $('#yesSecurityFund').on('click', function () {
+            $(this).addClass('selected');
+            $('#noSecurityFund').removeClass('selected');
+            $('#additionalDataSection').show();
+        });
+
+        $('#noSecurityFund').on('click', function () {
+            $(this).addClass('selected');
+            $('#yesSecurityFund').removeClass('selected');
+            $('#additionalDataSection').hide();
+        });
+
+        if ($('#yesSecurityFund').hasClass('selected')) {
+            $('#additionalDataSection').show();
+        } else if ($('#noSecurityFund').hasClass('selected')) {
+            $('#additionalDataSection').hide();
+        }
+
+    });
+
+
+    $(document).ready(function () {
+        function updateRemoveButtonVisibility() {
+            if ($('.deposit-detail').length > 1) {
+                $('.deposit-detail .btn-remove-row').show();
+            } else {
+                $('.deposit-detail .btn-remove-row').hide();
+            }
+        }
+
+        $('#addDepositDetail').on('click', function (e) {
+            e.preventDefault();
+            var newRow = $('.deposit-detail:last').clone(true);
+            newRow.find('input').val('');
+            newRow.find('select').val('');
+            $('.deposit-details-container').append(newRow);
+            $('<div class="lime-underline"></div>').insertBefore(newRow);
+            updateRemoveButtonVisibility();
+        });
+
+        $('.deposit-details-container').on('click', '.btn-remove-row', function (e) {
+            e.preventDefault();
+            $(this).closest('.deposit-detail').prev('.lime-underline').remove();
+            $(this).closest('.deposit-detail').remove();
+            updateRemoveButtonVisibility();
+        });
+
+        updateRemoveButtonVisibility();
+    });
+
+
+
+    $(document).ready(function () {
+        $('#yesLateFees').on('click', function () {
+            $(this).addClass('selected');
+            $('#noLateFees').removeClass('selected');
+            $('#lateFeesOptions').show();
+        });
+
+        // Card click event for "No" selection
+        $('#noLateFees').on('click', function () {
+            $(this).addClass('selected');
+            $('#yesLateFees').removeClass('selected');
+            $('#lateFeesOptions').hide();
+            $('#specifyPolicyFields').hide();
+        });
+
+        $('input[type="radio"][name="lateFeePolicy"]').on('change', function () {
+            if ($('#specifyPolicy').is(':checked')) {
+                $('#specifyPolicyFields').show();
+            } else {
+                $('#specifyPolicyFields').hide();
+            }
+        });
+    });
+
+    $(document).ready(function () {
+        $('#Signed').on('click', function () {
+            $(this).addClass('selected');
+            $('#UnSigned').removeClass('selected');
+        });
+
+        // Card click event for "No" selection
+        $('#UnSigned').on('click', function () {
+            $(this).addClass('selected');
+            $('#Signed').removeClass('selected');
+        });
+
+    });
+
+</script>
+
+
+
+
 
