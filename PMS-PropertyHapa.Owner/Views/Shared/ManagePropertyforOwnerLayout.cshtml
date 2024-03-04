@@ -7,22 +7,6 @@
 @using Microsoft.Extensions.Configuration
 @inject IConfiguration Configuration
 
-@* @{
-    string displayName = "";
-    string imagePath = "";
-    var user = await UserManager.GetUserAsync(User);
-    if (user == null)
-    {
-        displayName = User.Identity.Name;
-        imagePath = "";
-    }
-    else
-    {
-        displayName = user.UserName;
-        imagePath = user.Picture;
-    }
-    var ImageURL = Configuration.GetSection("ImageURl")["URL"].ToString();
-} *@
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -37,9 +21,8 @@
     <meta name="keywords" content="">
     <meta name="author" content="">
 
-    <link rel="icon" href="" type="image/x-icon" id="Org_icon">
-    <link rel="shortcut icon" href="" type="image/x-icon" id="Org_iconshort">
-    <title>Staff Portal</title>
+    <link rel="shortcut icon" href="~/Dashboard/assets/images/logo/favicon-icon.png" type="image/x-icon">
+    <title>Owner Portal</title>
     <!-- Google font-->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
