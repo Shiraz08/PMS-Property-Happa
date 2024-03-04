@@ -72,7 +72,7 @@ namespace PMS_PropertyHapa.Controllers
 
                         if (result.Succeeded)
 
-                            if (await _userManager.IsInRoleAsync(appUser, "Owner Merchant Account"))
+                            if (await _userManager.IsInRoleAsync(appUser, "Owner"))
                             {
                                 var logo = await _context.TenantOrganizationInfo
                                               .AsNoTracking()

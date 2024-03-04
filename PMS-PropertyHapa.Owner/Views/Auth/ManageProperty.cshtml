@@ -3,9 +3,24 @@
     ViewData["Title"] = "ManageProperty";
     Layout = "~/Views/Shared/ManagePropertyforOwnerLayout.cshtml";
 }
-
 <div class="page-body">
-    <div class="container default-dash">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-sm-6">
+                    <h3>Dashboard</h3>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"> <a class="home-item" href="@Url.Action("ManageProperty","Auth")"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item"> Dashboard</li>
+                        <li class="breadcrumb-item active">Index</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid default-dash">
         <div class="row">
             <div class="col-md-12">
                 <div class="row">
