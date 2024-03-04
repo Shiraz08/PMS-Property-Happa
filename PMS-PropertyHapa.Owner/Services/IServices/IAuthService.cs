@@ -67,5 +67,15 @@ namespace PMS_PropertyHapa.Owner.Services.IServices
 
         Task<TenantOrganizationInfoDto> GetTenantOrganizationByIdAsync(int tenantId);
 
+
+
+        Task<IEnumerable<AssetDTO>> GetAllAssetsAsync();
+
+        Task<bool> UpdateAssetAsync(AssetDTO asset);
+
+        Task<bool> DeleteAssetAsync(int propertyId);
+
+        Task<IEnumerable<OwnerDto>> GetAllLandlordAsync();
+
     }
 }

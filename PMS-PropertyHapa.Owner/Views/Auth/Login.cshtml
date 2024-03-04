@@ -42,8 +42,10 @@
                     type: 'POST',
                     data: formData,
                     success: function (response) {
+                    
                         if (response.success) {
                             debugger;
+                            localStorage.setItem('userId', response.id);
                             if (response.organization && response.organization.logo) {
                                 localStorage.setItem('organizationLogo', response.organization.logo);
                             }

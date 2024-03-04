@@ -78,7 +78,7 @@ namespace PMS_PropertyHapa.Controllers
                                               .AsNoTracking()
                                               .FirstOrDefaultAsync(to => to.TenantUserId == Guid.Parse(appUser.Id));
 
-                                return Json(new { success = true, message = "Logged In Successfully..!", organization = new { logo = logo?.OrganizationLogo } });
+                                return Json(new { success = true, message = "Logged In Successfully..!", organization = new { logo = logo?.OrganizationLogo } , id = appUser.Id });
                             }
                             else
                             {

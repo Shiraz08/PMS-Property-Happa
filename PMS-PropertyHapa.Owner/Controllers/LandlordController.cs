@@ -14,7 +14,7 @@ using PMS_PropertyHapa.Owner.Services.IServices;
 using PMS_PropertyHapa.Shared.Enum;
 using PMS_PropertyHapa.Shared.ImageUpload;
 
-namespace PMS_PropertyHapa.Staff.Controllers
+namespace PMS_PropertyHapa.Owner.Controllers
 {
     public class LandlordController : Controller
     {
@@ -39,12 +39,27 @@ namespace PMS_PropertyHapa.Staff.Controllers
         }
         public IActionResult Index()
         {
-            var list = _context.Owner.AsNoTracking().ToList();
-            return View(list);
-        } 
+            return View();
+        }
         public IActionResult AddLandlord()
         {
             return View();
+        }
+
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetLandlord()
+        {
+            try
+            {
+                var owner = await _authService.GetAllLandlordAsync();
+                return Ok(owner);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while fetching assets: {ex.Message}");
+            }
         }
     }
 }

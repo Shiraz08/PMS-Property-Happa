@@ -14,7 +14,7 @@ using PMS_PropertyHapa.Owner.Services.IServices;
 using PMS_PropertyHapa.Shared.Enum;
 using PMS_PropertyHapa.Shared.ImageUpload;
 
-namespace PMS_PropertyHapa.Staff.Controllers
+namespace PMS_PropertyHapa.Owner.Controllers
 {
     public class AssestsController : Controller
     {
@@ -57,7 +57,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
             try
             {
-                //await _authService.UpdateAssetAsync(assetDTO);
+                await _authService.UpdateAssetAsync(assetDTO);
                 return Ok(new { success = true, message = "Asset added successfully" });
             }
             catch (Exception ex)
@@ -71,11 +71,24 @@ namespace PMS_PropertyHapa.Staff.Controllers
         [HttpDelete]
         public async Task<IActionResult> DeleteAsset(int propertyId)
         {
-            //await _authService.DeleteAssetAsync(propertyId);
+            await _authService.DeleteAssetAsync(propertyId);
             return Json(new { success = true, message = "Tenant deleted successfully" });
         }
 
 
+        [HttpGet]
+        public async Task<IActionResult> GetAssets()
+        {
+            try
+            {
+                var asset = await _authService.GetAllAssetsAsync();
+                return Ok(asset);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while fetching assets: {ex.Message}");
+            }
+        }
 
 
         public IActionResult Index()

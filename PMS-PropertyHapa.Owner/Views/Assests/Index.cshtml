@@ -1,157 +1,263 @@
-﻿
+﻿@model IEnumerable<PMS_PropertyHapa.Models.DTO.AssetDTO>
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<!-- Page Sidebar Ends-->
 <div class="page-body">
     <div class="container-fluid">
         <div class="page-title">
             <div class="row">
-                <div class="col-12">
-                    <h3>Coming Soon</h3>
+                <div class="col-12 col-sm-6">
+                    <h3>Assets List</h3>
+                </div>
+                <div class="col-12 col-sm-6">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a class="home-item" href="index.html"><i data-feather="home"></i></a></li>
-                        <li class="breadcrumb-item">Coming Soon</li>
-                        <li class="breadcrumb-item active">Coming Soon</li>
+                        <li class="breadcrumb-item"><a href="index.html"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item">Assets</li>
+                        <li class="breadcrumb-item active">List</li>
                     </ol>
                 </div>
             </div>
         </div>
     </div>
+    <!-- Container-fluid starts-->
     <div class="container-fluid">
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <h4 class="card-title">
-                            Coming Soon
-                        </h4>
+        <div class="email-wrap bookmark-wrap">
+            <div class="row">
+                <div class="col-xl-9 col-md-12 box-col-9 xl-70">
+                    <div class="email-right-aside bookmark-tabcontent contacts-tabs">
+                        <div class="card email-body radius-left">
+                            <div class="ps-0">
+                                <div class="tab-content">
+                                    <div class="tab-pane fade active show" id="pills-personal" role="tabpanel" aria-labelledby="pills-personal-tab">
+                                        <div class="card mb-0">
+                                            <div class="card-header d-flex">
+                                                <h5>Asset</h5><span class="f-14 pull-right mt-0">Assets List</span>
+                                            </div>
+                                            <div class="card-body p-0">
+                                                <div class="row list-persons" id="addcon">
+                                                    <div class="col-xl-4 xl-50 col-md-5 box-col-6">
+                                                        <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                                                            
+                                                           <!-- Owners list will be populated here via AJAX -->
+                                                        </div>
+                                                    </div>
+                                                    <!-- Owner Details populated here-->
+                                                    <div class="col-xl-8 xl-50 col-md-7 box-col-6">
+                                                        <div class="tab-content" id="v-pills-tabContent">
+                                                            <!-- Owner details will be populated here via AJAX -->
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table" id="grouproles">
-                                <thead>
-                                    <tr>
-                                        <th style="width:290px!Important;text-align:center">.........</th>
-                                        <th style="width:290px!Important;text-align:center">.........</th>
-                                        <th style="width:290px!Important;text-align:center">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                </div>
+                <div class="col-xl-3 box-col-3 xl-30">
+                    <div class="email-sidebar">
+                        <a class="btn btn-primary email-aside-toggle" href="javascript:void(0)">contact filter    </a>
+                        <div class="email-left-aside">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="email-app-sidebar left-bookmark">
+                                        <div class="media">
+                                            <div class="media-size-email"><img class="me-3 rounded-circle" src="../assets/images/user/user.png" alt=""></div>
+                                            <div class="media-body">
+                                                <a href="user-profile.html">
+                                                    <h6 class="f-w-700">MARK JENCO</h6>
+                                                </a>
+                                                <p>Markjecno@gmail.com</p>
+                                            </div>
+                                        </div>
+                                        <ul class="nav main-menu contact-options" role="tablist">
+                                            <li class="nav-item">
+                                                <button class="btn-primary badge-light btn-block btn-mail w-100" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="me-2" data-feather="users"></i> New Contacts</button>
+                                                <div class="modal fade modal-bookmark" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog modal-lg" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="exampleModalLabel">Add Contact</h5>
+                                                                <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <form class="form-bookmark needs-validation" id="bookmark-form" novalidate="">
+                                                                    <div class="row g-2">
+                                                                        <div class="col-md-12 mt-0 m-b-20">
+                                                                            <label for="con-name">Name</label>
+                                                                            <div class="row">
+                                                                                <div class="col-sm-6">
+                                                                                    <input class="form-control" id="con-name" type="text" required="" placeholder="First Name" autocomplete="off">
+                                                                                </div>
+                                                                                <div class="col-sm-6">
+                                                                                    <input class="form-control" id="con-last" type="text" required="" placeholder="Last Name" autocomplete="off">
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-12 mt-0 m-b-20">
+                                                                            <label for="con-mail">Email Address</label>
+                                                                            <input class="form-control" id="con-mail" type="text" required="" autocomplete="off">
+                                                                        </div>
+                                                                        <div class="col-md-12 my-0 m-b-20">
+                                                                            <label for="con-phone">Phone</label>
+                                                                            <div class="row">
+                                                                                <div class="col-sm-6">
+                                                                                    <input class="form-control" id="con-phone" type="number" required="" autocomplete="off">
+                                                                                </div>
+                                                                                <div class="col-sm-6">
+                                                                                    <select class="form-control" id="con-select">
+                                                                                        <option>Mobile</option>
+                                                                                        <option>Work</option>
+                                                                                        <option>Others</option>
+                                                                                    </select>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <input id="index_var" type="hidden" value="5">
+                                                                    <button class="btn btn-secondary" type="submit" onclick="submitContact()">Save</button>
+                                                                    <button class="btn btn-primary" type="button" data-bs-dismiss="modal">Cancel</button>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li class="nav-item"><span class="main-title"> Views</span></li>
+                                            <li><a id="pills-personal-tab" data-bs-toggle="pill" href="#pills-personal" role="tab" aria-controls="pills-personal" aria-selected="true"><span class="title"> Personal</span></a></li>
+                                            <li>
+                                                <button class="btn btn-category" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal1"><span class="title"> + Add Category</span></button>
+                                                <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+                                                    <div class="modal-dialog" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="exampleModalLabel1">Add Category</h5>
+                                                                <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <form class="form-bookmark">
+                                                                    <div class="row g-2">
+                                                                        <div class="mb-3 col-md-12">
+                                                                            <input class="form-control" type="text" required="" placeholder="Enter category name" autocomplete="off">
+                                                                        </div>
+                                                                    </div>
+                                                                    <button class="btn btn-secondary" type="button">Save</button>
+                                                                    <button class="btn btn-primary" type="button" data-bs-dismiss="modal">Cancel</button>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li><a class="show" id="pills-organization-tab" data-bs-toggle="pill" href="#pills-organization" role="tab" aria-controls="pills-organization" aria-selected="false"><span class="title"> Organization</span></a></li>
+                                            <li><a href="javascript:void(0)"><span class="title">Follow up</span></a></li>
+                                            <li><a href="javascript:void(0)"><span class="title">Favorites</span></a></li>
+                                            <li><a href="javascript:void(0)"><span class="title">Ideas</span></a></li>
+                                            <li><a href="javascript:void(0)"><span class="title">Important</span></a></li>
+                                            <li><a href="javascript:void(0)"><span class="title">Business</span></a></li>
+                                            <li><a href="javascript:void(0)"><span class="title">Holidays</span></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <!-- Container-fluid Ends-->
 </div>
 
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+<script>
+$(document).ready(function () {
+    debugger;
+    fetchAssets();
+
+  function fetchAssets() {
+    console.log('Fetching assets...'); // Debugging line
+    $.ajax({
+        url: '/Assests/GetAssets', // Adjusted for a hypothetical correct URL
+        type: 'GET',
+        dataType: 'json',
+     success: function(data, textStatus, jqXHR) {
+    console.log('Raw response:', jqXHR.responseText); // Inspect raw response text
+    console.log('Data received:', data); // Inspect parsed data
+    populateAssets(data);
+},
+        error: function(error) {
+            console.error("Error fetching assets:", error);
+        }
+    });
+}
+
+
+   function populateAssets(assets) {
+    var ownersHtml = '';
+    var detailsHtml = '';
+      var defaultImageBase64 = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/4Qm+aHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLwA8P3hwYWNrZXQgYmVnaW49Iu+7vyIgaWQ9Ilc1TTBNcENlaGlIenJlU3pOVGN6a2M5ZCI/PiA8eDp4bXBtZXRhIHhtbG5zOng9ImFkb2JlOm5zOm1ldGEvIiB4OnhtcHRrPSJYTVAgQ29yZSA0LjQuMC1FeGl2MiI+IDxyZGY6UkRGIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyI+IDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSIiIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyI+IDxkYzpjcmVhdG9yPiA8cmRmOlNlcT4gPHJkZjpsaT5WZWN0b3JTdG9jay5jb20vNDY1NjA5OTA8L3JkZjpsaT4gPC9yZGY6U2VxPiA8L2RjOmNyZWF0b3I+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDw/eHBhY2tldCBlbmQ9InciPz7/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wAARCAD6APoDAREAAhEBAxEB/8QAHgABAAICAwEBAQAAAAAAAAAAAAgJBgcB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muwQOSOxc8pbN9amuwQOSOxc8pbN9amuwQOSOxc8pbN9amuwQOSOxc8pbN9amuwQOSOxc8pbN9amuwQOSOxc8pbN9amuwQOSOxc8pbN9amuwQOSOxc8pbN9amuwQOSOxc8pbN9amuwQOSOxc8pbN9amuwQOSOxc8pbN9amuwQOSOxc8pbN9amuwQOSOxc8pbN9amuwQOSOxc8pbN9amuwQOSOxc8pbN9amuwQOSOxc8pbN9amuwQOSOxc8pbN9amuwQexZvBTYrW9eNAq0zcVovl6fUpWcithTMyXuZDjMe4N1gaa6NOnnQWstGg+lBygICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICD/9k=';
+          
+    assets.forEach(function(asset, index) {
+        var isActive = index === 0 ? 'active show' : ''; // Make the first tab active
+         var assetPicture = asset.Picture || defaultImageBase64;
+        ownersHtml += '<a class="contact-tab-' + asset.AssetId + ' nav-link ' + isActive + '" id="v-pills-' + asset.AssetId + '-tab" data-bs-toggle="pill" onclick="activeDiv(' + asset.AssetId + ')" href="#v-pills-' + asset.AssetId + '" role="tab" aria-controls="v-pills-' + asset.AssetId + '" aria-selected="true">' +
+                        '<div class="media">' +
+                            '<img class="img-50 img-fluid m-r-20 rounded-circle update_img_0" src="' + assetPicture + '" alt="">' +
+                            '<div class="media-body">' +
+                                '<h6> <span class="first_name_0">' + asset.SelectedPropertyType + '</span></h6>' +
+                                '<p class="email_add_0">' + asset.SelectedSubtype + '</p>' +
+                            '</div>' +
+                        '</div>' +
+                      '</a>';
+
+        detailsHtml += '<div class="tab-pane contact-tab-' + asset.AssetId + ' fade ' + isActive + '" id="v-pills-' + asset.AssetId + '" role="tabpanel" aria-labelledby="v-pills-' + asset.AssetId + '-tab">' +
+                     '<div class="profile-mail">' +
+                    '<div class="media align-items-center">' +
+                    '<img class="img-100 img-fluid m-r-20 rounded-circle" src="' + assetPicture + '" alt="">' +
+                    '<div class="media-body mt-0">' +
+                                '<h5>' + asset.OwnerName + '</h5>' +
+                                '<p>' + asset.OwnerCompanyName + '</p>' +
+                              '<div class="mt-2">' +
+                    '<a href="/Tenant/EditOwner/' + asset.OwnerId + '" style="margin-right: 10px;">Edit</a>' +
+                    '<a href="javascript:void(0);" onclick="deleteTenant(' + asset.OwnerId + ');">Delete</a>' +
+                    '</div>' +
+                    '</div>' +
+                    '</div>' +
+                            '<div class="email-general">' +
+                                '<h6 class="mb-3">Details</h6>' +
+                                '<ul>' +
+                                    '<li>Street: <span class="font-primary">' + asset.Street1 + ' ' + asset.Street2 + '</span></li>' +
+                                    '<li>City: <span class="font-primary">' + asset.City + '</span></li>' +
+                                    '<li>State: <span class="font-primary">' + asset.State + '</span></li>' +
+                                    '<li>Country: <span class="font-primary">' + asset.Country + '</span></li>' +
+                                    '<li>Zipcode: <span class="font-primary">' + asset.Zipcode + '</span></li>' +
+                                    '<li>Bank Account Option: <span class="font-primary">' + asset.SelectedBankAccountOption + '</span></li>' +
+                                    '<li>Reserve Funds Option: <span class="font-primary">' + asset.SelectedReserveFundsOption + '</span></li>' +
+                                    '<li>Ownership Option: <span class="font-primary">' + asset.SelectedOwnershipOption + '</span></li>' +
+                                    '<li>Address: <span class="font-primary">' + asset.OwnerAddress + '</span></li>' +
+                                    '<li>Street: <span class="font-primary">' + asset.OwnerStreet + '</span></li>' +
+                                    '<li>Zipcode: <span class="font-primary">' + asset.OwnerZipcode + '</span></li>' +
+                                    '<li>City: <span class="font-primary">' + asset.OwnerCity + '</span></li>' +
+                                    '<li>Country: <span class="font-primary">' + asset.OwnerCountry + '</span></li>' +
+                                '</ul>' +
+                            '</div>' +
+                        '</div>' +
+                      '</div>';
+    });
+
+    $('#v-pills-tab').html(ownersHtml);
+    $('#v-pills-tabContent').html(detailsHtml);
+}
+
+});
+</script>

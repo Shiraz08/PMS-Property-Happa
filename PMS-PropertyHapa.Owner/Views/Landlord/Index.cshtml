@@ -1,4 +1,4 @@
-﻿@model IEnumerable<PMS_PropertyHapa.Models.Entities.Owner>
+﻿@model IEnumerable<PMS_PropertyHapa.Models.DTO.OwnerDto>
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -34,61 +34,20 @@
                                     <div class="tab-pane fade active show" id="pills-personal" role="tabpanel" aria-labelledby="pills-personal-tab">
                                         <div class="card mb-0">
                                             <div class="card-header d-flex">
-                                                <h5>Owner</h5><span class="f-14 pull-right mt-0">@Model.Count() List</span>
+                                                <h5>Owner</h5><span class="f-14 pull-right mt-0">@* @Model.Count() *@ List</span>
                                             </div>
                                             <div class="card-body p-0">
                                                 <div class="row list-persons" id="addcon">
                                                     <div class="col-xl-4 xl-50 col-md-5 box-col-6">
                                                         <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                                                            @foreach (var item in Model)
-                                                            {
-                                                                <a class="contact-tab-@item.OwnerId nav-link" id="v-pills-@item.OwnerId-tab" data-bs-toggle="pill" onclick="activeDiv(@item.OwnerId)" href="#v-pills-@item.OwnerId" role="tab" aria-controls="v-pills-@item.OwnerId" aria-selected="true">
-                                                                    <div class="media">
-                                                                        <img class="img-50 img-fluid m-r-20 rounded-circle update_img_0" src="@item.Picture" alt="">
-                                                                        <div class="media-body">
-                                                                            <h6> <span class="first_name_0">@item.FirstName </span><span class="last_name_0">@item.LastName</span></h6>
-                                                                            <p class="email_add_0">@item.EmailAddress</p>
-                                                                        </div>
-                                                                    </div>
-                                                                </a>
-                                                            }
+
+                                                            <!-- Owners list will be populated here via AJAX -->
                                                         </div>
                                                     </div>
+                                                    <!-- Owner Details populated here-->
                                                     <div class="col-xl-8 xl-50 col-md-7 box-col-6">
                                                         <div class="tab-content" id="v-pills-tabContent">
-                                                            @foreach (var item in Model)
-                                                            {
-                                                                <div class="tab-pane contact-tab-@item.OwnerId tab-content-child fade" id="v-pills-@item.OwnerId" role="tabpanel" aria-labelledby="v-pills-@item.OwnerId-tab">
-                                                                    <div class="profile-mail">
-                                                                        <div class="media align-items-center">
-                                                                            <img class="img-100 img-fluid m-r-20 rounded-circle update_img_0" src="@item.Picture" alt="">
-                                                                            <input class="updateimg" type="file" name="img" onchange="readURL(this,0)">
-                                                                            <div class="media-body mt-0">
-                                                                                <h5><span class="first_name_0">@item.FirstName </span><span class="last_name_0">@item.LastName</span></h5>
-                                                                                <p class="email_add_0">@item.EmailAddress</p>
-                                                                                <ul>
-                                                                                    <li><a href="javascript:void(0)">Edit</a></li>
-                                                                                    <li><a href="javascript:void(0)">Delete</a></li>
-                                                                                </ul>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="email-general">
-                                                                            <h6 class="mb-3">General</h6>
-                                                                            <ul>
-                                                                                <li>Name <span class="font-primary first_name_0">Bucky</span></li>
-                                                                                <li>Gender <span class="font-primary">Male</span></li>
-                                                                                <li>Birthday<span class="font-primary"> <span class="birth_day_0">18</span><span class="birth_month_0 ms-1">May</span><span class="birth_year_0 ms-1">1994</span></span></li>
-                                                                                <li>Personality<span class="font-primary personality_0">Cool</span></li>
-                                                                                <li>City<span class="font-primary city_0">moline acres</span></li>
-                                                                                <li>Mobile No<span class="font-primary mobile_num_0">+0 1800 76855</span></li>
-                                                                                <li>Email Address <span class="font-primary email_add_0">barnes@gmail.com </span></li>
-                                                                                <li>Website<span class="font-primary url_add_0">www.test.com</span></li>
-                                                                                <li>Interest<span class="font-primary interest_0">photography</span></li>
-                                                                            </ul>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            }
+                                                            <!-- Owner details will be populated here via AJAX -->
                                                         </div>
                                                     </div>
                                                 </div>
@@ -214,11 +173,98 @@
     </div>
     <!-- Container-fluid Ends-->
 </div>
-<script>
+@* <script>
     $(document).ready(function ()
     {
         $('.contacts-tabs .nav-link ').removeClass('active show');
         $('.contacts-tabs .tab-content .tab-content-child ').removeClass('active show');
         $('.contact-tab-' + @Model.Take(1).Select(x=>x.OwnerId).FirstOrDefault()).addClass('active show');
+    });
+</script>
+ *@
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+
+<script>
+    $(document).ready(function () {
+        fetchOwners();
+
+        function fetchOwners() {
+            console.log('Fetching assets...'); // Debugging line
+            $.ajax({
+                url: '/Landlord/GetLandlord', // Adjusted for a hypothetical correct URL
+                type: 'GET',
+                dataType: 'json',
+                success: function (data, textStatus, jqXHR) {
+                    console.log('Raw response:', jqXHR.responseText); // Inspect raw response text
+                    console.log('Data received:', data); // Inspect parsed data
+                    populateOwners(data);
+                },
+                error: function (error) {
+                    console.error("Error fetching assets:", error);
+                }
+            });
+        }
+
+
+
+        function populateOwners(owners) {
+            var ownersHtml = '';
+            var detailsHtml = '';
+            owners.forEach(function (owner, index) {
+                // Generate navigation list item
+                ownersHtml += '<a class="nav-link ' + (index === 0 ? 'active' : '') + '" id="v-pills-' + owner.OwnerId + '-tab" data-bs-toggle="pill" href="#v-pills-' + owner.OwnerId + '" role="tab" aria-controls="v-pills-' + owner.OwnerId + '" aria-selected="' + (index === 0 ? 'true' : 'false') + '">' +
+                    '<div class="media">' +
+                    '<img class="img-50 img-fluid m-r-20 rounded-circle" src="' + owner.Picture + '" alt="">' +
+                    '<div class="media-body">' +
+                    '<h6>' + owner.FirstName + ' ' + owner.LastName + '</h6>' +
+                    '<p>' + owner.EmailAddress + '</p>' +
+                    '</div>' +
+                    '</div>' +
+                    '</a>';
+
+                // Generate corresponding details content
+                detailsHtml += '<div class="tab-pane fade ' + (index === 0 ? 'show active' : '') + '" id="v-pills-' + owner.OwnerId + '" role="tabpanel" aria-labelledby="v-pills-' + owner.OwnerId + '-tab">' +
+                    '<div class="profile-mail">' +
+                    '<div class="media align-items-center">' +
+                    '<img class="img-100 img-fluid m-r-20 rounded-circle" src="' + owner.Picture + '" alt="">' +
+                    '<div class="media-body mt-0">' +
+                    '<h5>' + owner.FirstName + ' ' + owner.LastName + '</h5>' +
+                    '<p>' + owner.EmailAddress + '</p>' +
+                    '</div>' +
+                    '</div>' +
+                    '<div class="email-general">' +
+                    '<h6 class="mb-3">General</h6>' +
+                    '<ul>' +
+                    '<li>Name: <span class="font-primary">' + owner.FirstName + ' ' + owner.LastName + '</span></li>' +
+                    '<li>Email Address: <span class="font-primary">' + owner.EmailAddress + '</span></li>' +
+                    '<li>Phone Number: <span class="font-primary">' + owner.PhoneNumber + '</span></li>' +
+                    '<li>Emergency Contact Info: <span class="font-primary">' + owner.EmergencyContactInfo + '</span></li>' +
+                    '<li>Lease Agreement ID: <span class="font-primary">' + (owner.LeaseAgreementId ? owner.LeaseAgreementId : 'N/A') + '</span></li>' +
+                    '<li>Nationality: <span class="font-primary">' + owner.OwnerNationality + '</span></li>' +
+                    '<li>Gender: <span class="font-primary">' + owner.Gender + '</span></li>' +
+                    '<li>DOB: <span class="font-primary">' + owner.DOB + '</span></li>' +
+                    '<li>VAT: <span class="font-primary">' + owner.VAT + '</span></li>' +
+                    '<li>Legal Name: <span class="font-primary">' + owner.LegalName + '</span></li>' +
+                    '<li>Account Name: <span class="font-primary">' + owner.Account_Name + '</span></li>' +
+                    '<li>Account Holder: <span class="font-primary">' + owner.Account_Holder + '</span></li>' +
+                    '<li>IBAN: <span class="font-primary">' + owner.Account_IBAN + '</span></li>' +
+                    '<li>Swift: <span class="font-primary">' + owner.Account_Swift + '</span></li>' +
+                    '<li>Bank: <span class="font-primary">' + owner.Account_Bank + '</span></li>' +
+                    '<li>Currency: <span class="font-primary">' + owner.Account_Currency + '</span></li>' +
+                    '</ul>' +
+                    '</div>' +
+                    '</div>' +
+                    '</div>';
+
+            });
+
+            $('#v-pills-tab').html(ownersHtml); // Populate the navigation list
+            $('#v-pills-tabContent').html(detailsHtml); // Populate the details content
+        }
+
+        populateOwners();
     });
 </script>
