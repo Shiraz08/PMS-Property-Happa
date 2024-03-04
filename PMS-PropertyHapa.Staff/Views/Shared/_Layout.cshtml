@@ -37,7 +37,7 @@
     <meta name="keywords" content="">
     <meta name="author" content="">
 
-    <link rel="icon" href="" type="image/x-icon" id="Org_icon">
+    <link rel="icon" id="faviconIcon" type="image/x-icon">
     <link rel="shortcut icon" href="" type="image/x-icon" id="Org_iconshort">
     <title>Staff Portal</title>
     <!-- Google font-->
@@ -559,6 +559,24 @@
                 }
             });
         }
+
+
+
+        var organizationIconBase64 = localStorage.getItem('organizationIcon');
+        console.log('organizationIconBase64:', organizationIconBase64);
+
+        if (organizationIconBase64) {
+            var organizationIconDataURI = 'data:image;base64,' + organizationIconBase64;
+            var faviconIcon = document.getElementById('faviconIcon');
+            if (faviconIcon) {
+                faviconIcon.href = organizationIconDataURI;
+            } else {
+                console.error('faviconIcon element not found');
+            }
+        } else {
+            console.error('organizationIconBase64 is empty or not found in localStorage');
+        }
+
 
     </script>
 

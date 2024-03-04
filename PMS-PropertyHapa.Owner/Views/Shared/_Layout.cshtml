@@ -7,7 +7,7 @@
     <meta name="description" content="Zeta admin is super flexible, powerful, clean &amp; modern responsive bootstrap 5 admin template with unlimited possibilities.">
     <meta name="keywords" content="admin template, Zeta admin template, dashboard template, flat admin template, responsive admin template, web app">
     <meta name="author" content="pixelstrap">
-    <link rel="icon" href="~/Dashboard/assets/images/logo/favicon-icon.png" type="image/x-icon">
+    <link rel="icon" id="faviconIcon" type="image/x-icon">
     <link rel="shortcut icon" href="~/Dashboard/assets/images/logo/favicon-icon.png" type="image/x-icon">
     <title>Owner Portal</title>
     <!-- Google font-->
@@ -195,7 +195,7 @@
 
 
         var organizationLogoBase64 = localStorage.getItem('organizationLogo');
-
+       
 
         if (organizationLogoBase64) {
 
@@ -204,6 +204,25 @@
             document.getElementById('organizationLogoImg').src = organizationLogoDataURI;
         } else {
             document.getElementById('organizationLogoContainer').style.display = 'none';
+        }
+
+
+
+
+
+        var organizationIconBase64 = localStorage.getItem('organizationIcon');
+        console.log('organizationIconBase64:', organizationIconBase64); // Check the value in the console
+
+        if (organizationIconBase64) {
+            var organizationIconDataURI = 'data:image;base64,' + organizationIconBase64;
+            var faviconIcon = document.getElementById('faviconIcon');
+            if (faviconIcon) {
+                faviconIcon.href = organizationIconDataURI;
+            } else {
+                console.error('faviconIcon element not found');
+            }
+        } else {
+            console.error('organizationIconBase64 is empty or not found in localStorage');
         }
 
 

@@ -65,9 +65,9 @@ namespace PMS_PropertyHapa.Tenant.Controllers
 
                             if (await _userManager.IsInRoleAsync(appUser, "Tenant"))
                             {
-                                var logo = _context.TenantOrganizationInfo.Where(s => s.TenantUserId == System.Guid.Parse(appUser.Id));
+                                var tenant = _context.TenantOrganizationInfo.Where(s => s.TenantUserId == System.Guid.Parse(appUser.Id));
                                
-                                return Json(new { success = true, message = "Logged In Successfully..!", result = appUser.Id ,organization = new { logo = logo?.FirstOrDefault()?.OrganizationLogo } });
+                                return Json(new { success = true, message = "Logged In Successfully..!", result = appUser.Id ,organization = new { tenant = tenant?.FirstOrDefault()?.OrganizationLogo , icon = tenant?.FirstOrDefault()?.OrganizationIcon } });
                             }
                             else
                             {

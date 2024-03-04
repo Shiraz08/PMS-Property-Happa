@@ -44,8 +44,11 @@
                     success: function (response) {
                         if (response.success) {
                             localStorage.setItem('userId', response.result);
-                            if (response.organization && response.organization.logo) {
-                                localStorage.setItem('organizationLogo', response.organization.logo);
+                            if (response.organization && response.organization.tenant) {
+                                localStorage.setItem('organizationLogo', response.organization.tenant);
+                            }
+                            if (response.organization && response.organization.icon) {
+                                localStorage.setItem('organizationIcon', response.organization.icon);
                             }
                             var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
                             Toast.fire({ icon: 'success', title: response.message });
