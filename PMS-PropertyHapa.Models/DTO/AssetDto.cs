@@ -9,6 +9,7 @@ namespace PMS_PropertyHapa.Models.DTO
 {
     public class AssetDTO
     {
+        public int AssetId { get; set; }
         public string SelectedPropertyType { get; set; }
         public string SelectedSubtype { get; set; }
 

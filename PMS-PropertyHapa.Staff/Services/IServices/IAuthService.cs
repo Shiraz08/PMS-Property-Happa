@@ -33,7 +33,7 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
         Task<TenantModelDto> GetSingleTenantAsync(int tenantId);
 
 
-        Task<bool> CreateAssetAsync(AssetDTO asset);
+        
 
 
 
@@ -45,9 +45,12 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
 
         Task<PropertyTypeDto> GetSinglePropertyTypeAsync(int propertytypeId);
 
+        Task<bool> CreateAssetAsync(AssetDTO asset);
 
         Task<bool> DeleteAssetAsync(int propertyId);
         Task<bool> UpdateAssetAsync(AssetDTO asset);
+
+        Task<IEnumerable<AssetDTO>> GetAllAssetsAsync();
 
 
         Task<List<PropertySubTypeDto>> GetAllPropertySubTypesAsync();
@@ -59,6 +62,8 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
         Task<PropertySubTypeDto> GetSinglePropertySubTypeAsync(int propertysubtypeId);
 
         Task<List<PropertyTypeDto>> GetAllPropertyTypes();
+
+        Task<IEnumerable<OwnerDto>> GetAllLandlordAsync();
 
         Task<List<PropertySubTypeDto>> GetPropertySubTypeByIdAllAsync(string tenantId);
 

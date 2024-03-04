@@ -68,6 +68,19 @@ namespace PMS_PropertyHapa.Staff.Controllers
         }
 
 
+        [HttpGet]
+        public async Task<IActionResult> GetAssets()
+        {
+            try
+            {
+                var asset = await _authService.GetAllAssetsAsync();
+                return Ok(asset);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while fetching assets: {ex.Message}");
+            }
+        }
 
 
         public IActionResult Index()

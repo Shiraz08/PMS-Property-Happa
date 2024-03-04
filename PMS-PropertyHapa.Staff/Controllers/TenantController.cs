@@ -27,8 +27,8 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
                 if (tenants != null && tenants.Count > 0)
                 {
-                
-                    return Json(new { data = tenants });
+
+                    return Ok(tenants);
                 }
                 else
                 {

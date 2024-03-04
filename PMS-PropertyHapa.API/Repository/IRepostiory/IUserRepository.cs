@@ -88,5 +88,12 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
 
         Task<bool> UpdateTenantOrgAsync(TenantOrganizationInfoDto tenantDto);
 
+
+
+        Task<List<AssetDTO>> GetAllAssetsAsync();
+
+
+        Task<List<OwnerDto>> GetAllLandlordAsync();
+
     }
 }

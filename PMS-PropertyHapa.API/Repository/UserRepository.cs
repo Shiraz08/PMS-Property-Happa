@@ -1160,7 +1160,7 @@ namespace MagicVilla_VillaAPI.Repository
             tenant.Gender = tenantDto.Gender;
             tenant.DOB = tenantDto.DOB;
             tenant.VAT = tenantDto.VAT;
-            tenant.Status = true; 
+            tenant.Status = true;
             tenant.LegalName = tenantDto.LegalName;
             tenant.Account_Name = tenantDto.Account_Name;
             tenant.Account_Holder = tenantDto.Account_Holder;
@@ -1244,6 +1244,100 @@ namespace MagicVilla_VillaAPI.Repository
             return result > 0;
         }
         #endregion
+
+
+
+        #region Assets
+        public async Task<List<AssetDTO>> GetAllAssetsAsync()
+        {
+            try
+            {
+                var propertyTypes = await _db.Assets
+                                             .AsNoTracking()
+                                             .ToListAsync();
+
+                var propertyTypeDtos = propertyTypes.Select(tenant => new AssetDTO
+                {
+                    AssetId = tenant.AssetId,
+                    SelectedPropertyType = tenant.SelectedPropertyType,
+                    SelectedBankAccountOption = tenant.SelectedBankAccountOption,
+                    SelectedReserveFundsOption = tenant.SelectedReserveFundsOption,
+                    SelectedSubtype = tenant.SelectedSubtype,
+                    SelectedOwnershipOption = tenant.SelectedOwnershipOption,
+                    Street1 = tenant.Street1,
+                    Street2 = tenant.Street2,
+                    City = tenant.City,
+                    Country = tenant.Country,
+                    Zipcode = tenant.Zipcode,
+                    State = tenant.State,
+                    OwnerName = tenant.OwnerName,
+                    OwnerCompanyName = tenant.OwnerCompanyName,
+                    OwnerAddress = tenant.OwnerAddress,
+                    OwnerStreet = tenant.OwnerStreet,
+                    OwnerZipcode = tenant.OwnerZipcode,
+                    OwnerCity = tenant.OwnerCity,
+                    OwnerCountry = tenant.OwnerCountry
+                }).ToList();
+
+
+                return propertyTypeDtos;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping property types: {ex.Message}");
+                throw;
+            }
+        }
+
+        #endregion
+
+
+        #region Landlord
+        public async Task<List<OwnerDto>> GetAllLandlordAsync()
+        {
+            try
+            {
+                var propertyTypes = await _db.Owner
+                                             .AsNoTracking()
+                                             .ToListAsync();
+
+                var propertyTypeDtos = propertyTypes.Select(tenant => new OwnerDto
+                {
+                  
+                    OwnerId = tenant.OwnerId, 
+                    FirstName = tenant.FirstName,
+                    LastName = tenant.LastName,
+                    EmailAddress = tenant.EmailAddress,
+                    Picture = tenant.Picture,
+                    PhoneNumber = tenant.PhoneNumber,
+                    EmergencyContactInfo = tenant.EmergencyContactInfo,
+                    LeaseAgreementId = tenant.LeaseAgreementId,
+                    OwnerNationality = tenant.OwnerNationality,
+                    Gender = tenant.Gender,
+                    DOB = tenant.DOB,
+                    VAT = tenant.VAT,
+                    LegalName = tenant.LegalName,
+                    Account_Name = tenant.Account_Name,
+                    Account_Holder = tenant.Account_Holder,
+                    Account_IBAN = tenant.Account_IBAN,
+                    Account_Swift = tenant.Account_Swift,
+                    Account_Bank = tenant.Account_Bank,
+                    Account_Currency = tenant.Account_Currency
+                }).ToList();
+
+
+
+                return propertyTypeDtos;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping property types: {ex.Message}");
+                throw;
+            }
+        }
+        #endregion
+
+
     }
 
 
