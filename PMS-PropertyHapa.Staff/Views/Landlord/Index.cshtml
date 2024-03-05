@@ -26,7 +26,7 @@
     <div class="container-fluid">
         <div class="email-wrap bookmark-wrap">
             <div class="row">
-                <div class="col-xl-9 col-md-12 box-col-9 xl-70">
+                <div class="col-xl-12 col-md-12 box-col-12">
                     <div class="email-right-aside bookmark-tabcontent contacts-tabs">
                         <div class="card email-body radius-left">
                             <div class="ps-0">
@@ -34,134 +34,274 @@
                                     <div class="tab-pane fade active show" id="pills-personal" role="tabpanel" aria-labelledby="pills-personal-tab">
                                         <div class="card mb-0">
                                             <div class="card-header d-flex">
-                                                <h5>Owner</h5><span class="f-14 pull-right mt-0">@* @Model.Count() *@ List</span>
+                                                <h5>Owner</h5><span class="f-14 pull-right mt-0">@Model.Count() List</span>
                                             </div>
                                             <div class="card-body p-0">
                                                 <div class="row list-persons" id="addcon">
-                                                    <div class="col-xl-4 xl-50 col-md-5 box-col-6">
+                                                    <div class="col-xl-4  col-md-5 box-col-6">
                                                         <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-
-                                                            <!-- Owners list will be populated here via AJAX -->
+                                                            @foreach (var item in Model)
+                                                            {
+                                                                <a class="contact-tab-@item.OwnerId nav-link" id="v-pills-@item.OwnerId-tab" data-bs-toggle="pill" onclick="activeDiv(@item.OwnerId)" href="#v-pills-@item.OwnerId" role="tab" aria-controls="v-pills-@item.OwnerId" aria-selected="true">
+                                                                    <div class="media">
+                                                                        <img class="img-50 img-fluid m-r-20 rounded-circle update_img_0" src="@item.Picture" alt="">
+                                                                        <div class="media-body">
+                                                                            <h6> <span class="first_name_0">@item.FirstName </span><span class="last_name_0">@item.LastName</span></h6>
+                                                                            <p class="email_add_0">@item.EmailAddress</p>
+                                                                        </div>
+                                                                    </div>
+                                                                </a>
+                                                            }
                                                         </div>
                                                     </div>
-                                                    <!-- Owner Details populated here-->
-                                                    <div class="col-xl-8 xl-50 col-md-7 box-col-6">
+                                                    <div class="col-xl-8 col-md-7 box-col-6">
                                                         <div class="tab-content" id="v-pills-tabContent">
-                                                            <!-- Owner details will be populated here via AJAX -->
+                                                            @foreach (var item in Model)
+                                                            {
+                                                                <div class="tab-pane contact-tab-@item.OwnerId tab-content-child fade" id="v-pills-@item.OwnerId" role="tabpanel" aria-labelledby="v-pills-@item.OwnerId-tab">
+                                                                    <div class="profile-mail">
+                                                                        <div class="media align-items-center">
+                                                                            <img class="img-100 img-fluid m-r-20 rounded-circle update_img_0" src="@item.Picture" alt="">
+                                                                            <input class="updateimg" type="file" name="img" onchange="readURL(this,0)">
+                                                                            <div class="media-body mt-0">
+                                                                                <h5><span class="first_name_0">@item.FirstName </span><span class="last_name_0">@item.LastName</span></h5>
+                                                                                <p class="email_add_0">@item.EmailAddress</p>
+                                                                                <ul>
+                                                                                    <li><a onclick="editLandlord(@item.OwnerId)">Edit</a></li>
+                                                                                    <li><a onclick="deleteOwner(@item.OwnerId)">Delete</a></li>
+                                                                                </ul>
+                                                                            </div>
+                                                                        </div> 
+                                                                    </div>
+                                                                    <div class="col-xl-12 col-lg-12 col-md-5">
+                                                                        <div class="default-according style-1 faq-accordion job-accordion">
+                                                                            <div class="row">
+                                                                                <div class="col-xl-12">
+                                                                                    <div class="card">
+                                                                                        <div class="card-header">
+                                                                                            <h5 class="p-0">
+                                                                                                <button class="btn btn-link ps-0" data-bs-toggle="collapse" data-bs-target="#collapseicon2" aria-expanded="false" aria-controls="collapseicon2"><span class="first_name_0">Basic Info</span></button>
+                                                                                            </h5>
+                                                                                        </div>
+                                                                                        <div class="collapse show" id="collapseicon2" aria-labelledby="collapseicon2" data-parent="#accordion">
+                                                                                            <div class="card-body post-about">
+                                                                                                <ul style="width:50%; float:left;">
+                                                                                                    <li>
+                                                                                                        <div style="padding-bottom:15px!important">
+                                                                                                            <h5 >Name</h5>
+                                                                                                            <p>@item.FirstName @item.LastName</p>
+                                                                                                        </div>
+                                                                                                    </li>
+                                                                                                    <li>
+                                                                                                        <div style="padding-bottom:15px!important">
+                                                                                                            <h5>Gender</h5>
+                                                                                                            @if (@item.Gender != null)
+                                                                                                            {
+                                                                                                                <p>@item.Gender</p>
+                                                                                                            }
+                                                                                                            else
+                                                                                                            {
+                                                                                                                <p>----------------</p>
+                                                                                                            }
+                                                                                                        </div>
+                                                                                                    </li>
+                                                                                                    <li>
+                                                                                                        <div style="padding-bottom:15px!important">
+                                                                                                            <h5>DOB</h5>
+                                                                                                            @{
+                                                                                                                DateTime dob = Convert.ToDateTime(item.DOB);
+                                                                                                                @if (@item.DOB != null)
+                                                                                                                {
+                                                                                                                    <p>@item.DOB</p>
+                                                                                                                }
+                                                                                                                else
+                                                                                                                {
+                                                                                                                    <p>----------------</p>
+                                                                                                                }
+                                                                                                            }
+                                                                                                        </div>
+                                                                                                    </li>
+                                                                                                    <li>
+                                                                                                        <div style="padding-bottom:15px!important">
+                                                                                                            <h5>Owner Nationality</h5>
+                                                                                                            @if (@item.OwnerNationality != null)
+                                                                                                            {
+                                                                                                                <p>@item.OwnerNationality</p>
+                                                                                                            }
+                                                                                                            else
+                                                                                                            {
+                                                                                                                <p>----------------</p>
+                                                                                                            }
+                                                                                                        </div>
+                                                                                                    </li>
+                                                                                                    <li>
+                                                                                                        <div style="padding-bottom:15px!important">
+                                                                                                            <h5>Phone No.</h5>
+                                                                                                            @if (@item.PhoneNumber != null)
+                                                                                                            {
+                                                                                                                <p>@item.PhoneNumber</p>
+                                                                                                            }
+                                                                                                            else
+                                                                                                            {
+                                                                                                                <p>----------------</p>
+                                                                                                            }
+                                                                                                        </div>
+                                                                                                    </li>
+                                                                                                </ul>
+                                                                                                <ul style="width:50%; float:left;">
+                                                                                                    <li>
+                                                                                                        <div style="padding-bottom:15px!important">
+                                                                                                            <h5>Address</h5>
+                                                                                                            @if (@item.Address != null)
+                                                                                                            {
+                                                                                                                <p>@item.Address</p>
+                                                                                                            }
+                                                                                                            else
+                                                                                                            {
+                                                                                                                <p>----------------</p>
+                                                                                                            }
+                                                                                                        </div>
+                                                                                                    </li>
+                                                                                                    <li>
+                                                                                                        <div style="padding-bottom:15px!important">
+                                                                                                            <h5>Address 2</h5>
+                                                                                                            @if (@item.Address2 != null)
+                                                                                                            {
+                                                                                                                <p>@item.Address2</p>
+                                                                                                            }
+                                                                                                            else
+                                                                                                            {
+                                                                                                                <p>----------------</p>
+                                                                                                            }
+                                                                                                        </div>
+                                                                                                    </li>
+                                                                                                    <li>
+                                                                                                        <div style="padding-bottom:15px!important">
+                                                                                                            <h5>Reigon</h5>
+                                                                                                            @if (@item.Region != null)
+                                                                                                            {
+                                                                                                                <p>@item.Region</p>
+                                                                                                            }
+                                                                                                            else
+                                                                                                            {
+                                                                                                                <p>----------------</p>
+                                                                                                            }
+                                                                                                        </div>
+                                                                                                    </li>
+                                                                                                    <li>
+                                                                                                        <div style="padding-bottom:15px!important">
+                                                                                                            <h5>District</h5>
+                                                                                                            @if (@item.District != null)
+                                                                                                            {
+                                                                                                                <p>@item.District</p>
+                                                                                                            }
+                                                                                                            else
+                                                                                                            {
+                                                                                                                <p>----------------</p>
+                                                                                                            }
+                                                                                                        </div>
+                                                                                                    </li>
+                                                                                                    <li>
+                                                                                                        <div style="padding-bottom:15px!important">
+                                                                                                            <h5>Postal Code</h5>
+                                                                                                            @if (@item.PostalCode != null)
+                                                                                                            {
+                                                                                                                <p>@item.PostalCode</p>
+                                                                                                            }
+                                                                                                            else
+                                                                                                            {
+                                                                                                                <p>----------------</p>
+                                                                                                            }
+                                                                                                           
+                                                                                                        </div>
+                                                                                                    </li>
+                                                                                                </ul>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-xl-12 col-lg-6 col-md-12 col-sm-6">
+                                                                                    <div class="card">
+                                                                                        <div class="card-header">
+                                                                                            <h5 class="p-0">
+                                                                                                <button class="btn btn-link ps-0" data-bs-toggle="collapse" data-bs-target="#collapseicon8" aria-expanded="false" aria-controls="collapseicon8">Lease</button>
+                                                                                            </h5>
+                                                                                        </div>
+                                                                                        <div class="collapse" id="collapseicon8" aria-labelledby="collapseicon8" data-parent="#accordion">
+                                                                                            <div class="card-body social-list filter-cards-view">
+                                                                                                <table class="table table-bordered">
+                                                                                                    <thead>
+                                                                                                        <tr>
+                                                                                                            <th>Firstname</th>
+                                                                                                            <th>Lastname</th>
+                                                                                                            <th>Email</th>
+                                                                                                        </tr>
+                                                                                                    </thead>
+                                                                                                    <tbody>
+                                                                                                        <tr>
+                                                                                                            <td>John</td>
+                                                                                                            <td>Doe</td>
+                                                                                                            <td>john@example.com</td>
+                                                                                                        </tr>
+                                                                                                        <tr>
+                                                                                                            <td>Mary</td>
+                                                                                                            <td>Moe</td>
+                                                                                                            <td>mary@example.com</td>
+                                                                                                        </tr>
+                                                                                                        <tr>
+                                                                                                            <td>July</td>
+                                                                                                            <td>Dooley</td>
+                                                                                                            <td>july@example.com</td>
+                                                                                                        </tr>
+                                                                                                    </tbody>
+                                                                                                </table>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-xl-12 col-lg-6 col-md-12 col-sm-6">
+                                                                                    <div class="card">
+                                                                                        <div class="card-header">
+                                                                                            <h5 class="p-0">
+                                                                                                <button class="btn btn-link ps-0" data-bs-toggle="collapse" data-bs-target="#collapseicon11" aria-expanded="false" aria-controls="collapseicon11">Property</button>
+                                                                                            </h5>
+                                                                                        </div>
+                                                                                        <div class="collapse" id="collapseicon11" aria-labelledby="collapseicon11" data-parent="#accordion">
+                                                                                            <div class="card-body social-list filter-cards-view">
+                                                                                                <div class="media">
+                                                                                                    <img class="img-50 img-fluid m-r-20 rounded-circle" alt="" src="../assets/images/user/3.png">
+                                                                                                    <div class="media-body"><span class="d-block">Sarah Loren</span><a href="javascript:void(0)">Add Friend</a></div>
+                                                                                                </div>
+                                                                                                <div class="media">
+                                                                                                    <img class="img-50 img-fluid m-r-20 rounded-circle" alt="" src="../assets/images/user/2.png">
+                                                                                                    <div class="media-body"><span class="d-block">Bucky Barnes</span><a href="javascript:void(0)">Add Friend</a></div>
+                                                                                                </div>
+                                                                                                <div class="media">
+                                                                                                    <img class="img-50 img-fluid m-r-20 rounded-circle" alt="" src="../assets/images/user/10.jpg">
+                                                                                                    <div class="media-body"><span class="d-block">Comeren Diaz</span><a href="javascript:void(0)">Add Friend</a></div>
+                                                                                                </div>
+                                                                                                <div class="media">
+                                                                                                    <img class="img-50 img-fluid m-r-20 rounded-circle" alt="" src="../assets/images/user/3.jpg">
+                                                                                                    <div class="media-body"><span class="d-block">Jason Borne</span><a href="javascript:void(0)">Add Friend</a></div>
+                                                                                                </div>
+                                                                                                <div class="media">
+                                                                                                    <img class="img-50 img-fluid m-r-20 rounded-circle" alt="" src="../assets/images/user/11.png">
+                                                                                                    <div class="media-body"><span class="d-block">Andew Jon</span><a href="javascript:void(0)">Add Friend</a></div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            }
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-3 box-col-3 xl-30">
-                    <div class="email-sidebar">
-                        <a class="btn btn-primary email-aside-toggle" href="javascript:void(0)">contact filter    </a>
-                        <div class="email-left-aside">
-                            <div class="card">
-                                <div class="card-body">
-                                    <div class="email-app-sidebar left-bookmark">
-                                        <div class="media">
-                                            <div class="media-size-email"><img class="me-3 rounded-circle" src="../assets/images/user/user.png" alt=""></div>
-                                            <div class="media-body">
-                                                <a href="user-profile.html">
-                                                    <h6 class="f-w-700">MARK JENCO</h6>
-                                                </a>
-                                                <p>Markjecno@gmail.com</p>
-                                            </div>
-                                        </div>
-                                        <ul class="nav main-menu contact-options" role="tablist">
-                                            <li class="nav-item">
-                                                <button class="btn-primary badge-light btn-block btn-mail w-100" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="me-2" data-feather="users"></i> New Contacts</button>
-                                                <div class="modal fade modal-bookmark" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                    <div class="modal-dialog modal-lg" role="document">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h5 class="modal-title" id="exampleModalLabel">Add Contact</h5>
-                                                                <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                            </div>
-                                                            <div class="modal-body">
-                                                                <form class="form-bookmark needs-validation" id="bookmark-form" novalidate="">
-                                                                    <div class="row g-2">
-                                                                        <div class="col-md-12 mt-0 m-b-20">
-                                                                            <label for="con-name">Name</label>
-                                                                            <div class="row">
-                                                                                <div class="col-sm-6">
-                                                                                    <input class="form-control" id="con-name" type="text" required="" placeholder="First Name" autocomplete="off">
-                                                                                </div>
-                                                                                <div class="col-sm-6">
-                                                                                    <input class="form-control" id="con-last" type="text" required="" placeholder="Last Name" autocomplete="off">
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="col-md-12 mt-0 m-b-20">
-                                                                            <label for="con-mail">Email Address</label>
-                                                                            <input class="form-control" id="con-mail" type="text" required="" autocomplete="off">
-                                                                        </div>
-                                                                        <div class="col-md-12 my-0 m-b-20">
-                                                                            <label for="con-phone">Phone</label>
-                                                                            <div class="row">
-                                                                                <div class="col-sm-6">
-                                                                                    <input class="form-control" id="con-phone" type="number" required="" autocomplete="off">
-                                                                                </div>
-                                                                                <div class="col-sm-6">
-                                                                                    <select class="form-control" id="con-select">
-                                                                                        <option>Mobile</option>
-                                                                                        <option>Work</option>
-                                                                                        <option>Others</option>
-                                                                                    </select>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <input id="index_var" type="hidden" value="5">
-                                                                    <button class="btn btn-secondary" type="submit" onclick="submitContact()">Save</button>
-                                                                    <button class="btn btn-primary" type="button" data-bs-dismiss="modal">Cancel</button>
-                                                                </form>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li class="nav-item"><span class="main-title"> Views</span></li>
-                                            <li><a id="pills-personal-tab" data-bs-toggle="pill" href="#pills-personal" role="tab" aria-controls="pills-personal" aria-selected="true"><span class="title"> Personal</span></a></li>
-                                            <li>
-                                                <button class="btn btn-category" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal1"><span class="title"> + Add Category</span></button>
-                                                <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1" aria-hidden="true">
-                                                    <div class="modal-dialog" role="document">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h5 class="modal-title" id="exampleModalLabel1">Add Category</h5>
-                                                                <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                            </div>
-                                                            <div class="modal-body">
-                                                                <form class="form-bookmark">
-                                                                    <div class="row g-2">
-                                                                        <div class="mb-3 col-md-12">
-                                                                            <input class="form-control" type="text" required="" placeholder="Enter category name" autocomplete="off">
-                                                                        </div>
-                                                                    </div>
-                                                                    <button class="btn btn-secondary" type="button">Save</button>
-                                                                    <button class="btn btn-primary" type="button" data-bs-dismiss="modal">Cancel</button>
-                                                                </form>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li><a class="show" id="pills-organization-tab" data-bs-toggle="pill" href="#pills-organization" role="tab" aria-controls="pills-organization" aria-selected="false"><span class="title"> Organization</span></a></li>
-                                            <li><a href="javascript:void(0)"><span class="title">Follow up</span></a></li>
-                                            <li><a href="javascript:void(0)"><span class="title">Favorites</span></a></li>
-                                            <li><a href="javascript:void(0)"><span class="title">Ideas</span></a></li>
-                                            <li><a href="javascript:void(0)"><span class="title">Important</span></a></li>
-                                            <li><a href="javascript:void(0)"><span class="title">Business</span></a></li>
-                                            <li><a href="javascript:void(0)"><span class="title">Holidays</span></a></li>
-                                        </ul>
                                     </div>
                                 </div>
                             </div>
@@ -173,110 +313,13 @@
     </div>
     <!-- Container-fluid Ends-->
 </div>
-@* <script>
+ <script>
     $(document).ready(function ()
     {
         $('.contacts-tabs .nav-link ').removeClass('active show');
         $('.contacts-tabs .tab-content .tab-content-child ').removeClass('active show');
         $('.contact-tab-' + @Model.Take(1).Select(x=>x.OwnerId).FirstOrDefault()).addClass('active show');
     });
-</script>
- *@
-
-
-
-<script>
-    $(document).ready(function () {
-        fetchOwners();
-
-        function fetchOwners() {
-            console.log('Fetching assets...'); // Debugging line
-            $.ajax({
-                url: '/Landlord/GetLandlord', // Adjusted for a hypothetical correct URL
-                type: 'GET',
-                dataType: 'json',
-                success: function (data, textStatus, jqXHR) {
-                    console.log('Raw response:', jqXHR.responseText); // Inspect raw response text
-                    console.log('Data received:', data); // Inspect parsed data
-                    populateOwners(data);
-                },
-                error: function (error) {
-                    console.error("Error fetching assets:", error);
-                }
-            });
-        }
-
-
-
-        function populateOwners(owners) {
-            var ownersHtml = '';
-            var detailsHtml = '';
-            owners.forEach(function (owner, index) {
-                // Generate navigation list item
-                ownersHtml += '<a class="nav-link ' + (index === 0 ? 'active' : '') + '" id="v-pills-' + owner.OwnerId + '-tab" data-bs-toggle="pill" href="#v-pills-' + owner.OwnerId + '" role="tab" aria-controls="v-pills-' + owner.OwnerId + '" aria-selected="' + (index === 0 ? 'true' : 'false') + '">' +
-                    '<div class="media">' +
-                    '<img class="img-50 img-fluid m-r-20 rounded-circle" src="' + owner.Picture + '" alt="">' +
-                    '<div class="media-body">' +
-                    '<h6>' + owner.FirstName + ' ' + owner.LastName + '</h6>' +
-                    '<p>' + owner.EmailAddress + '</p>' +
-                    '</div>' +
-                    '</div>' +
-                    '</a>';
-
-                // Generate corresponding details content
-                detailsHtml += '<div class="tab-pane fade ' + (index === 0 ? 'show active' : '') + '" id="v-pills-' + owner.OwnerId + '" role="tabpanel" aria-labelledby="v-pills-' + owner.OwnerId + '-tab">' +
-                    '<div class="profile-mail">' +
-                    '<div class="media align-items-center">' +
-                    '<img class="img-100 img-fluid m-r-20 rounded-circle" src="' + owner.Picture + '" alt="">' +
-                    '<div class="media-body mt-0">' +
-                    '<h5>' + owner.FirstName + ' ' + owner.LastName + '</h5>' +
-                    '<p>' + owner.EmailAddress + '</p>' +
-                    '<div class="mt-2">' +
-                    '<a href="javascript:void(0);" onclick="editLandlord(' + owner.OwnerId + ');" style="margin-right: 10px;">Edit</a>' +
-                    '<a href="javascript:void(0);" onclick="deleteOwner(' + owner.OwnerId + ');">Delete</a>' +
-                    '</div>' +
-                    '</div>' +
-                    '</div>' +
-                    '<div class="email-general">' +
-                    '<h6 class="mb-3">General</h6>' +
-                    '<ul>' +
-                    '<li>Name: <span class="font-primary">' + owner.FirstName + ' ' + owner.LastName + '</span></li>' +
-                    '<li>Email Address: <span class="font-primary">' + owner.EmailAddress + '</span></li>' +
-                    '<li>Phone Number: <span class="font-primary">' + owner.PhoneNumber + '</span></li>' +
-                    '<li>Emergency Contact Info: <span class="font-primary">' + owner.EmergencyContactInfo + '</span></li>' +
-                    '<li>Lease Agreement ID: <span class="font-primary">' + (owner.LeaseAgreementId ? owner.LeaseAgreementId : 'N/A') + '</span></li>' +
-                    '<li>Nationality: <span class="font-primary">' + owner.OwnerNationality + '</span></li>' +
-                    '<li>Gender: <span class="font-primary">' + owner.Gender + '</span></li>' +
-                    '<li>DOB: <span class="font-primary">' + owner.DOB + '</span></li>' +
-                    '<li>VAT: <span class="font-primary">' + owner.VAT + '</span></li>' +
-                    '<li>Legal Name: <span class="font-primary">' + owner.LegalName + '</span></li>' +
-                    '<li>Account Name: <span class="font-primary">' + owner.Account_Name + '</span></li>' +
-                    '<li>Account Holder: <span class="font-primary">' + owner.Account_Holder + '</span></li>' +
-                    '<li>IBAN: <span class="font-primary">' + owner.Account_IBAN + '</span></li>' +
-                    '<li>Swift: <span class="font-primary">' + owner.Account_Swift + '</span></li>' +
-                    '<li>Bank: <span class="font-primary">' + owner.Account_Bank + '</span></li>' +
-                    '<li>Currency: <span class="font-primary">' + owner.Account_Currency + '</span></li>' +
-                    '</ul>' +
-                    '</div>' +
-                    '</div>' +
-                    '</div>';
-
-            });
-
-            $('#v-pills-tab').html(ownersHtml); // Populate the navigation list
-            $('#v-pills-tabContent').html(detailsHtml); // Populate the details content
-        }
-
-        populateOwners();
-    });
-</script>
-
-
-
-
-<script>
-
-
 
     function deleteOwner(ownerId) {
         Swal.fire({
