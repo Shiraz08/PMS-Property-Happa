@@ -67,8 +67,7 @@ $(document).ready(function () {
     };
 
 
-    $(".customizer-color.dark li").on('click', function ()
-    {
+    $(".customizer-color.dark li").on('click', function () {
         debugger
         $(".customizer-color.dark li").removeClass('active');
         $(this).addClass("active");

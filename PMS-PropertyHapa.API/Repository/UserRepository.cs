@@ -1199,6 +1199,144 @@ namespace MagicVilla_VillaAPI.Repository
 
 
 
+        #region Landlord
+
+        public async Task<OwnerDto> GetSingleLandlordByIdAsync(int ownerId)
+        {
+            var tenantDto = await _db.Owner.FirstOrDefaultAsync(t => t.OwnerId == ownerId);
+
+            if (tenantDto == null)
+                return new OwnerDto(); // Return an empty DTO or handle null case accordingly
+
+            // Map the single tenant to TenantModelDto
+            var tenant = new OwnerDto
+            {
+                OwnerId = tenantDto.OwnerId,
+                FirstName = tenantDto.FirstName,
+                LastName = tenantDto.LastName,
+                EmailAddress = tenantDto.EmailAddress,
+                PhoneNumber = tenantDto.PhoneNumber,
+                EmergencyContactInfo = tenantDto.EmergencyContactInfo,
+                LeaseAgreementId = tenantDto.LeaseAgreementId,
+                OwnerNationality = tenantDto.OwnerNationality,
+                Gender = tenantDto.Gender,
+                DOB = tenantDto.DOB,
+                VAT = tenantDto.VAT,
+                LegalName = tenantDto.LegalName,
+                Account_Name = tenantDto.Account_Name,
+                Account_Holder = tenantDto.Account_Holder,
+                Account_IBAN = tenantDto.Account_IBAN,
+                Account_Swift = tenantDto.Account_Swift,
+                Account_Bank = tenantDto.Account_Bank,
+                Account_Currency = tenantDto.Account_Currency,
+                AppTenantId = tenantDto.AppTenantId,
+                Address = tenantDto.Address,
+                Address2 = tenantDto.Address2,
+                Locality = tenantDto.Locality,
+                Region = tenantDto.Region,
+                PostalCode = tenantDto.PostalCode,
+                Country = tenantDto.Country,
+                CountryCode = tenantDto.CountryCode,
+                Picture = tenantDto.Picture
+            };
+
+            return tenant;
+        }
+
+
+        public async Task<bool> CreateOwnerAsync(OwnerDto tenantDto)
+        {
+            var newTenant = new Owner
+            {
+                FirstName = tenantDto.FirstName,
+                LastName = tenantDto.LastName,
+                EmailAddress = tenantDto.EmailAddress,
+                PhoneNumber = tenantDto.PhoneNumber,
+                EmergencyContactInfo = tenantDto.EmergencyContactInfo,
+                LeaseAgreementId = tenantDto.LeaseAgreementId,
+                OwnerNationality = tenantDto.OwnerNationality,
+                Gender = tenantDto.Gender,
+                DOB = tenantDto.DOB,
+                VAT = tenantDto.VAT,
+                Status = true,
+                LegalName = tenantDto.LegalName,
+                Account_Name = tenantDto.Account_Name,
+                Account_Holder = tenantDto.Account_Holder,
+                Account_IBAN = tenantDto.Account_IBAN,
+                Account_Swift = tenantDto.Account_Swift,
+                Account_Bank = tenantDto.Account_Bank,
+                Account_Currency = tenantDto.Account_Currency,
+                AppTenantId = tenantDto.AppTenantId,
+                Address = tenantDto.Address,
+                Address2 = tenantDto.Address2,
+                Locality = tenantDto.Locality,
+                Region = tenantDto.Region,
+                PostalCode = tenantDto.PostalCode,
+                Country = tenantDto.Country,
+                CountryCode = tenantDto.CountryCode,
+                Picture = tenantDto.Picture
+            };
+
+            await _db.Owner.AddAsync(newTenant);
+
+            var result = await _db.SaveChangesAsync();
+
+            return result > 0;
+        }
+
+
+        public async Task<bool> UpdateOwnerAsync(OwnerDto tenantDto)
+        {
+            var tenant = await _db.Owner.FirstOrDefaultAsync(t => t.OwnerId == tenantDto.OwnerId);
+            if (tenant == null) return false;
+
+            tenant.FirstName = tenantDto.FirstName;
+            tenant.LastName = tenantDto.LastName;
+            tenant.EmailAddress = tenantDto.EmailAddress;
+            tenant.PhoneNumber = tenantDto.PhoneNumber;
+            tenant.EmergencyContactInfo = tenantDto.EmergencyContactInfo;
+            tenant.LeaseAgreementId = tenantDto.LeaseAgreementId;
+            tenant.OwnerNationality = tenantDto.OwnerNationality;
+            tenant.Gender = tenantDto.Gender;
+            tenant.DOB = tenantDto.DOB;
+            tenant.VAT = tenantDto.VAT;
+            tenant.Status = true;
+            tenant.LegalName = tenantDto.LegalName;
+            tenant.Account_Name = tenantDto.Account_Name;
+            tenant.Account_Holder = tenantDto.Account_Holder;
+            tenant.Account_IBAN = tenantDto.Account_IBAN;
+            tenant.Account_Swift = tenantDto.Account_Swift;
+            tenant.Account_Bank = tenantDto.Account_Bank;
+            tenant.Account_Currency = tenantDto.Account_Currency;
+            tenant.AppTenantId = tenantDto.AppTenantId;
+            tenant.Address = tenantDto.Address;
+            tenant.Address2 = tenantDto.Address2;
+            tenant.Locality = tenantDto.Locality;
+            tenant.Region = tenantDto.Region;
+            tenant.PostalCode = tenantDto.PostalCode;
+            tenant.Country = tenantDto.Country;
+            tenant.CountryCode = tenantDto.CountryCode;
+            tenant.Picture = tenantDto.Picture;
+
+            _db.Owner.Update(tenant);
+            var result = await _db.SaveChangesAsync();
+            return result > 0;
+        }
+
+
+        public async Task<bool> DeleteOwnerAsync(string ownerId)
+        {
+            var tenant = await _db.Owner.FirstOrDefaultAsync(t => t.OwnerId == Convert.ToInt32(ownerId));
+            if (tenant == null) return false;
+
+            _db.Owner.Remove(tenant);
+            var result = await _db.SaveChangesAsync();
+            return result > 0;
+        }
+        #endregion
+
+
+
         #region TenantOrg
         public async Task<TenantOrganizationInfoDto> GetTenantOrgByIdAsync(int tenantId)
         {

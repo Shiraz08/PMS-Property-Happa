@@ -231,6 +231,10 @@
                     '<div class="media-body mt-0">' +
                     '<h5>' + owner.FirstName + ' ' + owner.LastName + '</h5>' +
                     '<p>' + owner.EmailAddress + '</p>' +
+                    '<div class="mt-2">' +
+                    '<a href="javascript:void(0);" onclick="editLandlord(' + owner.OwnerId + ');" style="margin-right: 10px;">Edit</a>' +
+                    '<a href="javascript:void(0);" onclick="deleteOwner(' + owner.OwnerId + ');">Delete</a>' +
+                    '</div>' +
                     '</div>' +
                     '</div>' +
                     '<div class="email-general">' +
@@ -265,4 +269,64 @@
 
         populateOwners();
     });
+</script>
+
+
+
+
+<script>
+
+
+
+    function deleteOwner(ownerId) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Once deleted, you will not be able to recover this owner!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: `/Landlord/Delete/?ownerId=${encodeURIComponent(ownerId)}`,
+                    type: 'DELETE',
+                    success: function (data) {
+                        if (data.success) {
+                            window.location.reload();
+                            Swal.fire(
+                                'Deleted!',
+                                'The owner has been deleted.',
+                                'success'
+                            );
+                        } else {
+                            Swal.fire(
+                                'Error!',
+                                'There was an issue deleting the owner.',
+                                'error'
+                            );
+                        }
+                    },
+                    error: function () {
+                        Swal.fire(
+                            'Error!',
+                            'There was an issue deleting the owner.',
+                            'error'
+                        );
+                    }
+                });
+            }
+        });
+    }
+
+
+
+
+
+</script>
+<script>
+    function editLandlord(ownerId) {
+        window.location.href = `/Landlord/EditLandlord?ownerId=${ownerId}`;
+    }
 </script>

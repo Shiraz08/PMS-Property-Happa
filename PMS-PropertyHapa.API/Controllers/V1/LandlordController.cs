@@ -109,80 +109,80 @@ namespace PMS_PropertyHapa.API.Controllers.V1
         //}
 
 
-        //[HttpGet("GetSinglePropertyType/{propertytypeId}")]
-        //public async Task<IActionResult> GetSinglePropertyType(int propertytypeId)
-        //{
-        //    try
-        //    {
-        //        var tenantDto = await _userRepo.GetSinglePropertyTypeByIdAsync(propertytypeId);
+        [HttpGet("GetSingleLandlord/{ownerId}")]
+        public async Task<IActionResult> GetSingleLandlord(int ownerId)
+        {
+            try
+            {
+                var tenantDto = await _userRepo.GetSingleLandlordByIdAsync(ownerId);
 
-        //        if (tenantDto != null)
-        //        {
-        //            _response.StatusCode = HttpStatusCode.OK;
-        //            _response.IsSuccess = true;
-        //            _response.Result = tenantDto;
-        //            return Ok(_response);
-        //        }
-        //        else
-        //        {
-        //            _response.StatusCode = HttpStatusCode.NotFound;
-        //            _response.IsSuccess = false;
-        //            _response.ErrorMessages.Add("No user found with this id.");
-        //            return NotFound(_response);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _response.StatusCode = HttpStatusCode.NotFound;
-        //        _response.IsSuccess = false;
-        //        _response.ErrorMessages.Add("Error Occured");
-        //        return NotFound(_response);
-        //    }
-        //}
+                if (tenantDto != null)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = tenantDto;
+                    return Ok(_response);
+                }
+                else
+                {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("No user found with this id.");
+                    return NotFound(_response);
+                }
+            }
+            catch (Exception ex)
+            {
+                _response.StatusCode = HttpStatusCode.NotFound;
+                _response.IsSuccess = false;
+                _response.ErrorMessages.Add("Error Occured");
+                return NotFound(_response);
+            }
+        }
 
 
-        //[HttpPost("PropertyType")]
-        //public async Task<ActionResult<bool>> CreatePropertyType(PropertyTypeDto tenant)
-        //{
-        //    try
-        //    {
-        //        var isSuccess = await _userRepo.CreatePropertyTypeAsync(tenant);
-        //        return Ok(isSuccess);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, $"An error occurred: {ex.Message}");
-        //    }
-        //}
+        [HttpPost("Landlord")]
+        public async Task<ActionResult<bool>> CreateOwner(OwnerDto owner)
+        {
+            try
+            {
+                var isSuccess = await _userRepo.CreateOwnerAsync(owner);
+                return Ok(isSuccess);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
 
-        //[HttpPut("PropertyType/{PropertyTypeId}")]
-        //public async Task<ActionResult<bool>> UpdatePropertyType(int PropertyTypeId, PropertyTypeDto tenant)
-        //{
-        //    try
-        //    {
-        //        tenant.PropertyTypeId = PropertyTypeId; // Ensure tenantId is set
-        //        var isSuccess = await _userRepo.UpdatePropertyTypeAsync(tenant);
-        //        return Ok(isSuccess);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, $"An error occurred: {ex.Message}");
-        //    }
-        //}
+        [HttpPut("Landlord/{OwnerId}")]
+        public async Task<ActionResult<bool>> UpdateOwner(int OwnerId, OwnerDto owner)
+        {
+            try
+            {
+                owner.OwnerId = OwnerId; // Ensure ownerId is set
+                var isSuccess = await _userRepo.UpdateOwnerAsync(owner);
+                return Ok(isSuccess);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
 
-        //[HttpDelete("PropertyType/{propertytypeId}")]
-        //public async Task<ActionResult<bool>> DeletePropertyType(int propertytypeId)
-        //{
-        //    try
-        //    {
-        //        var isSuccess = await _userRepo.DeletePropertyTypeAsync(propertytypeId);
-        //        return Ok(isSuccess);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, $"An error occurred: {ex.Message}");
-        //    }
-        //}
+        [HttpDelete("Landlord/{ownerId}")]
+        public async Task<ActionResult<bool>> DeleteOwner(string ownerId)
+        {
+            try
+            {
+                var isSuccess = await _userRepo.DeleteOwnerAsync(ownerId);
+                return Ok(isSuccess);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
         #endregion
 
 

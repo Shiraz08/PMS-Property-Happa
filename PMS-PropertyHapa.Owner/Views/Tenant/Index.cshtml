@@ -213,6 +213,10 @@
                     '<div class="media-body">' +
                     '<h6>' + tenant.FirstName + ' ' + tenant.LastName + '</h6>' +
                     '<p>' + tenant.EmailAddress + '</p>' +
+                    '<div class="mt-2">' +
+                    '<a href="/Tenant/EditTenant/' + tenant.TenantId + '" style="margin-right: 10px;">Edit</a>' +
+                    '<a href="javascript:void(0);" onclick="deleteTenant(' + tenant.TenantId + ');">Delete</a>' +
+                    '</div>' +
                     '</div>' +
                     '</div>' +
                     '</a>';

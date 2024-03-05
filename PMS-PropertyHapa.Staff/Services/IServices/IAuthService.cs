@@ -30,6 +30,16 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
         Task<bool> UpdateTenantAsync(TenantModelDto tenant);
         Task<bool> DeleteTenantAsync(string tenantId);
 
+
+
+
+        Task<bool> CreateLandlordAsync(OwnerDto owner);
+
+
+        Task<bool> UpdateLandlordAsync(OwnerDto owner);
+
+        Task<bool> DeleteLandlordAsync(string ownerId);
+
         Task<TenantModelDto> GetSingleTenantAsync(int tenantId);
 
 
@@ -72,5 +82,8 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
 
         Task<TenantOrganizationInfoDto> GetTenantOrganizationByIdAsync(int tenantId);
 
+
+
+        Task<OwnerDto> GetSingleLandlordAsync(int ownerId);
     }
 }

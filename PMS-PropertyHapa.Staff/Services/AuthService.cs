@@ -269,6 +269,33 @@ namespace PMS_PropertyHapa.Staff.Services
         }
 
 
+
+        public async Task<OwnerDto> GetSingleLandlordAsync(int ownerId)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.GET,
+                    Url = $"{villaUrl}/api/v1/LandlordAuth/GetSingleLandlord/{ownerId}"
+                });
+
+                if (response != null && response.IsSuccess)
+                {
+                    return JsonConvert.DeserializeObject<OwnerDto>(Convert.ToString(response.Result));
+                }
+                else
+                {
+                    throw new Exception("Failed to retrieve owner data");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when fetching owner data: {ex.Message}", ex);
+            }
+        }
+
+
         public async Task<bool> CreateTenantAsync(TenantModelDto tenant)
         {
             try
@@ -829,5 +856,69 @@ namespace PMS_PropertyHapa.Staff.Services
         }
 
         #endregion
+
+
+        #region Landlord
+
+
+        public async Task<bool> CreateLandlordAsync(OwnerDto owner)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Data = owner,
+                    Url = $"{villaUrl}/api/v1/LandlordAuth/Landlord"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when creating tenant: {ex.Message}", ex);
+            }
+        }
+
+
+        public async Task<bool> UpdateLandlordAsync(OwnerDto owner)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.PUT,
+                    Data = owner,
+                    Url = $"{villaUrl}/api/v1/LandlordAuth/Landlord/{owner.OwnerId}"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when updating owner: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<bool> DeleteLandlordAsync(string ownerId)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.DELETE,
+                    Url = $"{villaUrl}/api/v1/LandlordAuth/Landlord/{ownerId}"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when deleting owner: {ex.Message}", ex);
+            }
+        }
+        #endregion
     }
+
+
 }
