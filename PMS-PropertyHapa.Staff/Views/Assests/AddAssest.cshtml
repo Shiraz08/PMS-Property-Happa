@@ -7,6 +7,8 @@
 }
 
 <head>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
     <style>
 
 
@@ -296,7 +298,7 @@
                                 <h3>Unit Information</h3>
                                 <div id="unitFieldsContainer">
                                 </div>
-                                <button type="button" class="btn btn-info" id="addAnotherUnit">Add Another Unit</button>
+                                <a href="javascript:void(0);" class="btn btn-info" id="addAnotherUnit"><i class="fa fa-plus"></i></a>
                             </fieldset>
 
                             <fieldset id="step4" class="step-section">
@@ -477,44 +479,45 @@
 
 
 
-
 <script>
     var currentStep = 1;
     var totalSteps = 6;
+
+    function navigateToStep(step) {
+        $('.step-section').hide();
+        $('#step' + step).fadeIn('slow');
+        currentStep = step;
+
+        var progressWidth = ((step - 1) / (totalSteps - 1)) * 100;
+        $('.f1-progress-line').css('width', progressWidth + '%');
+
+        $('.f1-step').removeClass('active');
+        $('#stepIndicator' + step).addClass('active');
+
+        if (step === 1) {
+            $('.btn-previous').hide();
+        } else {
+            $('.btn-previous').show();
+        }
+
+        if (step == totalSteps) {
+            $('.btn-next').text('Submit').attr('type', 'submit').off('click').on('click', function (e) {
+            
+                e.preventDefault();
+              
+            });
+        } else {
+            $('.btn-next').text('Next').attr('type', 'button').off('click').on('click', function () {
+                navigateToStep(currentStep + 1);
+            });
+        }
+    }
+
+
     $(document).ready(function () {
 
 
-        function navigateToStep(step) {
-            $('.step-section').hide();
-            $('#step' + step).fadeIn('slow');
-            currentStep = step;
-
-            var progressWidth = ((step - 1) / (totalSteps - 1)) * 100;
-            $('.f1-progress-line').css('width', progressWidth + '%');
-
-            $('.f1-step').removeClass('active');
-            $('#stepIndicator' + step).addClass('active');
-
-            if (step === 1) {
-                $('.btn-previous').hide();
-            } else {
-                $('.btn-previous').show();
-            }
-
-            // Update button text and action without using 'onclick'
-            if (step == totalSteps) {
-                $('.btn-next').text('Submit').attr('type', 'submit').off('click').on('click', function (e) {
-                    // Prevent default form submission if you need to perform custom validation or AJAX submission
-                    e.preventDefault();
-                    // Call your form submission logic here, if custom action is required
-                    // submitForm();
-                });
-            } else {
-                $('.btn-next').text('Next').attr('type', 'button').off('click').on('click', function () {
-                    navigateToStep(currentStep + 1);
-                });
-            }
-        }
+      
 
         $('.btn-next').click(function () {
             if (currentStep < totalSteps) {
@@ -937,21 +940,25 @@
         debugger;
         // Manually construct the JSON object from the form data
         var formData = collectFormData();
+        console.log(formData); // Debug: Inspect the structure and data
 
         if (currentStep === totalSteps) {
             $.ajax({
-                url: '@Url.Action("AddAsset", "Assests")',
+                url: '/Assests/AddAsset', 
                 type: 'POST',
-                contentType: 'application/json; charset=utf-8',
-                data: JSON.stringify(formData),
+                contentType: 'application/x-www-form-urlencoded',
+                data: formData,
                 success: function (response) {
                     console.log("Success:", response);
-                    window.location.href = '/SuccessPage';
+                    window.location.href = '/Assests/Index';
+                  
                 },
                 error: function (xhr, status, error) {
                     console.error("Error:", error);
+            
                 }
             });
+
 
         } else {
             navigateToStep(currentStep + 1);
@@ -966,11 +973,11 @@
         var units = [];
         $('#unitFieldsContainer .unit-fields').each(function () {
             var unit = {
-                UnitName: $(this).find('[name="unitName"]').val(),
-                Beds: parseInt($(this).find('[name="beds"]').val(), 10),
-                Bath: parseInt($(this).find('[name="bath"]').val(), 10),
-                Size: parseInt($(this).find('[name="size"]').val(), 10),
-                Rent: parseFloat($(this).find('[name="rent"]').val())
+                UnitName: $(this).find('input[name="unitName"]').val(), 
+                Beds: parseInt($(this).find('input[name="beds"]').val(), 10),
+                Bath: parseInt($(this).find('input[name="bath"]').val(), 10),
+                Size: parseInt($(this).find('input[name="size"]').val(), 10),
+                Rent: parseFloat($(this).find('input[name="rent"]').val())
             };
             units.push(unit);
         });
@@ -985,33 +992,39 @@
         function addUnitFields() {
             var unitIndex = $('#unitFieldsContainer .unit-fields').length + 1;
             var unitFieldsHtml = `
-                        <div class="unit-fields" id="unitFields${unitIndex}">
-                            <hr>
-                            <h5>Unit ${unitIndex}</h5>
-                            <div class="form-row">
-                                <div class="col">
-                                    <input type="text" class="form-control" placeholder="Unit Name" name="unitName[]">
-                                </div>
-                                <div class="col">
-                                    <input type="number" class="form-control" placeholder="Beds" name="beds[]">
-                                </div>
-                                <div class="col">
-                                    <input type="number" class="form-control" placeholder="Bath" name="bath[]">
-                                </div>
-                                <div class="col">
-                                    <input type="number" class="form-control" placeholder="Size" name="size[]">
-                                </div>
-                                <div class="col">
-                                    <input type="number" class="form-control" placeholder="Rent" name="rent[]">
-                                </div>
-                            </div>
-                        </div>`;
+                <div class="unit-fields mb-3" id="unitFields${unitIndex}">
+                    <hr>
+                    <h5>Unit ${unitIndex} <a class="float-right remove-unit" data-unit="${unitIndex}"><i class="fa fa-times"></i></a></h5>
+                    <div class="form-row">
+                        <div class="col">
+                            <input type="text" class="form-control" placeholder="Unit Name" name="unitName[]">
+                        </div>
+                        <div class="col">
+                            <input type="number" class="form-control" placeholder="Beds" name="beds[]">
+                        </div>
+                        <div class="col">
+                            <input type="number" class="form-control" placeholder="Bath" name="bath[]">
+                        </div>
+                        <div class="col">
+                            <input type="number" class="form-control" placeholder="Size" name="size[]">
+                        </div>
+                        <div class="col">
+                            <input type="number" class="form-control" placeholder="Rent" name="rent[]">
+                        </div>
+                    </div>
+                </div>`;
             $('#unitFieldsContainer').append(unitFieldsHtml);
         }
+
         addUnitFields();
 
         $('#addAnotherUnit').click(function () {
             addUnitFields();
+        });
+
+        $('#unitFieldsContainer').on('click', '.remove-unit', function () {
+            var unitId = $(this).attr('data-unit');
+            $('#unitFields' + unitId).remove();
         });
     });
 

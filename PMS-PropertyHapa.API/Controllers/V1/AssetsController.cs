@@ -10,6 +10,7 @@ using System.Web;
 using System.Security.Claims;
 using System.Net.Http.Headers;
 using PMS_PropertyHapa.Models.Roles;
+using PMS_PropertyHapa.Models.Entities;
 
 namespace PMS_PropertyHapa.API.Controllers.V1
 {
@@ -141,19 +142,27 @@ namespace PMS_PropertyHapa.API.Controllers.V1
         //}
 
 
-        //[HttpPost("PropertyType")]
-        //public async Task<ActionResult<bool>> CreatePropertyType(PropertyTypeDto tenant)
-        //{
-        //    try
-        //    {
-        //        var isSuccess = await _userRepo.CreatePropertyTypeAsync(tenant);
-        //        return Ok(isSuccess);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, $"An error occurred: {ex.Message}");
-        //    }
-        //}
+        [HttpPost("Asset")]
+        public async Task<ActionResult<bool>> CreateAssets(AssetDTO asset)
+        {
+            try
+            {
+                var isSuccess = await _userRepo.CreateAssetAsync(asset);
+
+                if (isSuccess == true)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = isSuccess;
+                   
+                }
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
 
         //[HttpPut("PropertyType/{PropertyTypeId}")]
         //public async Task<ActionResult<bool>> UpdatePropertyType(int PropertyTypeId, PropertyTypeDto tenant)

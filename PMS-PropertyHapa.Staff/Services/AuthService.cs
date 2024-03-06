@@ -325,7 +325,7 @@ namespace PMS_PropertyHapa.Staff.Services
                 {
                     ApiType = SD.ApiType.POST,
                     Data = asset,
-                    Url = $"{villaUrl}/api/v1/Assetauth/Asset"
+                    Url = $"{villaUrl}/api/v1/AssetsAuth/Asset"
                 });
 
                 return response.IsSuccess;

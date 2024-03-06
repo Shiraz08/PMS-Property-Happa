@@ -20,12 +20,8 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> AddAsset([FromBody] AssetDTO assetDTO)
+        public async Task<IActionResult> AddAsset(AssetDTO assetDTO)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
 
             try
             {
@@ -34,7 +30,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { success = false, message = "An error occurred while adding the asset." });
+                return StatusCode(500, new { success = false, message = $"An error occurred while adding the asset. {ex.Message}" });
             }
         }
 

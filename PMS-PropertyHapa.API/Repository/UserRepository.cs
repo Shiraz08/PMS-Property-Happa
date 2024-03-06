@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using NuGet.ContentModel;
 using PMS_PropertyHapa.MigrationsFiles.Data;
 using PMS_PropertyHapa.Models;
 using PMS_PropertyHapa.Models.DTO;
@@ -1426,6 +1427,39 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
+
+        public async Task<bool> CreateAssetAsync(AssetDTO assetDTO)
+        {
+            var newAsset = new Assets
+            {
+               
+                AssetId = assetDTO.AssetId,
+                SelectedPropertyType = assetDTO.SelectedPropertyType,
+                SelectedBankAccountOption = assetDTO.SelectedBankAccountOption,
+                SelectedReserveFundsOption = assetDTO.SelectedReserveFundsOption,
+                SelectedSubtype = assetDTO.SelectedSubtype,
+                SelectedOwnershipOption = assetDTO.SelectedOwnershipOption,
+                Street1 = assetDTO.Street1,
+                Street2 = assetDTO.Street2,
+                City = assetDTO.City,
+                Country = assetDTO.Country,
+                Zipcode = assetDTO.Zipcode,
+                State = assetDTO.State,
+                OwnerName = assetDTO.OwnerName,
+                OwnerCompanyName = assetDTO.OwnerCompanyName,
+                OwnerAddress = assetDTO.OwnerAddress,
+                OwnerStreet = assetDTO.OwnerStreet,
+                OwnerZipcode = assetDTO.OwnerZipcode,
+                OwnerCity = assetDTO.OwnerCity,
+                OwnerCountry = assetDTO.OwnerCountry,
+            };
+
+            await _db.Assets.AddAsync(newAsset); 
+            var result = await _db.SaveChangesAsync();
+
+            return result > 0; 
+        }
+
 
         #endregion
 
