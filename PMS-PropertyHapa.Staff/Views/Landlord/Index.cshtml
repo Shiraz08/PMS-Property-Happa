@@ -71,7 +71,7 @@
                                                                                     <li><a onclick="deleteOwner(@item.OwnerId)">Delete</a></li>
                                                                                 </ul>
                                                                             </div>
-                                                                        </div> 
+                                                                        </div>
                                                                     </div>
                                                                     <div class="col-xl-12 col-lg-12 col-md-5">
                                                                         <div class="default-according style-1 faq-accordion job-accordion">
@@ -88,7 +88,7 @@
                                                                                                 <ul style="width:50%; float:left;">
                                                                                                     <li>
                                                                                                         <div style="padding-bottom:15px!important">
-                                                                                                            <h5 >Name</h5>
+                                                                                                            <h5>Name</h5>
                                                                                                             <p>@item.FirstName @item.LastName</p>
                                                                                                         </div>
                                                                                                     </li>
@@ -212,7 +212,7 @@
                                                                                                             {
                                                                                                                 <p>----------------</p>
                                                                                                             }
-                                                                                                           
+
                                                                                                         </div>
                                                                                                     </li>
                                                                                                 </ul>
@@ -313,9 +313,8 @@
     </div>
     <!-- Container-fluid Ends-->
 </div>
- <script>
-    $(document).ready(function ()
-    {
+<script>
+    $(document).ready(function () {
         $('.contacts-tabs .nav-link ').removeClass('active show');
         $('.contacts-tabs .tab-content .tab-content-child ').removeClass('active show');
         $('.contact-tab-' + @Model.Take(1).Select(x=>x.OwnerId).FirstOrDefault()).addClass('active show');

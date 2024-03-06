@@ -40,8 +40,8 @@ namespace PMS_PropertyHapa.Staff.Controllers
         public async Task<IActionResult> Index()
         {
             var owner = await _authService.GetAllLandlordAsync();
-            return View(owner); 
-        } 
+            return View(owner);
+        }
         public IActionResult AddLandlord()
         {
             return View();
@@ -66,7 +66,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Create( OwnerDto owner)
+        public async Task<IActionResult> Create(OwnerDto owner)
         {
             if (Guid.TryParse(owner.AppTid, out Guid appTenantId))
             {
@@ -90,14 +90,14 @@ namespace PMS_PropertyHapa.Staff.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Update([FromBody] OwnerDto owner)
+        public async Task<IActionResult> Update(OwnerDto owner)
         {
             owner.AppTenantId = Guid.Parse(owner.AppTid);
 
             if (owner.PictureUrl != null && owner.PictureUrl.Length > 0)
             {
                 var (fileName, base64String) = await ImageUploadUtility.UploadImageAsync(owner.PictureUrl, "uploads");
-                owner.Picture = base64String;
+                owner.Picture = $"data:image/png;base64,{base64String}";
             }
 
             owner.PictureUrl = null;
@@ -119,7 +119,6 @@ namespace PMS_PropertyHapa.Staff.Controllers
         {
             OwnerDto owner = null;
 
-
             if (ownerId > 0)
             {
                 owner = await _authService.GetSingleLandlordAsync(ownerId);
@@ -128,10 +127,13 @@ namespace PMS_PropertyHapa.Staff.Controllers
                 {
                     return NotFound();
                 }
+
             }
 
             return View("AddLandlord", owner);
         }
+
+
 
     }
 }

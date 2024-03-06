@@ -147,7 +147,13 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             try
             {
                 var isSuccess = await _userRepo.CreateOwnerAsync(owner);
-                return Ok(isSuccess);
+                if (isSuccess == true)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = isSuccess;
+                }
+                return Ok(_response);
             }
             catch (Exception ex)
             {

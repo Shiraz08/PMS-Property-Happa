@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using PMS_PropertyHapa.Models.DTO;
+using PMS_PropertyHapa.Models.Entities;
 using PMS_PropertyHapa.Staff.Services.IServices;
 using System.Security.Claims;
 
@@ -18,6 +19,11 @@ namespace PMS_PropertyHapa.Staff.Controllers
         }
 
 
+        public async Task<IActionResult> Index()
+        {
+            var owner = await _authService.GetAllTenantsAsync();
+            return View(owner);
+        }
 
         public async Task<IActionResult> GetTenant(string tenantId)
         {
@@ -67,10 +73,6 @@ namespace PMS_PropertyHapa.Staff.Controllers
             await _authService.DeleteTenantAsync(tenantId);
             return Json(new { success = true, message = "Tenant deleted successfully" });
         }
-        public IActionResult Index()
-        {
-            return View();
-        }
         public IActionResult AddTenant()
         {
             var model = new TenantModelDto(); 
@@ -80,17 +82,20 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
         public async Task<IActionResult> EditTenant(int tenantId)
         {
-            TenantModelDto tenant = null;
+            TenantModelDto tenant;
 
-           
             if (tenantId > 0)
             {
                 tenant = await _authService.GetSingleTenantAsync(tenantId);
 
                 if (tenant == null)
                 {
-                    return NotFound(); 
+                    return NotFound();
                 }
+            }
+            else
+            {
+                tenant = new TenantModelDto();
             }
 
             return View("AddTenant", tenant);

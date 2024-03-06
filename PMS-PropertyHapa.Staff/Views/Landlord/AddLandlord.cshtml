@@ -41,7 +41,7 @@
                             </div>
                             <div class="card-body">
                                 <div class="row">
-                                    <input type="hidden" id="TenantId" name="TenantId" value="@Model?.OwnerId" />
+                                    <input type="hidden" id="OwnerId" name="OwnerId" value="@Model?.OwnerId" />
                                     <!-- First Name -->
                                     <div class="col-sm-6 col-md-3">
                                         <div class="mb-3">
@@ -299,7 +299,7 @@
             var userId = localStorage.getItem('userId');
             formData.append('AppTId', userId); 
 
-            var ajaxUrl = $('#TenantId').val() ? '/Landlord/Update' : '/Landlord/Create';
+            var ajaxUrl = $('#OwnerId').val() ? '/Landlord/Update' : '/Landlord/Create';
 
             $.ajax({
                 url: ajaxUrl,
@@ -372,7 +372,7 @@
                 });
                 return;
             }
-
+            debugger;
             var formData = new FormData($('#tenantForm')[0]);
             var userId = localStorage.getItem('userId');
             formData.append('AppTId', stringToGuid(userId)); 
