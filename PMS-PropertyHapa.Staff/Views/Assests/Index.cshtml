@@ -1,4 +1,4 @@
-﻿@model IEnumerable<PMS_PropertyHapa.Models.DTO.AssetDTO>
+@model IEnumerable<PMS_PropertyHapa.Models.DTO.AssetDTO>
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -249,7 +249,9 @@
 </div>
 <script>
     $(document).ready(function () {
-
+        $('.contacts-tabs .nav-link ').removeClass('active show');
+        $('.contacts-tabs .tab-content .tab-content-child ').removeClass('active show');
+        $('.contact-tab-' + @Model?.Take(1).Select(x=>x.AssetId).FirstOrDefault()).addClass('active show');
     });
 </script>
 
