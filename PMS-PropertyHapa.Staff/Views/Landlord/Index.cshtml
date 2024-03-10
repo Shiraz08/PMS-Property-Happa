@@ -3,19 +3,17 @@
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-<!-- Page Sidebar Ends-->
 <div class="page-body">
     <div class="container-fluid">
         <div class="page-title">
             <div class="row">
                 <div class="col-12 col-sm-6">
-                    <h3>Owner List</h3>
+                    <h3>Landlord List</h3>
                 </div>
                 <div class="col-12 col-sm-6">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="index.html"><i data-feather="home"></i></a></li>
-                        <li class="breadcrumb-item">Owner</li>
+                        <li class="breadcrumb-item">Landlord</li>
                         <li class="breadcrumb-item active">List</li>
                     </ol>
                 </div>
@@ -49,12 +47,12 @@
                                                                 </svg>
 
                                                             </span>
-                                                            <input class="form-control" type="text" placeholder="Search Tenant" aria-label="search" aria-describedby="basic-addon1">
+                                                            <input class="form-control" type="text" id="searchInput" placeholder="Search Landlord" aria-label="search" aria-describedby="basic-addon1">
                                                         </div>
                                                     </div>
 
                                                     <div class="right-side-header">
-                                                        <button class="btn btn-primary" type="button">Export to CSV</button>
+                                                        <a class="btn btn-primary" href="@Url.Action("AddLandlord","Landlord")">Add New Landlord</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -79,16 +77,13 @@
                                                             }
 
                                                         </div>
+                                                        </div>
                                                         <div class="col-xl-9 xl-20 col-md-7 box-col-6" style="padding-left: 0px;">
                                                             <div class="tab-content" id="v-pills-tabContent">
                                                                 @foreach (var item in Model ?? Enumerable.Empty<PMS_PropertyHapa.Models.DTO.OwnerDto>())
                                                                 {
                                                                     <div class="tab-pane contact-tab-@item.OwnerId tab-content-child fade" id="v-pills-@item.OwnerId" role="tabpanel" aria-labelledby="v-pills-@item.OwnerId-tab">
                                                                         <div class="profile-mail">
-                                                                            <div class="d-flex border-0 px-2" style="height: 35px;">
-                                                                                <span class="fw-bold">Owner Detail</span>
-                                                                                <i class="icon-close"></i>
-                                                                            </div>
                                                                             <div class="d-flex justify-content-between border-0 p-2" style="align-items: flex-start !important; background-color: #f4f8ff;">
 
 
@@ -108,7 +103,7 @@
                                                                                                     <span class="font-primary">@item.EmailAddress</span>
                                                                                                 </div>
                                                                                                 <div class="d-flex flex-column border-0 ">
-                                                                                                    <span>Tenant since</span>
+                                                                                                    <span>Landlord since</span>
                                                                                                     <span class="fw-bold ">@DateTime.Now.ToShortDateString()</span>
                                                                                                 </div>
                                                                                             </div>
@@ -122,7 +117,7 @@
 
                                                                                 </div>
                                                                                 <div class="right-side-header">
-                                                                                    <button class="btn" style="background-color: #c9c9c9;color: black;" type="button" onclick="editTenant(@item.OwnerId)">
+                                                                                <button class="btn" style="background-color: #c9c9c9;color: black;" type="button" onclick="editLandlord(@item.OwnerId)">
                                                                                         Edit Owner
                                                                                     </button>
                                                                                 </div>
@@ -155,14 +150,14 @@
                                                                                         </div>
                                                                                         <div class="d-flex border-0  flex-column">
                                                                                             <span class="fw-medium" style="font-size: 12px; color: #999;">Shared with</span>
-                                                                                            <img class="img-fluid rounded-circle update_img_0" src="../assets/images/user/2.png" alt="" style="max-width: 30px; height: auto;">
+                                                                                            <img class="img-fluid rounded-circle update_img_0" src="~/Dashboard/assets/images/user/2.png" alt="" style="max-width: 30px; height: auto;">
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 px-md-3 px-2 py-3">
                                                                                     <div class="text-primary fw-bold">Collection</div>
                                                                                     <div class="d-flex flex-wrap border-0 ">
-                                                                                        <img class="img-fluid rounded-circle  m-r-20 update_img_0 mt-3 " src="../assets/images/user/2.png" alt="" style="width: 30px; height: 30px">
+                                                                                        <img class="img-fluid rounded-circle  m-r-20 update_img_0 mt-3 " src="~/Dashboard/assets/images/user/2.png" alt="" style="width: 30px; height: 30px">
                                                                                         <div class="flex-grow-1 d-flex flex-column border-0  px-2" style="gap: 10px;">
                                                                                             <div class="d-flex flex-column mt-3 border-0 ">
                                                                                                 <span class="fw-medium" style="font-size: 12px; color: #999;">Current Invoices</span>
@@ -242,7 +237,6 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -255,8 +249,23 @@
         </div>
     </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
 <script>
     $(document).ready(function () {
+        $('#searchInput').on('input', function () {
+            var searchText = $(this).val().toLowerCase();
+            $('.nav-link').each(function () {
+                var ownerName = $(this).find('.first_name_0').text().toLowerCase() + ' ' + $(this).find('.last_name_0').text().toLowerCase();
+                if (ownerName.includes(searchText)) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        });
         $('.contacts-tabs .nav-link ').removeClass('active show');
         $('.contacts-tabs .tab-content .tab-content-child ').removeClass('active show');
         $('.contact-tab-' + @Model.Take(1).Select(x=>x.OwnerId).FirstOrDefault()).addClass('active show');
