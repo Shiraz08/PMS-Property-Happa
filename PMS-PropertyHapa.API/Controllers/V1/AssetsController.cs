@@ -77,71 +77,6 @@ namespace PMS_PropertyHapa.API.Controllers.V1
         }
 
 
-
-        //[HttpGet("PropertyType/{tenantId}")]
-        //public async Task<IActionResult> GetPropertyTypeById(string tenantId)
-        //{
-        //    try
-        //    {
-        //        var propertyTypeDto = await _userRepo.GetPropertyTypeByIdAsync(tenantId);
-
-        //        if (propertyTypeDto != null)
-        //        {
-        //            _response.StatusCode = HttpStatusCode.OK;
-        //            _response.IsSuccess = true;
-        //            _response.Result = propertyTypeDto;
-        //            return Ok(_response);
-        //        }
-        //        else
-        //        {
-        //            _response.StatusCode = HttpStatusCode.NotFound;
-        //            _response.IsSuccess = false;
-        //            _response.ErrorMessages.Add("No propertyType found with this id.");
-        //            return NotFound(_response);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _response.StatusCode = HttpStatusCode.NotFound;
-        //        _response.IsSuccess = false;
-        //        _response.ErrorMessages.Add("Error Occured");
-        //        return NotFound(_response);
-        //    }
-        //}
-
-
-        //[HttpGet("GetSinglePropertyType/{propertytypeId}")]
-        //public async Task<IActionResult> GetSinglePropertyType(int propertytypeId)
-        //{
-        //    try
-        //    {
-        //        var tenantDto = await _userRepo.GetSinglePropertyTypeByIdAsync(propertytypeId);
-
-        //        if (tenantDto != null)
-        //        {
-        //            _response.StatusCode = HttpStatusCode.OK;
-        //            _response.IsSuccess = true;
-        //            _response.Result = tenantDto;
-        //            return Ok(_response);
-        //        }
-        //        else
-        //        {
-        //            _response.StatusCode = HttpStatusCode.NotFound;
-        //            _response.IsSuccess = false;
-        //            _response.ErrorMessages.Add("No user found with this id.");
-        //            return NotFound(_response);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _response.StatusCode = HttpStatusCode.NotFound;
-        //        _response.IsSuccess = false;
-        //        _response.ErrorMessages.Add("Error Occured");
-        //        return NotFound(_response);
-        //    }
-        //}
-
-
         [HttpPost("Asset")]
         public async Task<ActionResult<bool>> CreateAssets(AssetDTO asset)
         {
@@ -164,39 +99,35 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             }
         }
 
-        //[HttpPut("PropertyType/{PropertyTypeId}")]
-        //public async Task<ActionResult<bool>> UpdatePropertyType(int PropertyTypeId, PropertyTypeDto tenant)
-        //{
-        //    try
-        //    {
-        //        tenant.PropertyTypeId = PropertyTypeId; // Ensure tenantId is set
-        //        var isSuccess = await _userRepo.UpdatePropertyTypeAsync(tenant);
-        //        return Ok(isSuccess);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, $"An error occurred: {ex.Message}");
-        //    }
-        //}
+        [HttpPut("Asset/{assetId}")]
+        public async Task<ActionResult<bool>> UpdateAssets(int assetId, AssetDTO asset)
+        {
+            try
+            {
+                asset.AssetId = assetId; 
+                var isSuccess = await _userRepo.UpdateAssetAsync(asset);
+                return Ok(isSuccess);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
 
-        //[HttpDelete("PropertyType/{propertytypeId}")]
-        //public async Task<ActionResult<bool>> DeletePropertyType(int propertytypeId)
-        //{
-        //    try
-        //    {
-        //        var isSuccess = await _userRepo.DeletePropertyTypeAsync(propertytypeId);
-        //        return Ok(isSuccess);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, $"An error occurred: {ex.Message}");
-        //    }
-        //}
+        [HttpDelete("Asset/{assetId}")]
+        public async Task<ActionResult<bool>> DeleteAssets(int assetId)
+        {
+            try
+            {
+                var isSuccess = await _userRepo.DeleteAssetAsync(assetId);
+                return Ok(isSuccess);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
         #endregion
-
-
-
-
-
+        
     }
 }

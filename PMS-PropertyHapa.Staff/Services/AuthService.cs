@@ -7,6 +7,7 @@ using System.Net.Http;
 using PMS_PropertyHapa.Staff.Models;
 using APIResponse = PMS_PropertyHapa.Staff.Models.APIResponse;
 using PMS_PropertyHapa.Staff.Services.IServices;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace PMS_PropertyHapa.Staff.Services
 {
@@ -341,11 +342,12 @@ namespace PMS_PropertyHapa.Staff.Services
         {
             try
             {
+                int assetId = asset.AssetId;
                 var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
                 {
-                    ApiType = SD.ApiType.POST,
+                    ApiType = SD.ApiType.PUT,
                     Data = asset,
-                    Url = $"{villaUrl}/api/v1/Assetauth/Asset/Update"
+                    Url = $"{villaUrl}/api/v1/AssetsAuth/Asset/{assetId}"
                 });
 
                 return response.IsSuccess;
@@ -357,14 +359,14 @@ namespace PMS_PropertyHapa.Staff.Services
         }
 
 
-        public async Task<bool> DeleteAssetAsync(int propertyId)
+        public async Task<bool> DeleteAssetAsync(int assetId)
         {
             try
             {
                 var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
                 {
                     ApiType = SD.ApiType.DELETE,
-                    Url = $"{villaUrl}/api/v1/Assetauth/Asset/Delete/{propertyId}"
+                    Url = $"{villaUrl}/api/v1/AssetsAuth/Asset/{assetId}"
                 });
 
                 return response.IsSuccess;

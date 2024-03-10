@@ -110,5 +110,9 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
 
         Task<bool> CreateAssetAsync(AssetDTO assetDTO);
 
+        Task<bool> UpdateAssetAsync(AssetDTO assetDTO);
+
+        Task<bool> DeleteAssetAsync(int assetId);
+
     }
 }

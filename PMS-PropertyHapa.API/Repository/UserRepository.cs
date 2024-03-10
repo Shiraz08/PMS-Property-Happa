@@ -1392,8 +1392,11 @@ namespace MagicVilla_VillaAPI.Repository
             try
             {
                 var propertyTypes = await _db.Assets
+                                             .Include(asset => asset.Units)
                                              .AsNoTracking()
                                              .ToListAsync();
+
+
 
                 var propertyTypeDtos = propertyTypes.Select(tenant => new AssetDTO
                 {
@@ -1432,8 +1435,6 @@ namespace MagicVilla_VillaAPI.Repository
         {
             var newAsset = new Assets
             {
-               
-                AssetId = assetDTO.AssetId,
                 SelectedPropertyType = assetDTO.SelectedPropertyType,
                 SelectedBankAccountOption = assetDTO.SelectedBankAccountOption,
                 SelectedReserveFundsOption = assetDTO.SelectedReserveFundsOption,
@@ -1452,12 +1453,108 @@ namespace MagicVilla_VillaAPI.Repository
                 OwnerZipcode = assetDTO.OwnerZipcode,
                 OwnerCity = assetDTO.OwnerCity,
                 OwnerCountry = assetDTO.OwnerCountry,
+                Units = new List<AssetsUnits>() 
             };
 
-            await _db.Assets.AddAsync(newAsset); 
+            foreach (var u in assetDTO.Units)
+            {
+                var unit = new AssetsUnits
+                {
+                    UnitName = u.UnitName,
+                    Beds = u.Beds,
+                    Bath = u.Bath,
+                    Size = u.Size,
+                    Rent = u.Rent
+                };
+                newAsset.Units.Add(unit);
+            }
+            await _db.Assets.AddAsync(newAsset);
             var result = await _db.SaveChangesAsync();
 
-            return result > 0; 
+            return result > 0;
+        }
+
+
+        public async Task<bool> UpdateAssetAsync(AssetDTO assetDTO)
+        {
+            var existingAsset = await _db.Assets.FindAsync(assetDTO.AssetId);
+            if (existingAsset == null)
+            {
+                return false;
+            }
+            
+            existingAsset.SelectedPropertyType = assetDTO.SelectedPropertyType;
+            existingAsset.SelectedBankAccountOption = assetDTO.SelectedBankAccountOption;
+            existingAsset.SelectedReserveFundsOption = assetDTO.SelectedReserveFundsOption;
+            existingAsset.SelectedSubtype = assetDTO.SelectedSubtype;
+            existingAsset.SelectedOwnershipOption = assetDTO.SelectedOwnershipOption;
+            existingAsset.Street1 = assetDTO.Street1;
+            existingAsset.Street2 = assetDTO.Street2;
+            existingAsset.City = assetDTO.City;
+            existingAsset.Country = assetDTO.Country;
+            existingAsset.Zipcode = assetDTO.Zipcode;
+            existingAsset.State = assetDTO.State;
+            existingAsset.OwnerName = assetDTO.OwnerName;
+            existingAsset.OwnerCompanyName = assetDTO.OwnerCompanyName;
+            existingAsset.OwnerAddress = assetDTO.OwnerAddress;
+            existingAsset.OwnerStreet = assetDTO.OwnerStreet;
+            existingAsset.OwnerZipcode = assetDTO.OwnerZipcode;
+            existingAsset.OwnerCity = assetDTO.OwnerCity;
+            existingAsset.OwnerCountry = assetDTO.OwnerCountry;
+
+            foreach (var unitDTO in assetDTO.Units)
+            {
+                var existingUnit = existingAsset.Units.FirstOrDefault(u => u.UnitId == unitDTO.UnitId);
+                if (existingUnit != null)
+                {
+                    existingUnit.UnitName = unitDTO.UnitName;
+                    existingUnit.Beds = unitDTO.Beds;
+                    existingUnit.Bath = unitDTO.Bath;
+                    existingUnit.Size = unitDTO.Size;
+                    existingUnit.Rent = unitDTO.Rent;
+                }
+                else
+                {
+                    var newUnit = new AssetsUnits
+                    {
+                        AssetId = assetDTO.AssetId,
+                        UnitName = unitDTO.UnitName,
+                        Beds = unitDTO.Beds,
+                        Bath = unitDTO.Bath,
+                        Size = unitDTO.Size,
+                        Rent = unitDTO.Rent
+                    };
+                    existingAsset.Units.Add(newUnit);
+                }
+            }
+
+            foreach (var existingUnit in existingAsset.Units.ToList())
+            {
+                if (!assetDTO.Units.Any(u => u.UnitId == existingUnit.UnitId))
+                {
+                    _db.AssetsUnits.Remove(existingUnit);
+                }
+            }
+            
+            var result = await _db.SaveChangesAsync();
+
+            return result > 0;
+        }
+
+
+        public async Task<bool> DeleteAssetAsync(int assetId)
+        {
+            var asset = await _db.Assets.FindAsync(assetId);
+            if (asset == null)
+            {
+                return false;
+            }
+
+            _db.Assets.Remove(asset);
+
+            var result = await _db.SaveChangesAsync();
+
+            return result > 0;
         }
 
 

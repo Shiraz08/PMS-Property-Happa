@@ -223,8 +223,8 @@ $(document).ready(function () {
                                 '<h5>' + asset.OwnerName + '</h5>' +
                                 '<p>' + asset.OwnerCompanyName + '</p>' +
                               '<div class="mt-2">' +
-                    '<a href="/Tenant/EditOwner/' + asset.OwnerId + '" style="margin-right: 10px;">Edit</a>' +
-                    '<a href="javascript:void(0);" onclick="deleteTenant(' + asset.OwnerId + ');">Delete</a>' +
+                    '<a href="javascript:void(0)" onclick="editAsset(' + asset.AssetId + ')" style="margin-right: 10px;">Edit</a>' +
+                    '<a href="javascript:void(0)" onclick="deleteAsset(' + asset.AssetId + ');">Delete</a>' +
                     '</div>' +
                     '</div>' +
                     '</div>' +
@@ -255,4 +255,53 @@ $(document).ready(function () {
 }
 
 });
+
+
+
+
+    function deleteAsset(assetId) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Once deleted, you will not be able to recover this asset!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: `/Assests/DeleteAsset/?assetId=${encodeURIComponent(assetId)}`,
+                    type: 'DELETE',
+                    success: function (data) {
+                        if (data.success) {
+                            window.location.reload();
+                            Swal.fire(
+                                'Deleted!',
+                                'The asset has been deleted.',
+                                'success'
+                            );
+                        } else {
+                            Swal.fire(
+                                'Error!',
+                                'There was an issue deleting the asset.',
+                                'error'
+                            );
+                        }
+                    },
+                    error: function () {
+                        Swal.fire(
+                            'Error!',
+                            'There was an issue deleting the asset.',
+                            'error'
+                        );
+                    }
+                });
+            }
+        });
+    }
+
+    function editAsset(assetId) {
+        window.location.href = `/Assests/EditAsset/?assetId=${encodeURIComponent(assetId)}`;
+    }
 </script>
