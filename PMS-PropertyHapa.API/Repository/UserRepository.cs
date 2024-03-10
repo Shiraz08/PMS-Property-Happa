@@ -1013,8 +1013,6 @@ namespace MagicVilla_VillaAPI.Repository
                 Country = tenant.Country,
                 CountryCode = tenant.CountryCode
             }).ToList();
-
-
             return tenantDtos;
         }
 

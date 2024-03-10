@@ -31,7 +31,6 @@ namespace PMS_PropertyHapa.Models.DTO
         public Guid AppTenantId { get; set; }
 
         public string AppTid { get; set; }
-
         public string Address { get; set; }
         public string Address2 { get; set; }
         public string Locality { get; set; }
