@@ -1,130 +1,107 @@
-﻿
-<div class="page-body">
-    <div class="container default-dash">
+﻿@{
+    ViewData["Title"] = "Tenant Portal";
+}
+<section class="landing-home" id="home" style="height: 50vh;margin-bottom: 0px !important;margin-top: 90px !important;">
+    <img class="img-fluid bg-img-cover" src="~/Dashboard/assets/images/building.jpg" alt="">
+    <div class="custom-container">
         <div class="row">
-            <div class="col-md-12">
-                <div class="row">
-                    <div class="col-xl-6 col-md-6 dash-xl-50">
-                        <div class="card profile-greeting">
-                            <div class="card-body">
-                                <div class="media">
-                                    <div class="media-body">
-                                        <div class="greeting-user">
-                                            <h1>Hello, ,.....</h1>
-                                            <p>Welcome back, your dashboard is ready!</p>
-                                        </div>
-                                    </div>
+            <div class="col-12">
+                <div class="landing-home-contain">
+                    <div class="d-flex h-50 w-100 ">
+                        <div class="w-25 h-50 leftSectionBannar"></div>
+                        <div class="w-75 d-flex h-50 rightSectionBannar">
+                            <div class="">
+                                <div class="welcomBanner textWrapp">Welcome One</div>
+                                <div class="cradittext mt-2 textWrapp">Cradit Available</div>
+                                <div class="moneyText mt-2 textWrapp">$ 1,000.00</div>
+                                <div class="mt-2 fw-light textWrapp">
+                                    You next rent of
+                                    <span class="fw-bold ">$ 2,100.00</span>
+                                    is due on
+                                    <span class="fw-bold ">4/8/2023</span>
                                 </div>
-                                <div class="cartoon-img"><img class="img-fluid" src="~/Dashboard/assets/images/images.svg" alt=""></div>
-                             
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-6 col-lg-6 dash-xl-50">
-                        <div class="card total-transactions">
-                            <div class="row m-0">
-                                <div class="col-md-12 col-sm-12 p-0 report-sec">
-                                    <div class="card-body pt-0">
-                                        <div class="row" style="padding-top:27px!important">
-                                            <div class="col-6 report-main">
-                                                <div class="report-content text-center">
-                                                    <p class="font-theme-light">Balance Due</p>
-                                                    <h5>233.45$</h5>
-                                                </div>
-                                            </div>
-                                            <div class="col-6">
-                                                <div class="report-content text-center">
-                                                    <p class="font-theme-light">Next Payment</p>
-                                                    <h5>100.45$</h5>
-                                                </div>
-                                            </div>
-                                            <div class="col-6">
-                                                <div class="media report-perfom">
-                                                    <a class="btn btn-primary" href="">Setup Auto-Pay</a>
-                                                </div>
-                                            </div>
-                                            <div class="col-6">
-                                                <div class="media report-perfom">
-                                                    <a class="btn btn-success" href="">Make a Payment</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                <div class="mt-2 fw-light textAlignment textWrapp">
+                                    16182 RIO BAIL / HOUSE 2
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-12 col-md-12 col-xl-12">
-                        <div class="card card-absolute">
-                            <div class="card-header bg-primary b-l-primary">
-                                <h5 class="text-white">Absolute Style</h5>
-                            </div>
-                            <div class="card-body">
-                                <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled.</p>
+                            <div class="d-flex align-items-end gap-2 InfobutonWrapper">
+                                <button class="btn btn-light Cutombuttons">Setup auto-pay</button>
+                                <button class="btn btn-primary Cutombuttons">Make a Payment</button>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="col-lg-12 faq-articles">
-                        <div class="header-faq">
-                            <h3 class="mb-0">Latest articles and videos</h3>
-                        </div>
-                        <div class="row">
-                            <div class="col-xl-4 col-md-6">
-                                <div class="row">
-                                    <div class="col-sm-12">
-                                        <div class="card">
-                                            <div class="card-body">
-                                                <div class="media">
-                                                    <i class="m-r-30" data-feather="codepen"></i>
-                                                    <div class="media-body">
-                                                        <h6 class="f-w-600">Using Video</h6>
-                                                        <p>Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus.</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xl-4 col-md-6">
-                                <div class="row">
-                                    <div class="col-sm-12">
-                                        <div class="card">
-                                            <div class="card-body">
-                                                <div class="media">
-                                                    <i class="m-r-30" data-feather="file-text"></i>
-                                                    <div class="media-body">
-                                                        <h6 class="f-w-600"> Donec pede justo</h6>
-                                                        <p> Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xl-4">
-                                <div class="row">
-                                    <div class="col-xl-12 col-md-6">
-                                        <div class="card">
-                                            <div class="card-body">
-                                                <div class="media">
-                                                    <i class="m-r-30" data-feather="youtube"></i>
-                                                    <div class="media-body">
-                                                        <h6 class="f-w-600"> Vel illum qu</h6>
-                                                        <p>Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus.</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+</section>
+
+
+<div class="textdiv w-100 h-100 d-flex justify-content-center align-items-center ">
+    <div class="ReadMoreWrappar d-flex">
+        <div class="d-flex justify-content-between align-items-center p-3 w-100">
+            <img src="~/Dashboard/assets/images/message-icon.svg" style="width: 30px; height: 30px;" />
+            <div class="w-50">
+                <div class="d-flex justify-content-between align-items-center" style="border-bottom: 1px solid #9e9ed8;">
+                    <span class="fw-bold ">One Love</span>
+                    <span class="fw-bold">21-11-2022</span>
+                </div>
+                <div class="m-1">
+                    <span>Let's get togather and feel alright</span>
+                </div>
+            </div>
+            <button class="btn btn-dark">
+                Read more
+            </button>
+        </div>
+    </div>
 </div>
+
+
+
+
+<!-- landing home end-->
+<!-- demo section start-->
+<section class="demo-section section-py-space" id="dashboard">
+
+    <div class="custom-container">
+        <div class="row demo-block">
+            <div lass="col-lg-3 col-md-6 wow pulse"></div>
+            <div class="col-lg-3 col-md-6 wow pulse">
+                <div class="demo-box">
+                    <div class="img-wrraper bannarSetup">
+                        <img class="img-fluid" src="~/Dashboard/assets/images/autoPay.png" alt="" style="width: 70px">
+                        <h5 class="mt-1 ">AutoPay is active</h5>
+                        <p>You have 1 active auto-pay for this lease</p>
+                        <button class="btn btn-dark">Setup Auto-Pay</button>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 wow pulse">
+                <div class="demo-box">
+                    <div class="img-wrraper bannarSetup">
+                        <img class="img-fluid" src="~/Dashboard/assets/images/insurence.png" alt="" style="width: 60px">
+                        <h5 class="mt-1 ">You Are Insured</h5>
+                        <p>Insurence R Us</p>
+                        <button class="btn btn-dark">Get Insurence</button>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 wow pulse">
+                <div class="demo-box">
+                    <div class="img-wrraper bannarSetup">
+                        <img class="img-fluid" src="~/Dashboard/assets/images/request.png" alt="" style="width: 70px">
+                        <h5 class="mt-1 ">Requests</h5>
+                        <p>You have 50 active requests for this lease</p>
+                        <button class="btn btn-dark">New Request</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

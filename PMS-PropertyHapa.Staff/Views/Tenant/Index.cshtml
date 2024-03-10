@@ -3,13 +3,21 @@
     ViewData["Title"] = "Tenants";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<style>
+    .card {
+         margin-bottom: 0px!important;
+        }
 
+    .list-persons .profile-mail {
+        padding:0px !important;
+    }
+</style>
 <div class="page-body">
     <div class="container-fluid">
         <div class="page-title">
             <div class="row">
                 <div class="col-12 col-sm-6">
-                    <h3>Tenant List</h3>
+                    <h3>Tenant</h3>
                 </div>
                 <div class="col-12 col-sm-6">
                     <ol class="breadcrumb">
@@ -48,11 +56,11 @@
                                                                 </svg>
 
                                                             </span>
-                                                            <input class="form-control" id="searchInput" type="text" placeholder="Search Tenant" aria-label="search" aria-describedby="basic-addon1">
+                                                            <input class="form-control" type="text" id="searchInput" placeholder="Search Tenant" aria-label="search" aria-describedby="basic-addon1">
                                                         </div>
                                                     </div>
 
-                                                    <div class="right-side-header">
+                                                    <div class="right-side-header" >
                                                         <a class="btn btn-primary" href="@Url.Action("AddTenant","Tenant")">Add New Tenant</a>
                                                     </div>
                                                 </div>
@@ -65,9 +73,9 @@
 
                                                             @foreach (var item in Model ?? Enumerable.Empty<PMS_PropertyHapa.Models.DTO.TenantModelDto>())
                                                             {
-                                                                <a class="contact-tab-@item.TenantId nav-link" id="v-pills-@item.TenantId-tab" data-bs-toggle="pill" onclick="activeDiv(@item.TenantId)" href="#v-pills-@item.TenantId" role="tab" aria-controls="v-pills-@item.TenantId" aria-selected="true">
+                                                                <a class="contact-tab-@item.TenantId nav-link" id="v-pills-@item.TenantId-tab" data-bs-toggle="pill" onclick="activeDivforowner(@item.TenantId)" href="#v-pills-@item.TenantId" role="tab" aria-controls="v-pills-@item.TenantId" aria-selected="true">
                                                                     <div class="media">
-                                                                        <img class="img-50 img-fluid m-r-20 rounded-circle update_img_0" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==" alt="Sample Image">
+                                                                        <img class="img-50 img-fluid m-r-20 rounded-circle update_img_0" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQwNGg8PGjclHyU3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3N//AABEIAJQAswMBIgACEQEDEQH/xAAbAAABBQEBAAAAAAAAAAAAAAADAAIEBQYBB//EAD4QAAEDAgQDBQUGBQIHAAAAAAEAAgMEEQUSITETQVEGImFxkRQyQoGxI1KhwdHwFTNiY3IHkhYlU3OCo7L/xAAaAQADAQEBAQAAAAAAAAAAAAABAgMABAUG/8QAJxEAAgICAgIBAgcAAAAAAAAAAAECEQMSIUEEMRMiMgVCUWFxkaH/2gAMAwEAAhEDEQA/ANGBZIzxMNnGxRi24WI7Wz1VKeJA4iydAZtRUREaPCfDK292kFeRt7SVsZGZ9xdazs7j4qrZjrsUGzG8hrTE4WVm3HHBtt1n2Oa+PONVV1eMxUsoa9wFzzW2NqaqrxJ9QLKIDdVMGLU8gBu3VWcErJR3Sg3YUqHlVuKsvA7yVrk0UaphztIIQCeIdrKd4qtGEi6zxiePgK9mxPAo533cL/JUsvZlhcbNQs1HmOR9/dKcInn4SvR/+F2Ddq6OzcQGrQtZqPN+E/7hS4Dz8BXoT8Ep2HYIseAwutYBawUVv+nz6qimLmAi55r1Z+K1c0GUkWI5LOYLhkMHu2WjZE0CwtsjswUiJG1wNyiEI0pjjF3aIAnifsULCDeEB4UlxadnBAls0EkrGI9l1RX18bXkZtkljFmJ3Kg7Tx8aBx8EN2MX91xUPEKuSpgLWg7IKQ1GFkdleW8wdUehrJKOZsjCd0T+D1k9QbMsCVd4f2NqZ7ZybHkqJbehPRq+zuNipp2hx3G11RdsyXd6O976WC1vZzsa2kYLnXxV7L2Xp5rZ4wfNOsTvliuZ4nSHFBbhMktyut32Yqq8MtUNNwtiOz1JELCNungixYdDEdGgIyhFI0XZHbM7ILgoc9WI2F0mjQpz4WWtZZXtBVh0ogiOjfeXOkVfCJMmKUztDJ+CA/EKTL/MAPLRUhCaQqaInsyXV17nX4JYfMqvkrKo8mf7wi28vVLKfH1C2qBsyqqjVucSwNHnMESCrrWDvtZcf3W/qp7m+DvQJjmaaj/1ramtiosWqon2kjGXqJGn81pqTFOIwdbLzntNiXscLYactE7ze+W2ULZ9mZosTwqGrj3d3Xt+64bqU3RWCbGdosTqGRnhAk20CzFLjOIRnvtK3VRRRyCzmglQX4RAfgCn8g+hT4ZjdTPUFr43ZQbX6qbjeJvhp7hp2UyLDIonBzAAUKuoGztIct8htDz2bGKp0riAbErq1pwKK/uhJH5ED42XVPgrG209VObhcTRYhSWyAJ4eSpqRXUHTUEEbhZoV1SMjZsFWx7qdASF0Y5kpRLqneANFJLrhV0D9FK4gsr7EXE5KFFebI0j9FBqalkMbnvNgAlkx4ogY5iHslOWtP2j9Asa8lziSbk7lSq+qdWTukdexPdB5BRbeaKVCSdsbbzSAH7KcP3qukdboijLef1THWA1Pq1P0OmhXCMu+YeWqBgZtyDfk6yjVkzaaB0smYADTvc1JcRzLf/IWWexWo9om4bLFjLi45lJknpGzp8Xx3nya9GcxQvqKh80ly9xvryWj/wBNsV9lxJ2Hyu+zqtW35PA/NU9RECOagRNmpZmTx3a5r+67o4Lli9uD0vLwLHTR7k9vTZAcCEHBMRZimFw1Q0cWjO3o4bqW4XUG6ZypcEVzigvfopT2KPIxDYNIDn8Elws1XVtjUiyjbdSGAILAitNkyYtB4xqpkKgsdzUiKTVWjInJFnGQBuEdouLqsjlJfZTWy90BdCkScRTvsNOSyWPV5lk4ETjkb71uvRaPEGyvgcKf3yOaxVTDNC8tqAWu3ueaMeWLNugJKb6HwTjoNdlzYdB6qpIXLW4HqueQHmF06C9rf4lMJvqLFYwnOtu7X+oJhFtm2/xKRPiR4OSykkBrbucbANO5QbMNymaXgtcRzdfoqLE4jC2IFrM+eUXa3LcAiy0uG07KbG61sz3uyMiGjb3JBJ+qpu0/CNRTcESZcj3d8AG5cenkuPLLZWe14EHjzqP7X/g2lo3yYUx8b3sJlAuw2uM3VCnwwVlBWuG5qnlpHhayvcGOTB6NpgjkBkvd7j94nZFwaDiYK1xAPEe93q4oVSQmaVuf8mc7C4q6irJKOc5Wy7A/C4L0ASsOnNeY4/RuoMRbUw90F3LkVs8KrBX0MVQD3zo4dCFPKuLOfG+i6drsgPGiE2VzdCSumUFc5UblXU3OksYnBye03QAU8OsmsFB81tEWN+UXKjM6rkst0ykBosIH3OYqayRVNK+7dVOidz6K6kTlEmAglV2NMbJTueWg5eqkxyZgSmTxCqpnx3tm0VIu2RnwjK4tCyjbBIwHLI0uJvtpdQwRpa9yL6forXtPBwaGljJvla5t+vdQhTNkpBffhsKtFvkWUVqmVzjfW17cwmE5jyP1CnUGHOqKB8rpSHMke3XoD13USaF8TWulALXaBwI18j+/JMpJiSg4ugfgHWJ5O1urXAaPO72qRrRyj8epUCkpX1lQ2Fl+FvI4jUDp5la2GIMaGtAAAsB4KeSfSGhGuWUNDDxcdxcgCzZIwSfBgWa7Us4eIRNJYbRa5Xg2OY9PNLHYZqntFXMgBcTJqAbbABUzm5HFtrEGxXHLI61PpvG8ZLIst9Lg1FJi+GU+FU0L5JjLG0Zmtj2OvP5q5wCG2A0g/trE+yN/hjqrMc1wA3zK9EwqPh4XSt6RN+iaMnL2cPm48cI3Dt8lLjGCsxJpie8sB1uBsVDwPB6vCZpGcVk1NJ8i0+S1FQ0NjLvFQnv5hSySadHHCKasE9puhEHmjZ7ochbzKlZSgJLkk5Jaw0TQ4DmiRg7ndAjbc3duiOeG6c1gBXPsNN0Muu4DmUIu1TQ77UajRMjFkx7Iy0PdlaeaveFFh0MZkhFRVSNzMjebNY3q5ZwFrmAyNu3cjwV12jq3U+OzNlFoXBpY8D3Rb6LrwafmOXMpXwPlxLELaVTYwNmxRANCr34u+Oce3Ma+MnWSJuVzfMbH5WTpHAjQ6KtrNWm67XBVwcmzF2uewxwRteHlzXPjcNpG23H59EOlN6Jh/stQC41GFVUN/tKUipp3fdsQHjyIP4IVPiTS0sqBkeW5Q8e78wkXA8pWkWmCj/lM9tft5P8A6UCF0NXQH2ctfJSu4uW1wbEgj0up3Zp7X4fJsW8eTY+KkCggo2Vc0FxxIiMvTQn81NcIplf1sNT08LWA07GMjf3hlFt+akgWCFRACjg/7bfojKVDGCjbM/tXW+zsL3cYZrC9m5hf6LNSEmR5O+Y3VjiNbPT4vXPpp5Ii+RwcWOtcXVUXXJJOpXLKV8H1WDFr9b7SLR5pRg7I46guqXvBfFl90C/P5r0aBuSniaNgwD8F5VStMlTGxrSbvGwvzXpk+JU1P3XvuQPh1srY02eV+JawqKf6s7iJtEwdSVWyEjQIdZjtLUFrI8zyDswX9Ux8myjmVSOTF9o8mw1TCQ4Lma4Qnk3uFIoEuEkC7/BJAxaZrbIRdqmF640pgIKNUaKMF17JkQzEBSCWsDbuDGg6ucbAeaBmFaM0l2XdbS1uatDlxWkhpqh7I66NpZFxHfz2Dl5gfS6gUz2cO8b2OaObXXQa2qpqYNqat7WtjBIuLm/gOq6YRpHNOTb4H0sZia8PkcGAkNY9tnNsfp0UTEKujhfw5qhjHEZrO38rfl+qp2drqaWW7GNsD7j2lzj8hp+Kt8MxqY4c51DSYb/EXue98kt3Oa08y7Zp6DkAumE5Lgi4r2dw6AVEFYKUl75YmxtuNO8eXO3dsTsLrK1jqzjSQtiijLTlJJzFXBxGOOSGKV1GyVpOSaEGzH75ruN9DyGnQKBSUwjicAcxdZwJ26qWbLKKKYcal7CYHislFdjhYu1Lb913iOi1EdfFV0MxbdjuG67Ty0WXkpmh1iLtO6HGJqOQtBMsDuQPeaPDqhj8lPiRsnju7ibqlIFJBbbht+iDPiNJAbPnYXfcBufQLITV1TMAzJIWAWaJX2Fv8QopE5a4GUtaPhjblH6oyzY49hjim+ivr6GV9bNJLNDG173O1drYlDZS07f+pMf9oVgKZgJIHe8V0wgclzPOl9qPS+TLJU5f0AY6cNyw5YWjkxuvqnNgDyDMXPP9RujxxkctUURiwIU3llLsk4RQ6mDYyGs0Cml4sC5Q8liCDYjcW3CM11hY7IADyaAOZqOiDI8jkuMlGbhiwJ2HUJsjM2rSsYWcdSkhFr7+6uIgLAAnmiMPJBBKMzbTdYBNpwBqfVMq2QzwOjlHEDjYNG56ABDbLlaWknbU2TKqshw2AVNWcpOjNL5R181SENuWTnKuEQK/EaPs/TR00+a7+8Y4dddw25+p6rOw/wAV7X1VOyZvBhiFnluwBN/XkrWHCocSrpa14c6N7u40/CP3qtFhdThlBDw2lzCTdxyblXjNN0RcWlZGpOyFBTzMkj4oLPEX9bK9pMHpog/h0zQX+8balS6DEsLML3e0ML9mtdp81NgmgzsDJ4zm274V010Sd9mar+xNLWnNHxI376ahVAwWqwWZsM0hMct2tuvWaaJpGmU38V5/2xrBXdpODB/JoW5SRzeRc/vwSZ3FQKYr2KpzMzWkCwItbxQpGaFlrObspTxuCbEt3QbAuvz2cvNO1Ai3v6bAFDezvG2ml/VSMv4pr2fQhKORXMPNcdHrb5qQ4Eta7mk/u5SfmsayKGkHdFLbC7fROcByC62249ETDBqdl0XBCc4AHNyXCmFGTRseGkjvDZw3BXA9w5976pxcLILt7j0TexQvEH3klFI13SWoxcNa3onZg3YaBRn1BHdC6xxJ33ToQLLieH0jc9TUMzjVsR1LiqcsfjdaKmZpZTtIcyMkm/ip5pIHymSSJrndbKbBGBfKAGgXTOTqkIoK7YaBjY4i1oAHgFVVmGSPkc9k0jL62B09FbtIAA8U8OzuN0noczLqCvY4Bswd/kz9FyVtfF3THG7+oGxWmaO/rYhR6mPNq2wIRTBRS02JYpT3cz2pgFrcOVW9HG9sIe+/EecziddVIZG1sTQ4WJRAG2sNkJNsMVRHe3M4G2wTHm5Bby3CkGwQHkZtrBK0MmMcC5/d2Sfy8N07TKSDqmuN27KVFLB6Nu1o3umO91PuM1lw2uUaBYE+4bE6FMa4X1RXWa3N99CAsNUaNY82f5EahDOj7W0slmO42XHOvqigCdqEJzrHZEuPkhusigAS4X2STrDokmsBIk9+6kQC7C7nZJJMIPZrHdEie6x1XEkGFBonGzhdOe5xbvsuJJWFBYz3XeAQ5DoVxJOhSRcljL9Ex7iNkkkrChr+RQb3dZdSQCMboSnfAUkkg/RHbumn30kkTHHas15FDdskkigDMxDEInW66ksYVyU0lJJEAy6SSSJj/9k=" alt="Sample Image">
 
                                                                         <div class="media-body">
                                                                             <h6> <span class="first_name_0">@item.FirstName </span><span class="last_name_0">@item.LastName</span></h6>
@@ -78,164 +86,163 @@
                                                             }
 
                                                         </div>
-                                                        </div>
-                                                        <div class="col-xl-9 xl-20 col-md-7 box-col-6" style="padding-left: 0px;">
-                                                            <div class="tab-content" id="v-pills-tabContent">
-                                                                @foreach (var item in Model ?? Enumerable.Empty<PMS_PropertyHapa.Models.DTO.TenantModelDto>())
-                                                                {
-                                                                    <div class="tab-pane contact-tab-0 tab-content-child fade show active" id="v-pills-user" role="tabpanel" aria-labelledby="v-pills-user-tab">
-                                                                        <div class="profile-mail">
-                                                                            <div class="d-flex justify-content-between border-0 p-2" style="align-items: flex-start !important; background-color: #f4f8ff;">
+                                                    </div>
+                                                    <div class="col-xl-9 xl-20 col-md-7 box-col-6" style="padding-left: 0px;">
+                                                        <div class="tab-content" id="v-pills-tabContent">
+                                                            @foreach (var item in Model ?? Enumerable.Empty<PMS_PropertyHapa.Models.DTO.TenantModelDto>())
+                                                            {
+                                                                <div class="tab-pane contact-tab-@item.TenantId tab-content-child fade" id="v-pills-@item.TenantId" role="tabpanel" aria-labelledby="v-pills-@item.TenantId-tab">
+                                                                    <div class="profile-mail">
+                                                                        <div class="d-flex justify-content-between border-0 p-2" style="align-items: flex-start !important; background-color: #f4f8ff;">
 
 
-                                                                                <div class="media align-items-center">
-                                                                                    <img class="img-100 img-fluid m-r-20 rounded-circle update_img_0" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==" alt="">
-                                                                                    <div class="media-body mt-0">
+                                                                            <div class="media align-items-center">
+                                                                                <img class="img-100 img-fluid m-r-20 rounded-circle update_img_0" src="data:image/jpeg;base64,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" alt="">
+                                                                                <div class="media-body mt-0">
 
-                                                                                        <h3 class="font-primary">@item.FirstName @item.LastName</h3>
+                                                                                    <h3 class="font-primary">@item.FirstName @item.LastName</h3>
 
-                                                                                        <div class="d-flex justify-content-between gap-5 border-0 flex-wrap">
-                                                                                            <div class="d-flex gap-3 border-0">
-                                                                                                <div class="d-flex flex-column border-0 ">
-                                                                                                    <span>
-                                                                                                        <i class="fa fa-phone" aria-hidden="true" style="margin-right: 5px;"></i>
-                                                                                                        @item.PhoneNumber
-                                                                                                    </span>
-                                                                                                    <span class="font-primary">@item.EmailAddress</span>
-                                                                                                </div>
-                                                                                                <div class="d-flex flex-column border-0 ">
-                                                                                                    <span>Tenant since</span>
-                                                                                                    <span class="fw-bold ">@DateTime.Now.ToShortDateString()</span>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                            <div class="d-flex gap-2  border-0 align-items-center ">
-                                                                                                <i class="fa fa-user" aria-hidden="true"></i>
-                                                                                                <span>Account Status</span>
-                                                                                                <i class="fa fa-check-circle"></i>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
-
-                                                                                </div>
-                                                                                <div class="right-side-header">
-                                                                                    <button class="btn" style="background-color: #c9c9c9;color: black;" type="button" onclick="editTenant(@item.TenantId)">
-                                                                                        Edit Tenant
-                                                                                    </button>
-                                                                                </div>
-
-                                                                            </div>
-                                                                            <div class="row w-100 px-2">
-                                                                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 px-md-4 px-2 py-3">
-                                                                                    <div class="text-primary fw-bold">Current Lease</div>
-                                                                                    <div class="d-flex border-0  align-items-center gap-md-3 gap-2 mt-3">
-                                                                                        <img class="img-fluid rounded-1 update_img_0" src="data:image/jpeg;base64,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" alt="" style="max-width: 50px; height: auto;">
-                                                                                        <div class="d-flex border-0  flex-column">
-                                                                                            <span class="fw-medium" style="font-size: 12px; color: #999;">Vince Street</span>
-                                                                                            <span class="fw-medium" style="font-size: 12px; color: #999;">Apartments |</span>
-                                                                                            <span class="fw-bold" style="font-size: 12px;">2</span>
-                                                                                        </div>
-                                                                                        <div class="d-flex border-0  flex-column">
-                                                                                            <span class="fw-medium" style="font-size: 12px; color: #999;">Monthly Rent</span>
-                                                                                            <span class="fw-bold">$500.00</span>
-                                                                                            <span class="fw-bold" style="font-size: 12px;">of $100.00</span>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                    <div class="d-flex border-0 align-items-center gap-md-3 gap-2 mt-3">
-                                                                                        <div class="d-flex border-0  flex-column">
-                                                                                            <span class="fw-medium" style="font-size: 12px; color: #999;">Start</span>
-                                                                                            <span class="fw-bold" style="font-size: 12px;">Mar 12, 2018</span>
-                                                                                        </div>
-                                                                                        <div class="d-flex border-0 flex-column">
-                                                                                            <span class="fw-medium" style="font-size: 12px; color: #999;">End</span>
-                                                                                            <span class="fw-bold" style="font-size: 12px;">Mar 12, 2018</span>
-                                                                                        </div>
-                                                                                        <div class="d-flex border-0  flex-column">
-                                                                                            <span class="fw-medium" style="font-size: 12px; color: #999;">Shared with</span>
-                                                                                            <img class="img-fluid rounded-circle update_img_0" src="~/Dashboard/assets/images/user/2.png" alt="" style="max-width: 30px; height: auto;">
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 px-md-3 px-2 py-3">
-                                                                                    <div class="text-primary fw-bold">Collection</div>
-                                                                                    <div class="d-flex flex-wrap border-0 ">
-                                                                                        <img class="img-fluid rounded-circle  m-r-20 update_img_0 mt-3 " src="~/Dashboard/assets/images/user/2.png" alt="" style="width: 30px; height: 30px">
-                                                                                        <div class="flex-grow-1 d-flex flex-column border-0  px-2" style="gap: 10px;">
-                                                                                            <div class="d-flex flex-column mt-3 border-0 ">
-                                                                                                <span class="fw-medium" style="font-size: 12px; color: #999;">Current Invoices</span>
-                                                                                                <span class="fw-bold text-primary" style="font-size: 12px;">24404</span>
-                                                                                            </div>
-                                                                                            <div class="d-flex flex-column border-0">
-                                                                                                <span class="fw-medium" style="font-size: 12px; color: #999;">Past Due Invoices</span>
-                                                                                                <span class="fw-bold" style="font-size: 12px;">No Record found</span>
+                                                                                    <div class="d-flex justify-content-between gap-5 border-0 flex-wrap">
+                                                                                        <div class="d-flex gap-3 border-0">
+                                                                                            <div class="d-flex flex-column border-0 ">
+                                                                                                <span>
+                                                                                                    <i class="fa fa-phone" aria-hidden="true" style="margin-right: 5px;"></i>
+                                                                                                    @item.PhoneNumber
+                                                                                                </span>
+                                                                                                <span class="font-primary">@item.EmailAddress</span>
                                                                                             </div>
                                                                                             <div class="d-flex flex-column border-0 ">
-                                                                                                <span class="text-primary" style="font-size: 12px;">View all Invoices</span>
+                                                                                                <span>Landlord since</span>
+                                                                                                <span class="fw-bold ">@DateTime.Now.ToShortDateString()</span>
                                                                                             </div>
                                                                                         </div>
-                                                                                        <div class="flex-grow-1 d-flex flex-column px-2 border-0 ">
-                                                                                            <div class="d-flex flex-column mt-3 border-0 ">
-                                                                                                <span class="fw-medium" style="font-size: 12px; color: #999; text-wrap: nowrap;">Total rent collection</span>
-                                                                                                <span class="fw-bold" style="font-size: 12px;">$100.00</span>
-                                                                                            </div>
-                                                                                            <div class="d-flex border-0  flex-column mt-3">
-                                                                                                <span class="fw-medium" style="font-size: 12px; color: #999;">Other Collected</span>
-                                                                                                <span class="fw-bold" style="font-size: 12px;">$40.00</span>
-                                                                                            </div>
-                                                                                            <div class="d-flex border-0  flex-column mt-3">
-                                                                                                <span class="fw-medium" style="font-size: 12px; color: #999;">Total</span>
-                                                                                                <span class="fw-bold" style="font-size: 12px;">$140.00</span>
-                                                                                            </div>
+                                                                                        <div class="d-flex gap-2  border-0 align-items-center ">
+                                                                                            <i class="fa fa-user" aria-hidden="true"></i>
+                                                                                            <span>Account Status</span>
+                                                                                            <i class="fa fa-check-circle"></i>
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
+
+                                                                            </div>
+                                                                            <div class="right-side-header" style="padding-top:18px!important;padding-right: 27px!important;">
+                                                                                <button class="btn" style="background-color: #c9c9c9;color: black;" type="button" onclick="editTenant(@item.TenantId)">
+                                                                                    Edit Tenant
+                                                                                </button>
                                                                             </div>
 
-
-                                                                            <div class="w-100 p-3">
-                                                                                <span class="text-primary fw-bold ">Message History</span>
-                                                                                <div class="mt-1 ">
-                                                                                    <table class="table table-bordered">
-                                                                                        <thead>
-                                                                                            <tr>
-                                                                                                <th class="table-active" scope="col">To</th>
-                                                                                                <th class="table-active" scope="col">From</th>
-                                                                                                <th class="table-active" scope="col">Subject</th>
-                                                                                                <th class="table-active" scope="col">Notification Date</th>
-                                                                                                <th class="table-active" scope="col">
-                                                                                                    <span class="text-primary">Show All</span>
-                                                                                                </th>
-                                                                                            </tr>
-                                                                                        </thead>
-                                                                                        <tbody>
-                                                                                            <tr>
-                                                                                                <td scope="row">Jack</td>
-                                                                                                <td>Mark</td>
-                                                                                                <td>Tenant payment confirmation notification</td>
-                                                                                                <td>April 12, 2018</td>
-                                                                                                <td></td>
-                                                                                            </tr>
-                                                                                            <tr>
-                                                                                                <td scope="row">Jack</td>
-                                                                                                <td>Mark</td>
-                                                                                                <td>Tenant payment confirmation notification</td>
-                                                                                                <td>April 12, 2018</td>
-                                                                                                <td></td>
-                                                                                            </tr>
-                                                                                            <tr>
-                                                                                                <td scope="row">Jack</td>
-                                                                                                <td>Mark</td>
-                                                                                                <td>Tenant payment confirmation notification</td>
-                                                                                                <td>April 12, 2018</td>
-                                                                                                <td></td>
-                                                                                            </tr>
-                                                                                        </tbody>
-                                                                                    </table>
+                                                                        </div>
+                                                                        <div class="row w-100 px-2">
+                                                                            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 px-md-4 px-2 py-3">
+                                                                                <div class="text-primary fw-bold">Current Lease</div>
+                                                                                <div class="d-flex border-0  align-items-center gap-md-3 gap-2 mt-3">
+                                                                                    <img class="img-fluid rounded-1 update_img_0" src="data:image/jpeg;base64,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" alt="" style="max-width: 50px; height: auto;">
+                                                                                    <div class="d-flex border-0  flex-column">
+                                                                                        <span class="fw-medium" style="font-size: 12px; color: #999;">Vince Street</span>
+                                                                                        <span class="fw-medium" style="font-size: 12px; color: #999;">Apartments |</span>
+                                                                                        <span class="fw-bold" style="font-size: 12px;">2</span>
+                                                                                    </div>
+                                                                                    <div class="d-flex border-0  flex-column">
+                                                                                        <span class="fw-medium" style="font-size: 12px; color: #999;">Monthly Rent</span>
+                                                                                        <span class="fw-bold">$500.00</span>
+                                                                                        <span class="fw-bold" style="font-size: 12px;">of $100.00</span>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="d-flex border-0 align-items-center gap-md-3 gap-2 mt-3">
+                                                                                    <div class="d-flex border-0  flex-column">
+                                                                                        <span class="fw-medium" style="font-size: 12px; color: #999;">Start</span>
+                                                                                        <span class="fw-bold" style="font-size: 12px;">Mar 12, 2018</span>
+                                                                                    </div>
+                                                                                    <div class="d-flex border-0 flex-column">
+                                                                                        <span class="fw-medium" style="font-size: 12px; color: #999;">End</span>
+                                                                                        <span class="fw-bold" style="font-size: 12px;">Mar 12, 2018</span>
+                                                                                    </div>
+                                                                                    <div class="d-flex border-0  flex-column">
+                                                                                        <span class="fw-medium" style="font-size: 12px; color: #999;">Shared with</span>
+                                                                                        <img class="img-fluid rounded-circle update_img_0" src="~/Dashboard/assets/images/user/2.png" alt="" style="max-width: 30px; height: auto;">
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 px-md-3 px-2 py-3">
+                                                                                <div class="text-primary fw-bold">Collection</div>
+                                                                                <div class="d-flex flex-wrap border-0 ">
+                                                                                    <img class="img-fluid rounded-circle  m-r-20 update_img_0 mt-3 " src="~/Dashboard/assets/images/user/2.png" alt="" style="width: 30px; height: 30px">
+                                                                                    <div class="flex-grow-1 d-flex flex-column border-0  px-2" style="gap: 10px;">
+                                                                                        <div class="d-flex flex-column mt-3 border-0 ">
+                                                                                            <span class="fw-medium" style="font-size: 12px; color: #999;">Current Invoices</span>
+                                                                                            <span class="fw-bold text-primary" style="font-size: 12px;">24404</span>
+                                                                                        </div>
+                                                                                        <div class="d-flex flex-column border-0">
+                                                                                            <span class="fw-medium" style="font-size: 12px; color: #999;">Past Due Invoices</span>
+                                                                                            <span class="fw-bold" style="font-size: 12px;">No Record found</span>
+                                                                                        </div>
+                                                                                        <div class="d-flex flex-column border-0 ">
+                                                                                            <span class="text-primary" style="font-size: 12px;">View all Invoices</span>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="flex-grow-1 d-flex flex-column px-2 border-0 ">
+                                                                                        <div class="d-flex flex-column mt-3 border-0 ">
+                                                                                            <span class="fw-medium" style="font-size: 12px; color: #999; text-wrap: nowrap;">Total rent collection</span>
+                                                                                            <span class="fw-bold" style="font-size: 12px;">$100.00</span>
+                                                                                        </div>
+                                                                                        <div class="d-flex border-0  flex-column mt-3">
+                                                                                            <span class="fw-medium" style="font-size: 12px; color: #999;">Other Collected</span>
+                                                                                            <span class="fw-bold" style="font-size: 12px;">$40.00</span>
+                                                                                        </div>
+                                                                                        <div class="d-flex border-0  flex-column mt-3">
+                                                                                            <span class="fw-medium" style="font-size: 12px; color: #999;">Total</span>
+                                                                                            <span class="fw-bold" style="font-size: 12px;">$140.00</span>
+                                                                                        </div>
+                                                                                    </div>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
+
+
+                                                                        <div class="w-100 p-3">
+                                                                            <span class="text-primary fw-bold ">Message History</span>
+                                                                            <div class="mt-1 ">
+                                                                                <table class="table table-bordered">
+                                                                                    <thead>
+                                                                                        <tr>
+                                                                                            <th class="table-active" scope="col">To</th>
+                                                                                            <th class="table-active" scope="col">From</th>
+                                                                                            <th class="table-active" scope="col">Subject</th>
+                                                                                            <th class="table-active" scope="col">Notification Date</th>
+                                                                                            <th class="table-active" scope="col">
+                                                                                                <span class="text-primary">Show All</span>
+                                                                                            </th>
+                                                                                        </tr>
+                                                                                    </thead>
+                                                                                    <tbody>
+                                                                                        <tr>
+                                                                                            <td scope="row">Jack</td>
+                                                                                            <td>Mark</td>
+                                                                                            <td>Tenant payment confirmation notification</td>
+                                                                                            <td>April 12, 2018</td>
+                                                                                            <td></td>
+                                                                                        </tr>
+                                                                                        <tr>
+                                                                                            <td scope="row">Jack</td>
+                                                                                            <td>Mark</td>
+                                                                                            <td>Tenant payment confirmation notification</td>
+                                                                                            <td>April 12, 2018</td>
+                                                                                            <td></td>
+                                                                                        </tr>
+                                                                                        <tr>
+                                                                                            <td scope="row">Jack</td>
+                                                                                            <td>Mark</td>
+                                                                                            <td>Tenant payment confirmation notification</td>
+                                                                                            <td>April 12, 2018</td>
+                                                                                            <td></td>
+                                                                                        </tr>
+                                                                                    </tbody>
+                                                                                </table>
+                                                                            </div>
+                                                                        </div>
                                                                     </div>
-                                                                }
-                                                            </div>
+                                                                </div>
+                                                            }
                                                         </div>
                                                     </div>
                                                 </div>
@@ -250,13 +257,13 @@
             </div>
         </div>
     </div>
+    </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
 
    <script>
-
     $(document).ready(function () {
         $('#searchInput').on('input', function () {
             var searchText = $(this).val().toLowerCase();
@@ -269,10 +276,15 @@
                 }
             });
         });
-    $('.contacts-tabs .nav-link ').removeClass('active show');
-        $('.contacts-tabs .tab-content .tab-content-child ').removeClass('active show');
+        $('.contacts-tabs .nav-link').removeClass('active show');
+        $('.contacts-tabs .tab-content .tab-content-child').removeClass('active show');
         $('.contact-tab-' + @Model?.Take(1).Select(x=>x.TenantId).FirstOrDefault()).addClass('active show');
     });
+    function activeDivfortenant(index) {
+        $('.contacts-tabs .nav-link ').removeClass('active show');
+        $('.contacts-tabs .tab-content .tab-content-child ').removeClass('active show');
+        $('.contact-tab-' + index).addClass('active show');
+    }
         function editTenant(tenantId) {
             window.location.href = `/Tenant/EditTenant?tenantId=${tenantId}`;
         }
