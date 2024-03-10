@@ -310,31 +310,7 @@
                                         <input class="form-control" id="zipcode" type="text" name="zipcode" placeholder="Zip Code" required="" value="@Model?.Asset?.Zipcode">
                                     </div>
                                 </div>
-
-                                <div class="thick-black-underline"></div> 
-
-                                <div class="row mt-4">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="assetPicture">Upload Picture</label>
-                                            <input type="file" class="form-control-file" id="assetPicture" name="pictureFile">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div id="picturePreviewContainer">
-                                            @if (Model?.Asset?.Image != null)
-                                            {
-                                                <img src="@Model.Asset.Image" alt="Asset Picture" class="img-fluid">
-                                            }
-                                            else
-                                            {
-                                                <p>No picture uploaded</p>
-                                            }
-                                        </div>
-                                    </div>
-                                </div>
                             </fieldset>
-
 
 
                             <fieldset id="step3" class="step-section">
