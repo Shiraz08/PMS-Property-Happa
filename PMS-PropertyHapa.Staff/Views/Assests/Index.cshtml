@@ -10,11 +10,11 @@
         <div class="page-title">
             <div class="row">
                 <div class="col-12 col-sm-6">
-                    <h3>Assets List</h3>
+                    <h3>Assets</h3>
                 </div>
                 <div class="col-12 col-sm-6">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="index.html"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item"><a href="@Url.Action("Index","Assests")"><i data-feather="home"></i></a></li>
                         <li class="breadcrumb-item">Assets</li>
                         <li class="breadcrumb-item active">List</li>
                     </ol>
@@ -42,7 +42,7 @@
                                         </g>
                                     </svg>
                                 </span>
-                                <input class="form-control" type="text" placeholder="Search Proprites" aria-label="search" aria-describedby="basic-addon1">
+                                <input class="form-control" type="text" placeholder="Search Assets" id="searchInput" aria-label="search" aria-describedby="basic-addon1">
                             </div>
                         </div>
 
@@ -66,92 +66,39 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <!-- Table rows -->
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex border-0 gap-2  align-items-center ">
-                                                <img class="img-fluid rounded-1 update_img_0" src="~/Dashboard/assets/images/user/2.png" alt="" style="max-width: 50px; height: auto;">
-                                                <div class="d-flex flex-column  border-0 ">
-                                                    <div class="d-flex border-0 flex-column align-items-baseline ">
-                                                        <span class="fw-bold  tableFontSize">9600 Universal</span>
-                                                        <span class="fw-bold tableFontSize">Boulevard</span>
-                                                    </div>
-                                                    <div class="d-flex border-0 flex-column align-items-baseline ">
-                                                        <span class="tableFontSize">Unit: 2</span>
-                                                        <span class="tableFontSize">Availabilty: 1</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="tableFontSize">9600 Universal Boulevard Orlando, Florida 32819</td>
-                                        <td class="tableFontSize">$0.00</td>
-                                        <td class="tableFontSize">4</td>
-                                        <td class="tableFontSize">0</td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex border-0 gap-2  align-items-center ">
-                                                <img class="img-fluid rounded-1 update_img_0" src="~/Dashboard/assets/images/user/2.png" alt="" style="max-width: 50px; height: auto;">
-                                                <div class="d-flex flex-column  border-0 ">
-                                                    <div class="d-flex border-0 flex-column align-items-baseline ">
-                                                        <span class="fw-bold  tableFontSize">9600 Universal</span>
-                                                        <span class="fw-bold tableFontSize">Boulevard</span>
-                                                    </div>
-                                                    <div class="d-flex border-0 flex-column align-items-baseline ">
-                                                        <span class="tableFontSize">Unit: 2</span>
-                                                        <span class="tableFontSize">Availabilty: 1</span>
+                                  @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex border-0 gap-2  align-items-center ">
+                                                    @{
+                                                        if (!string.IsNullOrEmpty(item.Image))
+                                                        {
+                                                            <img class="img-fluid rounded-1 update_img_0" src="@item.Image" alt="" style="max-width: 50px; height: auto;">
+                                                        }
+                                                        else
+                                                        {
+                                                            <img class="img-fluid rounded-1 update_img_0" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRG_TUukNvS-0E486weXLkJDpTubsAcdHdmKw&usqp=CAU" alt="" style="max-width: 50px; height: auto;">
+                                                        }
+                                                    }
+                                                    <div class="d-flex flex-column  border-0 ">
+                                                        <div class="d-flex border-0 flex-column align-items-baseline ">
+                                                            <span class="fw-bold  tableFontSize">@item.SelectedPropertyType</span>
+                                                            <span class="fw-bold tableFontSize">@item.SelectedSubtype</span>
+                                                        </div>
+                                                        <div class="d-flex border-0 flex-column align-items-baseline ">
+                                                            <span class="tableFontSize">Unit: @item.Units.ToList().Count()</span>
+                                                            <span class="tableFontSize">Availabilty: 1</span>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </td>
-                                        <td class="tableFontSize">9600 Universal Boulevard Orlando, Florida 32819</td>
-                                        <td class="tableFontSize">$0.00</td>
-                                        <td class="tableFontSize">4</td>
-                                        <td class="tableFontSize">0</td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex border-0 gap-2  align-items-center ">
-                                                <img class="img-fluid rounded-1 update_img_0" src="~/Dashboard/assets/images/user/2.png" alt="" style="max-width: 50px; height: auto;">
-                                                <div class="d-flex flex-column  border-0 ">
-                                                    <div class="d-flex border-0 flex-column align-items-baseline ">
-                                                        <span class="fw-bold  tableFontSize">9600 Universal</span>
-                                                        <span class="fw-bold tableFontSize">Boulevard</span>
-                                                    </div>
-                                                    <div class="d-flex border-0 flex-column align-items-baseline ">
-                                                        <span class="tableFontSize">Unit: 2</span>
-                                                        <span class="tableFontSize">Availabilty: 1</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="tableFontSize">9600 Universal Boulevard Orlando, Florida 32819</td>
-                                        <td class="tableFontSize">$0.00</td>
-                                        <td class="tableFontSize">4</td>
-                                        <td class="tableFontSize">0</td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex border-0 gap-2  align-items-center ">
-                                                <img class="img-fluid rounded-1 update_img_0" src="~/Dashboard/assets/images/user/2.png" alt="" style="max-width: 50px; height: auto;">
-                                                <div class="d-flex flex-column  border-0 ">
-                                                    <div class="d-flex border-0 flex-column align-items-baseline ">
-                                                        <span class="fw-bold  tableFontSize">9600 Universal</span>
-                                                        <span class="fw-bold tableFontSize">Boulevard</span>
-                                                    </div>
-                                                    <div class="d-flex border-0 flex-column align-items-baseline ">
-                                                        <span class="tableFontSize">Unit: 2</span>
-                                                        <span class="tableFontSize">Availabilty: 1</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                        </td>
-                                        <td class="tableFontSize">9600 Universal Boulevard Orlando, Florida 32819</td>
-                                        <td class="tableFontSize">$0.00</td>
-                                        <td class="tableFontSize">4</td>
-                                        <td class="tableFontSize">0</td>
-                                    </tr>
+                                            </td>
+                                            <td class="tableFontSize">@item.Street1, @item.State, @item.City, @item.Country</td>
+                                            <td class="tableFontSize">$0.00</td>
+                                            <td class="tableFontSize">4</td>
+                                            <td class="tableFontSize">0</td>
+                                        </tr>
+                                    }
                                 </tbody>
                             </table>
                         </div>
@@ -163,12 +110,12 @@
             <div class="col-12 col-lg-2">
 
                 <div class="mb-2">
-                    <button class="btn btn-info w-100 d-flex border-0 align-items-center " type="button">
+                    <a class="btn btn-info w-100 d-flex border-0 align-items-center " href="@Url.Action("AddAssest","Assests")">
                         <div class="plusCircle">
                             +
                         </div>
                         New Property
-                    </button>
+                    </a>
                 </div>
                 <!-- Statistics Panels -->
 
@@ -247,11 +194,18 @@
         </div>
     </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
 <script>
     $(document).ready(function () {
-        $('.contacts-tabs .nav-link ').removeClass('active show');
-        $('.contacts-tabs .tab-content .tab-content-child ').removeClass('active show');
-        $('.contact-tab-' + @Model?.Take(1).Select(x=>x.AssetId).FirstOrDefault()).addClass('active show');
+        $("#searchInput").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("tbody tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
     });
 </script>
 

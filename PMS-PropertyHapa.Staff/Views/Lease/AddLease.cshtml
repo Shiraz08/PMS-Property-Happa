@@ -1,205 +1,204 @@
 ﻿@using PMS_PropertyHapa.Models.DTO;
 @model AssetDTO
-
 @{
-    ViewData["Title"] = "AddLease";
+    ViewData["Title"] = "Add Lease";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+<style>
+
+    .lime-underline {
+        height: 4px;
+        background-color: black;
+        width: 100%;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
 
 
-<head>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    .thick-black-underline {
+        height: 2px;
+        background-color: black;
+        width: 100%;
+        margin: 20px 0;
+    }
 
-    <style>
+    #step2 .row {
+        flex-wrap: nowrap;
+    }
 
-        .lime-underline {
-            height: 4px;
-            background-color: black;
-            width: 100%;
-            margin-top: 20px;
+    #step2 .col-md-6 {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+
+
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .small-square-card-container {
+        margin: auto;
+        flex: 0 0 18%;
+        max-width: 18%;
+        padding: 0 5px;
+    }
+
+    .small-square-card,
+    .property-subtype-card {
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+        border-radius: 5px;
+        margin-top: 5px;
+        font-size: 0.8rem;
+    }
+
+        .small-square-card::before,
+        .property-subtype-card::before {
+            content: '';
+            display: block;
+            padding-top: 100%;
+        }
+
+        .small-square-card .card-body,
+        .property-subtype-card .card-body {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .small-square-card i,
+        .property-subtype-card i {
+            font-size: 1rem;
+        }
+
+    .selected {
+        border: 3px solid #007bff;
+        background-color: #e9ecef;
+    }
+
+    @@media (max-width: 768px) {
+        .small-square-card-container {
+            flex: 0 0 100%;
+            max-width: 100%;
+            padding: 0 5px;
             margin-bottom: 20px;
         }
 
-
-        .thick-black-underline {
-            height: 2px; 
-            background-color: black;
-            width: 100%;
-            margin: 20px 0;
-        }
-
-        #step2 .row {
-            flex-wrap: nowrap; 
-        }
-
-        #step2 .col-md-6 {
-            flex: 0 0 50%; 
-            max-width: 50%;
-        }
-
-
         .row {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .small-square-card-container {
-            margin: auto;
-            flex: 0 0 18%;
-            max-width: 18%; 
-            padding: 0 5px; 
+            gap: 5px;
         }
 
         .small-square-card,
         .property-subtype-card {
-            position: relative;
-            width: 100%;
-            overflow: hidden;
-            border-radius: 5px;
-            margin-top: 5px;
-            font-size: 0.8rem; 
+            margin-top: 10px;
+            font-size: 0.9rem;
         }
 
-            .small-square-card::before,
-            .property-subtype-card::before {
-                content: '';
-                display: block;
-                padding-top: 100%; 
-            }
+        .f1-steps {
+            flex-direction: column;
+        }
 
-            .small-square-card .card-body,
-            .property-subtype-card .card-body {
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                text-align: center;
-            }
+        .f1-step-icon {
+            font-size: 1rem;
+        }
 
-            .small-square-card i,
-            .property-subtype-card i {
-                font-size: 1rem; 
-            }
+        .card-body {
+            padding: 10px;
+        }
 
-        .selected {
-            border: 3px solid #007bff;
-            background-color: #e9ecef;
+        .form-navigation,
+        .modal-footer {
+            flex-direction: column-reverse;
+        }
+
+        .btn-next,
+        .btn-previous,
+        .closebutton,
+        #saveOwner {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .modal-dialog {
+            margin: 20px;
+        }
+
+        .modal-content {
+            padding: 10px;
         }
 
         @@media (max-width: 768px) {
-            .small-square-card-container {
-                flex: 0 0 100%;
-                max-width: 100%;
-                padding: 0 5px;
-                margin-bottom: 20px; 
-            }
-
             .row {
-                gap: 5px; 
+                justify-content: center;
             }
 
-            .small-square-card,
-            .property-subtype-card {
-                margin-top: 10px; 
-                font-size: 0.9rem; 
-            }
-
-            .f1-steps {
-                flex-direction: column; 
-            }
-
-            .f1-step-icon {
-                font-size: 1rem;
-            }
-
-            .card-body {
-                padding: 10px;
-            }
-
-            .form-navigation,
-            .modal-footer {
-                flex-direction: column-reverse;
-            }
-
-            .btn-next,
-            .btn-previous,
-            .closebutton,
-            #saveOwner {
-                width: 100%;
-                margin-top: 10px;
-            }
-
-            .modal-dialog {
-                margin: 20px;
-            }
-
-            .modal-content {
-                padding: 10px;
-            }
-            @@media (max-width: 768px) {
+            @@media (max-width: 768px) and (min-width: 576px) {
                 .row {
-                    justify-content: center; 
+                    justify-content: space-between;
                 }
-                @@media (max-width: 768px) and (min-width: 576px) {
-                    .row {
-                        justify-content: space-between; 
-                    }
-                }
-                @@media (max-width: 576px) {
-                    .row {
-                        justify-content: center; 
-                    }
+            }
+
+            @@media (max-width: 576px) {
+                .row {
+                    justify-content: center;
                 }
             }
         }
-
-
-        
-@@media (max-width: 768px) {
-    .f1-progress {
-        display: none;
     }
-    .small-square-card-container, .row {
-        flex: 0 0 100%; 
-        max-width: 100%;
-        padding: 0 15px; 
-        margin-bottom: 20px; 
-    }
-    .row {
-        gap: 5px; 
-    }
-    .small-square-card, .property-subtype-card {
-        margin-top: 10px;
-        font-size: 0.9rem; 
-    }
-    .form-navigation, .modal-footer {
-        flex-direction: column-reverse;
-    }
-    .btn-next, .btn-previous, .closebutton, #saveOwner {
-        width: 100%;
-        margin-top: 10px;
-    }
-    .modal-dialog {
-        margin: 20px;
-    }
-    .modal-content {
-        padding: 10px;
-    }
-}
-
-
-    </style>
 
 
 
-</head>
+    @@media (max-width: 768px) {
+        .f1-progress {
+            display: none;
+        }
 
+        .small-square-card-container, .row {
+            flex: 0 0 100%;
+            max-width: 100%;
+            padding: 0 15px;
+            margin-bottom: 20px;
+        }
+
+        .row {
+            gap: 5px;
+        }
+
+        .small-square-card, .property-subtype-card {
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
+        .form-navigation, .modal-footer {
+            flex-direction: column-reverse;
+        }
+
+        .btn-next, .btn-previous, .closebutton, #saveOwner {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .modal-dialog {
+            margin: 20px;
+        }
+
+        .modal-content {
+            padding: 10px;
+        }
+    }
+
+</style>
 <!-- Page Sidebar Ends-->
 <div class="page-body">
     <div class="container-fluid">
