@@ -1,31 +1,41 @@
 ﻿@using PMS_PropertyHapa.Models.DTO;
-@model AssetDTO
+@model PMS_PropertyHapa.Models.DTO.AssetAndOwnersViewModel
 
 @{
-    ViewData["Title"] = "AddAssest";
+    var formTitle = Model?.Asset?.AssetId > 0 ? "Edit" : "Add";
+    ViewData["Title"] = "Add Asset";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+
 <head>
+    z
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
     <style>
 
+        .unit-fields {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start; 
+    gap: 10px; 
+}
+
+
 
         .thick-black-underline {
-            height: 2px; /* Adjust the thickness of the underline */
+            height: 2px;
             background-color: black;
             width: 100%;
             margin: 20px 0;
         }
 
-        /* Add this CSS to target address fields specifically */
         #step2 .row {
-            flex-wrap: nowrap; /* Ensure the address fields stay in one row */
+            flex-wrap: nowrap;
         }
 
         #step2 .col-md-6 {
-            flex: 0 0 50%; /* Make each address field take up half the row */
+            flex: 0 0 50%;
             max-width: 50%;
         }
 
@@ -33,16 +43,26 @@
         .row {
             display: flex;
             flex-wrap: wrap;
-            justify-content: center; /* Align cards to the center */
-            gap: 10px;
+            justify-content: center;
+            gap: 8%;
         }
 
+            .row input {
+                box-sizing: border-box;
+            }
+
         .small-square-card-container {
-            margin: auto;
-            flex: 0 0 18%; /* Reduce the width of each card container */
-            max-width: 18%; /* Reduce the maximum width */
-            padding: 0 5px; /* Reduce horizontal padding */
+            max-width: 20%;
         }
+
+        #step2 .row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8%;
+        }
+
+
 
         .small-square-card,
         .property-subtype-card {
@@ -50,15 +70,15 @@
             width: 100%;
             overflow: hidden;
             border-radius: 5px;
-            margin-top: 5px; /* Reduce space between cards */
-            font-size: 0.8rem; /* Reduce text size */
+            margin-top: 5px;
+            font-size: 0.8rem;
         }
 
             .small-square-card::before,
             .property-subtype-card::before {
                 content: '';
                 display: block;
-                padding-top: 100%; /* Maintains aspect ratio */
+                padding-top: 100%;
             }
 
             .small-square-card .card-body,
@@ -76,7 +96,7 @@
 
             .small-square-card i,
             .property-subtype-card i {
-                font-size: 1rem; /* Adjust icon size */
+                font-size: 1rem;
             }
 
         .selected {
@@ -87,24 +107,24 @@
         /* Add responsive adjustments */
         @@media (max-width: 768px) {
             .small-square-card-container {
-                flex: 0 0 100%; /* Makes cards full width */
+                flex: 0 0 100%;
                 max-width: 100%;
-                padding: 0 5px; /* Reduces horizontal padding */
-                margin-bottom: 20px; /* Adds more space between rows of cards */
+                padding: 0 5px;
+                margin-bottom: 20px;
             }
 
             .row {
-                gap: 5px; /* Reduces gap between flex items */
+                gap: 5px;
             }
 
             .small-square-card,
             .property-subtype-card {
-                margin-top: 10px; /* Increases space above cards */
-                font-size: 0.9rem; /* Increase text size */
+                margin-top: 10px;
+                font-size: 0.9rem;
             }
 
             .f1-steps {
-                flex-direction: column; /* Stacks step indicators vertically */
+                flex-direction: column;
             }
 
             .f1-step-icon {
@@ -135,21 +155,21 @@
             .modal-content {
                 padding: 10px;
             }
-            /* Adjust justify-content based on the number of cards in a row */
+
             @@media (max-width: 768px) {
                 .row {
-                    justify-content: center; /* Align cards to the center */
+                    justify-content: center;
                 }
-                /* For small screens with at least 3 cards in a row */
+
                 @@media (max-width: 768px) and (min-width: 576px) {
                     .row {
-                        justify-content: space-between; /* Align cards with space between them */
+                        justify-content: space-between;
                     }
                 }
-                /* For small screens with less than 3 cards in a row */
+
                 @@media (max-width: 576px) {
                     .row {
-                        justify-content: center; /* Align cards to the center */
+                        justify-content: center;
                     }
                 }
             }
@@ -169,7 +189,7 @@
                 <!-- Adjusted for alignment and distribution -->
                 <div class="col-auto">
                     <!-- col-auto adjusts the width to its content -->
-                    <h3>Add New Property</h3>
+                    <h3>@formTitle Property</h3>
                 </div>
                 <div class="col-auto">
                     <!-- col-auto adjusts the width to its content -->
@@ -182,7 +202,7 @@
                                 </a>
                             </li>
                             <li class="breadcrumb-item">Property</li>
-                            <li class="breadcrumb-item active" aria-current="page">Create</li>
+                            <li class="breadcrumb-item active" aria-current="page">@formTitle</li>
                         </ol>
                     </nav>
                 </div>
@@ -259,35 +279,35 @@
                             </fieldset>
 
                             <fieldset id="step2" class="step-section">
-                                <h3>Property Address</h3>
+                                <h3 class="mb-5">Property Address</h3>
                                 <div class="row">
-                                    <div class="col-md-6 mb-2">
+                                    <div class="col-md-4 mb-2">
                                         <label class="sr-only" for="street1">Street 1</label>
-                                        <input class="form-control" id="street1" type="text" name="street1" placeholder="Street 1" required="">
+                                        <input class="form-control" id="street1" type="text" name="street1" placeholder="Street 1" value="@Model?.Asset?.Street1" required="">
                                     </div>
-                                    <div class="col-md-6 mb-2">
+                                    <div class="col-md-4 mb-2">
                                         <label class="sr-only" for="street2">Street 2</label>
-                                        <input class="form-control" id="street2" type="text" name="street2" placeholder="Street 2">
+                                        <input class="form-control" id="street2" type="text" name="street2" placeholder="Street 2" value="@Model?.Asset?.Street2">
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-6 mb-2">
+                                    <div class="col-md-4 mb-2">
                                         <label class="sr-only" for="city">City</label>
-                                        <input class="form-control" id="city" type="text" name="city" placeholder="City" required="">
+                                        <input class="form-control" id="city" type="text" name="city" placeholder="City" required="" value="@Model?.Asset?.City">
                                     </div>
-                                    <div class="col-md-6 mb-2">
+                                    <div class="col-md-4 mb-2">
                                         <label class="sr-only" for="state">State</label>
-                                        <input class="form-control" id="state" type="text" name="state" placeholder="State" required="">
+                                        <input class="form-control" id="state" type="text" name="state" placeholder="State" required="" value="@Model?.Asset?.State">
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-6 mb-2">
+                                    <div class="col-md-4 mb-2">
                                         <label class="sr-only" for="country">Country</label>
-                                        <input class="form-control" id="country" type="text" name="country" placeholder="Country" required="">
+                                        <input class="form-control" id="country" type="text" name="country" placeholder="Country" required="" value="@Model?.Asset?.Country">
                                     </div>
-                                    <div class="col-md-6 mb-2">
+                                    <div class="col-md-4 mb-2">
                                         <label class="sr-only" for="zipcode">Zip Code</label>
-                                        <input class="form-control" id="zipcode" type="text" name="zipcode" placeholder="Zip Code" required="">
+                                        <input class="form-control" id="zipcode" type="text" name="zipcode" placeholder="Zip Code" required="" value="@Model?.Asset?.Zipcode">
                                     </div>
                                 </div>
                             </fieldset>
@@ -297,8 +317,19 @@
                             <fieldset id="step3" class="step-section">
                                 <h3>Unit Information</h3>
                                 <div id="unitFieldsContainer">
+                                    @if (Model?.Asset?.Units != null && Model?.Asset?.Units.Count > 0)
+                                    {
+                                        foreach (var unit in Model.Asset.Units)
+                                        {
+                                            <div class="unit-fields mb-3" id="unitFields@unit.UnitId">
+                                                <!-- Unit fields populated with data from the model -->
+                                            </div>
+                                        }
+                                    }
                                 </div>
-                                <a href="javascript:void(0);" class="btn btn-info" id="addAnotherUnit"><i class="fa fa-plus"></i></a>
+                                <div class="mb-3" style="text-align: right; margin-top: 20px;">
+                                    <a href="javascript:void(0);" class="btn btn-info" id="addAnotherUnit" style="display: inline-block;"><i class="fa fa-plus"></i> Add Unit</a>
+                                </div>
                             </fieldset>
 
                             <fieldset id="step4" class="step-section">
@@ -435,39 +466,91 @@
             </div>
             <div class="modal-body">
                 <form id="ownerForm">
-                    <div class="form-group">
-                        <label for="ownerName">Owner Name</label>
-                        <input type="text" class="form-control" id="ownerName" placeholder="Enter owner name">
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="ownerName">First Name</label>
+                            <input type="text" class="form-control" id="firstName" placeholder="Enter first name" value="@Model?.Owners?.FirstOrDefault().FirstName">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="ownerName">Last Name</label>
+                            <input type="text" class="form-control" id="lastName" placeholder="Enter last name" value="@Model?.Owners?.FirstOrDefault().LastName">
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label for="ownerCompanyName">Owner Company Name</label>
-                        <input type="text" class="form-control" id="ownerCompanyName" placeholder="Enter company name">
-                    </div>
-                    <div class="form-group">
-                        <label for="ownerAddress">Owner Address</label>
-                        <input type="text" class="form-control" id="ownerAddress" placeholder="Enter address">
+                        <label for="ownerName">Email</label>
+                        <input type="text" class="form-control" id="ownerName" placeholder="Enter email address" value="@Model?.Owners?.FirstOrDefault().EmailAddress">
                     </div>
                     <div class="form-row">
                         <div class="form-group col-md-6">
-                            <label for="ownerStreet">Street</label>
-                            <input type="text" class="form-control" id="ownerStreet" placeholder="Enter street">
+                            <label for="ownerCompanyName">Phone Number</label>
+                            <input type="text" class="form-control" id="ownerCompanyName" placeholder="Enter phone number" value="@Model?.Owners?.FirstOrDefault().PhoneNumber">
                         </div>
                         <div class="form-group col-md-6">
-                            <label for="ownerZipcode">Zip Code</label>
-                            <input type="text" class="form-control" id="ownerZipcode" placeholder="Enter zipcode">
+                            <div class="mb-3">
+                                <label for="Gender" class="form-label">Gender</label>
+                                <select class="form-control" id="Gender" name="Gender" required value="@Model?.Owners?.FirstOrDefault().Gender">
+                                    <option value="">Select Gender</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                     <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="ownerCity">City</label>
-                            <input type="text" class="form-control" id="ownerCity" placeholder="Enter city">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="DOB" class="form-label">Date of Birth</label>
+                                <input type="date" class="form-control" id="DOB" name="DOB" value="@Model?.Owners?.FirstOrDefault().DOB" />
+                            </div>
                         </div>
-                        <div class="form-group col-md-6">
-                            <label for="ownerCountry">Country</label>
-                            <input type="text" class="form-control" id="ownerCountry" placeholder="Enter country">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="EmergencyContactInfo" class="form-label">Emergency Contact Info</label>
+                                <input type="text" class="form-control" id="EmergencyContactInfo" name="EmergencyContactInfo" required value="@Model?.Owners?.FirstOrDefault().EmergencyContactInfo" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="TenantNationality" class="form-label">Owner Nationality</label>
+                                <input type="text" class="form-control" id="TenantNationality" name="TenantNationality" value="@Model?.Owners?.FirstOrDefault().OwnerNationality" required />
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="PictureUrl" class="form-label">Picture</label>
+                                <input type="file" class="form-control" id="PictureUrl" name="PictureUrl" accept="image/*" />
+                            </div>
                         </div>
                     </div>
                 </form>
+            </div>
+            <hr />
+            @* //Changes by Raas *@
+            <div class="modal-body">
+                <h3 class="modal-title">Previous Landlords<span class="f-14 pull-right mt-0">Total @Model?.Owners.Count()</span></h3>
+                <br />
+                <div class="card-body p-0">
+                    <div class="row list-persons" id="addcon">
+                        <div class="nav flex-column nav-pills" id="v-pills-tab">
+                            @foreach (var item in Model.Owners.OrderBy(a => a.FirstName))
+                            {
+                                <a class="contact-tab-@item.OwnerId nav-link" id="v-pills-@item.OwnerId-tab" data-bs-toggle="pill" onclick="activeDiv(@item.OwnerId)" href="#v-pills-@item.OwnerId" role="tab" aria-controls="v-pills-@item.OwnerId" aria-selected="true">
+                                    <div class="media">
+                                        <img class="img-50 img-fluid m-r-20 rounded-circle update_img_0" src="@item.Picture" alt="">
+                                        <div class="media-body">
+                                            <h6> <span class="first_name_0">@item.FirstName </span><span class="last_name_0">@item.LastName</span></h6>
+                                            <p class="email_add_0">@item.EmailAddress</p>
+                                        </div>
+                                    </div>
+                                </a>
+                            }
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary closebutton" data-dismiss="modal">Close</button>
@@ -479,9 +562,76 @@
 
 
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     var currentStep = 1;
     var totalSteps = 6;
+
+    function validateCurrentStep() {
+        var isValid = true;
+        var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
+
+        switch (currentStep) {
+            case 1:
+                if (!$('.property-type-card.selected').length) {
+                    isValid = false;
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'Please select property type and subtype.'
+                    });
+                }
+                break;
+            case 2:
+                if (!$('#street1').val() || !$('#city').val() || !$('#state').val() || !$('#country').val() || !$('#zipcode').val()) {
+                    isValid = false;
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'Please fill in all address fields.'
+                    });
+                }
+                break;
+            case 3:
+                if (!$('#unitName').val() || !$('#beds').val() || !$('#bath').val() || !$('#size').val() || !$('#rent').val() || !$('#room').val()) {
+                    isValid = false;
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'Please fill in all unit information fields.'
+                    });
+                }
+                break;
+            case 4:
+                if (!$('.bank-account-option.selected').length) {
+                    isValid = false;
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'Please select a bank account option.'
+                    });
+                }
+                break;
+            case 5:
+                if (!$('.reserve-funds-card.selected').length) {
+                    isValid = false;
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'Please select a reserve funds option.'
+                    });
+                }
+                break;
+            case 6:
+                if (!$('.ownership-card.selected').length) {
+                    isValid = false;
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'Please select an ownership option.'
+                    });
+                }
+                break;
+            default:
+                break;
+        }
+        return isValid;
+    }
+
 
     function navigateToStep(step) {
         $('.step-section').hide();
@@ -502,9 +652,9 @@
 
         if (step == totalSteps) {
             $('.btn-next').text('Submit').attr('type', 'submit').off('click').on('click', function (e) {
-            
+
                 e.preventDefault();
-              
+
             });
         } else {
             $('.btn-next').text('Next').attr('type', 'button').off('click').on('click', function () {
@@ -514,11 +664,11 @@
     }
 
 
+
     $(document).ready(function () {
 
 
-      
-
+        debugger;
         $('.btn-next').click(function () {
             if (currentStep < totalSteps) {
                 if (validateCurrentStep()) {
@@ -529,6 +679,7 @@
                 $('#multiStepForm').submit();
             }
         });
+
 
 
         $('.btn-previous').click(function () {
@@ -544,103 +695,103 @@
             if (type === 'residential') {
                 // Residential Subtypes
                 subtypesHtml = `
-                    <div class="row">
-                        <div class="small-square-card-container">
-                            <div class="card property-subtype-card small-square-card" data-subtype="single-family">
-                                <div class="card-body text-center">
-                                    <i class="fa fa-home fa-2x"></i>
-                                    <h5 class="card-title mt-2">Single Family</h5>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="small-square-card-container">
-                            <div class="card property-subtype-card small-square-card" data-subtype="multi-family">
-                                <div class="card-body text-center">
-                                    <i class="fa fa-building fa-2x"></i>
-                                    <h5 class="card-title mt-2">Multi Family</h5>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="small-square-card-container">
-                            <div class="card property-subtype-card small-square-card" data-subtype="condo">
-                                <div class="card-body text-center">
-                                    <i class="fa fa-building-o fa-2x"></i>
-                                    <h5 class="card-title mt-2">Condo</h5>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="small-square-card-container">
-                            <div class="card property-subtype-card small-square-card" data-subtype="townhome">
-                                <div class="card-body text-center">
-                                    <i class="fa fa-home fa-2x"></i>
-                                    <h5 class="card-title mt-2">Townhome</h5>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="small-square-card-container">
-                            <div class="card property-subtype-card small-square-card" data-subtype="other">
-                                <div class="card-body text-center">
-                                    <i class="fa fa-building fa-2x"></i>
-                                    <h5 class="card-title mt-2">Other</h5>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
+                                        <div class="row">
+                                            <div class="small-square-card-container">
+                                                <div class="card property-subtype-card small-square-card" data-subtype="single-family">
+                                                    <div class="card-body text-center">
+                                                        <i class="fa fa-home fa-2x"></i>
+                                                        <h5 class="card-title mt-2">Single Family</h5>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="small-square-card-container">
+                                                <div class="card property-subtype-card small-square-card" data-subtype="multi-family">
+                                                    <div class="card-body text-center">
+                                                        <i class="fa fa-building fa-2x"></i>
+                                                        <h5 class="card-title mt-2">Multi Family</h5>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="small-square-card-container">
+                                                <div class="card property-subtype-card small-square-card" data-subtype="condo">
+                                                    <div class="card-body text-center">
+                                                            <i class="fa fa-warehouse fa-2x"></i>
+                                                        <h5 class="card-title mt-2">Condo</h5>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="small-square-card-container">
+                                                <div class="card property-subtype-card small-square-card" data-subtype="townhome">
+                                                    <div class="card-body text-center">
+                                                        <i class="fa fa-home fa-2x"></i>
+                                                        <h5 class="card-title mt-2">Townhome</h5>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="small-square-card-container">
+                                                <div class="card property-subtype-card small-square-card" data-subtype="other">
+                                                    <div class="card-body text-center">
+                                                        <i class="fa fa-building fa-2x"></i>
+                                                        <h5 class="card-title mt-2">Other</h5>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    `;
             } else if (type === 'commercial') {
                 // Commercial Subtypes
                 subtypesHtml = `
-                    <div class="row">
-                        <div class="small-square-card-container">
-                            <div class="card property-subtype-card small-square-card" data-subtype="industrial">
-                                <div class="card-body text-center">
-                                    <i class="fa fa-industry fa-2x"></i>
-                                    <h5 class="card-title">Industrial</h5>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="small-square-card-container">
-                            <div class="card property-subtype-card small-square-card" data-subtype="office">
-                                <div class="card-body text-center">
-                                    <i class="fa fa-building fa-2x"></i>
-                                    <h5 class="card-title">Office</h5>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="small-square-card-container">
-                            <div class="card property-subtype-card small-square-card" data-subtype="retail">
-                                <div class="card-body text-center">
-                                    <i class="fa fa-shopping-bag fa-2x"></i>
-                                    <h5 class="card-title">Retail</h5>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="small-square-card-container">
-                            <div class="card property-subtype-card small-square-card" data-subtype="shopping-center">
-                                <div class="card-body text-center">
-                                    <i class="fa fa-shopping-cart fa-2x"></i>
-                                    <h5 class="card-title">Shopping Center</h5>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="small-square-card-container">
-                            <div class="card property-subtype-card small-square-card" data-subtype="storage">
-                                <div class="card-body text-center">
-                                    <i class="fa fa-warehouse fa-2x"></i>
-                                    <h5 class="card-title">Storage</h5>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="small-square-card-container">
-                            <div class="card property-subtype-card small-square-card" data-subtype="other">
-                                <div class="card-body text-center">
-                                    <i class="fa fa-building fa-2x"></i>
-                                    <h5 class="card-title">Other</h5>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
+                                        <div class="row">
+                                            <div class="small-square-card-container">
+                                                <div class="card property-subtype-card small-square-card" data-subtype="industrial">
+                                                    <div class="card-body text-center">
+                                                        <i class="fa fa-industry fa-2x"></i>
+                                                        <h5 class="card-title">Industrial</h5>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="small-square-card-container">
+                                                <div class="card property-subtype-card small-square-card" data-subtype="office">
+                                                    <div class="card-body text-center">
+                                                        <i class="fa fa-building fa-2x"></i>
+                                                        <h5 class="card-title">Office</h5>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="small-square-card-container">
+                                                <div class="card property-subtype-card small-square-card" data-subtype="retail">
+                                                    <div class="card-body text-center">
+                                                        <i class="fa fa-shopping-bag fa-2x"></i>
+                                                        <h5 class="card-title">Retail</h5>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="small-square-card-container">
+                                                <div class="card property-subtype-card small-square-card" data-subtype="shopping-center">
+                                                    <div class="card-body text-center">
+                                                        <i class="fa fa-shopping-cart fa-2x"></i>
+                                                        <h5 class="card-title">Shopping Center</h5>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="small-square-card-container">
+                                                <div class="card property-subtype-card small-square-card" data-subtype="storage">
+                                                    <div class="card-body text-center">
+                                                        <i class="fa fa-warehouse fa-2x"></i>
+                                                        <h5 class="card-title">Storage</h5>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="small-square-card-container">
+                                                <div class="card property-subtype-card small-square-card" data-subtype="other">
+                                                    <div class="card-body text-center">
+                                                        <i class="fa fa-building fa-2x"></i>
+                                                        <h5 class="card-title">Other</h5>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    `;
             }
             $('#subtypeSelection').html(subtypesHtml).show();
 
@@ -653,76 +804,76 @@
             if (type === 'residential') {
 
                 unitFieldsHtml = `
-                           <div class="row">
-                    <div class="col-md-4">
-                        <div class="mb-2">
-                            <label class="sr-only" for="unitName">Unit Name</label>
-                            <input class="form-control" id="unitName" type="text" name="unitName" placeholder="Unit Name" required="">
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="mb-2">
-                            <label class="sr-only" for="beds">Beds</label>
-                            <input class="form-control" id="beds" type="number" name="beds" placeholder="Beds" required="">
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="mb-2">
-                            <label class="sr-only" for="bath">Bath</label>
-                            <input class="form-control" id="bath" type="number" name="bath" placeholder="Bath" required="">
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="mb-2">
-                            <label class="sr-only" for="size">Size</label>
-                            <input class="form-control" id="size" type="number" name="size" placeholder="Size" required="">
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="mb-2">
-                            <label class="sr-only" for="rent">Rent</label>
-                            <input class="form-control" id="rent" type="number" name="rent" placeholder="Rent" required="">
-                        </div>
-                    </div>
-                </div>
+                                               <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="mb-2">
+                                                <label class="sr-only" for="unitName">Unit Name</label>
+                                                <input class="form-control" id="unitName" type="text" name="unitName" placeholder="Unit Name" required="">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="mb-2">
+                                                <label class="sr-only" for="beds">Beds</label>
+                                                <input class="form-control" id="beds" type="number" name="beds" placeholder="Beds" required="">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="mb-2">
+                                                <label class="sr-only" for="bath">Bath</label>
+                                                <input class="form-control" id="bath" type="number" name="bath" placeholder="Bath" required="">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="mb-2">
+                                                <label class="sr-only" for="size">Size</label>
+                                                <input class="form-control" id="size" type="number" name="size" placeholder="Size" required="">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="mb-2">
+                                                <label class="sr-only" for="rent">Rent</label>
+                                                <input class="form-control" id="rent" type="number" name="rent" placeholder="Rent" required="">
+                                            </div>
+                                        </div>
+                                    </div>
 
-                    `;
+                                        `;
             } else if (type === 'commercial') {
                 // Commercial unit fields
                 unitFieldsHtml = `
-                                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="mb-2">
-                                <label class="sr-only" for="unitName">Unit Name</label>
-                                <input class="form-control" id="unitName" type="text" name="unitName" placeholder="Unit Name" required="">
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="mb-2">
-                                <label class="sr-only" for="beds">Beds</label>
-                                <input class="form-control" id="beds" type="number" name="beds" placeholder="Beds" required="">
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="mb-2">
-                                <label class="sr-only" for="bath">Bath</label>
-                                <input class="form-control" id="bath" type="number" name="bath" placeholder="Bath" required="">
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="mb-2">
-                                <label class="sr-only" for="size">Size</label>
-                                <input class="form-control" id="size" type="number" name="size" placeholder="Size" required="">
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="mb-2">
-                                <label class="sr-only" for="rent">Rent</label>
-                                <input class="form-control" id="rent" type="number" name="rent" placeholder="Rent" required="">
-                            </div>
-                        </div>
-                    </div>
-                    `;
+                                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="mb-2">
+                                                    <label class="sr-only" for="unitName">Unit Name</label>
+                                                    <input class="form-control" id="unitName" type="text" name="unitName" placeholder="Unit Name" required="">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="mb-2">
+                                                    <label class="sr-only" for="beds">Beds</label>
+                                                    <input class="form-control" id="beds" type="number" name="beds" placeholder="Beds" required="">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="mb-2">
+                                                    <label class="sr-only" for="bath">Bath</label>
+                                                    <input class="form-control" id="bath" type="number" name="bath" placeholder="Bath" required="">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="mb-2">
+                                                    <label class="sr-only" for="size">Size</label>
+                                                    <input class="form-control" id="size" type="number" name="size" placeholder="Size" required="">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="mb-2">
+                                                    <label class="sr-only" for="rent">Rent</label>
+                                                    <input class="form-control" id="rent" type="number" name="rent" placeholder="Rent" required="">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        `;
             }
 
             $('#unitFields').html(unitFieldsHtml);
@@ -758,71 +909,8 @@
             $('#SelectedSubtype').val(subtype);
         });
 
+        debugger;
 
-        function validateCurrentStep() {
-            var isValid = true;
-            var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
-
-            switch (currentStep) {
-                case 1:
-                    if ($('.property-type-card.selected').length === 0 || $('.property-subtype-card.selected').length === 0) {
-                        isValid = false;
-                        Toast.fire({
-                            icon: 'error',
-                            title: 'Please select property type and subtype.'
-                        });
-                    }
-                    break;
-                case 2:
-                    if ($('#street1').val() === '' || $('#city').val() === '' || $('#state').val() === '' || $('#country').val() === '' || $('#zipcode').val() === '') {
-                        isValid = false;
-                        Toast.fire({
-                            icon: 'error',
-                            title: 'Please fill in all address fields.'
-                        });
-                    }
-                    break;
-                case 3:
-                    if ($('#unitName').val() === '' || $('#beds').val() === '' || $('#bath').val() === '' || $('#size').val() === '' || $('#rent').val() === '' || $('#room').val() === '') {
-                        isValid = false;
-                        Toast.fire({
-                            icon: 'error',
-                            title: 'Please fill in all unit information fields.'
-                        });
-                    }
-                    break;
-                case 4:
-                    if ($('.bank-account-option.selected').length === 0) {
-                        isValid = false;
-                        Toast.fire({
-                            icon: 'error',
-                            title: 'Please select a bank account option.'
-                        });
-                    }
-                    break;
-                case 5:
-                    if ($('.reserve-funds-card.selected').length === 0) {
-                        isValid = false;
-                        Toast.fire({
-                            icon: 'error',
-                            title: 'Please select a reserve funds option.'
-                        });
-                    }
-                    break;
-                case 6:
-                    if ($('.ownership-card.selected').length === 0) {
-                        isValid = false;
-                        Toast.fire({
-                            icon: 'error',
-                            title: 'Please select an ownership option.'
-                        });
-                    }
-                    break;
-                default:
-                    break;
-            }
-            return isValid;
-        }
 
 
 
@@ -934,28 +1022,28 @@
     }
 
 
+    var isEditMode = '@Model?.Asset?.AssetId' !== '';
 
     $('#submitForm').click(function (event) {
         event.preventDefault();
         debugger;
-        // Manually construct the JSON object from the form data
+
         var formData = collectFormData();
-        console.log(formData); // Debug: Inspect the structure and data
+        var submitUrl = isEditMode ? `$/Assests/UpdateAsset/{@Model.Asset.AssetId}` : '/Assests/AddAsset';
+        console.log(formData);
 
         if (currentStep === totalSteps) {
             $.ajax({
-                url: '/Assests/AddAsset', 
+                url: submitUrl,
                 type: 'POST',
                 contentType: 'application/x-www-form-urlencoded',
                 data: formData,
                 success: function (response) {
                     console.log("Success:", response);
                     window.location.href = '/Assests/Index';
-                  
                 },
                 error: function (xhr, status, error) {
                     console.error("Error:", error);
-            
                 }
             });
 
@@ -967,13 +1055,11 @@
 
 
 
-
-
     function collectUnitsData() {
         var units = [];
         $('#unitFieldsContainer .unit-fields').each(function () {
             var unit = {
-                UnitName: $(this).find('input[name="unitName"]').val(), 
+                UnitName: $(this).find('input[name="unitName"]').val(),
                 Beds: parseInt($(this).find('input[name="beds"]').val(), 10),
                 Bath: parseInt($(this).find('input[name="bath"]').val(), 10),
                 Size: parseInt($(this).find('input[name="size"]').val(), 10),
@@ -992,40 +1078,51 @@
         function addUnitFields() {
             var unitIndex = $('#unitFieldsContainer .unit-fields').length + 1;
             var unitFieldsHtml = `
-                <div class="unit-fields mb-3" id="unitFields${unitIndex}">
-                    <hr>
-                    <h5>Unit ${unitIndex} <a class="float-right remove-unit" data-unit="${unitIndex}"><i class="fa fa-times"></i></a></h5>
-                    <div class="form-row">
-                        <div class="col">
-                            <input type="text" class="form-control" placeholder="Unit Name" name="unitName[]">
+             <div id="unitFieldsContainer">
+    @if (Model?.Asset != null && Model?.Asset?.Units != null && (bool)Model?.Asset?.Units.Any())
+    {
+        foreach (var unit in Model?.Asset?.Units)
+        {
+                        <div class="unit-fields mb-3" id="unitFields@unit.UnitId">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5>Unit @unit.UnitName</h5>
+                                <button type="button" class="btn btn-danger remove-unit" data-unit="@unit.UnitId">Remove</button>
+                            </div>
+                            <div class="form-row">
+                                <div class="col">
+                                    <input type="text" class="form-control" placeholder="Unit Name" name="Units[@unit.UnitId].UnitName" value="@unit.UnitName">
+                                </div>
+                                <div class="col">
+                                    <input type="number" class="form-control" placeholder="Beds" name="Units[@unit.UnitId].Beds" value="@unit.Beds">
+                                </div>
+                                <div class="col">
+                                    <input type="number" class="form-control" placeholder="Bath" name="Units[@unit.UnitId].Bath" value="@unit.Bath">
+                                </div>
+                                <div class="col">
+                                    <input type="number" class="form-control" placeholder="Size" name="Units[@unit.UnitId].Size" value="@unit.Size">
+                                </div>
+                                <div class="col">
+                                    <input type="number" class="form-control" placeholder="Rent" name="Units[@unit.UnitId].Rent" value="@unit.Rent">
+                                </div>
+                            </div>
                         </div>
-                        <div class="col">
-                            <input type="number" class="form-control" placeholder="Beds" name="beds[]">
-                        </div>
-                        <div class="col">
-                            <input type="number" class="form-control" placeholder="Bath" name="bath[]">
-                        </div>
-                        <div class="col">
-                            <input type="number" class="form-control" placeholder="Size" name="size[]">
-                        </div>
-                        <div class="col">
-                            <input type="number" class="form-control" placeholder="Rent" name="rent[]">
-                        </div>
-                    </div>
-                </div>`;
-            $('#unitFieldsContainer').append(unitFieldsHtml);
+        }
+    }
+    </div>
+    <button type="button" id="addAnotherUnit" class="btn btn-primary">Add Another Unit</button>
         }
 
-        addUnitFields();
 
         $('#addAnotherUnit').click(function () {
             addUnitFields();
         });
 
         $('#unitFieldsContainer').on('click', '.remove-unit', function () {
-            var unitId = $(this).attr('data-unit');
+            var unitId = $(this).data('unit');
             $('#unitFields' + unitId).remove();
         });
+
+        addUnitFields();
     });
 
 
@@ -1036,4 +1133,53 @@
     });
 
 
+</script>
+
+
+<script>
+    $(document).ready(function () {
+
+        var selectedPropertyType = '@Model?.Asset?.SelectedPropertyType';
+        $('.property-type-card').each(function () {
+            if ($(this).data('type') === selectedPropertyType) {
+                $(this).addClass('selected');
+                displaySubtypes(selectedPropertyType);
+            }
+        });
+
+
+        var selectedSubtype = '@Model?.Asset?.SelectedSubtype';
+        $('.property-subtype-card').each(function () {
+            if ($(this).data('subtype') === selectedSubtype) {
+                $(this).addClass('selected');
+            }
+        });
+
+
+        var selectedBankAccountOption = '@Model?.Asset?.SelectedBankAccountOption';
+        $('.bank-account-option').each(function () {
+            if ($(this).data('option') === selectedBankAccountOption) {
+                $(this).addClass('selected');
+            }
+        });
+
+        // Set selected state for Reserve Funds Options
+        var selectedReserveFundsOption = '@Model?.Asset?.SelectedReserveFundsOption';
+        $('.reserve-funds-card').each(function () {
+            if ($(this).data('option') === selectedReserveFundsOption) {
+                $(this).addClass('selected');
+            }
+        });
+
+        // Set selected state for Ownership Options
+        var selectedOwnershipOption = '@Model?.Asset?.SelectedOwnershipOption';
+        $('.ownership-card').each(function () {
+            if ($(this).data('option') === selectedOwnershipOption) {
+                $(this).addClass('selected');
+                if ($(this).data('option') === 'owned-by-someone-else') {
+                    $('#addOwnerSection').show();
+                }
+            }
+        });
+    });
 </script>

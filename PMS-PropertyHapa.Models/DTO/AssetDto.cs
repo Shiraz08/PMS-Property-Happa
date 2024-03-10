@@ -21,6 +21,7 @@ namespace PMS_PropertyHapa.Models.DTO
         public string Zipcode { get; set; }
 
         public List<UnitDTO> Units { get; set; } = new List<UnitDTO>();
+        public OwnerDto OwnerData { get; set; }
 
         public string SelectedBankAccountOption { get; set; }
         public string SelectedReserveFundsOption { get; set; }
@@ -37,6 +38,7 @@ namespace PMS_PropertyHapa.Models.DTO
 
     public class UnitDTO
     {
+        public int UnitId { get; set; }
         public string UnitName { get; set; }
         public int Beds { get; set; }
         public int Bath { get; set; }

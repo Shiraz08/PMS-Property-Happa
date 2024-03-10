@@ -181,3 +181,44 @@
     });
 </script>
 
+        detailsHtml += '<div class="tab-pane contact-tab-' + asset.AssetId + ' fade ' + isActive + '" id="v-pills-' + asset.AssetId + '" role="tabpanel" aria-labelledby="v-pills-' + asset.AssetId + '-tab">' +
+                     '<div class="profile-mail">' +
+                    '<div class="media align-items-center">' +
+                    '<img class="img-100 img-fluid m-r-20 rounded-circle" src="' + assetPicture + '" alt="">' +
+                    '<div class="media-body mt-0">' +
+                                '<h5>' + asset.OwnerName + '</h5>' +
+                                '<p>' + asset.OwnerCompanyName + '</p>' +
+                              '<div class="mt-2">' +
+                    '<a href="/Tenant/EditOwner/' + asset.OwnerId + '" style="margin-right: 10px;">Edit</a>' +
+                    '<a href="javascript:void(0);" onclick="deleteTenant(' + asset.OwnerId + ');">Delete</a>' +
+                    '</div>' +
+                    '</div>' +
+                    '</div>' +
+                            '<div class="email-general">' +
+                                '<h6 class="mb-3">Details</h6>' +
+                                '<ul>' +
+                                    '<li>Street: <span class="font-primary">' + asset.Street1 + ' ' + asset.Street2 + '</span></li>' +
+                                    '<li>City: <span class="font-primary">' + asset.City + '</span></li>' +
+                                    '<li>State: <span class="font-primary">' + asset.State + '</span></li>' +
+                                    '<li>Country: <span class="font-primary">' + asset.Country + '</span></li>' +
+                                    '<li>Zipcode: <span class="font-primary">' + asset.Zipcode + '</span></li>' +
+                                    '<li>Bank Account Option: <span class="font-primary">' + asset.SelectedBankAccountOption + '</span></li>' +
+                                    '<li>Reserve Funds Option: <span class="font-primary">' + asset.SelectedReserveFundsOption + '</span></li>' +
+                                    '<li>Ownership Option: <span class="font-primary">' + asset.SelectedOwnershipOption + '</span></li>' +
+                                    '<li>Address: <span class="font-primary">' + asset.OwnerAddress + '</span></li>' +
+                                    '<li>Street: <span class="font-primary">' + asset.OwnerStreet + '</span></li>' +
+                                    '<li>Zipcode: <span class="font-primary">' + asset.OwnerZipcode + '</span></li>' +
+                                    '<li>City: <span class="font-primary">' + asset.OwnerCity + '</span></li>' +
+                                    '<li>Country: <span class="font-primary">' + asset.OwnerCountry + '</span></li>' +
+                                '</ul>' +
+                            '</div>' +
+                        '</div>' +
+                      '</div>';
+    });
+
+    $('#v-pills-tab').html(ownersHtml);
+    $('#v-pills-tabContent').html(detailsHtml);
+}
+
+});
+</script>
