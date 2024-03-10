@@ -21,25 +21,48 @@
             </div>
         </div>
     </div>
-    <!-- Container-fluid starts-->
     <div class="container-fluid">
         <div class="email-wrap bookmark-wrap">
             <div class="row">
-                <div class="col-xl-12 col-md-12 box-col-12">
+                <div class="col-xl-12 col-md-12 box-col-12 ">
                     <div class="email-right-aside bookmark-tabcontent contacts-tabs">
                         <div class="card email-body radius-left">
                             <div class="ps-0">
                                 <div class="tab-content">
                                     <div class="tab-pane fade active show" id="pills-personal" role="tabpanel" aria-labelledby="pills-personal-tab">
                                         <div class="card mb-0">
-                                            <div class="card-header d-flex">
-                                                <h5>Tenant</h5><span class="f-14 pull-right mt-0" id="tenantListCount">@Model?.Count() List</span>
 
+                                            <div class="card">
+                                                <div class="card-header d-flex justify-content-between align-items-center">
+
+                                                    <div class="left-side-header">
+                                                        <div class="input-group">
+                                                            <span class="input-group-text" id="basic-addon1">
+                                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                    <g>
+                                                                        <g>
+                                                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M11.2753 2.71436C16.0029 2.71436 19.8363 6.54674 19.8363 11.2753C19.8363 16.0039 16.0029 19.8363 11.2753 19.8363C6.54674 19.8363 2.71436 16.0039 2.71436 11.2753C2.71436 6.54674 6.54674 2.71436 11.2753 2.71436Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M19.8987 18.4878C20.6778 18.4878 21.3092 19.1202 21.3092 19.8983C21.3092 20.6783 20.6778 21.3097 19.8987 21.3097C19.1197 21.3097 18.4873 20.6783 18.4873 19.8983C18.4873 19.1202 19.1197 18.4878 19.8987 18.4878Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                                        </g>
+                                                                    </g>
+                                                                </svg>
+
+                                                            </span>
+                                                            <input class="form-control" type="text" placeholder="Search Tenant" aria-label="search" aria-describedby="basic-addon1">
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="right-side-header">
+                                                        <button class="btn btn-primary" type="button">Export to CSV</button>
+                                                    </div>
+                                                </div>
                                             </div>
+
                                             <div class="card-body p-0">
                                                 <div class="row list-persons" id="addcon">
-                                                    <div class="col-xl-4  col-md-5 box-col-6">
+                                                    <div class="col-xl-3 xl-20 col-md-5 box-col-6" style="padding-right: 0px;">
                                                         <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+
                                                             @foreach (var item in Model ?? Enumerable.Empty<PMS_PropertyHapa.Models.DTO.TenantModelDto>())
                                                             {
                                                                 <a class="contact-tab-@item.TenantId nav-link" id="v-pills-@item.TenantId-tab" data-bs-toggle="pill" onclick="activeDiv(@item.TenantId)" href="#v-pills-@item.TenantId" role="tab" aria-controls="v-pills-@item.TenantId" aria-selected="true">
@@ -53,251 +76,169 @@
                                                                     </div>
                                                                 </a>
                                                             }
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-xl-8 col-md-7 box-col-6">
-                                                        <div class="tab-content" id="v-pills-tabContent">
-                                                            @foreach (var item in Model ?? Enumerable.Empty<PMS_PropertyHapa.Models.DTO.TenantModelDto>())
-                                                            {
-                                                                <div class="tab-pane contact-tab-@item.TenantId tab-content-child fade" id="v-pills-@item.TenantId" role="tabpanel" aria-labelledby="v-pills-@item.TenantId-tab">
-                                                                    <div class="profile-mail">
-                                                                        <div class="media align-items-center">
-                                                                            <img class="img-100 img-fluid m-r-20 rounded-circle update_img_0" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==" alt="">
-                                                                            <input class="updateimg" type="file" name="img" onchange="readURL(this,0)">
-                                                                            <div class="media-body mt-0">
-                                                                                <h5><span class="first_name_0">@item.FirstName </span><span class="last_name_0">@item.LastName</span></h5>
-                                                                                <p class="email_add_0">@item.EmailAddress</p>
-                                                                                <ul>
-                                                                                    <li><a onclick="editTenant(@item.TenantId)">Edit</a></li>
-                                                                                    <li><a onclick="deleteTenant(@item.TenantId)">Delete</a></li>
-                                                                                </ul>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-xl-12 col-lg-12 col-md-5">
-                                                                        <div class="default-according style-1 faq-accordion job-accordion">
-                                                                            <div class="row">
-                                                                                <div class="col-xl-12">
-                                                                                    <div class="card">
-                                                                                        <div class="card-header">
-                                                                                            <h5 class="p-0">
-                                                                                                <button class="btn btn-link ps-0" data-bs-toggle="collapse" data-bs-target="#collapseicon2" aria-expanded="false" aria-controls="collapseicon2"><span class="first_name_0">Basic Info</span></button>
-                                                                                            </h5>
-                                                                                        </div>
-                                                                                        <div class="collapse show" id="collapseicon2" aria-labelledby="collapseicon2" data-parent="#accordion">
-                                                                                            <div class="card-body post-about">
-                                                                                                <ul style="width:50%; float:left;">
-                                                                                                    <li>
-                                                                                                        <div style="padding-bottom:15px!important">
-                                                                                                            <h5>Name</h5>
-                                                                                                            <p>@item.FirstName @item.LastName</p>
-                                                                                                        </div>
-                                                                                                    </li>
-                                                                                                    <li>
-                                                                                                        <div style="padding-bottom:15px!important">
-                                                                                                            <h5>Gender</h5>
-                                                                                                            @if (@item.Gender != null)
-                                                                                                            {
-                                                                                                                <p>@item.Gender</p>
-                                                                                                            }
-                                                                                                            else
-                                                                                                            {
-                                                                                                                <p>----------------</p>
-                                                                                                            }
-                                                                                                        </div>
-                                                                                                    </li>
-                                                                                                    <li>
-                                                                                                        <div style="padding-bottom:15px!important">
-                                                                                                            <h5>DOB</h5>
-                                                                                                            @{
-                                                                                                                DateTime dob = Convert.ToDateTime(item.DOB);
-                                                                                                                @if (@item.DOB != null)
-                                                                                                                {
-                                                                                                                    <p>@item.DOB</p>
-                                                                                                                }
-                                                                                                                else
-                                                                                                                {
-                                                                                                                    <p>----------------</p>
-                                                                                                                }
-                                                                                                            }
-                                                                                                        </div>
-                                                                                                    </li>
-                                                                                                    <li>
-                                                                                                        <div style="padding-bottom:15px!important">
-                                                                                                            <h5>Tenant Nationality</h5>
-                                                                                                            @if (@item.TenantNationality != null)
-                                                                                                            {
-                                                                                                                <p>@item.TenantNationality</p>
-                                                                                                            }
-                                                                                                            else
-                                                                                                            {
-                                                                                                                <p>----------------</p>
-                                                                                                            }
-                                                                                                        </div>
-                                                                                                    </li>
-                                                                                                    <li>
-                                                                                                        <div style="padding-bottom:15px!important">
-                                                                                                            <h5>Phone No.</h5>
-                                                                                                            @if (@item.PhoneNumber != null)
-                                                                                                            {
-                                                                                                                <p>@item.PhoneNumber</p>
-                                                                                                            }
-                                                                                                            else
-                                                                                                            {
-                                                                                                                <p>----------------</p>
-                                                                                                            }
-                                                                                                        </div>
-                                                                                                    </li>
-                                                                                                </ul>
-                                                                                                <ul style="width:50%; float:left;">
-                                                                                                    <li>
-                                                                                                        <div style="padding-bottom:15px!important">
-                                                                                                            <h5>Address</h5>
-                                                                                                            @if (@item.Address != null)
-                                                                                                            {
-                                                                                                                <p>@item.Address</p>
-                                                                                                            }
-                                                                                                            else
-                                                                                                            {
-                                                                                                                <p>----------------</p>
-                                                                                                            }
-                                                                                                        </div>
-                                                                                                    </li>
-                                                                                                    <li>
-                                                                                                        <div style="padding-bottom:15px!important">
-                                                                                                            <h5>Address 2</h5>
-                                                                                                            @if (@item.Address2 != null)
-                                                                                                            {
-                                                                                                                <p>@item.Address2</p>
-                                                                                                            }
-                                                                                                            else
-                                                                                                            {
-                                                                                                                <p>----------------</p>
-                                                                                                            }
-                                                                                                        </div>
-                                                                                                    </li>
-                                                                                                    <li>
-                                                                                                        <div style="padding-bottom:15px!important">
-                                                                                                            <h5>Reigon</h5>
-                                                                                                            @if (@item.Region != null)
-                                                                                                            {
-                                                                                                                <p>@item.Region</p>
-                                                                                                            }
-                                                                                                            else
-                                                                                                            {
-                                                                                                                <p>----------------</p>
-                                                                                                            }
-                                                                                                        </div>
-                                                                                                    </li>
-                                                                                                    <li>
-                                                                                                        <div style="padding-bottom:15px!important">
-                                                                                                            <h5>District</h5>
-                                                                                                            @if (@item.District != null)
-                                                                                                            {
-                                                                                                                <p>@item.District</p>
-                                                                                                            }
-                                                                                                            else
-                                                                                                            {
-                                                                                                                <p>----------------</p>
-                                                                                                            }
-                                                                                                        </div>
-                                                                                                    </li>
-                                                                                                    <li>
-                                                                                                        <div style="padding-bottom:15px!important">
-                                                                                                            <h5>Postal Code</h5>
-                                                                                                            @if (@item.PostalCode != null)
-                                                                                                            {
-                                                                                                                <p>@item.PostalCode</p>
-                                                                                                            }
-                                                                                                            else
-                                                                                                            {
-                                                                                                                <p>----------------</p>
-                                                                                                            }
 
-                                                                                                        </div>
-                                                                                                    </li>
-                                                                                                </ul>
+                                                        </div>
+                                                        <div class="col-xl-9 xl-20 col-md-7 box-col-6" style="padding-left: 0px;">
+                                                            <div class="tab-content" id="v-pills-tabContent">
+                                                                @foreach (var item in Model ?? Enumerable.Empty<PMS_PropertyHapa.Models.DTO.TenantModelDto>())
+                                                                {
+                                                                    <div class="tab-pane contact-tab-0 tab-content-child fade show active" id="v-pills-user" role="tabpanel" aria-labelledby="v-pills-user-tab">
+                                                                        <div class="profile-mail">
+                                                                            <div class="d-flex border-0 px-2" style="height: 35px;">
+                                                                                <span class="fw-bold">Tenant Detail</span>
+                                                                                <i class="icon-close"></i>
+                                                                            </div>
+                                                                            <div class="d-flex justify-content-between border-0 p-2" style="align-items: flex-start !important; background-color: #f4f8ff;">
+
+
+                                                                                <div class="media align-items-center">
+                                                                                    <img class="img-100 img-fluid m-r-20 rounded-circle update_img_0" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==" alt="">
+                                                                                    <div class="media-body mt-0">
+
+                                                                                        <h3 class="font-primary">@item.FirstName @item.LastName</h3>
+
+                                                                                        <div class="d-flex justify-content-between gap-5 border-0 flex-wrap">
+                                                                                            <div class="d-flex gap-3 border-0">
+                                                                                                <div class="d-flex flex-column border-0 ">
+                                                                                                    <span>
+                                                                                                        <i class="fa fa-phone" aria-hidden="true" style="margin-right: 5px;"></i>
+                                                                                                        @item.PhoneNumber
+                                                                                                    </span>
+                                                                                                    <span class="font-primary">@item.EmailAddress</span>
+                                                                                                </div>
+                                                                                                <div class="d-flex flex-column border-0 ">
+                                                                                                    <span>Tenant since</span>
+                                                                                                    <span class="fw-bold ">@DateTime.Now.ToShortDateString()</span>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div class="d-flex gap-2  border-0 align-items-center ">
+                                                                                                <i class="fa fa-user" aria-hidden="true"></i>
+                                                                                                <span>Account Status</span>
+                                                                                                <i class="fa fa-check-circle"></i>
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
+
                                                                                 </div>
-                                                                                <div class="col-xl-12 col-lg-6 col-md-12 col-sm-6">
-                                                                                    <div class="card">
-                                                                                        <div class="card-header">
-                                                                                            <h5 class="p-0">
-                                                                                                <button class="btn btn-link ps-0" data-bs-toggle="collapse" data-bs-target="#collapseicon8" aria-expanded="false" aria-controls="collapseicon8">Lease</button>
-                                                                                            </h5>
+                                                                                <div class="right-side-header">
+                                                                                    <button class="btn" style="background-color: #c9c9c9;color: black;" type="button" onclick="editTenant(@item.TenantId)">
+                                                                                        Edit Tenant
+                                                                                    </button>
+                                                                                </div>
+
+                                                                            </div>
+                                                                            <div class="row w-100 px-2">
+                                                                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 px-md-4 px-2 py-3">
+                                                                                    <div class="text-primary fw-bold">Current Lease</div>
+                                                                                    <div class="d-flex border-0  align-items-center gap-md-3 gap-2 mt-3">
+                                                                                        <img class="img-fluid rounded-1 update_img_0" src="data:image/jpeg;base64,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" alt="" style="max-width: 50px; height: auto;">
+                                                                                        <div class="d-flex border-0  flex-column">
+                                                                                            <span class="fw-medium" style="font-size: 12px; color: #999;">Vince Street</span>
+                                                                                            <span class="fw-medium" style="font-size: 12px; color: #999;">Apartments |</span>
+                                                                                            <span class="fw-bold" style="font-size: 12px;">2</span>
                                                                                         </div>
-                                                                                        <div class="collapse" id="collapseicon8" aria-labelledby="collapseicon8" data-parent="#accordion">
-                                                                                            <div class="card-body social-list filter-cards-view">
-                                                                                                <table class="table table-bordered">
-                                                                                                    <thead>
-                                                                                                        <tr>
-                                                                                                            <th>Firstname</th>
-                                                                                                            <th>Lastname</th>
-                                                                                                            <th>Email</th>
-                                                                                                        </tr>
-                                                                                                    </thead>
-                                                                                                    <tbody>
-                                                                                                        <tr>
-                                                                                                            <td>John</td>
-                                                                                                            <td>Doe</td>
-                                                                                                            <td>john@example.com</td>
-                                                                                                        </tr>
-                                                                                                        <tr>
-                                                                                                            <td>Mary</td>
-                                                                                                            <td>Moe</td>
-                                                                                                            <td>mary@example.com</td>
-                                                                                                        </tr>
-                                                                                                        <tr>
-                                                                                                            <td>July</td>
-                                                                                                            <td>Dooley</td>
-                                                                                                            <td>july@example.com</td>
-                                                                                                        </tr>
-                                                                                                    </tbody>
-                                                                                                </table>
-                                                                                            </div>
+                                                                                        <div class="d-flex border-0  flex-column">
+                                                                                            <span class="fw-medium" style="font-size: 12px; color: #999;">Monthly Rent</span>
+                                                                                            <span class="fw-bold">$500.00</span>
+                                                                                            <span class="fw-bold" style="font-size: 12px;">of $100.00</span>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="d-flex border-0 align-items-center gap-md-3 gap-2 mt-3">
+                                                                                        <div class="d-flex border-0  flex-column">
+                                                                                            <span class="fw-medium" style="font-size: 12px; color: #999;">Start</span>
+                                                                                            <span class="fw-bold" style="font-size: 12px;">Mar 12, 2018</span>
+                                                                                        </div>
+                                                                                        <div class="d-flex border-0 flex-column">
+                                                                                            <span class="fw-medium" style="font-size: 12px; color: #999;">End</span>
+                                                                                            <span class="fw-bold" style="font-size: 12px;">Mar 12, 2018</span>
+                                                                                        </div>
+                                                                                        <div class="d-flex border-0  flex-column">
+                                                                                            <span class="fw-medium" style="font-size: 12px; color: #999;">Shared with</span>
+                                                                                            <img class="img-fluid rounded-circle update_img_0" src="../assets/images/user/2.png" alt="" style="max-width: 30px; height: auto;">
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
-                                                                                <div class="col-xl-12 col-lg-6 col-md-12 col-sm-6">
-                                                                                    <div class="card">
-                                                                                        <div class="card-header">
-                                                                                            <h5 class="p-0">
-                                                                                                <button class="btn btn-link ps-0" data-bs-toggle="collapse" data-bs-target="#collapseicon11" aria-expanded="false" aria-controls="collapseicon11">Property</button>
-                                                                                            </h5>
+                                                                                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 px-md-3 px-2 py-3">
+                                                                                    <div class="text-primary fw-bold">Collection</div>
+                                                                                    <div class="d-flex flex-wrap border-0 ">
+                                                                                        <img class="img-fluid rounded-circle  m-r-20 update_img_0 mt-3 " src="../assets/images/user/2.png" alt="" style="width: 30px; height: 30px">
+                                                                                        <div class="flex-grow-1 d-flex flex-column border-0  px-2" style="gap: 10px;">
+                                                                                            <div class="d-flex flex-column mt-3 border-0 ">
+                                                                                                <span class="fw-medium" style="font-size: 12px; color: #999;">Current Invoices</span>
+                                                                                                <span class="fw-bold text-primary" style="font-size: 12px;">24404</span>
+                                                                                            </div>
+                                                                                            <div class="d-flex flex-column border-0">
+                                                                                                <span class="fw-medium" style="font-size: 12px; color: #999;">Past Due Invoices</span>
+                                                                                                <span class="fw-bold" style="font-size: 12px;">No Record found</span>
+                                                                                            </div>
+                                                                                            <div class="d-flex flex-column border-0 ">
+                                                                                                <span class="text-primary" style="font-size: 12px;">View all Invoices</span>
+                                                                                            </div>
                                                                                         </div>
-                                                                                        <div class="collapse" id="collapseicon11" aria-labelledby="collapseicon11" data-parent="#accordion">
-                                                                                            <div class="card-body social-list filter-cards-view">
-                                                                                                <div class="media">
-                                                                                                    <img class="img-50 img-fluid m-r-20 rounded-circle" alt="" src="../assets/images/user/3.png">
-                                                                                                    <div class="media-body"><span class="d-block">Sarah Loren</span><a href="javascript:void(0)">Add Friend</a></div>
-                                                                                                </div>
-                                                                                                <div class="media">
-                                                                                                    <img class="img-50 img-fluid m-r-20 rounded-circle" alt="" src="../assets/images/user/2.png">
-                                                                                                    <div class="media-body"><span class="d-block">Bucky Barnes</span><a href="javascript:void(0)">Add Friend</a></div>
-                                                                                                </div>
-                                                                                                <div class="media">
-                                                                                                    <img class="img-50 img-fluid m-r-20 rounded-circle" alt="" src="../assets/images/user/10.jpg">
-                                                                                                    <div class="media-body"><span class="d-block">Comeren Diaz</span><a href="javascript:void(0)">Add Friend</a></div>
-                                                                                                </div>
-                                                                                                <div class="media">
-                                                                                                    <img class="img-50 img-fluid m-r-20 rounded-circle" alt="" src="../assets/images/user/3.jpg">
-                                                                                                    <div class="media-body"><span class="d-block">Jason Borne</span><a href="javascript:void(0)">Add Friend</a></div>
-                                                                                                </div>
-                                                                                                <div class="media">
-                                                                                                    <img class="img-50 img-fluid m-r-20 rounded-circle" alt="" src="../assets/images/user/11.png">
-                                                                                                    <div class="media-body"><span class="d-block">Andew Jon</span><a href="javascript:void(0)">Add Friend</a></div>
-                                                                                                </div>
+                                                                                        <div class="flex-grow-1 d-flex flex-column px-2 border-0 ">
+                                                                                            <div class="d-flex flex-column mt-3 border-0 ">
+                                                                                                <span class="fw-medium" style="font-size: 12px; color: #999; text-wrap: nowrap;">Total rent collection</span>
+                                                                                                <span class="fw-bold" style="font-size: 12px;">$100.00</span>
+                                                                                            </div>
+                                                                                            <div class="d-flex border-0  flex-column mt-3">
+                                                                                                <span class="fw-medium" style="font-size: 12px; color: #999;">Other Collected</span>
+                                                                                                <span class="fw-bold" style="font-size: 12px;">$40.00</span>
+                                                                                            </div>
+                                                                                            <div class="d-flex border-0  flex-column mt-3">
+                                                                                                <span class="fw-medium" style="font-size: 12px; color: #999;">Total</span>
+                                                                                                <span class="fw-bold" style="font-size: 12px;">$140.00</span>
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
+
+
+                                                                            <div class="w-100 p-3">
+                                                                                <span class="text-primary fw-bold ">Message History</span>
+                                                                                <div class="mt-1 ">
+                                                                                    <table class="table table-bordered">
+                                                                                        <thead>
+                                                                                            <tr>
+                                                                                                <th class="table-active" scope="col">To</th>
+                                                                                                <th class="table-active" scope="col">From</th>
+                                                                                                <th class="table-active" scope="col">Subject</th>
+                                                                                                <th class="table-active" scope="col">Notification Date</th>
+                                                                                                <th class="table-active" scope="col">
+                                                                                                    <span class="text-primary">Show All</span>
+                                                                                                </th>
+                                                                                            </tr>
+                                                                                        </thead>
+                                                                                        <tbody>
+                                                                                            <tr>
+                                                                                                <td scope="row">Jack</td>
+                                                                                                <td>Mark</td>
+                                                                                                <td>Tenant payment confirmation notification</td>
+                                                                                                <td>April 12, 2018</td>
+                                                                                                <td></td>
+                                                                                            </tr>
+                                                                                            <tr>
+                                                                                                <td scope="row">Jack</td>
+                                                                                                <td>Mark</td>
+                                                                                                <td>Tenant payment confirmation notification</td>
+                                                                                                <td>April 12, 2018</td>
+                                                                                                <td></td>
+                                                                                            </tr>
+                                                                                            <tr>
+                                                                                                <td scope="row">Jack</td>
+                                                                                                <td>Mark</td>
+                                                                                                <td>Tenant payment confirmation notification</td>
+                                                                                                <td>April 12, 2018</td>
+                                                                                                <td></td>
+                                                                                            </tr>
+                                                                                        </tbody>
+                                                                                    </table>
+                                                                                </div>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
-                                                                </div>
-                                                            }
+                                                                }
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -312,161 +253,55 @@
             </div>
         </div>
     </div>
-</div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-<script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
-<link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
 
-<script>
-    var tenantId = localStorage.getItem('userId');
-    $(document).ready(function () {
-   
-        var ajaxUrl = `/Tenant/GetTenant/?tenantId=${encodeURIComponent(tenantId)}`;
-        fetchTenants();
-
-        function fetchTenants() {
-            console.log('Fetching tenants...');
-            $.ajax({
-                url: ajaxUrl,
-                type: 'GET',
-                dataType: 'json',
-                success: function (data) {
-                    console.log('Data received:', data);
-                    populateTenants(data);
-                },
-                error: function (error) {
-                    console.error("Error fetching tenants:", error);
-                }
-            });
+   <script>
+        function editTenant(tenantId) {
+            window.location.href = `/Tenant/EditTenant?tenantId=${tenantId}`;
         }
-        function populateTenants(tenants) {
-            var tenantsHtml = '';
-            var detailsHtml = '';
-            var defaultImageBase64 = 'data:image/jpeg;base64,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';
-            tenants.forEach(function (tenant, index) {
-                var isActive = index === 0 ? 'active' : ''; // Make the first tab active
-                var tenantPicture = tenant.Picture || defaultImageBase64;
-
-                tenantsHtml += '<a class="nav-link ' + isActive + '" id="v-pills-' + tenant.TenantId + '-tab" data-bs-toggle="pill" href="#v-pills-' + tenant.TenantId + '" role="tab" aria-controls="v-pills-' + tenant.TenantId + '" aria-selected="true">' +
-                    '<div class="media">' +
-                    '<img class="img-50 img-fluid m-r-20 rounded-circle" src="' + tenantPicture + '" alt="">' +
-                    '<div class="media-body">' +
-                    '<h6>' + tenant.FirstName + ' ' + tenant.LastName + '</h6>' +
-                    '<p>' + tenant.EmailAddress + '</p>' +
-                    '</div>' +
-                    '</div>' +
-                    '</a>';
-
-                detailsHtml += '<div class="tab-pane fade ' + isActive + ' show" id="v-pills-' + tenant.TenantId + '" role="tabpanel" aria-labelledby="v-pills-' + tenant.TenantId + '-tab">' +
-                    '<div class="profile-mail">' +
-                    '<div class="media align-items-center">' +
-                    '<img class="img-100 img-fluid m-r-20 rounded-circle" src="' + tenantPicture + '" alt="">' +
-                    '<div class="media-body mt-0">' +
-                    '<h5>' + tenant.FirstName + ' ' + tenant.LastName + '</h5>' +
-                    '<p>' + tenant.EmailAddress + '</p>' +
-                    '<div class="mt-2">' +
-                    '<a href="javascript:void(0);" onclick="editTenant(' + tenant.TenantId + ');" style="margin-right: 10px;">Edit</a>' +
-                    '<a href="javascript:void(0);" onclick="deleteTenant(' + tenant.TenantId + ');">Delete</a>' +
-                    '</div>' +
-                    '</div>' +
-                    '</div>' +
-                    '<div class="email-general">' +
-                    '<h6 class="mb-3">General</h6>' +
-                    '<ul>' +
-                    '<li>First Name: <span class="font-primary">' + tenant.FirstName + '</span></li>' +
-                    '<li>Last Name: <span class="font-primary">' + tenant.LastName + '</span></li>' +
-                    '<li>Email Address: <span class="font-primary">' + tenant.EmailAddress + '</span></li>' +
-                    '<li>Phone Number: <span class="font-primary">' + tenant.PhoneNumber + '</span></li>' +
-                    '<li>Emergency Contact Info: <span class="font-primary">' + tenant.EmergencyContactInfo + '</span></li>' +
-                    '<li>Lease Agreement Id: <span class="font-primary">' + tenant.LeaseAgreementId + '</span></li>' +
-                    '<li>Tenant Nationality: <span class="font-primary">' + tenant.TenantNationality + '</span></li>' +
-                    '<li>Gender: <span class="font-primary">' + tenant.Gender + '</span></li>' +
-                    '<li>DOB: <span class="font-primary">' + tenant.DOB + '</span></li>' +
-                    '<li>VAT: <span class="font-primary">' + tenant.VAT + '</span></li>' +
-                    '<li>Legal Name: <span class="font-primary">' + tenant.LegalName + '</span></li>' +
-                    '<li>Account Name: <span class="font-primary">' + tenant.Account_Name + '</span></li>' +
-                    '<li>Account Holder: <span class="font-primary">' + tenant.Account_Holder + '</span></li>' +
-                    '<li>Account IBAN: <span class="font-primary">' + tenant.Account_IBAN + '</span></li>' +
-                    '<li>Account Swift: <span class="font-primary">' + tenant.Account_Swift + '</span></li>' +
-                    '<li>Account Bank: <span class="font-primary">' + tenant.Account_Bank + '</span></li>' +
-                    '<li>Account Currency: <span class="font-primary">' + tenant.Account_Currency + '</span></li>' +
-                    '<li>Address: <span class="font-primary">' + tenant.Address + '</span></li>' +
-                    '<li>Address2: <span class="font-primary">' + tenant.Address2 + '</span></li>' +
-                    '<li>Locality: <span class="font-primary">' + tenant.Locality + '</span></li>' +
-                    '<li>Region: <span class="font-primary">' + tenant.Region + '</span></li>' +
-                    '<li>Postal Code: <span class="font-primary">' + tenant.PostalCode + '</span></li>' +
-                    '<li>Country: <span class="font-primary">' + tenant.Country + '</span></li>' +
-                    '<li>Country Code: <span class="font-primary">' + tenant.CountryCode + '</span></li>' +
-                    '</ul>' +
-                    '</div>' +
-                    '</div>' +
-                    '</div>';
-            });
-
-            $('#v-pills-tab').html(tenantsHtml);
-            $('#v-pills-tabContent').html(detailsHtml);
-
-            $('#tenantListCount').text(tenants.length + ' List');
-        }
-
-    });
-</script>
-
-<script>
-
-
-
-    function deleteTenant(tenantId) {
-        Swal.fire({
-            title: 'Are you sure?',
-            text: 'Once deleted, you will not be able to recover this tenant!',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: `/Tenant/Delete/?tenantId=${encodeURIComponent(tenantId)}`,
-                    type: 'DELETE',
-                    success: function (data) {
-                        if (data.success) {
-                            window.location.reload();
-                            Swal.fire(
-                                'Deleted!',
-                                'The tenant has been deleted.',
-                                'success'
-                            );
-                        } else {
+        function deleteTenant(tenantId) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'Once deleted, you will not be able to recover this tenant!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: `/Tenant/Delete/?tenantId=${encodeURIComponent(tenantId)}`,
+                        type: 'DELETE',
+                        success: function (data) {
+                            if (data.success) {
+                                window.location.reload();
+                                Swal.fire(
+                                    'Deleted!',
+                                    'The tenant has been deleted.',
+                                    'success'
+                                );
+                            } else {
+                                Swal.fire(
+                                    'Error!',
+                                    'There was an issue deleting the tenant.',
+                                    'error'
+                                );
+                            }
+                        },
+                        error: function () {
                             Swal.fire(
                                 'Error!',
                                 'There was an issue deleting the tenant.',
                                 'error'
                             );
                         }
-                    },
-                    error: function () {
-                        Swal.fire(
-                            'Error!',
-                            'There was an issue deleting the tenant.',
-                            'error'
-                        );
-                    }
-                });
-            }
-        });
-    }
-
-
-
-
-
-</script>
-<script>
-    function editTenant(tenantId) {
-        window.location.href = `/Tenant/EditTenant?tenantId=${tenantId}`;
-    }
-</script>
+                    });
+                }
+            });
+        }
+    </script>

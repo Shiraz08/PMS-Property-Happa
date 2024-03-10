@@ -19,6 +19,7 @@ namespace PMS_PropertyHapa.Models.Entities
         public string State { get; set; }
         public string Country { get; set; }
         public string Zipcode { get; set; }
+        public string Image { get; set; } 
        public virtual ICollection<AssetsUnits> Units { get; set; }
 
         public string SelectedBankAccountOption { get; set; }
