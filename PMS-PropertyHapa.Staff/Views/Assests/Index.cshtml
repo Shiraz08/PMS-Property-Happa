@@ -23,155 +23,229 @@
         </div>
     </div>
     <!-- Container-fluid starts-->
-    <div class="container-fluid">
-        <div class="email-wrap bookmark-wrap">
-            <div class="row">
-                <div class="col-xl-9 col-md-12 box-col-9 xl-70">
-                    <div class="email-right-aside bookmark-tabcontent contacts-tabs">
-                        <div class="card email-body radius-left">
-                            <div class="ps-0">
-                                <div class="tab-content">
-                                    <div class="tab-pane fade active show" id="pills-personal" role="tabpanel" aria-labelledby="pills-personal-tab">
-                                        <div class="card mb-0">
-                                            <div class="card-header d-flex">
-                                                <h5>Asset</h5><span class="f-14 pull-right mt-0">Assets List</span>
-                                            </div>
-                                            <div class="card-body p-0">
-                                                <div class="row list-persons" id="addcon">
-                                                    <div class="col-xl-4 xl-50 col-md-5 box-col-6">
-                                                        <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                                                            
-                                                           <!-- Owners list will be populated here via AJAX -->
-                                                        </div>
-                                                    </div>
-                                                    <!-- Owner Details populated here-->
-                                                    <div class="col-xl-8 xl-50 col-md-7 box-col-6">
-                                                        <div class="tab-content" id="v-pills-tabContent">
-                                                            <!-- Owner details will be populated here via AJAX -->
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+    <div class="container-fluid my-4">
+        <div class="row">
+            <!-- Column 1: Properties Table (80% on lg screens) -->
+            <div class="col-12 col-lg-10 mb-4">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+
+                        <div class="left-side-header">
+                            <div class="input-group">
+                                <span class="input-group-text" id="basic-addon1">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <g>
+                                            <g>
+                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M11.2753 2.71436C16.0029 2.71436 19.8363 6.54674 19.8363 11.2753C19.8363 16.0039 16.0029 19.8363 11.2753 19.8363C6.54674 19.8363 2.71436 16.0039 2.71436 11.2753C2.71436 6.54674 6.54674 2.71436 11.2753 2.71436Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M19.8987 18.4878C20.6778 18.4878 21.3092 19.1202 21.3092 19.8983C21.3092 20.6783 20.6778 21.3097 19.8987 21.3097C19.1197 21.3097 18.4873 20.6783 18.4873 19.8983C18.4873 19.1202 19.1197 18.4878 19.8987 18.4878Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                            </g>
+                                        </g>
+                                    </svg>
+                                </span>
+                                <input class="form-control" type="text" placeholder="Search Proprites" aria-label="search" aria-describedby="basic-addon1">
                             </div>
                         </div>
+
+                        <div class="right-side-header">
+                            <button class="btn btn-primary" type="button">Export to CSV</button>
+                        </div>
                     </div>
-                </div>
-                <div class="col-xl-3 box-col-3 xl-30">
-                    <div class="email-sidebar">
-                        <a class="btn btn-primary email-aside-toggle" href="javascript:void(0)">contact filter    </a>
-                        <div class="email-left-aside">
-                            <div class="card">
-                                <div class="card-body">
-                                    <div class="email-app-sidebar left-bookmark">
-                                        <div class="media">
-                                            <div class="media-size-email"><img class="me-3 rounded-circle" src="../assets/images/user/user.png" alt=""></div>
-                                            <div class="media-body">
-                                                <a href="user-profile.html">
-                                                    <h6 class="f-w-700">MARK JENCO</h6>
-                                                </a>
-                                                <p>Markjecno@gmail.com</p>
+                    <!-- <div class="card-header">
+                      PROPERTIES
+                    </div> -->
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" class="tableHeaderbg">Properties</th>
+                                        <th scope="col" class="tableHeaderbg">Address</th>
+                                        <th scope="col" class="tableHeaderbg">Total Monthly Rent</th>
+                                        <th scope="col" class="tableHeaderbg">Tenants</th>
+                                        <th scope="col" class="tableHeaderbg">Open Maintenance</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Table rows -->
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex border-0 gap-2  align-items-center ">
+                                                <img class="img-fluid rounded-1 update_img_0" src="../assets/images/user/2.png" alt="" style="max-width: 50px; height: auto;">
+                                                <div class="d-flex flex-column  border-0 ">
+                                                    <div class="d-flex border-0 flex-column align-items-baseline ">
+                                                        <span class="fw-bold  tableFontSize">9600 Universal</span>
+                                                        <span class="fw-bold tableFontSize">Boulevard</span>
+                                                    </div>
+                                                    <div class="d-flex border-0 flex-column align-items-baseline ">
+                                                        <span class="tableFontSize">Unit: 2</span>
+                                                        <span class="tableFontSize">Availabilty: 1</span>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <ul class="nav main-menu contact-options" role="tablist">
-                                            <li class="nav-item">
-                                                <button class="btn-primary badge-light btn-block btn-mail w-100" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="me-2" data-feather="users"></i> New Contacts</button>
-                                                <div class="modal fade modal-bookmark" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                    <div class="modal-dialog modal-lg" role="document">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h5 class="modal-title" id="exampleModalLabel">Add Contact</h5>
-                                                                <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                            </div>
-                                                            <div class="modal-body">
-                                                                <form class="form-bookmark needs-validation" id="bookmark-form" novalidate="">
-                                                                    <div class="row g-2">
-                                                                        <div class="col-md-12 mt-0 m-b-20">
-                                                                            <label for="con-name">Name</label>
-                                                                            <div class="row">
-                                                                                <div class="col-sm-6">
-                                                                                    <input class="form-control" id="con-name" type="text" required="" placeholder="First Name" autocomplete="off">
-                                                                                </div>
-                                                                                <div class="col-sm-6">
-                                                                                    <input class="form-control" id="con-last" type="text" required="" placeholder="Last Name" autocomplete="off">
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="col-md-12 mt-0 m-b-20">
-                                                                            <label for="con-mail">Email Address</label>
-                                                                            <input class="form-control" id="con-mail" type="text" required="" autocomplete="off">
-                                                                        </div>
-                                                                        <div class="col-md-12 my-0 m-b-20">
-                                                                            <label for="con-phone">Phone</label>
-                                                                            <div class="row">
-                                                                                <div class="col-sm-6">
-                                                                                    <input class="form-control" id="con-phone" type="number" required="" autocomplete="off">
-                                                                                </div>
-                                                                                <div class="col-sm-6">
-                                                                                    <select class="form-control" id="con-select">
-                                                                                        <option>Mobile</option>
-                                                                                        <option>Work</option>
-                                                                                        <option>Others</option>
-                                                                                    </select>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <input id="index_var" type="hidden" value="5">
-                                                                    <button class="btn btn-secondary" type="submit" onclick="submitContact()">Save</button>
-                                                                    <button class="btn btn-primary" type="button" data-bs-dismiss="modal">Cancel</button>
-                                                                </form>
-                                                            </div>
-                                                        </div>
+                                        </td>
+                                        <td class="tableFontSize">9600 Universal Boulevard Orlando, Florida 32819</td>
+                                        <td class="tableFontSize">$0.00</td>
+                                        <td class="tableFontSize">4</td>
+                                        <td class="tableFontSize">0</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex border-0 gap-2  align-items-center ">
+                                                <img class="img-fluid rounded-1 update_img_0" src="../assets/images/user/2.png" alt="" style="max-width: 50px; height: auto;">
+                                                <div class="d-flex flex-column  border-0 ">
+                                                    <div class="d-flex border-0 flex-column align-items-baseline ">
+                                                        <span class="fw-bold  tableFontSize">9600 Universal</span>
+                                                        <span class="fw-bold tableFontSize">Boulevard</span>
+                                                    </div>
+                                                    <div class="d-flex border-0 flex-column align-items-baseline ">
+                                                        <span class="tableFontSize">Unit: 2</span>
+                                                        <span class="tableFontSize">Availabilty: 1</span>
                                                     </div>
                                                 </div>
-                                            </li>
-                                            <li class="nav-item"><span class="main-title"> Views</span></li>
-                                            <li><a id="pills-personal-tab" data-bs-toggle="pill" href="#pills-personal" role="tab" aria-controls="pills-personal" aria-selected="true"><span class="title"> Personal</span></a></li>
-                                            <li>
-                                                <button class="btn btn-category" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal1"><span class="title"> + Add Category</span></button>
-                                                <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1" aria-hidden="true">
-                                                    <div class="modal-dialog" role="document">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h5 class="modal-title" id="exampleModalLabel1">Add Category</h5>
-                                                                <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                            </div>
-                                                            <div class="modal-body">
-                                                                <form class="form-bookmark">
-                                                                    <div class="row g-2">
-                                                                        <div class="mb-3 col-md-12">
-                                                                            <input class="form-control" type="text" required="" placeholder="Enter category name" autocomplete="off">
-                                                                        </div>
-                                                                    </div>
-                                                                    <button class="btn btn-secondary" type="button">Save</button>
-                                                                    <button class="btn btn-primary" type="button" data-bs-dismiss="modal">Cancel</button>
-                                                                </form>
-                                                            </div>
-                                                        </div>
+                                            </div>
+                                        </td>
+                                        <td class="tableFontSize">9600 Universal Boulevard Orlando, Florida 32819</td>
+                                        <td class="tableFontSize">$0.00</td>
+                                        <td class="tableFontSize">4</td>
+                                        <td class="tableFontSize">0</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex border-0 gap-2  align-items-center ">
+                                                <img class="img-fluid rounded-1 update_img_0" src="../assets/images/user/2.png" alt="" style="max-width: 50px; height: auto;">
+                                                <div class="d-flex flex-column  border-0 ">
+                                                    <div class="d-flex border-0 flex-column align-items-baseline ">
+                                                        <span class="fw-bold  tableFontSize">9600 Universal</span>
+                                                        <span class="fw-bold tableFontSize">Boulevard</span>
+                                                    </div>
+                                                    <div class="d-flex border-0 flex-column align-items-baseline ">
+                                                        <span class="tableFontSize">Unit: 2</span>
+                                                        <span class="tableFontSize">Availabilty: 1</span>
                                                     </div>
                                                 </div>
-                                            </li>
-                                            <li><a class="show" id="pills-organization-tab" data-bs-toggle="pill" href="#pills-organization" role="tab" aria-controls="pills-organization" aria-selected="false"><span class="title"> Organization</span></a></li>
-                                            <li><a href="javascript:void(0)"><span class="title">Follow up</span></a></li>
-                                            <li><a href="javascript:void(0)"><span class="title">Favorites</span></a></li>
-                                            <li><a href="javascript:void(0)"><span class="title">Ideas</span></a></li>
-                                            <li><a href="javascript:void(0)"><span class="title">Important</span></a></li>
-                                            <li><a href="javascript:void(0)"><span class="title">Business</span></a></li>
-                                            <li><a href="javascript:void(0)"><span class="title">Holidays</span></a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
+                                            </div>
+                                        </td>
+                                        <td class="tableFontSize">9600 Universal Boulevard Orlando, Florida 32819</td>
+                                        <td class="tableFontSize">$0.00</td>
+                                        <td class="tableFontSize">4</td>
+                                        <td class="tableFontSize">0</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex border-0 gap-2  align-items-center ">
+                                                <img class="img-fluid rounded-1 update_img_0" src="../assets/images/user/2.png" alt="" style="max-width: 50px; height: auto;">
+                                                <div class="d-flex flex-column  border-0 ">
+                                                    <div class="d-flex border-0 flex-column align-items-baseline ">
+                                                        <span class="fw-bold  tableFontSize">9600 Universal</span>
+                                                        <span class="fw-bold tableFontSize">Boulevard</span>
+                                                    </div>
+                                                    <div class="d-flex border-0 flex-column align-items-baseline ">
+                                                        <span class="tableFontSize">Unit: 2</span>
+                                                        <span class="tableFontSize">Availabilty: 1</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </td>
+                                        <td class="tableFontSize">9600 Universal Boulevard Orlando, Florida 32819</td>
+                                        <td class="tableFontSize">$0.00</td>
+                                        <td class="tableFontSize">4</td>
+                                        <td class="tableFontSize">0</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
             </div>
+
+
+            <div class="col-12 col-lg-2">
+
+                <div class="mb-2">
+                    <button class="btn btn-info w-100 d-flex border-0 align-items-center " type="button">
+                        <div class="plusCircle">
+                            +
+                        </div>
+                        New Property
+                    </button>
+                </div>
+                <!-- Statistics Panels -->
+
+                <div class="">
+                    <div class="card bg-primary text-white" style="margin-bottom: 10px !important;">
+                        <div class="card-body cardBody">
+                            <div class="card-title d-flex flex-column border-bottom ">
+                                <span>18</span>
+                                <span>UNITS</span>
+
+                            </div>
+                            <div class="d-flex border-0 ">
+                                <p class="card-text">Total <br /> Occupancy</p>
+                                <!-- Circle progress -->
+                                <div class="circular-progress-container">
+                                    <div class="circular-progress-bar" style="--progress: 75;">
+                                        <div class="value-container">75%</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex border-0 ">
+                                <div class="d-flex border-0 flex-column ">
+                                    <span class="card-text">Behind In</span>
+                                    <p class="card-text">Rent <br /> Payments</p>
+                                </div>
+                                <!-- Circle progress -->
+                                <div class="circular-progress-container">
+                                    <div class="circular-progress-bar" style="--progress: 45; --circle-progress-color:#ef5b5b ">
+                                        <div class="value-container">45%</div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="">
+                    <div class="card CardGreen text-white">
+                        <div class="card-body cardBody">
+                            <div class="card-title d-flex flex-column">
+                                <span>6</span>
+                                <span>UNITS With VACANCY</span>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+                <div class="">
+                    <div class="card CardRed text-white">
+                        <div class="card-body cardBody">
+                            <div class="card-title d-flex flex-column">
+                                <span>14</span>
+                                <span>UNITS With OVERDUE BALANCE</span>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+                <div class="">
+                    <div class="card cardInfo text-white">
+                        <div class="card-body cardBody">
+                            <div class="card-title d-flex flex-column">
+                                <span>3</span>
+                                <span>UNITS With OPEN MANTAINCEN REQUEST</span>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <!-- Repeat for other statistics -->
         </div>
     </div>
-    <!-- Container-fluid Ends-->
 </div>
 <script>
     $(document).ready(function () {
