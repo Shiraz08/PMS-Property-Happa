@@ -6,6 +6,7 @@ using PMS_PropertyHapa.MigrationsFiles.Data;
 using PMS_PropertyHapa.Models.Roles;
 using PMS_PropertyHapa.Staff.Services.IServices;
 using NuGet.ContentModel;
+using PMS_PropertyHapa.Shared.ImageUpload;
 
 namespace PMS_PropertyHapa.Staff.Controllers
 {
@@ -23,9 +24,16 @@ namespace PMS_PropertyHapa.Staff.Controllers
         [HttpPost]
         public async Task<IActionResult> AddAsset(AssetDTO assetDTO)
         {
-
             try
             {
+                if (assetDTO.PictureFile != null && assetDTO.PictureFile.Length > 0)
+                {
+                    var (fileName, base64String) = await ImageUploadUtility.UploadImageAsync(assetDTO.PictureFile, "uploads");
+                    assetDTO.Image = $"data:image/png;base64,{base64String}";
+                }
+
+                assetDTO.PictureFile = null;
+
                 await _authService.CreateAssetAsync(assetDTO);
                 return Ok(new { success = true, message = "Asset added successfully" });
             }
@@ -34,6 +42,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
                 return StatusCode(500, new { success = false, message = $"An error occurred while adding the asset. {ex.Message}" });
             }
         }
+
 
 
         [HttpPost]
