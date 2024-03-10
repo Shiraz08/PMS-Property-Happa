@@ -390,10 +390,10 @@ namespace PMS_PropertyHapa.Staff.Services
 
                 if (response.IsSuccess == true)
                 {
-                    var userListJson = Convert.ToString(response.Result);
-                    var asset = JsonConvert.DeserializeObject<IEnumerable<AssetDTO>>(userListJson);
-                    return asset;
-                }
+                var userListJson = Convert.ToString(response.Result);
+                var asset = JsonConvert.DeserializeObject<IEnumerable<AssetDTO>>(userListJson);
+                return asset;
+            }
                 else
                 {
                     throw new Exception("Failed to retrieve asset data");

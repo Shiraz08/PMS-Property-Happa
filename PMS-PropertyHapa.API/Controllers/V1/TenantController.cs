@@ -48,12 +48,9 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             try
             {
                 var tenants = await _userRepo.GetAllTenantsAsync();
-                if (tenants != null)
-                {
-                    return Ok(tenants);
+              _response.Result = tenants;
+                    return Ok(_response);
 
-                }
-                return Ok(_response);
             }
             catch (Exception ex)
             {

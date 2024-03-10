@@ -81,10 +81,12 @@ namespace PMS_PropertyHapa.Staff.Controllers
         }
 
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var assets = await _authService.GetAllAssetsAsync();
+            return View(assets);
         }
+
         public async Task<IActionResult> AddAssest()
         {
             //Changes by Raas
