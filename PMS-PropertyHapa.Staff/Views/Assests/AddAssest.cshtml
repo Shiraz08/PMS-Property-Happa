@@ -310,6 +310,29 @@
                                         <input class="form-control" id="zipcode" type="text" name="zipcode" placeholder="Zip Code" required="" value="@Model?.Asset?.Zipcode">
                                     </div>
                                 </div>
+
+                                <div class="thick-black-underline"></div> 
+
+                                <div class="row mt-4">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="assetPicture">Upload Picture</label>
+                                            <input type="file" class="form-control-file" id="assetPicture" name="pictureFile">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div id="picturePreviewContainer">
+                                            @if (Model?.Asset?.Image != null)
+                                            {
+                                                <img src="@Model.Asset.Image" alt="Asset Picture" class="img-fluid">
+                                            }
+                                            else
+                                            {
+                                                <p>No picture uploaded</p>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
                             </fieldset>
 
 
@@ -1029,7 +1052,7 @@
         debugger;
 
         var formData = collectFormData();
-        var submitUrl = isEditMode ? `$/Assests/UpdateAsset/{@Model.Asset.AssetId}` : '/Assests/AddAsset';
+        var submitUrl = isEditMode ? `$/Assests/UpdateAsset/{Model?.Asset?.AssetId}` : '/Assests/AddAsset';
         console.log(formData);
 
         if (currentStep === totalSteps) {
@@ -1078,52 +1101,46 @@
         function addUnitFields() {
             var unitIndex = $('#unitFieldsContainer .unit-fields').length + 1;
             var unitFieldsHtml = `
-             <div id="unitFieldsContainer">
-    @if (Model?.Asset != null && Model?.Asset?.Units != null && (bool)Model?.Asset?.Units.Any())
-    {
-        foreach (var unit in Model?.Asset?.Units)
-        {
-                        <div class="unit-fields mb-3" id="unitFields@unit.UnitId">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <h5>Unit @unit.UnitName</h5>
-                                <button type="button" class="btn btn-danger remove-unit" data-unit="@unit.UnitId">Remove</button>
+                    <div class="unit-fields mb-3" id="unitFields${unitIndex}">
+                        <hr>
+                     
+                        <div class="form-row">
+                            <div class="col">
+                                <input type="text" class="form-control" placeholder="Unit Name" name="unitName">
                             </div>
-                            <div class="form-row">
-                                <div class="col">
-                                    <input type="text" class="form-control" placeholder="Unit Name" name="Units[@unit.UnitId].UnitName" value="@unit.UnitName">
-                                </div>
-                                <div class="col">
-                                    <input type="number" class="form-control" placeholder="Beds" name="Units[@unit.UnitId].Beds" value="@unit.Beds">
-                                </div>
-                                <div class="col">
-                                    <input type="number" class="form-control" placeholder="Bath" name="Units[@unit.UnitId].Bath" value="@unit.Bath">
-                                </div>
-                                <div class="col">
-                                    <input type="number" class="form-control" placeholder="Size" name="Units[@unit.UnitId].Size" value="@unit.Size">
-                                </div>
-                                <div class="col">
-                                    <input type="number" class="form-control" placeholder="Rent" name="Units[@unit.UnitId].Rent" value="@unit.Rent">
-                                </div>
+                            <div class="col">
+                                <input type="number" class="form-control" placeholder="Beds" name="beds">
+                            </div>
+                            <div class="col">
+                                <input type="number" class="form-control" placeholder="Bath" name="bath">
+                            </div>
+                            <div class="col">
+                                <input type="number" class="form-control" placeholder="Size" name="size">
+                            </div>
+                            <div class="col">
+                                <input type="number" class="form-control" placeholder="Rent" name="rent">
                             </div>
                         </div>
-        }
-    }
-    </div>
-    <button type="button" id="addAnotherUnit" class="btn btn-primary">Add Another Unit</button>
+
+                        <div class="row mb-4">
+                                   <h5>Unit ${unitIndex} <a class="float-right remove-unit" data-unit="${unitIndex}"><i class="fa fa-times"></i></a></h5>
+                            </div>
+                    </div>`;
+            $('#unitFieldsContainer').append(unitFieldsHtml);
         }
 
+        addUnitFields();
 
         $('#addAnotherUnit').click(function () {
             addUnitFields();
         });
 
         $('#unitFieldsContainer').on('click', '.remove-unit', function () {
-            var unitId = $(this).data('unit');
+            var unitId = $(this).attr('data-unit');
             $('#unitFields' + unitId).remove();
         });
-
-        addUnitFields();
     });
+
 
 
     $('#saveOwner').click(function () {
@@ -1179,6 +1196,16 @@
                 if ($(this).data('option') === 'owned-by-someone-else') {
                     $('#addOwnerSection').show();
                 }
+            }
+        });
+
+        $("#assetPicture").change(function () {
+            if (this.files && this.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#picturePreviewContainer').html(`<img src="${e.target.result}" alt="Asset Picture" class="img-fluid">`);
+                };
+                reader.readAsDataURL(this.files[0]);
             }
         });
     });

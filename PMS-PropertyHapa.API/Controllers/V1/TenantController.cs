@@ -7,6 +7,7 @@ using System.Net;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using PMS_PropertyHapa.MigrationsFiles.Data;
 using PMS_PropertyHapa.Models.Roles;
+using NuGet.ContentModel;
 
 namespace PMS_PropertyHapa.API.Controllers.V1
 {
@@ -42,12 +43,17 @@ namespace PMS_PropertyHapa.API.Controllers.V1
         #region TenantCrud 
 
         [HttpGet("Tenant")]
-        public async Task<ActionResult<IEnumerable<TenantModelDto>>> GetAllTenants()
+        public async Task<IActionResult> GetAllTenants()
         {
             try
             {
                 var tenants = await _userRepo.GetAllTenantsAsync();
-                return Ok(tenants);
+                if (tenants != null)
+                {
+                    return Ok(tenants);
+
+                }
+                return Ok(_response);
             }
             catch (Exception ex)
             {

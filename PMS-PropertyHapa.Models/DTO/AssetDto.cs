@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -12,6 +13,11 @@ namespace PMS_PropertyHapa.Models.DTO
         public int AssetId { get; set; }
         public string SelectedPropertyType { get; set; }
         public string SelectedSubtype { get; set; }
+
+        public string Image { get; set; }
+
+
+        public IFormFile PictureFile { get; set; }
 
         public string Street1 { get; set; }
         public string Street2 { get; set; }

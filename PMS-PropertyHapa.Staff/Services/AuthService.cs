@@ -202,8 +202,9 @@ namespace PMS_PropertyHapa.Staff.Services
 
                 if (response != null && response.IsSuccess)
                 {
-
-                    return JsonConvert.DeserializeObject<IEnumerable<TenantModelDto>>(Convert.ToString(response.Result));
+                    var userListJson = Convert.ToString(response.Result);
+                    var tenants = JsonConvert.DeserializeObject<IEnumerable<TenantModelDto>>(userListJson);
+                    return tenants;
                 }
                 else
                 {
@@ -345,7 +346,7 @@ namespace PMS_PropertyHapa.Staff.Services
                 int assetId = asset.AssetId;
                 var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
                 {
-                    ApiType = SD.ApiType.PUT,
+                    ApiType = SD.ApiType.POST,
                     Data = asset,
                     Url = $"{villaUrl}/api/v1/AssetsAuth/Asset/{assetId}"
                 });
