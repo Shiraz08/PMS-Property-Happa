@@ -25,6 +25,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
             return View(owner);
         }
 
+
         public async Task<IActionResult> GetTenant(string tenantId)
         {
             if (!string.IsNullOrEmpty(tenantId))
