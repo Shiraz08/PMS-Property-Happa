@@ -3,12 +3,21 @@
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<style>
+    .card {
+        margin-bottom: 0px !important;
+    }
+
+    .list-persons .profile-mail {
+         padding: 0px!important;
+    }
+</style>
 <div class="page-body">
     <div class="container-fluid">
         <div class="page-title">
             <div class="row">
                 <div class="col-12 col-sm-6">
-                    <h3>Landlord List</h3>
+                    <h3>Landlord</h3>
                 </div>
                 <div class="col-12 col-sm-6">
                     <ol class="breadcrumb">
@@ -78,7 +87,7 @@
 
                                                         </div>
                                                         </div>
-                                                        <div class="col-xl-9 xl-20 col-md-7 box-col-6" style="padding-left: 0px;">
+                                                    <div class="col-xl-9 xl-20 col-md-7 box-col-6" style="padding-left: 0px;">
                                                             <div class="tab-content" id="v-pills-tabContent">
                                                                 @foreach (var item in Model ?? Enumerable.Empty<PMS_PropertyHapa.Models.DTO.OwnerDto>())
                                                                 {
@@ -116,9 +125,9 @@
                                                                                     </div>
 
                                                                                 </div>
-                                                                                <div class="right-side-header">
+                                                                            <div class="right-side-header" style="padding-top: 18px!important;padding-right: 27px!important;">
                                                                                 <button class="btn" style="background-color: #c9c9c9;color: black;" type="button" onclick="editLandlord(@item.OwnerId)">
-                                                                                        Edit Owner
+                                                                                        Edit Landlord
                                                                                     </button>
                                                                                 </div>
 
@@ -236,7 +245,7 @@
                                                                 }
                                                             </div>
                                                         </div>
-                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -268,7 +277,7 @@
         });
         $('.contacts-tabs .nav-link ').removeClass('active show');
         $('.contacts-tabs .tab-content .tab-content-child ').removeClass('active show');
-        $('.contact-tab-' + @Model.Take(1).Select(x=>x.OwnerId).FirstOrDefault()).addClass('active show');
+        $('.contact-tab-' + @Model?.Take(1).Select(x=>x.OwnerId).FirstOrDefault()).addClass('active show');
     });
     function activeDivforowner(index) {
         $('.contacts-tabs .nav-link ').removeClass('active show');
@@ -316,13 +325,6 @@
             }
         });
     }
-
-
-
-
-
-</script>
-<script>
     function editLandlord(ownerId) {
         window.location.href = `/Landlord/EditLandlord?ownerId=${ownerId}`;
     }
