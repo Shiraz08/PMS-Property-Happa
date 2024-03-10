@@ -9,9 +9,15 @@
 
 
 <head>
-    z
-
+    
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+
+    <style>
+        .rounded-circle-important {
+            border-radius: 50% !important;
+        }
+    </style>
+
     <style>
 
         .unit-fields {
@@ -21,7 +27,7 @@
     gap: 10px; 
 }
 
-
+       
 
         .thick-black-underline {
             height: 2px;
@@ -309,6 +315,31 @@
                                         <label class="sr-only" for="zipcode">Zip Code</label>
                                         <input class="form-control" id="zipcode" type="text" name="zipcode" placeholder="Zip Code" required="" value="@Model?.Asset?.Zipcode">
                                     </div>
+                                </div>
+
+                                <div class="thick-black-underline"></div>
+
+                                <div class="row">
+                                    <div class="col-md-4 mb-2">
+                                        <div class="form-group">
+                                            <label for="assetPicture">Upload Picture</label>
+                                            <input type="file" class="form-control" id="assetPicture" name="pictureFile">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <div id="picturePreviewContainer" class="rounded">
+                                            @if (Model?.Asset?.Image != null)
+                                            {
+                                                <img src="@Model.Asset.Image" alt="Asset Picture" class="img-fluid">
+                                            }
+                                            else
+                                            {
+                                                <p>No picture uploaded</p>
+                                            }
+                                        </div>
+
+                                    </div>
+
                                 </div>
                             </fieldset>
 
@@ -1004,6 +1035,7 @@
             State: $('#state').val(),
             Country: $('#country').val(),
             Zipcode: $('#zipcode').val(),
+            PictureFile: $('#picturePreviewContainer').val(),
             Units: units,
             SelectedBankAccountOption: $('#SelectedBankAccountOption').val(),
             SelectedReserveFundsOption: $('#SelectedReserveFundsOption').val(),

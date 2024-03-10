@@ -218,6 +218,6 @@
     $(document).ready(function () {
         $('.contacts-tabs .nav-link ').removeClass('active show');
         $('.contacts-tabs .tab-content .tab-content-child ').removeClass('active show');
-        $('.contact-tab-' + @Model.Take(1).Select(x=>x.OwnerId).FirstOrDefault()).addClass('active show');
+        $('.contact-tab-' + @Model?.Take(1).Select(x=>x.OwnerId).FirstOrDefault()).addClass('active show');
     });
 </script>
