@@ -29,6 +29,7 @@ namespace PMS_PropertyHapa.MigrationsFiles.Data
         public DbSet<TenantOrganizationInfo> TenantOrganizationInfo { get; set; }
         public DbSet<PropertyType> PropertyType { get; set; }
         public DbSet<PropertySubType> PropertySubType { get; set; }
+        public DbSet<OwnerOrganization> OwnerOrganization { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
