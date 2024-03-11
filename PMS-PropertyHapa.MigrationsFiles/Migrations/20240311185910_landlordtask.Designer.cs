@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PMS_PropertyHapa.MigrationsFiles.Data;
 
@@ -11,9 +12,10 @@ using PMS_PropertyHapa.MigrationsFiles.Data;
 namespace PMS_PropertyHapa.MigrationsFiles.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    partial class ApiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240311185910_landlordtask")]
+    partial class landlordtask
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -383,37 +385,6 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
                     b.HasKey("OwnerId");
 
                     b.ToTable("Owner");
-                });
-
-            modelBuilder.Entity("PMS_PropertyHapa.Models.Entities.OwnerOrganization", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("OrganizationDescription")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("OrganizationIcon")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("OrganizationLogo")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("OrganizationName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("OwnerId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Website")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("OwnerOrganization");
                 });
 
             modelBuilder.Entity("PMS_PropertyHapa.Models.Entities.PropertySubType", b =>

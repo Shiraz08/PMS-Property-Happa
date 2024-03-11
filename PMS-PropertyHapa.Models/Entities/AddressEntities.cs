@@ -10,6 +10,7 @@ namespace PMS_PropertyHapa.Models.Entities
     {
         public string Address { get; set; }
         public string Address2 { get; set; }
+        public string Unit { get; set; }
         public string Locality { get; set; }
         public string District { get; set; }
         public string Region { get; set; }

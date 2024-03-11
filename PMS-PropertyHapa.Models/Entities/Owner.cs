@@ -9,10 +9,14 @@ namespace PMS_PropertyHapa.Models.Entities
         public int OwnerId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public string MiddleName { get; set; }
+        public string Fax { get; set; }
         public string EmailAddress { get; set; }
+        public string EmailAddress2 { get; set; }
         public string Picture { get; set; }
         public string PhoneNumber { get; set; }
-        public string EmergencyContactInfo { get; set; }
+        public string PhoneNumber2 { get; set; }
+        public string EmergencyContactInfo { get; set; } 
         public int? LeaseAgreementId { get; set; }
 
         [Display(Name = "Nationality")]
