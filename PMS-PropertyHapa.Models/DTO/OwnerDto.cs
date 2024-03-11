@@ -7,10 +7,19 @@ namespace PMS_PropertyHapa.Models.DTO
     {
         public int? OwnerId { get; set; }
         public string FirstName { get; set; }
+
+        public string MiddleName { get; set; }
+        public string Fax { get; set; }
         public string LastName { get; set; }
         public string EmailAddress { get; set; }
+
+        public string Document { get; set; }
+
+        public string EmailAddress2 { get; set; }
         public string Picture { get; set; }
         public string PhoneNumber { get; set; }
+
+        public string PhoneNumber2 { get; set; }
         public string EmergencyContactInfo { get; set; }
         public int? LeaseAgreementId { get; set; }
 
@@ -50,5 +59,11 @@ namespace PMS_PropertyHapa.Models.DTO
         public string CountryCode { get; set; }
 
         public IFormFile PictureUrl { get; set; }
+
+        public string OrganizationName { get; set; }
+        public string OrganizationDescription { get; set; }
+        public string OrganizationIcon { get; set; }
+        public string OrganizationLogo { get; set; }
+        public string Website { get; set; }
     }
 }

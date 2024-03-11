@@ -41,7 +41,7 @@
                                     <input type="hidden" value="image" name="SaveType" id="SaveType" />
                                     <img class="img-account-profile2 rounded-circle mb-2" src="http://bootdey.com/img/Content/avatar/avatar1.png" alt="" style="width: 140px;">
                                     <div class=" font-italic text-muted mb-4"></div>
-                                    @Html.EditorFor(model => model.Picture, new { htmlAttributes = new { @class = "btn btn-primary"  ,@type="file" ,@accept="image/*",@required="required",@style="    width: 219px;"} })
+                                    @Html.EditorFor(model => model.PictureUrl, new { htmlAttributes = new { @class = "btn btn-primary"  ,@type="file" ,@accept="image/*",@required="required",@style="    width: 219px;"} })
                                 </div>
                             </div>
                         </div>
@@ -59,28 +59,21 @@
                                         <div class="col-sm-6 col-md-3">
                                             <div class="mb-3">
                                                 <label for="FirstName" class="form-label">First Name</label>
-                                                <input type="text" class="form-control" id="FirstName" name="FirstName" value="@Model?.FirstName" required />
+                                                <input type="text" class="form-control" id="FirstName" name="FirstName" value="@Model?.FirstName" pattern="[A-Za-z]+" required />
                                             </div>
                                         </div>
                                         <!-- Last Name -->
                                         <div class="col-sm-6 col-md-3">
                                             <div class="mb-3">
                                                 <label for="LastName" class="form-label">Last Name</label>
-                                                <input type="text" class="form-control" id="LastName" name="LastName" value="@Model?.LastName" required />
+                                                <input type="text" class="form-control" id="LastName" name="LastName" value="@Model?.LastName" pattern="[A-Za-z]+" required />
                                             </div>
                                         </div>
-                                        <!-- Email Address -->
+                                        <!-- Middle Name -->
                                         <div class="col-sm-6 col-md-3">
                                             <div class="mb-3">
-                                                <label for="EmailAddress" class="form-label">Email</label>
-                                                <input type="email" class="form-control" id="EmailAddress" name="EmailAddress" value="@Model?.EmailAddress" required />
-                                            </div>
-                                        </div>
-                                        <!-- Phone Number -->
-                                        <div class="col-sm-6 col-md-3">
-                                            <div class="mb-3">
-                                                <label for="PhoneNumber" class="form-label">Phone Number</label>
-                                                <input type="text" class="form-control" id="PhoneNumber" name="PhoneNumber" value="@Model?.PhoneNumber" required />
+                                                <label for="MiddleName" class="form-label">Middle Name</label>
+                                                <input type="text" class="form-control" id="MiddleName" name="MiddleName" value="@Model?.MiddleName" pattern="[A-Za-z]+" required />
                                             </div>
                                         </div>
                                         <!-- Gender -->
@@ -95,6 +88,50 @@
                                                 </select>
                                             </div>
                                         </div>
+                                        <div class="col-sm-6 col-md-3">
+                                            <div class="mb-3">
+                                                <label class="form-check-label" for="toggleOrganizationFields">Organization Info</label>
+                                                <div class="form-check form-switch mt-2">
+                                                    <input class="form-check-input" type="checkbox" id="toggleOrganizationFields">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Organization Name (Initially Hidden) -->
+                                        <div class="col-sm-6 col-md-3 organization-field" style="display: none;">
+                                            <div class="mb-3">
+                                                <label for="OrganizationName" class="form-label">Organization Name</label>
+                                                <input type="text" class="form-control" id="OrganizationName" pattern="[A-Za-z]+" name="OrganizationName">
+                                            </div>
+                                        </div>
+                                        <!-- Organization Description (Initially Hidden) -->
+                                        <div class="col-sm-6 col-md-3 organization-field" style="display: none;">
+                                            <div class="mb-3">
+                                                <label for="OrganizationDescription" class="form-label">Organization Description</label>
+                                                <input type="text" class="form-control" id="OrganizationDescription" pattern="[A-Za-z]+" name="OrganizationDescription">
+                                            </div>
+                                        </div>
+                                        <!-- Organization Icon (Initially Hidden) -->
+                                        <div class="col-sm-6 col-md-3 organization-field" style="display: none;">
+                                            <div class="mb-3">
+                                                <label for="OrganizationIcon" class="form-label">Organization Icon</label>
+                                                <img class="form-control" id="OrganizationIcon" name="OrganizationIcon" />
+                                            </div>
+                                        </div>
+                                        <!-- Organization Logo (Initially Hidden) -->
+                                        <div class="col-sm-6 col-md-3 organization-field" style="display: none;">
+                                            <div class="mb-3">
+                                                <label for="OrganizationLogo" class="form-label">Organization Logo</label>
+                                                <img src="" class="form-control" id="OrganizationLogo" name="OrganizationLogo" />
+                                            </div>
+                                        </div>
+                                        <!-- Website (Initially Hidden) -->
+                                        <div class="col-sm-6 col-md-3 organization-field" style="display: none;">
+                                            <div class="mb-3">
+                                                <label for="Website" class="form-label">Website</label>
+                                                <input type="text" class="form-control" id="Website"  name="Website">
+                                            </div>
+                                        </div>
+
                                         <!-- Date of Birth -->
                                         <div class="col-sm-6 col-md-3">
                                             <div class="mb-3">
@@ -109,17 +146,56 @@
                                                 <input type="text" class="form-control" id="EmergencyContactInfo" name="EmergencyContactInfo" value="@Model?.EmergencyContactInfo" required />
                                             </div>
                                         </div>
-                                        <!-- VAT -->
+                                        <!-- Email Address -->
                                         <div class="col-sm-6 col-md-3">
                                             <div class="mb-3">
-                                                <label for="TenantNationality" class="form-label">Fax</label>
-                                                <input type="text" class="form-control" id="TenantNationality" name="TenantNationality" value="@Model?.OwnerNationality" required />
+                                                <label for="EmailAddress" class="form-label">Email Address</label>
+                                                <input type="email" class="form-control" id="EmailAddress" name="EmailAddress" value="@Model?.EmailAddress" required />
+                                                <small class="text-success" id="addAnotherEmail" onclick="toggleEmailField()" style="cursor: pointer;">
+                                                    <i class="bi bi-plus-circle"></i> Add another email  +
+                                                </small>
+                                            </div>
+                                        </div>
+
+                                        <!-- Additional Email Address (Initially Hidden) -->
+                                        <div class="col-sm-6 col-md-3" id="additionalEmailField" style="display: none;">
+                                            <div class="mb-3">
+                                                <label for="EmailAddress2" class="form-label">Email Address2</label>
+                                                <input type="email" class="form-control" id="EmailAddress2" name="EmailAddress2" required />
+                                            </div>
+                                        </div>
+
+                                        <!-- Phone Number -->
+                                        <div class="col-sm-6 col-md-3">
+                                            <div class="mb-3">
+                                                <label for="PhoneNumber" class="form-label">Phone Number</label>
+                                                <input type="text" class="form-control" id="PhoneNumber" name="PhoneNumber" value="@Model?.PhoneNumber" required oninput="validateNumberInput(this)" />
+                                                <small class="text-success" id="addAnotherPhone" onclick="togglePhoneField()" style="cursor: pointer;">
+                                                    <i class="bi bi-plus-circle"></i> Add another phone  +
+                                                </small>
+                                            </div>
+                                        </div>
+
+                                        <!-- Additional Phone Number (Initially Hidden) -->
+                                        <div class="col-sm-6 col-md-3" id="additionalPhoneField" style="display: none;">
+                                            <div class="mb-3">
+                                                <label for="PhoneNumber2" class="form-label">Phone Number2</label>
+                                                <input type="text" class="form-control" id="PhoneNumber2" name="PhoneNumber2" required oninput="validateNumberInput(this)" />
+                                            </div>
+                                        </div>
+
+
+                                        <!-- Fax -->
+                                        <div class="col-sm-6 col-md-3">
+                                            <div class="mb-3">
+                                                <label for="Fax" class="form-label">Fax</label>
+                                                <input type="text" class="form-control" id="Fax" name="Fax" value="@Model?.Fax" required />
                                             </div>
                                         </div>
                                     </div>
                                     <hr />
                                     <br />
-                                    <h6>Address</h6>
+                                    <b><h4>Address</h4></b>
                                     <br />
                                     <div class="row">
                                         <div class="col-sm-6 col-md-3">
@@ -167,16 +243,23 @@
                                         <hr />
                                         <br />
                                         <div class="col-sm-6 col-md-3">
-                                            <div class="mb-3">
+                                            <div class="mb-3" onclick="toggleEmergencyContact()" style="cursor: pointer;">
                                                 <label for="PostalCode">EMERGENCY CONTACT</label>
-                                                + Add Emergency conatct
+                                                <small class="text-success"><i class="bi bi-plus-circle"></i> Add Emergency contact +</small>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-6 col-md-3" id="emergencyContactField" style="display: none;">
+                                            <div class="mb-3">
+                                                <label for="EmergencyContactInfo" class="form-label">Emergency Contact Info</label>
+                                                <input type="text" class="form-control" id="EmergencyContactInfo" name="EmergencyContactInfo" required />
                                             </div>
                                         </div>
                                         <hr />
                                         <div class="col-sm-12 col-md-12">
                                             <div class="mb-3">
-                                                <label for="PictureUrl" class="form-label">Document UPload</label>
-                                                <input type="file" class="form-control" id="PictureUrl" name="PictureUrl" accept="image/*" />
+                                                <label for="Document" class="form-label">Document Upload</label>
+                                                <input type="file" class="form-control" id="Document" name="Document" accept="image/*" />
                                             </div>
                                         </div>
                                         <br />
@@ -200,85 +283,96 @@
 
 
 <script>
- 
 
-      function submitTenantForm() {
-            event.preventDefault(); // Prevent the form from submitting in the default way
 
-            // Check if all required fields are filled
-            var isValid = true;
-            var requiredFields = [
-                '#FirstName',
-                '#LastName',
-                '#EmailAddress',
-                '#PhoneNumber',
-                '#Gender',
-                '#EmergencyContactInfo',
-                '#TenantNationality',
-                '#Account_Name',
-                '#Account_Holder',
-                '#Account_IBAN',
-                '#Account_Swift',
-                '#Account_Bank',
-                '#Account_Currency',
-                '#VAT',
-                '#LegalName'
-            ];
+    function submitTenantForm() {
+        event.preventDefault(); // Prevent the form from submitting in the default way
 
-            requiredFields.forEach(function (fieldId) {
-                var fieldValue = $(fieldId).val().trim();
-                if (!fieldValue) {
-                    isValid = false;
-                    $(fieldId).addClass('is-invalid');
-                } else {
-                    $(fieldId).removeClass('is-invalid');
-                }
-            });
+        // Check if all required fields are filled
+        var isValid = true;
+        var requiredFields = [
+            '#FirstName',
+            '#LastName',
+            '#EmailAddress',
+            '#PhoneNumber',
+            '#Gender',
+            '#EmergencyContactInfo',
+            '#TenantNationality',
+            '#Account_Name',
+            '#Account_Holder',
+            '#Account_IBAN',
+            '#Account_Swift',
+            '#Account_Bank',
+            '#Account_Currency',
+            '#VAT',
+            '#LegalName'
+        ];
 
-            if (!isValid) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Please fill all required fields',
-                    timer: 3000,
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timerProgressBar: true,
-                });
-                return;
+        requiredFields.forEach(function (fieldId) {
+            var fieldValue = $(fieldId).val().trim();
+            if (!fieldValue) {
+                isValid = false;
+                $(fieldId).addClass('is-invalid');
+            } else {
+                $(fieldId).removeClass('is-invalid');
             }
+        });
 
-            var formData = new FormData($('#tenantForm')[0]);
-            var userId = localStorage.getItem('userId');
-            formData.append('AppTId', userId); 
-
-            var ajaxUrl = $('#OwnerId').val() ? '/Landlord/Update' : '/Landlord/Create';
-
-            $.ajax({
-                url: ajaxUrl,
-                type: 'POST',
-                data: formData,
-                processData: false, 
-                contentType: false, 
-                success: function (response) {
-                    if (response.success) {
-                        toastr.success(response.message);
-                        window.location.href = '/Landlord/Index'; 
-                    } else {
-                        toastr.error(response.message);
-                    }
-                },
-                error: function (xhr, status, error) {
-                    toastr.error("Error: " + error);
-                }
+        if (!isValid) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Please fill all required fields',
+                timer: 3000,
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timerProgressBar: true,
             });
-        }  
+            return;
+        }
+
+        var formData = new FormData($('#tenantForm')[0]);
+        var userId = localStorage.getItem('userId');
+        formData.append('AppTId', userId);
+        formData.append('MiddleName', $('#MiddleName').val().trim());
+        formData.append('Fax', $('#Fax').val().trim());
+        formData.append('Document', $('#Document')[0].files[0]);
+        formData.append('EmailAddress2', $('#EmailAddress2').val().trim());
+        formData.append('Picture', $('#PictureUrl')[0].files[0]); 
+        formData.append('OrganizationName', $('#OrganizationName').val().trim());
+        formData.append('OrganizationDescription', $('#OrganizationDescription').val().trim());
+        formData.append('OrganizationIcon', $('#OrganizationIcon').val().trim());
+        formData.append('OrganizationLogo', $('#OrganizationLogo').val().trim());
+        formData.append('Website', $('#Website').val().trim());
+        formData.append('PhoneNumber2', $('#PhoneNumber2').val().trim());
+
+        var ajaxUrl = $('#OwnerId').val() ? '/Landlord/Update' : '/Landlord/Create';
+
+        $.ajax({
+            url: ajaxUrl,
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                if (response.success) {
+                    toastr.success(response.message);
+                    window.location.href = '/Landlord/Index';
+                } else {
+                    toastr.error(response.message);
+                }
+            },
+            error: function (xhr, status, error) {
+                toastr.error("Error: " + error);
+            }
+        });
+    }
 
 
     $(document).ready(function () {
 
         // Function to convert a string to GUID format; only if needed
-      
+
 
         function submitTenantForm() {
             event.preventDefault(); // Prevent the form from submitting in the default way
@@ -328,7 +422,7 @@
             debugger;
             var formData = new FormData($('#tenantForm')[0]);
             var userId = localStorage.getItem('userId');
-            formData.append('AppTId', stringToGuid(userId)); 
+            formData.append('AppTId', stringToGuid(userId));
 
             var ajaxUrl = $('#TenantId').val() ? '/Landlord/Update' : '/Landlord/Create';
 
@@ -336,12 +430,12 @@
                 url: ajaxUrl,
                 type: 'POST',
                 data: formData,
-                processData: false, 
-                contentType: false, 
+                processData: false,
+                contentType: false,
                 success: function (response) {
                     if (response.success) {
                         toastr.success(response.message);
-                        window.location.href = '/Landlord/Index'; 
+                        window.location.href = '/Landlord/Index';
                     } else {
                         toastr.error(response.message);
                     }
@@ -352,7 +446,7 @@
             });
         }
 
-       
+
         $('#tenantForm').on('submit', submitTenantForm);
     });
 
@@ -367,4 +461,107 @@
             $("#Country").val(country);
         }
     });
+
+
+    $(document).ready(function () {
+        $('#toggleOrganizationFields').change(function () {
+            if ($(this).is(':checked')) {
+                $('.organization-field').show();
+            } else {
+                $('.organization-field').hide();
+            }
+        });
+    });
+</script>
+
+
+<script>
+    function toggleEmailField() {
+        var additionalEmailField = document.getElementById("additionalEmailField");
+        if (additionalEmailField.style.display === "none") {
+            additionalEmailField.style.display = "block";
+        } else {
+            additionalEmailField.style.display = "none";
+        }
+    }
+
+    function togglePhoneField() {
+        var additionalPhoneField = document.getElementById("additionalPhoneField");
+        if (additionalPhoneField.style.display === "none") {
+            additionalPhoneField.style.display = "block";
+        } else {
+            additionalPhoneField.style.display = "none";
+        }
+    }
+
+
+    function toggleEmergencyContact() {
+        var emergencyContactField = document.getElementById("emergencyContactField");
+        if (emergencyContactField.style.display === "none") {
+            emergencyContactField.style.display = "block";
+        } else {
+            emergencyContactField.style.display = "none";
+        }
+    }
+
+
+       function toggleEmailField() {
+        var primaryEmail = $("#EmailAddress").val();
+        var additionalEmail = $("#EmailAddress2").val();
+          var emailRegex = /^[a-zA-Z0-9._%+-]+&#64;[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+
+
+
+        
+        if (!emailRegex.test(primaryEmail) || !emailRegex.test(additionalEmail)) {
+            alert("Please enter valid email addresses.");
+            return;
+        }
+
+        var additionalEmailField = document.getElementById("additionalEmailField");
+        if (additionalEmailField.style.display === "none") {
+            additionalEmailField.style.display = "block";
+        } else {
+            additionalEmailField.style.display = "none";
+        }
+    }
+
+
+    function validateGender() {
+        var genderSelect = document.getElementById("Gender");
+        if (genderSelect.value === "") {
+            genderSelect.value = "";
+            return false;
+        }
+        return true; 
+    }
+
+    var form = document.querySelector("form");
+    form.onsubmit = validateGender;
+
+
+    function validateNumberInput(input) {
+        input.value = input.value.replace(/[^0-9]/g, '');
+    }
+
+
+
+    const fileInput = document.getElementById('Document');
+fileInput.addEventListener('change', async (event) => {
+    const file = event.target.files[0];
+    const base64String = await convertFileToBase64(file);
+    console.log(base64String); 
+});
+
+
+    function convertFileToBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        });
+    }
+
 </script>

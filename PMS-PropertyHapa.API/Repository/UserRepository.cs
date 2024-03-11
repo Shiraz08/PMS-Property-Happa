@@ -1205,16 +1205,19 @@ namespace MagicVilla_VillaAPI.Repository
             var tenantDto = await _db.Owner.FirstOrDefaultAsync(t => t.OwnerId == ownerId);
 
             if (tenantDto == null)
-                return new OwnerDto(); // Return an empty DTO or handle null case accordingly
-
-            // Map the single tenant to TenantModelDto
+                return new OwnerDto(); 
             var tenant = new OwnerDto
             {
                 OwnerId = tenantDto.OwnerId,
                 FirstName = tenantDto.FirstName,
+                MiddleName = tenantDto.MiddleName,
                 LastName = tenantDto.LastName,
                 EmailAddress = tenantDto.EmailAddress,
+                EmailAddress2 = tenantDto.EmailAddress2,
                 PhoneNumber = tenantDto.PhoneNumber,
+                PhoneNumber2 = tenantDto.PhoneNumber2,
+                Fax = tenantDto.Fax,
+                Document = tenantDto.Document,
                 EmergencyContactInfo = tenantDto.EmergencyContactInfo,
                 LeaseAgreementId = tenantDto.LeaseAgreementId,
                 OwnerNationality = tenantDto.OwnerNationality,
@@ -1239,8 +1242,28 @@ namespace MagicVilla_VillaAPI.Repository
                 Picture = tenantDto.Picture
             };
 
+            var ownerOrganization = await _db.OwnerOrganization.FirstOrDefaultAsync(o => o.OwnerId == ownerId);
+            if (ownerOrganization != null)
+            {
+                tenant.OrganizationName = ownerOrganization.OrganizationName;
+                tenant.OrganizationDescription = ownerOrganization.OrganizationDescription;
+                tenant.OrganizationIcon = ownerOrganization.OrganizationIcon;
+                tenant.OrganizationLogo = ownerOrganization.OrganizationLogo;
+                tenant.Website = ownerOrganization.Website;
+            }
+            else
+            {
+                
+                tenant.OrganizationName = ""; 
+                tenant.OrganizationDescription = "";
+                tenant.OrganizationIcon = "";
+                tenant.OrganizationLogo = "";
+                tenant.Website = "";
+            }
+
             return tenant;
         }
+
 
 
         public async Task<bool> CreateOwnerAsync(OwnerDto tenantDto)
@@ -1248,9 +1271,13 @@ namespace MagicVilla_VillaAPI.Repository
             var newTenant = new Owner
             {
                 FirstName = tenantDto.FirstName,
+                MiddleName = tenantDto.MiddleName,
                 LastName = tenantDto.LastName,
                 EmailAddress = tenantDto.EmailAddress,
+                EmailAddress2 = tenantDto.EmailAddress2,
                 PhoneNumber = tenantDto.PhoneNumber,
+                PhoneNumber2 = tenantDto.PhoneNumber2,
+                Fax = tenantDto.Fax,
                 EmergencyContactInfo = tenantDto.EmergencyContactInfo,
                 LeaseAgreementId = tenantDto.LeaseAgreementId,
                 OwnerNationality = tenantDto.OwnerNationality,
@@ -1259,6 +1286,7 @@ namespace MagicVilla_VillaAPI.Repository
                 VAT = tenantDto.VAT,
                 Status = true,
                 LegalName = tenantDto.LegalName,
+                Document = tenantDto.Document,
                 Account_Name = tenantDto.Account_Name,
                 Account_Holder = tenantDto.Account_Holder,
                 Account_IBAN = tenantDto.Account_IBAN,
@@ -1276,7 +1304,18 @@ namespace MagicVilla_VillaAPI.Repository
                 Picture = tenantDto.Picture
             };
 
+            var newOwnerOrganization = new OwnerOrganization
+            {
+                OwnerId = newTenant.OwnerId, 
+                OrganizationName = tenantDto.OrganizationName,
+                OrganizationDescription = tenantDto.OrganizationDescription,
+                OrganizationIcon = tenantDto.OrganizationIcon,
+                OrganizationLogo = tenantDto.OrganizationLogo,
+                Website = tenantDto.Website
+            };
+
             await _db.Owner.AddAsync(newTenant);
+            await _db.OwnerOrganization.AddAsync(newOwnerOrganization);
 
             var result = await _db.SaveChangesAsync();
 
@@ -1284,15 +1323,25 @@ namespace MagicVilla_VillaAPI.Repository
         }
 
 
+
         public async Task<bool> UpdateOwnerAsync(OwnerDto tenantDto)
         {
             var tenant = await _db.Owner.FirstOrDefaultAsync(t => t.OwnerId == tenantDto.OwnerId);
             if (tenant == null) return false;
 
+            var ownerOrganization = await _db.OwnerOrganization.FirstOrDefaultAsync(o => o.OwnerId == tenantDto.OwnerId);
+
+            if (ownerOrganization == null) return false;
+
             tenant.FirstName = tenantDto.FirstName;
+            tenant.MiddleName = tenantDto.MiddleName;
             tenant.LastName = tenantDto.LastName;
             tenant.EmailAddress = tenantDto.EmailAddress;
+            tenant.EmailAddress2 = tenantDto.EmailAddress2;
             tenant.PhoneNumber = tenantDto.PhoneNumber;
+            tenant.PhoneNumber2 = tenantDto.PhoneNumber2;
+            tenant.Fax = tenantDto.Fax;
+            tenant.Document = tenantDto.Document;
             tenant.EmergencyContactInfo = tenantDto.EmergencyContactInfo;
             tenant.LeaseAgreementId = tenantDto.LeaseAgreementId;
             tenant.OwnerNationality = tenantDto.OwnerNationality;
@@ -1317,10 +1366,22 @@ namespace MagicVilla_VillaAPI.Repository
             tenant.CountryCode = tenantDto.CountryCode;
             tenant.Picture = tenantDto.Picture;
 
+            if (ownerOrganization != null)
+            {
+                ownerOrganization.OrganizationName = tenantDto.OrganizationName;
+                ownerOrganization.OrganizationDescription = tenantDto.OrganizationDescription;
+                ownerOrganization.OrganizationIcon = tenantDto.OrganizationIcon;
+                ownerOrganization.OrganizationLogo = tenantDto.OrganizationLogo;
+                ownerOrganization.Website = tenantDto.Website;
+            }
+
             _db.Owner.Update(tenant);
+            _db.OwnerOrganization.Update(ownerOrganization);
+
             var result = await _db.SaveChangesAsync();
             return result > 0;
         }
+
 
 
         public async Task<bool> DeleteOwnerAsync(string ownerId)
@@ -1328,6 +1389,10 @@ namespace MagicVilla_VillaAPI.Repository
             var tenant = await _db.Owner.FirstOrDefaultAsync(t => t.OwnerId == Convert.ToInt32(ownerId));
             if (tenant == null) return false;
 
+            var owner = await _db.OwnerOrganization.FirstOrDefaultAsync(t => t.OwnerId == Convert.ToInt32(ownerId));
+            if (owner == null) return false;
+
+            _db.OwnerOrganization.Remove(owner);
             _db.Owner.Remove(tenant);
             var result = await _db.SaveChangesAsync();
             return result > 0;
@@ -1564,44 +1629,55 @@ namespace MagicVilla_VillaAPI.Repository
         {
             try
             {
-                var propertyTypes = await _db.Owner
-                                             .AsNoTracking()
-                                             .ToListAsync();
+                var ownerDtos = await (from owner in _db.Owner
+                                       join organization in _db.OwnerOrganization
+                                       on owner.OwnerId equals organization.OwnerId into orgGroup
+                                       from org in orgGroup.DefaultIfEmpty()
+                                       select new OwnerDto
+                                       {
+                                           OwnerId = owner.OwnerId,
+                                           FirstName = owner.FirstName,
+                                           MiddleName = owner.MiddleName,
+                                           LastName = owner.LastName,
+                                           Fax = owner.Fax,
+                                           EmailAddress = owner.EmailAddress,
+                                           EmailAddress2 = owner.EmailAddress2,
+                                           Picture = owner.Picture,
+                                           PhoneNumber = owner.PhoneNumber,
+                                           PhoneNumber2 = owner.PhoneNumber2,
+                                           EmergencyContactInfo = owner.EmergencyContactInfo,
+                                           LeaseAgreementId = owner.LeaseAgreementId,
+                                           OwnerNationality = owner.OwnerNationality,
+                                           Gender = owner.Gender,
+                                           Document = owner.Document,
+                                           DOB = owner.DOB,
+                                           VAT = owner.VAT,
+                                           LegalName = owner.LegalName,
+                                           Account_Name = owner.Account_Name,
+                                           Account_Holder = owner.Account_Holder,
+                                           Account_IBAN = owner.Account_IBAN,
+                                           Account_Swift = owner.Account_Swift,
+                                           Account_Bank = owner.Account_Bank,
+                                           Account_Currency = owner.Account_Currency,
+                                           OrganizationName = org.OrganizationName,
+                                           OrganizationDescription = org.OrganizationDescription,
+                                           OrganizationIcon = org.OrganizationIcon,
+                                           OrganizationLogo = org.OrganizationLogo,
+                                           Website = org.Website,
+                                       })
+                                       .AsNoTracking()
+                                       .ToListAsync();
 
-                var propertyTypeDtos = propertyTypes.Select(tenant => new OwnerDto
-                {
-                  
-                    OwnerId = tenant.OwnerId, 
-                    FirstName = tenant.FirstName,
-                    LastName = tenant.LastName,
-                    EmailAddress = tenant.EmailAddress,
-                    Picture = tenant.Picture,
-                    PhoneNumber = tenant.PhoneNumber,
-                    EmergencyContactInfo = tenant.EmergencyContactInfo,
-                    LeaseAgreementId = tenant.LeaseAgreementId,
-                    OwnerNationality = tenant.OwnerNationality,
-                    Gender = tenant.Gender,
-                    DOB = tenant.DOB,
-                    VAT = tenant.VAT,
-                    LegalName = tenant.LegalName,
-                    Account_Name = tenant.Account_Name,
-                    Account_Holder = tenant.Account_Holder,
-                    Account_IBAN = tenant.Account_IBAN,
-                    Account_Swift = tenant.Account_Swift,
-                    Account_Bank = tenant.Account_Bank,
-                    Account_Currency = tenant.Account_Currency
-                }).ToList();
-
-
-
-                return propertyTypeDtos;
+                return ownerDtos;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"An error occurred while mapping property types: {ex.Message}");
+                Console.WriteLine($"An error occurred while mapping owners and organizations: {ex.Message}");
                 throw;
             }
         }
+
+
         #endregion
 
 
