@@ -17,6 +17,8 @@ namespace PMS_PropertyHapa.Models.DTO
         public string Image { get; set; }
 
 
+        public string PictureString { get; set; }
+
         public IFormFile PictureFile { get; set; }
 
         public string Street1 { get; set; }

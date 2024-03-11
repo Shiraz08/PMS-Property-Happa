@@ -9,9 +9,15 @@
 
 
 <head>
-    z
-
+    
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+
+    <style>
+        .rounded-circle-important {
+            border-radius: 50% !important;
+        }
+    </style>
+
     <style>
 
         .unit-fields {
@@ -21,7 +27,7 @@
     gap: 10px; 
 }
 
-
+       
 
         .thick-black-underline {
             height: 2px;
@@ -219,7 +225,7 @@
                     <div class="card-header pb-0">
                     </div>
                     <div class="card-body">
-                        <form class="f1" method="post" id="multiStepForm">
+                        <form class="f1" method="post" id="multiStepForm" enctype="multipart/form-data">
                             <div class="f1-steps" style="display: flex; justify-content: space-between;">
                                 <div class="f1-progress" style="position: absolute; width: 100%; bottom: 0;">
                                     <div class="f1-progress-line" id="progressLine"></div>
@@ -309,6 +315,31 @@
                                         <label class="sr-only" for="zipcode">Zip Code</label>
                                         <input class="form-control" id="zipcode" type="text" name="zipcode" placeholder="Zip Code" required="" value="@Model?.Asset?.Zipcode">
                                     </div>
+                                </div>
+
+                                <div class="thick-black-underline"></div>
+
+                                <div class="row">
+                                    <div class="col-md-4 mb-2">
+                                        <div class="form-group">
+                                            <label for="assetPicture">Upload Picture</label>
+                                            <input type="file" class="form-control" id="assetPicture" name="assetPicture">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <div id="picturePreviewContainer" class="rounded">
+                                            @if (Model?.Asset?.Image != null)
+                                            {
+                                                <img src="@Model.Asset.Image" id="PictureString" name="PictureString" alt="Asset Picture" class="img-fluid">
+                                            }
+                                            else
+                                            {
+                                                <p>No picture uploaded</p>
+                                            }
+                                        </div>
+
+                                    </div>
+
                                 </div>
                             </fieldset>
 
@@ -1005,6 +1036,7 @@
             Country: $('#country').val(),
             Zipcode: $('#zipcode').val(),
             Units: units,
+            Image: $('#Image').val(), 
             SelectedBankAccountOption: $('#SelectedBankAccountOption').val(),
             SelectedReserveFundsOption: $('#SelectedReserveFundsOption').val(),
             SelectedOwnershipOption: $('#SelectedOwnershipOption').val(),
@@ -1015,7 +1047,9 @@
             OwnerZipcode: $('#OwnerZipcode').val(),
             OwnerCity: $('#OwnerCity').val(),
             OwnerCountry: $('#OwnerCountry').val()
+            
         };
+
 
         return assetDTO;
     }
@@ -1028,6 +1062,7 @@
         debugger;
 
         var formData = collectFormData();
+
         var submitUrl = isEditMode ? `$/Assests/UpdateAsset/{Model?.Asset?.AssetId}` : '/Assests/AddAsset';
         console.log(formData);
 
@@ -1175,14 +1210,21 @@
             }
         });
 
-        $("#assetPicture").change(function () {
-            if (this.files && this.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    $('#picturePreviewContainer').html(`<img src="${e.target.result}" alt="Asset Picture" class="img-fluid">`);
-                };
-                reader.readAsDataURL(this.files[0]);
-            }
-        });
+     $("#assetPicture").change(function () {
+    if (this.files && this.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            // Display the image preview
+            $('#picturePreviewContainer').html(`<img src="${e.target.result}" alt="Asset Picture" class="img-fluid">`);
+
+            // Set the base64 string to hidden input
+            $('#Image').val(e.target.result);
+        };
+
+        reader.readAsDataURL(this.files[0]);
+    }
+});
+
     });
 </script>
