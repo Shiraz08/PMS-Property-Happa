@@ -14,6 +14,7 @@ namespace PMS_PropertyHapa.Models.Entities
         public string EmailAddress { get; set; }
         public string EmailAddress2 { get; set; }
         public string Picture { get; set; }
+        public string Document { get; set; }
         public string PhoneNumber { get; set; }
         public string PhoneNumber2 { get; set; }
         public string EmergencyContactInfo { get; set; } 

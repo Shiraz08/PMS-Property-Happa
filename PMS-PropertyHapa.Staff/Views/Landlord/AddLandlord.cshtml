@@ -32,6 +32,10 @@
         <div class="edit-profile">
             <div class="row">
                 <form id="tenantForm" method="post" enctype="multipart/form-data">
+                    <div class="col-xl-4">
+
+
+                    </div>
                     <div class="col-xl-12">
                         <!-- Tenant Information -->
                         <div class="card">
@@ -104,84 +108,9 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-sm-6 col-md-3">
-                                        <div class="mb-3">
-                                            <label for="PictureUrl" class="form-label">Picture</label>
-                                            <input type="file" class="form-control" id="PictureUrl" name="PictureUrl" accept="image/*" />
-                                        </div>
-                                    </div>
+
 
                                 </div>
-                            </div>
-                        </div>
-
-                        <!-- Billing Information -->
-                        <div class="card">
-                            <div class="card-header pb-0">
-                                <h4 class="card-title mb-0">Billing Information</h4>
-                                <div class="card-options"><a class="card-options-collapse" href="#" data-bs-toggle="card-collapse"><i class="fe fe-chevron-up"></i></a><a class="card-options-remove" href="#" data-bs-toggle="card-remove"><i class="fe fe-x"></i></a></div>
-                            </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-sm-6 col-md-3">
-                                        <div class="mb-3">
-                                            <label for="Account_Name">Account Name</label>
-                                            <input type="text" class="form-control" id="Account_Name" name="Account_Name" value="@Model?.Account_Name" required />
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-6 col-md-3">
-                                        <div class="mb-3">
-                                            <label for="Account_Holder">Account Holder</label>
-                                            <input type="text" class="form-control" id="Account_Holder" name="Account_Holder" value="@Model?.Account_Holder" required />
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-6 col-md-3">
-                                        <div class="mb-3">
-                                            <label for="Account_IBAN">Account IBAN</label>
-                                            <input type="text" class="form-control" id="Account_IBAN" name="Account_IBAN" value="@Model?.Account_IBAN" required />
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-6 col-md-3">
-                                        <div class="mb-3">
-                                            <label for="Account_Swift">Account SWIFT/BIC</label>
-                                            <input type="text" class="form-control" id="Account_Swift" name="Account_Swift" value="@Model?.Account_Swift" required />
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-6 col-md-3">
-                                        <div class="mb-3">
-                                            <label for="Account_Bank">Account Bank</label>
-                                            <input type="text" class="form-control" id="Account_Bank" name="Account_Bank" value="@Model?.Account_Bank" required />
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-6 col-md-3">
-                                        <div class="mb-3">
-                                            <label for="Account_Currency">Account Currency</label>
-                                            <input type="text" class="form-control" id="Account_Currency" name="Account_Currency" value="@Model?.Account_Currency" required />
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-6 col-md-3">
-                                        <div class="mb-3">
-                                            <label for="VAT">VAT Number</label>
-                                            <input type="text" class="form-control" id="VAT" name="VAT" value="@Model?.VAT" required />
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-6 col-md-3">
-                                        <div class="mb-3">
-                                            <label for="LegalName">Legal Name</label>
-                                            <input type="text" class="form-control" id="LegalName" name="LegalName" value="@Model?.LegalName" required />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Address Information -->
-                        <div class="card">
-                            <div class="card-header pb-0">
-                                <h4 class="card-title mb-0">Address Information</h4>
-                                <div class="card-options"><a class="card-options-collapse" href="#" data-bs-toggle="card-collapse"><i class="fe fe-chevron-up"></i></a><a class="card-options-remove" href="#" data-bs-toggle="card-remove"><i class="fe fe-x"></i></a></div>
-                            </div>
-                            <div class="card-body">
                                 <div class="row">
                                     <div class="col-sm-6 col-md-3">
                                         <div class="mb-3">
@@ -191,25 +120,25 @@
                                     </div>
                                     <div class="col-sm-6 col-md-3">
                                         <div class="mb-3">
-                                            <label for="Address2">Address 2</label>
+                                            <label for="Address2">Unit/Ap. #</label>
                                             <input type="text" class="form-control" id="Address2" name="Address2" value="@Model?.Address2" />
                                         </div>
                                     </div>
                                     <div class="col-sm-6 col-md-3">
                                         <div class="mb-3">
-                                            <label for="Locality">Locality</label>
+                                            <label for="Locality">City</label>
                                             <input type="text" class="form-control" id="Locality" name="Locality" value="@Model?.Locality" />
                                         </div>
                                     </div>
                                     <div class="col-sm-6 col-md-3">
                                         <div class="mb-3">
-                                            <label for="Region">Region</label>
+                                            <label for="Region">State / Region</label>
                                             <input type="text" class="form-control" id="Region" name="Region" value="@Model?.Region" />
                                         </div>
                                     </div>
                                     <div class="col-sm-6 col-md-3">
                                         <div class="mb-3">
-                                            <label for="PostalCode">Postal Code</label>
+                                            <label for="PostalCode">Zip</label>
                                             <input type="text" class="form-control" id="PostalCode" name="PostalCode" value="@Model?.PostalCode" />
                                         </div>
                                     </div>
@@ -225,18 +154,31 @@
                                             </select>
                                         </div>
                                     </div>
+                                    <hr />
                                     <div class="col-sm-6 col-md-3">
                                         <div class="mb-3">
-                                            <label for="CountryCode">Country Code</label>
-                                            <input type="text" class="form-control" id="CountryCode" name="CountryCode" value="@Model?.CountryCode" />
+                                            <label for="PostalCode">EMERGENCY CONTACT</label>
+                                           + Add Emergency conatct
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    <br />
+                                    <hr />
+                                    <div class="col-sm-6 col-md-3">
+                                        <div class="mb-3">
+                                            <label for="PictureUrl" class="form-label">Document UPload</label>
+                                            <input type="file" class="form-control" id="PictureUrl" name="PictureUrl" accept="image/*" />
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    <br />
+                                    <div class="col-sm-6 col-md-3">
+                                        <div class="mb-3">
+                                            <button type="button" onclick="submitTenantForm()" class="btn btn-primary">@(Model?.OwnerId == null ? "Add" : "Edit") Owner</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="card-footer text-end">
-                            <button type="button" onclick="submitTenantForm()" class="btn btn-primary">@(Model?.OwnerId == null ? "Add" : "Edit") Owner</button>
                         </div>
                     </div>
                 </form>
