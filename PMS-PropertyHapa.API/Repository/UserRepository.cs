@@ -1304,17 +1304,21 @@ namespace MagicVilla_VillaAPI.Repository
                 Picture = tenantDto.Picture
             };
 
+           
+
+            await _db.Owner.AddAsync(newTenant);
+            await _db.SaveChangesAsync();
+
+
             var newOwnerOrganization = new OwnerOrganization
             {
-                OwnerId = newTenant.OwnerId, 
+                OwnerId = newTenant.OwnerId,
                 OrganizationName = tenantDto.OrganizationName,
                 OrganizationDescription = tenantDto.OrganizationDescription,
                 OrganizationIcon = tenantDto.OrganizationIcon,
                 OrganizationLogo = tenantDto.OrganizationLogo,
                 Website = tenantDto.Website
             };
-
-            await _db.Owner.AddAsync(newTenant);
             await _db.OwnerOrganization.AddAsync(newOwnerOrganization);
 
             var result = await _db.SaveChangesAsync();

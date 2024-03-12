@@ -78,13 +78,12 @@ namespace PMS_PropertyHapa.Staff.Controllers
                 return Json(new { success = false, message = "Invalid AppTid format" });
             }
 
-            if (owner.PictureUrl != null && owner.PictureUrl.Length > 0)
+            if (owner.Picture != null || owner.OrganizationLogo != null || owner.OrganizationIcon != null)
             {
-                var (fileName, base64String) = await ImageUploadUtility.UploadImageAsync(owner.PictureUrl, "uploads");
-                owner.Picture = $"data:image/png;base64,{base64String}";
+                owner.Picture = $"data:image/png;base64,{owner.Picture}";
+                owner.OrganizationLogo = $"data:image/png;base64,{owner.OrganizationLogo}";
+                owner.OrganizationIcon = $"data:image/png;base64,{owner.OrganizationIcon}";
             }
-
-            owner.PictureUrl = null;
             await _authService.CreateLandlordAsync(owner);
             return Json(new { success = true, message = "Owner added successfully" });
         }
@@ -100,8 +99,13 @@ namespace PMS_PropertyHapa.Staff.Controllers
                 owner.Picture = $"data:image/png;base64,{base64String}";
             }
 
-            owner.PictureUrl = null;
-            await _authService.UpdateLandlordAsync(owner);
+            if (owner.Picture != null || owner.OrganizationLogo != null || owner.OrganizationIcon != null)
+            {
+                owner.Picture = $"data:image/png;base64,{owner.Picture}";
+                owner.OrganizationLogo = $"data:image/png;base64,{owner.OrganizationLogo}";
+                owner.OrganizationIcon = $"data:image/png;base64,{owner.OrganizationIcon}";
+            }
+                await _authService.UpdateLandlordAsync(owner);
             return Json(new { success = true, message = "Owner updated successfully" });
         }
 

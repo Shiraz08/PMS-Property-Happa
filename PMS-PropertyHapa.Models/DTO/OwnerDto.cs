@@ -14,6 +14,7 @@ namespace PMS_PropertyHapa.Models.DTO
         public string EmailAddress { get; set; }
 
         public string Document { get; set; }
+        public IFormFile DocumentUrl { get; set; }
 
         public string EmailAddress2 { get; set; }
         public string Picture { get; set; }
@@ -63,7 +64,9 @@ namespace PMS_PropertyHapa.Models.DTO
         public string OrganizationName { get; set; }
         public string OrganizationDescription { get; set; }
         public string OrganizationIcon { get; set; }
+        public IFormFile OrganizationIconFile { get; set; }
         public string OrganizationLogo { get; set; }
+        public IFormFile OrganizationLogoFile { get; set; }
         public string Website { get; set; }
     }
 }

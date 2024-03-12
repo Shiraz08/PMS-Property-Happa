@@ -39,11 +39,14 @@
                                 <div class="card-header">Profile Picture</div>
                                 <div class="card-body text-center">
                                     <input type="hidden" value="image" name="SaveType" id="SaveType" />
-                                    <img class="img-account-profile2 rounded-circle mb-2" src="http://bootdey.com/img/Content/avatar/avatar1.png" alt="" style="width: 140px;">
-                                    <div class=" font-italic text-muted mb-4"></div>
-                                    @Html.EditorFor(model => model.PictureUrl, new { htmlAttributes = new { @class = "btn btn-primary"  ,@type="file" ,@accept="image/*",@required="required",@style="    width: 219px;"} })
+                                    <img class="img-account-profile2 rounded-circle mb-2"
+                                         src="@(string.IsNullOrEmpty(Model?.Picture) ? "http://bootdey.com/img/Content/avatar/avatar1.png" : $"{Model?.Picture}")"
+                                         alt="" style="width: 140px;">
+                                    <div class="font-italic text-muted mb-4"></div>
+                                    @Html.EditorFor(model => model.PictureUrl, new { htmlAttributes = new {  @id="PictureUrl",@class = "btn btn-primary", @type="file", @accept="image/*", @required="required", @style="width: 219px;"} })
                                 </div>
                             </div>
+
                         </div>
                         <div class="col-xl-9 d-inline-block">
                             <!-- Tenant Information -->
@@ -54,6 +57,10 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
+                                        <input type="hidden" id="DocumentBase64" name="Document">
+                                        <input type="hidden" id="PictureBase64" name="Picture">
+                                        <input type="hidden" id="OrganizationLogoBase64" name="OrganizationLogo">
+                                        <input type="hidden" id="OrganizationIconBase64" name="OrganizationIcon">
                                         <input type="hidden" id="OwnerId" name="OwnerId" value="@Model?.OwnerId" />
                                         <!-- First Name -->
                                         <div class="col-sm-6 col-md-3">
@@ -82,17 +89,18 @@
                                                 <label for="Gender" class="form-label">Gender</label>
                                                 <select class="form-control" id="Gender" name="Gender" required>
                                                     <option value="">Select Gender</option>
-                                                    <option value="Male">Male</option>
-                                                    <option value="Female">Female</option>
-                                                    <option value="Other">Other</option>
+                                                    <option value="Male" @(Model?.Gender == "Male" ? "selected" : "")>Male</option>
+                                                    <option value="Female" @(Model?.Gender == "Female" ? "selected" : "")>Female</option>
+                                                    <option value="Other" @(Model?.Gender == "Other" ? "selected" : "")>Other</option>
                                                 </select>
+
                                             </div>
                                         </div>
                                         <div class="col-sm-6 col-md-3">
                                             <div class="mb-3">
-                                                <label class="form-check-label" for="toggleOrganizationFields">Organization Info</label>
+                                                <label class="form-check-label" for="toggleOrgInfo">Organization Info</label>
                                                 <div class="form-check form-switch mt-2">
-                                                    <input class="form-check-input" type="checkbox" id="toggleOrganizationFields">
+                                                    <input class="form-check-input" type="checkbox" id="toggleOrgInfo">
                                                 </div>
                                             </div>
                                         </div>
@@ -100,37 +108,42 @@
                                         <div class="col-sm-6 col-md-3 organization-field" style="display: none;">
                                             <div class="mb-3">
                                                 <label for="OrganizationName" class="form-label">Organization Name</label>
-                                                <input type="text" class="form-control" id="OrganizationName" pattern="[A-Za-z]+" name="OrganizationName">
+                                                <input type="text" class="form-control" id="OrganizationName" value="@Model?.OrganizationName" name="OrganizationName">
                                             </div>
                                         </div>
+
                                         <!-- Organization Description (Initially Hidden) -->
                                         <div class="col-sm-6 col-md-3 organization-field" style="display: none;">
                                             <div class="mb-3">
                                                 <label for="OrganizationDescription" class="form-label">Organization Description</label>
-                                                <input type="text" class="form-control" id="OrganizationDescription" pattern="[A-Za-z]+" name="OrganizationDescription">
+                                                <input type="text" class="form-control" id="OrganizationDescription" value="@Model?.OrganizationDescription" name="OrganizationDescription">
                                             </div>
                                         </div>
-                                        <!-- Organization Icon (Initially Hidden) -->
+
+                                        <!-- Organization Icon File Upload (Initially Hidden) -->
                                         <div class="col-sm-6 col-md-3 organization-field" style="display: none;">
                                             <div class="mb-3">
-                                                <label for="OrganizationIcon" class="form-label">Organization Icon</label>
-                                                <img class="form-control" id="OrganizationIcon" name="OrganizationIcon" />
+                                                <label for="OrganizationIconFile" class="form-label">Organization Icon</label>
+                                                <input type="file" class="form-control" id="OrganizationIconFile" name="OrganizationIconFile" accept="image/*">
                                             </div>
                                         </div>
-                                        <!-- Organization Logo (Initially Hidden) -->
+
+                                        <!-- Organization Logo File Upload (Initially Hidden) -->
                                         <div class="col-sm-6 col-md-3 organization-field" style="display: none;">
                                             <div class="mb-3">
-                                                <label for="OrganizationLogo" class="form-label">Organization Logo</label>
-                                                <img src="" class="form-control" id="OrganizationLogo" name="OrganizationLogo" />
+                                                <label for="OrganizationLogoFile" class="form-label">Organization Logo</label>
+                                                <input type="file" class="form-control" id="OrganizationLogoFile" name="OrganizationLogoFile" accept="image/*">
                                             </div>
                                         </div>
+
                                         <!-- Website (Initially Hidden) -->
                                         <div class="col-sm-6 col-md-3 organization-field" style="display: none;">
                                             <div class="mb-3">
                                                 <label for="Website" class="form-label">Website</label>
-                                                <input type="text" class="form-control" id="Website"  name="Website">
+                                                <input type="text" class="form-control" id="Website" value="@Model?.Website" name="Website">
                                             </div>
                                         </div>
+
 
                                         <!-- Date of Birth -->
                                         <div class="col-sm-6 col-md-3">
@@ -139,13 +152,7 @@
                                                 <input type="date" class="form-control" id="DOB" name="DOB" value="@Model?.DOB" />
                                             </div>
                                         </div>
-                                        <!-- Emergency Contact Info -->
-                                        <div class="col-sm-6 col-md-3">
-                                            <div class="mb-3">
-                                                <label for="EmergencyContactInfo" class="form-label">Emergency Contact Info</label>
-                                                <input type="text" class="form-control" id="EmergencyContactInfo" name="EmergencyContactInfo" value="@Model?.EmergencyContactInfo" required />
-                                            </div>
-                                        </div>
+
                                         <!-- Email Address -->
                                         <div class="col-sm-6 col-md-3">
                                             <div class="mb-3">
@@ -233,10 +240,10 @@
                                                 <label for="Country">Country</label>
                                                 <select class="form-control" id="Country" name="Country">
                                                     <option value="">Select Country</option>
-                                                    <option value="Germany">Germany</option>
-                                                    <option value="Canada">Canada</option>
-                                                    <option value="USA">USA</option>
-                                                    <option value="Australia">Australia</option>
+                                                    <option value="Germany" @(Model?.Country == "Germany" ? "selected" : "")>Germany</option>
+                                                    <option value="Canada" @(Model?.Country == "Canada" ? "selected" : "")>Canada</option>
+                                                    <option value="USA" @(Model?.Country == "USA" ? "selected" : "")>USA</option>
+                                                    <option value="Australia" @(Model?.Country == "Australia" ? "selected" : "")>Australia</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -252,22 +259,23 @@
                                         <div class="col-sm-6 col-md-3" id="emergencyContactField" style="display: none;">
                                             <div class="mb-3">
                                                 <label for="EmergencyContactInfo" class="form-label">Emergency Contact Info</label>
-                                                <input type="text" class="form-control" id="EmergencyContactInfo" name="EmergencyContactInfo" required />
+                                                <input type="text" class="form-control" id="EmergencyContactInfo" name="EmergencyContactInfo" value="@Model?.EmergencyContactInfo" required />
                                             </div>
                                         </div>
                                         <hr />
                                         <div class="col-sm-12 col-md-12">
                                             <div class="mb-3">
-                                                <label for="Document" class="form-label">Document Upload</label>
-                                                <input type="file" class="form-control" id="Document" name="Document" accept="image/*" />
+                                                <label for="DocumentFile" class="form-label">Document Upload</label>
+                                                <input type="file" class="form-control" id="DocumentFile" name="DocumentFile" accept=".pdf,.xls,.xlsx,.doc,.docx" />
                                             </div>
                                         </div>
+
                                         <br />
                                         <hr />
                                         <br />
                                         <div class="col-sm-6 col-md-3">
                                             <div class="mb-3">
-                                                <button type="button" onclick="submitTenantForm()" class="btn btn-primary">@(Model?.OwnerId == null ? "Add" : "Edit") Owner</button>
+                                                <button type="button" id="saveButton" class="btn btn-primary">@(Model?.OwnerId == null ? "Add" : "Edit") Owner</button>
                                             </div>
                                         </div>
                                     </div>
@@ -283,285 +291,151 @@
 
 
 <script>
-
-
-    function submitTenantForm() {
-        event.preventDefault(); // Prevent the form from submitting in the default way
-
-        // Check if all required fields are filled
-        var isValid = true;
-        var requiredFields = [
-            '#FirstName',
-            '#LastName',
-            '#EmailAddress',
-            '#PhoneNumber',
-            '#Gender',
-            '#EmergencyContactInfo',
-            '#TenantNationality',
-            '#Account_Name',
-            '#Account_Holder',
-            '#Account_IBAN',
-            '#Account_Swift',
-            '#Account_Bank',
-            '#Account_Currency',
-            '#VAT',
-            '#LegalName'
-        ];
-
-        requiredFields.forEach(function (fieldId) {
-            var fieldValue = $(fieldId).val().trim();
-            if (!fieldValue) {
-                isValid = false;
-                $(fieldId).addClass('is-invalid');
-            } else {
-                $(fieldId).removeClass('is-invalid');
-            }
-        });
-
-        if (!isValid) {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Please fill all required fields',
-                timer: 3000,
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timerProgressBar: true,
-            });
-            return;
-        }
-
-        var formData = new FormData($('#tenantForm')[0]);
-        var userId = localStorage.getItem('userId');
-        formData.append('AppTId', userId);
-        formData.append('MiddleName', $('#MiddleName').val().trim());
-        formData.append('Fax', $('#Fax').val().trim());
-        formData.append('Document', $('#Document')[0].files[0]);
-        formData.append('EmailAddress2', $('#EmailAddress2').val().trim());
-        formData.append('Picture', $('#PictureUrl')[0].files[0]); 
-        formData.append('OrganizationName', $('#OrganizationName').val().trim());
-        formData.append('OrganizationDescription', $('#OrganizationDescription').val().trim());
-        formData.append('OrganizationIcon', $('#OrganizationIcon').val().trim());
-        formData.append('OrganizationLogo', $('#OrganizationLogo').val().trim());
-        formData.append('Website', $('#Website').val().trim());
-        formData.append('PhoneNumber2', $('#PhoneNumber2').val().trim());
-
-        var ajaxUrl = $('#OwnerId').val() ? '/Landlord/Update' : '/Landlord/Create';
-
-        $.ajax({
-            url: ajaxUrl,
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function (response) {
-                if (response.success) {
-                    toastr.success(response.message);
-                    window.location.href = '/Landlord/Index';
-                } else {
-                    toastr.error(response.message);
-                }
-            },
-            error: function (xhr, status, error) {
-                toastr.error("Error: " + error);
-            }
-        });
+     function stringToGuid(str) {
+        return str.substring(0, 8) + '-' + str.substring(8, 12) + '-' + str.substring(12, 16) + '-' + str.substring(16, 20) + '-' + str.substring(20);
     }
 
-
-    $(document).ready(function () {
-
-        // Function to convert a string to GUID format; only if needed
-
-
-        function submitTenantForm() {
-            event.preventDefault(); // Prevent the form from submitting in the default way
-
-            // Check if all required fields are filled
-            var isValid = true;
-            var requiredFields = [
-                '#FirstName',
-                '#LastName',
-                '#EmailAddress',
-                '#PhoneNumber',
-                '#Gender',
-                '#EmergencyContactInfo',
-                '#TenantNationality',
-                '#Account_Name',
-                '#Account_Holder',
-                '#Account_IBAN',
-                '#Account_Swift',
-                '#Account_Bank',
-                '#Account_Currency',
-                '#VAT',
-                '#LegalName'
-            ];
-
-            requiredFields.forEach(function (fieldId) {
-                var fieldValue = $(fieldId).val().trim();
-                if (!fieldValue) {
-                    isValid = false;
-                    $(fieldId).addClass('is-invalid');
-                } else {
-                    $(fieldId).removeClass('is-invalid');
-                }
-            });
-
-            if (!isValid) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Please fill all required fields',
-                    timer: 3000,
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timerProgressBar: true,
-                });
-                return;
-            }
-            debugger;
-            var formData = new FormData($('#tenantForm')[0]);
-            var userId = localStorage.getItem('userId');
-            formData.append('AppTId', stringToGuid(userId));
-
-            var ajaxUrl = $('#TenantId').val() ? '/Landlord/Update' : '/Landlord/Create';
-
-            $.ajax({
-                url: ajaxUrl,
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function (response) {
-                    if (response.success) {
-                        toastr.success(response.message);
-                        window.location.href = '/Landlord/Index';
-                    } else {
-                        toastr.error(response.message);
-                    }
-                },
-                error: function (xhr, status, error) {
-                    toastr.error("Error: " + error);
-                }
-            });
-        }
-
-
-        $('#tenantForm').on('submit', submitTenantForm);
-    });
 
     document.addEventListener('DOMContentLoaded', function () {
-        var gender = '@Model?.Gender';
-        if (gender) {
-            $("#Gender").val(gender);
-        }
 
-        var country = '@Model?.Country';
-        if (country) {
-            $("#Country").val(country);
-        }
-    });
-
-
-    $(document).ready(function () {
-        $('#toggleOrganizationFields').change(function () {
-            if ($(this).is(':checked')) {
-                $('.organization-field').show();
-            } else {
-                $('.organization-field').hide();
-            }
+        const toggleCheckbox = document.getElementById('toggleOrgInfo');
+        toggleCheckbox.addEventListener('change', function () {
+            const orgFields = document.querySelectorAll('.organization-field');
+            orgFields.forEach(field => {
+                field.style.display = this.checked ? 'block' : 'none';
+            });
         });
+
+
+        window.toggleEmergencyContact = function () {
+            var emergencyContactField = document.getElementById("emergencyContactField");
+            emergencyContactField.style.display = emergencyContactField.style.display === "none" ? "block" : "none";
+        };
+
+        window.togglePhoneField = function () {
+            var additionalPhoneField = document.getElementById("additionalPhoneField");
+            additionalPhoneField.style.display = additionalPhoneField.style.display === "none" ? "block" : "none";
+        };
+
+        window.toggleEmailField = function () {
+            var additionalEmailField = document.getElementById("additionalEmailField");
+            additionalEmailField.style.display = additionalEmailField.style.display === "none" ? "block" : "none";
+        };
+
+
+
+        // function toggleEmailField() {
+        //     var primaryEmail = $("#EmailAddress").val();
+        //     var additionalEmail = $("#EmailAddress2").val();
+        //     var emailRegex = /^[a-zA-Z0-9._%+-]+&#64;[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        // }
+
+        const saveButton = document.getElementById('saveButton');
+        if (saveButton) {
+            saveButton.addEventListener('click', submitTenantForm);
+        }
     });
-</script>
 
-
-<script>
-    function toggleEmailField() {
-        var additionalEmailField = document.getElementById("additionalEmailField");
-        if (additionalEmailField.style.display === "none") {
-            additionalEmailField.style.display = "block";
-        } else {
-            additionalEmailField.style.display = "none";
-        }
-    }
-
-    function togglePhoneField() {
-        var additionalPhoneField = document.getElementById("additionalPhoneField");
-        if (additionalPhoneField.style.display === "none") {
-            additionalPhoneField.style.display = "block";
-        } else {
-            additionalPhoneField.style.display = "none";
-        }
-    }
-
-
-    function toggleEmergencyContact() {
-        var emergencyContactField = document.getElementById("emergencyContactField");
-        if (emergencyContactField.style.display === "none") {
-            emergencyContactField.style.display = "block";
-        } else {
-            emergencyContactField.style.display = "none";
-        }
-    }
-
-
-       function toggleEmailField() {
-        var primaryEmail = $("#EmailAddress").val();
-        var additionalEmail = $("#EmailAddress2").val();
-          var emailRegex = /^[a-zA-Z0-9._%+-]+&#64;[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    async function submitTenantForm(event) {
+        debugger;
+        event.preventDefault();
 
 
 
 
-        
-        if (!emailRegex.test(primaryEmail) || !emailRegex.test(additionalEmail)) {
-            alert("Please enter valid email addresses.");
-            return;
+        const fileInputs = {
+            'DocumentFile': 'DocumentBase64',
+            'PictureUrl': 'PictureBase64',
+            'OrganizationLogoFile': 'OrganizationLogoBase64',
+            'OrganizationIconFile': 'OrganizationIconBase64'
+        };
+
+        for (const [inputId, outputId] of Object.entries(fileInputs)) {
+            const inputFile = document.getElementById(inputId);
+            if (inputFile && inputFile.files.length > 0) {
+                document.getElementById(outputId).value = await convertFileToBase64(inputFile.files[0]);
+            }
         }
 
-        var additionalEmailField = document.getElementById("additionalEmailField");
-        if (additionalEmailField.style.display === "none") {
-            additionalEmailField.style.display = "block";
-        } else {
-            additionalEmailField.style.display = "none";
+        const formElement = document.getElementById('tenantForm');
+        var ajaxUrl = $('#OwnerId').val() ? '/Landlord/Update' : '/Landlord/Create';
+        const formData = new FormData(formElement);
+        Object.keys(fileInputs).forEach(key => formData.delete(key));
+
+        try {
+            var userId = localStorage.getItem('userId');
+            formData.append('AppTId', userId);
+            const response = await fetch(ajaxUrl, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                console.log(result);
+                toastr.success('Operation successful');
+                window.location.href = '/Landlord/Index';
+            } else {
+                console.error('Server responded with non-OK status');
+                toastr.error('Operation failed. Server responded with an error.');
+            }
+        } catch (error) {
+            console.error('Error submitting form:', error);
+            toastr.error('Operation failed. Network error or server is not responding.');
         }
     }
-
-
-    function validateGender() {
-        var genderSelect = document.getElementById("Gender");
-        if (genderSelect.value === "") {
-            genderSelect.value = "";
-            return false;
-        }
-        return true; 
-    }
-
-    var form = document.querySelector("form");
-    form.onsubmit = validateGender;
-
-
-    function validateNumberInput(input) {
-        input.value = input.value.replace(/[^0-9]/g, '');
-    }
-
-
-
-    const fileInput = document.getElementById('Document');
-fileInput.addEventListener('change', async (event) => {
-    const file = event.target.files[0];
-    const base64String = await convertFileToBase64(file);
-    console.log(base64String); 
-});
-
 
     function convertFileToBase64(file) {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result);
+            reader.onload = () => resolve(reader.result.split(',')[1]);
             reader.onerror = error => reject(error);
         });
     }
 
 </script>
+
+
+            <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        debugger;
+        const pictureInput = document.getElementById('PictureUrl');
+        const profileImage = document.querySelector('.img-account-profile2');
+
+        pictureInput.addEventListener('change', function (event) {
+            if (event.target.files && event.target.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    profileImage.src = e.target.result;
+                };
+
+                reader.readAsDataURL(event.target.files[0]);
+            }
+        });
+    });
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+    const pictureInput = document.getElementById('PictureUrl');
+    const profileImage = document.querySelector('.img-account-profile2');
+
+    pictureInput.addEventListener('change', function(event) {
+        if (event.target.files && event.target.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function(e) {
+                profileImage.src = e.target.result;
+            };
+
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    });
+});
+
+            </script>
