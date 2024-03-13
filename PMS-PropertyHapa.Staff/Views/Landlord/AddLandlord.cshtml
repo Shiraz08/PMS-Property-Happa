@@ -89,9 +89,9 @@
                                                 <label for="Gender" class="form-label">Gender</label>
                                                 <select class="form-control" id="Gender" name="Gender" required>
                                                     <option value="">Select Gender</option>
-                                                    <option value="Male" @(Model?.Gender == "Male" ? "selected" : "")>Male</option>
-                                                    <option value="Female" @(Model?.Gender == "Female" ? "selected" : "")>Female</option>
-                                                    <option value="Other" @(Model?.Gender == "Other" ? "selected" : "")>Other</option>
+                                                    <option value="Male">Male</option>
+                                                    <option value="Female">Female</option>
+                                                    <option value="Other" >Other</option>
                                                 </select>
 
                                             </div>
@@ -239,11 +239,7 @@
                                             <div class="mb-3">
                                                 <label for="Country">Country</label>
                                                 <select class="form-control" id="Country" name="Country">
-                                                    <option value="">Select Country</option>
-                                                    <option value="Germany" @(Model?.Country == "Germany" ? "selected" : "")>Germany</option>
-                                                    <option value="Canada" @(Model?.Country == "Canada" ? "selected" : "")>Canada</option>
-                                                    <option value="USA" @(Model?.Country == "USA" ? "selected" : "")>USA</option>
-                                                    <option value="Australia" @(Model?.Country == "Australia" ? "selected" : "")>Australia</option>
+                                                    <option value="Germany">Germany</option>
                                                 </select>
                                             </div>
                                         </div>

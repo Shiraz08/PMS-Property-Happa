@@ -9,6 +9,7 @@ using System.Linq;
 using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace PMS_PropertyHapa.MigrationsFiles.Data
 {
@@ -30,8 +31,12 @@ namespace PMS_PropertyHapa.MigrationsFiles.Data
         public DbSet<PropertyType> PropertyType { get; set; }
         public DbSet<PropertySubType> PropertySubType { get; set; }
         public DbSet<OwnerOrganization> OwnerOrganization { get; set; }
+        public DbSet<Pets> Pets { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Tenant>()
+        .HasMany(c => c.Pets)
+        .WithOne(e => e.Tenant);
             base.OnModelCreating(modelBuilder);
         }
     }
