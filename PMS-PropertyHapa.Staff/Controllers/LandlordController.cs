@@ -136,31 +136,45 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
             return View("AddLandlord", owner);
         }
-        // Download file from the server
-        public async Task<IActionResult> Download(string filename)
+        public async Task<IActionResult> Download(string id)
         {
-            if (filename == null)
-                return Content("filename is not availble");
+            var sessionData = HttpContext.Session.GetString(id);
+            if (string.IsNullOrEmpty(sessionData))
+                return Content("File not available");
 
-            string path = Path.Combine(_environment.WebRootPath, "UploadFiles", filename);
-            var memory = new MemoryStream();
-            using (var stream = new FileStream(path, FileMode.Open))
+            try
             {
-                await stream.CopyToAsync(memory);
+                var parts = sessionData.Split(new[] { '|' }, 2);
+                if (parts.Length < 2)
+                    return Content("Invalid file data");
+
+                var base64String = parts[0];
+                var fileExtension = parts[1]; 
+
+                byte[] fileBytes = Convert.FromBase64String(base64String);
+                var memory = new MemoryStream(fileBytes);
+                memory.Position = 0;
+
+                string contentType = GetContentType(fileExtension);
+
+                string fileName = $"downloadedFile{fileExtension}";
+
+                return File(memory, contentType, fileName);
             }
-            memory.Position = 0;
-            return File(memory, GetContentType(path), Path.GetFileName(path));
+            catch (Exception ex)
+            {
+                return Content($"Error processing your request: {ex.Message}");
+            }
         }
 
-        // Get content type
         private string GetContentType(string path)
         {
             var types = GetMimeTypes();
             var ext = Path.GetExtension(path).ToLowerInvariant();
-            return types[ext];
+            return types.ContainsKey(ext) ? types[ext] : "application/octet-stream";
         }
 
-        // Get mime types
+
         private Dictionary<string, string> GetMimeTypes()
         {
             return new Dictionary<string, string>
@@ -175,11 +189,15 @@ namespace PMS_PropertyHapa.Staff.Controllers
         {".jpg", "image/jpeg"},
         {".jpeg", "image/jpeg"},
         {".gif", "image/gif"},
-        {".csv", "text/csv"}
+        {".csv", "text/csv"},
+        {".bmp", "image/bmp"},
+        {".ico", "image/x-icon"},
+        {".svg", "image/svg+xml"},
+        {".tif", "image/tiff"},
+        {".tiff", "image/tiff"},
+        {".webp", "image/webp"}
     };
         }
-
-
 
     }
 }

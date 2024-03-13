@@ -1335,7 +1335,6 @@ namespace MagicVilla_VillaAPI.Repository
 
             var ownerOrganization = await _db.OwnerOrganization.FirstOrDefaultAsync(o => o.OwnerId == tenantDto.OwnerId);
 
-            if (ownerOrganization == null) return false;
 
             tenant.FirstName = tenantDto.FirstName;
             tenant.MiddleName = tenantDto.MiddleName;
@@ -1377,10 +1376,24 @@ namespace MagicVilla_VillaAPI.Repository
                 ownerOrganization.OrganizationIcon = tenantDto.OrganizationIcon;
                 ownerOrganization.OrganizationLogo = tenantDto.OrganizationLogo;
                 ownerOrganization.Website = tenantDto.Website;
+
+                _db.OwnerOrganization.Update(ownerOrganization);
+            }
+            else
+            { 
+                ownerOrganization = new OwnerOrganization
+                {
+                    OwnerId = (int)tenantDto.OwnerId,
+                    OrganizationName = tenantDto.OrganizationName,
+                    OrganizationDescription = tenantDto.OrganizationDescription,
+                    OrganizationIcon = tenantDto.OrganizationIcon,
+                    OrganizationLogo = tenantDto.OrganizationLogo,
+                    Website = tenantDto.Website
+                };
+                _db.OwnerOrganization.Add(ownerOrganization);
             }
 
             _db.Owner.Update(tenant);
-            _db.OwnerOrganization.Update(ownerOrganization);
 
             var result = await _db.SaveChangesAsync();
             return result > 0;

@@ -1,4 +1,5 @@
 @model PMS_PropertyHapa.Models.DTO.OwnerDto
+@using Microsoft.AspNetCore.Http
 
 @{
     ViewData["Title"] = "Add/Edit Landlord";
@@ -125,21 +126,44 @@
                                                 <label for="OrganizationIconFile" class="form-label">Organization Icon</label>
                                                 <input type="file" class="form-control" id="OrganizationIconFile" name="OrganizationIconFile" accept="image/*">
                                             </div>
-                                        </div>
+                                         @*    @if (!string.IsNullOrEmpty(Model?.OrganizationIcon))
+                                            {
+                                                var organizationIconId = Guid.NewGuid().ToString(); 
+                                                var organizationIconBase64 = Model.OrganizationIcon.Split(",")[1];
+                                                Context.Session.SetString(organizationIconId, organizationIconBase64); 
 
+                                                <p>Current Organization Icon:</p>
+                                           
+                                                <a href="javascript:void(0);" onclick="downloadFile('@organizationIconId')">Download</a>
+                                            } *@
+
+                                        </div>
+                                     
                                         <!-- Organization Logo File Upload (Initially Hidden) -->
                                         <div class="col-sm-6 col-md-3 organization-field" style="display: none;">
                                             <div class="mb-3">
                                                 <label for="OrganizationLogoFile" class="form-label">Organization Logo</label>
                                                 <input type="file" class="form-control" id="OrganizationLogoFile" name="OrganizationLogoFile" accept="image/*">
                                             </div>
+                                          @*   @if (!string.IsNullOrEmpty(Model?.OrganizationLogo))
+                                            {
+                                                var organizationLogoId = Guid.NewGuid().ToString(); 
+                                                var organizationLogoBase64 = Model.OrganizationLogo.Split(",")[1];
+                                                Context.Session.SetString(organizationLogoId, organizationLogoBase64); 
+
+                                                <p>Current Organization Logo:</p>
+                                           
+                                               <p></p> <a href="javascript:void(0);" onclick="downloadFile('@organizationLogoId')">Download</a>
+                                            } *@
+
                                         </div>
+                                     
 
                                         <!-- Website (Initially Hidden) -->
                                         <div class="col-sm-6 col-md-3 organization-field" style="display: none;">
                                             <div class="mb-3">
                                                 <label for="Website" class="form-label">Website</label>
-                                                <input type="text" class="form-control" id="Website" value="@Model?.Website" name="Website">
+                                                <input type="url" class="form-control" id="Website" required value="@Model?.Website" name="Website" pattern="https?://.+\.com" title="Please enter a valid URL. For example, http://www.example.com">
                                             </div>
                                         </div>
 
@@ -156,7 +180,7 @@
                                         <div class="col-sm-6 col-md-3">
                                             <div class="mb-3">
                                                 <label for="EmailAddress" class="form-label">Email Address</label>
-                                                <input type="email" class="form-control" id="EmailAddress" name="EmailAddress" value="@Model?.EmailAddress" required />
+                                                <input type="email" class="form-control" id="EmailAddress" pattern="[a-zA-Z0-9._%+-]+@@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$" title="Please enter a valid email address." name="EmailAddress" value="@Model?.EmailAddress" required />
                                                 <small class="text-success" id="addAnotherEmail" onclick="toggleEmailField()" style="cursor: pointer;">
                                                     <i class="bi bi-plus-circle"></i> Add another email  +
                                                 </small>
@@ -167,7 +191,7 @@
                                         <div class="col-sm-6 col-md-3" id="additionalEmailField" style="display: none;">
                                             <div class="mb-3">
                                                 <label for="EmailAddress2" class="form-label">Email Address2</label>
-                                                <input type="email" class="form-control" id="EmailAddress2" value="@Model?.EmailAddress2"  name="EmailAddress2" required />
+                                                <input type="email" class="form-control" id="EmailAddress2" pattern="[a-zA-Z0-9._%+-]+@@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$" title="Please enter a valid email address." value="@Model?.EmailAddress2" name="EmailAddress2" required />
                                             </div>
                                         </div>
 
@@ -175,7 +199,7 @@
                                         <div class="col-sm-6 col-md-3">
                                             <div class="mb-3">
                                                 <label for="PhoneNumber" class="form-label">Phone Number</label>
-                                                <input type="text" class="form-control" id="PhoneNumber" name="PhoneNumber" value="@Model?.PhoneNumber" required oninput="validateNumberInput(this)" />
+                                                <input type="text" class="form-control" id="PhoneNumber" name="PhoneNumber" value="@Model?.PhoneNumber" required pattern="\(\d{3}\) \d{3}-\d{4}" title="Please enter a valid phone number in the format (123) 456-7890." oninput="validateNumberInput(this)" />
                                                 <small class="text-success" id="addAnotherPhone" onclick="togglePhoneField()" style="cursor: pointer;">
                                                     <i class="bi bi-plus-circle"></i> Add another phone  +
                                                 </small>
@@ -186,7 +210,7 @@
                                         <div class="col-sm-6 col-md-3" id="additionalPhoneField" style="display: none;">
                                             <div class="mb-3">
                                                 <label for="PhoneNumber2" class="form-label">Phone Number2</label>
-                                                <input type="text" class="form-control" id="PhoneNumber2" name="PhoneNumber2" value="@Model?.PhoneNumber2" required oninput="validateNumberInput(this)" />
+                                                <input type="text" class="form-control" id="PhoneNumber2" name="PhoneNumber2" value="@Model?.PhoneNumber2" required pattern="\(\d{3}\) \d{3}-\d{4}" title="Please enter a valid phone number in the format (123) 456-7890." oninput="validateNumberInput(this)" />
                                             </div>
                                         </div>
 
@@ -207,7 +231,10 @@
                                         <div class="col-sm-6 col-md-3">
                                             <div class="mb-3">
                                                 <label for="Address">Address</label>
-                                                <input type="text" class="form-control" id="Address" name="Address" value="@Model?.Address" />
+                                                <input type="text" class="form-control" id="Address" name="Address" value="@Model?.Address" required maxlength="255" title="Address cannot be empty and must be shorter than 255 characters." />
+                                                <div class="invalid-feedback">
+                                                    Please provide a valid address.
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="col-sm-6 col-md-3">
@@ -268,14 +295,17 @@
                                                 <input type="file" class="form-control" id="DocumentFile" name="DocumentFile" accept=".pdf,.xls,.xlsx,.doc,.docx" />
                                             </div>
                                         </div>
-                                        @if (!string.IsNullOrEmpty(Model?.Document))
+                                    @*     @if (!string.IsNullOrEmpty(Model?.Document))
                                         {
+                                            var documentId = Guid.NewGuid().ToString();
+                                         
+                                            Context.Session.SetString(documentId, Model?.Document); 
+
                                             <div class="mb-3">
                                                 <label>Current Document:</label>
-                                                <a href="javascript:void(0);" onclick="downloadFile('@Model.Document')">Download Document</a>
+                                                <a href="javascript:void(0);" onclick="downloadFile('@documentId')">Download</a>
                                             </div>
-                                        }
-
+                                        } *@
                                         <br />
                                         <hr />
                                         <br />
@@ -324,18 +354,86 @@
             additionalEmailField.style.display = additionalEmailField.style.display === "none" ? "block" : "none";
         };
 
+         function validateEmail(email) {
+        const pattern = /^[a-zA-Z0-9._%+-]+@@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+        return pattern.test(email);
+    }
 
+    function validatePhoneNumber(phoneNumber) {
+        const pattern = /^\(\d{3}\) \d{3}-\d{4}$/;
+        return pattern.test(phoneNumber);
+    }
 
-        // function toggleEmailField() {
-        //     var primaryEmail = $("#EmailAddress").val();
-        //     var additionalEmail = $("#EmailAddress2").val();
-        //     var emailRegex = /^[a-zA-Z0-9._%+-]+&#64;[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-        // }
+    function validateWebsite(website) {
+        const pattern = /^https?:\/\/[^\s$.?#].[^\s]*$/;
+        return pattern.test(website);
+    }
+
+    function validateAddress(address) {
+        // Basic validation for non-empty address. Adjust according to your needs
+        return address.trim().length > 0;
+    }
+
+    // Show error message
+    function showError(input, message) {
+        const formControl = input.parentElement;
+        formControl.className = 'form-control error';
+        const small = formControl.querySelector('small');
+        small.innerText = message;
+    }
+
+    // Clear error message
+    function clearError(input) {
+        const formControl = input.parentElement;
+        formControl.className = 'form-control';
+        const small = formControl.querySelector('small');
+        small.innerText = '';
+    }
+
+    // Individual field validators
+    function validateField(field, validatorFunc, errorMessage) {
+        if (!validatorFunc(field.value)) {
+            showError(field, errorMessage);
+            return false;
+        } else {
+            clearError(field);
+            return true;
+        }
+    }
+
+    // Collect input elements
+    const emailAddress = document.getElementById('EmailAddress');
+    const emailAddress2 = document.getElementById('EmailAddress2');
+    const phoneNumber = document.getElementById('PhoneNumber');
+    const phoneNumber2 = document.getElementById('PhoneNumber2');
+    const website = document.getElementById('Website');
+    const address = document.getElementById('Address');
+
+        function checkValidationsAndSubmit() {
+            const isEmailAddressValid = validateField(emailAddress, validateEmail, 'Please enter a valid email address.');
+            const isEmailAddress2Valid = validateField(emailAddress2, validateEmail, 'Please enter a valid email address.');
+            const isPhoneNumberValid = validateField(phoneNumber, validatePhoneNumber, 'Please enter a valid phone number.');
+            const isPhoneNumber2Valid = validateField(phoneNumber2, validatePhoneNumber, 'Please enter a valid phone number.');
+            const isWebsiteValid = validateField(website, validateWebsite, 'Please enter a valid website URL.');
+            const isAddressValid = validateField(address, validateAddress, 'Address cannot be empty.');
+
+            if (isEmailAddressValid && isEmailAddress2Valid && isPhoneNumberValid && isPhoneNumber2Valid && isWebsiteValid && isAddressValid) {
+                
+                submitTenantForm();
+            } else {
+                console.error("Validation errors present. Cannot submit form.");
+            }
+        }
+
 
         const saveButton = document.getElementById('saveButton');
         if (saveButton) {
-            saveButton.addEventListener('click', submitTenantForm);
+            saveButton.addEventListener('click', function (event) {
+                event.preventDefault();
+                checkValidationsAndSubmit();
+            });
         }
+
     });
 
     async function submitTenantForm(event) {
@@ -421,32 +519,14 @@
             }
         });
     });
-
-
-    document.addEventListener('DOMContentLoaded', function () {
-        const pictureInput = document.getElementById('PictureUrl');
-        const profileImage = document.querySelector('.img-account-profile2');
-
-        pictureInput.addEventListener('change', function (event) {
-            if (event.target.files && event.target.files[0]) {
-                var reader = new FileReader();
-
-                reader.onload = function (e) {
-                    profileImage.src = e.target.result;
-                };
-
-                reader.readAsDataURL(event.target.files[0]);
-            }
-        });
-    });
-
+    
 
     document.addEventListener('DOMContentLoaded', function () {
     var gender = '@Model?.Gender';
     if (gender) {
         document.getElementById("Gender").value = gender;
     }
-});
+    });
 
 
 
@@ -455,10 +535,12 @@
         if (country) {
             document.getElementById("Country").value = country;
         }
+        }
     });
 
-    function downloadFile(fileUrl) {
-        window.location.href = fileUrl;
+
+    function downloadFile(id) {
+        window.location.href = '/Landlord/Download?id=' + id;
     }
 
 </script>
