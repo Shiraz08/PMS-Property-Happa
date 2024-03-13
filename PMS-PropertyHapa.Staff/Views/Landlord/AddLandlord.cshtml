@@ -89,11 +89,10 @@
                                                 <label for="Gender" class="form-label">Gender</label>
                                                 <select class="form-control" id="Gender" name="Gender" required>
                                                     <option value="">Select Gender</option>
-                                                    <option value="Male" @(Model?.Gender == "Male" ? "selected" : "")>Male</option>
-                                                    <option value="Female" @(Model?.Gender == "Female" ? "selected" : "")>Female</option>
-                                                    <option value="Other" @(Model?.Gender == "Other" ? "selected" : "")>Other</option>
+                                                    <option value="Male">Male</option>
+                                                    <option value="Female">Female</option>
+                                                    <option value="Other">Other</option>
                                                 </select>
-
                                             </div>
                                         </div>
                                         <div class="col-sm-6 col-md-3">
@@ -168,7 +167,7 @@
                                         <div class="col-sm-6 col-md-3" id="additionalEmailField" style="display: none;">
                                             <div class="mb-3">
                                                 <label for="EmailAddress2" class="form-label">Email Address2</label>
-                                                <input type="email" class="form-control" id="EmailAddress2" name="EmailAddress2" required />
+                                                <input type="email" class="form-control" id="EmailAddress2" value="@Model?.EmailAddress2"  name="EmailAddress2" required />
                                             </div>
                                         </div>
 
@@ -187,7 +186,7 @@
                                         <div class="col-sm-6 col-md-3" id="additionalPhoneField" style="display: none;">
                                             <div class="mb-3">
                                                 <label for="PhoneNumber2" class="form-label">Phone Number2</label>
-                                                <input type="text" class="form-control" id="PhoneNumber2" name="PhoneNumber2" required oninput="validateNumberInput(this)" />
+                                                <input type="text" class="form-control" id="PhoneNumber2" name="PhoneNumber2" value="@Model?.PhoneNumber2" required oninput="validateNumberInput(this)" />
                                             </div>
                                         </div>
 
@@ -196,7 +195,7 @@
                                         <div class="col-sm-6 col-md-3">
                                             <div class="mb-3">
                                                 <label for="Fax" class="form-label">Fax</label>
-                                                <input type="text" class="form-control" id="Fax" name="Fax" value="@Model?.Fax" required />
+                                                <input type="text" class="form-control" id="Fax" name="Fax" value="@Model?.Fax" value="@Model?.Fax" required />
                                             </div>
                                         </div>
                                     </div>
@@ -240,10 +239,10 @@
                                                 <label for="Country">Country</label>
                                                 <select class="form-control" id="Country" name="Country">
                                                     <option value="">Select Country</option>
-                                                    <option value="Germany" @(Model?.Country == "Germany" ? "selected" : "")>Germany</option>
-                                                    <option value="Canada" @(Model?.Country == "Canada" ? "selected" : "")>Canada</option>
-                                                    <option value="USA" @(Model?.Country == "USA" ? "selected" : "")>USA</option>
-                                                    <option value="Australia" @(Model?.Country == "Australia" ? "selected" : "")>Australia</option>
+                                                    <option value="Germany">Germany</option>
+                                                    <option value="Canada">Canada</option>
+                                                    <option value="USA">USA</option>
+                                                    <option value="Australia">Australia</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -269,6 +268,13 @@
                                                 <input type="file" class="form-control" id="DocumentFile" name="DocumentFile" accept=".pdf,.xls,.xlsx,.doc,.docx" />
                                             </div>
                                         </div>
+                                        @if (!string.IsNullOrEmpty(Model?.Document))
+                                        {
+                                            <div class="mb-3">
+                                                <label>Current Document:</label>
+                                                <a href="javascript:void(0);" onclick="downloadFile('@Model.Document')">Download Document</a>
+                                            </div>
+                                        }
 
                                         <br />
                                         <hr />
@@ -291,11 +297,7 @@
 
 
 <script>
-     function stringToGuid(str) {
-        return str.substring(0, 8) + '-' + str.substring(8, 12) + '-' + str.substring(12, 16) + '-' + str.substring(16, 20) + '-' + str.substring(20);
-    }
-
-
+   
     document.addEventListener('DOMContentLoaded', function () {
 
         const toggleCheckbox = document.getElementById('toggleOrgInfo');
@@ -401,7 +403,7 @@
 </script>
 
 
-            <script>
+<script>
     document.addEventListener('DOMContentLoaded', function () {
         debugger;
         const pictureInput = document.getElementById('PictureUrl');
@@ -421,21 +423,42 @@
     });
 
 
-    document.addEventListener('DOMContentLoaded', function() {
-    const pictureInput = document.getElementById('PictureUrl');
-    const profileImage = document.querySelector('.img-account-profile2');
+    document.addEventListener('DOMContentLoaded', function () {
+        const pictureInput = document.getElementById('PictureUrl');
+        const profileImage = document.querySelector('.img-account-profile2');
 
-    pictureInput.addEventListener('change', function(event) {
-        if (event.target.files && event.target.files[0]) {
-            var reader = new FileReader();
+        pictureInput.addEventListener('change', function (event) {
+            if (event.target.files && event.target.files[0]) {
+                var reader = new FileReader();
 
-            reader.onload = function(e) {
-                profileImage.src = e.target.result;
-            };
+                reader.onload = function (e) {
+                    profileImage.src = e.target.result;
+                };
 
-            reader.readAsDataURL(event.target.files[0]);
-        }
+                reader.readAsDataURL(event.target.files[0]);
+            }
+        });
     });
+
+
+    document.addEventListener('DOMContentLoaded', function () {
+    var gender = '@Model?.Gender';
+    if (gender) {
+        document.getElementById("Gender").value = gender;
+    }
 });
 
-            </script>
+
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var country = '@Model?.Country';
+        if (country) {
+            document.getElementById("Country").value = country;
+        }
+    });
+
+    function downloadFile(fileUrl) {
+        window.location.href = fileUrl;
+    }
+
+</script>
