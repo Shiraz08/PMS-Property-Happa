@@ -64,10 +64,10 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
-                                        <input type="hidden" id="DocumentBase64" name="Document" value="@Model?.Document">
-                                        <input type="hidden" id="PictureBase64" name="Picture" value="@Model?.Picture">
-                                        <input type="hidden" id="OrganizationLogoBase64" name="OrganizationLogo" value="@Model?.OrganizationLogo">
-                                        <input type="hidden" id="OrganizationIconBase64" name="OrganizationIcon" value="@Model?.OrganizationIcon">
+                                        <input type="hidden" id="DocumentBase64" name="Document" >
+                                        <input type="hidden" id="PictureBase64" name="Picture">
+                                        <input type="hidden" id="OrganizationLogoBase64" name="OrganizationLogo">
+                                        <input type="hidden" id="OrganizationIconBase64" name="OrganizationIcon">
                                         <input type="hidden" id="OwnerId" name="OwnerId" value="@Model?.OwnerId" />
                                         <!-- First Name -->
                                         <div class="col-sm-6 col-md-3">
@@ -205,7 +205,7 @@
                                         <div class="col-sm-6 col-md-3">
                                             <div class="mb-3">
                                                 <label for="PhoneNumber" class="form-label">Phone Number</label>
-                                                <input type="text" class="form-control" id="PhoneNumber" name="PhoneNumber" value="@Model?.PhoneNumber" required pattern="/^\(\d{3}\)\d{7}$/" title="Please enter a valid phone number in the format (123) 456-7890." oninput="validateNumberInput(this)" />
+                                                <input type="text" class="form-control" id="PhoneNumber" name="PhoneNumber" value="@Model?.PhoneNumber" required pattern="/^\(\d{3}\)\d{7}$/" title="Please enter a valid phone number in the format (123)4567890." oninput="validateNumberInput(this)" />
                                                 <small class="text-success" id="addAnotherPhone" onclick="togglePhoneField()" style="cursor: pointer;">
                                                     <i class="bi bi-plus-circle"></i> Add another phone  +
                                                 </small>
@@ -216,7 +216,7 @@
                                         <div class="col-sm-6 col-md-3" id="additionalPhoneField" style="display: none;">
                                             <div class="mb-3">
                                                 <label for="PhoneNumber2" class="form-label">Phone Number2</label>
-                                                <input type="text" class="form-control" id="PhoneNumber2" name="PhoneNumber2" value="@Model?.PhoneNumber2" required pattern="/^\(\d{3}\)\d{7}$/" title="Please enter a valid phone number in the format (123) 456-7890." oninput="validateNumberInput(this)" />
+                                                <input type="text" class="form-control" id="PhoneNumber2" name="PhoneNumber2" value="@Model?.PhoneNumber2" required pattern="/^\(\d{3}\)\d{7}$/" title="Please enter a valid phone number in the format (123)4567890." oninput="validateNumberInput(this)" />
                                             </div>
                                         </div>
 
@@ -516,7 +516,6 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        debugger;
         const pictureInput = document.getElementById('PictureUrl');
         const profileImage = document.querySelector('.img-account-profile2');
 
@@ -532,6 +531,7 @@
             }
         });
     });
+
     
 
     document.addEventListener('DOMContentLoaded', function () {
