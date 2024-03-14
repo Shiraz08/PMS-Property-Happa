@@ -205,7 +205,7 @@
                                         <div class="col-sm-6 col-md-3">
                                             <div class="mb-3">
                                                 <label for="PhoneNumber" class="form-label">Phone Number</label>
-                                                <input type="text" class="form-control" id="PhoneNumber" name="PhoneNumber" value="@Model?.PhoneNumber" required pattern="\(\d{3}\) \d{3}-\d{4}" title="Please enter a valid phone number in the format (123) 456-7890." oninput="validateNumberInput(this)" />
+                                                <input type="text" class="form-control" id="PhoneNumber" name="PhoneNumber" value="@Model?.PhoneNumber" required pattern="/^\(\d{3}\)\d{7}$/" title="Please enter a valid phone number in the format (123) 456-7890." oninput="validateNumberInput(this)" />
                                                 <small class="text-success" id="addAnotherPhone" onclick="togglePhoneField()" style="cursor: pointer;">
                                                     <i class="bi bi-plus-circle"></i> Add another phone  +
                                                 </small>
@@ -216,7 +216,7 @@
                                         <div class="col-sm-6 col-md-3" id="additionalPhoneField" style="display: none;">
                                             <div class="mb-3">
                                                 <label for="PhoneNumber2" class="form-label">Phone Number2</label>
-                                                <input type="text" class="form-control" id="PhoneNumber2" name="PhoneNumber2" value="@Model?.PhoneNumber2" required pattern="\(\d{3}\) \d{3}-\d{4}" title="Please enter a valid phone number in the format (123) 456-7890." oninput="validateNumberInput(this)" />
+                                                <input type="text" class="form-control" id="PhoneNumber2" name="PhoneNumber2" value="@Model?.PhoneNumber2" required pattern="/^\(\d{3}\)\d{7}$/" title="Please enter a valid phone number in the format (123) 456-7890." oninput="validateNumberInput(this)" />
                                             </div>
                                         </div>
 
