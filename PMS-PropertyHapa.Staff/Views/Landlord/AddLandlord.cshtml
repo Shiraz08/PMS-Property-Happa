@@ -64,10 +64,10 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
-                                        <input type="hidden" id="DocumentBase64" name="Document">
-                                        <input type="hidden" id="PictureBase64" name="Picture">
-                                        <input type="hidden" id="OrganizationLogoBase64" name="OrganizationLogo">
-                                        <input type="hidden" id="OrganizationIconBase64" name="OrganizationIcon">
+                                        <input type="hidden" id="DocumentBase64" name="Document" value="@Model?.Document">
+                                        <input type="hidden" id="PictureBase64" name="Picture" value="@Model?.Picture">
+                                        <input type="hidden" id="OrganizationLogoBase64" name="OrganizationLogo" value="@Model?.OrganizationLogo">
+                                        <input type="hidden" id="OrganizationIconBase64" name="OrganizationIcon" value="@Model?.OrganizationIcon">
                                         <input type="hidden" id="OwnerId" name="OwnerId" value="@Model?.OwnerId" />
                                         <!-- First Name -->
                                         <div class="col-sm-6 col-md-3">
@@ -437,7 +437,7 @@
 
             if (isEmailAddressValid && isEmailAddress2Valid && isPhoneNumberValid && isPhoneNumber2Valid && isWebsiteValid && isAddressValid) {
                 
-                submitTenantForm();
+                submitTenantForm(event);
             } else {
                 console.error("Validation errors present. Cannot submit form.");
             }
@@ -456,11 +456,6 @@
 
     async function submitTenantForm(event) {
         debugger;
-        event.preventDefault();
-
-
-
-
         const fileInputs = {
             'DocumentFile': 'DocumentBase64',
             'PictureUrl': 'PictureBase64',
