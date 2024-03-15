@@ -64,5 +64,6 @@ namespace PMS_PropertyHapa.Models.Entities
         public string EmergencyRelation { get; set; }
         public string EmergencyDetails { get; set; }
         public ICollection<Pets> Pets { get; set; }
+        public ICollection<Vehicle> Vehicle { get; set; }
     }
 }
