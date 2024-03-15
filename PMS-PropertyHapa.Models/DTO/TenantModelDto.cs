@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using PMS_PropertyHapa.Models.Entities;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -39,6 +41,40 @@ namespace PMS_PropertyHapa.Models.DTO
         public string PostalCode { get; set; }
         public string Country { get; set; }
         public string CountryCode { get; set; }
+
+
+        public string MiddleName { get; set; }
+        public string EmailAddress2 { get; set; }
+        public string Picture { get; set; }
+        public IFormFile PictureUrl { get; set; }
+        public string Document { get; set; }
+        public string PhoneNumber2 { get; set; }
+        public string EmergencyName { get; set; }
+        public string EmergencyEmailAddress { get; set; }
+        public string EmergencyRelation { get; set; }
+        public string EmergencyDetails { get; set; }
+
+        public List<PetDto> Pets { get; set; } = new List<PetDto>();
+
+        public class PetDto
+        {
+            public int PetId { get; set; }
+            public int TenantId { get; set; }
+            public string Picture { get; set; }
+            public string Name { get; set; }
+            public string Breed { get; set; }
+            public string Type { get; set; }
+            public int Quantity { get; set; }
+            public string TenantName { get; set; }
+
+            public Guid AppTenantId { get; set; }
+            public bool Status { get; set; }
+            public bool IsDeleted { get; set; }
+            public DateTime AddedDate { get; set; }
+            public string AddedBy { get; set; }
+            public DateTime ModifiedDate { get; set; }
+            public string ModifiedBy { get; set; }
+        }
 
     }
 }

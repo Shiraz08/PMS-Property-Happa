@@ -54,18 +54,36 @@ namespace PMS_PropertyHapa.Staff.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] TenantModelDto tenant)
         {
-            tenant.AppTenantId = Guid.Parse(tenant.AppTid);
+            if (!Guid.TryParse(tenant.AppTid, out Guid appTenantId))
+            {
+                return Json(new { success = false, message = "Invalid AppTid format" });
+            }
+            tenant.AppTenantId = appTenantId;
+
+            if (tenant.Picture != null)
+            {
+                tenant.Picture = $"data:image/png;base64,{tenant.Picture}";
+            }
+
             await _authService.CreateTenantAsync(tenant);
             return Json(new { success = true, message = "Tenant added successfully" });
         }
+
 
         [HttpPost]
         public async Task<IActionResult> Update([FromBody] TenantModelDto tenant)
         {
             tenant.AppTenantId = Guid.Parse(tenant.AppTid);
+
+            if (tenant.Picture != null)
+            {
+                tenant.Picture = $"data:image/png;base64,{tenant.Picture}";
+            }
+
             await _authService.UpdateTenantAsync(tenant);
             return Json(new { success = true, message = "Tenant updated successfully" });
         }
+
 
 
         [HttpDelete]

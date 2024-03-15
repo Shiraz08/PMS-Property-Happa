@@ -10,6 +10,7 @@ using PMS_PropertyHapa.Models;
 using PMS_PropertyHapa.Models.DTO;
 using PMS_PropertyHapa.Models.Entities;
 using PMS_PropertyHapa.Models.Roles;
+using System.Drawing;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -1106,19 +1107,25 @@ namespace MagicVilla_VillaAPI.Repository
 
         public async Task<bool> CreateTenantAsync(TenantModelDto tenantDto)
         {
+           
             var newTenant = new Tenant
             {
                 FirstName = tenantDto.FirstName,
                 LastName = tenantDto.LastName,
+                MiddleName = tenantDto.MiddleName,
                 EmailAddress = tenantDto.EmailAddress,
+                EmailAddress2 = tenantDto.EmailAddress2,
                 PhoneNumber = tenantDto.PhoneNumber,
+                PhoneNumber2 = tenantDto.PhoneNumber2,
                 EmergencyContactInfo = tenantDto.EmergencyContactInfo,
-                LeaseAgreementId = tenantDto.LeaseAgreementId,
+                EmergencyName = tenantDto.EmergencyName,
+                EmergencyEmailAddress = tenantDto.EmergencyEmailAddress,
+                EmergencyRelation = tenantDto.EmergencyRelation,
+                EmergencyDetails = tenantDto.EmergencyDetails,
                 TenantNationality = tenantDto.TenantNationality,
                 Gender = tenantDto.Gender,
                 DOB = tenantDto.DOB,
                 VAT = tenantDto.VAT,
-                Status = true,
                 LegalName = tenantDto.LegalName,
                 Account_Name = tenantDto.Account_Name,
                 Account_Holder = tenantDto.Account_Holder,
@@ -1126,21 +1133,40 @@ namespace MagicVilla_VillaAPI.Repository
                 Account_Swift = tenantDto.Account_Swift,
                 Account_Bank = tenantDto.Account_Bank,
                 Account_Currency = tenantDto.Account_Currency,
-                AppTenantId = tenantDto.AppTenantId,
                 Address = tenantDto.Address,
                 Address2 = tenantDto.Address2,
                 Locality = tenantDto.Locality,
+                District = tenantDto.District,
                 Region = tenantDto.Region,
                 PostalCode = tenantDto.PostalCode,
                 Country = tenantDto.Country,
-                CountryCode = tenantDto.CountryCode
+                CountryCode = tenantDto.CountryCode,
+                AppTenantId = tenantDto.AppTenantId,
+                Picture = tenantDto.Picture,
+                Document = tenantDto.Document
             };
 
-            await _db.Tenant.AddAsync(newTenant);
+            _db.Tenant.Add(newTenant);
+            await _db.SaveChangesAsync();
 
-            var result = await _db.SaveChangesAsync();
+            foreach (var petDto in tenantDto.Pets)
+            {
+                var pet = new Pets
+                {
+                    TenantId = newTenant.TenantId, 
+                    Name = petDto.Name,
+                    Breed = petDto.Breed,
+                    Type = petDto.Type,
+                    Quantity = petDto.Quantity,
+                    Picture = petDto.Picture, 
+                };
 
-            return result > 0;
+                _db.Pets.Add(pet);
+            }
+
+            await _db.SaveChangesAsync();
+
+            return true; 
         }
 
 
