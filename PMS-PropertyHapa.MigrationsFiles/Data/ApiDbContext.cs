@@ -32,11 +32,20 @@ namespace PMS_PropertyHapa.MigrationsFiles.Data
         public DbSet<PropertySubType> PropertySubType { get; set; }
         public DbSet<OwnerOrganization> OwnerOrganization { get; set; }
         public DbSet<Pets> Pets { get; set; }
+
+        public DbSet<Vehicle> Vehicle { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Tenant>()
-        .HasMany(c => c.Pets)
-        .WithOne(e => e.Tenant);
+                .HasMany(c => c.Pets) // Ensure your Tenant entity has a collection property named Pets
+                .WithOne(e => e.Tenant) // Ensure your Pet entity has a navigation property named Tenant
+                .HasForeignKey(e => e.TenantId); // This line assumes your Pet entity has a foreign key property named TenantId
+
+            modelBuilder.Entity<Tenant>()
+                .HasMany(c => c.Vehicle)
+                .WithOne(e => e.Tenant) 
+                .HasForeignKey(e => e.TenantId);
+
             base.OnModelCreating(modelBuilder);
         }
     }

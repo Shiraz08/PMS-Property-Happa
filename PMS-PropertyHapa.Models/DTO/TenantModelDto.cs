@@ -16,7 +16,11 @@ namespace PMS_PropertyHapa.Models.DTO
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public string? EmailAddress { get; set; }
+
+        public string EmailAddress2 { get; set; }
         public string? PhoneNumber { get; set; }
+
+        public string PhoneNumber2 { get; set; }
         public string? EmergencyContactInfo { get; set; }
         public int? LeaseAgreementId { get; set; }
         public string? TenantNationality { get; set; }
@@ -35,6 +39,8 @@ namespace PMS_PropertyHapa.Models.DTO
         public string AppTid { get; set; }
         public string Address { get; set; }
         public string Address2 { get; set; }
+
+        public string Unit { get; set; }
         public string Locality { get; set; }
         public string District { get; set; }
         public string Region { get; set; }
@@ -44,11 +50,11 @@ namespace PMS_PropertyHapa.Models.DTO
 
 
         public string MiddleName { get; set; }
-        public string EmailAddress2 { get; set; }
         public string Picture { get; set; }
         public IFormFile PictureUrl { get; set; }
         public string Document { get; set; }
-        public string PhoneNumber2 { get; set; }
+
+        public IFormFile DocumentUrl { get; set; }
         public string EmergencyName { get; set; }
         public string EmergencyEmailAddress { get; set; }
         public string EmergencyRelation { get; set; }
@@ -61,6 +67,8 @@ namespace PMS_PropertyHapa.Models.DTO
             public int PetId { get; set; }
             public int TenantId { get; set; }
             public string Picture { get; set; }
+
+            public IFormFile PictureUrl2 { get; set; }
             public string Name { get; set; }
             public string Breed { get; set; }
             public string Type { get; set; }
@@ -76,5 +84,17 @@ namespace PMS_PropertyHapa.Models.DTO
             public string ModifiedBy { get; set; }
         }
 
+        public List<VehicleDto> Vehicles { get; set; } = new List<VehicleDto>();
+
+        public class VehicleDto
+        {
+            public int VehicleId { get; set; }
+            public int TenantId { get; set; }
+            public string Manufacturer { get; set; }
+            public string ModelName { get; set; }
+            public string ModelVariant { get; set; }
+            public string Engine { get; set; }
+            public string Year { get; set; }
+        }
     }
 }

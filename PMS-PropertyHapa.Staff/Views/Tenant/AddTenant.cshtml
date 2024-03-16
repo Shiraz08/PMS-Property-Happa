@@ -6,10 +6,18 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <head>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.7.2/font/bootstrap-icons.min.css" rel="stylesheet">
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 </head>
 <div class="page-body">
     <div class="container-fluid">
@@ -47,10 +55,10 @@
                                 <div class="card-body text-center">
                                     <input type="hidden" value="image" name="SaveType" id="SaveType" />
                                     <img class="img-account-profile2 rounded-circle mb-2"
-                                         src="@(string.IsNullOrEmpty(Model?.Picture) ? "http://bootdey.com/img/Content/avatar/avatar1.png" : $"{Model?.Picture}")"
+                                         src="@(string.IsNullOrEmpty(Model?.Picture) ? "https://bootdey.com/img/Content/avatar/avatar1.png" : $"{Model?.Picture}")"
                                          alt="" style="width: 140px;">
                                     <div class="font-italic text-muted mb-4"></div>
-                                    @Html.EditorFor(model => model.Picture, new { htmlAttributes = new {  @id="PictureUrl",@class = "btn btn-primary", @type="file", @accept="image/*", @required="required", @style="width: 219px;"} })
+                                    @Html.EditorFor(model => model.PictureUrl, new { htmlAttributes = new {  @id="PictureUrl",@class = "btn btn-primary", @type="file", @accept="image/*", @required="required", @style="width: 219px;"} })
                                 </div>
                             </div>
 
@@ -66,14 +74,12 @@
                                     <div class="row">
                                         <input type="hidden" id="DocumentBase64" name="Document">
                                         <input type="hidden" id="PictureBase64" name="Picture">
-                                        <input type="hidden" id="OrganizationLogoBase64" name="OrganizationLogo">
-                                        <input type="hidden" id="OrganizationIconBase64" name="OrganizationIcon">
-                                        <input type="hidden" id="OwnerId" name="OwnerId" value="@Model?.TenantId" />
+                                        <input type="hidden" id="TenantId" name="TenantId" value="@Model?.TenantId" />
                                         <!-- First Name -->
                                         <div class="col-sm-6 col-md-3">
                                             <div class="mb-3">
                                                 <label for="FirstName" class="form-label">First Name</label>
-                                                <input type="text" class="form-control" id="FirstName" name="FirstName" value="@Model?.FirstName" pattern="[A-Za-z]+" required />
+                                                <input type="text" class="form-control" id="FirstName" name="FirstName" placeholder="Enter first name" value="@Model?.FirstName" pattern="[A-Za-z]+" required />
                                             </div>
                                         </div>
 
@@ -81,14 +87,14 @@
                                         <div class="col-sm-6 col-md-3">
                                             <div class="mb-3">
                                                 <label for="MiddleName" class="form-label">Middle Name</label>
-                                                <input type="text" class="form-control" id="MiddleName" name="MiddleName" value="@Model?.MiddleName" pattern="[A-Za-z]+" required />
+                                                <input type="text" class="form-control" id="MiddleName" name="MiddleName" placeholder="Enter middle name" value="@Model?.MiddleName" pattern="[A-Za-z]+" required />
                                             </div>
                                         </div>
                                         <!-- Last Name -->
                                         <div class="col-sm-6 col-md-3">
                                             <div class="mb-3">
                                                 <label for="LastName" class="form-label">Last Name</label>
-                                                <input type="text" class="form-control" id="LastName" name="LastName" value="@Model?.LastName" pattern="[A-Za-z]+" required />
+                                                <input type="text" class="form-control" id="LastName" name="LastName" placeholder="Enter last name" value="@Model?.LastName" pattern="[A-Za-z]+" required />
                                             </div>
                                         </div>
                                         <!-- Gender -->
@@ -107,16 +113,16 @@
                                         <div class="col-sm-6 col-md-3">
                                             <div class="mb-3">
                                                 <label for="DOB" class="form-label">Date of Birth</label>
-                                                <input type="date" class="form-control" id="DOB" name="DOB" value="@Model.DOB" />
+                                                <input type="date" class="form-control" id="DOB" name="DOB" value="@Model?.DOB" />
                                             </div>
                                         </div>
                                         <!-- Phone Number -->
                                         <div class="col-sm-6 col-md-3">
                                             <div class="mb-3">
                                                 <label for="PhoneNumber" class="form-label">Phone Number</label>
-                                                <input type="text" class="form-control" id="PhoneNumber" name="PhoneNumber" value="@Model?.PhoneNumber" required pattern="/^\(\d{3}\)\d{7}$/" title="Please enter a valid phone number in the format (123)4567890." oninput="validateNumberInput(this)" />
+                                                <input type="text" class="form-control" id="PhoneNumber" name="PhoneNumber" value="@Model?.PhoneNumber" required pattern="/^\(\d{3}\)\d{7}$/" placeholder="Enter phone number" title="Please enter a valid phone number in the format (123)4567890." />
                                                 <small class="text-success" id="addAnotherPhone" onclick="togglePhoneField()" style="cursor: pointer;">
-                                                    <i class="bi bi-plus-circle"></i> Add another phone  +
+                                                    <i class="bi bi-plus-circle"></i> Add another phone
                                                 </small>
                                             </div>
                                         </div>
@@ -125,7 +131,7 @@
                                         <div class="col-sm-6 col-md-3" id="additionalPhoneField" style="display: none;">
                                             <div class="mb-3">
                                                 <label for="PhoneNumber2" class="form-label">Phone Number2</label>
-                                                <input type="text" class="form-control" id="PhoneNumber2" name="PhoneNumber2" value="@Model?.PhoneNumber2" pattern="/^\(\d{3}\)\d{7}$/" title="Please enter a valid phone number in the format (123)4567890." oninput="validateNumberInput(this)" />
+                                                <input type="text" class="form-control" id="PhoneNumber2" name="PhoneNumber2" value="@Model?.PhoneNumber2" pattern="/^\(\d{3}\)\d{7}$/" placeholder="Enter another phone number" title="Please enter a valid phone number in the format (123)4567890." />
                                             </div>
                                         </div>
 
@@ -133,9 +139,9 @@
                                         <div class="col-sm-6 col-md-3">
                                             <div class="mb-3">
                                                 <label for="EmailAddress" class="form-label">Email Address</label>
-                                                <input type="email" class="form-control" id="EmailAddress" pattern="[a-zA-Z0-9._%+-]+@@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$" title="Please enter a valid email address." name="EmailAddress" value="@Model?.EmailAddress" required />
+                                                <input type="email" class="form-control" id="EmailAddress" pattern="[a-zA-Z0-9._%+-]+@@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$" placeholder="Enter email" title="Please enter a valid email address." name="EmailAddress" value="@Model?.EmailAddress" required />
                                                 <small class="text-success" id="addAnotherEmail" onclick="toggleEmailField()" style="cursor: pointer;">
-                                                    <i class="bi bi-plus-circle"></i> Add another email  +
+                                                    <i class="bi bi-plus-circle"></i> Add another email
                                                 </small>
                                             </div>
                                         </div>
@@ -144,7 +150,7 @@
                                         <div class="col-sm-6 col-md-3" id="additionalEmailField" style="display: none;">
                                             <div class="mb-3">
                                                 <label for="EmailAddress2" class="form-label">Email Address2</label>
-                                                <input type="email" class="form-control" id="EmailAddress2" pattern="[a-zA-Z0-9._%+-]+@@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$" title="Please enter a valid email address." value="@Model?.EmailAddress2" name="EmailAddress2" />
+                                                <input type="email" class="form-control" id="EmailAddress2" pattern="[a-zA-Z0-9._%+-]+@@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$" placeholder="Enter another email" title="Please enter a valid email address." value="@Model?.EmailAddress2" name="EmailAddress2" />
                                             </div>
                                         </div>
 
@@ -152,7 +158,7 @@
                                         <div class="col-sm-6 col-md-3">
                                             <div class="mb-3">
                                                 <label for="TenantNationality" class="form-label">Tenant Nationality</label>
-                                                <input type="text" class="form-control" id="TenantNationality" name="TenantNationality" value="@Model?.TenantNationality" required />
+                                                <input type="text" class="form-control" id="TenantNationality" name="TenantNationality" placeholder="Enter tenant nationality" value="@Model?.TenantNationality" required />
                                             </div>
                                         </div>
 
@@ -173,8 +179,14 @@
                                         </div>
                                         <div class="col-sm-6 col-md-3">
                                             <div class="mb-3">
-                                                <label for="Address2">Address 2</label>
+                                                <label for="Address2">Address2</label>
                                                 <input type="text" class="form-control" id="Address2" name="Address2" value="@Model?.Address2" />
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 col-md-3">
+                                            <div class="mb-3">
+                                                <label for="Unit">Unit/Ap. #</label>
+                                                <input type="text" class="form-control" id="Unit" name="Unit" value="@Model?.Unit" />
                                             </div>
                                         </div>
                                         <div class="col-sm-6 col-md-3">
@@ -205,7 +217,7 @@
                                         <div class="col-sm-6 col-md-3">
                                             <div class="mb-3">
                                                 <label for="District">District</label>
-                                                <input type="text" class="form-control" id="District" name="District" value="@Model.District" placeholder="Enter district">
+                                                <input type="text" class="form-control" id="District" name="District" value="@Model?.District" placeholder="Enter district">
                                             </div>
                                         </div>
                                         <div class="col-sm-6 col-md-3">
@@ -220,19 +232,6 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-sm-6 col-md-3">
-                                            <div class="mb-3">
-                                                <label for="VAT">VAT Number</label>
-                                                <input type="text" class="form-control" id="VAT" name="VAT" value="@Model?.VAT" placeholder="Enter VAT number">
-                                            </div>
-                                        </div>
-
-                                        <div class="col-sm-6 col-md-3">
-                                            <div class="mb-3">
-                                                <label for="LegalName">Legal Name</label>
-                                                <input type="text" class="form-control" id="LegalName" name="LegalName" value="@Model?.LegalName" placeholder="Enter legal name">
-                                            </div>
-                                        </div>
                                     </div>
                                     <hr />
                                     <br />
@@ -240,14 +239,14 @@
                                         <div class="col-sm-6 col-md-3">
                                             <div class="mb-3" onclick="toggleEmergencyContact()" style="cursor: pointer;">
                                                 <label for="PostalCode">EMERGENCY CONTACT</label>
-                                                <small class="text-success"><i class="bi bi-plus-circle"></i> Add Emergency contact +</small>
+                                                <small class="text-success"><i class="bi bi-plus-circle"></i>  Add Emergency contact </small>
                                             </div>
                                         </div>
 
                                         <div class="col-sm-6 col-md-3" id="emergencyContactField" style="display: none;">
                                             <div class="mb-3">
                                                 <label for="EmergencyContactInfo" class="form-label">Emergency Contact Info</label>
-                                                <input type="text" class="form-control" id="EmergencyContactInfo" name="EmergencyContactInfo" value="@Model?.EmergencyContactInfo"  />
+                                                <input type="text" class="form-control" id="EmergencyContactInfo" name="EmergencyContactInfo" value="@Model?.EmergencyContactInfo" />
                                             </div>
 
                                         </div>
@@ -257,43 +256,117 @@
                                     <b><h4>Add Pet</h4></b>
                                     <br />
                                     <div class="row" id="petsContainer">
-                                        <div class="col-sm-6 col-md-3">
-                                            <div class="mb-3">
-                                                <label for="PetPicture0">Pet Picture:</label>
-                                                <input type="file" class="form-control" name="Pets[0].Picture" accept="image/*" id="PetPicture0">
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6 col-md-3">
-                                            <div class="mb-3">
-                                                <label for="PetName0">Name:</label>
-                                                <input type="text" class="form-control" name="Pets[0].Name" id="PetName0">
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6 col-md-3">
-                                            <div class="mb-3">
-                                                <label for="PetBreed0">Breed:</label>
-                                                <input type="text" class="form-control" name="Pets[0].Breed" id="PetBreed0">
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6 col-md-3">
-                                            <div class="mb-3">
-                                                <label for="PetType0">Type:</label>
-                                                <input type="text" class="form-control" name="Pets[0].Type" id="PetType0">
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6 col-md-3">
-                                            <div class="mb-3">
-                                                <label for="PetQuantity0">Quantity:</label>
-                                                <input type="number" class="form-control" name="Pets[0].Quantity" id="PetQuantity0">
-                                            </div>
-                                        </div>
+                                        @if (Model?.Pets != null && Model.Pets.Any())
+                                        {
+                                            int i = 0;
+                                            foreach (var pet in Model.Pets)
+                                            {
+                                                <div class="row petEntry">
+                                                    <div class="col-sm-6 col-md-3">
+                                                        <div class="mb-3">
+                                                            <label for="Pets_@(i)__Picture">Pet Picture:</label>
+                                                            <input type="file" class="form-control" name="Pets[@i].PictureUrl2" accept="image/*" id="Pets_@(i)__Picture">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6 col-md-3">
+                                                        <div class="mb-3">
+                                                            <label for="Pets_@(i)__Name">Name:</label>
+                                                            <input type="text" class="form-control" name="Pets[@i].Name" id="Pets_@(i)__Name" value="@pet.Name">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6 col-md-3">
+                                                        <div class="mb-3">
+                                                            <label for="Pets_@(i)__Breed">Breed:</label>
+                                                            <input type="text" class="form-control" name="Pets[@i].Breed" id="Pets_@(i)__Breed" value="@pet.Breed">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6 col-md-3">
+                                                        <div class="mb-3">
+                                                            <label for="Pets_@(i)__Type">Type:</label>
+                                                            <input type="text" class="form-control" name="Pets[@i].Type" id="Pets_@(i)__Type" value="@pet.Type">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6 col-md-3">
+                                                        <div class="mb-3">
+                                                            <label for="Pets_@(i)__Quantity">Quantity:</label>
+                                                            <input type="number" class="form-control" name="Pets[@i].Quantity" id="Pets_@(i)__Quantity" value="@pet.Quantity">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6 align-self-end">
+                                                        <div class="mb-3">
+                                                            <a onclick="removePetEntry(this);" style="cursor: pointer;"><i class="bi bi-x-circle-fill"></i> Remove</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                i++;
+                                            }
+                                        }
+                                    </div>
 
-                                        <div class="col-sm-6 align-self-end">
-                                            <div class="mb-3">
-                                                <button onclick="addPetEntry();" class="btn btn-primary btn-sm">
-                                                    <i class="bi bi-plus-circle-fill"></i> +
-                                                </button>
-                                            </div>
+                                    <div class="col-sm-6 align-self-end">
+                                        <div class="mb-3">
+                                            <a onclick="addPetEntry(event);" style="cursor: pointer;">
+                                                <i class="bi bi-plus-circle-fill"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                    <br />
+                                    <hr />
+                                    <b><h4>Add Vehicle</h4></b>
+                                    <br />
+                                    <div class="row" id="vehiclesContainer">
+                                        @if (Model?.Vehicles != null && Model.Vehicles.Any())
+                                        {
+                                            int i = 0;
+                                            foreach (var vehicle in Model.Vehicles)
+                                            {
+                                                <div class="row vehicleEntry">
+                                                    <div class="col-sm-6 col-md-3">
+                                                        <div class="mb-3">
+                                                            <label for="Vehicles_@(i)__Manufacturer">Manufacturer:</label>
+                                                            <input type="text" class="form-control" name="Vehicles[@i].Manufacturer" id="Vehicles_@(i)__Manufacturer" value="@vehicle.Manufacturer">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6 col-md-3">
+                                                        <div class="mb-3">
+                                                            <label for="Vehicles_@(i)__ModelName">Model Name:</label>
+                                                            <input type="text" class="form-control" name="Vehicles[@i].ModelName" id="Vehicles_@(i)__ModelName" value="@vehicle.ModelName">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6 col-md-3">
+                                                        <div class="mb-3">
+                                                            <label for="Vehicles_@(i)__ModelVariant">Model Variant:</label>
+                                                            <input type="text" class="form-control" name="Vehicles[@i].ModelVariant" id="Vehicles_@(i)__ModelVariant" value="@vehicle.ModelVariant">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6 col-md-3">
+                                                        <div class="mb-3">
+                                                            <label for="Vehicles_@(i)__Engine">Engine:</label>
+                                                            <input type="text" class="form-control" name="Vehicles[@i].Engine" id="Vehicles_@(i)__Engine" value="@vehicle.Engine">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6 col-md-3">
+                                                        <div class="mb-3">
+                                                            <label for="Vehicles_@(i)__Year">Year:</label>
+                                                            <input type="text" class="form-control" name="Vehicles[@i].Year" id="Vehicles_@(i)__Year" value="@vehicle.Year">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6 align-self-end">
+                                                        <div class="mb-3">
+                                                            <a onclick="removeVehicleEntry(this);" style="cursor: pointer;"><i class="bi bi-x-circle-fill"></i> Remove</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                i++;
+                                            }
+                                        }
+                                    </div>
+                                    <div class="col-sm-6 align-self-end">
+                                        <div class="mb-3">
+                                            <a onclick="addVehicleEntry(event);" style="cursor: pointer;">
+                                                <i class="bi bi-plus-circle-fill"></i>
+                                            </a>
                                         </div>
                                     </div>
                                     <hr />
@@ -305,45 +378,46 @@
                                         <div class="col-sm-6 col-md-3">
                                             <div class="mb-3">
                                                 <label for="Account_Name">Account Name</label>
-                                                <input type="text" class="form-control" id="AccountName" name="AccountName" placeholder="Enter account name">
+                                                <input type="text" class="form-control" id="Account_Name" name="Account_Name" placeholder="Enter account name" value="@Model?.Account_Name">
                                             </div>
                                         </div>
 
                                         <div class="col-sm-6 col-md-3">
                                             <div class="mb-3">
                                                 <label for="Account_Holder">Account Holder</label>
-                                                <input type="text" class="form-control" id="AccountHolder" name="AccountHolder" placeholder="Enter account holder's name">
+                                                <input type="text" class="form-control" id="Account_Holder" name="Account_Holder" placeholder="Enter account holder's name" value="@Model?.Account_Holder">
                                             </div>
                                         </div>
 
                                         <div class="col-sm-6 col-md-3">
                                             <div class="mb-3">
                                                 <label for="Account_IBAN">Account IBAN</label>
-                                                <input type="text" class="form-control" id="AccountIBAN" name="AccountIBAN" placeholder="Enter IBAN">
+                                                <input type="text" class="form-control" id="Account_IBAN" name="Account_IBAN" placeholder="Enter IBAN" value="@Model?.Account_IBAN">
                                             </div>
                                         </div>
 
                                         <div class="col-sm-6 col-md-3">
                                             <div class="mb-3">
                                                 <label for="Account_Swift">Account Swift/BIC</label>
-                                                <input type="text" class="form-control" id="AccountSwift" name="AccountSwift" placeholder="Enter Swift/BIC">
+                                                <input type="text" class="form-control" id="Account_Swift" name="Account_Swift" placeholder="Enter Swift/BIC" value="@Model?.Account_Swift">
                                             </div>
                                         </div>
 
                                         <div class="col-sm-6 col-md-3">
                                             <div class="mb-3">
                                                 <label for="Account_Bank">Account Bank</label>
-                                                <input type="text" class="form-control" id="AccountBank" name="AccountBank" placeholder="Enter bank name">
+                                                <input type="text" class="form-control" id="Account_Bank" name="Account_Bank" placeholder="Enter bank name" value="@Model?.Account_Bank">
                                             </div>
                                         </div>
 
                                         <div class="col-sm-6 col-md-3">
                                             <div class="mb-3">
                                                 <label for="Account_Currency">Account Currency</label>
-                                                <input type="text" class="form-control" id="AccountCurrency" name="AccountCurrency" placeholder="Enter currency">
+                                                <input type="text" class="form-control" id="Account_Currency" name="Account_Currency" placeholder="Enter currency" value="@Model?.Account_Currency">
                                             </div>
                                         </div>
                                     </div>
+
                                     <hr />
 
                                     <div class="col-sm-12 col-md-12">
@@ -358,7 +432,9 @@
                                     <br />
                                     <div class="col-sm-6 col-md-3">
                                         <div class="mb-3">
-                                            <button type="button" id="saveButton" class="btn btn-primary">@(Model?.TenantId == null ? "Add" : "Edit") Tenant</button>
+                                            <button type="button" id="saveButton" class="btn btn-primary" onclick="checkValidationsAndSubmit(event)">
+                                                @(Model?.TenantId == null ? "Add" : "Update") Tenant
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -375,64 +451,66 @@
 
 
 <script>
-    window.toggleEmergencyContact = function () {
-        var emergencyContactField = document.getElementById("emergencyContactField");
-        emergencyContactField.style.display = emergencyContactField.style.display === "none" ? "block" : "none";
-    };
+    document.addEventListener('DOMContentLoaded', function () {
+        debugger;
+        window.toggleEmergencyContact = function () {
+            var emergencyContactField = document.getElementById("emergencyContactField");
+            emergencyContactField.style.display = emergencyContactField.style.display === "none" ? "block" : "none";
+        };
 
-    window.togglePhoneField = function () {
-        var additionalPhoneField = document.getElementById("additionalPhoneField");
-        additionalPhoneField.style.display = additionalPhoneField.style.display === "none" ? "block" : "none";
-    };
+        window.togglePhoneField = function () {
+            var additionalPhoneField = document.getElementById("additionalPhoneField");
+            additionalPhoneField.style.display = additionalPhoneField.style.display === "none" ? "block" : "none";
+        };
 
-    window.toggleEmailField = function () {
-        var additionalEmailField = document.getElementById("additionalEmailField");
-        additionalEmailField.style.display = additionalEmailField.style.display === "none" ? "block" : "none";
-    };
+        window.toggleEmailField = function () {
+            var additionalEmailField = document.getElementById("additionalEmailField");
+            additionalEmailField.style.display = additionalEmailField.style.display === "none" ? "block" : "none";
+        };
 
+    });
 
-    window.addPetEntry = function () {
+    window.addPetEntry = function (event) {
+        event.preventDefault();
         var petIndex = document.querySelectorAll('.petEntry').length;
 
         var newPetHTML = `<div class="row petEntry">
-                    <div class="col-sm-6 col-md-3">
-                        <div class="mb-3">
-                            <label for="PetPicture${petIndex}">Pet Picture:</label>
-                            <input type="file" class="form-control" name="Pets[${petIndex}].Picture" accept="image/*" id="PetPicture${petIndex}">
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-md-3">
-                        <div class="mb-3">
-                            <label for="PetName${petIndex}">Name:</label>
-                            <input type="text" class="form-control" name="Pets[${petIndex}].Name" id="PetName${petIndex}">
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-md-3">
-                        <div class="mb-3">
-                            <label for="PetBreed${petIndex}">Breed:</label>
-                            <input type="text" class="form-control" name="Pets[${petIndex}].Breed" id="PetBreed${petIndex}">
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-md-3">
-                        <div class="mb-3">
-                            <label for="PetType${petIndex}">Type:</label>
-                            <input type="text" class="form-control" name="Pets[${petIndex}].Type" id="PetType${petIndex}">
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-md-3">
-                        <div class="mb-3">
-                            <label for="PetQuantity${petIndex}">Quantity:</label>
-                            <input type="number" class="form-control" name="Pets[${petIndex}].Quantity" id="PetQuantity${petIndex}">
-                        </div>
-                    </div>
-                   <div class="col-sm-6 align-self-end">
-                      <div class="mb-3">
-                        <button type="button" class="btn btn-danger btn-sm" onclick="removePetEntry(this)">
-                            <i class="bi bi-x-circle"></i>
-                        </button>
-                    </div>
-                    </div>
-                </div>`;
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
+                                        <label for="Pets_${petIndex}__Picture">Pet Picture:</label>
+                                        <input type="file" class="form-control" name="Pets[${petIndex}].PictureUrl2" accept="image/*" id="Pets_${petIndex}__Picture">
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
+                                        <label for="Pets_${petIndex}__Name">Name:</label>
+                                        <input type="text" class="form-control" name="Pets[${petIndex}].Name" id="Pets_${petIndex}__Name">
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
+                                        <label for="Pets_${petIndex}__Breed">Breed:</label>
+                                        <input type="text" class="form-control" name="Pets[${petIndex}].Breed" id="Pets_${petIndex}__Breed">
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
+                                        <label for="Pets_${petIndex}__Type">Type:</label>
+                                        <input type="text" class="form-control" name="Pets[${petIndex}].Type" id="Pets_${petIndex}__Type">
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
+                                        <label for="Pets_${petIndex}__Quantity">Quantity:</label>
+                                        <input type="number" class="form-control" name="Pets[${petIndex}].Quantity" id="Pets_${petIndex}__Quantity">
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 align-self-end">
+                                    <div class="mb-3">
+                                        <a onclick="removePetEntry(this);" style="cursor: pointer;"><i class="bi bi-x-circle-fill"></i> Remove</a>
+                                    </div>
+                                </div>
+                            </div>`;
 
         var container = document.getElementById('petsContainer');
         container.insertAdjacentHTML('beforeend', newPetHTML);
@@ -440,7 +518,105 @@
 
     window.removePetEntry = function (element) {
         element.closest('.petEntry').remove();
+    };
+
+
+    window.addVehicleEntry = function (event) {
+        event.preventDefault();
+        var vehicleIndex = document.querySelectorAll('.vehicleEntry').length;
+
+        var newVehicleHTML = `<div class="row vehicleEntry">
+                                    <div class="col-sm-6 col-md-3">
+                                        <div class="mb-3">
+                                            <label for="Vehicles_${vehicleIndex}__Manufacturer">Manufacturer:</label>
+                                            <input type="text" class="form-control" name="Vehicles[${vehicleIndex}].Manufacturer" id="Vehicles_${vehicleIndex}__Manufacturer">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 col-md-3">
+                                        <div class="mb-3">
+                                            <label for="Vehicles_${vehicleIndex}__ModelName">Model Name:</label>
+                                            <input type="text" class="form-control" name="Vehicles[${vehicleIndex}].ModelName" id="Vehicles_${vehicleIndex}__ModelName">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 col-md-3">
+                                        <div class="mb-3">
+                                            <label for="Vehicles_${vehicleIndex}__ModelVariant">Model Variant:</label>
+                                            <input type="text" class="form-control" name="Vehicles[${vehicleIndex}].ModelVariant" id="Vehicles_${vehicleIndex}__ModelVariant">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 col-md-3">
+                                        <div class="mb-3">
+                                            <label for="Vehicles_${vehicleIndex}__Engine">Engine:</label>
+                                            <input type="text" class="form-control" name="Vehicles[${vehicleIndex}].Engine" id="Vehicles_${vehicleIndex}__Engine">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 col-md-3">
+                                        <div class="mb-3">
+                                            <label for="Vehicles_${vehicleIndex}__Year">Year:</label>
+                                            <input type="text" class="form-control" name="Vehicles[${vehicleIndex}].Year" id="Vehicles_${vehicleIndex}__Year">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6 align-self-end">
+                                        <div class="mb-3">
+                                            <a onclick="removeVehicleEntry(this);" style="cursor: pointer;"><i class="bi bi-x-circle-fill"></i> Remove</a>
+                                        </div>
+                                    </div>
+                                </div>`;
+
+        var container = document.getElementById('vehiclesContainer');
+        container.insertAdjacentHTML('beforeend', newVehicleHTML);
+    };
+
+    window.removeVehicleEntry = function (element) {
+        element.closest('.vehicleEntry').remove();
+    };
+
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var gender = '@Model?.Gender';
+        if (gender) {
+            document.getElementById("Gender").value = gender;
+        }
+    });
+
+
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var country = '@Model?.Country';
+        if (country) {
+            document.getElementById("Country").value = country;
+        }
+
+    });
+
+
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const pictureInput = document.getElementById('PictureUrl');
+        const profileImage = document.querySelector('.img-account-profile2');
+
+        pictureInput.addEventListener('change', function (event) {
+            if (event.target.files && event.target.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    profileImage.src = e.target.result;
+                };
+
+                reader.readAsDataURL(event.target.files[0]);
+            }
+        });
+    });
+
+
+
+
+
+    function downloadFile(id) {
+        window.location.href = '/Tenant/Download?id=' + id;
     }
+
+
 
 
 
@@ -456,6 +632,60 @@
 
 
 
+    async function submitTenantForm(event) {
+        debugger;
+        const fileInputs = {
+            'DocumentFile': 'DocumentBase64',
+            'PictureUrl': 'PictureBase64'
+        };
+
+        const petPictureInputs = document.querySelectorAll('[name^="Pets"]');
+        petPictureInputs.forEach(input => {
+            const id = input.id;
+            const fieldName = id.substring(0, id.indexOf('__Picture'));
+            fileInputs[fieldName] = 'PetPictureBase64';
+        });
+
+        for (const [inputId, outputId] of Object.entries(fileInputs)) {
+            const inputFile = document.getElementById(inputId);
+            if (inputFile && inputFile.files.length > 0) {
+                document.getElementById(outputId).value = await convertFileToBase64(inputFile.files[0]);
+            }
+        }
+
+        const formElement = document.getElementById('tenantForm');
+        var ajaxUrl = $('#TenantId').val() ? '/Tenant/Update' : '/Tenant/Create';
+        const formData = new FormData(formElement);
+        Object.keys(fileInputs).forEach(key => formData.delete(key));
+
+        try {
+            var userId = localStorage.getItem('userId');
+            formData.append('AppTId', userId);
+            const response = await fetch(ajaxUrl, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                console.log(result);
+                toastr.success('Operation successful');
+                window.location.href = '/Tenant/Index';
+            } else {
+                console.error('Server responded with non-OK status');
+                toastr.error('Operation failed. Server responded with an error.');
+            }
+        } catch (error) {
+            console.error('Error submitting form:', error);
+            toastr.error('Operation failed. Network error or server is not responding.');
+        }
+    }
+
+
 
     function validateEmail(email) {
         const atSymbol = String.fromCharCode(64);
@@ -468,11 +698,28 @@
         return pattern.test(phoneNumber);
     }
 
-
-    function validateWebsite(website) {
-        const pattern = /^https?:\/\/[^\s$.?#].[^\s]*$/;
-        return pattern.test(website);
+    function validateAccountName(accountName) {
+        return accountName.trim().length > 0;
     }
+
+    function validateAccountIBAN(accountIBAN) {
+      
+        return accountIBAN.trim().length > 0;
+    }
+
+    function validateAccountSwift(accountSwift) {
+    
+        return accountSwift.trim().length > 0;
+    }
+
+    function validateAccountBank(accountBank) {
+        return accountBank.trim().length > 0;
+    }
+
+    function validateAccountCurrency(accountCurrency) {
+        return accountCurrency.trim().length > 0;
+    }
+
 
     function validateAddress(address) {
         return address.trim().length > 0;
@@ -515,22 +762,37 @@
     };
 
     // Collect input elements
-    const emailAddress = document.getElementById('EmailAddress');
-    const emailAddress2 = document.getElementById('EmailAddress2');
-    const phoneNumber = document.getElementById('PhoneNumber');
-    const phoneNumber2 = document.getElementById('PhoneNumber2');
-    const website = document.getElementById('Website');
-    const address = document.getElementById('Address');
 
-    function checkValidationsAndSubmit() {
+
+    function checkValidationsAndSubmit(event) {
+        debugger;
+        event.preventDefault();
+
+        const emailAddress = document.getElementById('EmailAddress');
+        const emailAddress2 = document.getElementById('EmailAddress2');
+        const phoneNumber = document.getElementById('PhoneNumber');
+        const phoneNumber2 = document.getElementById('PhoneNumber2');
+        const website = document.getElementById('Website');
+        const address = document.getElementById('Address');
+        const accountName = document.getElementById('Account_Name');
+        const accountIBAN = document.getElementById('Account_IBAN');
+        const accountSwift = document.getElementById('Account_Swift');
+        const accountBank = document.getElementById('Account_Bank');
+        const accountCurrency = document.getElementById('Account_Currency');
+
+
         const isEmailAddressValid = validateField(emailAddress, validateEmail, 'Please enter a valid email address.');
         const isEmailAddress2Valid = validateField(emailAddress2, validateEmail, 'Please enter a valid email address.');
         const isPhoneNumberValid = validateField(phoneNumber, validatePhoneNumber, 'Please enter a valid phone number.');
         const isPhoneNumber2Valid = validateField(phoneNumber2, validatePhoneNumber, 'Please enter a valid phone number.');
-        const isWebsiteValid = validateField(website, validateWebsite, 'Please enter a valid website URL.');
         const isAddressValid = validateField(address, validateAddress, 'Address cannot be empty.');
+        const isAccountNameValid = validateField(accountName, validateAccountName, 'Account name cannot be empty.');
+        const isAccountIBANValid = validateField(accountIBAN, validateAccountIBAN, 'Please enter a valid IBAN.');
+        const isAccountSwiftValid = validateField(accountSwift, validateAccountSwift, 'Please enter a valid Swift/BIC.');
+        const isAccountBankValid = validateField(accountBank, validateAccountBank, 'Account bank name cannot be empty.');
+        const isAccountCurrencyValid = validateField(accountCurrency, validateAccountCurrency, 'Account currency cannot be empty.');
 
-        if (isEmailAddressValid && isEmailAddress2Valid && isPhoneNumberValid && isPhoneNumber2Valid && isWebsiteValid && isAddressValid) {
+        if (isEmailAddressValid && isEmailAddress2Valid && isPhoneNumberValid && isPhoneNumber2Valid && isAddressValid && isAccountNameValid && isAccountIBANValid && isAccountSwiftValid && isAccountBankValid && isAccountCurrencyValid) {
 
             submitTenantForm(event);
         } else {
@@ -539,64 +801,7 @@
     }
 
 
-    const saveButton = document.getElementById('saveButton');
-    if (saveButton) {
-        saveButton.addEventListener('click', function (event) {
-            event.preventDefault();
-            checkValidationsAndSubmit();
-        });
-    }
 
-
-
-
-    async function submitTenantForm(event) {
-        debugger;
-        const fileInputs = {
-            'DocumentFile': 'DocumentBase64',
-            'PictureUrl': 'PictureBase64',
-            'OrganizationLogoFile': 'OrganizationLogoBase64',
-            'OrganizationIconFile': 'OrganizationIconBase64'
-        };
-
-        for (const [inputId, outputId] of Object.entries(fileInputs)) {
-            const inputFile = document.getElementById(inputId);
-            if (inputFile && inputFile.files.length > 0) {
-                document.getElementById(outputId).value = await convertFileToBase64(inputFile.files[0]);
-            }
-        }
-
-        const formElement = document.getElementById('tenantForm');
-        var ajaxUrl = $('#TenantId').val() ? '/Tenant/Update' : '/Tenant/Create';
-        const formData = new FormData(formElement);
-        Object.keys(fileInputs).forEach(key => formData.delete(key));
-
-        try {
-            var userId = localStorage.getItem('userId');
-            formData.append('AppTId', userId);
-            const response = await fetch(ajaxUrl, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'Accept': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            });
-
-            if (response.ok) {
-                const result = await response.json();
-                console.log(result);
-                toastr.success('Operation successful');
-                window.location.href = '/Tenant/Index';
-            } else {
-                console.error('Server responded with non-OK status');
-                toastr.error('Operation failed. Server responded with an error.');
-            }
-        } catch (error) {
-            console.error('Error submitting form:', error);
-            toastr.error('Operation failed. Network error or server is not responding.');
-        }
-    }
 
     function convertFileToBase64(file) {
         return new Promise((resolve, reject) => {
@@ -609,48 +814,3 @@
 
 </script>
 
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const pictureInput = document.getElementById('PictureUrl');
-        const profileImage = document.querySelector('.img-account-profile2');
-
-        pictureInput.addEventListener('change', function (event) {
-            if (event.target.files && event.target.files[0]) {
-                var reader = new FileReader();
-
-                reader.onload = function (e) {
-                    profileImage.src = e.target.result;
-                };
-
-                reader.readAsDataURL(event.target.files[0]);
-            }
-        });
-    });
-
-
-
-    document.addEventListener('DOMContentLoaded', function () {
-        var gender = '@Model?.Gender';
-        if (gender) {
-            document.getElementById("Gender").value = gender;
-        }
-    });
-
-
-
-    document.addEventListener('DOMContentLoaded', function () {
-        var country = '@Model?.Country';
-        if (country) {
-            document.getElementById("Country").value = country;
-        }
-    }
-                                        });
-
-
-    function downloadFile(id) {
-        window.location.href = '/Tenant/Download?id=' + id;
-    }
-
-
-</script>

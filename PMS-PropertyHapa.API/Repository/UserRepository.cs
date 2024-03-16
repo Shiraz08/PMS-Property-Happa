@@ -15,6 +15,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using static PMS_PropertyHapa.Models.DTO.TenantModelDto;
 
 namespace MagicVilla_VillaAPI.Repository
 {
@@ -1064,15 +1065,19 @@ namespace MagicVilla_VillaAPI.Repository
 
         public async Task<TenantModelDto> GetSingleTenantByIdAsync(int tenantId)
         {
-            var tenant = await _db.Tenant.FirstOrDefaultAsync(t => t.TenantId == tenantId);
+            var tenant = await _db.Tenant
+                  .Include(t => t.Pets)
+                  .Include(t => t.Vehicle)
+                  .FirstOrDefaultAsync(t => t.TenantId == tenantId);
 
             if (tenant == null)
-                return new TenantModelDto(); // Return an empty DTO or handle null case accordingly
+                return new TenantModelDto(); 
 
-            // Map the single tenant to TenantModelDto
             var tenantDto = new TenantModelDto
             {
                 TenantId = tenant.TenantId,
+                Picture = tenant.Picture,
+                Document = tenant.Document,
                 FirstName = tenant.FirstName,
                 LastName = tenant.LastName,
                 EmailAddress = tenant.EmailAddress,
@@ -1096,7 +1101,26 @@ namespace MagicVilla_VillaAPI.Repository
                 Region = tenant.Region,
                 PostalCode = tenant.PostalCode,
                 Country = tenant.Country,
-                CountryCode = tenant.CountryCode
+                CountryCode = tenant.CountryCode,
+                Unit = tenant.Unit,
+                Pets = tenant.Pets.Select(p => new PetDto
+                {
+                    PetId = p.PetId,
+                    Name = p.Name,
+                    Breed = p.Breed,
+                    Type = p.Type,
+                    Quantity = p.Quantity,
+                    Picture = p.Picture 
+                }).ToList(),
+                Vehicles = tenant.Vehicle.Select(v => new VehicleDto
+                {
+                    VehicleId = v.VehicleId,
+                    Manufacturer = v.Manufacturer,
+                    ModelName = v.ModelName,
+                    ModelVariant = v.ModelVariant,
+                    Engine = v.Engine,
+                    Year = v.Year
+                }).ToList()
             };
 
             return tenantDto;
@@ -1107,7 +1131,7 @@ namespace MagicVilla_VillaAPI.Repository
 
         public async Task<bool> CreateTenantAsync(TenantModelDto tenantDto)
         {
-           
+
             var newTenant = new Tenant
             {
                 FirstName = tenantDto.FirstName,
@@ -1149,31 +1173,57 @@ namespace MagicVilla_VillaAPI.Repository
             _db.Tenant.Add(newTenant);
             await _db.SaveChangesAsync();
 
-            foreach (var petDto in tenantDto.Pets)
-            {
-                var pet = new Pets
-                {
-                    TenantId = newTenant.TenantId, 
-                    Name = petDto.Name,
-                    Breed = petDto.Breed,
-                    Type = petDto.Type,
-                    Quantity = petDto.Quantity,
-                    Picture = petDto.Picture, 
-                };
 
-                _db.Pets.Add(pet);
+            if (tenantDto.Pets != null)
+            {
+                foreach (var petDto in tenantDto.Pets)
+                {
+                    var pet = new Pets
+                    {
+                        TenantId = newTenant.TenantId,
+                        Name = petDto.Name,
+                        Breed = petDto.Breed,
+                        Type = petDto.Type,
+                        Quantity = petDto.Quantity,
+                        Picture = petDto.Picture,
+                    };
+
+                    _db.Pets.Add(pet);
+                }
+                await _db.SaveChangesAsync();
+            }
+
+            if (tenantDto.Vehicles != null)
+            {
+                foreach (var vehicleDto in tenantDto.Vehicles)
+                {
+                    var vehicle = new Vehicle
+                    {
+                        TenantId = newTenant.TenantId,
+                        Manufacturer = vehicleDto.Manufacturer,
+                        ModelName = vehicleDto.ModelName,
+                        ModelVariant = vehicleDto.ModelVariant,
+                        Engine = vehicleDto.Engine,
+                        Year = vehicleDto.Year
+                    };
+
+                    _db.Vehicle.Add(vehicle);
+                }
+
+                await _db.SaveChangesAsync();
             }
 
             await _db.SaveChangesAsync();
 
-            return true; 
+            return true;
         }
 
 
         public async Task<bool> UpdateTenantAsync(TenantModelDto tenantDto)
         {
-            var tenant = await _db.Tenant.FirstOrDefaultAsync(t => t.TenantId == tenantDto.TenantId);
-            if (tenant == null) return false;
+            var tenant = await _db.Tenant.Include(t => t.Pets).Include(t => t.Vehicle).FirstOrDefaultAsync(t => t.TenantId == tenantDto.TenantId);
+            if (tenant == null)
+                return false;
 
             tenant.FirstName = tenantDto.FirstName;
             tenant.LastName = tenantDto.LastName;
@@ -1202,7 +1252,60 @@ namespace MagicVilla_VillaAPI.Repository
             tenant.Country = tenantDto.Country;
             tenant.CountryCode = tenantDto.CountryCode;
 
-            _db.Tenant.Update(tenant);
+            // Update or add pets
+            foreach (var petDto in tenantDto.Pets)
+            {
+                var existingPet = tenant.Pets.FirstOrDefault(p => p.PetId == petDto.PetId);
+                if (existingPet != null)
+                {
+                    existingPet.Name = petDto.Name;
+                    existingPet.Breed = petDto.Breed;
+                    existingPet.Type = petDto.Type;
+                    existingPet.Quantity = petDto.Quantity;
+                    existingPet.Picture = petDto.Picture;
+                }
+                else
+                {
+                    var newPet = new Pets
+                    {
+                        TenantId = tenant.TenantId,
+                        Name = petDto.Name,
+                        Breed = petDto.Breed,
+                        Type = petDto.Type,
+                        Quantity = petDto.Quantity,
+                        Picture = petDto.Picture,
+                    };
+                    tenant.Pets.Add(newPet);
+                }
+            }
+
+            // Update or add vehicles
+            foreach (var vehicleDto in tenantDto.Vehicles)
+            {
+                var existingVehicle = tenant.Vehicle.FirstOrDefault(v => v.VehicleId == vehicleDto.VehicleId);
+                if (existingVehicle != null)
+                {
+                    existingVehicle.Manufacturer = vehicleDto.Manufacturer;
+                    existingVehicle.ModelName = vehicleDto.ModelName;
+                    existingVehicle.ModelVariant = vehicleDto.ModelVariant;
+                    existingVehicle.Engine = vehicleDto.Engine;
+                    existingVehicle.Year = vehicleDto.Year;
+                }
+                else
+                {
+                    var newVehicle = new Vehicle
+                    {
+                        TenantId = tenant.TenantId,
+                        Manufacturer = vehicleDto.Manufacturer,
+                        ModelName = vehicleDto.ModelName,
+                        ModelVariant = vehicleDto.ModelVariant,
+                        Engine = vehicleDto.Engine,
+                        Year = vehicleDto.Year
+                    };
+                    tenant.Vehicle.Add(newVehicle);
+                }
+            }
+
             var result = await _db.SaveChangesAsync();
             return result > 0;
         }
@@ -1231,7 +1334,7 @@ namespace MagicVilla_VillaAPI.Repository
             var tenantDto = await _db.Owner.FirstOrDefaultAsync(t => t.OwnerId == ownerId);
 
             if (tenantDto == null)
-                return new OwnerDto(); 
+                return new OwnerDto();
             var tenant = new OwnerDto
             {
                 OwnerId = tenantDto.OwnerId,
@@ -1279,8 +1382,8 @@ namespace MagicVilla_VillaAPI.Repository
             }
             else
             {
-                
-                tenant.OrganizationName = ""; 
+
+                tenant.OrganizationName = "";
                 tenant.OrganizationDescription = "";
                 tenant.OrganizationIcon = "";
                 tenant.OrganizationLogo = "";
@@ -1330,7 +1433,7 @@ namespace MagicVilla_VillaAPI.Repository
                 Picture = tenantDto.Picture
             };
 
-           
+
 
             await _db.Owner.AddAsync(newTenant);
             await _db.SaveChangesAsync();
@@ -1406,7 +1509,7 @@ namespace MagicVilla_VillaAPI.Repository
                 _db.OwnerOrganization.Update(ownerOrganization);
             }
             else
-            { 
+            {
                 ownerOrganization = new OwnerOrganization
                 {
                     OwnerId = (int)tenantDto.OwnerId,
@@ -1559,7 +1662,7 @@ namespace MagicVilla_VillaAPI.Repository
                 OwnerZipcode = assetDTO.OwnerZipcode,
                 OwnerCity = assetDTO.OwnerCity,
                 OwnerCountry = assetDTO.OwnerCountry,
-                Units = new List<AssetsUnits>() 
+                Units = new List<AssetsUnits>()
             };
 
             foreach (var u in assetDTO.Units)
@@ -1588,7 +1691,7 @@ namespace MagicVilla_VillaAPI.Repository
             {
                 return false;
             }
-            
+
             existingAsset.SelectedPropertyType = assetDTO.SelectedPropertyType;
             existingAsset.SelectedBankAccountOption = assetDTO.SelectedBankAccountOption;
             existingAsset.SelectedReserveFundsOption = assetDTO.SelectedReserveFundsOption;
@@ -1641,7 +1744,7 @@ namespace MagicVilla_VillaAPI.Repository
                     _db.AssetsUnits.Remove(existingUnit);
                 }
             }
-            
+
             var result = await _db.SaveChangesAsync();
 
             return result > 0;

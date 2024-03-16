@@ -257,7 +257,9 @@ namespace PMS_PropertyHapa.Staff.Services
 
                 if (response != null && response.IsSuccess)
                 {
-                    return JsonConvert.DeserializeObject<TenantModelDto>(Convert.ToString(response.Result));
+                    // Attempt to deserialize the result
+                    var tenantDto = JsonConvert.DeserializeObject<TenantModelDto>(Convert.ToString(response.Result));
+                    return tenantDto;
                 }
                 else
                 {
