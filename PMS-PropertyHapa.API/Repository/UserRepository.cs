@@ -1013,7 +1013,9 @@ namespace MagicVilla_VillaAPI.Repository
                 Region = tenant.Region,
                 PostalCode = tenant.PostalCode,
                 Country = tenant.Country,
-                CountryCode = tenant.CountryCode
+                CountryCode = tenant.CountryCode,
+                Picture = tenant.Picture,
+                Document = tenant.Document
             }).ToList();
             return tenantDtos;
         }
@@ -1055,7 +1057,9 @@ namespace MagicVilla_VillaAPI.Repository
                 Region = tenant.Region,
                 PostalCode = tenant.PostalCode,
                 Country = tenant.Country,
-                CountryCode = tenant.CountryCode
+                CountryCode = tenant.CountryCode,
+                Picture = tenant.Picture,
+                Document = tenant.Document
             }).ToList();
 
             return tenantDtos;
