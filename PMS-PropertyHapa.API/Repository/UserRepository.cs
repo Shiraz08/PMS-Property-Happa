@@ -1122,7 +1122,6 @@ namespace MagicVilla_VillaAPI.Repository
                     Manufacturer = v.Manufacturer,
                     ModelName = v.ModelName,
                     ModelVariant = v.ModelVariant,
-                    Engine = v.Engine,
                     Year = v.Year
                 }).ToList()
             };
@@ -1207,7 +1206,6 @@ namespace MagicVilla_VillaAPI.Repository
                         Manufacturer = vehicleDto.Manufacturer,
                         ModelName = vehicleDto.ModelName,
                         ModelVariant = vehicleDto.ModelVariant,
-                        Engine = vehicleDto.Engine,
                         Year = vehicleDto.Year
                     };
 
@@ -1292,7 +1290,6 @@ namespace MagicVilla_VillaAPI.Repository
                     existingVehicle.Manufacturer = vehicleDto.Manufacturer;
                     existingVehicle.ModelName = vehicleDto.ModelName;
                     existingVehicle.ModelVariant = vehicleDto.ModelVariant;
-                    existingVehicle.Engine = vehicleDto.Engine;
                     existingVehicle.Year = vehicleDto.Year;
                 }
                 else
@@ -1302,8 +1299,6 @@ namespace MagicVilla_VillaAPI.Repository
                         TenantId = tenant.TenantId,
                         Manufacturer = vehicleDto.Manufacturer,
                         ModelName = vehicleDto.ModelName,
-                        ModelVariant = vehicleDto.ModelVariant,
-                        Engine = vehicleDto.Engine,
                         Year = vehicleDto.Year
                     };
                     tenant.Vehicle.Add(newVehicle);

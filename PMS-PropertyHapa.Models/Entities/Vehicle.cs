@@ -12,11 +12,11 @@ namespace PMS_PropertyHapa.Models.Entities
         [Key]
         public int VehicleId { get; set; }
         public int TenantId { get; set; }
-        public string Manufacturer { get; set; }
-        public string ModelName { get; set; }
-        public string ModelVariant { get; set; }
-        public string Engine { get; set; }
-        public string Year { get; set; }
+        public string Manufacturer { get; set; } //Make
+        public string ModelName { get; set; } //Model
+        public string ModelVariant { get; set; } //License Plate
+        public string color { get; set; } 
+        public string Year { get; set; } //Year
         public Tenant Tenant { get; set; }
     }
 }
