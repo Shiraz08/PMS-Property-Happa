@@ -700,7 +700,13 @@
             });
         } else {
             $('.btn-next').text('Next').attr('type', 'button').off('click').on('click', function () {
-                navigateToStep(currentStep + 1);
+                var isValid = validateCurrentStep();
+
+                if (isValid) {
+                    if (currentStep < totalSteps) {
+                        navigateToStep(currentStep + 1);
+                    }
+                }
             });
         }
     }
@@ -709,27 +715,27 @@
 
     $(document).ready(function () {
 
-
-        debugger;
-        $('.btn-next').off('click').on('click', function () {
+    @*
+            debugger;
+            $('.btn-next').off('click').on('click', function () {
             if (validateCurrentStep()) {
-                if (currentStep < totalSteps) {
-                    navigateToStep(currentStep + 1);
-                } else {
+            if (currentStep < totalSteps) {
+            navigateToStep(currentStep + 1);
+            } else {
 
-                    $('#multiStepForm').submit();
+            $('#multiStepForm').submit();
+            }
+            }
+            }); *@
+
+
+
+
+            $('.btn-previous').click(function () {
+                if (currentStep > 1) {
+                    navigateToStep(currentStep - 1);
                 }
-            }
-        });
-
-
-
-
-        $('.btn-previous').click(function () {
-            if (currentStep > 1) {
-                navigateToStep(currentStep - 1);
-            }
-        });
+            });
 
         navigateToStep(1);
 
@@ -738,103 +744,103 @@
             if (type === 'residential') {
                 // Residential Subtypes
                 subtypesHtml = `
-                                                                <div class="row">
-                                                                    <div class="small-square-card-container">
-                                                                        <div class="card property-subtype-card small-square-card" data-subtype="single-family">
-                                                                            <div class="card-body text-center">
-                                                                                <i class="fa fa-home fa-2x"></i>
-                                                                                <h5 class="card-title mt-2">Single Family</h5>
+                                                                            <div class="row">
+                                                                                <div class="small-square-card-container">
+                                                                                    <div class="card property-subtype-card small-square-card" data-subtype="single-family">
+                                                                                        <div class="card-body text-center">
+                                                                                            <i class="fa fa-home fa-2x"></i>
+                                                                                            <h5 class="card-title mt-2">Single Family</h5>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="small-square-card-container">
+                                                                                    <div class="card property-subtype-card small-square-card" data-subtype="multi-family">
+                                                                                        <div class="card-body text-center">
+                                                                                            <i class="fa fa-building fa-2x"></i>
+                                                                                            <h5 class="card-title mt-2">Multi Family</h5>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="small-square-card-container">
+                                                                                    <div class="card property-subtype-card small-square-card" data-subtype="condo">
+                                                                                        <div class="card-body text-center">
+                                                                                                <i class="fa fa-warehouse fa-2x"></i>
+                                                                                            <h5 class="card-title mt-2">Condo</h5>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="small-square-card-container">
+                                                                                    <div class="card property-subtype-card small-square-card" data-subtype="townhome">
+                                                                                        <div class="card-body text-center">
+                                                                                            <i class="fa fa-home fa-2x"></i>
+                                                                                            <h5 class="card-title mt-2">Townhome</h5>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="small-square-card-container">
+                                                                                    <div class="card property-subtype-card small-square-card" data-subtype="other">
+                                                                                        <div class="card-body text-center">
+                                                                                            <i class="fa fa-building fa-2x"></i>
+                                                                                            <h5 class="card-title mt-2">Other</h5>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
                                                                             </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="small-square-card-container">
-                                                                        <div class="card property-subtype-card small-square-card" data-subtype="multi-family">
-                                                                            <div class="card-body text-center">
-                                                                                <i class="fa fa-building fa-2x"></i>
-                                                                                <h5 class="card-title mt-2">Multi Family</h5>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="small-square-card-container">
-                                                                        <div class="card property-subtype-card small-square-card" data-subtype="condo">
-                                                                            <div class="card-body text-center">
-                                                                                    <i class="fa fa-warehouse fa-2x"></i>
-                                                                                <h5 class="card-title mt-2">Condo</h5>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="small-square-card-container">
-                                                                        <div class="card property-subtype-card small-square-card" data-subtype="townhome">
-                                                                            <div class="card-body text-center">
-                                                                                <i class="fa fa-home fa-2x"></i>
-                                                                                <h5 class="card-title mt-2">Townhome</h5>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="small-square-card-container">
-                                                                        <div class="card property-subtype-card small-square-card" data-subtype="other">
-                                                                            <div class="card-body text-center">
-                                                                                <i class="fa fa-building fa-2x"></i>
-                                                                                <h5 class="card-title mt-2">Other</h5>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            `;
+                                                                        `;
             } else if (type === 'commercial') {
                 // Commercial Subtypes
                 subtypesHtml = `
-                                                                <div class="row">
-                                                                    <div class="small-square-card-container">
-                                                                        <div class="card property-subtype-card small-square-card" data-subtype="industrial">
-                                                                            <div class="card-body text-center">
-                                                                                <i class="fa fa-industry fa-2x"></i>
-                                                                                <h5 class="card-title">Industrial</h5>
+                                                                            <div class="row">
+                                                                                <div class="small-square-card-container">
+                                                                                    <div class="card property-subtype-card small-square-card" data-subtype="industrial">
+                                                                                        <div class="card-body text-center">
+                                                                                            <i class="fa fa-industry fa-2x"></i>
+                                                                                            <h5 class="card-title">Industrial</h5>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="small-square-card-container">
+                                                                                    <div class="card property-subtype-card small-square-card" data-subtype="office">
+                                                                                        <div class="card-body text-center">
+                                                                                            <i class="fa fa-building fa-2x"></i>
+                                                                                            <h5 class="card-title">Office</h5>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="small-square-card-container">
+                                                                                    <div class="card property-subtype-card small-square-card" data-subtype="retail">
+                                                                                        <div class="card-body text-center">
+                                                                                            <i class="fa fa-shopping-bag fa-2x"></i>
+                                                                                            <h5 class="card-title">Retail</h5>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="small-square-card-container">
+                                                                                    <div class="card property-subtype-card small-square-card" data-subtype="shopping-center">
+                                                                                        <div class="card-body text-center">
+                                                                                            <i class="fa fa-shopping-cart fa-2x"></i>
+                                                                                            <h5 class="card-title">Shopping Center</h5>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="small-square-card-container">
+                                                                                    <div class="card property-subtype-card small-square-card" data-subtype="storage">
+                                                                                        <div class="card-body text-center">
+                                                                                            <i class="fa fa-warehouse fa-2x"></i>
+                                                                                            <h5 class="card-title">Storage</h5>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="small-square-card-container">
+                                                                                    <div class="card property-subtype-card small-square-card" data-subtype="other">
+                                                                                        <div class="card-body text-center">
+                                                                                            <i class="fa fa-building fa-2x"></i>
+                                                                                            <h5 class="card-title">Other</h5>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
                                                                             </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="small-square-card-container">
-                                                                        <div class="card property-subtype-card small-square-card" data-subtype="office">
-                                                                            <div class="card-body text-center">
-                                                                                <i class="fa fa-building fa-2x"></i>
-                                                                                <h5 class="card-title">Office</h5>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="small-square-card-container">
-                                                                        <div class="card property-subtype-card small-square-card" data-subtype="retail">
-                                                                            <div class="card-body text-center">
-                                                                                <i class="fa fa-shopping-bag fa-2x"></i>
-                                                                                <h5 class="card-title">Retail</h5>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="small-square-card-container">
-                                                                        <div class="card property-subtype-card small-square-card" data-subtype="shopping-center">
-                                                                            <div class="card-body text-center">
-                                                                                <i class="fa fa-shopping-cart fa-2x"></i>
-                                                                                <h5 class="card-title">Shopping Center</h5>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="small-square-card-container">
-                                                                        <div class="card property-subtype-card small-square-card" data-subtype="storage">
-                                                                            <div class="card-body text-center">
-                                                                                <i class="fa fa-warehouse fa-2x"></i>
-                                                                                <h5 class="card-title">Storage</h5>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="small-square-card-container">
-                                                                        <div class="card property-subtype-card small-square-card" data-subtype="other">
-                                                                            <div class="card-body text-center">
-                                                                                <i class="fa fa-building fa-2x"></i>
-                                                                                <h5 class="card-title">Other</h5>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            `;
+                                                                        `;
             }
             $('#subtypeSelection').html(subtypesHtml).show();
 
@@ -847,76 +853,76 @@
             if (type === 'residential') {
 
                 unitFieldsHtml = `
-                                                                       <div class="row">
-                                                                <div class="col-md-4">
-                                                                    <div class="mb-2">
-                                                                        <label class="sr-only" for="unitName">Unit Name</label>
-                                                                        <input class="form-control" id="unitName" type="text" name="unitName" placeholder="Unit Name" required="">
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-2">
-                                                                    <div class="mb-2">
-                                                                        <label class="sr-only" for="beds">Beds</label>
-                                                                        <input class="form-control" id="beds" type="number" name="beds" placeholder="Beds" required="">
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-2">
-                                                                    <div class="mb-2">
-                                                                        <label class="sr-only" for="bath">Bath</label>
-                                                                        <input class="form-control" id="bath" type="number" name="bath" placeholder="Bath" required="">
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-2">
-                                                                    <div class="mb-2">
-                                                                        <label class="sr-only" for="size">Size</label>
-                                                                        <input class="form-control" id="size" type="number" name="size" placeholder="Size" required="">
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-2">
-                                                                    <div class="mb-2">
-                                                                        <label class="sr-only" for="rent">Rent</label>
-                                                                        <input class="form-control" id="rent" type="number" name="rent" placeholder="Rent" required="">
-                                                                    </div>
-                                                                </div>
-                                                            </div>
+                                                                                   <div class="row">
+                                                                            <div class="col-md-4">
+                                                                                <div class="mb-2">
+                                                                                    <label class="sr-only" for="unitName">Unit Name</label>
+                                                                                    <input class="form-control" id="unitName" type="text" name="unitName" placeholder="Unit Name" required="">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-md-2">
+                                                                                <div class="mb-2">
+                                                                                    <label class="sr-only" for="beds">Beds</label>
+                                                                                    <input class="form-control" id="beds" type="number" name="beds" placeholder="Beds" required="">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-md-2">
+                                                                                <div class="mb-2">
+                                                                                    <label class="sr-only" for="bath">Bath</label>
+                                                                                    <input class="form-control" id="bath" type="number" name="bath" placeholder="Bath" required="">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-md-2">
+                                                                                <div class="mb-2">
+                                                                                    <label class="sr-only" for="size">Size</label>
+                                                                                    <input class="form-control" id="size" type="number" name="size" placeholder="Size" required="">
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-md-2">
+                                                                                <div class="mb-2">
+                                                                                    <label class="sr-only" for="rent">Rent</label>
+                                                                                    <input class="form-control" id="rent" type="number" name="rent" placeholder="Rent" required="">
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
 
-                                                                `;
+                                                                            `;
             } else if (type === 'commercial') {
                 // Commercial unit fields
                 unitFieldsHtml = `
-                                                                                <div class="row">
-                                                                    <div class="col-md-4">
-                                                                        <div class="mb-2">
-                                                                            <label class="sr-only" for="unitName">Unit Name</label>
-                                                                            <input class="form-control" id="unitName" type="text" name="unitName" placeholder="Unit Name" required="">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-2">
-                                                                        <div class="mb-2">
-                                                                            <label class="sr-only" for="beds">Beds</label>
-                                                                            <input class="form-control" id="beds" type="number" name="beds" placeholder="Beds" required="">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-2">
-                                                                        <div class="mb-2">
-                                                                            <label class="sr-only" for="bath">Bath</label>
-                                                                            <input class="form-control" id="bath" type="number" name="bath" placeholder="Bath" required="">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-2">
-                                                                        <div class="mb-2">
-                                                                            <label class="sr-only" for="size">Size</label>
-                                                                            <input class="form-control" id="size" type="number" name="size" placeholder="Size" required="">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-2">
-                                                                        <div class="mb-2">
-                                                                            <label class="sr-only" for="rent">Rent</label>
-                                                                            <input class="form-control" id="rent" type="number" name="rent" placeholder="Rent" required="">
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                `;
+                                                                                            <div class="row">
+                                                                                <div class="col-md-4">
+                                                                                    <div class="mb-2">
+                                                                                        <label class="sr-only" for="unitName">Unit Name</label>
+                                                                                        <input class="form-control" id="unitName" type="text" name="unitName" placeholder="Unit Name" required="">
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-md-2">
+                                                                                    <div class="mb-2">
+                                                                                        <label class="sr-only" for="beds">Beds</label>
+                                                                                        <input class="form-control" id="beds" type="number" name="beds" placeholder="Beds" required="">
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-md-2">
+                                                                                    <div class="mb-2">
+                                                                                        <label class="sr-only" for="bath">Bath</label>
+                                                                                        <input class="form-control" id="bath" type="number" name="bath" placeholder="Bath" required="">
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-md-2">
+                                                                                    <div class="mb-2">
+                                                                                        <label class="sr-only" for="size">Size</label>
+                                                                                        <input class="form-control" id="size" type="number" name="size" placeholder="Size" required="">
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-md-2">
+                                                                                    <div class="mb-2">
+                                                                                        <label class="sr-only" for="rent">Rent</label>
+                                                                                        <input class="form-control" id="rent" type="number" name="rent" placeholder="Rent" required="">
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            `;
             }
 
             $('#unitFields').html(unitFieldsHtml);
@@ -952,7 +958,7 @@
             $('#SelectedSubtype').val(subtype);
         });
 
-     
+
     });
 
     $('.bank-account-option').click(function () {
@@ -1070,31 +1076,36 @@
 
     $('#submitForm').click(function (event) {
         event.preventDefault();
+
         debugger;
+        var isValid = validateCurrentStep();
+        if (isValid) {
+            if (currentStep < totalSteps) {
 
-        var formData = collectFormData();
+                navigateToStep(currentStep + 1);
+            } else {
 
-        var submitUrl = isEditMode ? `$/Assests/UpdateAsset/{Model?.Asset?.AssetId}` : '/Assests/AddAsset';
-        console.log(formData);
+                var formData = collectFormData();
+                var submitUrl = isEditMode ? `$/Assests/UpdateAsset/{Model?.Asset?.AssetId}` : '/Assests/AddAsset';
+                console.log(formData);
 
-        if (currentStep === totalSteps) {
-            $.ajax({
-                url: submitUrl,
-                type: 'POST',
-                contentType: 'application/x-www-form-urlencoded',
-                data: formData,
-                success: function (response) {
-                    console.log("Success:", response);
-                    window.location.href = '/Assests/Index';
-                },
-                error: function (xhr, status, error) {
-                    console.error("Error:", error);
-                }
-            });
-
-
+                $.ajax({
+                    url: submitUrl,
+                    type: 'POST',
+                    contentType: 'application/x-www-form-urlencoded',
+                    data: formData,
+                    success: function (response) {
+                        console.log("Success:", response);
+                        window.location.href = '/Assests/Index';
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error:", error);
+                    }
+                });
+            }
         } else {
-            navigateToStep(currentStep + 1);
+
+            console.log('Form validation failed. Please check the inputs.');
         }
     });
 
@@ -1123,31 +1134,31 @@
         function addUnitFields() {
             var unitIndex = $('#unitFieldsContainer .unit-fields').length + 1;
             var unitFieldsHtml = `
-                                            <div class="unit-fields mb-3" id="unitFields${unitIndex}">
-                                                <hr>
+                                                        <div class="unit-fields mb-3" id="unitFields${unitIndex}">
+                                                            <hr>
 
-                                                <div class="form-row">
-                                                    <div class="col">
-                                                        <input type="text" class="form-control" placeholder="Unit Name" name="unitName">
-                                                    </div>
-                                                    <div class="col">
-                                                        <input type="number" class="form-control" placeholder="Beds" name="beds">
-                                                    </div>
-                                                    <div class="col">
-                                                        <input type="number" class="form-control" placeholder="Bath" name="bath">
-                                                    </div>
-                                                    <div class="col">
-                                                        <input type="number" class="form-control" placeholder="Size" name="size">
-                                                    </div>
-                                                    <div class="col">
-                                                        <input type="number" class="form-control" placeholder="Rent" name="rent">
-                                                    </div>
-                                                </div>
+                                                            <div class="form-row">
+                                                                <div class="col">
+                                                                    <input type="text" class="form-control" placeholder="Unit Name" name="unitName">
+                                                                </div>
+                                                                <div class="col">
+                                                                    <input type="number" class="form-control" placeholder="Beds" name="beds">
+                                                                </div>
+                                                                <div class="col">
+                                                                    <input type="number" class="form-control" placeholder="Bath" name="bath">
+                                                                </div>
+                                                                <div class="col">
+                                                                    <input type="number" class="form-control" placeholder="Size" name="size">
+                                                                </div>
+                                                                <div class="col">
+                                                                    <input type="number" class="form-control" placeholder="Rent" name="rent">
+                                                                </div>
+                                                            </div>
 
-                                                <div class="row mb-4">
-                                                           <h5>Unit ${unitIndex} <a class="float-right remove-unit" data-unit="${unitIndex}"><i class="fa fa-times"></i></a></h5>
-                                                    </div>
-                                            </div>`;
+                                                            <div class="row mb-4">
+                                                                       <h5>Unit ${unitIndex} <a class="float-right remove-unit" data-unit="${unitIndex}"><i class="fa fa-times"></i></a></h5>
+                                                                </div>
+                                                        </div>`;
             $('#unitFieldsContainer').append(unitFieldsHtml);
         }
 
@@ -1172,27 +1183,27 @@
 
 
     $('#addNewOwner').click(function () {
-      
+
         $('#ownerForm')[0].reset();
-       
+
         $('#firstName').focus();
     });
 
     function selectOwner(ownerId, firstName, lastName, email, picture, postalCode, address, district, region, countryCode, country) {
         // Update the table with the selected owner's details
         $('#selectedOwnerTable tbody').html(`
-            <tr>
-                <td><img src="${picture}" alt="${firstName} ${lastName}" class="img-50 img-fluid m-r-20 rounded-circle"></td>
-                <td>${firstName} ${lastName}</td>
-                <td>${email}</td>
-                <td>${postalCode}</td>
-                <td>${address}</td>
-                <td>${district}</td>
-                <td>${region}</td>
-                <td>${countryCode}</td>
-                <td>${country}</td>
-            </tr>
-        `);
+                        <tr>
+                            <td><img src="${picture}" alt="${firstName} ${lastName}" class="img-50 img-fluid m-r-20 rounded-circle"></td>
+                            <td>${firstName} ${lastName}</td>
+                            <td>${email}</td>
+                            <td>${postalCode}</td>
+                            <td>${address}</td>
+                            <td>${district}</td>
+                            <td>${region}</td>
+                            <td>${countryCode}</td>
+                            <td>${country}</td>
+                        </tr>
+                    `);
 
         $('#OwnerName').val(`${firstName} ${lastName}`);
         $('#OwnerEmail').val(email);

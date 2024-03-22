@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using NuGet.ContentModel;
 using PMS_PropertyHapa.MigrationsFiles.Data;
+using PMS_PropertyHapa.MigrationsFiles.Migrations;
 using PMS_PropertyHapa.Models;
 using PMS_PropertyHapa.Models.DTO;
 using PMS_PropertyHapa.Models.Entities;
@@ -1621,12 +1622,13 @@ namespace MagicVilla_VillaAPI.Repository
                     Zipcode = tenant.Zipcode,
                     State = tenant.State,
                     OwnerName = tenant.OwnerName,
+               //     OwnerEmail = tenant.OwnerEmail,
                     OwnerCompanyName = tenant.OwnerCompanyName,
-                    OwnerAddress = tenant.OwnerAddress,
-                    OwnerStreet = tenant.OwnerStreet,
-                    OwnerZipcode = tenant.OwnerZipcode,
-                    OwnerCity = tenant.OwnerCity,
-                    OwnerCountry = tenant.OwnerCountry
+                    OwnerAddress = tenant.OwnerAddress
+               //     OwnerDistrict = tenant.OwnerDistrict,
+               //     OwnerRegion = tenant.OwnerRegion,
+               //     OwnerCountryCode = tenant.OwnerCountryCode,
+               //     OwnerCountry = tenant.OwnerCountry,
                 }).ToList();
 
 
@@ -1655,12 +1657,13 @@ namespace MagicVilla_VillaAPI.Repository
                 Zipcode = assetDTO.Zipcode,
                 State = assetDTO.State,
                 OwnerName = assetDTO.OwnerName,
+                //     OwnerEmail = tenant.OwnerEmail,
                 OwnerCompanyName = assetDTO.OwnerCompanyName,
                 OwnerAddress = assetDTO.OwnerAddress,
-                OwnerStreet = assetDTO.OwnerStreet,
-                OwnerZipcode = assetDTO.OwnerZipcode,
-                OwnerCity = assetDTO.OwnerCity,
-                OwnerCountry = assetDTO.OwnerCountry,
+               //     OwnerDistrict = tenant.OwnerDistrict,
+               //     OwnerRegion = tenant.OwnerRegion,
+               //     OwnerCountryCode = tenant.OwnerCountryCode,
+               //     OwnerCountry = tenant.OwnerCountry,
                 Units = new List<AssetsUnits>()
             };
 
@@ -1703,11 +1706,13 @@ namespace MagicVilla_VillaAPI.Repository
             existingAsset.Zipcode = assetDTO.Zipcode;
             existingAsset.State = assetDTO.State;
             existingAsset.OwnerName = assetDTO.OwnerName;
+          //  existingAsset.OwnerEmail = assetDTO.OwnerEmail; 
             existingAsset.OwnerCompanyName = assetDTO.OwnerCompanyName;
             existingAsset.OwnerAddress = assetDTO.OwnerAddress;
-            existingAsset.OwnerStreet = assetDTO.OwnerStreet;
-            existingAsset.OwnerZipcode = assetDTO.OwnerZipcode;
-            existingAsset.OwnerCity = assetDTO.OwnerCity;
+
+        //    existingAsset.OwnerDistrict = assetDTO.OwnerDistrict;
+        //    existingAsset.OwnerRegion = assetDTO.OwnerRegion;
+        //    existingAsset.OwnerCountryCode = assetDTO.OwnerCountryCode;
             existingAsset.OwnerCountry = assetDTO.OwnerCountry;
 
             foreach (var unitDTO in assetDTO.Units)
