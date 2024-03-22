@@ -36,12 +36,14 @@ namespace PMS_PropertyHapa.Models.DTO
         public string SelectedOwnershipOption { get; set; }
 
         public string OwnerName { get; set; }
+        public string OwnerEmail { get; set; }
         public string OwnerCompanyName { get; set; }
         public string OwnerAddress { get; set; }
-        public string OwnerStreet { get; set; }
-        public string OwnerZipcode { get; set; }
-        public string OwnerCity { get; set; }
+        public string OwnerDistrict { get; set; }
+        public string OwnerRegion { get; set; }
+        public string OwnerCountryCode { get; set; }
         public string OwnerCountry { get; set; }
+
     }
 
     public class UnitDTO
