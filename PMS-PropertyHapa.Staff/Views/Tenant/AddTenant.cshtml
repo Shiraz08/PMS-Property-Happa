@@ -944,6 +944,11 @@
             'PictureUrl': 'PictureBase64'
         };
 
+         const pictureInput = document.getElementById('PictureUrl');
+    if (pictureInput.files.length > 0) {
+        formData.append('Picture', pictureInput.files[0]);
+    }sss
+
         const petPictureInputs = document.querySelectorAll('[name^="Pets"]');
         petPictureInputs.forEach(input => {
             const id = input.id;

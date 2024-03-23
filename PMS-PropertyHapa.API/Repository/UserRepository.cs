@@ -1075,11 +1075,11 @@ namespace MagicVilla_VillaAPI.Repository
                   .Include(t => t.Pets)
                   .Include(t => t.Vehicle)
                   .Include(t => t.TenantDependent)
-                  .Include(t=>t.CoTenant)
+                  .Include(t => t.CoTenant)
                   .FirstOrDefaultAsync(t => t.TenantId == tenantId);
 
             if (tenant == null)
-                return new TenantModelDto(); 
+                return new TenantModelDto();
 
             var tenantDto = new TenantModelDto
             {
@@ -1118,7 +1118,7 @@ namespace MagicVilla_VillaAPI.Repository
                     Breed = p.Breed,
                     Type = p.Type,
                     Quantity = p.Quantity,
-                    Picture = p.Picture 
+                    Picture = p.Picture
                 }).ToList(),
                 Vehicles = tenant.Vehicle.Select(v => new VehicleDto
                 {
@@ -1219,6 +1219,7 @@ namespace MagicVilla_VillaAPI.Repository
                         Type = petDto.Type,
                         Quantity = petDto.Quantity,
                         Picture = petDto.Picture,
+                        AppTenantId = tenantDto.AppTenantId
                     };
 
                     _db.Pets.Add(pet);
@@ -1256,7 +1257,8 @@ namespace MagicVilla_VillaAPI.Repository
                         EmailAddress = dependentDto.EmailAddress,
                         PhoneNumber = dependentDto.PhoneNumber,
                         DOB = dependentDto.DOB,
-                        Relation = dependentDto.Relation
+                        Relation = dependentDto.Relation,
+                        AppTenantId = tenantDto.AppTenantId
                     };
 
                     _db.TenantDependent.Add(dependent);
@@ -1280,12 +1282,13 @@ namespace MagicVilla_VillaAPI.Repository
                         District = coTenantDto.District,
                         Region = coTenantDto.Region,
                         PostalCode = coTenantDto.PostalCode,
-                        Country = coTenantDto.Country
+                        Country = coTenantDto.Country,
+                        AppTenantId = tenantDto.AppTenantId
                     };
 
                     _db.CoTenant.Add(coTenant);
                 }
-                await _db.SaveChangesAsync(); 
+                await _db.SaveChangesAsync();
             }
 
             await _db.SaveChangesAsync();
@@ -1338,6 +1341,7 @@ namespace MagicVilla_VillaAPI.Repository
                     existingPet.Type = petDto.Type;
                     existingPet.Quantity = petDto.Quantity;
                     existingPet.Picture = petDto.Picture;
+                    existingPet.AppTenantId = petDto.AppTenantId;
                 }
                 else
                 {
@@ -1349,6 +1353,7 @@ namespace MagicVilla_VillaAPI.Repository
                         Type = petDto.Type,
                         Quantity = petDto.Quantity,
                         Picture = petDto.Picture,
+                        AppTenantId = tenantDto.AppTenantId
                     };
                     tenant.Pets.Add(newPet);
                 }
@@ -1389,6 +1394,7 @@ namespace MagicVilla_VillaAPI.Repository
                     existingDependent.PhoneNumber = dependentDto.PhoneNumber;
                     existingDependent.DOB = dependentDto.DOB;
                     existingDependent.Relation = dependentDto.Relation;
+                    existingDependent.AppTenantId = tenantDto.AppTenantId;
                 }
                 else
                 {
@@ -1401,6 +1407,7 @@ namespace MagicVilla_VillaAPI.Repository
                         PhoneNumber = dependentDto.PhoneNumber,
                         DOB = dependentDto.DOB,
                         Relation = dependentDto.Relation,
+                        AppTenantId = tenantDto.AppTenantId
                     };
                     tenant.TenantDependent.Add(newDependent);
                 }
@@ -1411,7 +1418,7 @@ namespace MagicVilla_VillaAPI.Repository
                 var existingCoTenant = tenant.CoTenant.FirstOrDefault(ct => ct.CoTenantId == coTenantDto.CoTenantId);
                 if (existingCoTenant != null)
                 {
-                
+
                     existingCoTenant.FirstName = coTenantDto.FirstName;
                     existingCoTenant.LastName = coTenantDto.LastName;
                     existingCoTenant.EmailAddress = coTenantDto.EmailAddress;
@@ -1422,10 +1429,13 @@ namespace MagicVilla_VillaAPI.Repository
                     existingCoTenant.Region = coTenantDto.Region;
                     existingCoTenant.PostalCode = coTenantDto.PostalCode;
                     existingCoTenant.Country = coTenantDto.Country;
+                    existingCoTenant.IsDeleted = false;
+                    existingCoTenant.Status = true;
+                    existingCoTenant.AppTenantId = tenantDto.AppTenantId;
                 }
                 else
                 {
-                
+
                     var newCoTenant = new CoTenant
                     {
                         TenantId = tenant.TenantId,
@@ -1438,7 +1448,10 @@ namespace MagicVilla_VillaAPI.Repository
                         District = coTenantDto.District,
                         Region = coTenantDto.Region,
                         PostalCode = coTenantDto.PostalCode,
-                        Country = coTenantDto.Country
+                        Country = coTenantDto.Country,
+                        IsDeleted = false,
+                        Status = true,
+                        AppTenantId = tenantDto.AppTenantId
                     };
                     tenant.CoTenant.Add(newCoTenant);
                 }
@@ -1758,14 +1771,14 @@ namespace MagicVilla_VillaAPI.Repository
                     Country = tenant.Country,
                     Zipcode = tenant.Zipcode,
                     State = tenant.State,
-               //     OwnerName = tenant.OwnerName,
-               //     OwnerEmail = tenant.OwnerEmail,
-               //     OwnerCompanyName = tenant.OwnerCompanyName,
-                //    OwnerAddress = tenant.OwnerAddress
-               //     OwnerDistrict = tenant.OwnerDistrict,
-               //     OwnerRegion = tenant.OwnerRegion,
-               //     OwnerCountryCode = tenant.OwnerCountryCode,
-               //     OwnerCountry = tenant.OwnerCountry,
+                    //     OwnerName = tenant.OwnerName,
+                    //     OwnerEmail = tenant.OwnerEmail,
+                    //     OwnerCompanyName = tenant.OwnerCompanyName,
+                    //    OwnerAddress = tenant.OwnerAddress
+                    //     OwnerDistrict = tenant.OwnerDistrict,
+                    //     OwnerRegion = tenant.OwnerRegion,
+                    //     OwnerCountryCode = tenant.OwnerCountryCode,
+                    //     OwnerCountry = tenant.OwnerCountry,
                 }).ToList();
 
 
@@ -1783,7 +1796,7 @@ namespace MagicVilla_VillaAPI.Repository
             var existingOwner = await _db.Owner.FirstOrDefaultAsync(o => o.EmailAddress == assetDTO.OwnerEmail);
             if (existingOwner == null)
             {
-               
+
                 existingOwner = new Owner
                 {
                     FirstName = assetDTO.OwnerFirstName,
@@ -1815,7 +1828,7 @@ namespace MagicVilla_VillaAPI.Repository
                 Zipcode = assetDTO.Zipcode,
                 State = assetDTO.State,
                 Image = assetDTO.Image,
-            Units = new List<AssetsUnits>()
+                Units = new List<AssetsUnits>()
             };
 
             foreach (var u in assetDTO.Units)
@@ -1878,7 +1891,7 @@ namespace MagicVilla_VillaAPI.Repository
             existingAsset.Zipcode = assetDTO.Zipcode;
             existingAsset.State = assetDTO.State;
             existingAsset.Image = assetDTO.Image;
-        
+
 
             foreach (var unitDTO in assetDTO.Units)
             {
