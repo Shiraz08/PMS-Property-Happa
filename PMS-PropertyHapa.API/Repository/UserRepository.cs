@@ -1075,6 +1075,7 @@ namespace MagicVilla_VillaAPI.Repository
                   .Include(t => t.Pets)
                   .Include(t => t.Vehicle)
                   .Include(t => t.TenantDependent)
+                  .Include(t=>t.CoTenant)
                   .FirstOrDefaultAsync(t => t.TenantId == tenantId);
 
             if (tenant == null)
@@ -1295,7 +1296,7 @@ namespace MagicVilla_VillaAPI.Repository
 
         public async Task<bool> UpdateTenantAsync(TenantModelDto tenantDto)
         {
-            var tenant = await _db.Tenant.Include(t => t.Pets).Include(t => t.Vehicle).FirstOrDefaultAsync(t => t.TenantId == tenantDto.TenantId);
+            var tenant = await _db.Tenant.Include(t => t.Pets).Include(t => t.Vehicle).Include(t => t.TenantDependent).Include(t => t.CoTenant).FirstOrDefaultAsync(t => t.TenantId == tenantDto.TenantId);
             if (tenant == null)
                 return false;
 
