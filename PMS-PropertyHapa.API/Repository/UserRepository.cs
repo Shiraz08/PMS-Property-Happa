@@ -1621,10 +1621,10 @@ namespace MagicVilla_VillaAPI.Repository
                     Country = tenant.Country,
                     Zipcode = tenant.Zipcode,
                     State = tenant.State,
-                    OwnerName = tenant.OwnerName,
+               //     OwnerName = tenant.OwnerName,
                //     OwnerEmail = tenant.OwnerEmail,
-                    OwnerCompanyName = tenant.OwnerCompanyName,
-                    OwnerAddress = tenant.OwnerAddress
+               //     OwnerCompanyName = tenant.OwnerCompanyName,
+                //    OwnerAddress = tenant.OwnerAddress
                //     OwnerDistrict = tenant.OwnerDistrict,
                //     OwnerRegion = tenant.OwnerRegion,
                //     OwnerCountryCode = tenant.OwnerCountryCode,
@@ -1643,6 +1643,27 @@ namespace MagicVilla_VillaAPI.Repository
 
         public async Task<bool> CreateAssetAsync(AssetDTO assetDTO)
         {
+            var existingOwner = await _db.Owner.FirstOrDefaultAsync(o => o.EmailAddress == assetDTO.OwnerEmail);
+            if (existingOwner == null)
+            {
+               
+                existingOwner = new Owner
+                {
+                    FirstName = assetDTO.OwnerFirstName,
+                    LastName = assetDTO.OwnerLastName,
+                    EmailAddress = assetDTO.OwnerEmail,
+                    Address = assetDTO.OwnerAddress,
+                    District = assetDTO.OwnerDistrict,
+                    Region = assetDTO.OwnerRegion,
+                    CountryCode = assetDTO.OwnerCountryCode,
+                    Country = assetDTO.OwnerCountry,
+                    AppTenantId = Guid.Parse(assetDTO.AppTid),
+                    Picture = assetDTO.OwnerImage
+
+                };
+                await _db.Owner.AddAsync(existingOwner);
+            }
+
             var newAsset = new Assets
             {
                 SelectedPropertyType = assetDTO.SelectedPropertyType,
@@ -1656,15 +1677,8 @@ namespace MagicVilla_VillaAPI.Repository
                 Country = assetDTO.Country,
                 Zipcode = assetDTO.Zipcode,
                 State = assetDTO.State,
-                OwnerName = assetDTO.OwnerName,
-                //     OwnerEmail = tenant.OwnerEmail,
-                OwnerCompanyName = assetDTO.OwnerCompanyName,
-                OwnerAddress = assetDTO.OwnerAddress,
-               //     OwnerDistrict = tenant.OwnerDistrict,
-               //     OwnerRegion = tenant.OwnerRegion,
-               //     OwnerCountryCode = tenant.OwnerCountryCode,
-               //     OwnerCountry = tenant.OwnerCountry,
-                Units = new List<AssetsUnits>()
+                Image = assetDTO.Image,
+            Units = new List<AssetsUnits>()
             };
 
             foreach (var u in assetDTO.Units)
@@ -1688,6 +1702,27 @@ namespace MagicVilla_VillaAPI.Repository
 
         public async Task<bool> UpdateAssetAsync(AssetDTO assetDTO)
         {
+            var existingOwner = await _db.Owner.FirstOrDefaultAsync(o => o.EmailAddress == assetDTO.OwnerEmail);
+            if (existingOwner == null)
+            {
+
+                existingOwner = new Owner
+                {
+                    FirstName = assetDTO.OwnerFirstName,
+                    LastName = assetDTO.OwnerLastName,
+                    EmailAddress = assetDTO.OwnerEmail,
+                    Address = assetDTO.OwnerAddress,
+                    District = assetDTO.OwnerDistrict,
+                    Region = assetDTO.OwnerRegion,
+                    CountryCode = assetDTO.OwnerCountryCode,
+                    Country = assetDTO.OwnerCountry,
+                    AppTenantId = Guid.Parse(assetDTO.AppTid),
+                    Picture = assetDTO.OwnerImage
+                };
+                await _db.Owner.AddAsync(existingOwner);
+            }
+
+
             var existingAsset = await _db.Assets.FindAsync(assetDTO.AssetId);
             if (existingAsset == null)
             {
@@ -1705,15 +1740,8 @@ namespace MagicVilla_VillaAPI.Repository
             existingAsset.Country = assetDTO.Country;
             existingAsset.Zipcode = assetDTO.Zipcode;
             existingAsset.State = assetDTO.State;
-            existingAsset.OwnerName = assetDTO.OwnerName;
-          //  existingAsset.OwnerEmail = assetDTO.OwnerEmail; 
-            existingAsset.OwnerCompanyName = assetDTO.OwnerCompanyName;
-            existingAsset.OwnerAddress = assetDTO.OwnerAddress;
-
-        //    existingAsset.OwnerDistrict = assetDTO.OwnerDistrict;
-        //    existingAsset.OwnerRegion = assetDTO.OwnerRegion;
-        //    existingAsset.OwnerCountryCode = assetDTO.OwnerCountryCode;
-            existingAsset.OwnerCountry = assetDTO.OwnerCountry;
+            existingAsset.Image = assetDTO.Image;
+        
 
             foreach (var unitDTO in assetDTO.Units)
             {

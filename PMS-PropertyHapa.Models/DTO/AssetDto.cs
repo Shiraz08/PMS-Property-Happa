@@ -28,6 +28,8 @@ namespace PMS_PropertyHapa.Models.DTO
         public string Country { get; set; }
         public string Zipcode { get; set; }
 
+        public string AppTid { get; set; }
+
         public List<UnitDTO> Units { get; set; } = new List<UnitDTO>();
         public OwnerDto OwnerData { get; set; }
 
@@ -35,7 +37,8 @@ namespace PMS_PropertyHapa.Models.DTO
         public string SelectedReserveFundsOption { get; set; }
         public string SelectedOwnershipOption { get; set; }
 
-        public string OwnerName { get; set; }
+        public string OwnerFirstName { get; set; }
+        public string OwnerLastName { get; set; }
         public string OwnerEmail { get; set; }
         public string OwnerCompanyName { get; set; }
         public string OwnerAddress { get; set; }
@@ -43,6 +46,8 @@ namespace PMS_PropertyHapa.Models.DTO
         public string OwnerRegion { get; set; }
         public string OwnerCountryCode { get; set; }
         public string OwnerCountry { get; set; }
+
+        public string OwnerImage { get; set; }  
 
     }
 

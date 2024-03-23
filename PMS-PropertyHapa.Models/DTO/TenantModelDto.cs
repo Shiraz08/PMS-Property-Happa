@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace PMS_PropertyHapa.Models.DTO
 {
-    public class TenantModelDto 
+    public class TenantModelDto
     {
 
         public int? TenantId { get; set; }
@@ -93,8 +93,22 @@ namespace PMS_PropertyHapa.Models.DTO
             public string Manufacturer { get; set; }
             public string ModelName { get; set; }
             public string ModelVariant { get; set; }
-            public string Engine { get; set; }
+            public string Color { get; set; }
             public string Year { get; set; }
+        }
+
+        public List<TenantDependentDto> Dependent { get; set; } = new List<TenantDependentDto>();
+
+        public class TenantDependentDto
+        {
+            public int TenantDependentId { get; set; }
+            public int TenantId { get; set; }
+            public string FirstName { get; set; }
+            public string LastName { get; set; }
+            public string EmailAddress { get; set; }
+            public string PhoneNumber { get; set; }
+            public string DOB { get; set; }
+            public string Relation { get; set; }
         }
     }
 }
