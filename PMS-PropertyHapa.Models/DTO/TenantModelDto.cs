@@ -110,5 +110,23 @@ namespace PMS_PropertyHapa.Models.DTO
             public string DOB { get; set; }
             public string Relation { get; set; }
         }
+
+        public List<CoTenantDto> CoTenant { get; set; } = new List<CoTenantDto>();
+
+        public class CoTenantDto
+        {
+            public int CoTenantId { get; set; }
+            public int TenantId { get; set; }
+            public string FirstName { get; set; }
+            public string LastName { get; set; }
+            public string EmailAddress { get; set; }
+            public string PhoneNumber { get; set; }
+            public string Address { get; set; }
+            public string Unit { get; set; }
+            public string District { get; set; }
+            public string Region { get; set; }
+            public string PostalCode { get; set; }
+            public string Country { get; set; }
+        }
     }
 }

@@ -2,6 +2,7 @@
 using MagicVilla_VillaAPI.Repository.IRepostiory;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.DotNet.Scaffolding.Shared.ProjectModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using NuGet.ContentModel;
@@ -1073,6 +1074,7 @@ namespace MagicVilla_VillaAPI.Repository
             var tenant = await _db.Tenant
                   .Include(t => t.Pets)
                   .Include(t => t.Vehicle)
+                  .Include(t => t.TenantDependent)
                   .FirstOrDefaultAsync(t => t.TenantId == tenantId);
 
             if (tenant == null)
@@ -1124,6 +1126,32 @@ namespace MagicVilla_VillaAPI.Repository
                     ModelName = v.ModelName,
                     ModelVariant = v.ModelVariant,
                     Year = v.Year
+                }).ToList(),
+                Dependent = tenant.TenantDependent.Select(d => new TenantDependentDto
+                {
+                    TenantDependentId = d.TenantDependentId,
+                    TenantId = d.TenantId,
+                    FirstName = d.FirstName,
+                    LastName = d.LastName,
+                    EmailAddress = d.EmailAddress,
+                    PhoneNumber = d.PhoneNumber,
+                    DOB = d.DOB,
+                    Relation = d.Relation
+                }).ToList(),
+                CoTenant = tenant.CoTenant.Select(c => new CoTenantDto
+                {
+                    CoTenantId = c.CoTenantId,
+                    TenantId = c.TenantId,
+                    FirstName = c.FirstName,
+                    LastName = c.LastName,
+                    EmailAddress = c.EmailAddress,
+                    PhoneNumber = c.PhoneNumber,
+                    Address = c.Address,
+                    Unit = c.Unit,
+                    District = c.District,
+                    Region = c.Region,
+                    PostalCode = c.PostalCode,
+                    Country = c.Country
                 }).ToList()
             };
 
@@ -1214,6 +1242,49 @@ namespace MagicVilla_VillaAPI.Repository
                 }
 
                 await _db.SaveChangesAsync();
+            }
+            if (tenantDto.Dependent != null)
+            {
+                foreach (var dependentDto in tenantDto.Dependent)
+                {
+                    var dependent = new TenantDependent
+                    {
+                        TenantId = newTenant.TenantId,
+                        FirstName = dependentDto.FirstName,
+                        LastName = dependentDto.LastName,
+                        EmailAddress = dependentDto.EmailAddress,
+                        PhoneNumber = dependentDto.PhoneNumber,
+                        DOB = dependentDto.DOB,
+                        Relation = dependentDto.Relation
+                    };
+
+                    _db.TenantDependent.Add(dependent);
+                }
+
+                await _db.SaveChangesAsync();
+            }
+            if (tenantDto.CoTenant != null)
+            {
+                foreach (var coTenantDto in tenantDto.CoTenant)
+                {
+                    var coTenant = new CoTenant
+                    {
+                        TenantId = newTenant.TenantId,
+                        FirstName = coTenantDto.FirstName,
+                        LastName = coTenantDto.LastName,
+                        EmailAddress = coTenantDto.EmailAddress,
+                        PhoneNumber = coTenantDto.PhoneNumber,
+                        Address = coTenantDto.Address,
+                        Unit = coTenantDto.Unit,
+                        District = coTenantDto.District,
+                        Region = coTenantDto.Region,
+                        PostalCode = coTenantDto.PostalCode,
+                        Country = coTenantDto.Country
+                    };
+
+                    _db.CoTenant.Add(coTenant);
+                }
+                await _db.SaveChangesAsync(); 
             }
 
             await _db.SaveChangesAsync();
@@ -1306,6 +1377,71 @@ namespace MagicVilla_VillaAPI.Repository
                 }
             }
 
+            foreach (var dependentDto in tenantDto.Dependent)
+            {
+                var existingDependent = tenant.TenantDependent.FirstOrDefault(d => d.TenantDependentId == dependentDto.TenantDependentId);
+                if (existingDependent != null)
+                {
+                    existingDependent.FirstName = dependentDto.FirstName;
+                    existingDependent.LastName = dependentDto.LastName;
+                    existingDependent.EmailAddress = dependentDto.EmailAddress;
+                    existingDependent.PhoneNumber = dependentDto.PhoneNumber;
+                    existingDependent.DOB = dependentDto.DOB;
+                    existingDependent.Relation = dependentDto.Relation;
+                }
+                else
+                {
+                    var newDependent = new TenantDependent
+                    {
+                        TenantId = tenant.TenantId,
+                        FirstName = dependentDto.FirstName,
+                        LastName = dependentDto.LastName,
+                        EmailAddress = dependentDto.EmailAddress,
+                        PhoneNumber = dependentDto.PhoneNumber,
+                        DOB = dependentDto.DOB,
+                        Relation = dependentDto.Relation,
+                    };
+                    tenant.TenantDependent.Add(newDependent);
+                }
+            }
+
+            foreach (var coTenantDto in tenantDto.CoTenant)
+            {
+                var existingCoTenant = tenant.CoTenant.FirstOrDefault(ct => ct.CoTenantId == coTenantDto.CoTenantId);
+                if (existingCoTenant != null)
+                {
+                
+                    existingCoTenant.FirstName = coTenantDto.FirstName;
+                    existingCoTenant.LastName = coTenantDto.LastName;
+                    existingCoTenant.EmailAddress = coTenantDto.EmailAddress;
+                    existingCoTenant.PhoneNumber = coTenantDto.PhoneNumber;
+                    existingCoTenant.Address = coTenantDto.Address;
+                    existingCoTenant.Unit = coTenantDto.Unit;
+                    existingCoTenant.District = coTenantDto.District;
+                    existingCoTenant.Region = coTenantDto.Region;
+                    existingCoTenant.PostalCode = coTenantDto.PostalCode;
+                    existingCoTenant.Country = coTenantDto.Country;
+                }
+                else
+                {
+                
+                    var newCoTenant = new CoTenant
+                    {
+                        TenantId = tenant.TenantId,
+                        FirstName = coTenantDto.FirstName,
+                        LastName = coTenantDto.LastName,
+                        EmailAddress = coTenantDto.EmailAddress,
+                        PhoneNumber = coTenantDto.PhoneNumber,
+                        Address = coTenantDto.Address,
+                        Unit = coTenantDto.Unit,
+                        District = coTenantDto.District,
+                        Region = coTenantDto.Region,
+                        PostalCode = coTenantDto.PostalCode,
+                        Country = coTenantDto.Country
+                    };
+                    tenant.CoTenant.Add(newCoTenant);
+                }
+            }
             var result = await _db.SaveChangesAsync();
             return result > 0;
         }
