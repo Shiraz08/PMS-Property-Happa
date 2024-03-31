@@ -36,6 +36,9 @@ namespace PMS_PropertyHapa.MigrationsFiles.Data
         public DbSet<Vehicle> Vehicle { get; set; }
         public DbSet<CoTenant> CoTenant { get; set; }
         public DbSet<TenantDependent> TenantDependent { get; set; }
+        public DbSet<Lease> Lease { get; set; }
+        public DbSet<RentCharge> RentCharge { get; set; }
+        public DbSet<SecurityDeposit> SecurityDeposit { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Tenant>()
@@ -60,6 +63,10 @@ namespace PMS_PropertyHapa.MigrationsFiles.Data
                 .HasMany(c => c.CoTenant)
                 .WithOne(e => e.Tenant)
                 .HasForeignKey(e => e.TenantId);
+
+
+
+
 
             base.OnModelCreating(modelBuilder);
         }
