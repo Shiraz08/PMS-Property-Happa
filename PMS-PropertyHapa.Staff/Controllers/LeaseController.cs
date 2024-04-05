@@ -41,11 +41,15 @@ namespace PMS_PropertyHapa.Staff.Controllers
             return View();
         }
 
-
+       
 
         [HttpPost]
         public async Task<IActionResult> Create(LeaseDto lease)
         {
+            if(lease.TenantId == 0)
+            {
+                lease.TenantId = 41;
+            }
             if (lease == null)
             {
                 return Json(new { success = false, message = "lease data is  empty" });
