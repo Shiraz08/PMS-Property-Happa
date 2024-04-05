@@ -697,6 +697,7 @@
     }
 
     function addRentChargeEntry(amount, description, rentDate, rentPeriod, index) {
+        var formattedRentDate = rentDate && rentDate != '0001-01-01T00:00:00' ? rentDate.substr(0, 10) : '';
         // Creating the HTML structure for a new rent charge entry
         const entryHtml = `
                 <div class="rent-charge-entry" data-index="${index}">
@@ -705,7 +706,7 @@
 
                     <input type="number" class="form-control mb-2" name="RentCharges[${index}].Amount" placeholder="Amount" value="${amount}">
 
-                    <input type="date" class="form-control mb-2" name="RentCharges[${index}].RentDate" value="${rentDate ? rentDate.substr(0, 10) : ''}">
+                            <input type="date" class="form-control mb-2" name="RentCharges[${index}].RentDate" value="${formattedRentDate}">
 
                     <select class="form-control mb-2" name="RentCharges[${index}].RentPeriod">
                         <option value="daily" ${rentPeriod === 'daily' ? 'selected' : ''}>Daily</option>
@@ -812,16 +813,7 @@
         $("#securityDepositsContainer").append(entryHtml);
     }
 
-
-    function appendSecurityDepositsToFormData(formData) {
-        $('.deposit-detail').each(function (index) {
-            let description = $(this).find('input[name^="SecurityDeposits["]').val();
-            let amount = $(this).find('input[name^="SecurityDeposits["]').val(); // Adjust based on your actual input names
-            formData.append(`SecurityDeposits[${index}].Description`, description);
-            formData.append(`SecurityDeposits[${index}].Amount`, amount);
-        });
-    }
-
+  
 
     const Toast = Swal.mixin({
         toast: true,
@@ -1222,6 +1214,7 @@
 
     function appendSecurityDepositsToFormData(formData) {
         $('#securityDepositsContainer .deposit-detail').each(function (index) {
+            // Utilize the name attribute structure you've established
             formData.append(`SecurityDeposits[${index}].Description`, $(this).find('[name$=".Description"]').val());
             formData.append(`SecurityDeposits[${index}].Amount`, $(this).find('[name$=".Amount"]').val());
         });
