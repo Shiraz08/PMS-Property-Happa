@@ -942,7 +942,7 @@
         }
 
 
-        if (@Model.IsFixedTerm.ToString().ToLower() == "true") {
+        if (@Model?.IsFixedTerm.ToString().ToLower() == "true") {
             $('#fixedTermCard').addClass('selected');
         } else {
             $('#monthToMonthCard').addClass('selected');
