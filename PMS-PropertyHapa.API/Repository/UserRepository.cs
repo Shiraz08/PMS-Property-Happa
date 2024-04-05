@@ -1661,7 +1661,6 @@ namespace MagicVilla_VillaAPI.Repository
             }
             catch (Exception ex)
             {
-                await transaction.RollbackAsync();
                 return false;
             }
         }
