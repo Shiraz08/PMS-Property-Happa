@@ -389,7 +389,7 @@
                                         <hr class="my-4 mb-2 mt-2" style="width: 100%; border-top: 2px solid #000;" />
 
                                         <p>When do you want to start charging rent?</p>
-                                        <input type="date" class="form-control w-25 d-inline-block mb-3" id="firstRentDate" >
+                                        <input type="date" class="form-control w-25 d-inline-block mb-3" id="firstRentDate">
 
                                         <p>How often do you charge rent?</p>
                                         <select class="form-control w-25 d-inline-block mb-3" id="rentFrequency">
@@ -685,9 +685,9 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.5.3/signature_pad.min.js"></script>
 <script>
-    var rentCharges = @Html.Raw(Json.Serialize(Model?.RentCharges));
+    var rentCharges = @Html.Raw(Json.Serialize(Model?.RentCharges)) || [];
     var securityDeposits = @Html.Raw(Json.Serialize(Model?.SecurityDeposits)) || [];
-    var signaturePad;
+
 
     function populateRentCharges() {
         $("#rentChargesContainer").html(""); // Clear existing entries
@@ -697,63 +697,63 @@
     }
 
     function addRentChargeEntry(amount, description, rentDate, rentPeriod, index) {
+        // Creating the HTML structure for a new rent charge entry
         const entryHtml = `
                 <div class="rent-charge-entry" data-index="${index}">
+
                     <input type="text" class="form-control mb-2" name="RentCharges[${index}].Description" placeholder="Description" value="${description}">
+
                     <input type="number" class="form-control mb-2" name="RentCharges[${index}].Amount" placeholder="Amount" value="${amount}">
+
                     <input type="date" class="form-control mb-2" name="RentCharges[${index}].RentDate" value="${rentDate ? rentDate.substr(0, 10) : ''}">
+
                     <select class="form-control mb-2" name="RentCharges[${index}].RentPeriod">
                         <option value="daily" ${rentPeriod === 'daily' ? 'selected' : ''}>Daily</option>
                         <option value="weekly" ${rentPeriod === 'weekly' ? 'selected' : ''}>Weekly</option>
                         <option value="monthly" ${rentPeriod === 'monthly' ? 'selected' : ''}>Monthly</option>
                     </select>
-                    <button type="button" class="btn btn-danger remove-charge" onclick="removeChargeEntry(this)">Remove</button>
+
+                    <button type="button" class="btn btn-danger remove-charge" onclick="removeChargeEntry(this)">x</button>
                 </div>
             `;
 
+        // Appending the new entry to the 'rentChargesContainer'
         $("#rentChargesContainer").append(entryHtml);
     }
 
-    function initializeSignaturePad() {
-        var canvas = document.getElementById('signatureCanvas');
-        signaturePad = new SignaturePad(canvas);
-
-        $('#clearSignature').click(function () {
-            signaturePad.clear();
-        });
-    }
-
-    function setupEventHandlers() {
-        
-        // Handle "Signed" and "Unsigned" button clicks
-        $('#Signed').click(function () {
-            $('#signatureUploadSection').show();
-            $('#signaturePadSection').hide();
-        });
-
-        $('#UnSigned').click(function () {
-            $('#signaturePadSection').show();
-            $('#signatureUploadSection').hide();
-        });
-
-        // Before form submission, get the signature data
-        $('#submitForm').click(function () {
-            if ($('#UnSigned').hasClass('selected') && !signaturePad.isEmpty()) {
-                var signatureData = signaturePad.toDataURL();
-                $('#SignatureImagePath').val(signatureData.replace(/^data:image\/(png|jpg|jpeg);base64,/, ""));
-            } else {
-              
-                $('#SignatureImagePath').val('');
-            }
-
-        });
-    }
-        });
-
     function removeChargeEntry(button) {
+        // Removes the closest '.rent-charge-entry' parent of the button that triggered the event
         $(button).closest('.rent-charge-entry').remove();
-        // Optional: Re-index your rent charge entries here if necessary
     }
+
+    var signaturePad = new SignaturePad(document.getElementById('signatureCanvas'));
+
+    $('#Signed, #UnSigned').on('click', function () {
+        // Remove 'selected' class from both options
+        $('#Signed, #UnSigned').removeClass('selected');
+
+        // Add 'selected' class to the clicked option
+        $(this).addClass('selected');
+
+        // Hide both sections initially
+        $('#signatureUploadSection, #signaturePadSection').hide();
+
+        // Show the relevant section based on the selection
+        if ($(this).attr('id') === 'Signed') {
+            $('#signatureUploadSection').fadeIn();
+        } else {
+            $('#signaturePadSection').fadeIn();
+        }
+    });
+
+    $('#UnSigned').on('click', function () {
+        if (signaturePad) {
+            signaturePad.clear();
+            signaturePad = new SignaturePad(document.getElementById('signatureCanvas'));
+        }
+    });
+
+
 
     $(document).ready(function () {
         // Determine if you are in edit mode based on the existence of security deposits
@@ -769,7 +769,9 @@
         }
 
         // Populate existing security deposits if any
-        populateSecurityDeposits();
+
+
+
 
         // Event handlers for the Yes/No buttons
         $('#yesSecurityFund, #noSecurityFund').on('click', function () {
@@ -779,10 +781,8 @@
             $('#additionalDataSection')[displaySection]();
         });
 
-        // Handler for adding a new security deposit entry
-        $('#addSecurityDeposit').on('click', function () {
-            addSecurityDepositEntry('', '', securityDeposits.length);
-        });
+        populateSecurityDeposits();
+        populateRentCharges();
     });
 
     // Remove a security deposit entry
@@ -798,16 +798,29 @@
 
     function addSecurityDepositEntry(amount, description, index) {
         const entryHtml = `
-                <div class="security-deposit-entry mb-3" data-index="${index}">
-                    <input type="text" class="form-control mb-2" name="SecurityDeposits[${index}].Description" placeholder="Description" value="${description}">
-                    <input type="number" class="form-control mb-2" name="SecurityDeposits[${index}].Amount" placeholder="Amount" value="${amount}">
-                    <button type="button" class="btn btn-danger remove-deposit">Remove</button>
-                </div>
-            `;
+                <div class="deposit-detail row mb-3" data-index="${index}">
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control mb-2" name="SecurityDeposits[${index}].Description" placeholder="Description" value="${description}">
+                    </div>
+                    <div class="col-sm-4">
+                        <input type="number" class="form-control mb-2" name="SecurityDeposits[${index}].Amount" placeholder="Amount" value="${amount}">
+                    </div>
+                    <div class="col-sm-4">
+                        <button type="button" class="btn btn-danger remove-deposit">Remove</button>
+                    </div>
+                </div>`;
         $("#securityDepositsContainer").append(entryHtml);
     }
 
 
+    function appendSecurityDepositsToFormData(formData) {
+        $('.deposit-detail').each(function (index) {
+            let description = $(this).find('input[name^="SecurityDeposits["]').val();
+            let amount = $(this).find('input[name^="SecurityDeposits["]').val(); // Adjust based on your actual input names
+            formData.append(`SecurityDeposits[${index}].Description`, description);
+            formData.append(`SecurityDeposits[${index}].Amount`, amount);
+        });
+    }
 
 
     const Toast = Swal.mixin({
@@ -941,8 +954,8 @@
             $('#progressLine .f1-progress-indicator').css('width', progressPercentage + '%');
         }
 
-
-        if (@Model?.IsFixedTerm.ToString().ToLower() == "true") {
+        var isFixedTerm = '@Model?.IsFixedTerm' ? '@Model?.IsFixedTerm'.toLowerCase() === 'true' : null;
+        if (isFixedTerm) {
             $('#fixedTermCard').addClass('selected');
         } else {
             $('#monthToMonthCard').addClass('selected');
@@ -955,25 +968,34 @@
             PhoneNumber: "@Model?.Tenant?.PhoneNumber",
             EmailAddress: "@Model?.Tenant?.EmailAddress"
         }];
-        debugger;
-        // Check if there are any tenants to display
-        if (tenants && tenants.length > 0) {
-            tenants.forEach(function (tenant) {
-                // Create and append the tenant card for each tenant
-                var tenantCardHtml = '<div class="tenant-card mr-5">' +
-                    '<div class="card-body">' +
-                    '<h5 class="card-title">' + tenant.FirstName + '</h5>' +
-                    '</div>' +
-                    '</div>';
-                $('#tenantsContainer').append(tenantCardHtml);
-            });
-        }
+
+        $(document).ready(function () {
+            var isEditMode = $('#leaseId').val() && $('#leaseId').val() > 0;
+
+            // Only attempt to display tenants if in edit mode
+            if (isEditMode && tenants && tenants.length > 0) {
+                tenants.forEach(function (tenant) {
+                    var tenantCardHtml = '<div class="tenant-card mr-5">' +
+                        '<div class="card-body">' +
+                        '<h5 class="card-title">' + tenant.FirstName + ' ' + tenant.LastName + '</h5>' +
+                        '<p>' + tenant.EmailAddress + '</p>' +
+                        '<p>' + tenant.PhoneNumber + '</p>' +
+                        '</div>' +
+                        '</div>';
+                    $('#tenantsContainer').append(tenantCardHtml);
+                });
+
+              
+                $('#tenantsContainer').show();
+            } else {
+           
+                $('#tenantsContainer').hide();
+            }
+        });
 
 
-        populateRentCharges();
-        populateSecurityDeposits();
-        setupEventHandlers();
-        initializeSignaturePad();
+
+
 
         $('#yesSecurityFund').click(function () {
             $(this).addClass('selected');
@@ -988,29 +1010,24 @@
             $('#additionalDataSection').hide();
         });
 
-        // Button click handler to add a new security deposit entry
-        $('#addSecurityDeposit').click(function () {
-            // Assuming a new entry should be empty, modify as needed
-            addSecurityDepositEntry('', '', securityDeposits.length);
-            securityDeposits.push({}); // Add a placeholder to represent the new entry
-        });
+
     });
 
 
     $(document).ready(function () {
         // Click event for Fixed Term card
         $('#fixedTermCard').on('click', function () {
-            // Toggle 'selected' class
+         
             $(this).toggleClass('selected');
-            // If the Month-to-Month card is selected, deselect it
+         
             $('#monthToMonthCard').removeClass('selected');
         });
 
-        // Click event for Month-to-Month card
+       
         $('#monthToMonthCard').on('click', function () {
-            // Toggle 'selected' class
+          
             $(this).toggleClass('selected');
-            // If the Fixed Term card is selected, deselect it
+    
             $('#fixedTermCard').removeClass('selected');
         });
     });
@@ -1041,24 +1058,24 @@
     document.getElementById('addAnotherCharge').addEventListener('click', function () {
         const container = document.getElementById('rentChargesContainer');
         const newEntryHtml = `
-                <div class="form-row d-flex flex-wrap justify-content-center mb-3 rent-charge-entry">
-                    <div class="col-sm-3">
-                        <select class="form-control charge-type" name="RentCharges[${rentChargeIndex}].Type">
-                            <option value="" disabled selected hidden>Select</option>
-                            <option value="rental">Rental Income</option>
-                            <option value="storage">Storage Rent</option>
-                        </select>
-                    </div>
-                    <div class="col-sm-3">
-                        <input type="text" class="form-control charge-description" name="RentCharges[${rentChargeIndex}].Description" placeholder="Add description">
-                    </div>
-                    <div class="col-sm-3">
-                        <input type="text" class="form-control charge-amount" name="RentCharges[${rentChargeIndex}].Amount" placeholder="Amount">
-                    </div>
-                    <div class="col-sm-3">
-                        <button type="button" class="btn btn-danger remove-charge">Remove</button>
-                    </div>
-                </div>`;
+                            <div class="form-row d-flex flex-wrap justify-content-center mb-3 rent-charge-entry">
+                                <div class="col-sm-3">
+                                    <select class="form-control charge-type" name="RentCharges[${rentChargeIndex}].Type">
+                                        <option value="" disabled selected hidden>Select</option>
+                                        <option value="rental">Rental Income</option>
+                                        <option value="storage">Storage Rent</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control charge-description" name="RentCharges[${rentChargeIndex}].Description" placeholder="Add description">
+                                </div>
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control charge-amount" name="RentCharges[${rentChargeIndex}].Amount" placeholder="Amount">
+                                </div>
+                                <div class="col-sm-3">
+                                    <button type="button" class="btn btn-danger remove-charge">Remove</button>
+                                </div>
+                            </div>`;
         container.insertAdjacentHTML('beforeend', newEntryHtml);
         rentChargeIndex++;
     });
@@ -1082,17 +1099,17 @@
         $('#addSecurityDeposit').on('click', function () {
             // Example of adding a new deposit detail entry - Adjust according to your specific needs
             const newDepositEntry = `
-                    <div class="row deposit-detail">
-                        <div class="col-sm-4">
-                            <input type="text" class="form-control" placeholder="Description">
-                        </div>
-                        <div class="col-sm-3">
-                            <input type="text" class="form-control" placeholder="Amount">
-                        </div>
-                        <div class="col-sm-1">
-                            <button type="button" class="btn-sm btn-remove-deposit btn btn-danger">&times;</button>
-                        </div>
-                    </div>`;
+                                <div class="row deposit-detail">
+                                    <div class="col-sm-4">
+                                        <input type="text" class="form-control" placeholder="Description">
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <input type="text" class="form-control" placeholder="Amount">
+                                    </div>
+                                    <div class="col-sm-1">
+                                        <button type="button" class="btn-sm btn-remove-deposit btn btn-danger">&times;</button>
+                                    </div>
+                                </div>`;
             $('#securityDepositsContainer').append(newDepositEntry);
         });
 
@@ -1165,65 +1182,182 @@
         });
     });
 
-   
+
 
     function submitLeaseForm() {
         var appTenantId = localStorage.getItem('AppTenantId');
+        var leaseId = $('#leaseId').val();
+        var isEditMode = leaseId && leaseId > 0;
+        var url = isEditMode ? '/Lease/Update/' + leaseId : '/Lease/Create';
         var formData = new FormData(document.getElementById('multiStepForm'));
 
         // Append additional fields to FormData
         formData.append('AppTenantId', appTenantId);
         formData.append('StartDate', $('#startDate').val());
         formData.append('EndDate', $('#endDate').val());
-        formData.append('IsSigned', $('#Signed').hasClass('selected') ? 'true' : 'false'); // Assuming boolean true/false for IsSigned
-
-        if (isNewSignatureSelected) {
-            // Directly use the file for FormData if a new image was selected
-            formData.append('SignatureImagePath', $('#signatureImageUpload').prop('files')[0]);
-        } else {
-           
-            var existingImagePath = $('#existingSignatureImagePath').val(); 
-            formData.append('SignatureImagePath', existingImagePath);
-        }
-
-        // Assuming you might want to handle boolean values for IsFixedTerm and others
+        formData.append('IsSigned', $('#Signed').hasClass('selected') ? 'true' : 'false');
         formData.append('IsFixedTerm', $('#fixedTermCard').hasClass('selected') ? 'true' : 'false');
         formData.append('IsMonthToMonth', $('#monthToMonthCard').hasClass('selected') ? 'true' : 'false');
         formData.append('HasSecurityDeposit', $('#yesSecurityFund').hasClass('selected') ? 'true' : 'false');
         formData.append('LateFeesPolicy', $('#yesLateFees').hasClass('selected') ? 'true' : 'false');
-        formData.append('TenantId', hiddenTenantId);
 
         // Append Rent Charges and Security Deposits
+        appendRentChargesToFormData(formData);
+        appendSecurityDepositsToFormData(formData);
+
+        // Handle signature data and submit form data after signature is processed
+        appendSignatureData(formData, function (updatedFormData) {
+            sendAjaxRequest(url, updatedFormData);
+        });
+    }
+
+    function appendRentChargesToFormData(formData) {
         $('#rentChargesContainer .rent-charge-entry').each(function (index) {
-            formData.append(`RentCharges[${index}].Type`, $(this).find('.charge-type').val());
-            formData.append(`RentCharges[${index}].Description`, $(this).find('.charge-description').val());
-            formData.append(`RentCharges[${index}].Amount`, $(this).find('.charge-amount').val());
+            formData.append(`RentCharges[${index}].Description`, $(this).find('[name$=".Description"]').val());
+            formData.append(`RentCharges[${index}].Amount`, $(this).find('[name$=".Amount"]').val());
+            formData.append(`RentCharges[${index}].RentDate`, $(this).find('[name$=".RentDate"]').val());
+            formData.append(`RentCharges[${index}].RentPeriod`, $(this).find('[name$=".RentPeriod"]').val());
         });
+    }
 
-        $('.deposit-details-container .deposit-detail').each(function (index) {
-            formData.append(`SecurityDeposits[${index}].Description`, $(this).find('select').val());
-            formData.append(`SecurityDeposits[${index}].Amount`, $(this).find('input[type="text"]').val());
+    function appendSecurityDepositsToFormData(formData) {
+        $('#securityDepositsContainer .deposit-detail').each(function (index) {
+            formData.append(`SecurityDeposits[${index}].Description`, $(this).find('[name$=".Description"]').val());
+            formData.append(`SecurityDeposits[${index}].Amount`, $(this).find('[name$=".Amount"]').val());
         });
+    }
 
-        var url = leaseId > 0 ? '/Lease/Update' : '/Lease/Create';
+    function appendSignatureData(formData, callback) {
+        if ($('#Signed').hasClass('selected')) {
+            var fileInput = document.getElementById('signatureImageUpload');
+            if (fileInput.files.length > 0) {
+                var file = fileInput.files[0];
+                convertFileToBase64(file, function (base64String) {
+                    formData.append('SignatureImagePath', base64String);
+                    callback(formData);
+                });
+            }
+        } else if ($('#UnSigned').hasClass('selected') && !signaturePad.isEmpty()) {
+            var signatureData = signaturePad.toDataURL();
+            formData.append('SignatureImagePath', signatureData);
+            callback(formData);
+        } else {
+            callback(formData);
+        }
+    }
+
+
+    function convertFileToBase64(file, callback) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            callback(e.target.result);
+        };
+        reader.readAsDataURL(file);
+    }
+
+
+    function sendAjaxRequest(url, formData) {
         $.ajax({
-            url: url, // Make sure this is your correct endpoint
+            url: url,
             type: 'POST',
-            processData: false, // Important for FormData
-            contentType: false, // Important for FormData
+            processData: false,
+            contentType: false,
             data: formData,
             success: function (response) {
-                // Handle success
                 Swal.fire('Success', 'Lease successfully saved.', 'success').then(function () {
-                    window.location.href = '/Lease/Index'; // Redirect or handle response
+                    window.location.href = '/Lease/Index';
                 });
             },
             error: function (xhr, status, error) {
-                // Handle error
                 Toast.fire({ icon: 'error', title: 'An error occurred: ' + error });
             }
         });
     }
+
+
+
+
+    $(document).ready(function () {
+        // Initialize the signature pad
+        var signaturePad = new SignaturePad(document.getElementById('signatureCanvas'));
+        var isEditMode = $('#leaseId').val() && $('#leaseId').val() > 0;
+
+        // Check edit mode to decide on selection states
+        if (isEditMode) {
+            // Implement your logic for edit mode here, if needed
+            // For example, selecting a specific card based on data
+        } else {
+
+            $('.card').removeClass('selected');
+        }
+
+        // Clear button functionality for the signature pad
+        $('#clearSignature').on('click', function () {
+            if (signaturePad) {
+                signaturePad.clear();
+            }
+        });
+
+        $('#Signed, #UnSigned').click(function () {
+            $('.signature-option').hide();
+            if ($(this).attr('id') === 'Signed') {
+                $('#signatureUploadSection').show();
+            } else {
+                $('#signaturePadSection').show();
+            }
+        });
+
+
+        $('#submitForm').click(function (e) {
+            e.preventDefault();
+            submitLeaseForm();
+        });
+
+
+        function submitLeaseForm() {
+            debugger;
+            var formData = new FormData(document.getElementById('multiStepForm'));
+
+
+            var signatureOption = $('#Signed').hasClass('selected') ? 'Signed' : 'UnSigned';
+
+
+            var isSigned = (signatureOption === 'Signed' && $('#signatureImageUpload')[0].files.length > 0) ||
+                (signatureOption === 'UnSigned' && !signaturePad.isEmpty());
+            formData.append('IsSigned', isSigned ? 'true' : 'false');
+
+            if (signatureOption === 'Signed' && $('#signatureImageUpload')[0].files.length > 0) {
+                var file = $('#signatureImageUpload')[0].files[0];
+                fileToBase64(file, function (base64String) {
+                    formData.append('SignatureData', base64String);
+
+                });
+            }
+
+            else if (signatureOption === 'UnSigned' && !signaturePad.isEmpty()) {
+                var signatureData = signaturePad.toDataURL();
+                formData.append('SignatureData', signatureData);
+
+            } else {
+
+            }
+        }
+
+        function convertFileToBase64(file, callback) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                callback(e.target.result);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function appendAdditionalFields(formData) {
+            // Append logic for additional form data as needed
+            formData.append('IsSigned', $('#Signed').hasClass('selected') ? 'true' : 'false');
+            // Add other fields as necessary
+        }
+
+    });
 
 
     var hiddenTenantId;
@@ -1232,7 +1366,7 @@
         var formData = new FormData(document.getElementById('addTenantForm'));
         var url = '/Tenant/CreateTenantData';
         var tenantId = $('#hiddenTenantId').val(); // Get the tenant ID
-
+        hiddenTenantId = tenantId;
         // Check if it's an edit case
         if (tenantId !== '') {
             url = '/Tenant/UpdateTenantData/' + tenantId; // Append tenantId to the URL for update
@@ -1248,29 +1382,29 @@
             data: formData,
             success: function (response) {
                 if (response.success) {
-                    // Using only the first name of the tenant from the response
-                    const tenantFirstName = response.tenant.FirstName;
-                    const tenantId = response.tenant.TenantId;
-                    hiddenTenantId = tenantId;
-                    // Set the Tenant ID to the hidden input field
-                    $('#hiddenTenantId').val(tenantId);
-                    // Creating a new tenant card with fixed width, height, and only showing the first name
-                    const tenantCard = `
-                                <div class="tenant-card mr-5">
-                                    <div class="card-body d-flex justify-content-center align-items-center flex-column">
-                                        <p class="card-title">${tenantFirstName}</p>
-                                    </div>
-                                </div>`;
+                    const tenant = response.tenant; // Assuming the response includes tenant details
+                    const tenantCardHtml = `
+                            <div class="tenant-card" id="tenantCard_${tenant.TenantId}">
+                                <div class="card-body">
+                                    <h5 class="card-title">${tenant.FirstName} ${tenant.LastName}</h5>
+                                    <p>${tenant.EmailAddress}</p>
+                                    <p>${tenant.PhoneNumber}</p>
+                                </div>
+                            </div>`;
 
-                    // Appending the new tenant card to both containers
-                    $('#tenantsContainer').append(tenantCard);
-                    $('#tenant').append(tenantCard);
+                    // If editing an existing tenant, replace the existing card; otherwise, append the new card
+                    if ($('#tenantCard_' + tenant.TenantId).length) {
+                        $('#tenantCard_' + tenant.TenantId).replaceWith(tenantCardHtml);
+                    } else {
+                        $('#tenantsContainer').append(tenantCardHtml).show(); // Make sure the container is visible
+                    }
 
-                    // Hide the modal and reset the form
-                    $('#addNewTenantModal').modal('hide');
-                    $('#addTenantForm')[0].reset();
+                    $('#addNewTenantModal').modal('hide'); // Hide the modal
+                    $('#addTenantForm')[0].reset(); // Reset the form for the next input
+                    $('#hiddenTenantId').val(''); // Clear the hidden field for the next addition
                 } else {
-                    Toast.fire({ icon: 'error', title: 'Failed to add/update tenant: ' + response.message });
+                    // Handle failure
+                    Toast.fire({ icon: 'error', title: 'Failed to save tenant: ' + response.message });
                 }
             },
             error: function (xhr, status, error) {
@@ -1279,5 +1413,20 @@
         });
     });
 
+    function initializeUIBasedOnMode(isEditMode) {
+        // In "edit" mode, ensure tenant-related UI elements are displayed
+        if (isEditMode) {
+            $('#tenantsContainer').show(); // Show the container if there are existing tenants to display
+            // You might want to pre-populate tenants here if you have their information available
+        } else {
 
+            $('#tenantsContainer').hide();
+        }
+    }
+
+    // Call this function when the page loads to handle edit cases
+    $(document).ready(function () {
+        var isEditMode = $('#hiddenTenantId').val() !== ''; // Determine if in edit mode
+        initializeUIBasedOnMode(isEditMode);
+    });
 </script>
