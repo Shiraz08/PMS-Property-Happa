@@ -126,8 +126,16 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
 
 
-            await _authService.CreateTenantAsync(tenant);
-            return Json(new { success = true, message = "Tenant added successfully", tenant = tenant });
+         bool response2 =  await _authService.CreateTenantAsync(tenant);
+
+            if(response2)
+            {
+                var tenantdatafetch = await _authService.GetAllTenantsAsync();
+
+                tenantdatafetch.Max(s => s.TenantId);
+                return Json(new { success = true, message = "Tenant added successfully", tenant = tenant });
+            }
+           
         }
 
         [HttpPost]
