@@ -923,6 +923,90 @@ namespace PMS_PropertyHapa.Staff.Services
             }
         }
         #endregion
+
+        #region Lease
+        public async Task<bool> CreateLeaseAsync(LeaseDto lease)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Data = lease,
+                    Url = $"{villaUrl}/api/v1/LeaseAuth/Lease"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when creating lease: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<LeaseDto> GetLeaseByIdAsync(int leaseId)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.GET,
+                    Url = $"{villaUrl}/api/v1/LeaseAuth/Lease/{leaseId}"
+                });
+
+                if (response.IsSuccess && response.Result != null)
+                {
+                    return JsonConvert.DeserializeObject<LeaseDto>(Convert.ToString(response.Result));
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when fetching lease by ID: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<IEnumerable<LeaseDto>> GetAllLeasesAsync()
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.GET,
+                    Url = $"{villaUrl}/api/v1/LeaseAuth/Leases"
+                });
+
+                if (response.IsSuccess && response.Result != null)
+                {
+                    return JsonConvert.DeserializeObject<IEnumerable<LeaseDto>>(Convert.ToString(response.Result));
+                }
+                return new List<LeaseDto>();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when fetching all leases: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<bool> UpdateLeaseAsync(LeaseDto lease)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.PUT,
+                    Data = lease,
+                    Url = $"{villaUrl}/api/v1/LeaseAuth/Lease"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when updating lease: {ex.Message}", ex);
+            }
+        }
+        #endregion
     }
 
 

@@ -70,6 +70,15 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
 
 
 
+        Task<bool> CreateLeaseAsync(LeaseDto leaseDto);
+
+        Task<LeaseDto> GetLeaseByIdAsync(int leaseId);
+
+        Task<List<LeaseDto>> GetAllLeasesAsync();
+
+        Task<bool> UpdateLeaseAsync(LeaseDto leaseDto);
+
+
         #region PropertySubType
 
         Task<List<PropertySubTypeDto>> GetPropertySubTypeByIdAllAsync(string tenantId);

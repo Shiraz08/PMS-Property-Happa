@@ -1606,6 +1606,274 @@ namespace MagicVilla_VillaAPI.Repository
         }
 
 
+        public async Task<bool> CreateLeaseAsync(LeaseDto leaseDto)
+        {
+            using var transaction = await _db.Database.BeginTransactionAsync();
+            try
+            {
+                var newLease = new Lease
+                {
+                    StartDate = leaseDto.StartDate,
+                    EndDate = leaseDto.EndDate,
+                    IsSigned = leaseDto.IsSigned,
+                    SignatureImagePath = leaseDto.SignatureImagePath,
+                    IsFixedTerm = leaseDto.IsFixedTerm,
+                    IsMonthToMonth = leaseDto.IsMonthToMonth,
+                    HasSecurityDeposit = leaseDto.HasSecurityDeposit,
+                    LateFeesPolicy = leaseDto.LateFeesPolicy,
+                    TenantsTenantId = leaseDto.TenantId,
+                    AppTenantId = Guid.Parse(leaseDto.AppTenantId)
+                };
+
+                await _db.Lease.AddAsync(newLease);
+                await _db.SaveChangesAsync();
+
+                foreach (var rentChargeDto in leaseDto.RentCharges)
+                {
+                    var rentCharge = new RentCharge
+                    {
+                        LeaseId = newLease.LeaseId,
+                        Amount = rentChargeDto.Amount,
+                        Description = rentChargeDto.Description,
+                        RentDate = rentChargeDto.RentDate,
+                        RentPeriod = rentChargeDto.RentPeriod
+                    };
+
+                    await _db.RentCharge.AddAsync(rentCharge);
+                }
+
+                foreach (var securityDepositDto in leaseDto.SecurityDeposits)
+                {
+                    var securityDeposit = new SecurityDeposit
+                    {
+                        LeaseId = newLease.LeaseId,
+                        Amount = securityDepositDto.Amount,
+                        Description = securityDepositDto.Description,
+                    };
+
+                    await _db.SecurityDeposit.AddAsync(securityDeposit);
+                }
+
+                await _db.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                return false;
+            }
+        }
+
+
+        public async Task<LeaseDto> GetLeaseByIdAsync(int leaseId)
+        {
+            var lease = await _db.Lease
+                .Where(l => l.LeaseId == leaseId)
+                .Include(l => l.RentCharges)
+                .Include(l => l.SecurityDeposit)
+                 .Include(l => l.Tenants)
+                .FirstOrDefaultAsync();
+
+            if (lease == null) return null;
+
+            var leaseDto = new LeaseDto
+            {
+                LeaseId = lease.LeaseId,
+                StartDate = lease.StartDate,
+                EndDate = lease.EndDate,
+                IsSigned = lease.IsSigned,
+                SignatureImagePath = lease.SignatureImagePath,
+                IsFixedTerm = lease.IsFixedTerm,
+                IsMonthToMonth = lease.IsMonthToMonth,
+                HasSecurityDeposit = lease.HasSecurityDeposit,
+                LateFeesPolicy = lease.LateFeesPolicy,
+                RentCharges = lease.RentCharges.Select(rc => new RentChargeDto
+                {
+                 
+                    RentChargeId = rc.RentChargeId,
+                    Amount = rc.Amount,
+                    Description = rc.Description,
+                    RentDate = rc.RentDate,
+                    RentPeriod = rc.RentPeriod
+                }).ToList(),
+                SecurityDeposits = lease.SecurityDeposit.Select(sd => new SecurityDepositDto
+                {
+                  
+                    SecurityDepositId = sd.SecurityDepositId,
+                    Amount = sd.Amount,
+                    Description = sd.Description
+                }).ToList(),
+                Tenant = lease.Tenants != null ? new TenantModelDto 
+                {
+                    TenantId = lease.Tenants.TenantId,
+                    FirstName = lease.Tenants.FirstName,
+                    LastName = lease.Tenants.LastName,
+                    EmailAddress = lease.Tenants.EmailAddress,
+                    PhoneNumber = lease.Tenants.PhoneNumber,
+                    // Map other properties as needed
+                } : null
+            };
+
+            return leaseDto;
+        }
+
+
+        public async Task<List<LeaseDto>> GetAllLeasesAsync()
+        {
+            try
+            {
+
+
+                var leases = await _db.Lease
+                    .Include(l => l.RentCharges)
+                    .Include(l => l.SecurityDeposit)
+                     .Include(l => l.Tenants)
+                    .ToListAsync();
+
+
+                var leaseDtos = leases.Select(lease => new LeaseDto
+                {
+                    LeaseId = lease.LeaseId,
+                    StartDate = lease.StartDate,
+                    EndDate = lease.EndDate,
+                    IsSigned = lease.IsSigned,
+                    SignatureImagePath = lease.SignatureImagePath,
+                    IsFixedTerm = lease.IsFixedTerm,
+                    IsMonthToMonth = lease.IsMonthToMonth,
+                    HasSecurityDeposit = lease.HasSecurityDeposit,
+                    LateFeesPolicy = lease.LateFeesPolicy,
+                    TenantId = lease.TenantsTenantId,
+                    RentCharges = lease.RentCharges.Select(rc => new RentChargeDto
+                    {
+
+                        RentChargeId = rc.RentChargeId,
+                        Amount = rc.Amount,
+                        Description = rc.Description,
+                        RentDate = rc.RentDate,
+                        RentPeriod = rc.RentPeriod
+                    }).ToList(),
+
+
+                    SecurityDeposits = lease.SecurityDeposit.Select(sd => new SecurityDepositDto
+                    {
+
+                        SecurityDepositId = sd.SecurityDepositId,
+                        Amount = sd.Amount,
+                        Description = sd.Description
+                    }).ToList(),
+
+                    Tenant = lease.Tenants != null ? new TenantModelDto
+                    {
+                        TenantId = lease.Tenants.TenantId,
+                        AppTenantId = lease.Tenants.AppTenantId,
+                        FirstName = lease.Tenants.FirstName,
+                        LastName = lease.Tenants.LastName,
+                        EmailAddress = lease.Tenants.EmailAddress,
+                        PhoneNumber = lease.Tenants.PhoneNumber,
+                        // Map other properties as needed
+                    } : null
+                }).ToList();
+
+                return leaseDtos;
+            }
+            catch(Exception ex)
+            {
+                throw;
+            }
+        }
+
+
+        public async Task<bool> UpdateLeaseAsync(LeaseDto leaseDto)
+        {
+            using var transaction = await _db.Database.BeginTransactionAsync();
+            try
+            {
+                var existingLease = await _db.Lease
+                    .Include(l => l.RentCharges)
+                    .Include(l => l.SecurityDeposit)
+                    .FirstOrDefaultAsync(l => l.LeaseId == leaseDto.LeaseId);
+
+                if (existingLease == null)
+                {
+                    return false;
+                }
+
+                existingLease.StartDate = leaseDto.StartDate;
+                existingLease.EndDate = leaseDto.EndDate;
+                existingLease.IsSigned = leaseDto.IsSigned;
+                existingLease.SignatureImagePath = leaseDto.SignatureImagePath;
+                existingLease.IsFixedTerm = leaseDto.IsFixedTerm;
+                existingLease.IsMonthToMonth = leaseDto.IsMonthToMonth;
+                existingLease.HasSecurityDeposit = leaseDto.HasSecurityDeposit;
+                existingLease.LateFeesPolicy = leaseDto.LateFeesPolicy;
+                existingLease.TenantsTenantId = leaseDto.TenantId;
+                existingLease.AppTenantId = Guid.Parse(leaseDto.AppTenantId);
+
+
+
+                foreach (var rcDto in leaseDto.RentCharges)
+                {
+                    var existingRc = existingLease.RentCharges.FirstOrDefault(rc => rc.RentChargeId == rcDto.RentChargeId);
+                    if (existingRc != null)
+                    {
+                        // Update existing RentCharge
+                        existingRc.Amount = rcDto.Amount;
+                        existingRc.Description = rcDto.Description;
+                        existingRc.RentDate = rcDto.RentDate;
+                        existingRc.RentPeriod = rcDto.RentPeriod;
+                    }
+                    else
+                    {
+                      
+                        existingLease.RentCharges.Add(new RentCharge
+                        {
+                            Amount = rcDto.Amount,
+                            Description = rcDto.Description,
+                            LeaseId = existingLease.LeaseId,
+                            RentDate = rcDto.RentDate,
+                            RentPeriod = rcDto.RentPeriod
+                        });
+                    }
+                }
+
+
+                foreach (var sdDto in leaseDto.SecurityDeposits)
+                {
+                    var existingSd = existingLease.SecurityDeposit.FirstOrDefault(sd => sd.SecurityDepositId == sdDto.SecurityDepositId);
+                    if (existingSd != null)
+                    {
+                        
+                        existingSd.Amount = sdDto.Amount;
+                        existingSd.Description = sdDto.Description;
+                        existingLease.LeaseId = sdDto.LeaseId;
+                    }
+                    else
+                    {
+                       
+                        existingLease.SecurityDeposit.Add(new SecurityDeposit
+                        {
+                            Amount = sdDto.Amount,
+                            Description = sdDto.Description,
+                            LeaseId = existingLease.LeaseId
+                        });
+                    }
+                }
+
+                await _db.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                return false;
+            }
+        }
+
+
 
         public async Task<bool> UpdateOwnerAsync(OwnerDto tenantDto)
         {

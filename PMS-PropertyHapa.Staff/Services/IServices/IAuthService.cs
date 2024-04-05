@@ -85,5 +85,16 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
 
 
         Task<OwnerDto> GetSingleLandlordAsync(int ownerId);
+
+
+        Task<bool> CreateLeaseAsync(LeaseDto lease);
+
+        Task<LeaseDto> GetLeaseByIdAsync(int leaseId);
+
+        Task<IEnumerable<LeaseDto>> GetAllLeasesAsync();
+
+        Task<bool> UpdateLeaseAsync(LeaseDto lease);
+
+
     }
 }

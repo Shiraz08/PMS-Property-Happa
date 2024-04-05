@@ -1,6 +1,8 @@
-﻿@{
+﻿@model IEnumerable<PMS_PropertyHapa.Models.DTO.LeaseDto>
+@{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
 }
 
 <!-- Page Sidebar Ends-->
@@ -41,112 +43,50 @@
                                     </svg>
                                     </svg>
                                 </span>
-                                <input class="form-control" type="text" placeholder="Search Lease" aria-label="search" aria-describedby="basic-addon1">
+                                <input class="form-control" type="text" placeholder="Search Assets" id="searchInput" aria-label="search" aria-describedby="basic-addon1">
                             </div>
                         </div>
                     </div>
-                    <!-- <div class="card-header">
-                      PROPERTIES
-                    </div> -->
+
                     <div class="card-body">
                         <div class="table-responsive">
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th scope="col" class="tableHeaderbg">Lease Info</th>
-                                        <th scope="col" class="tableHeaderbg">Address</th>
-                                        <th scope="col" class="tableHeaderbg">Total Monthly Rent</th>
-                                        <th scope="col" class="tableHeaderbg">Tenants</th>
-                                        <th scope="col" class="tableHeaderbg">Open Maintenance</th>
+                                        <th scope="col" class="tableHeaderbg">Lease ID</th>
+                                        <th scope="col" class="tableHeaderbg">Start Date</th>
+                                        <th scope="col" class="tableHeaderbg">End Date</th>
+                                        <th scope="col" class="tableHeaderbg">Rent Charges</th>
+                                        <th scope="col" class="tableHeaderbg">Security Deposit</th>
+                                        <th scope="col" class="tableHeaderbg">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <!-- Table rows -->
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex border-0 gap-2  align-items-center ">
-                                                <img class="img-fluid rounded-1 update_img_0" src="~/Dashboard/assets/images/user/2.png" alt="" style="max-width: 50px; height: auto;">
-                                                <div class="d-flex flex-column  border-0 ">
-                                                    <div class="d-flex border-0 flex-column align-items-baseline ">
-                                                        <span class="fw-bold  tableFontSize">9600 Universal</span>
-                                                        <span class="fw-bold tableFontSize">Boulevard</span>
-                                                    </div>
-                                                    <div class="d-flex border-0 flex-column align-items-baseline ">
-                                                        <span class="tableFontSize">Unit: 2</span>
-                                                        <span class="tableFontSize">Availabilty: 1</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="tableFontSize">9600 Universal Boulevard Orlando, Florida 32819</td>
-                                        <td class="tableFontSize">$0.00</td>
-                                        <td class="tableFontSize">4</td>
-                                        <td class="tableFontSize">0</td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex border-0 gap-2  align-items-center ">
-                                                <img class="img-fluid rounded-1 update_img_0" src="~/Dashboard/assets/images/user/2.png" alt="" style="max-width: 50px; height: auto;">
-                                                <div class="d-flex flex-column  border-0 ">
-                                                    <div class="d-flex border-0 flex-column align-items-baseline ">
-                                                        <span class="fw-bold  tableFontSize">9600 Universal</span>
-                                                        <span class="fw-bold tableFontSize">Boulevard</span>
-                                                    </div>
-                                                    <div class="d-flex border-0 flex-column align-items-baseline ">
-                                                        <span class="tableFontSize">Unit: 2</span>
-                                                        <span class="tableFontSize">Availabilty: 1</span>
+                                    @foreach (var lease in Model)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex border-0 gap-2 align-items-center">
+                                                    <img class="img-fluid rounded-1" src="@lease.SignatureImagePath" alt="" style="max-width: 50px; height: auto;">
+                                                    <div class="d-flex flex-column border-0">
+                                                        <div class="d-flex border-0 flex-column align-items-baseline">
+                                                            <span class="fw-bold tableFontSize">@lease.LeaseId</span>@* 
+                                                            <span class="fw-bold tableFontSize">@lease.StartDate.ToString("d") - @lease.EndDate.ToString("d")</span> *@
+                                                        </div>
+                                                        <div class="d-flex border-0 flex-column align-items-baseline">
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </td>
-                                        <td class="tableFontSize">9600 Universal Boulevard Orlando, Florida 32819</td>
-                                        <td class="tableFontSize">$0.00</td>
-                                        <td class="tableFontSize">4</td>
-                                        <td class="tableFontSize">0</td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex border-0 gap-2  align-items-center ">
-                                                <img class="img-fluid rounded-1 update_img_0" src="~/Dashboard/assets/images/user/2.png" alt="" style="max-width: 50px; height: auto;">
-                                                <div class="d-flex flex-column  border-0 ">
-                                                    <div class="d-flex border-0 flex-column align-items-baseline ">
-                                                        <span class="fw-bold  tableFontSize">9600 Universal</span>
-                                                        <span class="fw-bold tableFontSize">Boulevard</span>
-                                                    </div>
-                                                    <div class="d-flex border-0 flex-column align-items-baseline ">
-                                                        <span class="tableFontSize">Unit: 2</span>
-                                                        <span class="tableFontSize">Availabilty: 1</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="tableFontSize">9600 Universal Boulevard Orlando, Florida 32819</td>
-                                        <td class="tableFontSize">$0.00</td>
-                                        <td class="tableFontSize">4</td>
-                                        <td class="tableFontSize">0</td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex border-0 gap-2  align-items-center ">
-                                                <img class="img-fluid rounded-1 update_img_0" src="~/Dashboard/assets/images/user/2.png" alt="" style="max-width: 50px; height: auto;">
-                                                <div class="d-flex flex-column  border-0 ">
-                                                    <div class="d-flex border-0 flex-column align-items-baseline ">
-                                                        <span class="fw-bold  tableFontSize">9600 Universal</span>
-                                                        <span class="fw-bold tableFontSize">Boulevard</span>
-                                                    </div>
-                                                    <div class="d-flex border-0 flex-column align-items-baseline ">
-                                                        <span class="tableFontSize">Unit: 2</span>
-                                                        <span class="tableFontSize">Availabilty: 1</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                        </td>
-                                        <td class="tableFontSize">9600 Universal Boulevard Orlando, Florida 32819</td>
-                                        <td class="tableFontSize">$0.00</td>
-                                        <td class="tableFontSize">4</td>
-                                        <td class="tableFontSize">0</td>
-                                    </tr>
+                                            </td>
+                                            <td class="tableFontSize">@lease.StartDate</td> 
+                                            <td class="tableFontSize">@lease.EndDate</td>
+                                            <td class="tableFontSize">@lease.RentCharges.Count()</td>
+                                            <td class="tableFontSize">@lease.SecurityDeposits.Count()</td>
+                                            <td class="tableFontSize">
+                                                <a href="@Url.Action("EditLease", "Lease", new { leaseId = lease.LeaseId })" class="btn btn-primary">Edit</a>
+                                            </td>
+                                        </tr>
+                                    }
                                 </tbody>
                             </table>
                         </div>
@@ -238,7 +178,22 @@
                     </div>
                 </div>
             </div>
-            <!-- Repeat for other statistics -->
+
         </div>
     </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
+<script>
+    $(document).ready(function () {
+        $("#searchInput").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("tbody tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+</script>

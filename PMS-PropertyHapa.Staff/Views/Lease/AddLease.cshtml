@@ -1,11 +1,30 @@
 ﻿@using PMS_PropertyHapa.Models.DTO;
-@model AssetDTO
+@model LeaseDto
 @{
-    ViewData["Title"] = "Add Lease";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var isEditMode = Model?.LeaseId > 0;
+    if (isEditMode)
+        ViewData["Title"] = "Edit Lease";
+
+    else
+        ViewData["Title"] = "Add Lease";
+
 }
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 <style>
+
+    .tenant-card {
+        width: 10rem; /* Adjust width as needed */
+        height: 10rem; /* Adjust height as needed */
+        margin: 0.5rem; /* Adjust margin as needed */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        border: 1px solid #ccc; /* Example border */
+        border-radius: 5px; /* Example border radius */
+        background-color: #f9f9f9; /* Example background color */
+    }
 
     .lime-underline {
         height: 4px;
@@ -241,7 +260,7 @@
                             <div class="f1-steps" style="display: flex; justify-content: space-between;">
                                 <div class="f1-progress" style="position: absolute; width: 100%; bottom: 0;">
                                     <div class="f1-progress-line" id="progressLine">
-                                        <div class="f1-progress-indicator" style="width: 0%; background-color: red; height: 100%;"></div>
+                                        <div class="f1-progress-indicator" style="width: 0%; background-color: green; height: 100%;"></div>
                                     </div>
 
                                 </div>
@@ -278,6 +297,7 @@
                                         <div class="col-md-6 mb-3">
                                             <label for="propertyDropdown" class="form-label">Choose Property</label>
                                             <select id="propertyDropdown" class="form-select">
+
                                                 <!-- Random property options -->
                                                 <option value="property1">Property 1</option>
                                                 <option value="property2">Property 2</option>
@@ -311,6 +331,10 @@
                                                     <h5 class="card-title text-center">Month-to-Month</h5>
                                                 </div>
                                             </div>
+                                            <input type="hidden" id="leaseId" value="@Model?.LeaseId" />
+                                            <input type="hidden" id="hiddenTenantId" name="TenantId" value="@Model?.TenantId">
+
+
                                         </div>
 
 
@@ -318,20 +342,19 @@
                                             <div class="d-flex justify-content-between align-items-center w-100 my-3">
                                                 <div class="form-group w-40 pr-1">
                                                     <label for="startDate">Start Date</label>
-                                                    <input type="date" id="startDate" class="form-control">
+                                                    <input type="date" id="startDate" class="form-control" value="@Model?.StartDate.ToString("yyyy-MM-dd")">
                                                 </div>
 
                                                 <div class="form-group w-40 pl-1">
                                                     <label for="endDate">End Date</label>
-                                                    <input type="date" id="endDate" class="form-control">
+                                                    <input type="date" id="endDate" class="form-control" value="@Model?.EndDate.ToString("yyyy-MM-dd")">
                                                 </div>
                                             </div>
                                         </div>
 
 
-
                                         <div class="custom-control custom-switch my-3">
-                                            <input type="checkbox" class="custom-control-input" id="customSwitch1">
+                                            <input type="checkbox" class="custom-control-input" id="customSwitch1" value="@Model?.IsMonthToMonth">
                                             <label class="custom-control-label" for="customSwitch1">Roll over to month to month at the end of the term</label>
                                         </div>
                                     </div>
@@ -343,7 +366,10 @@
                                 <!-- ...existing code... -->
                                 <div class="container my-4">
                                     <div class="d-flex justify-content-center">
-                                        <div class="card" style="width: 10rem; height: 10rem; cursor: pointer;" id="addTenantCard" data-toggle="modal" data-target="#addTenantModal">
+                                        <div id="tenantsContainer" class="row">
+                                            <!-- Newly added tenant cards will go here -->
+                                        </div>
+                                        <div class="card" style="width: 10rem; height: 10rem; cursor: pointer;" id="addTenantCard" data-toggle="modal">
                                             <div class="card-body d-flex justify-content-center align-items-center flex-column">
                                                 <i class="fa fa-plus fa-2x"></i>
                                                 <p class="card-title mt-2">Add Tenant</p>
@@ -356,7 +382,6 @@
 
 
 
-
                             <fieldset id="step3" class="step-section">
                                 <h2 class="text-center mb-5">Rent Charges</h2>
                                 <div class="container charge-section">
@@ -364,7 +389,7 @@
                                         <hr class="my-4 mb-2 mt-2" style="width: 100%; border-top: 2px solid #000;" />
 
                                         <p>When do you want to start charging rent?</p>
-                                        <input type="date" class="form-control w-25 d-inline-block mb-3" id="firstRentDate">
+                                        <input type="date" class="form-control w-25 d-inline-block mb-3" id="firstRentDate" >
 
                                         <p>How often do you charge rent?</p>
                                         <select class="form-control w-25 d-inline-block mb-3" id="rentFrequency">
@@ -375,53 +400,28 @@
                                         </select>
 
                                         <p>What are your rent charges?</p>
-                                        <div class="form-row d-flex flex-wrap justify-content-center mb-3">
-                                            <div class="row">
-                                                <div class="col-sm-3">
-                                                    <select class="form-control">
-                                                        <option value="" disabled selected hidden>Select</option>
-                                                        <option value="rental">Rental Income</option>
-                                                        <option value="storage">Storage Rent</option>
-                                                        <!-- Add more options here -->
-                                                    </select>
-                                                </div>
-                                                <div class="col-sm-3">
-                                                    <input type="text" class="form-control" placeholder="Add description">
-                                                </div>
-                                                <div class="col-sm-3">
-                                                    <!-- Adjusted from col-sm-3 to col-sm-4 for better alignment -->
-                                                    <input type="text" class="form-control" placeholder="Amount">
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-sm-2">
-                                                    <!-- Adjusted for alignment and to accommodate the button properly -->
-                                                    <button class="btn btn-danger" onclick="removeCharge(this)">×</button>
-                                                </div>
-                                            </div>
+                                        <div id="rentChargesContainer">
+                                            <!-- Existing rent charge entry will be cloned from here -->
                                         </div>
+                                        <button type="button" class="btn btn-primary" id="addAnotherCharge">+</button>
                                     </div>
-                                </div>
-
-
-                                <div class="text-center mb-3">
-                                    <button class="btn btn-primary" id="addAnotherCharge">Schedule Rent Increase</button>
                                 </div>
                             </fieldset>
 
+
                             <fieldset id="step4" class="step-section">
                                 <h4 class="text-center my-3">Security Funds</h4>
-                                <p class="text-center my-3">Will you be holding a security deposit on these lease?</p>
+                                <p class="text-center my-3">Will you be holding a security deposit on this lease?</p>
                                 <div class="d-flex flex-wrap justify-content-center">
                                     <!-- Yes Card -->
-                                    <div class="card m-2" style="width: 10rem; height: 10rem;" id="yesSecurityFund">
+                                    <div class="card m-2" style="width: 10rem; height: 10rem; cursor:pointer;" id="yesSecurityFund">
                                         <div class="card-body d-flex flex-column justify-content-center align-items-center">
                                             <i class="fas fa-check fa-2x"></i>
                                             <h5 class="card-title text-center">Yes</h5>
                                         </div>
                                     </div>
                                     <!-- No Card -->
-                                    <div class="card m-2" style="width: 10rem; height: 10rem;" id="noSecurityFund">
+                                    <div class="card m-2" style="width: 10rem; height: 10rem; cursor:pointer;" id="noSecurityFund">
                                         <div class="card-body d-flex flex-column justify-content-center align-items-center">
                                             <i class="fas fa-times fa-2x"></i>
                                             <h5 class="card-title text-center">No</h5>
@@ -434,47 +434,22 @@
                                         <div class="row justify-content-center">
                                             <div class="col-sm-12 text-center">
                                                 <p>Tell us more about the security deposits you are holding</p>
-                                                <input type="date" class="form-control w-25 d-inline-block mb-3" id="firstRentDate">
                                             </div>
                                         </div>
-                                        <div class="deposit-details-container">
-                                            <div class="row deposit-detail">
-                                                <div class="col-sm-4">
-                                                    <p class="mb-1">What is this for</p>
-                                                    <select class="form-control">
-                                                        <option value="" disabled selected hidden>Select</option>
-                                                        <option value="rental">Accounts Payable</option>
-                                                        <option value="storage">Storage Rent</option>
-                                                        <!-- Add more options here -->
-                                                    </select>
-                                                </div>
-                                                <div class="col-sm-4">
-                                                    <p class="mb-1">Add description</p>
-                                                    <input type="text" class="form-control" placeholder="Add description">
-                                                </div>
-                                                <div class="col-sm-3">
-                                                    <p class="mb-1">Amount</p>
-                                                    <input type="text" class="form-control" placeholder="Amount">
-                                                </div>
-                                                <div class="col-sm-1">
-                                                    <button type="button" class="btn-sm btn-remove-row btn btn-danger">&times;</button>
-
-                                                </div>
-                                            </div>
+                                        <div class="deposit-details-container" id="securityDepositsContainer">
+                                            <!-- Security deposit detail inputs are dynamically added here -->
                                         </div>
                                         <div class="text-left my-3">
                                             <div class="row">
                                                 <div class="col-12 d-flex justify-content-start ml-3">
-                                                    <button class="btn btn-primary" id="addDepositDetail">+</button>
+                                                    <button type="button" class="btn btn-primary" id="addSecurityDeposit">Add Security Deposit</button>
                                                 </div>
                                             </div>
                                         </div>
-
-
-
                                     </div>
                                 </div>
                             </fieldset>
+
 
                             <div id="step5" class="step-section">
                                 <h4 class="text-center my-3">Late Fees</h4>
@@ -559,7 +534,19 @@
                                         </div>
                                     </div>
                                 </div>
+                                <!-- Image Upload (Initially Hidden) -->
+                                <div id="signatureUploadSection" style="display:none;" class="text-center mt-4">
+                                    <p class="text-center">Upload Signed Document:</p>
+                                    <input type="file" id="signatureImageUpload" accept="image/*">
+                                </div>
+                                <div id="signaturePadSection" style="display:none;" class="text-center mt-4">
+                                    <p>Sign Below:</p>
+                                    <canvas id="signatureCanvas" width="400" height="200" style="border:1px solid #ccc;"></canvas>
+                                    <button type="button" id="clearSignature" class="btn btn-secondary mt-2">Clear</button>
+                                </div>
+                                <input type="hidden" id="SignatureImagePath">
                             </fieldset>
+
 
 
 
@@ -569,6 +556,7 @@
                             <input type="hidden" name="SelectedBankAccountOption" id="SelectedBankAccountOption">
                             <input type="hidden" name="SelectedReserveFundsOption" id="SelectedReserveFundsOption">
                             <input type="hidden" name="SelectedOwnershipOption" id="SelectedOwnershipOption">
+                            <input type="hidden" id="existingSignatureImagePath" value="@Model?.SignatureImagePath">
                             <!-- Hidden inputs for owner details -->
                             <input type="hidden" name="OwnerName" id="OwnerName">
                             <input type="hidden" name="OwnerCompanyName" id="OwnerCompanyName">
@@ -651,89 +639,288 @@
 </div>
 
 
-<div id="addTenantModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="addTenantModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl" role="document">
+<!-- Add Tenant Modal -->
+<div id="addNewTenantModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="addNewTenantModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addTenantModalLabel">Add Tenant</h5>
+                <h5 class="modal-title" id="addNewTenantModalLabel">Add New Tenant</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card" style="width: 100%; height: 100vh;">
-                            <div class="card-header d-flex justify-content-between align-items-center">
-                                <h4 class="card-title">
-                                    <a href="/Tenant/AddTenant" class="btn btn-success mb-3">Add New Tenant</a>
-                                </h4>
-                            </div>
-                            <div class="card-body" style="overflow-y: auto;">
-                                <div class="table-responsive">
-                                    <table class="table" id="tenantsTable">
-                                        <thead>
-                                            <tr>
-                                                <th>First Name</th>
-                                                <th>Last Name</th>
-                                                <th>Email Address</th>
-                                                <th>Phone Number</th>
-                                                <th>Emergency Contact Info</th>
-                                                <th>Lease Agreement Id</th>
-                                                <th>Tenant Nationality</th>
-                                                <th>Gender</th>
-                                                <th>DOB</th>
-                                                <th>VAT</th>
-                                                <th>Legal Name</th>
-                                                <th>Account Name</th>
-                                                <th>Account Holder</th>
-                                                <th>Account IBAN</th>
-                                                <th>Account Swift</th>
-                                                <th>Account Bank</th>
-                                                <th>Account Currency</th>
-                                                <th>Address</th>
-                                                <th>Address2</th>
-                                                <th>Locality</th>
-                                                <th>Region</th>
-                                                <th>Postal Code</th>
-                                                <th>Country</th>
-                                                <th>Country Code</th>
-                                                <th>Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
+            <div class="modal-body">
+                <form id="addTenantForm">
+                    <!-- Essential Tenant Fields -->
+                    <div class="form-group">
+                        <label for="tenantFirstName">First Name</label>
+                        <input type="text" class="form-control" id="tenantFirstName" name="Tenant.FirstName" placeholder="Enter first name">
                     </div>
-                </div>
+                    <div class="form-group">
+                        <label for="tenantLastName">Last Name</label>
+                        <input type="text" class="form-control" id="tenantLastName" name="Tenant.LastName" placeholder="Enter last name">
+                    </div>
+                    <div class="form-group">
+                        <label for="tenantPhoneNumber">Phone Number</label>
+                        <input type="tel" class="form-control" id="tenantPhoneNumber" name="Tenant.PhoneNumber" placeholder="Enter phone number">
+                    </div>
+                    <div class="form-group">
+                        <label for="tenantEmailAddress">Email Address</label>
+                        <input type="email" class="form-control" id="tenantEmailAddress" name="Tenant.EmailAddress" placeholder="Enter email">
+                    </div>
+
+                </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="saveNewTenant">Save Tenant</button>
             </div>
         </div>
     </div>
 </div>
 
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.5.3/signature_pad.min.js"></script>
 <script>
+    var rentCharges = @Html.Raw(Json.Serialize(Model?.RentCharges));
+    var securityDeposits = @Html.Raw(Json.Serialize(Model?.SecurityDeposits)) || [];
+    var signaturePad;
+
+    function populateRentCharges() {
+        $("#rentChargesContainer").html(""); // Clear existing entries
+        rentCharges.forEach(function (charge, index) {
+            addRentChargeEntry(charge.Amount, charge.Description, charge.RentDate, charge.RentPeriod, index);
+        });
+    }
+
+    function addRentChargeEntry(amount, description, rentDate, rentPeriod, index) {
+        const entryHtml = `
+                <div class="rent-charge-entry" data-index="${index}">
+                    <input type="text" class="form-control mb-2" name="RentCharges[${index}].Description" placeholder="Description" value="${description}">
+                    <input type="number" class="form-control mb-2" name="RentCharges[${index}].Amount" placeholder="Amount" value="${amount}">
+                    <input type="date" class="form-control mb-2" name="RentCharges[${index}].RentDate" value="${rentDate ? rentDate.substr(0, 10) : ''}">
+                    <select class="form-control mb-2" name="RentCharges[${index}].RentPeriod">
+                        <option value="daily" ${rentPeriod === 'daily' ? 'selected' : ''}>Daily</option>
+                        <option value="weekly" ${rentPeriod === 'weekly' ? 'selected' : ''}>Weekly</option>
+                        <option value="monthly" ${rentPeriod === 'monthly' ? 'selected' : ''}>Monthly</option>
+                    </select>
+                    <button type="button" class="btn btn-danger remove-charge" onclick="removeChargeEntry(this)">Remove</button>
+                </div>
+            `;
+
+        $("#rentChargesContainer").append(entryHtml);
+    }
+
+    function initializeSignaturePad() {
+        var canvas = document.getElementById('signatureCanvas');
+        signaturePad = new SignaturePad(canvas);
+
+        $('#clearSignature').click(function () {
+            signaturePad.clear();
+        });
+    }
+
+    function setupEventHandlers() {
+        
+        // Handle "Signed" and "Unsigned" button clicks
+        $('#Signed').click(function () {
+            $('#signatureUploadSection').show();
+            $('#signaturePadSection').hide();
+        });
+
+        $('#UnSigned').click(function () {
+            $('#signaturePadSection').show();
+            $('#signatureUploadSection').hide();
+        });
+
+        // Before form submission, get the signature data
+        $('#submitForm').click(function () {
+            if ($('#UnSigned').hasClass('selected') && !signaturePad.isEmpty()) {
+                var signatureData = signaturePad.toDataURL();
+                $('#SignatureImagePath').val(signatureData.replace(/^data:image\/(png|jpg|jpeg);base64,/, ""));
+            } else {
+              
+                $('#SignatureImagePath').val('');
+            }
+
+        });
+    }
+        });
+
+    function removeChargeEntry(button) {
+        $(button).closest('.rent-charge-entry').remove();
+        // Optional: Re-index your rent charge entries here if necessary
+    }
+
     $(document).ready(function () {
+        // Determine if you are in edit mode based on the existence of security deposits
+        var hasSecurityDeposits = securityDeposits.length > 0;
+
+        // Initial setup based on whether security deposits exist
+        if (hasSecurityDeposits) {
+            $('#yesSecurityFund').addClass('selected');
+            $('#additionalDataSection').show();
+        } else {
+            $('#noSecurityFund').addClass('selected');
+            $('#additionalDataSection').hide();
+        }
+
+        // Populate existing security deposits if any
+        populateSecurityDeposits();
+
+        // Event handlers for the Yes/No buttons
+        $('#yesSecurityFund, #noSecurityFund').on('click', function () {
+            $('#yesSecurityFund, #noSecurityFund').removeClass('selected');
+            $(this).addClass('selected');
+            var displaySection = $(this).is('#yesSecurityFund') ? 'slideDown' : 'slideUp';
+            $('#additionalDataSection')[displaySection]();
+        });
+
+        // Handler for adding a new security deposit entry
+        $('#addSecurityDeposit').on('click', function () {
+            addSecurityDepositEntry('', '', securityDeposits.length);
+        });
+    });
+
+    // Remove a security deposit entry
+    $(document).on('click', '.remove-deposit', function () {
+        $(this).closest('.security-deposit-entry').remove();
+    });
+
+    function populateSecurityDeposits() {
+        securityDeposits.forEach(function (deposit, index) {
+            addSecurityDepositEntry(deposit.Amount, deposit.Description, index);
+        });
+    }
+
+    function addSecurityDepositEntry(amount, description, index) {
+        const entryHtml = `
+                <div class="security-deposit-entry mb-3" data-index="${index}">
+                    <input type="text" class="form-control mb-2" name="SecurityDeposits[${index}].Description" placeholder="Description" value="${description}">
+                    <input type="number" class="form-control mb-2" name="SecurityDeposits[${index}].Amount" placeholder="Amount" value="${amount}">
+                    <button type="button" class="btn btn-danger remove-deposit">Remove</button>
+                </div>
+            `;
+        $("#securityDepositsContainer").append(entryHtml);
+    }
+
+
+
+
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    });
+
+
+
+
+
+    $(document).ready(function () {
+
         var currentStep = 1;
         var maxSteps = 6;
-        updateProgressBar(currentStep); // Initialize the progress bar
+        updateStepVisibility(currentStep);
+        updateProgressBar(currentStep);
 
-        // Next button click event
+        const stepValidations = [
+            {
+                step: 1,
+                validate: function () {
+                    return ($('#propertyDropdown').val() && $('#unitDropdown').val() &&
+                        ($('#fixedTermCard').hasClass('selected') || $('#monthToMonthCard').hasClass('selected')) &&
+                        $('#startDate').val() && $('#endDate').val())
+                },
+                message: 'Please complete all fields in the Overview section.'
+            },
+            {
+                step: 2,
+                validate: function () {
+                    return $('#tenantsContainer .tenant-card').length > 0;
+                },
+                message: 'Please add at least one tenant.'
+            },
+            {
+                step: 3,
+                validate: function () {
+                    var isValidDate = $('#firstRentDate').val() !== '';
+                    var isValidFrequency = $('#rentFrequency').val() !== null && $('#rentFrequency').val() !== '';
+
+                    var isValidCharges = false;
+                    $('.rent-charge-entry').each(function () {
+                        var type = $(this).find('.charge-type').val() !== '';
+                        var description = $(this).find('.charge-description').val() !== '';
+                        var amount = $(this).find('.charge-amount').val() !== '';
+
+                        if (type && description && amount) {
+                            isValidCharges = true;
+                            return false;
+                        }
+                    });
+
+                    return isValidDate && isValidFrequency && isValidCharges;
+                },
+                message: 'Please specify the first rent date, rent frequency, and at least one rent charge detail with all fields filled.'
+            },
+            {
+                step: 4,
+                validate: function () {
+                    return !$('#yesSecurityFund').hasClass('selected') || $('.deposit-detail').length > 0;
+                },
+                message: 'You selected to hold a security deposit but did not provide details.'
+            },
+            {
+                step: 5,
+                validate: function () {
+                    return !$('#yesLateFees').hasClass('selected') || $('input[name="lateFeePolicy"]:checked').val();
+                },
+                message: 'Please specify the late fees policy.'
+            },
+            {
+                step: 6,
+                validate: function () {
+                    return $('#Signed').hasClass('selected') || $('#UnSigned').hasClass('selected');
+                },
+                message: 'Please specify if the lease is signed.'
+            }
+        ];
+
+        function validateCurrentStep(step) {
+            let validation = stepValidations.find(v => v.step === step);
+            if (validation && !validation.validate()) {
+                Toast.fire({
+                    icon: 'error',
+                    title: validation.message
+                });
+                return false;
+            }
+            return true;
+        }
+
         $('.btn-next').on('click', function () {
-            if (currentStep < maxSteps) {
-                currentStep++;
-                updateStepVisibility(currentStep);
-                updateProgressBar(currentStep);
+            // Validate current step before moving to the next
+            if (validateCurrentStep(currentStep)) {
+                if (currentStep < maxSteps) {
+                    // Move to next step if not the last step
+                    currentStep++;
+                    updateStepVisibility(currentStep);
+                    updateProgressBar(currentStep);
+                } else {
+                    submitLeaseForm();
+                }
             }
         });
 
-        // Previous button click event
         $('.btn-previous').on('click', function () {
             if (currentStep > 1) {
                 currentStep--;
@@ -743,40 +930,71 @@
         });
 
         function updateStepVisibility(step) {
-            // Hide all sections and show the current step
             $('.step-section').hide().eq(step - 1).show();
-            // Update active step indicator
             $('.f1-step').removeClass('active').eq(step - 1).addClass('active');
-            // Hide the Previous button on the first step
-            if (step === 1) {
-                $('.btn-previous').hide();
-            } else {
-                $('.btn-previous').show();
-            }
-            // Change button text on the last step
-            if (step === maxSteps) {
-                $('#submitForm').text('Submit');
-            } else {
-                $('#submitForm').text('Next');
-            }
+            $('.btn-previous').toggle(step !== 1);
+            $('#submitForm').text(step === maxSteps ? 'Submit' : 'Next');
         }
 
         function updateProgressBar(step) {
-            // Update the progress bar width based on the current step
             var progressPercentage = (step / maxSteps) * 100;
             $('#progressLine .f1-progress-indicator').css('width', progressPercentage + '%');
         }
 
-        // Initialize visibility and progress bar
-        updateStepVisibility(currentStep);
+
+        if (@Model.IsFixedTerm.ToString().ToLower() == "true") {
+            $('#fixedTermCard').addClass('selected');
+        } else {
+            $('#monthToMonthCard').addClass('selected');
+        }
+
+        var tenants = [{
+            TenantId: "@Model?.TenantId", // Adjust based on actual data
+            FirstName: "@Model?.Tenant?.FirstName", // Adjust these fields based on your actual model
+            LastName: "@Model?.Tenant?.LastName",
+            PhoneNumber: "@Model?.Tenant?.PhoneNumber",
+            EmailAddress: "@Model?.Tenant?.EmailAddress"
+        }];
+        debugger;
+        // Check if there are any tenants to display
+        if (tenants && tenants.length > 0) {
+            tenants.forEach(function (tenant) {
+                // Create and append the tenant card for each tenant
+                var tenantCardHtml = '<div class="tenant-card mr-5">' +
+                    '<div class="card-body">' +
+                    '<h5 class="card-title">' + tenant.FirstName + '</h5>' +
+                    '</div>' +
+                    '</div>';
+                $('#tenantsContainer').append(tenantCardHtml);
+            });
+        }
+
+
+        populateRentCharges();
+        populateSecurityDeposits();
+        setupEventHandlers();
+        initializeSignaturePad();
+
+        $('#yesSecurityFund').click(function () {
+            $(this).addClass('selected');
+            $('#noSecurityFund').removeClass('selected');
+            $('#additionalDataSection').show();
+        });
+
+        // Click event handler for the "No" card to hide the security deposits section
+        $('#noSecurityFund').click(function () {
+            $(this).addClass('selected');
+            $('#yesSecurityFund').removeClass('selected');
+            $('#additionalDataSection').hide();
+        });
+
+        // Button click handler to add a new security deposit entry
+        $('#addSecurityDeposit').click(function () {
+            // Assuming a new entry should be empty, modify as needed
+            addSecurityDepositEntry('', '', securityDeposits.length);
+            securityDeposits.push({}); // Add a placeholder to represent the new entry
+        });
     });
-
-
-
-
-
-
-
 
 
     $(document).ready(function () {
@@ -801,173 +1019,96 @@
 
 
 
-
-
-
-
-
-
-
     $(document).ready(function () {
         // Function to initialize the DataTable
-        function initializeTenantsTable() {
-            var tenantId = localStorage.getItem('userId');
-            var ajaxUrl = `/Tenant/GetTenant/?tenantId=${encodeURIComponent(tenantId)}`;
-            $('#tenantsTable').DataTable({
-                "ajax": {
-                    "url": ajaxUrl,
-                    "type": "GET",
-                    "datatype": "json"
-                },
-                "deferRender": true,
-                "columns": [
-                    { "data": "FirstName", "width": "60%" },
-                    { "data": "LastName", "width": "60%" },
-                    { "data": "EmailAddress", "width": "60%" },
-                    { "data": "PhoneNumber", "width": "60%" },
-                    { "data": "EmergencyContactInfo", "width": "60%" },
-                    { "data": "LeaseAgreementId", "width": "60%" },
-                    { "data": "TenantNationality", "width": "60%" },
-                    { "data": "Gender", "width": "60%" },
-                    { "data": "DOB", "width": "60%" },
-                    { "data": "VAT", "width": "60%" },
-                    { "data": "LegalName", "width": "60%" },
-                    { "data": "Account_Name", "width": "60%" },
-                    { "data": "Account_Holder", "width": "60%" },
-                    { "data": "Account_IBAN", "width": "60%" },
-                    { "data": "Account_Swift", "width": "60%" },
-                    { "data": "Account_Bank", "width": "60%" },
-                    { "data": "Account_Currency", "width": "60%" },
-                    { "data": "Address", "width": "60%" },
-                    { "data": "Address2", "width": "60%" },
-                    { "data": "Locality", "width": "60%" },
-                    { "data": "Region", "width": "60%" },
-                    { "data": "PostalCode", "width": "60%" },
-                    { "data": "Country", "width": "60%" },
-                    { "data": "CountryCode", "width": "60%" },
-                    {
-                        "data": "tenantId",
-                        "render": function (data, type, row) {
-                            return `<div style="display: flex; align-items: center;">
-                                                                                <button onclick="editTenant(${row.TenantId})" class="btn btn-sm btn-success edit-tenant">Edit</button>
-                                                                                <button data-tenant-id="${row.TenantId}" style="margin-left: 10px;" class="btn btn-sm btn-danger delete-tenant">Delete</button>
-                                                                            </div>`;
-                        },
-
-                        "orderable": false
-                    }
-                ],
-                "language": {
-                    "emptyTable": "No data found, Please click on <b>Add New</b> Button"
-                },
-                "initComplete": function () {
-
-                    $('#tenantsTable thead th').css("min-width", "100px");
-                },
-                "order": []
-            });
-
-        }
-
-
 
 
         $('#addTenantCard').on('click', function () {
 
-            if (!$.fn.DataTable.isDataTable('#tenantsTable')) {
-
-                initializeTenantsTable();
-            } else {
-
-                $('#tenantsTable').DataTable().ajax.reload();
-            }
+            $('#addNewTenantModal').modal('show');
         });
     });
-
-
-
-
-
-
 
     function updateTenant(tenantId) {
         window.location.href = `/Tenant/AddTenant?tenantId=${tenantId}`;
     }
 
-    $('#tenantsTable').on('click', '.delete-tenant', function () {
-        var tenantId = $(this).data('tenant-id');
-        deleteTenant(tenantId);
+
+
+    let rentChargeIndex = 0;
+    let securityDepositIndex = 0;
+
+    document.getElementById('addAnotherCharge').addEventListener('click', function () {
+        const container = document.getElementById('rentChargesContainer');
+        const newEntryHtml = `
+                <div class="form-row d-flex flex-wrap justify-content-center mb-3 rent-charge-entry">
+                    <div class="col-sm-3">
+                        <select class="form-control charge-type" name="RentCharges[${rentChargeIndex}].Type">
+                            <option value="" disabled selected hidden>Select</option>
+                            <option value="rental">Rental Income</option>
+                            <option value="storage">Storage Rent</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-3">
+                        <input type="text" class="form-control charge-description" name="RentCharges[${rentChargeIndex}].Description" placeholder="Add description">
+                    </div>
+                    <div class="col-sm-3">
+                        <input type="text" class="form-control charge-amount" name="RentCharges[${rentChargeIndex}].Amount" placeholder="Amount">
+                    </div>
+                    <div class="col-sm-3">
+                        <button type="button" class="btn btn-danger remove-charge">Remove</button>
+                    </div>
+                </div>`;
+        container.insertAdjacentHTML('beforeend', newEntryHtml);
+        rentChargeIndex++;
     });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     $(document).ready(function () {
-        $('#addAnotherCharge').on('click', function (event) {
-            event.preventDefault();
+        $('#yesSecurityFund, #noSecurityFund').on('click', function () {
+            // Remove 'selected' class from both cards
+            $('#yesSecurityFund, #noSecurityFund').removeClass('selected');
+            // Add 'selected' class to clicked card
+            $(this).addClass('selected');
 
-            var chargeSections = $('.charge-section');
-            var lastChargeSection = chargeSections.last();
-            var newChargeSection = lastChargeSection.clone(true, true);
-
-            newChargeSection.find('input').val('');
-            newChargeSection.find('select').prop('selectedIndex', 0);
-
-            if (chargeSections.length >= 1) {
-                $('<div class="lime-underline" style="height: 4px; background-color: lime; width: 100%; margin-bottom:20px"></div>').insertBefore(newChargeSection);
+            // Toggle additional data section based on selection
+            if ($(this).attr('id') === 'yesSecurityFund') {
+                $('#additionalDataSection').slideDown();
+            } else {
+                $('#additionalDataSection').slideUp();
             }
-
-            var deleteButton = $('<button type="button" class="btn btn-danger">×</button>')
-                .click(function (event) {
-                    event.preventDefault();
-                    $(this).closest('.charge-section').prev('.lime-underline').remove();
-                    $(this).closest('.charge-section').remove();
-                });
-
-            newChargeSection.find('.col-sm-2').html(deleteButton);
-
-            lastChargeSection.after(newChargeSection);
         });
 
-        $('.charge-section').first().find('.btn-danger').hide();
+
+        $('#addSecurityDeposit').on('click', function () {
+            // Example of adding a new deposit detail entry - Adjust according to your specific needs
+            const newDepositEntry = `
+                    <div class="row deposit-detail">
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" placeholder="Description">
+                        </div>
+                        <div class="col-sm-3">
+                            <input type="text" class="form-control" placeholder="Amount">
+                        </div>
+                        <div class="col-sm-1">
+                            <button type="button" class="btn-sm btn-remove-deposit btn btn-danger">&times;</button>
+                        </div>
+                    </div>`;
+            $('#securityDepositsContainer').append(newDepositEntry);
+        });
+
+        // Optionally, handle removal of deposit details
+        $(document).on('click', '.btn-remove-deposit', function () {
+            $(this).closest('.deposit-detail').remove();
+        });
     });
 
-
-
-    $(document).ready(function () {
-        $('#yesSecurityFund').on('click', function () {
-            $(this).addClass('selected');
-            $('#noSecurityFund').removeClass('selected');
-            $('#additionalDataSection').show();
-        });
-
-        $('#noSecurityFund').on('click', function () {
-            $(this).addClass('selected');
-            $('#yesSecurityFund').removeClass('selected');
-            $('#additionalDataSection').hide();
-        });
-
-        if ($('#yesSecurityFund').hasClass('selected')) {
-            $('#additionalDataSection').show();
-        } else if ($('#noSecurityFund').hasClass('selected')) {
-            $('#additionalDataSection').hide();
+    document.addEventListener('click', function (event) {
+        if (event.target.classList.contains('remove-charge')) {
+            event.target.closest('.rent-charge-entry').remove();
+        } else if (event.target.classList.contains('btn-remove-row')) {
+            event.target.closest('.security-deposit-entry').remove();
         }
-
     });
-
 
     $(document).ready(function () {
         function updateRemoveButtonVisibility() {
@@ -1024,23 +1165,119 @@
         });
     });
 
-    $(document).ready(function () {
-        $('#Signed').on('click', function () {
-            $(this).addClass('selected');
-            $('#UnSigned').removeClass('selected');
+   
+
+    function submitLeaseForm() {
+        var appTenantId = localStorage.getItem('AppTenantId');
+        var formData = new FormData(document.getElementById('multiStepForm'));
+
+        // Append additional fields to FormData
+        formData.append('AppTenantId', appTenantId);
+        formData.append('StartDate', $('#startDate').val());
+        formData.append('EndDate', $('#endDate').val());
+        formData.append('IsSigned', $('#Signed').hasClass('selected') ? 'true' : 'false'); // Assuming boolean true/false for IsSigned
+
+        if (isNewSignatureSelected) {
+            // Directly use the file for FormData if a new image was selected
+            formData.append('SignatureImagePath', $('#signatureImageUpload').prop('files')[0]);
+        } else {
+           
+            var existingImagePath = $('#existingSignatureImagePath').val(); 
+            formData.append('SignatureImagePath', existingImagePath);
+        }
+
+        // Assuming you might want to handle boolean values for IsFixedTerm and others
+        formData.append('IsFixedTerm', $('#fixedTermCard').hasClass('selected') ? 'true' : 'false');
+        formData.append('IsMonthToMonth', $('#monthToMonthCard').hasClass('selected') ? 'true' : 'false');
+        formData.append('HasSecurityDeposit', $('#yesSecurityFund').hasClass('selected') ? 'true' : 'false');
+        formData.append('LateFeesPolicy', $('#yesLateFees').hasClass('selected') ? 'true' : 'false');
+        formData.append('TenantId', hiddenTenantId);
+
+        // Append Rent Charges and Security Deposits
+        $('#rentChargesContainer .rent-charge-entry').each(function (index) {
+            formData.append(`RentCharges[${index}].Type`, $(this).find('.charge-type').val());
+            formData.append(`RentCharges[${index}].Description`, $(this).find('.charge-description').val());
+            formData.append(`RentCharges[${index}].Amount`, $(this).find('.charge-amount').val());
         });
 
-        // Card click event for "No" selection
-        $('#UnSigned').on('click', function () {
-            $(this).addClass('selected');
-            $('#Signed').removeClass('selected');
+        $('.deposit-details-container .deposit-detail').each(function (index) {
+            formData.append(`SecurityDeposits[${index}].Description`, $(this).find('select').val());
+            formData.append(`SecurityDeposits[${index}].Amount`, $(this).find('input[type="text"]').val());
         });
 
+        var url = leaseId > 0 ? '/Lease/Update' : '/Lease/Create';
+        $.ajax({
+            url: url, // Make sure this is your correct endpoint
+            type: 'POST',
+            processData: false, // Important for FormData
+            contentType: false, // Important for FormData
+            data: formData,
+            success: function (response) {
+                // Handle success
+                Swal.fire('Success', 'Lease successfully saved.', 'success').then(function () {
+                    window.location.href = '/Lease/Index'; // Redirect or handle response
+                });
+            },
+            error: function (xhr, status, error) {
+                // Handle error
+                Toast.fire({ icon: 'error', title: 'An error occurred: ' + error });
+            }
+        });
+    }
+
+
+    var hiddenTenantId;
+
+    $('#saveNewTenant').click(function () {
+        var formData = new FormData(document.getElementById('addTenantForm'));
+        var url = '/Tenant/CreateTenantData';
+        var tenantId = $('#hiddenTenantId').val(); // Get the tenant ID
+
+        // Check if it's an edit case
+        if (tenantId !== '') {
+            url = '/Tenant/UpdateTenantData/' + tenantId; // Append tenantId to the URL for update
+        } else {
+            formData.append("Tenant.AppTid", localStorage.getItem('userId'));
+        }
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            processData: false,
+            contentType: false,
+            data: formData,
+            success: function (response) {
+                if (response.success) {
+                    // Using only the first name of the tenant from the response
+                    const tenantFirstName = response.tenant.FirstName;
+                    const tenantId = response.tenant.TenantId;
+                    hiddenTenantId = tenantId;
+                    // Set the Tenant ID to the hidden input field
+                    $('#hiddenTenantId').val(tenantId);
+                    // Creating a new tenant card with fixed width, height, and only showing the first name
+                    const tenantCard = `
+                                <div class="tenant-card mr-5">
+                                    <div class="card-body d-flex justify-content-center align-items-center flex-column">
+                                        <p class="card-title">${tenantFirstName}</p>
+                                    </div>
+                                </div>`;
+
+                    // Appending the new tenant card to both containers
+                    $('#tenantsContainer').append(tenantCard);
+                    $('#tenant').append(tenantCard);
+
+                    // Hide the modal and reset the form
+                    $('#addNewTenantModal').modal('hide');
+                    $('#addTenantForm')[0].reset();
+                } else {
+                    Toast.fire({ icon: 'error', title: 'Failed to add/update tenant: ' + response.message });
+                }
+            },
+            error: function (xhr, status, error) {
+                Toast.fire({ icon: 'error', title: 'An error occurred: ' + error });
+            }
+        });
     });
 
+
 </script>
-
-
-
-
-

@@ -21,6 +21,8 @@ namespace PMS_PropertyHapa.Models.Entities
         // Security Deposit Flag
         public bool HasSecurityDeposit { get; set; }
 
+        public int TenantsTenantId { get; set; }
+
         // Late Fee Policy
         public string LateFeesPolicy { get; set; }
 

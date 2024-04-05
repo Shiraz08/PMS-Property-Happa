@@ -91,6 +91,45 @@ namespace PMS_PropertyHapa.Staff.Controllers
         }
 
 
+
+        [HttpPost]
+        public async Task<IActionResult> CreateTenantData(TenantModelDto tenant)
+        {
+            if (!Guid.TryParse(tenant.AppTid, out Guid appTenantId))
+            {
+                return Json(new { success = false, message = "Invalid AppTid format" });
+            }
+
+            tenant.AppTenantId = appTenantId;
+
+            if (tenant.Picture != null)
+            {
+                tenant.Picture = $"data:image/png;base64,{tenant.Picture}";
+            }
+
+            if (tenant.Pets != null)
+            {
+                foreach (var pet in tenant.Pets)
+                {
+                    if (pet.PictureUrl2 != null)
+                    {
+                        using (var memoryStream = new MemoryStream())
+                        {
+                            await pet.PictureUrl2.CopyToAsync(memoryStream);
+                            var pictureBytes = memoryStream.ToArray();
+                            pet.Picture = $"data:image/png;base64,{Convert.ToBase64String(pictureBytes)}";
+                        }
+                        pet.PictureUrl2 = null;
+                    }
+                }
+            }
+
+
+
+            await _authService.CreateTenantAsync(tenant);
+            return Json(new { success = true, message = "Tenant added successfully", tenant = tenant });
+        }
+
         [HttpPost]
         public async Task<IActionResult> Update(TenantModelDto tenant)
         {
