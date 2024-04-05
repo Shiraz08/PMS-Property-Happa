@@ -1177,7 +1177,7 @@
 
 
     function submitLeaseForm() {
-        var appTenantId = localStorage.getItem('AppTenantId');
+        var appTenantId = localStorage.getItem('userId');
         var leaseId = $('#leaseId').val();
         var isEditMode = leaseId && leaseId > 0;
         var url = isEditMode ? '/Lease/Update/' + leaseId : '/Lease/Create';
