@@ -727,6 +727,37 @@
         $(button).closest('.rent-charge-entry').remove();
     }
 
+
+     // Remove a security deposit entry
+    $(document).on('click', '.remove-deposit', function () {
+        $(this).closest('.security-deposit-entry').remove();
+    });
+
+    function populateSecurityDeposits() {
+        securityDeposits.forEach(function (deposit, index) {
+            addSecurityDepositEntry(deposit.Amount, deposit.Description, index);
+        });
+    }
+
+    function addSecurityDepositEntry(amount, description, index) {
+        const entryHtml = `
+                <div class="deposit-detail row mb-3" data-index="${index}">
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control mb-2" name="SecurityDeposits[${index}].Description" placeholder="Description" value="${description}">
+                    </div>
+                    <div class="col-sm-4">
+                        <input type="number" class="form-control mb-2" name="SecurityDeposits[${index}].Amount" placeholder="Amount" value="${amount}">
+                    </div>
+                    <div class="col-sm-4">
+                        <button type="button" class="btn btn-danger remove-deposit">Remove</button>
+                    </div>
+                </div>`;
+        $("#securityDepositsContainer").append(entryHtml);
+    }
+
+
+
+
     var signaturePad = new SignaturePad(document.getElementById('signatureCanvas'));
 
     $('#Signed, #UnSigned').on('click', function () {
@@ -786,33 +817,7 @@
         populateRentCharges();
     });
 
-    // Remove a security deposit entry
-    $(document).on('click', '.remove-deposit', function () {
-        $(this).closest('.security-deposit-entry').remove();
-    });
-
-    function populateSecurityDeposits() {
-        securityDeposits.forEach(function (deposit, index) {
-            addSecurityDepositEntry(deposit.Amount, deposit.Description, index);
-        });
-    }
-
-    function addSecurityDepositEntry(amount, description, index) {
-        const entryHtml = `
-                <div class="deposit-detail row mb-3" data-index="${index}">
-                    <div class="col-sm-4">
-                        <input type="text" class="form-control mb-2" name="SecurityDeposits[${index}].Description" placeholder="Description" value="${description}">
-                    </div>
-                    <div class="col-sm-4">
-                        <input type="number" class="form-control mb-2" name="SecurityDeposits[${index}].Amount" placeholder="Amount" value="${amount}">
-                    </div>
-                    <div class="col-sm-4">
-                        <button type="button" class="btn btn-danger remove-deposit">Remove</button>
-                    </div>
-                </div>`;
-        $("#securityDepositsContainer").append(entryHtml);
-    }
-
+   
   
 
     const Toast = Swal.mixin({
