@@ -124,18 +124,20 @@ namespace PMS_PropertyHapa.Staff.Controllers
                 }
             }
 
-
-
-         bool response2 =  await _authService.CreateTenantAsync(tenant);
-
-            if(response2)
+            bool response2 = await _authService.CreateTenantAsync(tenant);
+            if (response2)
             {
                 var tenantdatafetch = await _authService.GetAllTenantsAsync();
 
-                tenantdatafetch.Max(s => s.TenantId);
+                var maxTenantId = tenantdatafetch.Max(s => s.TenantId);
+                tenant.TenantId = maxTenantId;
+
                 return Json(new { success = true, message = "Tenant added successfully", tenant = tenant });
             }
-           
+            else
+            {
+                return Json(new { success = false, message = "Failed to add tenant" });
+            }
         }
 
         [HttpPost]

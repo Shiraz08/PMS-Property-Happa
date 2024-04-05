@@ -46,10 +46,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(LeaseDto lease)
         {
-            if(lease.TenantId == 0)
-            {
-                lease.TenantId = 41;
-            }
+            lease.TenantId = Convert.ToInt32(lease.TenantIdValue);
             if (lease == null)
             {
                 return Json(new { success = false, message = "lease data is  empty" });
@@ -82,10 +79,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
         [HttpPost]
         public async Task<IActionResult> Update(LeaseDto lease)
         {
-            if (lease.TenantId == 0)
-            {
-                lease.TenantId = 41;
-            }
+            
             if (lease == null)
             {
                 return Json(new { success = false, message = "Lease data is empty." });

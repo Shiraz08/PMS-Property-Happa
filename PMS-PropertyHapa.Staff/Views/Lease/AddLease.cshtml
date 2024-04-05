@@ -1362,11 +1362,6 @@
     function submitLeaseForm() {
         debugger;
         var appTenantId = localStorage.getItem('userId');
-        var tenantId = localStorage.getItem('tenantId');
-        if (tenantId) {
-            console.log("Retrieved Tenant ID from localStorage: ", tenantId);
-            AddTenantId = tenantId;
-        }
         var leaseId = $('#leaseId').val();
         var isEditMode = leaseId && leaseId > 0;
         var url = isEditMode ? '/Lease/Update/' + leaseId : '/Lease/Create';
@@ -1381,8 +1376,14 @@
         formData.append('IsMonthToMonth', $('#monthToMonthCard').hasClass('selected') ? 'true' : 'false');
         formData.append('HasSecurityDeposit', $('#yesSecurityFund').hasClass('selected') ? 'true' : 'false');
         formData.append('LateFeesPolicy', $('#yesLateFees').hasClass('selected') ? 'true' : 'false');
-        formData.append('TenantId', 41);
+        if (globalTenantId > 0) {
+            // This is the edit scenario, append TenantId to formData
+            formData.append('TenantId', globalTenantId);
+        } else {
 
+            var TenantId = localStorage.getItem('tenantId');
+            formData.append('TenantIdValue', TenantId);
+        }
 
 
         // Append Rent Charges and Security Deposits
@@ -1568,13 +1569,14 @@
             success: function (response) {
                 if (response.success) {
                     const tenant = response.tenant;
-                    var TId = response.tenant.TenantId;
-                    localStorage.setItem('tenantId', TId);
+                    const TenantId = tenant.TenantId;
+                    localStorage.setItem('tenantId', TenantId);
+                    console.log(TenantId);
                     const tenantCardHtml = `
                                         <div class="tenant-card mr-5" id="tenantCard_${tenant.TenantId}">
                                             <div class="card-body">
                                                 <h5 class="card-title">${tenant.FirstName} ${tenant.LastName}</h5>
-                                                <p>${tenant.EmailAddress}</p>
+                                                <p>${tenant.TenantId}</p>
                                                 <p>${tenant.PhoneNumber}</p>
                                                
                                             </div>

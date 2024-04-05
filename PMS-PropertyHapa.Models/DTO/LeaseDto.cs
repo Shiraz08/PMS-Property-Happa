@@ -27,6 +27,8 @@ namespace PMS_PropertyHapa.Models.DTO
         // Assuming TenantId is enough to link tenants for simplicity
         public int TenantId { get; set; }
 
+        public string TenantIdValue { get; set; }
+
         public TenantModelDto Tenant { get; set; }
         // Collections for Rent Charges and Security Deposits
         public List<RentChargeDto> RentCharges { get; set; }
