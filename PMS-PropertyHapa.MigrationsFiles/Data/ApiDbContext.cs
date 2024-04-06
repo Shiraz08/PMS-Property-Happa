@@ -65,7 +65,17 @@ namespace PMS_PropertyHapa.MigrationsFiles.Data
                 .HasForeignKey(e => e.TenantId);
 
 
+            modelBuilder.Entity<SecurityDeposit>(entity =>
+            {
+                entity.Property(e => e.Amount)
+                      .HasColumnType("decimal(18, 4)"); 
+            });
 
+            modelBuilder.Entity<RentCharge>(entity =>
+            {
+                entity.Property(e => e.Amount)
+                .HasColumnType("decimal(18, 4)");
+            });
 
 
             base.OnModelCreating(modelBuilder);

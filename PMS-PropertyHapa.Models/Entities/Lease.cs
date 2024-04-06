@@ -11,6 +11,10 @@ namespace PMS_PropertyHapa.Models.Entities
         public int LeaseId { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
+
+        public string SelectedProperty { get; set; }
+
+        public string SelectedUnit { get; set; }
         public bool IsSigned { get; set; }
         public string SignatureImagePath { get; set; }
 
@@ -20,6 +24,8 @@ namespace PMS_PropertyHapa.Models.Entities
 
         // Security Deposit Flag
         public bool HasSecurityDeposit { get; set; }
+
+
 
         public int TenantsTenantId { get; set; }
 

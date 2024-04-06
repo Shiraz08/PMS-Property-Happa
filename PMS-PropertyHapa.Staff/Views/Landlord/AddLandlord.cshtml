@@ -205,7 +205,7 @@
                                         <div class="col-sm-6 col-md-3">
                                             <div class="mb-3">
                                                 <label for="PhoneNumber" class="form-label">Phone Number</label>
-                                                <input type="number" class="form-control" id="PhoneNumber" name="PhoneNumber" value="@Model?.PhoneNumber" required pattern="/^(\+{0,})(\d{0,})([(]{1}\d{1,3}[)]{0,}){0,}(\s?\d+|\+\d{2,3}\s{1}\d+|\d+){1}[\s|-]?\d+([\s|-]?\d+){1,2}(\s){0,}$/gm" title="Please enter a valid phone number." oninput="validateNumberInput(this)" />
+                                                <input type="number" class="form-control" id="PhoneNumber" name="PhoneNumber" value="@Model?.PhoneNumber" required pattern="/^(\+{0,})(\d{0,})([(]{1}\d{1,3}[)]{0,}){0,}(\s?\d+|\+\d{2,3}\s{1}\d+|\d+){1}[\s|-]?\d+([\s|-]?\d+){1,2}(\s){0,}$/gm" title="Please enter a valid phone number." />
                                                 <small class="text-success" id="addAnotherPhone" onclick="togglePhoneField()" style="cursor: pointer;">
                                                     <i class="bi bi-plus-circle"></i> Add another phone  +
                                                 </small>
@@ -216,7 +216,7 @@
                                         <div class="col-sm-6 col-md-3" id="additionalPhoneField" style="display: none;">
                                             <div class="mb-3">
                                                 <label for="PhoneNumber2" class="form-label">Phone Number2</label>
-                                                <input type="number" class="form-control" id="PhoneNumber2" name="PhoneNumber2" value="@Model?.PhoneNumber2" required pattern="/^(\+{0,})(\d{0,})([(]{1}\d{1,3}[)]{0,}){0,}(\s?\d+|\+\d{2,3}\s{1}\d+|\d+){1}[\s|-]?\d+([\s|-]?\d+){1,2}(\s){0,}$/gm" title="Please enter a valid phone number." oninput="validateNumberInput(this)" />
+                                                <input type="number" class="form-control" id="PhoneNumber2" name="PhoneNumber2" value="@Model?.PhoneNumber2" required pattern="/^(\+{0,})(\d{0,})([(]{1}\d{1,3}[)]{0,}){0,}(\s?\d+|\+\d{2,3}\s{1}\d+|\d+){1}[\s|-]?\d+([\s|-]?\d+){1,2}(\s){0,}$/gm" title="Please enter a valid phone number." />
                                             </div>
                                         </div>
 
@@ -332,10 +332,32 @@
 </div>
 
 
+<div class="modal fade" id="propertyManagerModal" tabindex="-1" aria-labelledby="propertyManagerModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="propertyManagerModalLabel">Property Manager</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Does this landlord want to be a property manager?</p>
+                <div class="mb-3">
+                    <label for="managerPassword" class="form-label">Enter Password for Property Manager:</label>
+                    <input type="password" class="form-control" id="managerPassword" name="managerPassword">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                <button type="button" class="btn btn-primary" id="confirmPropertyManager">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
 
     document.addEventListener('DOMContentLoaded', function () {
-
+        const OwnerID = Number('@Model?.OwnerId');
 
 
         const toggleCheckbox = document.getElementById('toggleOrgInfo');
@@ -423,14 +445,7 @@
                 return true;
             }
         }
-        function validateOrganizationName(OrganizationName) {
-            if (OrganizationName.trim().length > 0) {
-                return false;
-            }
-            else {
-                return true;
-            }
-        }
+      
         function validateField(field, validatorFunc, errorMessage) {
             if (!validatorFunc(field.value)) {
                 showError(errorMessage);
@@ -484,11 +499,14 @@
             const isLastNameValid = validateField(LastName, validateLastName, 'LastName cannot be empty.');
             const isUnitValid = validateField(Unit, validateUnit, 'Unit cannot be empty.');
             const isRegionValid = validateField(Region, validateRegion, 'Region cannot be empty.');
-            const isOrganizationNameValid = validateField(OrganizationName, validateOrganizationName, 'Organization Name cannot be empty.');
             const isPostalCodeValid = validateField(PostalCode, validatePostalCode, 'PostalCode cannot be empty.');
             if (isEmailAddressValid && isPhoneNumberValid && isWebsiteValid && isAddressValid && isEmail2Valid && isFirstNameValid && isLastNameValid && isUnitValid && isRegionValid && isPostalCodeValid) {
 
-                submitTenantForm(event);
+                if (!OwnerID || OwnerID <= 0) {
+                    $('#propertyManagerModal').modal('show');
+                } else {
+                    submitTenantForm();
+                }
             } else {
                 console.error("Validation errors present. Cannot submit form.");
             }
@@ -599,12 +617,90 @@
         if (country) {
             document.getElementById("Country").value = country;
         }
-    }
-        });
+
+    });
 
 
     function downloadFile(id) {
         window.location.href = '/Landlord/Download?id=' + id;
     }
 
+
+    document.addEventListener('DOMContentLoaded', function () {
+   
+        document.querySelector('.btn-secondary').addEventListener('click', function () {
+
+            document.getElementById('tenantForm').submit();
+            $('#propertyManagerModal').modal('hide');
+
+        });
+   
+
+        const ownerId = '@Model?.OwnerId';
+        const saveButton = document.getElementById('saveButton');
+
+        if (!ownerId) { // Add case
+            saveButton.addEventListener('click', function (event) {
+                event.preventDefault();
+
+                $('#propertyManagerModal').modal('show');
+            });
+
+            document.getElementById('confirmPropertyManager').addEventListener('click', function () {
+                debugger;
+                var firstName = document.getElementById('FirstName').value;
+                var lastName = document.getElementById('LastName').value;
+                var email = document.getElementById('EmailAddress').value;
+                var password = document.getElementById('managerPassword').value;
+
+                if (password === "") {
+                    alert("Please enter a password for the property manager.");
+                    return;
+                }
+                var role = 'PropertyManager';
+                var formData = new FormData();
+                formData.append('Name', firstName + ' ' + lastName);
+                formData.append('Email', email);
+                formData.append('Password', password);
+                formData.append('UserName', email);
+                formData.append('Role', role);
+
+                submitRegistration(formData);
+            });
+
+        } else {
+            saveButton.addEventListener('click', function (event) {
+                event.preventDefault();
+                checkValidationsAndSubmit();
+            });
+        }
+
+        $('.btn-secondary').on('click', function () {
+        });
+
+        function submitRegistration(formData) {
+            debugger;
+            $.ajax({
+                url: '/Landlord/Register',
+                type: 'POST',
+                processData: false,
+                contentType: false,
+                body: formData,
+                success: function (response) {
+                    console.log(response);
+                    Swal.fire({ icon: 'success', title: 'Registered Successfully', showConfirmButton: false, timer: 1500 });
+                    window.location.href = "/Auth/Login";
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseText);
+                    Swal.fire({ icon: 'error', title: 'Registration Failed', text: 'Please try again!' });
+                }
+            });
+            $('#propertyManagerModal').modal('hide');
+        }
+
+        function checkValidationsAndSubmit() {
+
+        }
+    });
 </script>

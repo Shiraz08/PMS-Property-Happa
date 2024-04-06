@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PMS_PropertyHapa.Models.DTO;
 using PMS_PropertyHapa.Staff.Services.IServices;
 
 namespace PMS_PropertyHapa.Staff.Controllers

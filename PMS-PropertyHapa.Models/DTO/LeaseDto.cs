@@ -17,6 +17,10 @@ namespace PMS_PropertyHapa.Models.DTO
         public bool IsSigned { get; set; }
         public string SignatureImagePath { get; set; }
 
+        public string SelectedProperty { get; set; }
+
+        public string SelectedUnit { get; set; }
+
         public bool IsFixedTerm { get; set; }
         public bool IsMonthToMonth { get; set; }
         public bool HasSecurityDeposit { get; set; }

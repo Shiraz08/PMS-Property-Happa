@@ -1611,6 +1611,7 @@ namespace MagicVilla_VillaAPI.Repository
             using var transaction = await _db.Database.BeginTransactionAsync();
             try
             {
+
                 var newLease = new Lease
                 {
                     StartDate = leaseDto.StartDate,
@@ -1618,6 +1619,8 @@ namespace MagicVilla_VillaAPI.Repository
                     IsSigned = leaseDto.IsSigned,
                     SignatureImagePath = leaseDto.SignatureImagePath,
                     IsFixedTerm = leaseDto.IsFixedTerm,
+                    SelectedProperty = leaseDto.SelectedProperty,
+                    SelectedUnit = leaseDto.SelectedUnit,
                     IsMonthToMonth = leaseDto.IsMonthToMonth,
                     HasSecurityDeposit = leaseDto.HasSecurityDeposit,
                     LateFeesPolicy = leaseDto.LateFeesPolicy,
@@ -1628,35 +1631,41 @@ namespace MagicVilla_VillaAPI.Repository
                 await _db.Lease.AddAsync(newLease);
                 await _db.SaveChangesAsync();
 
-                foreach (var rentChargeDto in leaseDto.RentCharges)
+                if (leaseDto.RentCharges != null && leaseDto.SecurityDeposits != null)
                 {
-                    var rentCharge = new RentCharge
+
+                    foreach (var rentChargeDto in leaseDto.RentCharges)
                     {
-                        LeaseId = newLease.LeaseId,
-                        Amount = rentChargeDto.Amount,
-                        Description = rentChargeDto.Description,
-                        RentDate = rentChargeDto.RentDate,
-                        RentPeriod = rentChargeDto.RentPeriod
-                    };
+                        var rentCharge = new RentCharge
+                        {
+                            LeaseId = newLease.LeaseId,
+                            Amount = rentChargeDto.Amount,
+                            Description = rentChargeDto.Description,
+                            RentDate = rentChargeDto.RentDate,
+                            RentPeriod = rentChargeDto.RentPeriod
+                        };
 
-                    await _db.RentCharge.AddAsync(rentCharge);
-                }
+                        await _db.RentCharge.AddAsync(rentCharge);
+                        await _db.SaveChangesAsync();
+                    }
 
-                foreach (var securityDepositDto in leaseDto.SecurityDeposits)
-                {
-                    var securityDeposit = new SecurityDeposit
+                    foreach (var securityDepositDto in leaseDto.SecurityDeposits)
                     {
-                        LeaseId = newLease.LeaseId,
-                        Amount = securityDepositDto.Amount,
-                        Description = securityDepositDto.Description,
-                    };
+                        var securityDeposit = new SecurityDeposit
+                        {
+                            LeaseId = newLease.LeaseId,
+                            Amount = securityDepositDto.Amount,
+                            Description = securityDepositDto.Description,
+                        };
 
-                    await _db.SecurityDeposit.AddAsync(securityDeposit);
+                        await _db.SecurityDeposit.AddAsync(securityDeposit);
+                        await _db.SaveChangesAsync();
+                    }
+
+                   
+                
                 }
-
-                await _db.SaveChangesAsync();
                 await transaction.CommitAsync();
-
                 return true;
             }
             catch (Exception ex)
@@ -1684,6 +1693,8 @@ namespace MagicVilla_VillaAPI.Repository
                 StartDate = lease.StartDate,
                 EndDate = lease.EndDate,
                 IsSigned = lease.IsSigned,
+                SelectedProperty = lease.SelectedProperty,
+                SelectedUnit = lease.SelectedUnit,
                 SignatureImagePath = lease.SignatureImagePath,
                 IsFixedTerm = lease.IsFixedTerm,
                 IsMonthToMonth = lease.IsMonthToMonth,
@@ -1739,6 +1750,8 @@ namespace MagicVilla_VillaAPI.Repository
                     StartDate = lease.StartDate,
                     EndDate = lease.EndDate,
                     IsSigned = lease.IsSigned,
+                    SelectedProperty = lease.SelectedProperty,
+                    SelectedUnit = lease.SelectedUnit,
                     SignatureImagePath = lease.SignatureImagePath,
                     IsFixedTerm = lease.IsFixedTerm,
                     IsMonthToMonth = lease.IsMonthToMonth,
@@ -1803,6 +1816,8 @@ namespace MagicVilla_VillaAPI.Repository
                 existingLease.StartDate = leaseDto.StartDate;
                 existingLease.EndDate = leaseDto.EndDate;
                 existingLease.IsSigned = leaseDto.IsSigned;
+                existingLease.SelectedProperty = leaseDto.SelectedProperty;
+                existingLease.SelectedUnit = leaseDto.SelectedUnit;
                 existingLease.SignatureImagePath = leaseDto.SignatureImagePath;
                 existingLease.IsFixedTerm = leaseDto.IsFixedTerm;
                 existingLease.IsMonthToMonth = leaseDto.IsMonthToMonth;

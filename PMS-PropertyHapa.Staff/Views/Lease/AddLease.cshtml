@@ -296,7 +296,7 @@
                                     <div class="d-flex flex-column align-items-center">
                                         <div class="col-md-6 mb-3">
                                             <label for="propertyDropdown" class="form-label">Choose Property</label>
-                                            <select id="propertyDropdown" class="form-select">
+                                            <select id="propertyDropdown" name="SelectedProperty" class="form-select" data-selected-property="@Model?.SelectedProperty">
 
                                                 <!-- Random property options -->
                                                 <option value="property1">Property 1</option>
@@ -307,7 +307,7 @@
 
                                         <div class="col-md-6 mb-3">
                                             <label for="unitDropdown" class="form-label">Choose Units</label>
-                                            <select id="unitDropdown" class="form-select">
+                                            <select id="unitDropdown" name="SelectedUnit" class="form-select" data-selected-property="@Model?.SelectedUnit">
                                                 <!-- Random unit options -->
                                                 <option value="unit1">Unit 1</option>
                                                 <option value="unit2">Unit 2</option>
@@ -437,6 +437,12 @@
                                             </div>
                                         </div>
                                         <div id="securityDepositsContainer">
+                                            <div class="security-deposit-entry">
+                                                <input type="text" class="form-control deposit-description" name="Description" placeholder="Description">
+                                                <input type="number" class="form-control deposit-amount" name="Amount" placeholder="Amount">
+                                                <!-- Optionally, include a button to remove the deposit entry -->
+                                                <button type="button" class="btn btn-danger remove-deposit">Remove</button>
+                                            </div>
                                         </div>
                                         <div class="text-left my-3">
                                             <div class="row">
@@ -690,16 +696,14 @@
     var globalTenantId = @Html.Raw(Model?.TenantId > 0 ? Model?.TenantId.ToString() : "null");
     var AddTenantId;
 
-    function populateRentCharges() {
-        $("#rentChargesContainer").html(""); // Clear existing entries
-        rentCharges.forEach(function (charge, index) {
-            addRentChargeEntry(charge.Amount, charge.Description, charge.RentDate, charge.RentPeriod, index);
-        });
-    }
+   function populateRentCharges() {
+    $("#rentChargesContainer").html(""); 
+    rentCharges.forEach(function (charge, index) {
+        addRentChargeEntry(charge.Amount, charge.Description, charge.RentDate, charge.RentPeriod, index);
+    });
+}
 
     function addRentChargeEntry(amount, description, rentDate, rentPeriod, index) {
-        var formattedRentDate = rentDate && rentDate != '0001-01-01T00:00:00' ? rentDate.substr(0, 10) : '';
-        // Creating the HTML structure for a new rent charge entry
         const entryHtml = `
                             <div class="rent-charge-entry" data-index="${index}">
 
@@ -707,7 +711,8 @@
 
                                 <input type="number" class="form-control mb-2" name="RentCharges[${index}].Amount" placeholder="Amount" value="${amount}">
 
-                                        <input type="date" class="form-control mb-2" name="RentCharges[${index}].RentDate" value="${formattedRentDate}">
+                                    <input type="date" class="form-control mb-2 rent-date" name="RentCharges[${rentChargeIndex}].RentDate" value="${rentDate}">
+
 
                                 <select class="form-control mb-2" name="RentCharges[${index}].RentPeriod">
                                     <option value="daily" ${rentPeriod === 'daily' ? 'selected' : ''}>Daily</option>
@@ -735,30 +740,32 @@
     });
 
     function populateSecurityDeposits() {
+        $("#securityDepositsContainer").html(""); 
         securityDeposits.forEach(function (deposit, index) {
-            addSecurityDepositEntry(deposit.Amount, deposit.Description, index);
+            const entryHTML = `
+                <div class="security-deposit-entry">
+                    <input type="text" class="form-control deposit-description" name="SecurityDeposits[${index}].Description" value="${deposit.Description}" placeholder="Description">
+                    <input type="number" class="form-control deposit-amount" name="SecurityDeposits[${index}].Amount" value="${deposit.Amount}" placeholder="Amount">
+                    <button type="button" class="btn btn-danger remove-deposit">Remove</button>
+                </div>
+            `;
+            $('#securityDepositsContainer').append(entryHTML);
         });
     }
 
     let securityDepositIndex = 0;
 
-    function addSecurityDepositEntry() {
-        const container = document.getElementById("securityDepositsContainer");
-        if (container) { // Check if the container exists
-            const entryHtml = `
-                            <div class="deposit-detail">
-                                <input type="text" name="SecurityDeposits[${securityDepositIndex}].Description" placeholder="Description">
-                                <input type="number" name="SecurityDeposits[${securityDepositIndex}].Amount" placeholder="Amount">
-                            </div>
-                        `;
-            container.insertAdjacentHTML('beforeend', entryHtml);
-            securityDepositIndex++;
-        } else {
-            console.error("Container not found");
-        }
-    }
 
-
+    $('#addSecurityDeposit').on('click', function () {
+        let index = $('#securityDepositsContainer .security-deposit-entry').length;
+        const newDepositEntry = `
+                <div class="security-deposit-entry">
+                    <input type="text" class="form-control deposit-description" name="SecurityDeposits[${index}].Description" placeholder="Description">
+                    <input type="number" class="form-control deposit-amount" name="SecurityDeposits[${index}].Amount" placeholder="Amount">
+                    <button type="button" class="btn btn-danger remove-deposit">Remove</button>
+                </div>`;
+        $('#securityDepositsContainer').append(newDepositEntry);
+    });
 
     var signaturePad = new SignaturePad(document.getElementById('signatureCanvas'));
 
@@ -1054,29 +1061,21 @@
     let rentChargeIndex = 0;
 
     document.getElementById('addAnotherCharge').addEventListener('click', function () {
-        const container = document.getElementById('rentChargesContainer');
+        let index = $('#rentChargesContainer .rent-charge-entry').length; // Determine the next index
+        const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
         const newEntryHtml = `
-                                        <div class="form-row d-flex flex-wrap justify-content-center mb-3 rent-charge-entry">
-                                            <div class="col-sm-3">
-                                                    <select class="form-control charge-type" name="RentCharges[${rentChargeIndex}].RentPeriod">
-                                                    <option value="" disabled selected hidden>Select</option>
-                                                          <option value="daily">Daily</option>
-                                        <option value="weekly">Weekly</option>
-                                        <option value="monthly">Monthly</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-sm-3">
-                                                <input type="text" class="form-control charge-description" name="RentCharges[${rentChargeIndex}].Description" placeholder="Add description">
-                                            </div>
-                                            <div class="col-sm-3">
-                                                <input type="text" class="form-control charge-amount" name="RentCharges[${rentChargeIndex}].Amount" placeholder="Amount">
-                                            </div>
-                                            <div class="col-sm-3">
-                                                <button type="button" class="btn btn-danger remove-charge">Remove</button>
-                                            </div>
-                                        </div>`;
-        container.insertAdjacentHTML('beforeend', newEntryHtml);
-        rentChargeIndex++;
+            <div class="rent-charge-entry">
+                <input type="text" class="form-control mb-2" name="RentCharges[${index}].Description" placeholder="Description">
+                <input type="number" class="form-control mb-2" name="RentCharges[${index}].Amount" placeholder="Amount">
+                <input type="date" class="form-control mb-2" name="RentCharges[${index}].RentDate" value="${today}">
+                <select class="form-control mb-2" name="RentCharges[${index}].RentPeriod">
+                    <option value="monthly">Monthly</option>
+                    <!-- Other options -->
+                </select>
+                <button type="button" class="btn btn-danger remove-charge">Remove</button>
+            </div>
+        `;
+        $('#rentChargesContainer').append(newEntryHtml);
     });
 
     $(document).ready(function () {
@@ -1094,24 +1093,7 @@
             }
         });
 
-
-        $('#addSecurityDeposit').on('click', function () {
-            // Example of adding a new deposit detail entry - Adjust according to your specific needs
-            const newDepositEntry = `
-                                            <div class="row deposit-detail">
-                                                <div class="col-sm-4">
-                                                    <input type="text" class="form-control" placeholder="Description">
-                                                </div>
-                                                <div class="col-sm-3">
-                                                    <input type="text" class="form-control" placeholder="Amount">
-                                                </div>
-                                                <div class="col-sm-1">
-                                                    <button type="button" class="btn-sm btn-remove-deposit btn btn-danger">&times;</button>
-                                                </div>
-                                            </div>`;
-            $('#securityDepositsContainer').append(newDepositEntry);
-        });
-
+       
         // Optionally, handle removal of deposit details
         $(document).on('click', '.btn-remove-deposit', function () {
             $(this).closest('.deposit-detail').remove();
@@ -1376,6 +1358,8 @@
         formData.append('IsMonthToMonth', $('#monthToMonthCard').hasClass('selected') ? 'true' : 'false');
         formData.append('HasSecurityDeposit', $('#yesSecurityFund').hasClass('selected') ? 'true' : 'false');
         formData.append('LateFeesPolicy', $('#yesLateFees').hasClass('selected') ? 'true' : 'false');
+        formData.append("SelectedProperty", $("#propertyDropdown").val());
+        formData.append("SelectedUnit", $("#unitDropdown").val());
         if (globalTenantId > 0) {
             // This is the edit scenario, append TenantId to formData
             formData.append('TenantId', globalTenantId);
@@ -1398,18 +1382,33 @@
 
     function appendRentChargesToFormData(formData) {
         $('#rentChargesContainer .rent-charge-entry').each(function (index) {
-            formData.append(`RentCharges[${index}].Description`, $(this).find('[name$=".Description"]').val());
-            formData.append(`RentCharges[${index}].Amount`, $(this).find('[name$=".Amount"]').val());
-            formData.append(`RentCharges[${index}].RentDate`, $(this).find('[name$=".RentDate"]').val());
-            formData.append(`RentCharges[${index}].RentPeriod`, $(this).find('[name$=".RentPeriod"]').val());
+            var description = $(this).find('[name$=".Description"]').val();
+            var amount = $(this).find('[name$=".Amount"]').val();
+            var rentDate = $(this).find('[name$=".RentDate"]').val();
+
+            // Debugging: Console log to check the rentDate format
+            console.log("Appending Rent Charge with Date: ", rentDate);
+
+            formData.append(`RentCharges[${index}].Description`, description);
+            formData.append(`RentCharges[${index}].Amount`, amount);
+            formData.append(`RentCharges[${index}].RentDate`, rentDate);
+
+            // Assuming RentPeriod is correctly captured, append it as well
+            var rentPeriod = $(this).find('[name$=".RentPeriod"]').val();
+            formData.append(`RentCharges[${index}].RentPeriod`, rentPeriod);
         });
     }
 
+
     function appendSecurityDepositsToFormData(formData) {
-        $('#securityDepositsContainer .deposit-detail').each(function (index) {
-            // Utilize the name attribute structure you've established
-            formData.append(`SecurityDeposits[${index}].Description`, $(this).find('[name$=".Description"]').val());
-            formData.append(`SecurityDeposits[${index}].Amount`, $(this).find('[name$=".Amount"]').val());
+       
+        $('.security-deposit-entry').each(function (index) {
+          
+            var description = $(this).find('.deposit-description').val();
+            var amount = $(this).find('.deposit-amount').val();
+
+            formData.append(`SecurityDeposits[${index}].Description`, description);
+            formData.append(`SecurityDeposits[${index}].Amount`, amount);
         });
     }
 
@@ -1586,14 +1585,14 @@
                     if ($('#tenantCard_' + tenant.TenantId).length) {
                         $('#tenantCard_' + tenant.TenantId).replaceWith(tenantCardHtml);
                     } else {
-                        $('#tenantsContainer').append(tenantCardHtml).show(); // Make sure the container is visible
+                        $('#tenantsContainer').append(tenantCardHtml).show(); 
                     }
 
                     $('#addNewTenantModal').modal('hide'); // Hide the modal
                     $('#addTenantForm')[0].reset(); // Reset the form for the next input
                     $('#hiddenTenantId').val(''); // Clear the hidden field for the next addition
                 } else {
-                    // Handle failure
+                
                     Toast.fire({ icon: 'error', title: 'Failed to save tenant: ' + response.message });
                 }
             },
@@ -1618,5 +1617,25 @@
     $(document).ready(function () {
         var isEditMode = $('#hiddenTenantId').val() !== ''; // Determine if in edit mode
         initializeUIBasedOnMode(isEditMode);
+    });
+
+
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // Set selected value for Property based on data-selected-property attribute
+        document.querySelectorAll('select[data-selected-property]').forEach(function (selectElement) {
+            var selectedProperty = selectElement.getAttribute('data-selected-property');
+            if (selectedProperty) {
+                selectElement.value = selectedProperty;
+            }
+        });
+
+        // Set selected value for Unit based on data-selected-unit attribute
+        document.querySelectorAll('select[data-selected-unit]').forEach(function (selectElement) {
+            var selectedUnit = selectElement.getAttribute('data-selected-unit');
+            if (selectedUnit) {
+                selectElement.value = selectedUnit;
+            }
+        });
     });
 </script>
