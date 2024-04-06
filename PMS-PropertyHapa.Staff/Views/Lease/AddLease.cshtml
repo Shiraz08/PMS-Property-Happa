@@ -1061,16 +1061,27 @@ function addSecurityDepositEntry(description = "", amount = "", index = null) {
         let index = $('#rentChargesContainer .rent-charge-entry').length; // Determine the next index
         const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
         const newEntryHtml = `
-            <div class="rent-charge-entry">
-                <input type="text" class="form-control mb-2" name="RentCharges[${index}].Description" placeholder="Description">
-                <input type="number" class="form-control mb-2" name="RentCharges[${index}].Amount" placeholder="Amount">
-                <input type="date" class="form-control mb-2" name="RentCharges[${index}].RentDate" value="${today}">
-                <select class="form-control mb-2" name="RentCharges[${index}].RentPeriod">
-                    <option value="monthly">Monthly</option>
-                    <!-- Other options -->
-                </select>
-                <button type="button" class="btn btn-danger remove-charge">Remove</button>
-            </div>
+          <div class="rent-charge-entry row gx-2 gy-2">
+    <div class="col-md-3">
+        <input type="text" class="form-control mb-2" name="RentCharges[${index}].Description" placeholder="Description">
+    </div>
+    <div class="col-md-2">
+        <input type="number" class="form-control mb-2" name="RentCharges[${index}].Amount" placeholder="Amount">
+    </div>
+    <div class="col-md-2">
+        <input type="date" class="form-control mb-2" name="RentCharges[${index}].RentDate" value="${today}">
+    </div>
+    <div class="col-md-3">
+        <select class="form-control mb-2" name="RentCharges[${index}].RentPeriod">
+            <option value="daily">Daily</option>
+            <option value="weekly">Weekly</option>
+            <option value="monthly">Monthly</option>
+        </select>
+    </div>
+    <div class="col-md-2 d-flex align-items-center">
+        <button type="button" class="btn btn-danger remove-charge">Remove</button>
+    </div>
+</div>
         `;
         $('#rentChargesContainer').append(newEntryHtml);
     });
@@ -1397,15 +1408,11 @@ function addSecurityDepositEntry(description = "", amount = "", index = null) {
     }
 
 
-    function appendSecurityDepositsToFormData(formData) {
-       
-        $('.security-deposit-entry').each(function (index) {
-          
-            var description = $(this).find('.deposit-description').val();
-            var amount = $(this).find('.deposit-amount').val();
-
-            formData.append(`SecurityDeposits[${index}].Description`, description);
-            formData.append(`SecurityDeposits[${index}].Amount`, amount);
+ function appendSecurityDepositsToFormData(formData) {
+        $('#securityDepositsContainer .deposit-detail').each(function (index) {
+            // Utilize the name attribute structure you've established
+            formData.append(`SecurityDeposits[${index}].Description`, $(this).find('[name$=".Description"]').val());
+            formData.append(`SecurityDeposits[${index}].Amount`, $(this).find('[name$=".Amount"]').val());
         });
     }
 
