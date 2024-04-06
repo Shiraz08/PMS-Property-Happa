@@ -734,38 +734,35 @@
     }
 
 
-    // Remove a security deposit entry
-    $(document).on('click', '.remove-deposit', function () {
+     $(document).on('click', '.remove-deposit', function () {
         $(this).closest('.security-deposit-entry').remove();
-    });
+    })
 
-    function populateSecurityDeposits() {
-        $("#securityDepositsContainer").html(""); 
-        securityDeposits.forEach(function (deposit, index) {
-            const entryHTML = `
-                <div class="security-deposit-entry">
-                    <input type="text" class="form-control deposit-description" name="SecurityDeposits[${index}].Description" value="${deposit.Description}" placeholder="Description">
-                    <input type="number" class="form-control deposit-amount" name="SecurityDeposits[${index}].Amount" value="${deposit.Amount}" placeholder="Amount">
-                    <button type="button" class="btn btn-danger remove-deposit">Remove</button>
-                </div>
-            `;
-            $('#securityDepositsContainer').append(entryHTML);
-        });
-    }
+   function populateSecurityDeposits() {
+    $("#securityDepositsContainer").html(""); // Clear existing entries
+    securityDeposits.forEach(function(deposit, index) {
+        addSecurityDepositEntry(deposit.Description, deposit.Amount, index);
+    });
+}
+
+function addSecurityDepositEntry(description = "", amount = "", index = null) {
+    index = index === null ? $("#securityDepositsContainer .security-deposit-entry").length : index;
+    const entryHTML = `
+        <div class="security-deposit-entry">
+            <input type="text" class="form-control deposit-description" name="SecurityDeposits[${index}].Description" value="${description}" placeholder="Description">
+            <input type="number" class="form-control deposit-amount" name="SecurityDeposits[${index}].Amount" value="${amount}" placeholder="Amount">
+            <button type="button" class="btn btn-danger remove-deposit">Remove</button>
+        </div>`;
+    $('#securityDepositsContainer').append(entryHTML);
+}
+
 
     let securityDepositIndex = 0;
 
 
-    $('#addSecurityDeposit').on('click', function () {
-        let index = $('#securityDepositsContainer .security-deposit-entry').length;
-        const newDepositEntry = `
-                <div class="security-deposit-entry">
-                    <input type="text" class="form-control deposit-description" name="SecurityDeposits[${index}].Description" placeholder="Description">
-                    <input type="number" class="form-control deposit-amount" name="SecurityDeposits[${index}].Amount" placeholder="Amount">
-                    <button type="button" class="btn btn-danger remove-deposit">Remove</button>
-                </div>`;
-        $('#securityDepositsContainer').append(newDepositEntry);
-    });
+   $('#addSecurityDeposit').on('click', function () {
+    addSecurityDepositEntry(); // No arguments passed for a new entry
+});
 
     var signaturePad = new SignaturePad(document.getElementById('signatureCanvas'));
 
