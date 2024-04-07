@@ -56,6 +56,8 @@
                                         <th scope="col" class="tableHeaderbg">Lease ID</th>
                                         <th scope="col" class="tableHeaderbg">Start Date</th>
                                         <th scope="col" class="tableHeaderbg">End Date</th>
+                                        <th scope="col" class="tableHeaderbg">Selected Property</th>
+                                        <th scope="col" class="tableHeaderbg">Selected Unit</th>
                                         <th scope="col" class="tableHeaderbg">Rent Charges</th>
                                         <th scope="col" class="tableHeaderbg">Security Deposit</th>
                                         <th scope="col" class="tableHeaderbg">Action</th>
@@ -80,6 +82,8 @@
                                             </td>
                                             <td class="tableFontSize">@lease.StartDate</td> 
                                             <td class="tableFontSize">@lease.EndDate</td>
+                                            <td class="tableFontSize">@lease.SelectedProperty</td>
+                                            <td class="tableFontSize">@lease.SelectedUnit</td>
                                             <td class="tableFontSize">@lease.RentCharges.Count()</td>
                                             <td class="tableFontSize">@lease.SecurityDeposits.Count()</td>
                                             <td class="tableFontSize">

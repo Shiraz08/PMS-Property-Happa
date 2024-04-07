@@ -120,22 +120,28 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Register(RegisterationRequestDTO obj)
-        {
-            if (string.IsNullOrEmpty(obj.Role))
+        [Route("Landlord/Register")]
+        public async Task<IActionResult> Register([FromBody] OwnerDto obj)
+        { 
+
+            var registrationRequest = new RegisterationRequestDTO
             {
-                obj.Role = SD.User;
-            }
-            APIResponse result = await _authService.RegisterAsync<APIResponse>(obj);
-            if (result != null && result.IsSuccess)
+                UserName = obj.UserName,
+                Name = obj.Name,
+                Password = obj.Password,
+                Email = obj.Email,
+                Role = string.IsNullOrEmpty(obj.Role) ? SD.User : obj.Role
+            };
+            APIResponse result = await _authService.RegisterAsync<APIResponse>(registrationRequest);
+            if (result.IsSuccess)
             {
-                return RedirectToAction("Login");
+                return Json(new { success = true, message = "Registered Successfully" });
             }
             var roleList = new List<SelectListItem>()
-            {
-                new SelectListItem{Text=SD.Admin,Value=SD.Admin},
-                new SelectListItem{Text=SD.Customer,Value=SD.Customer},
-            };
+    {
+        new SelectListItem{Text=SD.Admin, Value=SD.Admin},
+        new SelectListItem{Text=SD.Customer, Value=SD.Customer},
+    };
             ViewBag.RoleList = roleList;
             return View();
         }

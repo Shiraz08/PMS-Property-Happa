@@ -68,5 +68,17 @@ namespace PMS_PropertyHapa.Models.DTO
         public string OrganizationLogo { get; set; }
         public IFormFile OrganizationLogoFile { get; set; }
         public string Website { get; set; }
+
+
+
+
+
+
+
+        public string UserName { get; set; }
+        public string Name { get; set; }
+        public string Password { get; set; }
+        public string Email { get; set; }
+        public string Role { get; set; }
     }
 }
