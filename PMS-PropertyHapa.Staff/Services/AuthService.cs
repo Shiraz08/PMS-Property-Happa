@@ -398,14 +398,97 @@ namespace PMS_PropertyHapa.Staff.Services
             }
                 else
                 {
-                    throw new Exception("Failed to retrieve asset data");
+                    throw new Exception("Failed to retrieve communication data");
                 }
             
            
         }
 
 
+        #region Communication Services Method
+        public async Task<bool> CreateCommunicationAsync(CommunicationDto communication)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Data = communication,
+                    Url = $"{villaUrl}/api/v1/CommunicationAuth/Communication"
+                });
 
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when creating communication: {ex.Message}", ex);
+            }
+        }
+
+
+        public async Task<bool> UpdateCommunicationAsync(CommunicationDto communication)
+        {
+            try
+            {
+                int communicationId = communication.Communication_Id;
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Data = communication,
+                    Url = $"{villaUrl}/api/v1/CommunicationAuth/Communication/{communicationId}"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when creating communication: {ex.Message}", ex);
+            }
+        }
+
+
+        public async Task<bool> DeleteCommunicationAsync(int communicationId)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.DELETE,
+                    Url = $"{villaUrl}/api/v1/CommunicationAuth/Communication/{communicationId}"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when deleting communication: {ex.Message}", ex);
+            }
+        }
+
+
+        public async Task<IEnumerable<CommunicationDto>> GetAllCommunicationAsync()
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = $"{villaUrl}/api/v1/CommunicationAuth/Communication"
+            });
+
+            if (response.IsSuccess == true)
+            {
+                var userListJson = Convert.ToString(response.Result);
+                var communication = JsonConvert.DeserializeObject<IEnumerable<CommunicationDto>>(userListJson);
+                return communication;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve communication data");
+            }
+
+
+        }
+        #endregion
 
 
 

@@ -63,6 +63,16 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
         Task<IEnumerable<AssetDTO>> GetAllAssetsAsync();
 
 
+        #region Communication Interface Services 
+        Task<bool> CreateCommunicationAsync(CommunicationDto communication);
+
+        Task<bool> DeleteCommunicationAsync(int communication_id);
+        Task<bool> UpdateCommunicationAsync(CommunicationDto communication);
+
+        Task<IEnumerable<CommunicationDto>> GetAllCommunicationAsync();
+        #endregion
+
+
         Task<List<PropertySubTypeDto>> GetAllPropertySubTypesAsync();
         Task<List<PropertySubTypeDto>> GetPropertySubTypeByIdAsync(int propertytypeId);
         Task<bool> CreatePropertySubTypeAsync(PropertySubTypeDto propertyType);

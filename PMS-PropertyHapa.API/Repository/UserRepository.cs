@@ -1662,8 +1662,8 @@ namespace MagicVilla_VillaAPI.Repository
                         await _db.SaveChangesAsync();
                     }
 
-                   
-                
+
+
                 }
                 await transaction.CommitAsync();
                 return true;
@@ -1702,7 +1702,7 @@ namespace MagicVilla_VillaAPI.Repository
                 LateFeesPolicy = lease.LateFeesPolicy,
                 RentCharges = lease.RentCharges.Select(rc => new RentChargeDto
                 {
-                 
+
                     RentChargeId = rc.RentChargeId,
                     Amount = rc.Amount,
                     Description = rc.Description,
@@ -1711,12 +1711,12 @@ namespace MagicVilla_VillaAPI.Repository
                 }).ToList(),
                 SecurityDeposits = lease.SecurityDeposit.Select(sd => new SecurityDepositDto
                 {
-                  
+
                     SecurityDepositId = sd.SecurityDepositId,
                     Amount = sd.Amount,
                     Description = sd.Description
                 }).ToList(),
-                Tenant = lease.Tenants != null ? new TenantModelDto 
+                Tenant = lease.Tenants != null ? new TenantModelDto
                 {
                     TenantId = lease.Tenants.TenantId,
                     FirstName = lease.Tenants.FirstName,
@@ -1791,7 +1791,7 @@ namespace MagicVilla_VillaAPI.Repository
 
                 return leaseDtos;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw;
             }
@@ -1841,7 +1841,7 @@ namespace MagicVilla_VillaAPI.Repository
                     }
                     else
                     {
-                      
+
                         existingLease.RentCharges.Add(new RentCharge
                         {
                             Amount = rcDto.Amount,
@@ -1859,14 +1859,14 @@ namespace MagicVilla_VillaAPI.Repository
                     var existingSd = existingLease.SecurityDeposit.FirstOrDefault(sd => sd.SecurityDepositId == sdDto.SecurityDepositId);
                     if (existingSd != null)
                     {
-                        
+
                         existingSd.Amount = sdDto.Amount;
                         existingSd.Description = sdDto.Description;
                         existingLease.LeaseId = sdDto.LeaseId;
                     }
                     else
                     {
-                       
+
                         existingLease.SecurityDeposit.Add(new SecurityDeposit
                         {
                             Amount = sdDto.Amount,
@@ -2225,6 +2225,116 @@ namespace MagicVilla_VillaAPI.Repository
             }
 
             _db.Assets.Remove(asset);
+
+            var result = await _db.SaveChangesAsync();
+
+            return result > 0;
+        }
+
+
+        #endregion
+
+
+
+        #region Communication
+        public async Task<List<CommunicationDto>> GetAllCommunicationAsync()
+        {
+            try
+            {
+                var communicationTypes = await _db.Communication
+                                             .AsNoTracking()
+                                             .ToListAsync();
+
+
+
+                var propertyTypeDtos = communicationTypes.Select(communication => new CommunicationDto
+                {
+                    Communication_Id = communication.Communication_Id,
+                    Communication_File = communication.Communication_File,
+                    Subject = communication.Subject,
+                    Message = communication.Message,
+                    PropertyIds = communication.PropertyIds,
+                    TenantIds = communication.TenantIds,
+                    IsByEmail = communication.IsByEmail,
+                    IsByText = communication.IsByText,
+                    IsShowCommunicationInTenantPortal = communication.IsShowCommunicationInTenantPortal,
+                    IsPostOnTenantScreen = communication.IsPostOnTenantScreen,
+                    RemoveFeedDate = communication.RemoveFeedDate,
+                }).ToList();
+
+
+                return propertyTypeDtos;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping property types: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<bool> CreateCommunicationAsync(CommunicationDto communication)
+        {
+            var CommunicationData = new Communication
+
+            {
+                Communication_Id = communication.Communication_Id,
+                Communication_File = communication.Communication_File,
+                Subject = communication.Subject,
+                Message = communication.Message,
+                PropertyIds = communication.PropertyIds,
+                TenantIds = communication.TenantIds,
+                IsByEmail = communication.IsByEmail,
+                IsByText = communication.IsByText,
+                IsShowCommunicationInTenantPortal = communication.IsShowCommunicationInTenantPortal,
+                IsPostOnTenantScreen = communication.IsPostOnTenantScreen,
+                RemoveFeedDate = communication.RemoveFeedDate,
+
+            };
+            await _db.Communication.AddAsync(CommunicationData);
+
+            var result = await _db.SaveChangesAsync();
+
+            return result > 0;
+        }
+
+
+        public async Task<bool> UpdateCommunicationAsync(CommunicationDto communication)
+        {
+
+            var existingCommunication = await _db.Communication.FindAsync(communication.Communication_Id);
+            if (existingCommunication == null)
+            {
+                return false;
+            }
+
+            existingCommunication.Communication_Id = communication.Communication_Id;
+            existingCommunication.Communication_File = communication.Communication_File;
+            existingCommunication.Subject = communication.Subject;
+            existingCommunication.Message = communication.Message;
+            existingCommunication.PropertyIds = communication.PropertyIds;
+            existingCommunication.TenantIds = communication.TenantIds;
+            existingCommunication.IsByEmail = communication.IsByEmail;
+            existingCommunication.IsByText = communication.IsByText;
+            existingCommunication.IsShowCommunicationInTenantPortal = communication.IsShowCommunicationInTenantPortal;
+            existingCommunication.IsPostOnTenantScreen = communication.IsPostOnTenantScreen;
+            existingCommunication.RemoveFeedDate = communication.RemoveFeedDate;
+
+            _db.Communication.Update(existingCommunication);
+            var result = await _db.SaveChangesAsync();
+
+            return result > 0;
+        }
+
+
+        public async Task<bool> DeleteCommunicationAsync(int communicationId)
+        {
+            var communication = await _db.Communication.FindAsync(communicationId);
+            if (communication == null)
+            {
+                return false;
+            }
+
+            _db.Communication.Remove(communication);
 
             var result = await _db.SaveChangesAsync();
 

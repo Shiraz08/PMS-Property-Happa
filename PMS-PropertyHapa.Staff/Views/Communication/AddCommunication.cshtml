@@ -1,0 +1,660 @@
+﻿@using PMS_PropertyHapa.Models.DTO;
+@model PMS_PropertyHapa.Models.DTO.CommunicationDto;
+@{
+    ViewData["Title"] = "AddCommunication";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<head>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+
+    <style>
+        .square-card {
+            width: 150px;
+            height: 150px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .selection-card.active .square-card {
+            border-color: #007bff;
+            background-color: #e7f0ff;
+            transform: scale(1.05);
+        }
+
+        .d-none {
+            display: none;
+        }
+
+
+
+        .progressbar {
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-line {
+            position: absolute;
+            height: 2px;
+            background-color: #007bff;
+            top: 50%;
+            left: 0;
+            z-index: 0;
+            width: 0%;
+        }
+
+
+        .progress-indicator {
+            z-index: 1;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+            .progress-indicator span {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                background-color: #ddd;
+                color: #000;
+            }
+
+            .progress-indicator.active span {
+                background-color: #007bff;
+                color: #fff;
+            }
+
+            .progress-indicator p {
+                margin-top: 5px;
+                font-size: 12px;
+            }
+
+    </style>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+</head>
+
+
+<div class="page-body">
+
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row align-items-center justify-content-between">
+                <!-- Adjusted for alignment and distribution -->
+                <div class="col-auto">
+                    <!-- col-auto adjusts the width to its content -->
+                    <h3>Communication</h3>
+                </div>
+                <div class="col-auto">
+                    <!-- col-auto adjusts the width to its content -->
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb mb-0">
+                            <!-- mb-0 removes the bottom margin -->
+                            <li class="breadcrumb-item">
+                                <a href="index.html">
+                                    <i data-feather="home"></i>
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item">Communication</li>
+                            <li class="breadcrumb-item active" aria-current="page">Add/Update</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-body">
+                        <form id="communicationForm" method="post" enctype="multipart/form-data">
+                            <div id="progressbar" class="progressbar">
+                                <div class="progress-indicator active" data-step="1"><span>1</span><p>Properties/Units</p></div>
+                                <div class="progress-indicator" data-step="2"><span>2</span><p>Delivery Method</p></div>
+                                <div class="progress-indicator" data-step="3"><span>3</span><p>Announcement Content</p></div>
+                                <div class="progress-indicator" data-step="4"><span>4</span><p>Review & Confirm</p></div>
+                                <div class="progress-line" id="progressLine"></div>
+                            </div>
+                            <!-- Fields -->
+                            <fieldset id="step1" class="step-section active">
+                                <h3>Properties/Units</h3>
+
+                                <div class="container">
+                                    <div class="row d-flex justify-content-center">
+                                        <!-- All Properties -->
+                                        <div class="col-auto selection-card" data-target="propertiesDropdown" data-show="false">
+                                            <label class="card square-card border p-3">
+                                                <input name="propertiesRadioBtn" value="all" type="radio" hidden>
+                                                <div class="radio-details">
+                                                    <i class="fas fa-city fa-2x mb-2"></i>
+                                                    <p class="fs-6 text-dark fw-bold mb-0">All Properties</p>
+                                                </div>
+                                            </label>
+                                        </div>
+
+                                        <!-- Some Properties -->
+                                        <div class="col-auto selection-card" data-target="propertiesDropdown" data-show="true">
+                                            <label class="card square-card border p-3">
+                                                <input name="propertiesRadioBtn" value="some" type="radio" hidden>
+                                                <div class="radio-details">
+                                                    <i class="fas fa-home fa-2x mb-2"></i>
+                                                    <p class="fs-6 text-dark fw-bold mb-0">Some Properties</p>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div id="propertiesDropdown" class="row d-flex justify-content-center mt-3 d-none">
+                                        <div class="col-auto">
+                                            <label for="announcementProperties">Select Properties</label>
+                                            <div id="propertyCount" class="selected-count">0 Selected</div>
+                                            <select id="announcementProperties" multiple name="announcementProperties" class="form-control select2" required></select>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="container mt-4">
+                                        <!-- Tenant Selection -->
+                                        <div class="row d-flex justify-content-center">
+                                            <!-- All Tenants -->
+                                            <div class="col-auto selection-card" data-target="tenantsDropdown" data-show="false">
+                                                <label class="card square-card border p-3">
+                                                    <input name="tenantsRadioBtn" value="all" type="radio" hidden>
+                                                    <div class="radio-details">
+                                                        <i class="fas fa-users fa-2x mb-2"></i>
+                                                        <p class="fs-6 text-dark fw-bold mb-0">All Tenants</p>
+                                                    </div>
+                                                </label>
+                                            </div>
+
+                                            <!-- Some Tenants -->
+                                            <div class="col-auto selection-card" data-target="tenantsDropdown" data-show="true">
+                                                <label class="card square-card border p-3">
+                                                    <input name="tenantsRadioBtn" value="some" type="radio" hidden>
+                                                    <div class="radio-details">
+                                                        <i class="fas fa-user fa-2x mb-2"></i>
+                                                        <p class="fs-6 text-dark fw-bold mb-0">Some Tenants</p>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <div id="tenantsDropdown" class="row d-flex justify-content-center mt-3 d-none">
+                                            <div class="col-auto">
+                                                <label for="announcementTenants">Select Tenants</label>
+                                                <div id="tenantCount" class="selected-count">0 Selected</div>
+                                                <select id="announcementTenants" multiple name="announcementTenants" class="form-control select2" required></select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <input type="hidden" id="propertyIds" name="PropertyIds" />
+                                <input type="hidden" id="tenantIds" name="TenantIds" />
+                                <input type="hidden" id="communicationId" name="Communication_Id" value="" />
+                            </fieldset>
+
+
+                            <fieldset id="step2" class="step-section">
+                                <h3 class="mb-4">Delivery Method</h3>
+                                <div class="row align-items-center">
+                                    <!-- Email Switch -->
+                                    <div class="form-check form-switch switchBtn gap-2" style="align-items: center; gap: 10px; display: flex;">
+                                        <input class="form-check-input" style="width: 2rem; height: 1.2rem; cursor: pointer;" type="checkbox" id="emailSwitch">
+                                        <p class="form-check-label fs-6 text-dark fw-bold" for="emailSwitch" style="margin-bottom: 0;">Send now by email</p>
+                                    </div>
+                                    <div id="deliveryEmailDiv" class="d-none">
+                                        <p id="deliveryMessage" class="fs-6 text-dark">This announcement will be sent immediately to all tenants with an email address on file. We will track delivery and open rates for you.</p>
+                                    </div>
+
+                                    <!-- Text Message Switch -->
+                                    <div class="form-check form-switch switchBtn gap-2" style="align-items: center; gap: 10px; display: flex;">
+                                        <input class="form-check-input" style="width: 2rem; height: 1.2rem; cursor: pointer;" type="checkbox" id="textMessageSwitch">
+                                        <p class="form-check-label fs-6 text-dark fw-bold" for="textMessageSwitch" style="margin-bottom: 0;">Send now by text message</p>
+                                    </div>
+                                    <div id="deliveryTextDiv" class="d-none">
+                                        <p class="fs-6 text-dark">This announcement will be sent immediately to all tenants with a mobile phone number on file and will use 1 communication credit per text message sent.</p>
+                                        <p class="fs-6 text-dark">Limit 140 characters.</p>
+                                    </div>
+
+                                    <!-- Tenant Portal Switch -->
+                                    <div class="form-check form-switch switchBtn gap-2" style="align-items: center; gap: 10px; display: flex;">
+                                        <input class="form-check-input" style="width: 2rem; height: 1.2rem; cursor: pointer;" type="checkbox" id="tenantPortalSwitch">
+                                        <p class="form-check-label fs-6 text-dark fw-bold" for="tenantPortalSwitch" style="margin-bottom: 0;">Show this announcement in the tenant portal</p>
+                                    </div>
+                                    <div id="deliveryTenantPortalDiv" class="d-none">
+                                        <p class="fs-6 text-dark">This announcement will be posted in the announcement section of the tenant portal</p>
+                                        <div class="form-check">
+                                            <input class="" type="checkbox" id="homeScreenSwitch">
+                                            <label class="fs-6 text-dark" for="homeScreenSwitch">Also post this announcement on the home screen of the tenant portal</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="" type="checkbox" id="removePortalSwitch">
+                                            <label class="fs-6 text-dark" for="removePortalSwitch">Remove this announcement from tenants portal feed on this date</label>
+                                        </div>
+                                        <div id="removeFeedDateDiv" class="form-group col-4 d-none">
+                                            <label for="removeFeedDate" class="fs-6 text-dark">Date</label>
+                                            <input type="date" class="form-control" id="removeFeedDate">
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+
+
+
+                            <fieldset id="step3" class="step-section">
+                                <h3>Announcement Content</h3>
+                                <div class="mb-3">
+                                    <label for="announcementSubject" class="form-label">Subject</label>
+                                    <input type="text" class="form-control" id="announcementSubject" name="Subject" required placeholder="Enter the subject of your announcement">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="announcementMessage" class="form-label">Message</label>
+                                    <textarea class="form-control" id="announcementMessage" name="Message" rows="4" required placeholder="Write your message here"></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="documentFiles" class="form-label">Attach Files</label>
+                                    <input type="file" class="form-control" id="documentFiles" name="DocumentFiles" multiple>
+                                    <div id="filesHelp" class="form-text">You can select multiple files to attach with your announcement.</div>
+                                </div>
+                            </fieldset>
+
+
+                            <fieldset id="step4" class="step-section">
+                                <h3>Review and Confirm</h3>
+                                <div class="form-card mt-3">
+                                    <div class="row">
+                                        <div class="col-12 mb-3">
+                                            <p class="fs-6 text-dark">This announcement will be delivered via:</p>
+                                        </div>
+                                        <div id="iconContainer" class="col-12 d-flex flex-column align-items-start">
+                                            <div><i class="fas fa-envelope fa-2x text-primary mb-2" title="Email"></i> Email</div>
+                                            <div><i class="fas fa-sms fa-2x text-success mb-2" title="Text Message"></i> Text Message</div>
+                                            <div><i class="fas fa-globe fa-2x text-info mb-2" title="Tenant Portal"></i> Tenant Portal</div>
+                                        </div>
+                                    </div>
+
+                                    <br><br>
+                                </div>
+                            </fieldset>
+
+
+
+
+                            <div class="form-navigation float-end">
+                                <button type="button" class="btn btn-secondary btn-previous" style="display: none;">Previous</button>
+                                <button type="button" class="btn btn-primary btn-next">Next</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Function to update the selected options in dropdowns
+        function updateSelectedOptions(selectedIds, dropdownId) {
+            $(dropdownId).val(selectedIds.split(',')).trigger('change');
+        }
+
+        // Function to update the checked status of checkboxes
+        function updateCheckboxStatus(isChecked, checkboxId) {
+            $(checkboxId).prop('checked', isChecked);
+        }
+
+        // Function to populate fields based on the Communication object
+        function populateFields(communication) {
+            // Update property dropdown
+            updateSelectedOptions(communication.PropertyIds, '#announcementProperties');
+
+            // Update tenant dropdown
+            updateSelectedOptions(communication.TenantIds, '#announcementTenants');
+
+            // Update delivery method checkboxes
+            updateCheckboxStatus(communication.SendByEmail, '#emailSwitch');
+            updateCheckboxStatus(communication.SendByTextMessage, '#textMessageSwitch');
+            updateCheckboxStatus(communication.ShowInTenantPortal, '#tenantPortalSwitch');
+            updateCheckboxStatus(communication.RemoveFromPortalOnDate, '#removePortalSwitch');
+        }
+
+        // Call the populateFields function if Communication object exists
+        if (typeof Communication !== 'undefined') {
+            populateFields(Communication);
+        }
+    });
+
+
+
+    $(document).ready(function () {
+        let currentStep = 1;
+        const totalSteps = $('.progress-indicator').length;
+
+        function updateProgress(step) {
+
+            $('.progress-indicator').removeClass('active').slice(0, step).addClass('active');
+            let progressWidth = ((step - 1) / (totalSteps - 1)) * 100;
+            $('#progressLine').css('width', progressWidth + '%');
+
+            $('.step-section').hide();
+            $('#step' + step).show();
+
+            if (step === totalSteps) {
+                $('.btn-previous').show();
+                $('.btn-next').text('Submit').addClass('btn-submit').removeClass('btn-next');
+            } else {
+                $('.btn-previous').toggle(step > 1);
+                $('.btn-submit').text('Next').addClass('btn-next').removeClass('btn-submit');
+            }
+        }
+
+        $(document).on('click', '.btn-next, .btn-submit', function () {
+            if (currentStep < totalSteps) {
+                currentStep++;
+                updateProgress(currentStep);
+            } else {
+
+                alert('Form submitted!');
+            }
+        });
+
+        $('.btn-previous').on('click', function () {
+            if (currentStep > 1) {
+                currentStep--;
+                updateProgress(currentStep);
+            }
+        });
+
+        updateProgress(currentStep);
+    });
+
+
+    $(document).ready(function () {
+        // Function to toggle dropdown visibility
+        function toggleDropdownVisibility() {
+            if ($('input[name="propertiesRadioBtn"]:checked').val() === "some") {
+                $('#ddlPropertyDiv').show();
+            } else {
+                $('#ddlPropertyDiv').hide();
+            }
+            if ($('input[name="tenantsRadioBtn"]:checked').val() === "some") {
+                $('#ddlTenantDiv').show();
+            } else {
+                $('#ddlTenantDiv').hide();
+            }
+        }
+
+        // Call toggleDropdownVisibility on page load
+        toggleDropdownVisibility();
+
+        // Call toggleDropdownVisibility on radio button change
+        $('input[name="propertiesRadioBtn"], input[name="tenantsRadioBtn"]').change(function () {
+            toggleDropdownVisibility();
+        });
+    });
+
+    $(document).ready(function () {
+
+        function updateHiddenInputs() {
+            var propertyIds = $('#announcementProperties').val().join(',');
+            var tenantIds = $('#announcementTenants').val().join(',');
+            $('#propertyIds').val(propertyIds);
+            $('#tenantIds').val(tenantIds);
+        }
+
+
+        $('#announcementProperties, #announcementTenants').change(function () {
+            updateHiddenInputs();
+        });
+
+
+        updateHiddenInputs();
+    });
+
+
+    $(document).ready(function () {
+        // Fetch Properties
+        $.ajax({
+            url: '@Url.Action("GetProperties", "Communication")',
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                $('#announcementProperties').empty();
+                $.each(data, function (index, item) {
+                    $('#announcementProperties').append($('<option>', {
+                        value: item.AssetId,
+                        text: item.SelectedPropertyType
+                    }));
+                });
+                $('#announcementProperties').select2();
+            }
+        });
+
+        // Fetch Tenants
+        $.ajax({
+            url: '@Url.Action("GetTenants", "Communication")',
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                $('#announcementTenants').empty();
+                $.each(data, function (index, item) {
+                    $('#announcementTenants').append($('<option>', {
+                        value: item.TenantId,
+                        text: item.FirstName + ' ' + item.LastName
+                    }));
+                });
+                $('#announcementTenants').select2();
+            }
+        });
+    });
+
+    $(document).ready(function () {
+
+        $('#emailSwitch').change(function () {
+            if ($(this).is(':checked')) {
+                $('#deliveryEmailDiv').removeClass('d-none');
+            } else {
+                $('#deliveryEmailDiv').addClass('d-none');
+            }
+        });
+
+        $('#textMessageSwitch').change(function () {
+            if ($(this).is(':checked')) {
+                $('#deliveryTextDiv').removeClass('d-none');
+            } else {
+                $('#deliveryTextDiv').addClass('d-none');
+            }
+        });
+
+        $('#tenantPortalSwitch').change(function () {
+            if ($(this).is(':checked')) {
+                $('#deliveryTenantPortalDiv').removeClass('d-none');
+            } else {
+                $('#deliveryTenantPortalDiv').addClass('d-none');
+            }
+        });
+
+        $('#removePortalSwitch').change(function () {
+            if ($(this).is(':checked')) {
+                $('#removeFeedDateDiv').removeClass('d-none');
+            } else {
+                $('#removeFeedDateDiv').addClass('d-none');
+            }
+        });
+    });
+
+
+    document.querySelectorAll('.selection-card').forEach(card => {
+        card.addEventListener('click', function () {
+            let target = this.getAttribute('data-target');
+            let show = this.getAttribute('data-show') === 'true';
+
+            document.querySelectorAll('.selection-card').forEach(c => {
+                if (c.getAttribute('data-target') === target) {
+                    c.classList.remove('active');
+                }
+            });
+
+            this.classList.add('active');
+
+            if (show) {
+                document.getElementById(target).classList.remove('d-none');
+            } else {
+                document.getElementById(target).classList.add('d-none');
+            }
+
+            this.querySelector('input[type="radio"]').click();
+        });
+    });
+
+
+    $(document).ready(function () {
+        $('#announcementProperties').select2().on('change', function () {
+
+            var propertyCount = $(this).select2('data').length;
+            $('#propertyCount').text(propertyCount + ' Selected');
+        });
+
+        $('#announcementTenants').select2().on('change', function () {
+
+            var tenantCount = $(this).select2('data').length;
+            $('#tenantCount').text(tenantCount + ' Selected');
+        });
+
+        var initialPropertyCount = $('#announcementProperties').select2('data').length;
+        $('#propertyCount').text(initialPropertyCount + ' Selected');
+
+        var initialTenantCount = $('#announcementTenants').select2('data').length;
+        $('#tenantCount').text(initialTenantCount + ' Selected');
+    });
+
+
+
+
+    $(document).ready(function () {
+        $('#communicationForm').on('submit', function (e) {
+            e.preventDefault();
+
+            var formData = new FormData(this);
+            var url = '@Url.Action("CreateCommunication", "Communication")';
+            var communicationId = $('#communicationId').val();
+
+            if (communicationId) {
+                url = '@Url.Action("UpdateCommunication", "Communication")' + '?Communication_Id=' + communicationId;
+            }
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    if (response.success) {
+
+                        Toast.fire({
+                            icon: 'success',
+                            title: 'Communication successfully saved.'
+                        });
+
+                        if (!communicationId) {
+                            $('#communicationForm').trigger("reset");
+                        }
+                    } else {
+
+                        Toast.fire({
+                            icon: 'error',
+                            title: response.message
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
+
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'An error occurred while processing your request.'
+                    });
+                    console.error(error);
+                }
+            });
+        });
+    });
+
+
+
+    $(document).on('click', '.btn-next, .btn-submit', function () {
+        if (currentStep < totalSteps) {
+
+            if (!validateStep(currentStep)) {
+
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Please fill in all required fields.'
+                });
+                return;
+            } else {
+                currentStep++;
+                updateProgress(currentStep);
+            }
+        } else {
+            Toast.fire({
+                icon: 'success',
+                title: 'Form Submitted'
+            });
+        }
+    });
+
+
+    function validateStep(step) {
+        var isValid = true;
+        switch (step) {
+            case 1:
+                // Validate step 1 fields
+                if ($('#announcementProperties').val() == null || $('#announcementProperties').val().length === 0) {
+                    isValid = false;
+                }
+                break;
+            case 2:
+                // Validate step 2 fields
+                if (!$('#emailSwitch').is(':checked') && !$('#textMessageSwitch').is(':checked') && !$('#tenantPortalSwitch').is(':checked')) {
+                    isValid = false;
+                }
+                break;
+            case 3:
+                // Validate step 3 fields
+                var subject = $('#announcementSubject').val();
+                var message = $('#announcementMessage').val();
+                if (!subject || !message) {
+                    isValid = false;
+                }
+                break;
+            case 4:
+
+                break;
+            default:
+                isValid = true;
+                break;
+        }
+        return isValid;
+    }
+
+</script>

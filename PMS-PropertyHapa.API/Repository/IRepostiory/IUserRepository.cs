@@ -123,5 +123,17 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
 
         Task<bool> DeleteAssetAsync(int assetId);
 
+
+
+        #region CommunicationData
+        Task<bool> DeleteCommunicationAsync(int communicationId);
+
+        Task<bool> UpdateCommunicationAsync(CommunicationDto communicationDto);
+
+        Task<bool> CreateCommunicationAsync(CommunicationDto communication);
+
+        Task<List<CommunicationDto>> GetAllCommunicationAsync();
+        #endregion
+
     }
 }
