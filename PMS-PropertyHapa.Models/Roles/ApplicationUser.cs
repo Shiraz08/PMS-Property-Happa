@@ -36,5 +36,9 @@ namespace PMS_PropertyHapa.Models.Roles
         public DateTime ModifiedDate { get; set; }
         public string ModifiedBy { get; set; }
 
+        public string AccountSid { get; set; }
+        public string AuthToken { get; set; }
+        public string TiwiloPhone { get; set; }
+
     }
 }

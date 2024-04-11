@@ -8,6 +8,7 @@ using PMS_PropertyHapa.Staff.Models;
 using APIResponse = PMS_PropertyHapa.Staff.Models.APIResponse;
 using PMS_PropertyHapa.Staff.Services.IServices;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Humanizer.Localisation;
 
 namespace PMS_PropertyHapa.Staff.Services
 {
@@ -1089,6 +1090,23 @@ namespace PMS_PropertyHapa.Staff.Services
                 throw new Exception($"An error occurred when updating lease: {ex.Message}", ex);
             }
         }
+
+
+
+        public async Task<bool> UpdateAccountAsync(TiwiloDto obj)
+        {
+            
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.POST,
+                Data = obj,
+                Url = $"{villaUrl}/api/v1/CommunicationAuth/updateAccount"
+            });
+
+            return response.IsSuccess;
+
+        }
+
         #endregion
     }
 

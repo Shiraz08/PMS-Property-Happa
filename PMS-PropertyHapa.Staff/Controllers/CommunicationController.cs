@@ -8,6 +8,7 @@ using PMS_PropertyHapa.Staff.Services.IServices;
 using NuGet.ContentModel;
 using PMS_PropertyHapa.Shared.ImageUpload;
 using System.Linq;
+using PMS_PropertyHapa.Models.Entities;
 
 namespace PMS_PropertyHapa.Staff.Controllers
 {
@@ -29,6 +30,12 @@ namespace PMS_PropertyHapa.Staff.Controllers
         }
 
         public IActionResult AddCommunication()
+        {
+            return View();
+        }
+
+
+        public IActionResult TiwiloView()
         {
             return View();
         }
@@ -166,6 +173,28 @@ namespace PMS_PropertyHapa.Staff.Controllers
         }
 
 
+        [HttpPost]
+        public async Task<IActionResult> AddTiwilo(TiwiloDto model)
+        {
+            if (!String.IsNullOrEmpty(model.UserID))
+            {
+                bool updateAccount = await _authService.UpdateAccountAsync(model);
+
+                if (updateAccount)
+                {
+                    return Json(new { success = true, message = "Data updated successfully" });
+                }
+                else
+                {
+                    return Json(new { success = false, message = "Failed to update data" });
+                }
+            }
+            else
+            {
+               
+                return Json(new { success = false, message = "Invalid user ID" });
+            }
+        }
 
 
     }

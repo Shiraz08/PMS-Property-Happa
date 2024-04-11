@@ -133,6 +133,8 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
         Task<bool> CreateCommunicationAsync(CommunicationDto communication);
 
         Task<List<CommunicationDto>> GetAllCommunicationAsync();
+
+        Task<bool> UpdateAccountAsync(TiwiloDto userDto);
         #endregion
 
     }

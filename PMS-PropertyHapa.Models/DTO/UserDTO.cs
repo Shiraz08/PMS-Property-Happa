@@ -53,5 +53,15 @@
         public string AllUsersLateComingsFine { get; set; }
         public bool AllUsersLateComingsFineAllowed { get; set; }
         public long ParentId { get; set; }
+
+
+
+
+        // variables for Twilio Account
+        public string AccountSid { get; set; }
+        public string AuthToken { get; set; }
+        public string TiwiloPhone { get; set; }
+
+        public string UserID { get; set; }  
     }
 }

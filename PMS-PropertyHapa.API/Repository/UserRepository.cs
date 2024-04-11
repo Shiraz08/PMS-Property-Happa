@@ -326,6 +326,28 @@ namespace MagicVilla_VillaAPI.Repository
             return new UserDTO();
         }
 
+        public async Task<bool> UpdateAccountAsync(TiwiloDto userDto)
+        {
+            var user = await _userManager.FindByIdAsync(userDto.UserID);
+            if (user == null)
+            {
+                throw new Exception("User not found");
+            }
+            user.AccountSid = userDto.AccountSid;
+            user.AuthToken = userDto.AuthToken;
+            user.TiwiloPhone = userDto.TiwiloPhone;
+
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+            {
+               
+                var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                throw new Exception($"Failed to update user account: {errors}");
+            }
+
+            return true;
+        }
+
 
         public async Task<UserDTO> RegisterAdmin(RegisterationRequestDTO registrationRequestDTO)
         {

@@ -206,6 +206,12 @@
                                 <input type="hidden" id="propertyIds" name="PropertyIds" />
                                 <input type="hidden" id="tenantIds" name="TenantIds" />
                                 <input type="hidden" id="communicationId" name="Communication_Id" value="" />
+                                <input type="hidden" id="IsByEmail" name="IsByEmail" value="false">
+                                <input type="hidden" id="IsByText" name="IsByText" value="false">
+                                <input type="hidden" id="IsShowCommunicationInTenantPortal" name="IsShowCommunicationInTenantPortal" value="false">
+                                <input type="hidden" id="Status" name="Status" value="true">
+                                <input type="hidden" id="IsDeleted" name="IsDeleted" value="false">
+                                <input type="hidden" id="Communication_File" name="Communication_File" value="">
                             </fieldset>
 
 
@@ -282,22 +288,22 @@
                                             <p class="fs-6 text-dark">This announcement will be delivered via:</p>
                                         </div>
                                         <div id="iconContainer" class="col-12 d-flex flex-column align-items-start">
-                                            <div><i class="fas fa-envelope fa-2x text-primary mb-2" title="Email"></i> Email</div>
-                                            <div><i class="fas fa-sms fa-2x text-success mb-2" title="Text Message"></i> Text Message</div>
-                                            <div><i class="fas fa-globe fa-2x text-info mb-2" title="Tenant Portal"></i> Tenant Portal</div>
+                                            <div id="emailDeliveryIcon" style="display: none;"><i class="fas fa-envelope fa-2x text-primary mb-2" title="Email"></i> Email</div>
+                                            <div id="textMessageDeliveryIcon" style="display: none;"><i class="fas fa-sms fa-2x text-success mb-2" title="Text Message"></i> Text Message</div>
+                                            <div id="tenantPortalDeliveryIcon" style="display: none;"><i class="fas fa-globe fa-2x text-info mb-2" title="Tenant Portal"></i> Tenant Portal</div>
                                         </div>
                                     </div>
-
                                     <br><br>
                                 </div>
                             </fieldset>
-
+                        
 
 
 
                             <div class="form-navigation float-end">
                                 <button type="button" class="btn btn-secondary btn-previous" style="display: none;">Previous</button>
                                 <button type="button" class="btn btn-primary btn-next">Next</button>
+                                <button type="button" class="btn btn-primary btn-submit" style="display: none;">Submit</button>
                             </div>
                         </form>
                     </div>
@@ -308,9 +314,19 @@
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+
 <script>
+
+
+
+    var currentStep = 1;
+    const totalSteps = $('.progress-indicator').length;
+
+
     $(document).ready(function () {
         // Function to update the selected options in dropdowns
         function updateSelectedOptions(selectedIds, dropdownId) {
@@ -337,7 +353,6 @@
             updateCheckboxStatus(communication.RemoveFromPortalOnDate, '#removePortalSwitch');
         }
 
-        // Call the populateFields function if Communication object exists
         if (typeof Communication !== 'undefined') {
             populateFields(Communication);
         }
@@ -345,47 +360,81 @@
 
 
 
-    $(document).ready(function () {
-        let currentStep = 1;
-        const totalSteps = $('.progress-indicator').length;
+    function updateProgress(step) {
+        $('.progress-indicator').removeClass('active').slice(0, step).addClass('active');
+        let progressWidth = ((step - 1) / (totalSteps - 1)) * 100;
+        $('#progressLine').css('width', progressWidth + '%');
 
-        function updateProgress(step) {
+        $('.step-section').hide();
+        $('#step' + step).show();
 
-            $('.progress-indicator').removeClass('active').slice(0, step).addClass('active');
-            let progressWidth = ((step - 1) / (totalSteps - 1)) * 100;
-            $('#progressLine').css('width', progressWidth + '%');
-
-            $('.step-section').hide();
-            $('#step' + step).show();
-
-            if (step === totalSteps) {
-                $('.btn-previous').show();
-                $('.btn-next').text('Submit').addClass('btn-submit').removeClass('btn-next');
-            } else {
-                $('.btn-previous').toggle(step > 1);
-                $('.btn-submit').text('Next').addClass('btn-next').removeClass('btn-submit');
-            }
+        if (step === totalSteps) {
+            $('.btn-previous').show();
+            $('.btn-next').hide();
+            $('.btn-submit').show();
+        } else {
+            $('.btn-previous').toggle(step > 1);
+            $('.btn-next').show().removeClass('btn-submit').addClass('btn-next');
+            $('.btn-submit').hide();
         }
+    }
 
-        $(document).on('click', '.btn-next, .btn-submit', function () {
+    $(document).on('click', '.btn-submit', function () {
+
+        $('#communicationForm').submit();
+    });
+
+    $(document).on('click', '.btn-next', function () {
+
+        if (validateStep(currentStep)) {
             if (currentStep < totalSteps) {
                 currentStep++;
                 updateProgress(currentStep);
-            } else {
-
-                alert('Form submitted!');
             }
-        });
+        } else {
 
-        $('.btn-previous').on('click', function () {
-            if (currentStep > 1) {
-                currentStep--;
-                updateProgress(currentStep);
-            }
-        });
-
-        updateProgress(currentStep);
+            Swal.fire({
+                icon: 'error',
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                toast: true,
+                width: '300px',
+                padding: '0.5rem',
+                title: 'Please fill in all required fields before moving to the next step.'
+            });
+        }
     });
+
+    $('.btn-previous').on('click', function () {
+        if (currentStep > 1) {
+            currentStep--;
+            updateProgress(currentStep);
+        }
+    });
+
+    $(document).on('click', '.btn-submit', function () {
+
+        if (validateStep(currentStep)) {
+            $('#communicationForm').submit();
+        } else {
+            Swal.fire({
+                icon: 'error',
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                toast: true,
+                width: '300px',
+                padding: '0.5rem',
+                title: 'Please fill in all required fields before submitting.'
+            });
+        }
+    });
+
+
+    updateProgress(currentStep);
 
 
     $(document).ready(function () {
@@ -548,6 +597,9 @@
     });
 
 
+    $(document).on('click', '.btn-submit', function () {
+        $('#communicationForm').submit();
+    });
 
 
     $(document).ready(function () {
@@ -571,27 +623,36 @@
                 success: function (response) {
                     if (response.success) {
 
-                        Toast.fire({
-                            icon: 'success',
-                            title: 'Communication successfully saved.'
+                        Swal.fire({
+                            icon: 'error',
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                            toast: true,
+                            width: '300px',
+                            padding: '0.5rem',
+                            title: 'Communication saved Successfully'
                         });
 
                         if (!communicationId) {
                             $('#communicationForm').trigger("reset");
                         }
                     } else {
-
-                        Toast.fire({
-                            icon: 'error',
-                            title: response.message
-                        });
                     }
                 },
                 error: function (xhr, status, error) {
 
-                    Toast.fire({
+                    Swal.fire({
                         icon: 'error',
-                        title: 'An error occurred while processing your request.'
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true,
+                        toast: true,
+                        width: '300px',
+                        padding: '0.5rem',
+                        title: 'An error occured while processing your request'
                     });
                     console.error(error);
                 }
@@ -601,27 +662,30 @@
 
 
 
-    $(document).on('click', '.btn-next, .btn-submit', function () {
+    $(document).on('click', '.btn-next', function () {
         if (currentStep < totalSteps) {
 
-            if (!validateStep(currentStep)) {
-
-                Toast.fire({
-                    icon: 'error',
-                    title: 'Please fill in all required fields.'
-                });
-                return;
-            } else {
+            if (validateStep(currentStep)) {
                 currentStep++;
                 updateProgress(currentStep);
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    toast: true,
+                    width: '300px',
+                    padding: '0.5rem',
+                    title: 'Please fill in all required fields before moving to the next step.'
+                });
             }
-        } else {
-            Toast.fire({
-                icon: 'success',
-                title: 'Form Submitted'
-            });
         }
     });
+
+
+
 
 
     function validateStep(step) {
@@ -656,5 +720,68 @@
         }
         return isValid;
     }
+
+
+    function updateStep4DeliveryOptions() {
+        $('#emailDeliveryIcon').toggle($('#emailSwitch').is(':checked'));
+        $('#textMessageDeliveryIcon').toggle($('#textMessageSwitch').is(':checked'));
+        $('#tenantPortalDeliveryIcon').toggle($('#tenantPortalSwitch').is(':checked'));
+    }
+
+    $('#emailSwitch, #textMessageSwitch, #tenantPortalSwitch').change(updateStep4DeliveryOptions);
+
+
+    $(document).ready(function () {
+        updateStep4DeliveryOptions();
+    });
+
+
+    function convertFilesToBase64(files, callback) {
+        let base64Strings = [];
+        let filesRead = 0;
+
+        Array.from(files).forEach(file => {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                base64Strings.push(e.target.result);
+                filesRead++;
+
+                if (filesRead === files.length) {
+                    callback(base64Strings); 
+                }
+            };
+
+            reader.readAsDataURL(file); 
+        });
+    }
+
+    $('#documentFiles').change(function () {
+        convertFilesToBase64(this.files, function (base64Strings) {
+         
+            $('#Communication_File').val(base64Strings.join(',')); 
+        });
+    });
+
+
+    $(document).ready(function () {
+       
+        $('#emailSwitch').change(function () {
+            $('#IsByEmail').val($(this).is(':checked'));
+        });
+
+        $('#textMessageSwitch').change(function () {
+            $('#IsByText').val($(this).is(':checked'));
+        });
+
+        $('#tenantPortalSwitch').change(function () {
+            $('#IsShowCommunicationInTenantPortal').val($(this).is(':checked'));
+        });
+
+    });
+
+    $('#emailSwitch').trigger('change');
+    $('#textMessageSwitch').trigger('change');
+    $('#tenantPortalSwitch').trigger('change');
 
 </script>

@@ -105,6 +105,6 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
 
         Task<bool> UpdateLeaseAsync(LeaseDto lease);
 
-
+        Task<bool> UpdateAccountAsync(TiwiloDto obj);
     }
 }

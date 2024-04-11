@@ -127,7 +127,23 @@ namespace PMS_PropertyHapa.API.Controllers.V1
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
+
+
+        [HttpPost("updateAccount")]
+        public async Task<ActionResult<bool>> UpdateAccount(TiwiloDto obj)
+        {
+            try
+            {
+                var isSuccess = await _userRepo.UpdateAccountAsync(obj);
+                return Ok(isSuccess);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
         #endregion
-        
+
     }
 }

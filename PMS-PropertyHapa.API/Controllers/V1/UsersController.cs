@@ -60,8 +60,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             return Ok(_response);
         }
 
-
-
+   
 
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterationRequestDTO model)
