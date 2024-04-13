@@ -61,7 +61,7 @@
         public string AccountSid { get; set; }
         public string AuthToken { get; set; }
         public string TiwiloPhone { get; set; }
+        public string AppTId { get; set; }
 
-        public string UserID { get; set; }  
     }
 }

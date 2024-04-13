@@ -1,8 +1,15 @@
-@model IEnumerable<PMS_PropertyHapa.Models.DTO.CommunicationDto>
+@model PMS_PropertyHapa.Models.DTO.CommunicationsViewModel
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+<style>
+    .no-print {
+        display: none;
+    }
+</style>
 
 <div class="page-body">
     <div class="container-fluid">
@@ -13,59 +20,106 @@
                 </div>
                 <div class="col-12 col-sm-6">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="@Url.Action("Index", "Communication")"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item"><a href="@Url.Action("Index", "Communication")"><i class="fas fa-home"></i></a></li>
                         <li class="breadcrumb-item">Communication</li>
                         <li class="breadcrumb-item active">List</li>
                     </ol>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="container-fluid my-4">
-        <div class="row">
-            <div class="col-12 col-lg-12 mb-4">
-                <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <div></div>
-                        <div class="right-side-header">
-                            <a class="btn btn-info d-flex border-0 align-items-center" href="@Url.Action("AddCommunication", "Communication")">
-                                Add New Communication
-                            </a>
+        <div class="container-fluid my-4">
+            <div class="row">
+                <div class="col-12 col-lg-12 mb-4">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                         
+                            <div class="d-flex justify-content-start mb-3">
+                                <button id="copyButton" class="btn btn-secondary mr-1">Copy</button>
+                                <button id="csvButton" class="btn btn-secondary mr-1">CSV</button>
+                                <button id="excelButton" class="btn btn-secondary mr-1">Excel</button>
+                                <button id="pdfButton" class="btn btn-secondary mr-1">PDF</button>
+                                <button id="printButton" class="btn btn-secondary mr-1">Print</button>
+                            </div>
+                            <div class="right-side-header">
+                                <a class="btn btn-primary d-flex border-0 align-items-center" href="@Url.Action("AddCommunication", "Communication")">
+                                    Add New Communication
+                                </a>
+                            </div>
                         </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table" id="communicationTable">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Subject & Message</th>
-                                        <th scope="col">Remove Feed Date</th>
-                                        <th scope="col">Status</th>
-                                        <th scope="col">IsDeleted</th>
-                                        <th scope="col">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var communication in Model)
-                                    {
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table" id="communicationTable">
+                                    <thead>
                                         <tr>
-                                            <td>
-                                                <span class="fw-bold">@communication.Subject</span><br>
-                                                <span>@communication.Message</span>
-                                            </td>
-                                            <td>@communication.RemoveFeedDate</td>
-                                            <td>@communication.Status</td>
-                                            <td>@communication.IsDeleted</td>
-                                            <td>
-                                                <a href="@Url.Action("EditCommunication", "Communication", new { communicationId = communication.Communication_Id })" class="btn btn-primary btn-sm mr-3">Edit</a>
-                                                <button onclick="deleteCommunication(@communication.Communication_Id)" class="btn btn-danger btn-sm">Delete</button>
-                                            </td>
+                                            <th class="text-center" style="width: 25%">Subject</th>
+                                            <th class="text-center" style="width: 25%">Association List</th>
+                                            <th class="text-center" style="width: 10%">Sent At</th>
+                                            <th class="text-center" style="width: 10%">Expiry Date</th>
+                                            <th class="text-center" style="width: 15%">Delivery Method</th>
+                                            <th class="text-center" style="width: 15%">Actions</th>
                                         </tr>
-                                    }
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var communication in Model?.Communications)
+                                        {
+                                            <tr>
+                                                <td><i class="fas fa-envelope"></i> @communication?.Subject</td>
+                                                @{
+                                                    // Splitting the comma-separated IDs and counting them
+                                                    var tenantIds = communication?.TenantIds.Split(',', StringSplitOptions.RemoveEmptyEntries);
+                                                    var propertyIds = communication?.PropertyIds.Split(',', StringSplitOptions.RemoveEmptyEntries);
+
+                                                    bool allTenants = tenantIds.Length == communication?.TotalTenantsCount;
+                                                    bool allProperties = propertyIds.Length == communication?.TotalPropertiesCount;
+                                                }
+                                              
+                                                    @if (allTenants && allProperties)
+                                                    {
+                                                    <td>All Tenants, All Properties</td>
+                                                    }
+                                                    else if (allTenants)
+                                                    {
+                                                    <td>All Tenants, Some Properties</td>
+                                                    }
+                                                    else if (allProperties)
+                                                    {
+                                                    <td>Some Tenants, All Properties</td>
+                                                    }
+                                                    else
+                                                    {
+                                                    <td>Some Tenants, Some Properties</td>
+                                                    }
+                                               
+                                                <td>@communication?.AddedAt.ToString("yyyy-MM-dd")</td>
+                                                <td>@communication?.RemoveFeedDate?.ToString("yyyy-MM-dd")</td>
+                                                <td>
+                                                    @if ((bool)communication?.IsByEmail)
+                                                    {
+                                                        <i class="fas fa-envelope fa-2x text-primary mb-2" title="Email"></i>
+                                                    }
+                                                    @if ((bool)communication?.IsByText)
+                                                    {
+                                                        <i class="fas fa-sms fa-2x text-success mb-2" title="Text Message"></i>
+                                                    }
+                                                    @if ((bool)communication?.IsShowCommunicationInTenantPortal)
+                                                    {
+                                                        <i class="fas fa-globe fa-2x text-info mb-2" title="Tenant Portal"></i>
+                                                    }
+                                                </td>
+
+                                                <td style="justify-content:center">
+                                                    <button href="@Url.Action("EditCommunication", "Communication", new { communicationId = communication.Communication_Id })" class="btn btn-info btn-sm" style="padding: 3px 8px; margin-right: 5px; display: inline-block;">Edit</button>
+                                                    <button onclick="deleteCommunication(@communication.Communication_Id)" class="btn btn-danger btn-sm" style="padding: 3px 8px; display: inline-block;">Delete</button>
+                                                </td>
+                                            </tr>
+                                        }
+
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -74,17 +128,97 @@
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+
 
 <script>
     $(document).ready(function () {
-        $('#communicationTable').DataTable({
-            "paging": true,
-            "ordering": true,
-            "info": true,
-            "searching": true
+        var table = $('#communicationTable').DataTable({
+            paging: true,
+            ordering: true,
+            info: true,
+            searching: true
         });
+    });
+
+    function exportToCSV() {
+        var csv = [];
+        var rows = document.querySelectorAll("table tr");
+        for (var i = 0; i < rows.length; i++) {
+            var row = [], cols = rows[i].querySelectorAll("td, th");
+            for (var j = 0; j < cols.length; j++)
+                row.push(cols[j].innerText);
+            csv.push(row.join(","));
+        }
+        downloadCSV(csv.join("\n"), 'export.csv');
+    }
+
+    function downloadCSV(csv, filename) {
+        var csvFile;
+        var downloadLink;
+        csvFile = new Blob([csv], { type: "text/csv" });
+        downloadLink = document.createElement("a");
+        downloadLink.download = filename;
+        downloadLink.href = window.URL.createObjectURL(csvFile);
+        downloadLink.style.display = "none";
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+    }
+
+   
+
+    function exportToPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        doc.autoTable({ html: '#communicationTable' });
+        doc.save('export.pdf');
+    }
+
+    $('#copyButton').on('click', function () {
+        var text = $("#communicationTable").clone().find('th, td').each(function () {
+            $(this).text($(this).text());
+        }).end().prop('outerHTML');
+
+        var $temp = $("<textarea>");
+        $("body").append($temp);
+        $temp.val(text).select();
+        document.execCommand("copy");
+        $temp.remove();
+
+        Swal.fire({
+            icon: 'success',
+            title: 'Copied to Clipboard',
+            showConfirmButton: false,
+            timer: 1500
+        });
+    });
+
+
+    function printTable() {
+        window.print();
+    }
+
+
+    $('#csvButton').on('click', function () {
+        exportToCSV();
+    });
+
+    $('#excelButton').on('click', function () {
+        var wb = XLSX.utils.table_to_book(document.getElementById('communicationTable'), { sheet: "Sheet1" });
+        XLSX.writeFile(wb, "CommunicationData.xlsx");
+    });
+
+    $('#pdfButton').on('click', function () {
+        exportToPDF();
+    });
+
+    $('#printButton').on('click', function () {
+        printTable();
     });
 
     function deleteCommunication(communicationId) {
@@ -130,4 +264,6 @@
             }
         });
     }
+
+
 </script>

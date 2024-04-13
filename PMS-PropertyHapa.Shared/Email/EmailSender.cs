@@ -13,9 +13,9 @@ namespace PMS_PropertyHapa.Shared.Email
                 SmtpClient smtpClient = new SmtpClient("smtp.gmail.com", 587);
                 smtpClient.EnableSsl = true;
                 smtpClient.UseDefaultCredentials = false;
-                smtpClient.Credentials = new NetworkCredential("info@allsolace.com", "?Q3WFVWuxBce%Y$");
+                smtpClient.Credentials = new NetworkCredential("info@propertyhapa.com", "hcwzkjtnqnlytfoj");
                 MailMessage mailMessage = new MailMessage();
-                mailMessage.From = new MailAddress("info@allsolace.com");
+                mailMessage.From = new MailAddress("info@propertyhapa.com");
                 foreach (var address in emails.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries))
                 {
                     mailMessage.To.Add(new MailAddress(address));

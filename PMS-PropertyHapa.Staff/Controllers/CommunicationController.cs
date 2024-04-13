@@ -9,6 +9,8 @@ using NuGet.ContentModel;
 using PMS_PropertyHapa.Shared.ImageUpload;
 using System.Linq;
 using PMS_PropertyHapa.Models.Entities;
+using PMS_PropertyHapa.Shared.EmailSenderFile;
+using Microsoft.EntityFrameworkCore;
 
 namespace PMS_PropertyHapa.Staff.Controllers
 {
@@ -16,17 +18,29 @@ namespace PMS_PropertyHapa.Staff.Controllers
     {
 
         private readonly IAuthService _authService;
+        private readonly EmailSenderBase _emailSenderBase;
 
 
-        public CommunicationController(IAuthService authService)
+        public CommunicationController(IAuthService authService, EmailSenderBase emailSenderBase)
         {
             _authService = authService;
+            _emailSenderBase = emailSenderBase;
         }
 
         public async Task<IActionResult> Index()
         {
-            var communication = await _authService.GetAllCommunicationAsync();
-            return View(communication);
+            var communications = await _authService.GetAllCommunicationAsync();
+            var propertiesCount = (await _authService.GetAllAssetsAsync()).Count();
+            var tenantsCount = (await _authService.GetAllTenantsAsync()).Count();
+
+            var model = new CommunicationsViewModel
+            {
+                Communications = communications,
+                TotalPropertiesCount = propertiesCount,
+                TotalTenantsCount = tenantsCount
+            };
+
+            return View(model);
         }
 
         public IActionResult AddCommunication()
@@ -60,7 +74,9 @@ namespace PMS_PropertyHapa.Staff.Controllers
         {
             try
             {
-                var tenants = await _authService.GetAllTenantsAsync();
+                var count = await _authService.GetAllCommunicationAsync();
+                var tenant = await _authService.GetAllTenantsAsync();
+                var tenants = tenant.Where(s => s.AppTid == count?.FirstOrDefault().UserID);
                 return Ok(tenants);
             }
             catch (Exception ex)
@@ -68,6 +84,9 @@ namespace PMS_PropertyHapa.Staff.Controllers
                 return StatusCode(500, $"An error occurred while fetching Communications: {ex.Message}");
             }
         }
+
+
+
 
         [HttpPost]
         public async Task<IActionResult> CreateCommunication(CommunicationDto CommunicationDto)
@@ -82,7 +101,36 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
                 CommunicationDto.CommunicationFile = null;
 
+                if (CommunicationDto.IsByEmail)
+                {
+                    if (CommunicationDto.Subject != null && CommunicationDto.Message != null && CommunicationDto.Communication_File != null)
+                    {
+                        List<string> tenantIds = CommunicationDto.TenantIds.Split(',').ToList();
+
+                        foreach (var tenantId in tenantIds)
+                        {
+                            var tenant = await _authService.GetAllTenantsAsync();
+                            var emailAddress = tenant.Where(s=>s.TenantId == Convert.ToInt32(tenantId)).FirstOrDefault().EmailAddress;
+                            List<string> emailAddressList = new List<string> { emailAddress };
+
+                            var fileBytes = Convert.FromBase64String(CommunicationDto.Communication_File.Split(',')[1]);
+
+                            using (var memoryStream = new MemoryStream(fileBytes))
+                            {
+                                // Send email with file to the tenant
+                                await _emailSenderBase.SendEmailWithFile(
+                                    memoryStream,
+                                    emailAddressList,
+                                    CommunicationDto.Subject,
+                                    CommunicationDto.Message,
+                                    "AttachmentFileName.pdf" // Provide the file name here
+                                );
+                            }
+                        }
+                    }
+                }
                 await _authService.CreateCommunicationAsync(CommunicationDto);
+
                 return Ok(new { success = true, message = "Communication added successfully" });
             }
             catch (Exception ex)
@@ -90,6 +138,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
                 return StatusCode(500, new { success = false, message = $"An error occurred while adding the Communication. {ex.Message}" });
             }
         }
+
 
 
 
@@ -123,19 +172,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
         }
 
 
-        [HttpGet]
-        public async Task<IActionResult> GetCommunications()
-        {
-            try
-            {
-                var Communication = await _authService.GetAllCommunicationAsync();
-                return Ok(Communication);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"An error occurred while fetching Communications: {ex.Message}");
-            }
-        }
+
 
 
         public async Task<IActionResult> EditCommunication(int Communication_Id)
@@ -191,9 +228,19 @@ namespace PMS_PropertyHapa.Staff.Controllers
             }
             else
             {
-               
+
                 return Json(new { success = false, message = "Invalid user ID" });
             }
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetUserTwilioCredentials(string userId)
+        {
+            var users = await _authService.GetAllUsersAsync();
+            var getusers = users.Where(users => users.AppTId == userId).ToList();
+           
+            return Ok(new { AccountSid = getusers.FirstOrDefault().AccountSid, AuthToken = getusers.FirstOrDefault().AuthToken, TiwiloPhone = getusers.FirstOrDefault().TiwiloPhone });
         }
 
 

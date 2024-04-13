@@ -163,9 +163,10 @@
                                             <label for="announcementProperties">Select Properties</label>
                                             <div id="propertyCount" class="selected-count">0 Selected</div>
                                             <select id="announcementProperties" multiple name="announcementProperties" class="form-control select2" required></select>
-
                                         </div>
                                     </div>
+
+                                    
 
                                     <div class="container mt-4">
                                         <!-- Tenant Selection -->
@@ -314,7 +315,6 @@
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
@@ -326,27 +326,107 @@
     var currentStep = 1;
     const totalSteps = $('.progress-indicator').length;
 
+    $(document).ready(function () {
+        $('#textMessageSwitch').change(function () {
+            if ($(this).is(':checked')) {
+                checkTwilioCredentials();
+                $('#deliveryTextDiv').removeClass('d-none');
+            } else {
+                $('#deliveryTextDiv').addClass('d-none');
+            }
+        });
+    });
+
+    function checkTwilioCredentials() {
+        var userId = localStorage.getItem('userId');
+        if (!userId) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'User ID Not Found',
+                text: 'No user ID found in local storage.',
+                footer: '<a href="/views/Communication/Login.razor">Log in here</a>'
+            });
+            $('#textMessageSwitch').prop('checked', false);
+            return;
+        }
+
+        $.ajax({
+            url: '@Url.Action("GetUserTwilioCredentials", "Communication")',
+            type: 'GET',
+            data: { userId: userId },
+            success: function (response) {
+                if (!response.AccountSid || !response.AuthToken || !response.TiwiloPhone) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Incomplete Tiwilio Credentials',
+                        text: 'Please update your Twilio credentials to proceed.',
+                        footer: '<a href="/Communication/TiwiloView">Update Twilio Credentials</a>'
+                    });
+                    $('#textMessageSwitch').prop('checked', false); 
+                }
+            },
+            error: function (xhr, status, error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error Fetching Credentials',
+                    text: 'There was a problem fetching your credentials.',
+                    footer: 'Please try again or contact support if the problem persists.'
+                });
+                $('#textMessageSwitch').prop('checked', false); 
+            }
+        });
+    }
+
 
     $(document).ready(function () {
-        // Function to update the selected options in dropdowns
+    
+        function updatePropertyCount() {
+            var propertyCount = $('#announcementProperties').val() ? $('#announcementProperties').val().length : 0;
+            $('#propertyCount').text(propertyCount + ' Selected');
+        }
+
+     
+        function updateTenantCount() {
+            var tenantCount = $('#announcementTenants').val() ? $('#announcementTenants').val().length : 0;
+            $('#tenantCount').text(tenantCount + ' Selected');
+        }
+
+        $('#announcementProperties').on('change', function () {
+            updatePropertyCount();
+        });
+
+        $('#announcementTenants').on('change', function () {
+            updateTenantCount();
+        });
+
+        $('#selectAllProperties').on('click', function () {
+            $('#announcementProperties option').prop('selected', true);
+            $('#announcementProperties').trigger('change');
+        });
+
+        $('#selectAllTenants').on('click', function () {
+            $('#announcementTenants option').prop('selected', true);
+            $('#announcementTenants').trigger('change');
+        });
+    });
+
+    $(document).ready(function () {
+      
         function updateSelectedOptions(selectedIds, dropdownId) {
             $(dropdownId).val(selectedIds.split(',')).trigger('change');
         }
 
-        // Function to update the checked status of checkboxes
         function updateCheckboxStatus(isChecked, checkboxId) {
             $(checkboxId).prop('checked', isChecked);
         }
 
-        // Function to populate fields based on the Communication object
         function populateFields(communication) {
-            // Update property dropdown
+           
             updateSelectedOptions(communication.PropertyIds, '#announcementProperties');
 
-            // Update tenant dropdown
             updateSelectedOptions(communication.TenantIds, '#announcementTenants');
 
-            // Update delivery method checkboxes
+        
             updateCheckboxStatus(communication.SendByEmail, '#emailSwitch');
             updateCheckboxStatus(communication.SendByTextMessage, '#textMessageSwitch');
             updateCheckboxStatus(communication.ShowInTenantPortal, '#tenantPortalSwitch');
@@ -379,31 +459,14 @@
         }
     }
 
-    $(document).on('click', '.btn-submit', function () {
-
-        $('#communicationForm').submit();
-    });
-
     $(document).on('click', '.btn-next', function () {
-
         if (validateStep(currentStep)) {
             if (currentStep < totalSteps) {
                 currentStep++;
                 updateProgress(currentStep);
             }
         } else {
-
-            Swal.fire({
-                icon: 'error',
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-                toast: true,
-                width: '300px',
-                padding: '0.5rem',
-                title: 'Please fill in all required fields before moving to the next step.'
-            });
+            showValidationError();
         }
     });
 
@@ -419,17 +482,7 @@
         if (validateStep(currentStep)) {
             $('#communicationForm').submit();
         } else {
-            Swal.fire({
-                icon: 'error',
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-                toast: true,
-                width: '300px',
-                padding: '0.5rem',
-                title: 'Please fill in all required fields before submitting.'
-            });
+            
         }
     });
 
@@ -481,20 +534,36 @@
 
 
     $(document).ready(function () {
+        // Function to update selected property count
+        function updatePropertyCount() {
+            var selectedProperties = document.getElementById('announcementProperties').selectedOptions;
+            var propertyCount = selectedProperties ? selectedProperties.length : 0;
+            document.getElementById('propertyCount').textContent = propertyCount + ' Selected';
+        }
+
+        // Function to update selected tenant count
+        function updateTenantCount() {
+            var selectedTenants = document.getElementById('announcementTenants').selectedOptions;
+            var tenantCount = selectedTenants ? selectedTenants.length : 0;
+            document.getElementById('tenantCount').textContent = tenantCount + ' Selected';
+        }
+
+        // Attach change event listeners to announcementProperties and announcementTenants
+        document.getElementById('announcementProperties').addEventListener('change', updatePropertyCount);
+        document.getElementById('announcementTenants').addEventListener('change', updateTenantCount);
+
         // Fetch Properties
         $.ajax({
             url: '@Url.Action("GetProperties", "Communication")',
             type: 'GET',
             dataType: 'json',
             success: function (data) {
-                $('#announcementProperties').empty();
-                $.each(data, function (index, item) {
-                    $('#announcementProperties').append($('<option>', {
-                        value: item.AssetId,
-                        text: item.SelectedPropertyType
-                    }));
+                var propertiesDropdown = document.getElementById('announcementProperties');
+                propertiesDropdown.innerHTML = ''; // Clear existing options
+                data.forEach(function (item) {
+                    var option = new Option(item.SelectedPropertyType, item.AssetId);
+                    propertiesDropdown.appendChild(option);
                 });
-                $('#announcementProperties').select2();
             }
         });
 
@@ -504,14 +573,12 @@
             type: 'GET',
             dataType: 'json',
             success: function (data) {
-                $('#announcementTenants').empty();
-                $.each(data, function (index, item) {
-                    $('#announcementTenants').append($('<option>', {
-                        value: item.TenantId,
-                        text: item.FirstName + ' ' + item.LastName
-                    }));
+                var tenantsDropdown = document.getElementById('announcementTenants');
+                tenantsDropdown.innerHTML = ''; // Clear existing options
+                data.forEach(function (item) {
+                    var option = new Option(item.FirstName + ' ' + item.LastName, item.TenantId);
+                    tenantsDropdown.appendChild(option);
                 });
-                $('#announcementTenants').select2();
             }
         });
     });
@@ -577,36 +644,12 @@
 
 
     $(document).ready(function () {
-        $('#announcementProperties').select2().on('change', function () {
-
-            var propertyCount = $(this).select2('data').length;
-            $('#propertyCount').text(propertyCount + ' Selected');
-        });
-
-        $('#announcementTenants').select2().on('change', function () {
-
-            var tenantCount = $(this).select2('data').length;
-            $('#tenantCount').text(tenantCount + ' Selected');
-        });
-
-        var initialPropertyCount = $('#announcementProperties').select2('data').length;
-        $('#propertyCount').text(initialPropertyCount + ' Selected');
-
-        var initialTenantCount = $('#announcementTenants').select2('data').length;
-        $('#tenantCount').text(initialTenantCount + ' Selected');
-    });
-
-
-    $(document).on('click', '.btn-submit', function () {
-        $('#communicationForm').submit();
-    });
-
-
-    $(document).ready(function () {
         $('#communicationForm').on('submit', function (e) {
             e.preventDefault();
 
+            var userId = localStorage.getItem('userId');
             var formData = new FormData(this);
+            formData.append('UserID', userId);
             var url = '@Url.Action("CreateCommunication", "Communication")';
             var communicationId = $('#communicationId').val();
 
@@ -624,7 +667,7 @@
                     if (response.success) {
 
                         Swal.fire({
-                            icon: 'error',
+                            icon: 'success',
                             position: 'top-end',
                             showConfirmButton: false,
                             timer: 3000,
@@ -635,9 +678,7 @@
                             title: 'Communication saved Successfully'
                         });
 
-                        if (!communicationId) {
-                            $('#communicationForm').trigger("reset");
-                        }
+                        window.location.href = '/Communication/Index';
                     } else {
                     }
                 },
@@ -668,19 +709,8 @@
             if (validateStep(currentStep)) {
                 currentStep++;
                 updateProgress(currentStep);
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    toast: true,
-                    width: '300px',
-                    padding: '0.5rem',
-                    title: 'Please fill in all required fields before moving to the next step.'
-                });
-            }
+            } 
+            
         }
     });
 
@@ -689,36 +719,44 @@
 
 
     function validateStep(step) {
-        var isValid = true;
         switch (step) {
             case 1:
-                // Validate step 1 fields
-                if ($('#announcementProperties').val() == null || $('#announcementProperties').val().length === 0) {
-                    isValid = false;
-                }
-                break;
+                return validateStep1();
             case 2:
-                // Validate step 2 fields
-                if (!$('#emailSwitch').is(':checked') && !$('#textMessageSwitch').is(':checked') && !$('#tenantPortalSwitch').is(':checked')) {
-                    isValid = false;
-                }
-                break;
+                return validateStep2();
             case 3:
-                // Validate step 3 fields
-                var subject = $('#announcementSubject').val();
-                var message = $('#announcementMessage').val();
-                if (!subject || !message) {
-                    isValid = false;
-                }
-                break;
-            case 4:
-
-                break;
+                return validateStep3();
             default:
-                isValid = true;
-                break;
+                return true;
         }
-        return isValid;
+    }
+
+    function validateStep1() {
+        return $('#announcementProperties').val() !== null && $('#announcementProperties').val().length > 0;
+    }
+
+    function validateStep2() {
+        return $('#emailSwitch').is(':checked') || $('#textMessageSwitch').is(':checked') || $('#tenantPortalSwitch').is(':checked');
+    }
+
+    function validateStep3() {
+        var subject = $('#announcementSubject').val();
+        var message = $('#announcementMessage').val();
+        return subject && message;
+    }
+
+    function showValidationError() {
+        Swal.fire({
+            icon: 'error',
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            toast: true,
+            width: '300px',
+            padding: '0.5rem',
+            title: 'Please fill in all required fields before moving to the next step.'
+        });
     }
 
 
@@ -785,3 +823,5 @@
     $('#tenantPortalSwitch').trigger('change');
 
 </script>
+
+

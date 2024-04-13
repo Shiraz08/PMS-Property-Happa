@@ -377,21 +377,29 @@ namespace MagicVilla_VillaAPI.Repository
 
         public async Task<IEnumerable<UserDTO>> GetAllUsersAsync()
         {
-
-            var users = await _userManager.Users.ToListAsync();
-
-            var userDTOs = users.Select(u => new UserDTO
+            try
             {
+                var userDTOs = await _userManager.Users
+                    .Select(u => new UserDTO
+                    {
+                        userName = u.UserName,
+                        email = u.Email,
+                        phoneNumber = u.PhoneNumber,
+                        createdOn = u.AddedDate,
+                        AppTId = u.Id,
+                        AccountSid = u.AccountSid,
+                        AuthToken = u.AuthToken,
+                        TiwiloPhone = u.TiwiloPhone,
+                    })
+                    .ToListAsync();
 
-                userName = u.UserName,
-                email = u.Email,
-                phoneNumber = u.PhoneNumber,
-                createdOn = u.AddedDate,
-            });
-
-            return userDTOs;
+                return userDTOs;
+            }
+            catch (Exception ex)
+            {
+                throw; 
+            }
         }
-
 
 
         public async Task<UserDTO> RegisterUser(RegisterationRequestDTO registrationRequestDTO)
@@ -1039,7 +1047,8 @@ namespace MagicVilla_VillaAPI.Repository
                 Country = tenant.Country,
                 CountryCode = tenant.CountryCode,
                 Picture = tenant.Picture,
-                Document = tenant.Document
+                Document = tenant.Document,
+                AppTid = tenant.AppTenantId.ToString()
             }).ToList();
             return tenantDtos;
         }
@@ -2282,6 +2291,9 @@ namespace MagicVilla_VillaAPI.Repository
                     IsShowCommunicationInTenantPortal = communication.IsShowCommunicationInTenantPortal,
                     IsPostOnTenantScreen = communication.IsPostOnTenantScreen,
                     RemoveFeedDate = communication.RemoveFeedDate,
+                    AddedBy = communication.AddedBy,
+                    AddedAt = communication.AddedDate,
+                    UserID = communication.AppTenantId.ToString(),
                 }).ToList();
 
 
@@ -2307,9 +2319,12 @@ namespace MagicVilla_VillaAPI.Repository
                 TenantIds = communication.TenantIds,
                 IsByEmail = communication.IsByEmail,
                 IsByText = communication.IsByText,
+                AppTenantId = Guid.Parse(communication.UserID),
                 IsShowCommunicationInTenantPortal = communication.IsShowCommunicationInTenantPortal,
                 IsPostOnTenantScreen = communication.IsPostOnTenantScreen,
                 RemoveFeedDate = communication.RemoveFeedDate,
+                AddedBy = communication.AddedBy,
+                AddedDate = DateTime.Now,
 
             };
             await _db.Communication.AddAsync(CommunicationData);
@@ -2337,9 +2352,12 @@ namespace MagicVilla_VillaAPI.Repository
             existingCommunication.TenantIds = communication.TenantIds;
             existingCommunication.IsByEmail = communication.IsByEmail;
             existingCommunication.IsByText = communication.IsByText;
+            existingCommunication.AppTenantId = Guid.Parse(communication.UserID);
             existingCommunication.IsShowCommunicationInTenantPortal = communication.IsShowCommunicationInTenantPortal;
             existingCommunication.IsPostOnTenantScreen = communication.IsPostOnTenantScreen;
             existingCommunication.RemoveFeedDate = communication.RemoveFeedDate;
+            existingCommunication.AddedBy = communication.AddedBy;
+            existingCommunication.AddedDate = DateTime.Now;
 
             _db.Communication.Update(existingCommunication);
             var result = await _db.SaveChangesAsync();
