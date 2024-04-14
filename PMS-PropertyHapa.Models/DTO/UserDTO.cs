@@ -54,7 +54,7 @@
         public bool AllUsersLateComingsFineAllowed { get; set; }
         public long ParentId { get; set; }
 
-
+        public int TenantId { get; set; }   
 
 
         // variables for Twilio Account
@@ -62,6 +62,8 @@
         public string AuthToken { get; set; }
         public string TiwiloPhone { get; set; }
         public string AppTId { get; set; }
+
+       
 
     }
 }

@@ -14,8 +14,8 @@ namespace PMS_PropertyHapa.Models.DTO
 
         [Required(ErrorMessage = "Please Enter Password")]
         public string? Password { get; set; }
-
         public string? ReturnUrl { get; set; }
+
 
         public bool Remember { get; set; }
     }

@@ -27,10 +27,10 @@
                 var fieldType = $passwordField.attr('type');
                 if (fieldType === 'password') {
                     $passwordField.attr('type', 'text');
-                    $('.show-hide i').removeClass('bi-eye').addClass('bi-eye-slash');
+                    $(this).find('i').removeClass('bi-eye').addClass('bi-eye-slash');
                 } else {
                     $passwordField.attr('type', 'password');
-                    $('.show-hide i').removeClass('bi-eye-slash').addClass('bi-eye');
+                    $(this).find('i').removeClass('bi-eye-slash').addClass('bi-eye');
                 }
             });
 
@@ -42,20 +42,32 @@
                     type: 'POST',
                     data: formData,
                     success: function (response) {
+                        debugger;
                         if (response.success) {
-                            localStorage.setItem('userId', response.result);
-                            if (response.organization && response.organization.tenant) {
-                                localStorage.setItem('organizationLogo', response.organization.tenant);
+                            localStorage.setItem('userId', response.result.userId);
+                            if (response.result.organization && response.result.organization.tenant) {
+                                localStorage.setItem('organizationLogo', response.result.organization.tenant);
                             }
-                            if (response.organization && response.organization.icon) {
-                                localStorage.setItem('organizationIcon', response.organization.icon);
+                            if (response.result.organization && response.result.organization.icon) {
+                                localStorage.setItem('organizationIcon', response.result.organization.icon);
                             }
-                            var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
-                            Toast.fire({ icon: 'success', title: response.message });
-                            window.location.href = '@Url.Action("Index", "Home")';
+                            localStorage.setItem('tenantId', response.result.tenantId);
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Logged in successfully',
+                                showConfirmButton: false,
+                                timer: 1500
+                            }).then(() => {
+                                sessionStorage.clear();
+                                window.location.href = "/Home/Index";
+                            });
                         } else {
-                            var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
-                            Toast.fire({ icon: 'error', title: response.message });
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Failed to log in',
+                                text: response.message,
+                                showConfirmButton: true
+                            });
                         }
                     },
                     error: function (xhr, status, error) {

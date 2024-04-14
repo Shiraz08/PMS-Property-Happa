@@ -1,5 +1,6 @@
-﻿using PMS_PropertyHapa.Models.DTO;
+﻿
 using PMS_PropertyHapa.Tenant.Models;
+using PMS_PropertyHapa.Models.DTO;
 using System.Threading.Tasks;
 
 namespace PMS_PropertyHapa.Tenant.Services.IServices
@@ -29,10 +30,20 @@ namespace PMS_PropertyHapa.Tenant.Services.IServices
         Task<bool> UpdateTenantAsync(TenantModelDto tenant);
         Task<bool> DeleteTenantAsync(string tenantId);
 
+
+
+
+        Task<bool> CreateLandlordAsync(OwnerDto owner);
+
+
+        Task<bool> UpdateLandlordAsync(OwnerDto owner);
+
+        Task<bool> DeleteLandlordAsync(string ownerId);
+
         Task<TenantModelDto> GetSingleTenantAsync(int tenantId);
 
 
-        Task<bool> CreateAssetAsync(AssetDTO asset);
+        
 
 
 
@@ -44,9 +55,22 @@ namespace PMS_PropertyHapa.Tenant.Services.IServices
 
         Task<PropertyTypeDto> GetSinglePropertyTypeAsync(int propertytypeId);
 
+        Task<bool> CreateAssetAsync(AssetDTO asset);
+
+        Task<bool> DeleteAssetAsync(int propertyId);
+        Task<bool> UpdateAssetAsync(AssetDTO asset);
+
+        Task<IEnumerable<AssetDTO>> GetAllAssetsAsync();
 
 
+        #region Communication Interface Services 
+        Task<bool> CreateCommunicationAsync(CommunicationDto communication);
 
+        Task<bool> DeleteCommunicationAsync(int communication_id);
+        Task<bool> UpdateCommunicationAsync(CommunicationDto communication);
+
+        Task<IEnumerable<CommunicationDto>> GetAllCommunicationAsync();
+        #endregion
 
 
         Task<List<PropertySubTypeDto>> GetAllPropertySubTypesAsync();
@@ -59,6 +83,8 @@ namespace PMS_PropertyHapa.Tenant.Services.IServices
 
         Task<List<PropertyTypeDto>> GetAllPropertyTypes();
 
+        Task<IEnumerable<OwnerDto>> GetAllLandlordAsync();
+
         Task<List<PropertySubTypeDto>> GetPropertySubTypeByIdAllAsync(string tenantId);
 
 
@@ -66,5 +92,19 @@ namespace PMS_PropertyHapa.Tenant.Services.IServices
 
         Task<TenantOrganizationInfoDto> GetTenantOrganizationByIdAsync(int tenantId);
 
+
+
+        Task<OwnerDto> GetSingleLandlordAsync(int ownerId);
+
+
+        Task<bool> CreateLeaseAsync(LeaseDto lease);
+
+        Task<LeaseDto> GetLeaseByIdAsync(int leaseId);
+
+        Task<IEnumerable<LeaseDto>> GetAllLeasesAsync();
+
+        Task<bool> UpdateLeaseAsync(LeaseDto lease);
+
+        Task<bool> UpdateAccountAsync(TiwiloDto obj);
     }
 }

@@ -233,7 +233,7 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: '@Url.Action("RemoveCommunication", "Communication")',
+                    url: '@Url.Action("DeleteCommunication", "Communication")',
                     type: 'DELETE',
                     data: { Communication_Id: communicationId },
                     success: function (response) {

@@ -14,12 +14,12 @@ namespace PMS_PropertyHapa.Shared.EmailSenderFile
                 {
                     EnableSsl = true,
                     UseDefaultCredentials = false,
-                    Credentials = new NetworkCredential("info@propertyhapa.com", "hcwzkjtnqnlytfoj") 
+                    Credentials = new NetworkCredential("info@hoozzee.com", "yykbjptkvssnyhih") 
                 };
 
                 using (MailMessage mailMessage = new MailMessage())
                 {
-                    mailMessage.From = new MailAddress("info@propertyhapa.com");
+                    mailMessage.From = new MailAddress("info@hoozzee.com");
                     foreach (var address in emailAddresses)
                     {
                         mailMessage.To.Add(new MailAddress(address));

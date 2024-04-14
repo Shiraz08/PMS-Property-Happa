@@ -1,7 +1,41 @@
 ﻿@{
     ViewData["Title"] = "Tenant Portal";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<style>
+    .landing-home {
+        position: relative;
+        height: 60vh; y
+        margin-top: 90px;
+        overflow: hidden; 
+    }
+
+    .marquee-container {
+        position: absolute; 
+        width: 100%;
+        background-color: white; 
+        z-index: 10; 
+    }
+
+    marquee {
+        width: 100%;
+        color: black; 
+        font-size: 20px;
+        padding: 10px 0; 
+        cursor: pointer; 
+    }
+
+    .img-fluid {
+        width: 100%;
+        height: 100%; 
+        object-fit: cover; 
+        position: relative; 
+    }
+</style>
 <section class="landing-home" id="home" style="height: 50vh;margin-bottom: 0px !important;margin-top: 90px !important;">
+    <div class="marquee-container">
+        <marquee behavior="scroll" direction="left" style="width: 100%; color: black; font-size: 20px;" title="Click for more details"></marquee>
+    </div>
     <img class="img-fluid bg-img-cover" src="~/Dashboard/assets/images/building.jpg" alt="">
     <div class="custom-container">
         <div class="row">
@@ -105,3 +139,93 @@
         </div>
     </div>
 </section>
+
+<div class="modal fade" id="announcementModal" tabindex="-1" aria-labelledby="announcementModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="announcementModalLabel">Announcement Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Subject</th>
+                            <th>Message</th>
+                            <th>No of Announcements</th>
+                            <th>Remove Feed Date</th>
+                            <th>Added At</th>
+                            <th>Added By</th>
+                        </tr>
+                    </thead>
+                    <tbody id="announcementDetailsTableBody">
+                        <!-- Data rows will be added here dynamically -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var tenantId = localStorage.getItem('tenantId');
+        var marquee = document.querySelector('marquee');
+        var announcementModal = new bootstrap.Modal(document.getElementById('announcementModal'), {});
+        var announcementDetailsTableBody = document.getElementById('announcementDetailsTableBody');
+
+        function loadCommunications() {
+            if (tenantId) {
+                fetch('@Url.Action("ViewCommunicationsByTenantId", "Home")' + '?tenantId=' + encodeURIComponent(tenantId))
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Failed to fetch data: ' + response.statusText);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        let tableRows = '';
+                        const totalAnnouncements = data.length;
+                        data.forEach(item => {
+                            tableRows += `<tr>
+                                    <td>${item.Subject || ''}</td>
+                                    <td>${item.Message || ''}</td>
+                                       <td>${totalAnnouncements}</td>
+                                    <td>${item.RemoveFeedDate || ''}</td>
+                                    <td>${item.AddedAt || ''}</td>
+                                    <td>${item.AddedBy || ''}</td>
+                                </tr>`;
+                        });
+                        announcementDetailsTableBody.innerHTML = tableRows;
+                        if (data.length > 0) {
+                            var messages = data.map(item => item.Message).join(' *** ');
+                            marquee.textContent = `Announcements: ${data.length} : ${messages}`;
+                        } else {
+                            marquee.textContent = 'No communications found.';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching communications:', error);
+                        announcementDetailsTableBody.innerHTML = `<tr><td colspan="6">Failed to load communications.</td></tr>`;
+                        marquee.textContent = 'Failed to load communications.';
+                    });
+            } else {
+                announcementDetailsTableBody.innerHTML = `<tr><td colspan="6">No tenant ID found.</td></tr>`;
+                marquee.textContent = 'No tenant ID found.';
+            }
+        }
+
+        // Load communications immediately
+        loadCommunications();
+
+        // Optionally, reload communications when marquee is clicked
+        marquee.addEventListener('click', function () {
+            announcementModal.show();
+        });
+    });
+</script>

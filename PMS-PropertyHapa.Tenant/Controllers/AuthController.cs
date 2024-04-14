@@ -40,63 +40,62 @@ namespace PMS_PropertyHapa.Tenant.Controllers
         [HttpGet]
         public IActionResult Login()
         {
-            // Check if there's an error message passed via ViewBag and pass it to the view if needed
             ViewBag.ErrorMessage = ViewBag.ErrorMessage ?? string.Empty;
             LoginRequestDTO obj = new();
             return View(obj);
         }
 
         [HttpPost]
-        [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginRequestDTO login)
         {
             try
             {
                 ApplicationUser appUser = _context.Users.FirstOrDefault(x => x.Email == login.Email);
-                if (appUser != null)
+                if (appUser == null)
                 {
-                    try
-                    {
-                        await _signInManager.SignOutAsync();
-                        Microsoft.AspNetCore.Identity.SignInResult result = await _signInManager.PasswordSignInAsync(appUser, login.Password, login.Remember, false);
-
-                        if (result.Succeeded)
-
-                            if (await _userManager.IsInRoleAsync(appUser, "Tenant"))
-                            {
-                                var tenant = _context.TenantOrganizationInfo.Where(s => s.TenantUserId == System.Guid.Parse(appUser.Id));
-                               
-                                return Json(new { success = true, message = "Logged In Successfully..!", result = appUser.Id ,organization = new { tenant = tenant?.FirstOrDefault()?.OrganizationLogo , icon = tenant?.FirstOrDefault()?.OrganizationIcon } });
-                            }
-                            else
-                            {
-                                ModelState.AddModelError("", "Login Failed: Only Tenant are allowed to log in.");
-                                await _signInManager.SignOutAsync();
-                            }
-
-
-                        if (!result.Succeeded)
-                            ModelState.Remove(nameof(login.Password));
-                    }
-                    catch (Exception ex)
-                    {
-                        ModelState.AddModelError("", "An error occurred while attempting to sign in.");
-                    }
+                    ModelState.AddModelError("", "Login Failed: Invalid Email or password.");
+                    return View(login);
                 }
-                else
+
+                var result = await _authService.LoginAsync<APIResponse>(login);
+                if (!result.IsSuccess)
                 {
-                    ModelState.AddModelError("", "Login Failed: Invalid Email or password");
-                    ModelState.AddModelError(nameof(login.Password), "Please enter the correct password.");
+                    ModelState.AddModelError("", "Invalid login attempt.");
+                    return View(login);
                 }
+                
+                if (!await _userManager.IsInRoleAsync(appUser, "Tenant"))
+                {
+                    ModelState.AddModelError("", "Login Failed: Only Tenants are allowed to log in.");
+                    return View(login);
+                }
+
+                return Json(new
+                {
+                    success = true,
+                    message = "Logged In Successfully..!",
+                    result = new
+                    {
+                        userId = appUser.Id,
+                        tenantId = appUser.TenantId, 
+                        organization = new
+                        {
+                            tenant = "",
+                            icon = ""
+                        }
+                    }
+                });
+
             }
             catch (Exception e)
             {
-                ModelState.AddModelError("", "An unexpected error occurred during login.");
+                ModelState.AddModelError("", "An unexpected error occurred during login. Please try again later.");
+                return View(login);
             }
-
-            return View(login);
         }
+
+
 
         public async Task<IActionResult> Logout()
         {

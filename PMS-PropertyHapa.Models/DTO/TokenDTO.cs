@@ -16,5 +16,6 @@
         public string OrganizationIcon { get; set; }    
 
         public int? Tid { get; set; }    
+        public int TenantId { get; set; }    
     }
 }

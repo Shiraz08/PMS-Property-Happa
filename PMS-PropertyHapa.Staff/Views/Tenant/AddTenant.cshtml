@@ -146,11 +146,24 @@
                                             </div>
                                         </div>
 
+
                                         <!-- Additional Email Address (Initially Hidden) -->
                                         <div class="col-sm-6 col-md-3" id="additionalEmailField" style="display: none;">
                                             <div class="mb-3">
                                                 <label for="EmailAddress2" class="form-label">Email Address2</label>
                                                 <input type="email" class="form-control" id="EmailAddress2" placeholder="Enter another email" title="Please enter a email address." value="@Model?.EmailAddress2" name="EmailAddress2" />
+                                            </div>
+                                        </div>
+
+
+                                        <div class="col-sm-6 col-md-3">
+                                            <div class="mb-3">
+                                                <label for="AddTenantAsUser" class="form-label">Add Tenant as User</label>
+                                                <select class="form-control" id="AddTenantAsUser" name="AddTenantAsUser" required>
+                                                    <option value="" disabled selected hidden>Select</option>
+                                                    <option value="true">Yes</option>
+                                                    <option value="false">No</option>
+                                                </select>
                                             </div>
                                         </div>
 
@@ -938,7 +951,11 @@
 
 
     async function submitTenantForm(event) {
-        debugger;
+        const formElement = document.getElementById('tenantForm');
+        const formData = new FormData(formElement);
+        var ajaxUrl = $('#TenantId').val() ? '/Tenant/Update' : '/Tenant/Create';
+
+
         const fileInputs = {
             'DocumentFile': 'DocumentBase64',
             'PictureUrl': 'PictureBase64'
@@ -947,7 +964,7 @@
          const pictureInput = document.getElementById('PictureUrl');
     if (pictureInput.files.length > 0) {
         formData.append('Picture', pictureInput.files[0]);
-    }sss
+    }
 
         const petPictureInputs = document.querySelectorAll('[name^="Pets"]');
         petPictureInputs.forEach(input => {
@@ -963,9 +980,8 @@
             }
         }
 
-        const formElement = document.getElementById('tenantForm');
-        var ajaxUrl = $('#TenantId').val() ? '/Tenant/Update' : '/Tenant/Create';
-        const formData = new FormData(formElement);
+     
+  
         Object.keys(fileInputs).forEach(key => formData.delete(key));
 
         try {
@@ -1141,6 +1157,12 @@
     }
 
 
+    document.addEventListener('DOMContentLoaded', function () {
+        var addTenantAsUser = '@(Model?.AddTenantAsUser.ToString().ToLower())'; // Assuming Model.AddTenantAsUser is a boolean
+        if (addTenantAsUser) {
+            document.getElementById("AddTenantAsUser").value = addTenantAsUser;
+        }
+    });
 
 </script>
 

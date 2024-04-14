@@ -168,7 +168,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
         public async Task<IActionResult> DeleteCommunication(int Communication_Id)
         {
             await _authService.DeleteCommunicationAsync(Communication_Id);
-            return Json(new { success = true, message = "Tenant deleted successfully" });
+            return Json(new { success = true, message = "Announcement deleted successfully" });
         }
 
 

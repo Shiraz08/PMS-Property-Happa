@@ -29,6 +29,8 @@ namespace PMS_PropertyHapa.Models.Roles
         public string PostalCode { get; set; }
         public string Country { get; set; }
         public Guid AppTenantId { get; set; }
+
+        public int TenantId { get; set; }
         public bool Status { get; set; }
         public bool IsDeleted { get; set; }
         public DateTime AddedDate { get; set; }

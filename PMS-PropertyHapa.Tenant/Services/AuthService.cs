@@ -1,10 +1,14 @@
 ﻿using Newtonsoft.Json;
+using PMS_PropertyHapa.Models;
 using PMS_PropertyHapa.Models.DTO;
 using PMS_PropertyHapa.Models.Entities;
-using PMS_PropertyHapa.Tenant.Models;
-using PMS_PropertyHapa.Tenant.Services.IServices;
 using PMS_PropertyHapa.Shared.Enum;
 using System.Net.Http;
+using PMS_PropertyHapa.Tenant.Models;
+using APIResponse = PMS_PropertyHapa.Tenant.Models.APIResponse;
+using PMS_PropertyHapa.Tenant.Services.IServices;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Humanizer.Localisation;
 
 namespace PMS_PropertyHapa.Tenant.Services
 {
@@ -199,8 +203,9 @@ namespace PMS_PropertyHapa.Tenant.Services
 
                 if (response != null && response.IsSuccess)
                 {
-
-                    return JsonConvert.DeserializeObject<IEnumerable<TenantModelDto>>(Convert.ToString(response.Result));
+                    var userListJson = Convert.ToString(response.Result);
+                    var tenants = JsonConvert.DeserializeObject<IEnumerable<TenantModelDto>>(userListJson);
+                    return tenants;
                 }
                 else
                 {
@@ -253,7 +258,9 @@ namespace PMS_PropertyHapa.Tenant.Services
 
                 if (response != null && response.IsSuccess)
                 {
-                    return JsonConvert.DeserializeObject<TenantModelDto>(Convert.ToString(response.Result));
+                    // Attempt to deserialize the result
+                    var tenantDto = JsonConvert.DeserializeObject<TenantModelDto>(Convert.ToString(response.Result));
+                    return tenantDto;
                 }
                 else
                 {
@@ -263,6 +270,33 @@ namespace PMS_PropertyHapa.Tenant.Services
             catch (Exception ex)
             {
                 throw new Exception($"An error occurred when fetching tenant data: {ex.Message}", ex);
+            }
+        }
+
+
+
+        public async Task<OwnerDto> GetSingleLandlordAsync(int ownerId)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.GET,
+                    Url = $"{villaUrl}/api/v1/LandlordAuth/GetSingleLandlord/{ownerId}"
+                });
+
+                if (response != null && response.IsSuccess)
+                {
+                    return JsonConvert.DeserializeObject<OwnerDto>(Convert.ToString(response.Result));
+                }
+                else
+                {
+                    throw new Exception("Failed to retrieve owner data");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when fetching owner data: {ex.Message}", ex);
             }
         }
 
@@ -296,7 +330,7 @@ namespace PMS_PropertyHapa.Tenant.Services
                 {
                     ApiType = SD.ApiType.POST,
                     Data = asset,
-                    Url = $"{villaUrl}/api/v1/Tenantauth/Tenant"
+                    Url = $"{villaUrl}/api/v1/AssetsAuth/Asset"
                 });
 
                 return response.IsSuccess;
@@ -307,6 +341,180 @@ namespace PMS_PropertyHapa.Tenant.Services
             }
         }
 
+
+        public async Task<bool> UpdateAssetAsync(AssetDTO asset)
+        {
+            try
+            {
+                int assetId = asset.AssetId;
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Data = asset,
+                    Url = $"{villaUrl}/api/v1/AssetsAuth/Asset/{assetId}"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when creating tenant: {ex.Message}", ex);
+            }
+        }
+
+
+        public async Task<bool> DeleteAssetAsync(int assetId)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.DELETE,
+                    Url = $"{villaUrl}/api/v1/AssetsAuth/Asset/{assetId}"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when deleting tenant: {ex.Message}", ex);
+            }
+        }
+
+
+        public async Task<IEnumerable<AssetDTO>> GetAllAssetsAsync()
+        {
+           
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.GET,
+                    Url = $"{villaUrl}/api/v1/AssetsAuth/Assets"
+                });
+
+                if (response.IsSuccess == true)
+                {
+                var userListJson = Convert.ToString(response.Result);
+                var asset = JsonConvert.DeserializeObject<IEnumerable<AssetDTO>>(userListJson);
+                return asset;
+            }
+                else
+                {
+                    throw new Exception("Failed to retrieve communication data");
+                }
+            
+           
+        }
+
+
+        #region Communication Services Method
+        public async Task<bool> CreateCommunicationAsync(CommunicationDto communication)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Data = communication,
+                    Url = $"{villaUrl}/api/v1/CommunicationAuth/Communication"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when creating communication: {ex.Message}", ex);
+            }
+        }
+
+
+        public async Task<bool> UpdateCommunicationAsync(CommunicationDto communication)
+        {
+            try
+            {
+                int communicationId = communication.Communication_Id;
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Data = communication,
+                    Url = $"{villaUrl}/api/v1/CommunicationAuth/Communication/{communicationId}"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when creating communication: {ex.Message}", ex);
+            }
+        }
+
+
+        public async Task<bool> DeleteCommunicationAsync(int communicationId)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.DELETE,
+                    Url = $"{villaUrl}/api/v1/CommunicationAuth/Communication/{communicationId}"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when deleting communication: {ex.Message}", ex);
+            }
+        }
+
+
+        public async Task<IEnumerable<CommunicationDto>> GetAllCommunicationAsync()
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = $"{villaUrl}/api/v1/CommunicationAuth/Communication"
+            });
+
+            if (response.IsSuccess == true)
+            {
+                var userListJson = Convert.ToString(response.Result);
+                var communication = JsonConvert.DeserializeObject<IEnumerable<CommunicationDto>>(userListJson);
+                return communication;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve communication data");
+            }
+
+
+        }
+        #endregion
+
+
+
+        public async Task<IEnumerable<OwnerDto>> GetAllLandlordAsync()
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = $"{villaUrl}/api/v1/LandlordAuth/Landlord"
+            });
+
+            if (response.IsSuccess == true)
+            {
+                var userListJson = Convert.ToString(response.Result);
+                var asset = JsonConvert.DeserializeObject<IEnumerable<OwnerDto>>(userListJson);
+                return asset;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve asset data");
+            }
+
+
+        }
 
 
 
@@ -737,5 +945,170 @@ namespace PMS_PropertyHapa.Tenant.Services
         }
 
         #endregion
+
+
+        #region Landlord
+
+
+        public async Task<bool> CreateLandlordAsync(OwnerDto owner)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Data = owner,
+                    Url = $"{villaUrl}/api/v1/LandlordAuth/Landlord"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when creating tenant: {ex.Message}", ex);
+            }
+        }
+
+
+        public async Task<bool> UpdateLandlordAsync(OwnerDto owner)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.PUT,
+                    Data = owner,
+                    Url = $"{villaUrl}/api/v1/LandlordAuth/Landlord/{owner.OwnerId}"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when updating owner: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<bool> DeleteLandlordAsync(string ownerId)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.DELETE,
+                    Url = $"{villaUrl}/api/v1/LandlordAuth/Landlord/{ownerId}"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when deleting owner: {ex.Message}", ex);
+            }
+        }
+        #endregion
+
+        #region Lease
+        public async Task<bool> CreateLeaseAsync(LeaseDto lease)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Data = lease,
+                    Url = $"{villaUrl}/api/v1/LeaseAuth/Lease"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when creating lease: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<LeaseDto> GetLeaseByIdAsync(int leaseId)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.GET,
+                    Url = $"{villaUrl}/api/v1/LeaseAuth/Lease/{leaseId}"
+                });
+
+                if (response.IsSuccess && response.Result != null)
+                {
+                    return JsonConvert.DeserializeObject<LeaseDto>(Convert.ToString(response.Result));
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when fetching lease by ID: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<IEnumerable<LeaseDto>> GetAllLeasesAsync()
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.GET,
+                    Url = $"{villaUrl}/api/v1/LeaseAuth/Leases"
+                });
+
+                if (response.IsSuccess && response.Result != null)
+                {
+                    return JsonConvert.DeserializeObject<IEnumerable<LeaseDto>>(Convert.ToString(response.Result));
+                }
+                return new List<LeaseDto>();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when fetching all leases: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<bool> UpdateLeaseAsync(LeaseDto lease)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.PUT,
+                    Data = lease,
+                    Url = $"{villaUrl}/api/v1/LeaseAuth/Lease"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when updating lease: {ex.Message}", ex);
+            }
+        }
+
+
+
+        public async Task<bool> UpdateAccountAsync(TiwiloDto obj)
+        {
+            
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.POST,
+                Data = obj,
+                Url = $"{villaUrl}/api/v1/CommunicationAuth/updateAccount"
+            });
+
+            return response.IsSuccess;
+
+        }
+
+        #endregion
     }
+
+
 }

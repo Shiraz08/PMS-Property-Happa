@@ -36,6 +36,8 @@ namespace PMS_PropertyHapa.Models.DTO
         public string? Account_Currency { get; set; }
         public Guid AppTenantId { get; set; }
 
+        public bool AddTenantAsUser { get; set; }   
+
         public string AppTid { get; set; }
         public string Address { get; set; }
         public string Address2 { get; set; }

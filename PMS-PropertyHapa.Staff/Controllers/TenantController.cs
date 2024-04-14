@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using PMS_PropertyHapa.Models.DTO;
 using PMS_PropertyHapa.Models.Entities;
 using PMS_PropertyHapa.Shared.ImageUpload;
+using PMS_PropertyHapa.Staff.Models;
 using PMS_PropertyHapa.Staff.Services.IServices;
 using System.Security.Claims;
 
@@ -85,8 +86,30 @@ namespace PMS_PropertyHapa.Staff.Controllers
             }
 
 
+           await _authService.CreateTenantAsync(tenant);
 
-            await _authService.CreateTenantAsync(tenant);
+
+            // Register tenant as a user if required
+            if (tenant.AddTenantAsUser)
+            {
+                var newtenant = await _authService.GetAllTenantsAsync();
+                var registrationRequest = new RegisterationRequestDTO
+                {
+                    UserName = tenant.EmailAddress,
+                    Name = $"{tenant.FirstName} {tenant.LastName}",
+                    Email = tenant.EmailAddress,
+                    Password = "Test@123",
+                    Role = "Tenant",
+                    TenantId = newtenant.Max(s => s.TenantId)
+                };
+
+                APIResponse result = await _authService.RegisterAsync<APIResponse>(registrationRequest);
+                if (!result.IsSuccess)
+                {
+                    return Json(new { success = false, message = "Failed to register tenant as user." });
+                }
+            }
+
             return Json(new { success = true, message = "Tenant added successfully" });
         }
 

@@ -105,7 +105,8 @@ namespace MagicVilla_VillaAPI.Repository
                 SecondaryColor = tenantOrganization?.OrganizationSecondColor,
                 OrganizationLogo = tenantOrganization?.OrganizationLogo,
                 OrganizationIcon = tenantOrganization?.OrganizationIcon,
-                Tid = tenantOrganization?.Id
+                Tid = tenantOrganization?.Id,
+                TenantId = user.TenantId
             };
         }
 
@@ -116,7 +117,8 @@ namespace MagicVilla_VillaAPI.Repository
                 UserName = registerationRequestDTO.UserName,
                 Email = registerationRequestDTO.UserName,
                 NormalizedEmail = registerationRequestDTO.UserName.ToUpper(),
-                Name = registerationRequestDTO.Name
+                Name = registerationRequestDTO.Name,
+                TenantId = registerationRequestDTO?.TenantId ?? 0
             };
 
             try
@@ -340,7 +342,7 @@ namespace MagicVilla_VillaAPI.Repository
             var result = await _userManager.UpdateAsync(user);
             if (!result.Succeeded)
             {
-               
+
                 var errors = string.Join(", ", result.Errors.Select(e => e.Description));
                 throw new Exception($"Failed to update user account: {errors}");
             }
@@ -397,7 +399,7 @@ namespace MagicVilla_VillaAPI.Repository
             }
             catch (Exception ex)
             {
-                throw; 
+                throw;
             }
         }
 
