@@ -327,7 +327,7 @@
     const totalSteps = $('.progress-indicator').length;
 
     $(document).ready(function () {
-        $('#textMessageSwitch').change(function () {
+        $('#tenantPortalSwitch').change(function () {
             if ($(this).is(':checked')) {
                 checkTwilioCredentials();
                 $('#deliveryTextDiv').removeClass('d-none');
@@ -346,7 +346,7 @@
                 text: 'No user ID found in local storage.',
                 footer: '<a href="/views/Communication/Login.razor">Log in here</a>'
             });
-            $('#textMessageSwitch').prop('checked', false);
+            $('#tenantPortalSwitch').prop('checked', false);
             return;
         }
 
@@ -362,7 +362,7 @@
                         text: 'Please update your Twilio credentials to proceed.',
                         footer: '<a href="/Communication/TiwiloView">Update Twilio Credentials</a>'
                     });
-                    $('#textMessageSwitch').prop('checked', false); 
+                    $('#tenantPortalSwitch').prop('checked', false);
                 }
             },
             error: function (xhr, status, error) {
@@ -372,7 +372,7 @@
                     text: 'There was a problem fetching your credentials.',
                     footer: 'Please try again or contact support if the problem persists.'
                 });
-                $('#textMessageSwitch').prop('checked', false); 
+                $('#tenantPortalSwitch').prop('checked', false);
             }
         });
     }

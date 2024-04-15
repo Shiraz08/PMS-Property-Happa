@@ -6,6 +6,7 @@ using PMS_PropertyHapa.Shared.ImageUpload;
 using PMS_PropertyHapa.Staff.Models;
 using PMS_PropertyHapa.Staff.Services.IServices;
 using System.Security.Claims;
+using PMS_PropertyHapa.Shared.Email;
 
 namespace PMS_PropertyHapa.Staff.Controllers
 {
@@ -13,6 +14,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
     {
         private readonly IAuthService _authService;
         private readonly ITokenProvider _tokenProvider;
+        EmailSender _emailSender = new EmailSender();
 
         public TenantController(IAuthService authService, ITokenProvider tokenProvider)
         {
@@ -108,6 +110,9 @@ namespace PMS_PropertyHapa.Staff.Controllers
                 {
                     return Json(new { success = false, message = "Failed to register tenant as user." });
                 }
+
+                var emailContent = $"Welcome {tenant.FirstName} {tenant.LastName},\n\nThank you for registering. Here are your details:\nUsername: {tenant.EmailAddress}\nPassword: Test@123\nTenant ID: {registrationRequest.TenantId}\n\nThank you!";
+                await _emailSender.SendEmailAsync(tenant.EmailAddress, "Welcome to Our Service!", emailContent);
             }
 
             return Json(new { success = true, message = "Tenant added successfully" });
