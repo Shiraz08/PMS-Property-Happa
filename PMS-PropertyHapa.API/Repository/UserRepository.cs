@@ -2444,6 +2444,79 @@ namespace MagicVilla_VillaAPI.Repository
         #endregion
 
 
+
+
+
+        public async Task<List<SubscriptionDto>> GetAllSubscriptionsAsync()
+        {
+            return await _db.Subscriptions.Select(subscription => new SubscriptionDto
+            {
+                Id = subscription.Id,
+                Name = subscription.Name,
+                Price = subscription.Price,
+                Description = subscription.Description,
+                AppTenantId = subscription.AppTenantId,
+                TenantId = subscription.TenantId
+            }).ToListAsync();
+        }
+
+        public async Task<SubscriptionDto> GetSubscriptionByIdAsync(int Id)
+        {
+            var subscription = await _db.Subscriptions.FindAsync(Id);
+            if (subscription == null) return null;
+            return new SubscriptionDto
+            {
+                Id = subscription.Id,
+                Name = subscription.Name,
+                Price = subscription.Price,
+                Description = subscription.Description,
+                AppTenantId = subscription.AppTenantId,
+                TenantId = subscription.TenantId
+            };
+        }
+
+        public async Task<bool> CreateSubscriptionAsync(SubscriptionDto subscriptionDto)
+        {
+            var subscription = new Subscription
+            {
+                Name = subscriptionDto.Name,
+                Price = subscriptionDto.Price,
+                Description = subscriptionDto.Description,
+                AppTenantId = subscriptionDto.AppTenantId,
+                TenantId = subscriptionDto.TenantId
+            };
+            await _db.Subscriptions.AddAsync(subscription);
+            var result = await _db.SaveChangesAsync();
+            return result > 0;
+        }
+
+        public async Task<bool> UpdateSubscriptionAsync(SubscriptionDto subscriptionDto)
+        {
+            var subscription = await _db.Subscriptions.FindAsync(subscriptionDto.Id);
+            if (subscription == null) return false;
+
+            subscription.Name = subscriptionDto.Name;
+            subscription.Price = subscriptionDto.Price;
+            subscription.Description = subscriptionDto.Description;
+            subscription.AppTenantId = subscriptionDto.AppTenantId;
+            subscription.TenantId = subscriptionDto.TenantId;
+
+            _db.Subscriptions.Update(subscription);
+            var result = await _db.SaveChangesAsync();
+            return result > 0;
+        }
+
+        public async Task<bool> DeleteSubscriptionAsync(int Id)
+        {
+            var subscription = await _db.Subscriptions.FindAsync(Id);
+            if (subscription == null) return false;
+
+            _db.Subscriptions.Remove(subscription);
+            var result = await _db.SaveChangesAsync();
+            return result > 0;
+        }
+
+
     }
 
 

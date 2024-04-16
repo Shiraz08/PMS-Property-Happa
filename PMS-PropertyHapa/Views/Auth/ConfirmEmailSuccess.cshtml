@@ -1,0 +1,10 @@
+﻿@model PMS_PropertyHapa.Models.DTO.RegisterationRequestDTO
+@{
+    Layout = "~/Views/Shared/_IdentityLayout.cshtml";
+}
+@{
+    ViewData["Title"] = "Email Confirmation Success";
+}
+
+<h2>Your email has been confirmed!</h2>
+<p>Thank you for confirming your email. You can now proceed to <a asp-action="Login" asp-controller="Auth">login</a>.</p>

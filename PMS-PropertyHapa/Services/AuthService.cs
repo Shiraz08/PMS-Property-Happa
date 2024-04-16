@@ -546,7 +546,121 @@ namespace PMS_PropertyHapa.Services
         #endregion
 
 
+        #region Subscription CRUD
 
+
+        public async Task<List<SubscriptionDto>> GetAllSubscriptionsAsync()
+        {
+            try
+            {
+                var apiResponse = await _baseService.SendAsync<APIResponse>(new APIRequest
+                {
+                    ApiType = SD.ApiType.GET,
+                    Url = $"{villaUrl}/api/v1/SubscriptionAuth/Subscription"
+                });
+
+                if (apiResponse != null && apiResponse.IsSuccess)
+                {
+                    var subscriptions = JsonConvert.DeserializeObject<List<SubscriptionDto>>(Convert.ToString(apiResponse.Result));
+                    return subscriptions;
+                }
+                else
+                {
+                    throw new Exception("Failed to retrieve subscriptions data");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when fetching subscriptions data: {ex.Message}", ex);
+            }
+        }
+
+
+        public async Task<List<SubscriptionDto>> GetSubscriptionsByIdAsync(int Id)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.GET,
+                    Url = $"{villaUrl}/api/v1/SubscriptionAuth/Subscription/{Id}"
+                });
+
+                if (response != null && response.IsSuccess)
+                {
+                    return JsonConvert.DeserializeObject<List<SubscriptionDto>>(Convert.ToString(response.Result));
+                }
+                else
+                {
+                    throw new Exception("Failed to retrieve subscription data");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when fetching subscription data: {ex.Message}", ex);
+            }
+        }
+
+
+        
+
+        public async Task<bool> CreateSubscriptionAsync(SubscriptionDto subscription)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Data = subscription,
+                    Url = $"{villaUrl}/api/v1/SubscriptionAuth/Subscription"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when creating subscription: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<bool> UpdateSubscriptionAsync(SubscriptionDto subscription)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.PUT,
+                    Data = subscription,
+                    Url = $"{villaUrl}/api/v1/SubscriptionAuth/Subscription/{subscription.Id}"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when updating subscription: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<bool> DeleteSubscriptionAsync(int Id)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.DELETE,
+                    Url = $"{villaUrl}/api/v1/SubscriptionAuth/Subscription/{Id}"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when deleting subscription: {ex.Message}", ex);
+            }
+        }
+
+        #endregion
 
         #region Property SubType Crud
 

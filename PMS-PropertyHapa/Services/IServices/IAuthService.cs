@@ -67,5 +67,15 @@ namespace PMS_PropertyHapa.Services.IServices
 
         Task<TenantOrganizationInfoDto> GetTenantOrganizationByIdAsync(int tenantId);
 
+
+        Task<List<SubscriptionDto>> GetAllSubscriptionsAsync();
+
+        Task<List<SubscriptionDto>> GetSubscriptionsByIdAsync(int Id);
+
+        Task<bool> CreateSubscriptionAsync(SubscriptionDto subscription);
+
+        Task<bool> UpdateSubscriptionAsync(SubscriptionDto subscription);
+
+        Task<bool> DeleteSubscriptionAsync(int Id);
     }
 }

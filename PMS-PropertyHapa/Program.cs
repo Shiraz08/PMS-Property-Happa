@@ -10,6 +10,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PMS_PropertyHapa.MigrationsFiles.Data;
 using PMS_PropertyHapa.Models.Roles;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using PMS_PropertyHapa.Shared.Email;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
@@ -47,13 +50,24 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
+builder.Services.Configure<IdentityOptions>(opts =>
+{
+    opts.SignIn.RequireConfirmedEmail = true;
+    opts.Lockout.AllowedForNewUsers = true;
+    opts.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10);
+    opts.Lockout.MaxFailedAccessAttempts = 3;
+});
 
 builder.Services.AddDbContext<ApiDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("PMS_PropertyHapaContextConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("PropertyConnection")));
+
+
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<ApiDbContext>()
     .AddDefaultTokenProviders();
+
+builder.Services.AddTransient<IEmailSender, EmailSender>();
 // Add other services
 builder.Services.AddControllersWithViews();
 builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();

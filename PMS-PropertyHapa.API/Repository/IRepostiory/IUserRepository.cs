@@ -137,5 +137,14 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
         Task<bool> UpdateAccountAsync(TiwiloDto userDto);
         #endregion
 
+
+
+
+        Task<List<SubscriptionDto>> GetAllSubscriptionsAsync();
+        Task<SubscriptionDto> GetSubscriptionByIdAsync(int Id);
+        Task<bool> CreateSubscriptionAsync(SubscriptionDto subscriptionDto);
+        Task<bool> UpdateSubscriptionAsync(SubscriptionDto subscriptionDto);
+        Task<bool> DeleteSubscriptionAsync(int Id);
+
     }
 }
