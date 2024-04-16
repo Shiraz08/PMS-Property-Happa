@@ -1,0 +1,90 @@
+﻿@model PMS_PropertyHapa.Models.DTO.SubscriptionDto
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Manage Subscriptions</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="subscriptionList"></tbody>
+        </table>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            fetchSubscriptions();
+
+            function fetchSubscriptions() {
+                $.ajax({
+                    url: '/Subscription/GetAllSubscriptions',
+                    type: 'GET',
+                    success: function (response) {
+                        if (response.success) {
+                            var subscriptions = response.data;
+                            $('#subscriptionList').empty();
+                            subscriptions.forEach(function (subscription) {
+                                $('#subscriptionList').append(`
+                                <tr>
+                                    <td>${subscription.Id}</td>
+                                    <td>${subscription.Name}</td>
+                                    <td>${subscription.Price}</td>
+                                    <td>${subscription.Description}</td>
+                                    <td>
+                                        <button onclick="deleteSubscription(${subscription.Id})" class="btn btn-danger">Delete</button>
+                                        <button onclick="editSubscription(${subscription.Id})" class="btn btn-primary">Edit</button>
+                                    </td>
+                                </tr>
+                            `);
+                            });
+                        } else {
+                            console.error('Error fetching subscriptions:', response.message);
+                        }
+                    },
+                    error: function (error) {
+                        console.error('Error fetching subscriptions:', error.responseText);
+                    }
+                });
+            }
+
+            window.deleteSubscription = function (Id) {
+                $.ajax({
+                    url: '/Subscription/Delete/' + Id,
+                    type: 'DELETE',
+                    success: function (result) {
+                        if (result.success) {
+                            fetchSubscriptions()
+
+                            alert('Subscription deleted successfully!');
+                            $('#subscriptionList').empty(); // Optionally refresh or clear the list
+                        } else {
+                            alert('Error deleting subscription: ' + result.message);
+                        }
+                    },
+                    error: function (error) {
+                        alert('Error deleting subscription: ' + error.responseText);
+                    }
+                });
+            };
+
+            window.editSubscription = function (Id) {
+                window.location.href = '/Subscription/Edit/' + Id; // Ensure you have a corresponding edit page
+            };
+        });
+    </script>
+</body>
+</html>

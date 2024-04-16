@@ -287,10 +287,6 @@
                         width: '300px',
                         padding: '0.5rem',
                         title: 'Subscription Added Successfully'
-                    }).then((result) => {
-                        if (result.dismiss === Swal.DismissReason.timer) {
-                            window.location.href = '/Subscription/AddSubscription';
-                        }
                     });
                 },
                 error: function (response) {
