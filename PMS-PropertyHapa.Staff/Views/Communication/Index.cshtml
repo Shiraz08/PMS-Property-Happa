@@ -109,7 +109,7 @@
                                                 </td>
 
                                                 <td style="justify-content:center">
-                                                    <button href="@Url.Action("EditCommunication", "Communication", new { communicationId = communication.Communication_Id })" class="btn btn-info btn-sm" style="padding: 3px 8px; margin-right: 5px; display: inline-block;">Edit</button>
+                                                    <button onclick="editCommunication(@communication.Communication_Id)" class="btn btn-info btn-sm" style="padding: 3px 8px; margin-right: 5px; display: inline-block;">Edit</button>
                                                     <button onclick="deleteCommunication(@communication.Communication_Id)" class="btn btn-danger btn-sm" style="padding: 3px 8px; display: inline-block;">Delete</button>
                                                 </td>
                                             </tr>
@@ -266,4 +266,47 @@
     }
 
 
+    // // function updateCommunication(communicationId) {
+    // //     var communicationId = $('#communicationId').val();  
+    // //     var formData = new FormData($('#communicationForm')[0]); 
+
+    // //     $.ajax({
+    // //         url: '/Communication/EditCommunication?communicationId=' + communicationId,
+    // //         type: 'POST',
+    // //         data: formData,
+    // //         contentType: false, 
+    // //         processData: false,
+    // //         success: function (response) {
+    // //             if (response.success) {
+    // //                 Swal.fire({
+    // //                     icon: 'success',
+    // //                     title: 'Updated Successfully',
+    // //                     text: 'The communication has been updated successfully!',
+    // //                     timer: 3000,
+    // //                     showConfirmButton: false
+    // //                 }).then((result) => {
+    // //                     window.location.reload(); 
+    // //                 });
+    // //             } else {
+    // //                 Swal.fire({
+    // //                     icon: 'error',
+    // //                     title: 'Update Failed',
+    // //                     text: response.message 
+    // //                 });
+    // //             }
+    // //         },
+    // //         error: function (xhr, status, error) {
+    // //             Swal.fire({
+    // //                 icon: 'error',
+    // //                 title: 'Update Error',
+    // //                 text: 'An error occurred during the update process. Please try again.'
+    // //             });
+    // //         }
+    // //     });
+    // }
+
+    function editCommunication(communicationId) {
+        var url = '@Url.Action("EditCommunication", "Communication")' + '?communicationId=' + communicationId;
+        window.location.href = url; 
+    }
 </script>

@@ -213,6 +213,8 @@
                                 <input type="hidden" id="Status" name="Status" value="true">
                                 <input type="hidden" id="IsDeleted" name="IsDeleted" value="false">
                                 <input type="hidden" id="Communication_File" name="Communication_File" value="">
+                                <input type="hidden" id="communicationId" name="Communication_Id" value="@Model?.Communication_Id" />
+
                             </fieldset>
 
 
@@ -321,10 +323,29 @@
 
 <script>
 
-
-
     var currentStep = 1;
     const totalSteps = $('.progress-indicator').length;
+    var isShowCommunicationInTenantPortal = @Html.Raw(Json.Serialize(Model?.IsShowCommunicationInTenantPortal));
+    var isByEmail = @Html.Raw(Json.Serialize(Model?.IsByEmail));
+    var isByText = @Html.Raw(Json.Serialize(Model?.IsByText));
+    var subject = @Html.Raw(Json.Serialize(Model?.Subject));
+    var message = @Html.Raw(Json.Serialize(Model?.Message));
+    var propertyIds = @Html.Raw(Json.Serialize(Model?.PropertyIds?.Split(',').Select(int.Parse).ToArray() ?? new int[0]));
+    var tenantIds = @Html.Raw(Json.Serialize(Model?.TenantIds?.Split(',').Select(int.Parse).ToArray() ?? new int[0]));
+
+    $(document).ready(function () {
+        // Initialize form elements with these values
+        $('#emailSwitch').prop('checked', isByEmail);
+        $('#textMessageSwitch').prop('checked', isByText);
+        $('#tenantPortalSwitch').prop('checked', isShowCommunicationInTenantPortal);
+        $('#announcementSubject').val(subject);
+        $('#announcementMessage').val(message);
+        $('#announcementProperties').val(propertyIds).trigger('change');
+        $('#announcementTenants').val(tenantIds).trigger('change');
+    });
+
+
+
 
     $(document).ready(function () {
         $('#tenantPortalSwitch').change(function () {

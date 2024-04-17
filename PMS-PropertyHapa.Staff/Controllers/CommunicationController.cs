@@ -175,16 +175,16 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
 
 
-        public async Task<IActionResult> EditCommunication(int Communication_Id)
+        public async Task<IActionResult> EditCommunication(int communicationId)
         {
             CommunicationDto Communication;
             IEnumerable<TenantModelDto> tenant;
             IEnumerable<AssetDTO> assets;
 
-            if (Communication_Id > 0)
+            if (communicationId > 0)
             {
                 var Communications = await _authService.GetAllCommunicationAsync();
-                Communication = Communications.FirstOrDefault(s => s.Communication_Id == Communication_Id);
+                Communication = Communications.FirstOrDefault(s => s.Communication_Id == communicationId);
 
                 if (Communication == null)
                 {
@@ -208,6 +208,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
             return View("AddCommunication");
         }
+
 
 
         [HttpPost]
