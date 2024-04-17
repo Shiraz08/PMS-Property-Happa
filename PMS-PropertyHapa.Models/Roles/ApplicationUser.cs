@@ -42,5 +42,9 @@ namespace PMS_PropertyHapa.Models.Roles
         public string AuthToken { get; set; }
         public string TiwiloPhone { get; set; }
 
+        public string? SubscriptionName { get; set; }    
+
+        public bool EmailConfirmed { get; set; }
+
     }
 }

@@ -16,8 +16,13 @@ namespace PMS_PropertyHapa.Models.Entities
         public decimal Price { get; set; }
         public string Description { get; set; }
 
-        public string AppTenantId { get; set; } 
+        public int DiskSpaceGB { get; set; } // in GB
+        public int EmailAccounts { get; set; }
+        public int BandwidthGB { get; set; } // in GB
+        public int Subdomains { get; set; }
+        public int Domains { get; set; }
 
+        public string AppTenantId { get; set; }
         public int TenantId { get; set; }
 
 

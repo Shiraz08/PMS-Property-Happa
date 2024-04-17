@@ -144,15 +144,17 @@ namespace PMS_PropertyHapa.Controllers
         }
 
 
-        
         [HttpGet]
         public async Task<IActionResult> GetAllSubscriptions()
         {
             try
             {
-                var subscriptions2 = await _authService.GetAllSubscriptionsAsync();
-                var maxId = subscriptions2.Max(s => s.Id);
-                var subscriptions = subscriptions2.FirstOrDefault(s => s.Id == maxId);
+                var subscriptions = await _authService.GetAllSubscriptionsAsync();
+                if (subscriptions == null || !subscriptions.Any())
+                {
+                    return Json(new { success = false, message = "No subscriptions found." });
+                }
+
                 return Json(new { success = true, data = subscriptions });
             }
             catch (Exception ex)
@@ -162,8 +164,7 @@ namespace PMS_PropertyHapa.Controllers
             }
         }
 
-        
-      
+
 
     }
 }

@@ -22,7 +22,7 @@ namespace PMS_PropertyHapa.Controllers
     //[Authorize]
     public class SubscriptionController : Controller
     {
-    
+
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private ApiDbContext _context;
@@ -30,7 +30,7 @@ namespace PMS_PropertyHapa.Controllers
         EmailSender _emailSender = new EmailSender();
         private IWebHostEnvironment _environment;
 
-        public SubscriptionController(IWebHostEnvironment Environment,  SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, ApiDbContext context, IUserStore<ApplicationUser> userStore)
+        public SubscriptionController(IWebHostEnvironment Environment, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, ApiDbContext context, IUserStore<ApplicationUser> userStore)
         {
             _signInManager = signInManager;
             _userManager = userManager;
@@ -45,10 +45,11 @@ namespace PMS_PropertyHapa.Controllers
             return View(new SubscriptionDto());
         }
 
-        
+
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] SubscriptionDto dto)
+        public async Task<IActionResult> Create(SubscriptionDto dto)
         {
+            dto.Id = null;
             if (!ModelState.IsValid)
             {
                 return Json(new { success = false, message = "Invalid data", errors = ModelState });
@@ -58,11 +59,16 @@ namespace PMS_PropertyHapa.Controllers
             {
                 Subscription newSubscription = new Subscription
                 {
-                   Name = dto.Name,
-                   Price = dto.Price,
-                   Description = dto.Description,
-                   AppTenantId = dto.AppTenantId,
-                   TenantId = dto.TenantId,
+                    Name = dto.Name,
+                    Price = dto.Price,
+                    Description = dto.Description,
+                    AppTenantId = dto.AppTenantId,
+                    TenantId = dto.TenantId,
+                    DiskSpaceGB = dto.DiskSpaceGB,
+                    EmailAccounts = dto.EmailAccounts,
+                    BandwidthGB = dto.BandwidthGB,
+                    Subdomains = dto.Subdomains,
+                    Domains = dto.Domains,
                 };
 
                 _context.Subscriptions.Add(newSubscription);
@@ -76,9 +82,9 @@ namespace PMS_PropertyHapa.Controllers
             }
         }
 
-        
+
         [HttpPut]
-        public async Task<IActionResult> Edit(int id, [FromBody] SubscriptionDto dto)
+        public async Task<IActionResult> Edit(int id, SubscriptionDto dto)
         {
             if (!ModelState.IsValid)
             {
@@ -98,6 +104,11 @@ namespace PMS_PropertyHapa.Controllers
                 subscription.Description = dto.Description;
                 subscription.AppTenantId = dto.AppTenantId;
                 subscription.TenantId = dto.TenantId;
+                subscription.DiskSpaceGB = dto.DiskSpaceGB;
+                subscription.EmailAccounts = dto.EmailAccounts;
+                subscription.BandwidthGB = dto.BandwidthGB;
+                subscription.Subdomains = dto.Subdomains;
+                subscription.Domains = dto.Domains;
 
 
                 _context.Subscriptions.Update(subscription);
@@ -148,6 +159,38 @@ namespace PMS_PropertyHapa.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Get(int id)
+        {
+            try
+            {
+                var subscription = await _context.Subscriptions.FindAsync(id);
+                if (subscription == null)
+                {
+                    return Json(new { success = false, message = "Subscription not found." });
+                }
+
+                // Assuming SubscriptionDto is already mapped or directly usable
+                var subscriptionDto = new SubscriptionDto
+                {
+                    Id = subscription.Id,
+                    Name = subscription.Name,
+                    Price = subscription.Price,
+                    Description = subscription.Description,
+                    DiskSpaceGB = subscription.DiskSpaceGB,
+                    EmailAccounts = subscription.EmailAccounts,
+                    BandwidthGB = subscription.BandwidthGB,
+                    Subdomains = subscription.Subdomains,
+                    Domains = subscription.Domains
+                };
+
+                return Json(new { success = true, data = subscriptionDto });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Error retrieving subscription data." });
+            }
+        }
 
 
     }

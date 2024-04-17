@@ -11,6 +11,7 @@
 <body>
     <div class="container mt-5">
         <h2>Manage Subscriptions</h2>
+        <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#subscriptionModal">Add New Subscription</button>
         <table class="table">
             <thead>
                 <tr>
@@ -18,6 +19,11 @@
                     <th>Name</th>
                     <th>Price</th>
                     <th>Description</th>
+                    <th>Disk Space (GB)</th>
+                    <th>Email Accounts</th>
+                    <th>Bandwidth (GB)</th>
+                    <th>Subdomains</th>
+                    <th>Domains</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -25,32 +31,74 @@
         </table>
     </div>
 
+    <!-- Subscription Modal -->
+    <div class="modal fade" id="subscriptionModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabel">Subscription Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="subscriptionForm">
+                        <input type="hidden" id="subscriptionId">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="price" class="form-label">Price</label>
+                            <input type="number" class="form-control" id="price" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" id="description" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="diskSpaceGB" class="form-label">Disk Space (GB)</label>
+                            <input type="number" class="form-control" id="diskSpaceGB" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="emailAccounts" class="form-label">Email Accounts</label>
+                            <input type="number" class="form-control" id="emailAccounts" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="bandwidthGB" class="form-label">Bandwidth (GB)</label>
+                            <input type="number" class="form-control" id="bandwidthGB" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="subdomains" class="form-label">Subdomains</label>
+                            <input type="number" class="form-control" id="subdomains" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="domains" class="form-label">Domains</label>
+                            <input type="number" class="form-control" id="domains" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="saveSubscription()">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $(document).ready(function () {
             fetchSubscriptions();
 
+            // Fetches and displays the subscription list
             function fetchSubscriptions() {
                 $.ajax({
                     url: '/Subscription/GetAllSubscriptions',
                     type: 'GET',
                     success: function (response) {
                         if (response.success) {
-                            var subscriptions = response.data;
-                            $('#subscriptionList').empty();
-                            subscriptions.forEach(function (subscription) {
-                                $('#subscriptionList').append(`
-                                <tr>
-                                    <td>${subscription.Id}</td>
-                                    <td>${subscription.Name}</td>
-                                    <td>${subscription.Price}</td>
-                                    <td>${subscription.Description}</td>
-                                    <td>
-                                        <button onclick="deleteSubscription(${subscription.Id})" class="btn btn-danger">Delete</button>
-                                        <button onclick="editSubscription(${subscription.Id})" class="btn btn-primary">Edit</button>
-                                    </td>
-                                </tr>
-                            `);
-                            });
+                            updateSubscriptionList(response.data);
                         } else {
                             console.error('Error fetching subscriptions:', response.message);
                         }
@@ -61,30 +109,174 @@
                 });
             }
 
-            window.deleteSubscription = function (Id) {
-                $.ajax({
-                    url: '/Subscription/Delete/' + Id,
-                    type: 'DELETE',
-                    success: function (result) {
-                        if (result.success) {
-                            fetchSubscriptions()
+            // Updates the HTML table with subscription data
+            function updateSubscriptionList(subscriptions) {
+                var $list = $('#subscriptionList').empty(); // Clear previous entries
+                subscriptions.forEach(function (subscription) {
+                    $list.append(`
+                                <tr>
+                                    <td>${subscription.Id}</td>
+                                    <td>${subscription.Name}</td>
+                                    <td>${subscription.Price.toFixed(2)}</td>
+                                    <td>${subscription.Description}</td>
+                                    <td>${subscription.DiskSpaceGB}</td>
+                                    <td>${subscription.EmailAccounts}</td>
+                                    <td>${subscription.BandwidthGB}</td>
+                                    <td>${subscription.Subdomains}</td>
+                                    <td>${subscription.Domains}</td>
+                                    <td>
+                                        <button onclick="editSubscription(${subscription.Id})" class="btn btn-primary">Edit</button>
+                                        <button onclick="deleteSubscription(${subscription.Id})" class="btn btn-danger">Delete</button>
+                                    </td>
+                                </tr>
+                            `);
+                });
+            }
 
-                            alert('Subscription deleted successfully!');
-                            $('#subscriptionList').empty(); // Optionally refresh or clear the list
-                        } else {
-                            alert('Error deleting subscription: ' + result.message);
-                        }
-                    },
-                    error: function (error) {
-                        alert('Error deleting subscription: ' + error.responseText);
+            window.editSubscription = function (id) {
+                // Fill form and show modal
+                $.get('/Subscription/Get/' + id, function (response) {
+                    if (response.success) {
+                        $('#subscriptionId').val(response.data.Id);
+                        $('#name').val(response.data.Name);
+                        $('#price').val(response.data.Price);
+                        $('#description').val(response.data.Description);
+                        $('#diskSpaceGB').val(response.data.DiskSpaceGB);
+                        $('#emailAccounts').val(response.data.EmailAccounts);
+                        $('#bandwidthGB').val(response.data.BandwidthGB);
+                        $('#subdomains').val(response.data.Subdomains);
+                        $('#domains').val(response.data.Domains);
+                        $('#subscriptionModal').modal('show');
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                            toast: true,
+                            width: '300px',
+                            padding: '0.5rem',
+                            title: 'Failed to fetch data'
+                        });
                     }
                 });
             };
 
-            window.editSubscription = function (Id) {
-                window.location.href = '/Subscription/Edit/' + Id; // Ensure you have a corresponding edit page
+            window.saveSubscription = function () {
+                var data = {
+                    Id: $('#subscriptionId').val(), 
+                    Name: $('#name').val(),
+                    Price: $('#price').val(),
+                    Description: $('#description').val(),
+                    DiskSpaceGB: $('#diskSpaceGB').val(),
+                    EmailAccounts: $('#emailAccounts').val(),
+                    BandwidthGB: $('#bandwidthGB').val(),
+                    Subdomains: $('#subdomains').val(),
+                    Domains: $('#domains').val()
+                };
+
+                var url = $('#subscriptionId').val() ? '/Subscription/Edit/' + $('#subscriptionId').val() : '/Subscription/Create';
+                var method = $('#subscriptionId').val() ? 'PUT' : 'POST';
+
+                $.ajax({
+                    url: url,
+                    type: method,
+                    data: data, // Directly using the data object, not stringified
+                    success: function (response) {
+                        if (response.success) {
+                            $('#subscriptionModal').modal('hide');
+                            fetchSubscriptions();
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Subscription saved successfully!',
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Failed to save subscription',
+                                text: response.message,
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true
+                            });
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error in saving subscription',
+                            text: xhr.statusText,
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true
+                        });
+                    }
+                });
+            };
+
+            window.deleteSubscription = function (id) {
+                if (confirm('Are you sure you want to delete this subscription?')) {
+                    $.ajax({
+                        url: '/Subscription/Delete/' + id,
+                        type: 'DELETE',
+                        success: function (result) {
+                            if (result.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 3000,
+                                    timerProgressBar: true,
+                                    toast: true,
+                                    width: '300px',
+                                    padding: '0.5rem',
+                                    title: 'Subscription deleted successfully'
+                                });
+                                fetchSubscriptions(); 
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 3000,
+                                    timerProgressBar: true,
+                                    toast: true,
+                                    width: '300px',
+                                    padding: '0.5rem',
+                                    title: 'Failed to delete subscription'
+                                });
+                            }
+                        },
+                        error: function (error) {
+                            Swal.fire({
+                                icon: 'error',
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                                toast: true,
+                                width: '300px',
+                                padding: '0.5rem',
+                                title: 'Failed to delete subscription'
+                            });
+                        }
+                    });
+                }
             };
         });
     </script>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

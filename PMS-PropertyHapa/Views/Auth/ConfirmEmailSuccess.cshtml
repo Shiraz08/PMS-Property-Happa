@@ -1,10 +1,28 @@
 ﻿@model PMS_PropertyHapa.Models.DTO.RegisterationRequestDTO
 @{
     Layout = "~/Views/Shared/_IdentityLayout.cshtml";
-}
-@{
     ViewData["Title"] = "Email Confirmation Success";
+    string username = ViewData["Username"] as string;
 }
 
 <h2>Your email has been confirmed!</h2>
-<p>Thank you for confirming your email. You can now proceed to <a asp-action="Login" asp-controller="Auth">login</a>.</p>
+@if (!string.IsNullOrWhiteSpace(username))
+{
+    <p>Welcome, @username! Thank you for confirming your email. You can now proceed to use Property Happa.</p>
+    <a href="@Url.Action("Index", "Home")" class="btn btn-primary">Go to Dashboard</a>
+}
+else
+{
+    <p>Thank you for confirming your email. You can now proceed to Property Happa to Login as a Property Manager.</p>
+    <a href="@Url.Action("Index", "Home")" class="btn btn-primary">Login</a>
+}
+
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        if ('@username'.length > 0) {
+            document.getElementById("subscription-container").style.display = 'none';
+        }
+    });
+</script>

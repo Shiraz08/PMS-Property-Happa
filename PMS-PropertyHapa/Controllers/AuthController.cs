@@ -44,9 +44,10 @@ namespace PMS_PropertyHapa.Controllers
 
 
         [HttpGet]
-        public IActionResult Register()
+        public IActionResult Register(string subscription)
         {
             var model = new RegisterationRequestDTO();
+            ViewBag.SubscriptionType = subscription; 
             return View(model);
         }
 
@@ -60,7 +61,8 @@ namespace PMS_PropertyHapa.Controllers
                     UserName = model.UserName,
                     Email = model.Email,
                     NormalizedEmail = model.Email.ToUpperInvariant(),
-                    EmailConfirmed = false  
+                    EmailConfirmed = true,
+                    SubscriptionName = model.SubscriptionName
                 };
 
                 var result = await _userManager.CreateAsync(user, model.Password);
@@ -70,16 +72,16 @@ namespace PMS_PropertyHapa.Controllers
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     var encodedCode = HttpUtility.UrlEncode(code);
-                    var callbackUrl = Url.Action("ConfirmEmail", "Auth", new { email = user.Email, code = encodedCode }, protocol: HttpContext.Request.Scheme);
+                    var callbackUrl = Url.Action("ConfirmEmail", "Auth", new { name = user.UserName, code = encodedCode }, protocol: HttpContext.Request.Scheme);
 
                     await _emailSender.SendEmailAsync(user.Email, "Confirm your email", $"Please confirm your account by <a href='{callbackUrl}'>clicking here</a>.");
 
                     return RedirectToAction("Index", "Home");
                 }
-             
+
                 foreach (var error in result.Errors)
                 {
-                    ModelState.AddModelError("", error.Description);
+                    return RedirectToAction("Auth", "Register");
                 }
             }
 
@@ -87,17 +89,22 @@ namespace PMS_PropertyHapa.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ConfirmEmail(string email, string code)
+        public async Task<IActionResult> ConfirmEmail(string name, string code)
         {
-            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(code))
+            if (name == null || code == null)
             {
-                return View("ConfirmEmailFailure");
+                return RedirectToAction("ConfirmEmailFailure");
             }
-          else
-            {
-                return View("ConfirmEmailSuccess");
-
-            }
+           
+            return RedirectToAction("Index2", new { username = name });
         }
+
+        [HttpGet]
+        public IActionResult Index2(string username)
+        {
+            ViewData["Username"] = username;
+            return View();
+        }
+
     }
 }

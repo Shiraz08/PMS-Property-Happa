@@ -8,5 +8,9 @@
         public string Email { get; set; }
         public string Role { get; set; }
         public int? TenantId { get; set; }
+
+        public string? SubscriptionName { get; set; }
+
+        public bool EmailConfirmed { get; set; }
     }
 }

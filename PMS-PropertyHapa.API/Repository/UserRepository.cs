@@ -118,7 +118,9 @@ namespace MagicVilla_VillaAPI.Repository
                 Email = registerationRequestDTO.UserName,
                 NormalizedEmail = registerationRequestDTO.UserName.ToUpper(),
                 Name = registerationRequestDTO.Name,
-                TenantId = registerationRequestDTO?.TenantId ?? 0
+                TenantId = registerationRequestDTO?.TenantId ?? 0,
+                EmailConfirmed = registerationRequestDTO?.EmailConfirmed ?? false,
+                SubscriptionName = registerationRequestDTO?.SubscriptionName
             };
 
             try
@@ -2455,11 +2457,15 @@ namespace MagicVilla_VillaAPI.Repository
                 Name = subscription.Name,
                 Price = subscription.Price,
                 Description = subscription.Description,
-                AppTenantId = subscription.AppTenantId,
+                DiskSpaceGB = subscription.DiskSpaceGB,
+                EmailAccounts = subscription.EmailAccounts,
+                BandwidthGB = subscription.BandwidthGB,
+                Subdomains = subscription.Subdomains,
+                Domains = subscription.Domains,
+                AppTenantId = subscription.AppTenantId ?? "", 
                 TenantId = subscription.TenantId
             }).ToListAsync();
         }
-
         public async Task<SubscriptionDto> GetSubscriptionByIdAsync(int Id)
         {
             var subscription = await _db.Subscriptions.FindAsync(Id);
@@ -2470,7 +2476,12 @@ namespace MagicVilla_VillaAPI.Repository
                 Name = subscription.Name,
                 Price = subscription.Price,
                 Description = subscription.Description,
-                AppTenantId = subscription.AppTenantId,
+                DiskSpaceGB = subscription.DiskSpaceGB,
+                EmailAccounts = subscription.EmailAccounts,
+                BandwidthGB = subscription.BandwidthGB,
+                Subdomains = subscription.Subdomains,
+                Domains = subscription.Domains,
+                AppTenantId = subscription.AppTenantId ?? "",
                 TenantId = subscription.TenantId
             };
         }
@@ -2482,7 +2493,12 @@ namespace MagicVilla_VillaAPI.Repository
                 Name = subscriptionDto.Name,
                 Price = subscriptionDto.Price,
                 Description = subscriptionDto.Description,
-                AppTenantId = subscriptionDto.AppTenantId,
+                DiskSpaceGB = subscriptionDto.DiskSpaceGB,
+                EmailAccounts = subscriptionDto.EmailAccounts,
+                BandwidthGB = subscriptionDto.BandwidthGB,
+                Subdomains = subscriptionDto.Subdomains,
+                Domains = subscriptionDto.Domains,
+                AppTenantId = subscriptionDto.AppTenantId ?? "",
                 TenantId = subscriptionDto.TenantId
             };
             await _db.Subscriptions.AddAsync(subscription);
@@ -2498,7 +2514,12 @@ namespace MagicVilla_VillaAPI.Repository
             subscription.Name = subscriptionDto.Name;
             subscription.Price = subscriptionDto.Price;
             subscription.Description = subscriptionDto.Description;
-            subscription.AppTenantId = subscriptionDto.AppTenantId;
+            subscription.DiskSpaceGB = subscriptionDto.DiskSpaceGB;
+            subscription.EmailAccounts = subscriptionDto.EmailAccounts;
+            subscription.BandwidthGB = subscriptionDto.BandwidthGB;
+            subscription.Subdomains = subscriptionDto.Subdomains;
+            subscription.Domains = subscriptionDto.Domains;
+            subscription.AppTenantId = subscription.AppTenantId ?? "";
             subscription.TenantId = subscriptionDto.TenantId;
 
             _db.Subscriptions.Update(subscription);

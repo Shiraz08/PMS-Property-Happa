@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.V4.Pages.Account.Internal;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -61,53 +62,31 @@ namespace PMS_PropertyHapa.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginRequestDTO login)
         {
-            try
+            var user = await _userManager.FindByEmailAsync(login.Email);
+            if (user == null)
             {
-                ApplicationUser appUser = _context.Users.FirstOrDefault(x => x.Email == login.Email);
-                if (appUser != null)
-                {
-                    try
-                    {
-                        await _signInManager.SignOutAsync();
-                        Microsoft.AspNetCore.Identity.SignInResult result = await _signInManager.PasswordSignInAsync(appUser, login.Password, login.Remember, false);
-
-                        if (result.Succeeded)
-
-                            if (await _userManager.IsInRoleAsync(appUser, "SuperAdmin"))
-                            {
-                                return RedirectToAction("Index", "Dashboard");
-                            }
-                            else
-                            {
-                                ModelState.AddModelError("", "Login Failed: Only Super Admin are allowed to log in.");
-                                await _signInManager.SignOutAsync(); 
-                            }
-
-                        if (result.IsLockedOut)
-                            ModelState.AddModelError("", "Your account is locked out. Kindly wait for 10 minutes and try again");
-
-                        if (result.IsNotAllowed)
-                            ModelState.AddModelError("", "Login Failed: Your account is not allowed to log in.");
-
-                        if (!result.Succeeded)
-                            ModelState.Remove(nameof(login.Password)); 
-                    }
-                    catch (Exception ex)
-                    {
-                        ModelState.AddModelError("", "An error occurred while attempting to sign in.");
-                    }
-                }
-                else
-                {
-                    ModelState.AddModelError("", "Login Failed: Invalid Email or password");
-                    ModelState.AddModelError(nameof(login.Password), "Please enter the correct password.");
-                }
-            }
-            catch (Exception e)
-            {
-                ModelState.AddModelError("", "An unexpected error occurred during login.");
+                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                return View(login);
             }
 
+            // Manually verify the password
+            var passwordVerificationResult = _userManager.PasswordHasher.VerifyHashedPassword(user, user.PasswordHash, login.Password);
+            if (passwordVerificationResult == PasswordVerificationResult.Failed)
+            {
+                ModelState.AddModelError("", "Invalid login attempt. Please try again.");
+                return View(login);
+            }
+
+            // Manually sign in the user
+            if (passwordVerificationResult == PasswordVerificationResult.Success)
+            {
+                await _signInManager.SignInAsync(user, isPersistent: login.Remember);
+                _logger.LogInformation("User {Email} logged in successfully.", user.Email);
+                return RedirectToAction("Index", "Home");
+            }
+
+            // Fallback for any other case (such as needing a rehash)
+            ModelState.AddModelError("", "Invalid login attempt. Please try again.");
             return View(login);
         }
 
