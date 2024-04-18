@@ -36,12 +36,19 @@ namespace PMS_PropertyHapa.Staff.Controllers
             return View(lease);
         }
 
-        public IActionResult AddLease()
+        public async Task<IActionResult> AddLease()
         {
-            return View();
+            var leaseDto = new LeaseDto
+            {
+                Assets = await _authService.GetAllAssetsAsync(),
+                SelectedUnits = await _authService.GetAllUnitsAsync()
+            };
+
+            return View(leaseDto); 
         }
 
-       
+
+
 
         [HttpPost]
         public async Task<IActionResult> Create(LeaseDto lease)

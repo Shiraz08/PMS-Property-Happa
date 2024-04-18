@@ -146,5 +146,8 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
         Task<bool> UpdateSubscriptionAsync(SubscriptionDto subscriptionDto);
         Task<bool> DeleteSubscriptionAsync(int Id);
 
+
+
+        Task<List<AssetUnitDTO>> GetAllUnitsAsync();
     }
 }

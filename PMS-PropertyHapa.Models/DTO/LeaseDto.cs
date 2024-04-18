@@ -19,6 +19,9 @@ namespace PMS_PropertyHapa.Models.DTO
 
         public string SelectedProperty { get; set; }
 
+        public IEnumerable<AssetDTO> Assets { get; set; } 
+        public IEnumerable<AssetUnitDTO> SelectedUnits { get; set; }   
+
         public string SelectedUnit { get; set; }
 
         public bool IsFixedTerm { get; set; }
@@ -37,6 +40,8 @@ namespace PMS_PropertyHapa.Models.DTO
         // Collections for Rent Charges and Security Deposits
         public List<RentChargeDto> RentCharges { get; set; }
         public List<SecurityDepositDto> SecurityDeposits { get; set; }
+
+        public List<FeeChargeDto> FeeCharges { get; set; }
     }
 
     public class RentChargeDto
@@ -59,6 +64,13 @@ namespace PMS_PropertyHapa.Models.DTO
         public string Description { get; set; }
     }
 
-  
+    public class FeeChargeDto
+    {
+        public int LeaseId { get; set; }
+        public int FeeChargeId { get; set; }
+        public decimal Amount { get; set; }
+        public string Description { get; set; }
+        public DateTime FeeDate { get; set; }
+    }
 
 }

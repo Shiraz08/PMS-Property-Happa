@@ -296,23 +296,22 @@
 
                                     <div class="d-flex flex-column align-items-center">
                                         <div class="col-md-6 mb-3">
-                                            <label for="propertyDropdown" class="form-label">Choose Property</label>
-                                            <select id="propertyDropdown" name="SelectedProperty" class="form-select" data-selected-property="@Model?.SelectedProperty">
-
-                                                <!-- Random property options -->
-                                                <option value="property1">Property 1</option>
-                                                <option value="property2">Property 2</option>
-                                                <option value="property3">Property 3</option>
+                                            <label for="propertyDropdown">Choose Property:</label>
+                                            <select id="propertyDropdown" name="SelectedProperty" class="form-select">
+                                                @foreach (var property in Model?.Assets)
+                                                {
+                                                    <option value="@property.AssetId">@property.SelectedPropertyType</option>
+                                                }
                                             </select>
                                         </div>
 
                                         <div class="col-md-6 mb-3">
-                                            <label for="unitDropdown" class="form-label">Choose Units</label>
-                                            <select id="unitDropdown" name="SelectedUnit" class="form-select" data-selected-property="@Model?.SelectedUnit">
-                                                <!-- Random unit options -->
-                                                <option value="unit1">Unit 1</option>
-                                                <option value="unit2">Unit 2</option>
-                                                <option value="unit3">Unit 3</option>
+                                            <label for="unitDropdown">Choose Units:</label>
+                                            <select id="unitDropdown" name="SelectedUnit" class="form-select">
+                                                @foreach (var unit in Model?.SelectedUnits)
+                                                {
+                                                    <option value="@unit.UnitId">@unit.UnitName</option>
+                                                }
                                             </select>
                                         </div>
 
@@ -364,22 +363,28 @@
 
 
                             <fieldset id="step2" class="step-section">
-                                <!-- ...existing code... -->
                                 <div class="container my-4">
-                                    <div class="d-flex justify-content-center">
-                                        <div id="tenantsContainer" class="row">
-                                            <!-- Newly added tenant cards will go here -->
-                                        </div>
-                                        <div class="card" style="width: 10rem; height: 10rem; cursor: pointer;" id="addTenantCard" data-toggle="modal">
-                                            <div class="card-body d-flex justify-content-center align-items-center flex-column">
-                                                <i class="fa fa-plus fa-2x"></i>
-                                                <p class="card-title mt-2">Add Tenant</p>
-                                            </div>
-                                        </div>
+                                    <button type="button" class="btn btn-primary mb-3" id="openAddTenantModal">Add Tenant</button>
+                                    <table class="table table-striped" id="tenantList">
+                                        <thead>
+                                            <tr>
+                                                <th>First Name</th>
+                                                <th>Last Name</th>
+                                                <th>Email</th>
+                                                <th>Phone</th>
+                                                <th>Select</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Tenants will be populated here -->
+                                        </tbody>
+                                    </table>
+                                    <div id="tenantsContainer" class="row mt-3">
+                                        <!-- Selected tenant's data will be displayed here -->
                                     </div>
                                 </div>
-                                <!-- ...existing code... -->
                             </fieldset>
+
 
 
 
@@ -390,8 +395,8 @@
                                         <hr class="my-4 mb-2 mt-2" style="width: 100%; border-top: 2px solid #000;" />
 
                                         <p>When do you want to start charging rent?</p>
-                                      <input type="date" class="form-control w-25 d-inline-block mb-3" id="firstRentDate" 
-                                          value="@Model?.RentCharges?.FirstOrDefault()?.RentDate.ToString("yyyy-MM-dd")">
+                                        <input type="date" class="form-control w-25 d-inline-block mb-3" id="firstRentDate"
+                                               value="@Model?.RentCharges?.FirstOrDefault()?.RentDate.ToString("yyyy-MM-dd")">
 
                                         <p>How often do you charge rent?</p>
                                         <select class="form-control w-25 d-inline-block mb-3" id="rentFrequency">
@@ -438,8 +443,8 @@
                                                 <p>Tell us more about the security deposits you are holding</p>
                                             </div>
                                         </div>
-                                      <div id="securityDepositsContainer">
-                                       </div>
+                                        <div id="securityDepositsContainer">
+                                        </div>
                                         <div class="text-left my-3">
                                             <div class="row">
                                                 <div class="col-12 d-flex justify-content-start ml-3">
@@ -475,16 +480,16 @@
                                     <div class="container">
                                         <div class="row">
                                             <div class="col-md-12">
-                                               <div class="form-check">
+                                                <div class="form-check">
                                                     <input class="form-check-input" type="radio" name="lateFeePolicy" id="usePropertyPolicy" value="usePropertyPolicy"
-                                                        @(Model?.LateFeesPolicy == "true" ? "checked" : "")>
+                                                    @(Model?.LateFeesPolicy == "true" ? "checked" : "")>
                                                     <label class="form-check-label" for="usePropertyPolicy">
                                                         Use property late fees policy
                                                     </label>
                                                 </div>
                                                 <div class="form-check">
                                                     <input class="form-check-input" type="radio" name="lateFeePolicy" id="specifyPolicy" value="specifyPolicy"
-                                                        @(Model?.LateFeesPolicy == "false" ? "checked" : "")>
+                                                    @(Model?.LateFeesPolicy == "false" ? "checked" : "")>
                                                     <label class="form-check-label" for="specifyPolicy">
                                                         Specify late fees policy for this lease
                                                     </label>
@@ -493,10 +498,33 @@
                                         </div>
                                     </div>
                                     <div id="specifyPolicyFields" style="display: none;" class="mb-4">
-                                     
+
                                         <div id="lateFeePolicyInfo" class="mt-4 mb-4" style="display: none;">
                                             <div class="alert alert-warning" role="alert">
                                                 When late fees are applicable, they are enforced to encourage timely payments and maintain financial discipline among tenants. The specific policy details including the fee amount, grace periods, and frequency of charges should be clearly outlined in the lease agreement to ensure transparency and compliance.
+                                            </div>
+
+                                            <div class="container fee-charge-section">
+                                                <div class="text-center">
+                                                    <hr class="my-4 mb-2 mt-2" style="width: 100%; border-top: 2px solid #000;" />
+
+                                                    <p>When do you want to start charging fees?</p>
+                                                    <input type="date" class="form-control w-25 d-inline-block mb-3" id="firstFeeDate"
+                                                           value="@Model?.FeeCharges?.FirstOrDefault()?.FeeDate.ToString("yyyy-MM-dd")">
+
+                                                    <p>How often do you charge fees?</p>
+                                                    <select class="form-control w-25 d-inline-block mb-3" id="feeFrequency">
+                                                        <option value="" disabled selected>Please select a value</option>
+                                                        <option value="one-time">One-Time</option>
+                                                        <option value="monthly">Monthly</option>
+                                                    </select>
+
+                                                    <p>What are your fee charges?</p>
+                                                    <div id="feeChargesContainer">
+                                                        <!-- Existing fee charge entries will be cloned from here -->
+                                                    </div>
+                                                    <button type="button" class="btn btn-primary" id="addAnotherFee">+</button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -528,7 +556,7 @@
                                     </div>
                                 </div>
                                 <!-- Image Upload (Initially Hidden) -->
-                               <div id="signatureUploadSection" style="display:none;" class="text-center mt-4">
+                                <div id="signatureUploadSection" style="display:none;" class="text-center mt-4">
                                     <p class="text-center">Upload Signed Document:</p>
                                     <input type="file" id="signatureImageUpload" accept="image/*">
                                 </div>
@@ -678,48 +706,64 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.5.3/signature_pad.min.js"></script>
 <script>
-    debugger;
+
     var rentCharges = @Html.Raw(Json.Serialize(Model?.RentCharges)) || [];
     var securityDeposits = @Html.Raw(Json.Serialize(Model?.SecurityDeposits)) || [];
     var globalTenantId = @Html.Raw(Model?.TenantId > 0 ? Model?.TenantId.ToString() : "null");
     var AddTenantId;
 
-   function populateRentCharges() {
-    $("#rentChargesContainer").html(""); 
-    rentCharges.forEach(function (charge, index) {
-        addRentChargeEntry(charge.Amount, charge.Description, charge.RentDate, charge.RentPeriod, index);
+    $(document).ready(function () {
+        var userId = localStorage.getItem('userId');
+        var selectedProperty = localStorage.getItem(userId + '_selectedProperty');
+        var selectedUnit = localStorage.getItem(userId + '_selectedUnit');
+
+        // Hide selected property and unit from dropdown
+        if (selectedProperty) {
+            $('#propertyDropdown option[value="' + selectedProperty + '"]').hide();
+        }
+        if (selectedUnit) {
+            $('#unitDropdown option[value="' + selectedUnit + '"]').hide();
+        }
     });
-}
 
-  function addRentChargeEntry(amount, description, rentDate, rentPeriod, index) {
-      const formattedRentDate = new Date(rentDate).toISOString().split('T')[0];
-    const entryHtml = `
-        <div class="rent-charge-entry rent-charge-entry-inline d-flex flex-row align-items-end mb-5" data-index="${index}">
-            <div class="col">
-                <input type="text" class="form-control" name="RentCharges[${index}].Description" placeholder="Description" value="${description}">
-            </div>
-            <div class="col">
-                <input type="number" class="form-control" name="RentCharges[${index}].Amount" placeholder="Amount" value="${amount}">
-            </div>
-            <div class="col">
-                 <input type="date" class="form-control rent-date" name="RentCharges[${index}].RentDate" value="${formattedRentDate}">
-            </div>
-            <div class="col">
-                <select class="form-control" name="RentCharges[${index}].RentPeriod">
-                    <option value="daily" ${rentPeriod === 'daily' ? 'selected' : ''}>Daily</option>
-                    <option value="weekly" ${rentPeriod === 'weekly' ? 'selected' : ''}>Weekly</option>
-                    <option value="monthly" ${rentPeriod === 'monthly' ? 'selected' : ''}>Monthly</option>
-                </select>
-            </div>
-            <div class="col-auto">
-                <button type="button" class="btn btn-danger remove-charge" onclick="removeChargeEntry(this)">x</button>
-            </div>
-        </div>
-    `;
 
-    // Appending the new entry to the 'rentChargesContainer'
-    $("#rentChargesContainer").append(entryHtml);
-}
+
+    function populateRentCharges() {
+        $("#rentChargesContainer").html("");
+        rentCharges.forEach(function (charge, index) {
+            addRentChargeEntry(charge.Amount, charge.Description, charge.RentDate, charge.RentPeriod, index);
+        });
+    }
+
+    function addRentChargeEntry(amount, description, rentDate, rentPeriod, index) {
+        const formattedRentDate = new Date(rentDate).toISOString().split('T')[0];
+        const entryHtml = `
+                    <div class="rent-charge-entry rent-charge-entry-inline d-flex flex-row align-items-end mb-5" data-index="${index}">
+                        <div class="col">
+                            <input type="text" class="form-control" name="RentCharges[${index}].Description" placeholder="Description" value="${description}">
+                        </div>
+                        <div class="col">
+                            <input type="number" class="form-control" name="RentCharges[${index}].Amount" placeholder="Amount" value="${amount}">
+                        </div>
+                        <div class="col">
+                             <input type="date" class="form-control rent-date" name="RentCharges[${index}].RentDate" value="${formattedRentDate}">
+                        </div>
+                        <div class="col">
+                            <select class="form-control" name="RentCharges[${index}].RentPeriod">
+                                <option value="daily" ${rentPeriod === 'daily' ? 'selected' : ''}>Daily</option>
+                                <option value="weekly" ${rentPeriod === 'weekly' ? 'selected' : ''}>Weekly</option>
+                                <option value="monthly" ${rentPeriod === 'monthly' ? 'selected' : ''}>Monthly</option>
+                            </select>
+                        </div>
+                        <div class="col-auto">
+                            <button type="button" class="btn btn-danger remove-charge" onclick="removeChargeEntry(this)">x</button>
+                        </div>
+                    </div>
+                `;
+
+        // Appending the new entry to the 'rentChargesContainer'
+        $("#rentChargesContainer").append(entryHtml);
+    }
 
 
     function removeChargeEntry(button) {
@@ -728,41 +772,41 @@
     }
 
 
-   $('#securityDepositsContainer').on('click', '.remove-deposit', function () {
-    $(this).closest('.security-deposit-entry').remove();
-});
-
-function populateSecurityDeposits() {
-    $("#securityDepositsContainer").html(""); // Clear existing entries
-    securityDeposits.forEach(function(deposit, index) {
-        addSecurityDepositEntry(deposit.Description, deposit.Amount, index);
+    $('#securityDepositsContainer').on('click', '.remove-deposit', function () {
+        $(this).closest('.security-deposit-entry').remove();
     });
-}
 
-function addSecurityDepositEntry(description = "", amount = "", index = null) {
-    index = index === null ? $("#securityDepositsContainer .security-deposit-entry").length : index;
-    const entryHTML = `
-        <div class="security-deposit-entry row">
-            <div class="col-sm">
-                <input type="text" class="form-control" name="SecurityDeposits[${index}].Description" value="${description}" placeholder="Description">
-            </div>
-            <div class="col-sm">
-                <input type="number" class="form-control" name="SecurityDeposits[${index}].Amount" value="${amount}" placeholder="Amount">
-            </div>
-            <div class="col-sm-auto">
-                <button type="button" class="btn btn-danger remove-deposit">Remove</button>
-            </div>
-        </div>`;
-    $('#securityDepositsContainer').append(entryHTML);
-}
+    function populateSecurityDeposits() {
+        $("#securityDepositsContainer").html(""); // Clear existing entries
+        securityDeposits.forEach(function (deposit, index) {
+            addSecurityDepositEntry(deposit.Description, deposit.Amount, index);
+        });
+    }
+
+    function addSecurityDepositEntry(description = "", amount = "", index = null) {
+        index = index === null ? $("#securityDepositsContainer .security-deposit-entry").length : index;
+        const entryHTML = `
+                    <div class="security-deposit-entry row">
+                        <div class="col-sm">
+                            <input type="text" class="form-control" name="SecurityDeposits[${index}].Description" value="${description}" placeholder="Description">
+                        </div>
+                        <div class="col-sm">
+                            <input type="number" class="form-control" name="SecurityDeposits[${index}].Amount" value="${amount}" placeholder="Amount">
+                        </div>
+                        <div class="col-sm-auto">
+                            <button type="button" class="btn btn-danger remove-deposit">Remove</button>
+                        </div>
+                    </div>`;
+        $('#securityDepositsContainer').append(entryHTML);
+    }
 
 
     let securityDepositIndex = 0;
 
 
-  $('#addSecurityDeposit').on('click', function () {
-    addSecurityDepositEntry();
-});
+    $('#addSecurityDeposit').on('click', function () {
+        addSecurityDepositEntry();
+    });
 
     var signaturePad = new SignaturePad(document.getElementById('signatureCanvas'));
 
@@ -862,7 +906,7 @@ function addSecurityDepositEntry(description = "", amount = "", index = null) {
             {
                 step: 2,
                 validate: function () {
-                    return $('#tenantsContainer .tenant-card').length > 0;
+                    return $('#hiddenTenantId').val() || $('#tenantList .tenant-row input:checked').length > 0;
                 },
                 message: 'Please add at least one tenant.'
             },
@@ -888,16 +932,16 @@ function addSecurityDepositEntry(description = "", amount = "", index = null) {
                 },
                 message: 'Please specify the first rent date, rent frequency, and at least one rent charge detail with all fields filled.'
             },
-           {
-    step: 4,
-    validate: function () {
-        var hasDescription = $('#securityDepositsContainer .security-deposit-entry').find('input[name*="Description"]').filter(function() { return this.value; }).length > 0;
-        var hasAmount = $('#securityDepositsContainer .security-deposit-entry').find('input[name*="Amount"]').filter(function() { return this.value; }).length > 0;
+            {
+                step: 4,
+                validate: function () {
+                    var hasDescription = $('#securityDepositsContainer .security-deposit-entry').find('input[name*="Description"]').filter(function () { return this.value; }).length > 0;
+                    var hasAmount = $('#securityDepositsContainer .security-deposit-entry').find('input[name*="Amount"]').filter(function () { return this.value; }).length > 0;
 
-        return hasDescription && hasAmount;
-    },
-    message: 'Please provide details for at least one security deposit.'
-},
+                    return hasDescription && hasAmount;
+                },
+                message: 'Please provide details for at least one security deposit.'
+            },
             {
                 step: 5,
                 validate: function () {
@@ -1064,28 +1108,28 @@ function addSecurityDepositEntry(description = "", amount = "", index = null) {
         let index = $('#rentChargesContainer .rent-charge-entry').length; // Determine the next index
         const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
         const newEntryHtml = `
-        <div class="rent-charge-entry row gx-2 gy-2">
-    <div class="col-3">
-        <input type="text" class="form-control mb-2 mb-md-0" name="RentCharges[${index}].Description" placeholder="Description">
-    </div>
-    <div class="col-2">
-        <input type="number" class="form-control mb-2 mb-md-0" name="RentCharges[${index}].Amount" placeholder="Amount">
-    </div>
-    <div class="col-3">
-        <input type="date" class="form-control mb-2 mb-md-0" name="RentCharges[${index}].RentDate" value="${today}">
-    </div>
-    <div class="col-3">
-        <select class="form-control mb-2 mb-md-0" name="RentCharges[${index}].RentPeriod">
-            <option value="daily">Daily</option>
-            <option value="weekly">Weekly</option>
-            <option value="monthly">Monthly</option>
-        </select>
-    </div>
-    <div class="col-2 d-flex align-items-center">
-        <button type="button" class="btn btn-danger remove-charge w-100 mb-5">Remove</button>
-    </div>
-</div>
-        `;
+                    <div class="rent-charge-entry row gx-2 gy-2">
+                <div class="col-3">
+                    <input type="text" class="form-control mb-2 mb-md-0" name="RentCharges[${index}].Description" placeholder="Description">
+                </div>
+                <div class="col-2">
+                    <input type="number" class="form-control mb-2 mb-md-0" name="RentCharges[${index}].Amount" placeholder="Amount">
+                </div>
+                <div class="col-3">
+                    <input type="date" class="form-control mb-2 mb-md-0" name="RentCharges[${index}].RentDate" value="${today}">
+                </div>
+                <div class="col-3">
+                    <select class="form-control mb-2 mb-md-0" name="RentCharges[${index}].RentPeriod">
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly">Monthly</option>
+                    </select>
+                </div>
+                <div class="col-2 d-flex align-items-center">
+                    <button type="button" class="btn btn-danger remove-charge w-100 mb-5">Remove</button>
+                </div>
+            </div>
+                    `;
         $('#rentChargesContainer').append(newEntryHtml);
     });
 
@@ -1104,7 +1148,7 @@ function addSecurityDepositEntry(description = "", amount = "", index = null) {
             }
         });
 
-       
+
         // Optionally, handle removal of deposit details
         $(document).on('click', '.btn-remove-deposit', function () {
             $(this).closest('.deposit-detail').remove();
@@ -1178,18 +1222,18 @@ function addSecurityDepositEntry(description = "", amount = "", index = null) {
 
 
 
-        $('#yesSecurityFund').click(function () {
-            $(this).addClass('selected');
-            $('#noSecurityFund').removeClass('selected');
-            $('#additionalDataSection').show();
-        });
+    $('#yesSecurityFund').click(function () {
+        $(this).addClass('selected');
+        $('#noSecurityFund').removeClass('selected');
+        $('#additionalDataSection').show();
+    });
 
-        // Click event handler for the "No" card to hide the security deposits section
-        $('#noSecurityFund').click(function () {
-            $(this).addClass('selected');
-            $('#yesSecurityFund').removeClass('selected');
-            $('#additionalDataSection').hide();
-        });
+    // Click event handler for the "No" card to hide the security deposits section
+    $('#noSecurityFund').click(function () {
+        $(this).addClass('selected');
+        $('#yesSecurityFund').removeClass('selected');
+        $('#additionalDataSection').hide();
+    });
 
 
 
@@ -1227,6 +1271,7 @@ function addSecurityDepositEntry(description = "", amount = "", index = null) {
         // Append Rent Charges and Security Deposits
         appendRentChargesToFormData(formData);
         appendSecurityDepositsToFormData(formData);
+        appendFeeChargesToFormData(formData);
 
         // Handle signature data and submit form data after signature is processed
         appendSignatureData(formData, function (updatedFormData) {
@@ -1254,7 +1299,7 @@ function addSecurityDepositEntry(description = "", amount = "", index = null) {
     }
 
 
- function appendSecurityDepositsToFormData(formData) {
+    function appendSecurityDepositsToFormData(formData) {
         $('#securityDepositsContainer .deposit-detail').each(function (index) {
             // Utilize the name attribute structure you've established
             formData.append(`SecurityDeposits[${index}].Description`, $(this).find('[name$=".Description"]').val());
@@ -1396,18 +1441,22 @@ function addSecurityDepositEntry(description = "", amount = "", index = null) {
 
 
     var hiddenTenantId;
-
     $('#saveNewTenant').click(function () {
-        var formData = new FormData(document.getElementById('addTenantForm'));
-        var url = '/Tenant/CreateTenantData';
-        var tenantId = $('#hiddenTenantId').val(); // Get the tenant ID
-        hiddenTenantId = tenantId;
-        // Check if it's an edit case
-        if (tenantId !== '') {
-            url = '/Tenant/UpdateTenantData/' + tenantId; // Append tenantId to the URL for update
-        } else {
-            formData.append("Tenant.AppTid", localStorage.getItem('userId'));
+        // If there's already a tenantId in the hidden input, do not proceed with creation
+        var tenantId = $('#hiddenTenantId').val();
+        if (tenantId) {
+            Toast.fire({
+                icon: 'info',
+                title: 'Tenant already associated. No new tenant will be added.'
+            });
+            return; // Exit the function if there's an existing tenant ID
         }
+
+        var formData = new FormData(document.getElementById('addTenantForm'));
+        var url = '/Tenant/CreateTenantData'; // Always point to the creation endpoint
+
+        // Append tenant application ID when creating a new tenant
+        formData.append("Tenant.AppTid", localStorage.getItem('userId'));
 
         $.ajax({
             url: url,
@@ -1418,31 +1467,18 @@ function addSecurityDepositEntry(description = "", amount = "", index = null) {
             success: function (response) {
                 if (response.success) {
                     const tenant = response.tenant;
-                    const TenantId = tenant.TenantId;
-                    localStorage.setItem('tenantId', TenantId);
-                    console.log(TenantId);
-                    const tenantCardHtml = `
-                                        <div class="tenant-card mr-5" id="tenantCard_${tenant.TenantId}">
-                                            <div class="card-body">
-                                                <h5 class="card-title">${tenant.FirstName} ${tenant.LastName}</h5>
-                                                <p>${tenant.TenantId}</p>
-                                                <p>${tenant.PhoneNumber}</p>
-                                               
-                                            </div>
-                                        </div>`;
+                    localStorage.setItem('tenantId', tenant.TenantId); // Store tenantId for further use
 
-                    // If editing an existing tenant, replace the existing card; otherwise, append the new card
-                    if ($('#tenantCard_' + tenant.TenantId).length) {
-                        $('#tenantCard_' + tenant.TenantId).replaceWith(tenantCardHtml);
-                    } else {
-                        $('#tenantsContainer').append(tenantCardHtml).show(); 
-                    }
+                    // Add new tenant to the UI
+                    updateOrAddTenant(tenant);
 
-                    $('#addNewTenantModal').modal('hide'); // Hide the modal
-                    $('#addTenantForm')[0].reset(); // Reset the form for the next input
-                    $('#hiddenTenantId').val(''); // Clear the hidden field for the next addition
+                    $('#addNewTenantModal').modal('hide');
+                    $('#addTenantForm')[0].reset();
+                    $('#hiddenTenantId').val('');
+
+                    // Refresh the tenant list to reflect new addition
+                    loadTenants();
                 } else {
-                
                     Toast.fire({ icon: 'error', title: 'Failed to save tenant: ' + response.message });
                 }
             },
@@ -1451,6 +1487,23 @@ function addSecurityDepositEntry(description = "", amount = "", index = null) {
             }
         });
     });
+
+
+
+    function updateOrAddTenant(tenant) {
+        const tenantCardHtml = `
+            <div class="tenant-card mr-5" id="tenantCard_${tenant.TenantId}">
+                <div class="card-body">
+                    <h5 class="card-title">${tenant.FirstName} ${tenant.LastName}</h5>
+                    <p>${tenant.TenantId}</p>
+                    <p>${tenant.PhoneNumber}</p>
+                </div>
+            </div>`;
+
+        $('#tenantsContainer').append(tenantCardHtml).show(); 
+    }
+
+
 
     function initializeUIBasedOnMode(isEditMode) {
         // In "edit" mode, ensure tenant-related UI elements are displayed
@@ -1491,37 +1544,147 @@ function addSecurityDepositEntry(description = "", amount = "", index = null) {
 
 
 
-      $(document).ready(function () {
-    $('#yesLateFees, #noLateFees').on('click', function () {
-        // Hide the info box initially
-        $('#lateFeePolicyInfo').hide();
-        
-        // Remove 'selected' class from both cards
-        $('#yesLateFees, #noLateFees').removeClass('selected');
-        
-        // Add 'selected' class to clicked card
-        $(this).addClass('selected');
-        
-        // Show the info box if "Yes" is selected
-        if ($(this).attr('id') === 'yesLateFees') {
-            $('#lateFeePolicyInfo').show();
-        } 
+    $(document).ready(function () {
+        $('#yesLateFees, #noLateFees').on('click', function () {
+            // Hide the info box initially
+            $('#lateFeePolicyInfo').hide();
+
+            // Remove 'selected' class from both cards
+            $('#yesLateFees, #noLateFees').removeClass('selected');
+
+            // Add 'selected' class to clicked card
+            $(this).addClass('selected');
+
+            // Show the info box if "Yes" is selected
+            if ($(this).attr('id') === 'yesLateFees') {
+                $('#lateFeePolicyInfo').show();
+            }
+        });
     });
-});
 
 
-$(document).ready(function () {
-    // Set the selected option for the "Choose Property" dropdown
-    var selectedProperty = $('#propertyDropdown').data('selected-property');
-    if(selectedProperty) {
-        $('#propertyDropdown').val(selectedProperty);
+    $(document).ready(function () {
+        // Set the selected option for the "Choose Property" dropdown
+        var selectedProperty = $('#propertyDropdown').data('selected-property');
+        if (selectedProperty) {
+            $('#propertyDropdown').val(selectedProperty);
+        }
+
+        // Set the selected option for the "Choose Units" dropdown
+        var selectedUnit = $('#unitDropdown').data('selected-property');
+        if (selectedUnit) {
+            $('#unitDropdown').val(selectedUnit);
+        }
+    });
+
+
+
+    function populateFeeCharges() {
+        $("#feeChargesContainer").html("");
+        Model.FeeCharges.forEach(function (charge, index) {
+            addFeeChargeEntry(charge.Amount, charge.Description, charge.FeeDate, index);
+        });
     }
 
-    // Set the selected option for the "Choose Units" dropdown
-    var selectedUnit = $('#unitDropdown').data('selected-property');
-    if(selectedUnit) {
-        $('#unitDropdown').val(selectedUnit);
+    function addFeeChargeEntry(amount, description, feeDate, index) {
+        const formattedFeeDate = new Date(feeDate).toISOString().split('T')[0];
+        const entryHtml = `
+                <div class="fee-charge-entry fee-charge-entry-inline d-flex flex-row align-items-end mb-5" data-index="${index}">
+                    <div class="col">
+                        <input type="text" class="form-control" name="FeeCharges[${index}].Description" placeholder="Description" value="${description}">
+                    </div>
+                    <div class="col">
+                        <input type="number" class="form-control" name="FeeCharges[${index}].Amount" placeholder="Amount" value="${amount}">
+                    </div>
+                    <div class="col">
+                        <input type="date" class="form-control fee-date" name="FeeCharges[${index}].FeeDate" value="${formattedFeeDate}">
+                    </div>
+                </div>
+            `;
+        $("#feeChargesContainer").append(entryHtml);
     }
-});
+
+    $('#addAnotherFee').on('click', function () {
+        let index = $('#feeChargesContainer .fee-charge-entry').length;
+        const today = new Date().toISOString().split('T')[0];
+        addFeeChargeEntry('', '', today, index);
+    });
+
+
+
+    $(document).ready(function () {
+        if (isEditMode) {
+            populateFeeCharges();  // Call this function if you are in edit mode
+        }
+    });
+
+    // Ensure your model's data is correctly formatted and available for the JavaScript
+    var feeCharges = @Html.Raw(Json.Serialize(Model?.FeeCharges)) || [];
+
+    function populateFeeCharges() {
+        $("#feeChargesContainer").empty(); // Clears existing entries
+        feeCharges.forEach(function (charge, index) {
+            addFeeChargeEntry(charge.Amount, charge.Description, charge.FeeDate, charge.FeePeriod, index);
+        });
+    }
+
+    function appendFeeChargesToFormData(formData) {
+        $('#feeChargesContainer .fee-charge-entry').each(function (index) {
+            var description = $(this).find('[name$=".Description"]').val();
+            var amount = $(this).find('[name$=".Amount"]').val();
+            var feeDate = $(this).find('[name$=".FeeDate"]').val();
+            var feePeriod = $(this).find('[name$=".FeePeriod"]').val();  
+
+            formData.append(`FeeCharges[${index}].Description`, description);
+            formData.append(`FeeCharges[${index}].Amount`, amount);
+            formData.append(`FeeCharges[${index}].FeeDate`, feeDate);
+            formData.append(`FeeCharges[${index}].FeePeriod`, feePeriod);
+        });
+    }
+
+
+    function loadTenants() {
+        $.ajax({
+            url: '/Tenant/GetAllTenants',
+            method: 'GET',
+            success: function (tenants) {
+                var tbody = $('#tenantList tbody');
+                tbody.empty(); // Clear existing rows
+                tenants.forEach(function (tenant) {
+                    var row = `<tr class="tenant-row" data-id="${tenant.TenantId}">
+                                    <td>${tenant.FirstName}</td>
+                                    <td>${tenant.LastName}</td>
+                                    <td>${tenant.Email}</td>
+                                    <td>${tenant.Phone}</td>
+                                    <td><input type="checkbox" name="selectedTenant" /></td>
+                               </tr>`;
+                    tbody.append(row);
+                });
+            },
+            error: function () {
+                alert('Failed to load tenants');
+            }
+        });
+    }
+
+
+
+    $(document).ready(function () {
+        loadTenants();
+
+        // Handle tenant selection
+        $('#tenantList').on('click', '.list-group-item', function () {
+            $('.list-group-item').removeClass('active');
+            $(this).addClass('active');
+            var tenantId = $(this).data('id');
+            // Optionally save tenantId or load more data as needed
+            localStorage.setItem('selectedTenantId', tenantId);
+        });
+
+        // Open Add Tenant Modal
+        $('#openAddTenantModal').click(function () {
+            $('#addNewTenantModal').modal('show');
+        });
+    });
 </script>
 

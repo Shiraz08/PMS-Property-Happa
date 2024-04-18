@@ -40,6 +40,7 @@ namespace PMS_PropertyHapa.MigrationsFiles.Data
         public DbSet<Communication> Communication { get; set; }
         public DbSet<Subscription> Subscriptions { get; set; }
         public DbSet<RentCharge> RentCharge { get; set; }
+        public DbSet<FeeCharge> FeeCharge { get; set; }
         public DbSet<SecurityDeposit> SecurityDeposit { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

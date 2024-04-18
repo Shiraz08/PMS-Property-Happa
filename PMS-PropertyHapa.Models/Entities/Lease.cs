@@ -36,5 +36,7 @@ namespace PMS_PropertyHapa.Models.Entities
         public virtual Tenant Tenants { get; set; }
         public virtual ICollection<RentCharge> RentCharges { get; set; }
         public virtual ICollection<SecurityDeposit> SecurityDeposit { get; set; }
+
+        public virtual ICollection<FeeCharge> FeeCharge { get; set; }
     }
 }
