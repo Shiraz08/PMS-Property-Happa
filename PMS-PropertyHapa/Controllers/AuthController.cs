@@ -42,6 +42,65 @@ namespace PMS_PropertyHapa.Controllers
             _environment = Environment;
         }
 
+        [HttpGet]
+        public IActionResult Login()
+        {
+            ViewBag.ErrorMessage = ViewBag.ErrorMessage ?? string.Empty;
+            LoginRequestDTO obj = new();
+            return View(obj);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(LoginRequestDTO login)
+        {
+            try
+            {
+                ApplicationUser appUser = _context.Users.FirstOrDefault(x => x.Email == login.Email);
+                if (appUser == null)
+                {
+                    ModelState.AddModelError("", "Login Failed: Invalid Email or password.");
+                    return View(login);
+                }
+
+                var result = await _authService.LoginAsync<APIResponse>(login);
+                if (!result.IsSuccess)
+                {
+                    ModelState.AddModelError("", "Invalid login attempt.");
+                    return View(login);
+                }
+
+                if (!await _userManager.IsInRoleAsync(appUser, "PropertyManager"))
+                {
+                    ModelState.AddModelError("", "Login Failed: Only Tenants are allowed to log in.");
+                    return View(login);
+                }
+
+                return Json(new
+                {
+                    success = true,
+                    message = "Logged In Successfully..!",
+                    result = new
+                    {
+                        userId = appUser.Id,
+                        tenantId = appUser.TenantId,
+                        organization = new
+                        {
+                            tenant = "",
+                            icon = ""
+                        }
+                    }
+                });
+
+            }
+            catch (Exception e)
+            {
+                ModelState.AddModelError("", "An unexpected error occurred during login. Please try again later.");
+                return View(login);
+            }
+        }
+
+
 
         [HttpGet]
         public IActionResult Register(string subscription)
