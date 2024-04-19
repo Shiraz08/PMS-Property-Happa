@@ -1712,7 +1712,7 @@ namespace MagicVilla_VillaAPI.Repository
                         await _db.SaveChangesAsync();
                     }
 
-                 
+
                 }
                 await transaction.CommitAsync();
                 return true;
@@ -2539,15 +2539,14 @@ namespace MagicVilla_VillaAPI.Repository
             return await _db.Subscriptions.Select(subscription => new SubscriptionDto
             {
                 Id = subscription.Id,
-                Name = subscription.Name,
+                SubscriptionName = subscription.SubscriptionName,
                 Price = subscription.Price,
-                Description = subscription.Description,
-                DiskSpaceGB = subscription.DiskSpaceGB,
-                EmailAccounts = subscription.EmailAccounts,
-                BandwidthGB = subscription.BandwidthGB,
-                Subdomains = subscription.Subdomains,
-                Domains = subscription.Domains,
-                AppTenantId = subscription.AppTenantId ?? "", 
+                SmallDescription = subscription.SmallDescription,
+                SubscriptionType = subscription.SubscriptionType,
+                Currency = subscription.Currency,
+                NoOfUnits = subscription.NoOfUnits,
+                Tax = subscription.Tax,
+                AppTenantId = subscription.AppTenantId ?? "",
                 TenantId = subscription.TenantId
             }).ToListAsync();
         }
@@ -2558,14 +2557,13 @@ namespace MagicVilla_VillaAPI.Repository
             return new SubscriptionDto
             {
                 Id = subscription.Id,
-                Name = subscription.Name,
+                SubscriptionName = subscription.SubscriptionName,
                 Price = subscription.Price,
-                Description = subscription.Description,
-                DiskSpaceGB = subscription.DiskSpaceGB,
-                EmailAccounts = subscription.EmailAccounts,
-                BandwidthGB = subscription.BandwidthGB,
-                Subdomains = subscription.Subdomains,
-                Domains = subscription.Domains,
+                SmallDescription = subscription.SmallDescription,
+                SubscriptionType = subscription.SubscriptionType,
+                Currency = subscription.Currency,
+                NoOfUnits = subscription.NoOfUnits,
+                Tax = subscription.Tax,
                 AppTenantId = subscription.AppTenantId ?? "",
                 TenantId = subscription.TenantId
             };
@@ -2575,14 +2573,14 @@ namespace MagicVilla_VillaAPI.Repository
         {
             var subscription = new Subscription
             {
-                Name = subscriptionDto.Name,
+                Id = subscriptionDto.Id,
+                SubscriptionName = subscriptionDto.SubscriptionName,
                 Price = subscriptionDto.Price,
-                Description = subscriptionDto.Description,
-                DiskSpaceGB = subscriptionDto.DiskSpaceGB,
-                EmailAccounts = subscriptionDto.EmailAccounts,
-                BandwidthGB = subscriptionDto.BandwidthGB,
-                Subdomains = subscriptionDto.Subdomains,
-                Domains = subscriptionDto.Domains,
+                SmallDescription = subscriptionDto.SmallDescription,
+                SubscriptionType = subscriptionDto.SubscriptionType,
+                Currency = subscriptionDto.Currency,
+                NoOfUnits = subscriptionDto.NoOfUnits,
+                Tax = subscriptionDto.Tax,
                 AppTenantId = subscriptionDto.AppTenantId ?? "",
                 TenantId = subscriptionDto.TenantId
             };
@@ -2596,15 +2594,15 @@ namespace MagicVilla_VillaAPI.Repository
             var subscription = await _db.Subscriptions.FindAsync(subscriptionDto.Id);
             if (subscription == null) return false;
 
-            subscription.Name = subscriptionDto.Name;
+            subscription.Id = subscriptionDto.Id;
+            subscription.SubscriptionName = subscriptionDto.SubscriptionName;
             subscription.Price = subscriptionDto.Price;
-            subscription.Description = subscriptionDto.Description;
-            subscription.DiskSpaceGB = subscriptionDto.DiskSpaceGB;
-            subscription.EmailAccounts = subscriptionDto.EmailAccounts;
-            subscription.BandwidthGB = subscriptionDto.BandwidthGB;
-            subscription.Subdomains = subscriptionDto.Subdomains;
-            subscription.Domains = subscriptionDto.Domains;
-            subscription.AppTenantId = subscription.AppTenantId ?? "";
+            subscription.SmallDescription = subscriptionDto.SmallDescription;
+            subscription.SubscriptionType = subscriptionDto.SubscriptionType;
+            subscription.Currency = subscriptionDto.Currency;
+            subscription.NoOfUnits = subscriptionDto.NoOfUnits;
+            subscription.Tax = subscriptionDto.Tax;
+            subscription.AppTenantId = subscriptionDto.AppTenantId ?? "";
             subscription.TenantId = subscriptionDto.TenantId;
 
             _db.Subscriptions.Update(subscription);

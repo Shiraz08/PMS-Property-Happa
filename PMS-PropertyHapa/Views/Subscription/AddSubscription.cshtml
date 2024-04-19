@@ -16,8 +16,13 @@
                 <tr>
                     <th>ID</th>
                     <th>Name</th>
+                    <th>Type</th>
                     <th>Price</th>
+                    <th>Currency</th>
                     <th>Description</th>
+                    <th>Tax (%)</th>
+                    <th>Units</th>
+                    <th>Tenant ID</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -31,31 +36,37 @@
 
             function fetchSubscriptions() {
                 $.ajax({
-                    url: '/Subscription/GetAllSubscriptions', // Adjust this if necessary
+                    url: '/Subscription/GetAllSubscriptions', 
                     type: 'GET',
                     success: function (response) {
                         if (response.success) {
-                            var subscription = response.data; // Now handling a single subscription object
+                            var subscriptions = response.data; 
                             $('#subscriptionList').empty();
-                            // Directly append the single subscription details without looping
-                            $('#subscriptionList').append(`
-                                <tr>
-                                    <td>${subscription.Id}</td>
-                                    <td>${subscription.Name}</td>
-                                    <td>${subscription.Price}</td>
-                                    <td>${subscription.Description}</td>
-                                    <td>
-                                        <button onclick="deleteSubscription(${subscription.id})" class="btn btn-danger">Delete</button>
-                                        <button onclick="editSubscription(${subscription.id})" class="btn btn-primary" disabled>Edit</button>
-                                    </td>
-                                </tr>
-                            `);
+                            subscriptions.forEach(function (subscription) {
+                                $('#subscriptionList').append(`
+                                            <tr>
+                                                <td>${subscription.id}</td>
+                                                <td>${subscription.subscriptionName}</td>
+                                                <td>${subscription.subscriptionType}</td>
+                                                <td>${subscription.price.toFixed(2)}</td>
+                                                <td>${subscription.currency}</td>
+                                                <td>${subscription.smallDescription}</td>
+                                                <td>${subscription.tax.toFixed(2)}%</td>
+                                                <td>${subscription.noOfUnits}</td>
+                                                <td>${subscription.tenantId}</td>
+                                                <td>
+                                                    <button onclick="deleteSubscription(${subscription.id})" class="btn btn-danger">Delete</button>
+                                                    <button onclick="editSubscription(${subscription.id})" class="btn btn-primary">Edit</button>
+                                                </td>
+                                            </tr>
+                                        `);
+                            });
                         } else {
-                            console.error('Error fetching subscription:', response.message);
+                            console.error('Error fetching subscriptions:', response.message);
                         }
                     },
                     error: function (error) {
-                        console.error('Error fetching subscription:', error.responseText);
+                        console.error('Error fetching subscriptions:', error.responseText);
                     }
                 });
             }
@@ -67,7 +78,7 @@
                     success: function (result) {
                         if (result.success) {
                             alert('Subscription deleted successfully!');
-                            $('#subscriptionList').empty(); // Optionally refresh or clear the list
+                            fetchSubscriptions(); 
                         } else {
                             alert('Error deleting subscription: ' + result.message);
                         }
@@ -79,7 +90,7 @@
             };
 
             window.editSubscription = function (id) {
-                window.location.href = '/Subscription/Edit/' + id; // Ensure you have a corresponding edit page
+                window.location.href = '/Subscription/Edit/' + id; 
             };
         });
     </script>

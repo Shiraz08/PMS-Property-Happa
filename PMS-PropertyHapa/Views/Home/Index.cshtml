@@ -59,10 +59,10 @@
             <div class="col-xl-3 col-sm-6 xl-50 box-col-6">
                 <div class="pricing-block card text-center">
                     <div class="pricing-header">
-                        <h2>${subscription.Name}</h2>
+                        <h2>${subscription.SubscriptionName}</h2>
                         <div class="price-box">
                             <div>
-                                <h3>$${subscription.Price}</h3>
+                                <h4 class="text-white">$${subscription.Price.toFixed(2)} ${subscription.Currency}</h4>
                                 <p>/ month</p>
                             </div>
                         </div>
@@ -70,22 +70,16 @@
                     <div class="pricing-list">
                         <ul class="pricing-inner">
                             <li>
-                                <h6>${subscription.DiskSpaceGB}GB<span> Disk Space</span></h6>
+                                <h6>${subscription.NoOfUnits}<span> Units</span></h6>
                             </li>
                             <li>
-                                <h6>${subscription.EmailAccounts}<span> Email Accounts</span></h6>
+                                <h6>${subscription.SmallDescription}</h6>
                             </li>
                             <li>
-                                <h6>${subscription.BandwidthGB}GB<span> Bandwidth</span></h6>
-                            </li>
-                            <li>
-                                <h6>${subscription.Subdomains}<span> Subdomains</span></h6>
-                            </li>
-                            <li>
-                                <h6>${subscription.Domains}<span> Domains</span></h6>
+                                <h6>${subscription.Tax}%<span> Tax</span></h6>
                             </li>
                         </ul>
-                        <button class="btn btn-primary btn-lg" onclick="handleSubscriptionClick(${subscription.Price}, '${subscription.Id}', '${subscription.Name}')" type="button">Subscribe</button>
+                        <button class="btn btn-primary btn-lg" onclick="handleSubscriptionClick(${subscription.Price}, '${subscription.Id}', '${subscription.SubscriptionName}')" type="button">Subscribe</button>
                     </div>
                 </div>
             </div>`;
@@ -93,10 +87,19 @@
 
     function handleSubscriptionClick(price, id, name) {
         if (price === 0) {
-            
             window.location.href = `/Auth/Register?subscription=${encodeURIComponent(name)}`;
         } else {
-           
+            
+            Swal.fire({
+                icon: 'info',
+                title: 'Proceed to Payment',
+                text: 'Please proceed to payment to complete your subscription.',
+                confirmButtonText: 'Ok'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = `/Auth/Register?subscription=${encodeURIComponent(name)}`;
+                }
+            });
         }
     }
 </script>
