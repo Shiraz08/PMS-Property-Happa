@@ -1661,7 +1661,7 @@ namespace MagicVilla_VillaAPI.Repository
                     HasSecurityDeposit = leaseDto.HasSecurityDeposit,
                     LateFeesPolicy = leaseDto.LateFeesPolicy,
                     TenantsTenantId = leaseDto.TenantId,
-                    AppTenantId = Guid.Parse(leaseDto.AppTenantId)
+                    AppTenantId = leaseDto.AppTenantId
                 };
 
                 await _db.Lease.AddAsync(newLease);
@@ -1750,6 +1750,7 @@ namespace MagicVilla_VillaAPI.Repository
                 IsMonthToMonth = lease.IsMonthToMonth,
                 HasSecurityDeposit = lease.HasSecurityDeposit,
                 LateFeesPolicy = lease.LateFeesPolicy,
+                AppTenantId = lease.AppTenantId,
                 RentCharges = lease.RentCharges.Select(rc => new RentChargeDto
                 {
 
@@ -1796,10 +1797,12 @@ namespace MagicVilla_VillaAPI.Repository
 
 
                 var leases = await _db.Lease
-                    .Include(l => l.RentCharges)
-                    .Include(l => l.SecurityDeposit)
-                     .Include(l => l.Tenants)
-                    .ToListAsync();
+      .Include(l => l.RentCharges)
+      .Include(l => l.SecurityDeposit)
+      .Include(l => l.FeeCharge)
+      .Include(l => l.Tenants)
+      .AsNoTracking()
+      .ToListAsync();
 
 
                 var leaseDtos = leases.Select(lease => new LeaseDto
@@ -1816,6 +1819,7 @@ namespace MagicVilla_VillaAPI.Repository
                     HasSecurityDeposit = lease.HasSecurityDeposit,
                     LateFeesPolicy = lease.LateFeesPolicy,
                     TenantId = lease.TenantsTenantId,
+                    AppTenantId = lease.AppTenantId,
                     RentCharges = lease.RentCharges.Select(rc => new RentChargeDto
                     {
 
@@ -1824,14 +1828,14 @@ namespace MagicVilla_VillaAPI.Repository
                         Description = rc.Description,
                         RentDate = rc.RentDate,
                         RentPeriod = rc.RentPeriod
-                    }).ToList(),
+                    }).ToList() ?? new List<RentChargeDto>(),
                     FeeCharges = lease.FeeCharge.Select(rc => new FeeChargeDto
                     {
                         FeeChargeId = rc.FeeChargeId,
                         Amount = rc.Amount,
                         Description = rc.Description,
                         FeeDate = rc.FeeDate
-                    }).ToList(),
+                    }).ToList() ?? new List<FeeChargeDto>(),
 
                     SecurityDeposits = lease.SecurityDeposit.Select(sd => new SecurityDepositDto
                     {
@@ -1839,7 +1843,7 @@ namespace MagicVilla_VillaAPI.Repository
                         SecurityDepositId = sd.SecurityDepositId,
                         Amount = sd.Amount,
                         Description = sd.Description
-                    }).ToList(),
+                    }).ToList() ?? new List<SecurityDepositDto>(),
 
                     Tenant = lease.Tenants != null ? new TenantModelDto
                     {
@@ -1888,7 +1892,7 @@ namespace MagicVilla_VillaAPI.Repository
                 existingLease.HasSecurityDeposit = leaseDto.HasSecurityDeposit;
                 existingLease.LateFeesPolicy = leaseDto.LateFeesPolicy;
                 existingLease.TenantsTenantId = leaseDto.TenantId;
-                existingLease.AppTenantId = Guid.Parse(leaseDto.AppTenantId);
+                existingLease.AppTenantId = leaseDto.AppTenantId;
 
 
 
@@ -2142,14 +2146,13 @@ namespace MagicVilla_VillaAPI.Repository
                     Country = tenant.Country,
                     Zipcode = tenant.Zipcode,
                     State = tenant.State,
-                    //     OwnerName = tenant.OwnerName,
-                    //     OwnerEmail = tenant.OwnerEmail,
-                    //     OwnerCompanyName = tenant.OwnerCompanyName,
-                    //    OwnerAddress = tenant.OwnerAddress
-                    //     OwnerDistrict = tenant.OwnerDistrict,
-                    //     OwnerRegion = tenant.OwnerRegion,
-                    //     OwnerCountryCode = tenant.OwnerCountryCode,
-                    //     OwnerCountry = tenant.OwnerCountry,
+                    AppTid = tenant.AppTenantId,
+                    Units = tenant.Units.Select(unit => new UnitDTO
+                    {
+                        UnitId = unit.UnitId,
+                        UnitName = unit.UnitName,
+                    }).ToList()
+
                 }).ToList();
 
 
@@ -2231,6 +2234,7 @@ namespace MagicVilla_VillaAPI.Repository
                 Zipcode = assetDTO.Zipcode,
                 State = assetDTO.State,
                 Image = assetDTO.Image,
+                AppTenantId = assetDTO.AppTid,
                 Units = new List<AssetsUnits>()
             };
 
@@ -2294,6 +2298,7 @@ namespace MagicVilla_VillaAPI.Repository
             existingAsset.Zipcode = assetDTO.Zipcode;
             existingAsset.State = assetDTO.State;
             existingAsset.Image = assetDTO.Image;
+            existingAsset.AppTenantId = assetDTO.AppTid;
 
 
             foreach (var unitDTO in assetDTO.Units)

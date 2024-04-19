@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using NuGet.ContentModel;
 using PMS_PropertyHapa.MigrationsFiles.Data;
 using PMS_PropertyHapa.Models.DTO;
+using PMS_PropertyHapa.Models.Entities;
 using PMS_PropertyHapa.Models.Roles;
 using PMS_PropertyHapa.Staff.Auth.Controllers;
 using PMS_PropertyHapa.Staff.Services.IServices;
@@ -38,17 +40,48 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
         public async Task<IActionResult> AddLease()
         {
+            var selectedAssets = await _authService.GetAllAssetsAsync();
+            var selectedUnits = selectedAssets.SelectMany(asset => asset.Units).ToList();
             var leaseDto = new LeaseDto
             {
-                Assets = await _authService.GetAllAssetsAsync(),
-                SelectedUnits = await _authService.GetAllUnitsAsync()
+                Assets = selectedAssets,
+                SelectedUnits = selectedUnits
             };
 
             return View(leaseDto); 
         }
 
 
+        [HttpPost]
+        public async Task<IActionResult> ByUser([FromBody] string userId)
+        {
+            var properties2 = await _authService.GetAllAssetsAsync();
 
+            var properties = properties2
+                .Where(p => p.AppTid == userId) 
+                .Select(p => new {
+                    AssetId = p.AssetId,
+                    SelectedPropertyType = p.SelectedPropertyType
+                })
+                .ToList();
+
+            return Json(properties);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ByProperty(int propertyId)
+        {
+            var units2 = await _authService.GetAllUnitsAsync();
+            var units = units2
+                .Where(u => u.AssetId == propertyId) 
+                .Select(u => new {
+                    UnitId = u.UnitId,
+                    UnitName = u.UnitName 
+                })
+                .ToList();
+
+            return Json(units);
+        }
 
         [HttpPost]
         public async Task<IActionResult> Create(LeaseDto lease)

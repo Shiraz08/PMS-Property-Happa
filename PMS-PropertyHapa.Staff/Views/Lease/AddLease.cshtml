@@ -298,7 +298,7 @@
                                         <div class="col-md-6 mb-3">
                                             <label for="propertyDropdown">Choose Property:</label>
                                             <select id="propertyDropdown" name="SelectedProperty" class="form-select">
-                                                @foreach (var property in Model?.Assets)
+                                                @foreach (var property in Model.Assets)
                                                 {
                                                     <option value="@property.AssetId">@property.SelectedPropertyType</option>
                                                 }
@@ -308,7 +308,7 @@
                                         <div class="col-md-6 mb-3">
                                             <label for="unitDropdown">Choose Units:</label>
                                             <select id="unitDropdown" name="SelectedUnit" class="form-select">
-                                                @foreach (var unit in Model?.SelectedUnits)
+                                                @foreach (var unit in Model.SelectedUnits)
                                                 {
                                                     <option value="@unit.UnitId">@unit.UnitName</option>
                                                 }
@@ -371,7 +371,6 @@
                                                 <th>First Name</th>
                                                 <th>Last Name</th>
                                                 <th>Email</th>
-                                                <th>Phone</th>
                                                 <th>Select</th>
                                             </tr>
                                         </thead>
@@ -586,6 +585,7 @@
                             <input type="hidden" name="OwnerZipcode" id="OwnerZipcode">
                             <input type="hidden" name="OwnerCity" id="OwnerCity">
                             <input type="hidden" name="OwnerCountry" id="OwnerCountry">
+                            <input type="hidden" id="selectedTenantId" name="TenantId" value="">
 
 
 
@@ -712,18 +712,101 @@
     var globalTenantId = @Html.Raw(Model?.TenantId > 0 ? Model?.TenantId.ToString() : "null");
     var AddTenantId;
 
-    $(document).ready(function () {
-        var userId = localStorage.getItem('userId');
-        var selectedProperty = localStorage.getItem(userId + '_selectedProperty');
-        var selectedUnit = localStorage.getItem(userId + '_selectedUnit');
 
-        // Hide selected property and unit from dropdown
-        if (selectedProperty) {
-            $('#propertyDropdown option[value="' + selectedProperty + '"]').hide();
+
+    $(document).ready(function () {
+        // Retrieve 'userId' from localStorage within the document ready block to ensure it's available
+        var userId = localStorage.getItem('userId');
+
+        // Ensure 'userId' is treated as a string. Add a check to see if it's retrieved correctly
+        console.log("User ID retrieved:", userId); // Debugging line to show the userId in console
+
+        var isEditMode = $('#leaseId').val() > 0; // Check if in edit mode based on a hidden input holding the lease ID
+        var selectedPropertyId = localStorage.getItem(userId + '_selectedProperty'); // Retrieve the previously selected property, if available
+        var selectedUnitId = localStorage.getItem(userId + '_selectedUnit'); // Retrieve the previously selected unit, if available
+
+        // Check and log retrieved values for properties and units
+        console.log("Selected Property ID:", selectedPropertyId);
+        console.log("Selected Unit ID:", selectedUnitId);
+
+        // Function to populate properties
+        function populateProperties(userId, selectedPropertyId) {
+            if (!userId) {
+                console.error("User ID is not available.");
+                return; // Do not proceed if userId is not available
+            }
+
+            $.ajax({
+                url: '/Lease/byUser/' + encodeURIComponent(userId),
+                method: 'GET',
+                success: function (properties) {
+                    var $propertyDropdown = $('#propertyDropdown');
+                    $propertyDropdown.empty().append('<option value="">Select Property</option>');
+                    properties.forEach(function (property) {
+                        var isSelected = selectedPropertyId === property.AssetId.toString();
+                        var option = $('<option>', {
+                            value: property.AssetId,
+                            text: property.SelectedPropertyType,
+                            selected: isSelected
+                        });
+                        $propertyDropdown.append(option);
+                    });
+                    // Trigger change to load units if in edit mode and a property was selected
+                    if (isEditMode && selectedPropertyId) {
+                        $propertyDropdown.change();
+                    }
+                },
+                error: function (error) {
+                    console.error('Failed to fetch properties:', error);
+                }
+            });
         }
-        if (selectedUnit) {
-            $('#unitDropdown option[value="' + selectedUnit + '"]').hide();
+
+        // Function to populate units based on the selected property
+        function populateUnits(propertyId, selectedUnitId) {
+            if (!propertyId) {
+                console.error("Property ID is not available.");
+                return; // Do not proceed if propertyId is not available
+            }
+
+            $.ajax({
+                url: '/Lease/byProperty/' + propertyId,
+                method: 'GET',
+                success: function (units) {
+                    var $unitDropdown = $('#unitDropdown');
+                    $unitDropdown.empty().append('<option value="">Select Unit</option>');
+                    units.forEach(function (unit) {
+                        var isSelected = selectedUnitId === unit.UnitId.toString();
+                        var option = $('<option>', {
+                            value: unit.UnitId,
+                            text: unit.UnitName,
+                            selected: isSelected
+                        });
+                        $unitDropdown.append(option);
+                    });
+                },
+                error: function (error) {
+                    console.error('Failed to fetch units:', error);
+                }
+            });
         }
+
+        // Initial call to populate properties when the page loads, if userId is available
+        if (userId) {
+            populateProperties(userId, selectedPropertyId);
+        } else {
+            console.error("User ID is missing or not set in localStorage.");
+        }
+
+        // Handle change event on property dropdown to update units dropdown
+        $('#propertyDropdown').change(function () {
+            var propertyId = $(this).val();
+            if (propertyId) {
+                populateUnits(propertyId, selectedUnitId);
+            } else {
+                $('#unitDropdown').empty().append('<option value="">Select Unit</option>');
+            }
+        });
     });
 
 
@@ -935,6 +1018,11 @@
             {
                 step: 4,
                 validate: function () {
+                    var isNoSecurityDepositSelected = $('#noSecurityFund').hasClass('selected');
+                    if (isNoSecurityDepositSelected) {
+                        return true;
+                    }
+
                     var hasDescription = $('#securityDepositsContainer .security-deposit-entry').find('input[name*="Description"]').filter(function () { return this.value; }).length > 0;
                     var hasAmount = $('#securityDepositsContainer .security-deposit-entry').find('input[name*="Amount"]').filter(function () { return this.value; }).length > 0;
 
@@ -1246,7 +1334,7 @@
         var isEditMode = leaseId && leaseId > 0;
         var url = isEditMode ? '/Lease/Update/' + leaseId : '/Lease/Create';
         var formData = new FormData(document.getElementById('multiStepForm'));
-
+       
         // Append additional fields to FormData
         formData.append('AppTenantId', appTenantId);
         formData.append('StartDate', $('#startDate').val());
@@ -1261,11 +1349,7 @@
         if (globalTenantId > 0) {
             // This is the edit scenario, append TenantId to formData
             formData.append('TenantId', globalTenantId);
-        } else {
-
-            var TenantId = localStorage.getItem('tenantId');
-            formData.append('TenantIdValue', TenantId);
-        }
+        } 
 
 
         // Append Rent Charges and Security Deposits
@@ -1654,9 +1738,8 @@
                     var row = `<tr class="tenant-row" data-id="${tenant.TenantId}">
                                     <td>${tenant.FirstName}</td>
                                     <td>${tenant.LastName}</td>
-                                    <td>${tenant.Email}</td>
-                                    <td>${tenant.Phone}</td>
-                                    <td><input type="checkbox" name="selectedTenant" /></td>
+                                    <td>${tenant.EmailAddress}</td>
+                                    <td><input type="checkbox" name="selectedTenant" class="select-tenant-checkbox" /></td>
                                </tr>`;
                     tbody.append(row);
                 });
@@ -1686,5 +1769,15 @@
             $('#addNewTenantModal').modal('show');
         });
     });
+
+    $('#tenantList').on('change', '.select-tenant-checkbox', function () {
+        // Clear any previously selected checkboxes if only one can be selected
+        $('.select-tenant-checkbox').not(this).prop('checked', false);
+
+        var tenantId = $(this).is(':checked') ? $(this).closest('tr').data('id') : '';
+        $('#selectedTenantId').val(tenantId);
+    });
+
+  
 </script>
 

@@ -20,7 +20,7 @@ namespace PMS_PropertyHapa.Models.DTO
         public string SelectedProperty { get; set; }
 
         public IEnumerable<AssetDTO> Assets { get; set; } 
-        public IEnumerable<AssetUnitDTO> SelectedUnits { get; set; }   
+        public IEnumerable<UnitDTO> SelectedUnits { get; set; }   
 
         public string SelectedUnit { get; set; }
 
