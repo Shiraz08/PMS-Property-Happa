@@ -30,6 +30,24 @@ namespace PMS_PropertyHapa.Staff.Controllers
         }
 
 
+        public async Task<IActionResult> GetAllTenants()
+        {
+
+            var tenants = await _authService.GetAllTenantsAsync();
+
+            if (tenants != null)
+            {
+                return Ok(tenants);
+            }
+
+            else
+            {
+
+                return Json(new { data = new List<TenantModelDto>() });
+            }
+        }
+
+
         public async Task<IActionResult> GetTenant(string tenantId)
         {
             if (!string.IsNullOrEmpty(tenantId))
@@ -43,13 +61,13 @@ namespace PMS_PropertyHapa.Staff.Controllers
                 }
                 else
                 {
-                  
+
                     return Json(new { data = new List<TenantModelDto>() });
                 }
             }
             else
             {
-               
+
                 return BadRequest("Tenant ID is required.");
             }
         }
@@ -82,13 +100,13 @@ namespace PMS_PropertyHapa.Staff.Controllers
                             var pictureBytes = memoryStream.ToArray();
                             pet.Picture = $"data:image/png;base64,{Convert.ToBase64String(pictureBytes)}";
                         }
-                        pet.PictureUrl2 = null; 
+                        pet.PictureUrl2 = null;
                     }
                 }
             }
 
 
-           await _authService.CreateTenantAsync(tenant);
+            await _authService.CreateTenantAsync(tenant);
 
 
             // Register tenant as a user if required
@@ -191,13 +209,54 @@ namespace PMS_PropertyHapa.Staff.Controllers
                             pet.Picture = $"data:image/png;base64,{Convert.ToBase64String(pictureBytes)}";
                         }
                         // As mentioned earlier, setting IFormFile to null after conversion might not be necessary
-                         pet.PictureUrl2 = null;
+                        pet.PictureUrl2 = null;
                     }
                 }
             }
 
             await _authService.UpdateTenantAsync(tenant);
             return Json(new { success = true, message = "Tenant updated successfully" });
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateTenantData([FromForm] TenantModelDto tenant)
+        {
+            try
+            {
+                tenant.AppTenantId = Guid.Parse(tenant.AppTid);
+
+                if (tenant.PictureUrl != null)
+                {
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        await tenant.PictureUrl.CopyToAsync(memoryStream);
+                        tenant.Picture = $"data:image/png;base64,{Convert.ToBase64String(memoryStream.ToArray())}";
+                    }
+                }
+
+                if (tenant.Pets != null)
+                {
+                    foreach (var pet in tenant.Pets)
+                    {
+                        if (pet.Picture != null)
+                        {
+                            using (var memoryStream = new MemoryStream())
+                            {
+                                await pet.PictureUrl2.CopyToAsync(memoryStream);
+                                pet.Picture = $"data:image/png;base64,{Convert.ToBase64String(memoryStream.ToArray())}";
+                            }
+                        }
+                    }
+                }
+
+                await _authService.UpdateTenantAsync(tenant);
+                return Json(new { success = true, message = "Tenant updated successfully" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Error updating tenant: " + ex.Message });
+            }
         }
 
 
@@ -210,8 +269,8 @@ namespace PMS_PropertyHapa.Staff.Controllers
         }
         public IActionResult AddTenant()
         {
-            var model = new TenantModelDto(); 
-                                           
+            var model = new TenantModelDto();
+
             return View(model);
         }
 

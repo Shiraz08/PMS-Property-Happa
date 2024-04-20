@@ -33,5 +33,7 @@ namespace PMS_PropertyHapa.Models.Entities
         public string OwnerZipcode { get; set; }
         public string OwnerCity { get; set; }
         public string OwnerCountry { get; set; }
+
+        public string AppTenantId { get; set; }
     }
 }

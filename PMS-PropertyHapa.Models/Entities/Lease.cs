@@ -32,9 +32,13 @@ namespace PMS_PropertyHapa.Models.Entities
         // Late Fee Policy
         public string LateFeesPolicy { get; set; }
 
+        public string AppTenantId { get; set; }
+
         // Collections of related entities
         public virtual Tenant Tenants { get; set; }
         public virtual ICollection<RentCharge> RentCharges { get; set; }
         public virtual ICollection<SecurityDeposit> SecurityDeposit { get; set; }
+
+        public virtual ICollection<FeeCharge> FeeCharge { get; set; }
     }
 }

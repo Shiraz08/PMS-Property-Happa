@@ -4,7 +4,7 @@
 
 namespace PMS_PropertyHapa.MigrationsFiles.Migrations
 {
-    public partial class subscriptionData : Migration
+    public partial class aubscriptions : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

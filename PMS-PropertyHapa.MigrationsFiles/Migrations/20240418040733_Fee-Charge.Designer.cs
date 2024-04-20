@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PMS_PropertyHapa.MigrationsFiles.Data;
 
@@ -11,9 +12,10 @@ using PMS_PropertyHapa.MigrationsFiles.Data;
 namespace PMS_PropertyHapa.MigrationsFiles.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    partial class ApiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240418040733_Fee-Charge")]
+    partial class FeeCharge
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -162,9 +164,6 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AssetId"), 1L, 1);
-
-                    b.Property<string>("AppTenantId")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("City")
                         .HasColumnType("nvarchar(max)");
@@ -416,8 +415,6 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
 
                     b.HasKey("FeeChargeId");
 
-                    b.HasIndex("LeaseId");
-
                     b.ToTable("FeeCharge");
                 });
 
@@ -435,8 +432,8 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
                     b.Property<DateTime>("AddedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("AppTenantId")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<Guid>("AppTenantId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
@@ -850,35 +847,38 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
 
             modelBuilder.Entity("PMS_PropertyHapa.Models.Entities.Subscription", b =>
                 {
-                    b.Property<int?>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("AppTenantId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Currency")
+                    b.Property<int>("BandwidthGB")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("NoOfUnits")
+                    b.Property<int>("DiskSpaceGB")
                         .HasColumnType("int");
+
+                    b.Property<int>("Domains")
+                        .HasColumnType("int");
+
+                    b.Property<int>("EmailAccounts")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("SmallDescription")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SubscriptionName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SubscriptionType")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("Tax")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<int>("Subdomains")
+                        .HasColumnType("int");
 
                     b.Property<int>("TenantId")
                         .HasColumnType("int");
@@ -1499,15 +1499,6 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
                     b.Navigation("Tenant");
                 });
 
-            modelBuilder.Entity("PMS_PropertyHapa.Models.Entities.FeeCharge", b =>
-                {
-                    b.HasOne("PMS_PropertyHapa.Models.Entities.Lease", null)
-                        .WithMany("FeeCharge")
-                        .HasForeignKey("LeaseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("PMS_PropertyHapa.Models.Entities.Lease", b =>
                 {
                     b.HasOne("PMS_PropertyHapa.Models.Entities.Tenant", "Tenants")
@@ -1581,8 +1572,6 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
 
             modelBuilder.Entity("PMS_PropertyHapa.Models.Entities.Lease", b =>
                 {
-                    b.Navigation("FeeCharge");
-
                     b.Navigation("RentCharges");
 
                     b.Navigation("SecurityDeposit");

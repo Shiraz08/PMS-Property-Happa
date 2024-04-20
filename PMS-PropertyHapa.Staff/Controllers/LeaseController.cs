@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using NuGet.ContentModel;
 using PMS_PropertyHapa.MigrationsFiles.Data;
 using PMS_PropertyHapa.Models.DTO;
+using PMS_PropertyHapa.Models.Entities;
 using PMS_PropertyHapa.Models.Roles;
 using PMS_PropertyHapa.Staff.Auth.Controllers;
 using PMS_PropertyHapa.Staff.Services.IServices;
@@ -36,12 +38,69 @@ namespace PMS_PropertyHapa.Staff.Controllers
             return View(lease);
         }
 
-        public IActionResult AddLease()
+        public async Task<IActionResult> AddLease()
         {
-            return View();
+            var selectedAssets = await _authService.GetAllAssetsAsync();
+            var selectedUnits = selectedAssets.SelectMany(asset => asset.Units).ToList();
+            var leaseDto = new LeaseDto
+            {
+                Assets = selectedAssets,
+                SelectedUnits = selectedUnits
+            };
+
+            return View(leaseDto); 
         }
 
-       
+        [HttpGet]
+        public async Task<IActionResult> ByUser(string userId)
+        {
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                return BadRequest("User ID is required."); 
+            }
+
+            try
+            {
+                var properties2 = await _authService.GetAllAssetsAsync(); 
+
+                var properties = properties2
+                   .Where(s=>s.AppTid == userId.ToUpperInvariant())
+                    .Select(a => new {
+                        AssetId = a.AssetId,
+                        SelectedPropertyType = a.SelectedPropertyType
+                    })
+                    .ToList();
+
+                return Json(properties);
+            }
+            catch (System.Exception ex)
+            {
+                return StatusCode(500, "Internal server error: " + ex.Message); 
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ByProperty(int propertyId)
+        {
+            try
+            {
+                var units = await _authService.GetAllUnitsAsync();
+
+                var filteredUnits = units
+                    .Where(u => u.AssetId == propertyId) 
+                    .Select(u => new {
+                        UnitId = u.UnitId,
+                        UnitName = u.UnitName
+                    })
+                    .ToList();
+
+                return Json(filteredUnits);
+            }
+            catch (System.Exception ex)
+            {
+                return StatusCode(500, "Internal server error: " + ex.Message); 
+            }
+        }
 
         [HttpPost]
         public async Task<IActionResult> Create(LeaseDto lease)

@@ -11,6 +11,7 @@ using System.Security.Claims;
 using System.Net.Http.Headers;
 using PMS_PropertyHapa.Models.Roles;
 using PMS_PropertyHapa.Models.Entities;
+using ImageMagick;
 
 namespace PMS_PropertyHapa.API.Controllers.V1
 {
@@ -128,6 +129,35 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             }
         }
         #endregion
-        
+
+
+
+        [HttpGet("Units")]
+        public async Task<ActionResult<AssetUnitDTO>> GetAllUnits()
+        {
+            try
+            {
+                var units = await _userRepo.GetAllUnitsAsync();
+
+                if (units != null)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = units;
+                    return Ok(_response);
+                }
+                else
+                {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("No unit found with this id.");
+                    return NotFound(_response);
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
     }
 }

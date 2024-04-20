@@ -1108,7 +1108,38 @@ namespace PMS_PropertyHapa.Staff.Services
         }
 
         #endregion
+
+
+
+
+        public async Task<IEnumerable<AssetUnitDTO>> GetAllUnitsAsync()
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = $"{villaUrl}/api/v1/AssetsAuth/Units"
+            });
+
+            if (response.IsSuccess == true)
+            {
+                var unitListJson = Convert.ToString(response.Result);
+                var units = JsonConvert.DeserializeObject<IEnumerable<AssetUnitDTO>>(unitListJson);
+                return units;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve unit data");
+            }
+
+
+        }
+
+
+
     }
+
+
 
 
 }

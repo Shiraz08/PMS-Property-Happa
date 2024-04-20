@@ -16,6 +16,8 @@ namespace PMS_PropertyHapa.Models.DTO
 
         public string Image { get; set; }
 
+        public string AppTenantId { get; set; }
+
 
         public string PictureString { get; set; }
 

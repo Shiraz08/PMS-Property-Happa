@@ -47,7 +47,7 @@ namespace PMS_PropertyHapa.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Create(SubscriptionDto dto)
+        public async Task<IActionResult> Create([FromBody] SubscriptionDto dto)
         {
             dto.Id = null;
             if (!ModelState.IsValid)
@@ -59,17 +59,16 @@ namespace PMS_PropertyHapa.Controllers
             {
                 Subscription newSubscription = new Subscription
                 {
-                    Name = dto.Name,
-                    Price = dto.Price,
-                    Description = dto.Description,
-                    AppTenantId = dto.AppTenantId,
-                    TenantId = dto.TenantId,
-                    DiskSpaceGB = dto.DiskSpaceGB,
-                    EmailAccounts = dto.EmailAccounts,
-                    BandwidthGB = dto.BandwidthGB,
-                    Subdomains = dto.Subdomains,
-                    Domains = dto.Domains,
-                };
+                SubscriptionName = dto.SubscriptionName,
+                Price = dto.Price,
+                SmallDescription = dto.SmallDescription,
+                SubscriptionType = dto.SubscriptionType,
+                Currency = dto.Currency,
+                NoOfUnits = dto.NoOfUnits,
+                Tax = dto.Tax,
+                AppTenantId = dto.AppTenantId ?? "",
+                TenantId = dto.TenantId,
+            };
 
                 _context.Subscriptions.Add(newSubscription);
                 await _context.SaveChangesAsync();
@@ -84,7 +83,7 @@ namespace PMS_PropertyHapa.Controllers
 
 
         [HttpPut]
-        public async Task<IActionResult> Edit(int id, SubscriptionDto dto)
+        public async Task<IActionResult> Edit(int id, [FromBody] SubscriptionDto dto)
         {
             if (!ModelState.IsValid)
             {
@@ -99,16 +98,16 @@ namespace PMS_PropertyHapa.Controllers
 
             try
             {
-                subscription.Name = dto.Name;
+                subscription.Id = dto.Id;
+                subscription.SubscriptionName = dto.SubscriptionName;
                 subscription.Price = dto.Price;
-                subscription.Description = dto.Description;
-                subscription.AppTenantId = dto.AppTenantId;
+                subscription.SmallDescription = dto.SmallDescription;
+                subscription.SubscriptionType = dto.SubscriptionType;
+                subscription.Currency = dto.Currency;
+                subscription.NoOfUnits = dto.NoOfUnits;
+                subscription.Tax = dto.Tax;
+                subscription.AppTenantId = dto.AppTenantId ?? "";
                 subscription.TenantId = dto.TenantId;
-                subscription.DiskSpaceGB = dto.DiskSpaceGB;
-                subscription.EmailAccounts = dto.EmailAccounts;
-                subscription.BandwidthGB = dto.BandwidthGB;
-                subscription.Subdomains = dto.Subdomains;
-                subscription.Domains = dto.Domains;
 
 
                 _context.Subscriptions.Update(subscription);
@@ -173,16 +172,17 @@ namespace PMS_PropertyHapa.Controllers
                 // Assuming SubscriptionDto is already mapped or directly usable
                 var subscriptionDto = new SubscriptionDto
                 {
-                    Id = subscription.Id,
-                    Name = subscription.Name,
-                    Price = subscription.Price,
-                    Description = subscription.Description,
-                    DiskSpaceGB = subscription.DiskSpaceGB,
-                    EmailAccounts = subscription.EmailAccounts,
-                    BandwidthGB = subscription.BandwidthGB,
-                    Subdomains = subscription.Subdomains,
-                    Domains = subscription.Domains
-                };
+                Id = subscription.Id,
+                SubscriptionName = subscription.SubscriptionName,
+                Price = subscription.Price,
+                SmallDescription = subscription.SmallDescription,
+                SubscriptionType = subscription.SubscriptionType,
+                Currency = subscription.Currency,
+                NoOfUnits = subscription.NoOfUnits,
+                Tax = subscription.Tax,
+                AppTenantId = subscription.AppTenantId ?? "",
+                TenantId = subscription.TenantId,
+            };
 
                 return Json(new { success = true, data = subscriptionDto });
             }

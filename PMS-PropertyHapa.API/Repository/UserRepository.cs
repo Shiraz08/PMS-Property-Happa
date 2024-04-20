@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Humanizer.Localisation;
 using MagicVilla_VillaAPI.Repository.IRepostiory;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -1660,13 +1661,13 @@ namespace MagicVilla_VillaAPI.Repository
                     HasSecurityDeposit = leaseDto.HasSecurityDeposit,
                     LateFeesPolicy = leaseDto.LateFeesPolicy,
                     TenantsTenantId = leaseDto.TenantId,
-                    AppTenantId = Guid.Parse(leaseDto.AppTenantId)
+                    AppTenantId = leaseDto.AppTenantId
                 };
 
                 await _db.Lease.AddAsync(newLease);
                 await _db.SaveChangesAsync();
 
-                if (leaseDto.RentCharges != null && leaseDto.SecurityDeposits != null)
+                if (leaseDto.RentCharges != null || leaseDto.SecurityDeposits != null || leaseDto.FeeCharges != null)
                 {
 
                     foreach (var rentChargeDto in leaseDto.RentCharges)
@@ -1697,6 +1698,19 @@ namespace MagicVilla_VillaAPI.Repository
                         await _db.SaveChangesAsync();
                     }
 
+                    foreach (var feeDto in leaseDto.FeeCharges)
+                    {
+                        var securityDeposit = new PMS_PropertyHapa.Models.Entities.FeeCharge
+                        {
+                            LeaseId = newLease.LeaseId,
+                            Amount = feeDto.Amount,
+                            Description = feeDto.Description,
+                            FeeDate = feeDto.FeeDate,
+                        };
+
+                        await _db.FeeCharge.AddAsync(securityDeposit);
+                        await _db.SaveChangesAsync();
+                    }
 
 
                 }
@@ -1717,6 +1731,7 @@ namespace MagicVilla_VillaAPI.Repository
                 .Where(l => l.LeaseId == leaseId)
                 .Include(l => l.RentCharges)
                 .Include(l => l.SecurityDeposit)
+                .Include(l => l.FeeCharge)
                  .Include(l => l.Tenants)
                 .FirstOrDefaultAsync();
 
@@ -1735,6 +1750,7 @@ namespace MagicVilla_VillaAPI.Repository
                 IsMonthToMonth = lease.IsMonthToMonth,
                 HasSecurityDeposit = lease.HasSecurityDeposit,
                 LateFeesPolicy = lease.LateFeesPolicy,
+                AppTenantId = lease.AppTenantId,
                 RentCharges = lease.RentCharges.Select(rc => new RentChargeDto
                 {
 
@@ -1744,6 +1760,14 @@ namespace MagicVilla_VillaAPI.Repository
                     RentDate = rc.RentDate,
                     RentPeriod = rc.RentPeriod
                 }).ToList(),
+                FeeCharges = lease.FeeCharge.Select(rc => new FeeChargeDto
+                {
+                    FeeChargeId = rc.FeeChargeId,
+                    Amount = rc.Amount,
+                    Description = rc.Description,
+                    FeeDate = rc.FeeDate
+                }).ToList(),
+
                 SecurityDeposits = lease.SecurityDeposit.Select(sd => new SecurityDepositDto
                 {
 
@@ -1773,10 +1797,12 @@ namespace MagicVilla_VillaAPI.Repository
 
 
                 var leases = await _db.Lease
-                    .Include(l => l.RentCharges)
-                    .Include(l => l.SecurityDeposit)
-                     .Include(l => l.Tenants)
-                    .ToListAsync();
+      .Include(l => l.RentCharges)
+      .Include(l => l.SecurityDeposit)
+      .Include(l => l.FeeCharge)
+      .Include(l => l.Tenants)
+      .AsNoTracking()
+      .ToListAsync();
 
 
                 var leaseDtos = leases.Select(lease => new LeaseDto
@@ -1793,6 +1819,7 @@ namespace MagicVilla_VillaAPI.Repository
                     HasSecurityDeposit = lease.HasSecurityDeposit,
                     LateFeesPolicy = lease.LateFeesPolicy,
                     TenantId = lease.TenantsTenantId,
+                    AppTenantId = lease.AppTenantId,
                     RentCharges = lease.RentCharges.Select(rc => new RentChargeDto
                     {
 
@@ -1801,8 +1828,14 @@ namespace MagicVilla_VillaAPI.Repository
                         Description = rc.Description,
                         RentDate = rc.RentDate,
                         RentPeriod = rc.RentPeriod
-                    }).ToList(),
-
+                    }).ToList() ?? new List<RentChargeDto>(),
+                    FeeCharges = lease.FeeCharge.Select(rc => new FeeChargeDto
+                    {
+                        FeeChargeId = rc.FeeChargeId,
+                        Amount = rc.Amount,
+                        Description = rc.Description,
+                        FeeDate = rc.FeeDate
+                    }).ToList() ?? new List<FeeChargeDto>(),
 
                     SecurityDeposits = lease.SecurityDeposit.Select(sd => new SecurityDepositDto
                     {
@@ -1810,7 +1843,7 @@ namespace MagicVilla_VillaAPI.Repository
                         SecurityDepositId = sd.SecurityDepositId,
                         Amount = sd.Amount,
                         Description = sd.Description
-                    }).ToList(),
+                    }).ToList() ?? new List<SecurityDepositDto>(),
 
                     Tenant = lease.Tenants != null ? new TenantModelDto
                     {
@@ -1859,7 +1892,7 @@ namespace MagicVilla_VillaAPI.Repository
                 existingLease.HasSecurityDeposit = leaseDto.HasSecurityDeposit;
                 existingLease.LateFeesPolicy = leaseDto.LateFeesPolicy;
                 existingLease.TenantsTenantId = leaseDto.TenantId;
-                existingLease.AppTenantId = Guid.Parse(leaseDto.AppTenantId);
+                existingLease.AppTenantId = leaseDto.AppTenantId;
 
 
 
@@ -1884,6 +1917,30 @@ namespace MagicVilla_VillaAPI.Repository
                             LeaseId = existingLease.LeaseId,
                             RentDate = rcDto.RentDate,
                             RentPeriod = rcDto.RentPeriod
+                        });
+                    }
+                }
+
+
+                foreach (var rcDto in leaseDto.FeeCharges)
+                {
+                    var existingRc = existingLease.FeeCharge.FirstOrDefault(rc => rc.FeeChargeId == rcDto.FeeChargeId);
+                    if (existingRc != null)
+                    {
+                        // Update existing RentCharge
+                        existingRc.Amount = rcDto.Amount;
+                        existingRc.Description = rcDto.Description;
+                        existingRc.FeeDate = rcDto.FeeDate;
+                    }
+                    else
+                    {
+
+                        existingLease.FeeCharge.Add(new PMS_PropertyHapa.Models.Entities.FeeCharge
+                        {
+                            Amount = rcDto.Amount,
+                            Description = rcDto.Description,
+                            LeaseId = existingLease.LeaseId,
+                            FeeDate = rcDto.FeeDate,
                         });
                     }
                 }
@@ -2089,14 +2146,13 @@ namespace MagicVilla_VillaAPI.Repository
                     Country = tenant.Country,
                     Zipcode = tenant.Zipcode,
                     State = tenant.State,
-                    //     OwnerName = tenant.OwnerName,
-                    //     OwnerEmail = tenant.OwnerEmail,
-                    //     OwnerCompanyName = tenant.OwnerCompanyName,
-                    //    OwnerAddress = tenant.OwnerAddress
-                    //     OwnerDistrict = tenant.OwnerDistrict,
-                    //     OwnerRegion = tenant.OwnerRegion,
-                    //     OwnerCountryCode = tenant.OwnerCountryCode,
-                    //     OwnerCountry = tenant.OwnerCountry,
+                    AppTid = tenant.AppTenantId,
+                    Units = tenant.Units.Select(unit => new UnitDTO
+                    {
+                        UnitId = unit.UnitId,
+                        UnitName = unit.UnitName,
+                    }).ToList()
+
                 }).ToList();
 
 
@@ -2105,6 +2161,38 @@ namespace MagicVilla_VillaAPI.Repository
             catch (Exception ex)
             {
                 Console.WriteLine($"An error occurred while mapping property types: {ex.Message}");
+                throw;
+            }
+        }
+
+
+        public async Task<List<AssetUnitDTO>> GetAllUnitsAsync()
+        {
+            try
+            {
+                var units = await _db.AssetsUnits
+                                             .AsNoTracking()
+                                             .ToListAsync();
+
+
+
+                var Unit = units.Select(tenant => new AssetUnitDTO
+                {
+                    AssetId = tenant.AssetId,
+                    UnitId = tenant.UnitId,
+                    UnitName = tenant.UnitName,
+                    Bath = tenant.Bath,
+                    Beds = tenant.Beds,
+                    Rent = tenant.Rent,
+                    Size = tenant.Size,
+                }).ToList();
+
+
+                return Unit;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping units: {ex.Message}");
                 throw;
             }
         }
@@ -2146,6 +2234,7 @@ namespace MagicVilla_VillaAPI.Repository
                 Zipcode = assetDTO.Zipcode,
                 State = assetDTO.State,
                 Image = assetDTO.Image,
+                AppTenantId = assetDTO.AppTid,
                 Units = new List<AssetsUnits>()
             };
 
@@ -2209,6 +2298,7 @@ namespace MagicVilla_VillaAPI.Repository
             existingAsset.Zipcode = assetDTO.Zipcode;
             existingAsset.State = assetDTO.State;
             existingAsset.Image = assetDTO.Image;
+            existingAsset.AppTenantId = assetDTO.AppTid;
 
 
             foreach (var unitDTO in assetDTO.Units)
@@ -2454,15 +2544,14 @@ namespace MagicVilla_VillaAPI.Repository
             return await _db.Subscriptions.Select(subscription => new SubscriptionDto
             {
                 Id = subscription.Id,
-                Name = subscription.Name,
+                SubscriptionName = subscription.SubscriptionName,
                 Price = subscription.Price,
-                Description = subscription.Description,
-                DiskSpaceGB = subscription.DiskSpaceGB,
-                EmailAccounts = subscription.EmailAccounts,
-                BandwidthGB = subscription.BandwidthGB,
-                Subdomains = subscription.Subdomains,
-                Domains = subscription.Domains,
-                AppTenantId = subscription.AppTenantId ?? "", 
+                SmallDescription = subscription.SmallDescription,
+                SubscriptionType = subscription.SubscriptionType,
+                Currency = subscription.Currency,
+                NoOfUnits = subscription.NoOfUnits,
+                Tax = subscription.Tax,
+                AppTenantId = subscription.AppTenantId ?? "",
                 TenantId = subscription.TenantId
             }).ToListAsync();
         }
@@ -2473,14 +2562,13 @@ namespace MagicVilla_VillaAPI.Repository
             return new SubscriptionDto
             {
                 Id = subscription.Id,
-                Name = subscription.Name,
+                SubscriptionName = subscription.SubscriptionName,
                 Price = subscription.Price,
-                Description = subscription.Description,
-                DiskSpaceGB = subscription.DiskSpaceGB,
-                EmailAccounts = subscription.EmailAccounts,
-                BandwidthGB = subscription.BandwidthGB,
-                Subdomains = subscription.Subdomains,
-                Domains = subscription.Domains,
+                SmallDescription = subscription.SmallDescription,
+                SubscriptionType = subscription.SubscriptionType,
+                Currency = subscription.Currency,
+                NoOfUnits = subscription.NoOfUnits,
+                Tax = subscription.Tax,
                 AppTenantId = subscription.AppTenantId ?? "",
                 TenantId = subscription.TenantId
             };
@@ -2490,14 +2578,14 @@ namespace MagicVilla_VillaAPI.Repository
         {
             var subscription = new Subscription
             {
-                Name = subscriptionDto.Name,
+                Id = subscriptionDto.Id,
+                SubscriptionName = subscriptionDto.SubscriptionName,
                 Price = subscriptionDto.Price,
-                Description = subscriptionDto.Description,
-                DiskSpaceGB = subscriptionDto.DiskSpaceGB,
-                EmailAccounts = subscriptionDto.EmailAccounts,
-                BandwidthGB = subscriptionDto.BandwidthGB,
-                Subdomains = subscriptionDto.Subdomains,
-                Domains = subscriptionDto.Domains,
+                SmallDescription = subscriptionDto.SmallDescription,
+                SubscriptionType = subscriptionDto.SubscriptionType,
+                Currency = subscriptionDto.Currency,
+                NoOfUnits = subscriptionDto.NoOfUnits,
+                Tax = subscriptionDto.Tax,
                 AppTenantId = subscriptionDto.AppTenantId ?? "",
                 TenantId = subscriptionDto.TenantId
             };
@@ -2511,15 +2599,15 @@ namespace MagicVilla_VillaAPI.Repository
             var subscription = await _db.Subscriptions.FindAsync(subscriptionDto.Id);
             if (subscription == null) return false;
 
-            subscription.Name = subscriptionDto.Name;
+            subscription.Id = subscriptionDto.Id;
+            subscription.SubscriptionName = subscriptionDto.SubscriptionName;
             subscription.Price = subscriptionDto.Price;
-            subscription.Description = subscriptionDto.Description;
-            subscription.DiskSpaceGB = subscriptionDto.DiskSpaceGB;
-            subscription.EmailAccounts = subscriptionDto.EmailAccounts;
-            subscription.BandwidthGB = subscriptionDto.BandwidthGB;
-            subscription.Subdomains = subscriptionDto.Subdomains;
-            subscription.Domains = subscriptionDto.Domains;
-            subscription.AppTenantId = subscription.AppTenantId ?? "";
+            subscription.SmallDescription = subscriptionDto.SmallDescription;
+            subscription.SubscriptionType = subscriptionDto.SubscriptionType;
+            subscription.Currency = subscriptionDto.Currency;
+            subscription.NoOfUnits = subscriptionDto.NoOfUnits;
+            subscription.Tax = subscriptionDto.Tax;
+            subscription.AppTenantId = subscriptionDto.AppTenantId ?? "";
             subscription.TenantId = subscriptionDto.TenantId;
 
             _db.Subscriptions.Update(subscription);
