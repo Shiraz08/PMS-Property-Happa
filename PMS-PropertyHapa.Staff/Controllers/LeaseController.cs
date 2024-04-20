@@ -51,36 +51,55 @@ namespace PMS_PropertyHapa.Staff.Controllers
             return View(leaseDto); 
         }
 
-
-        [HttpPost]
-        public async Task<IActionResult> ByUser([FromBody] string userId)
+        [HttpGet]
+        public async Task<IActionResult> ByUser(string userId)
         {
-            var properties2 = await _authService.GetAllAssetsAsync();
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                return BadRequest("User ID is required."); 
+            }
 
-            var properties = properties2
-                .Where(p => p.AppTid == userId) 
-                .Select(p => new {
-                    AssetId = p.AssetId,
-                    SelectedPropertyType = p.SelectedPropertyType
-                })
-                .ToList();
+            try
+            {
+                var properties2 = await _authService.GetAllAssetsAsync(); 
 
-            return Json(properties);
+                var properties = properties2
+                   .Where(s=>s.AppTid == userId.ToUpperInvariant())
+                    .Select(a => new {
+                        AssetId = a.AssetId,
+                        SelectedPropertyType = a.SelectedPropertyType
+                    })
+                    .ToList();
+
+                return Json(properties);
+            }
+            catch (System.Exception ex)
+            {
+                return StatusCode(500, "Internal server error: " + ex.Message); 
+            }
         }
 
         [HttpGet]
         public async Task<IActionResult> ByProperty(int propertyId)
         {
-            var units2 = await _authService.GetAllUnitsAsync();
-            var units = units2
-                .Where(u => u.AssetId == propertyId) 
-                .Select(u => new {
-                    UnitId = u.UnitId,
-                    UnitName = u.UnitName 
-                })
-                .ToList();
+            try
+            {
+                var units = await _authService.GetAllUnitsAsync();
 
-            return Json(units);
+                var filteredUnits = units
+                    .Where(u => u.AssetId == propertyId) 
+                    .Select(u => new {
+                        UnitId = u.UnitId,
+                        UnitName = u.UnitName
+                    })
+                    .ToList();
+
+                return Json(filteredUnits);
+            }
+            catch (System.Exception ex)
+            {
+                return StatusCode(500, "Internal server error: " + ex.Message); 
+            }
         }
 
         [HttpPost]
