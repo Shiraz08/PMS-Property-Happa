@@ -1,4 +1,8 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Hosting
+@inject Microsoft.AspNetCore.Hosting.IHostingEnvironment env
+
+
+@{
     ViewData["Title"] = "Home Page";
     Layout = "~/Views/Shared/_Layout.cshtml";
     string username = ViewData["Username"] as string;
@@ -6,5 +10,14 @@
 
 <div class="text-center">
     <h2>Welcome, @username! to Property Happa</h2>
-    <p><a href="@Url.Action("Login", "Auth")" class="btn btn-primary">Click here to login to your PMC Portal</a></p>
+    <p>
+        @if (env.IsDevelopment())
+        {
+            <a href="https://localhost:7247/" class="btn btn-primary">Click here to login to your PMC Portal</a>
+        }
+        else
+        {
+            <a href="https://pmc.propertyhapa.com/" class="btn btn-primary">Click here to login to your PMC Portal</a>
+        }
+    </p>
 </div>

@@ -332,6 +332,8 @@
     var message = @Html.Raw(Json.Serialize(Model?.Message));
     var propertyIds = @Html.Raw(Json.Serialize(Model?.PropertyIds?.Split(',').Select(int.Parse).ToArray() ?? new int[0]));
     var tenantIds = @Html.Raw(Json.Serialize(Model?.TenantIds?.Split(',').Select(int.Parse).ToArray() ?? new int[0]));
+    var hasPropertiesSome = false;
+    var hasTenatsSome = false;
 
     $(document).ready(function () {
         // Initialize form elements with these values
@@ -342,13 +344,10 @@
         $('#announcementMessage').val(message);
         $('#announcementProperties').val(propertyIds).trigger('change');
         $('#announcementTenants').val(tenantIds).trigger('change');
-    });
 
 
 
-
-    $(document).ready(function () {
-        $('#tenantPortalSwitch').change(function () {
+        $('#textMessageSwitch').change(function () {
             if ($(this).is(':checked')) {
                 checkTwilioCredentials();
                 $('#deliveryTextDiv').removeClass('d-none');
@@ -356,7 +355,33 @@
                 $('#deliveryTextDiv').addClass('d-none');
             }
         });
+
+        $('#emailSwitch').change(function () {
+            if ($(this).is(':checked')) {
+                $('#deliveryEmailDiv').removeClass('d-none');
+            } else {
+                $('#deliveryEmailDiv').addClass('d-none');
+            }
+        });
+
+        $('#tenantPortalSwitch').change(function () {
+            if ($(this).is(':checked')) {
+                $('#deliveryTenantPortalDiv').removeClass('d-none');
+            } else {
+                $('#deliveryTenantPortalDiv').addClass('d-none');
+            }
+        });
+
+        $('#removePortalSwitch').change(function () {
+            if ($(this).is(':checked')) {
+                $('#removeFeedDateDiv').removeClass('d-none');
+            } else {
+                $('#removeFeedDateDiv').addClass('d-none');
+            }
+        });
+
     });
+
 
     function checkTwilioCredentials() {
         var userId = localStorage.getItem('userId');
@@ -367,7 +392,7 @@
                 text: 'No user ID found in local storage.',
                 footer: '<a href="/views/Communication/Login.razor">Log in here</a>'
             });
-            $('#tenantPortalSwitch').prop('checked', false);
+            $('#textMessageSwitch').prop('checked', false);
             return;
         }
 
@@ -383,7 +408,7 @@
                         text: 'Please update your Twilio credentials to proceed.',
                         footer: '<a href="/Communication/TiwiloView">Update Twilio Credentials</a>'
                     });
-                    $('#tenantPortalSwitch').prop('checked', false);
+                    $('#textMessageSwitch').prop('checked', false);
                 }
             },
             error: function (xhr, status, error) {
@@ -393,7 +418,7 @@
                     text: 'There was a problem fetching your credentials.',
                     footer: 'Please try again or contact support if the problem persists.'
                 });
-                $('#tenantPortalSwitch').prop('checked', false);
+                $('#textMessageSwitch').prop('checked', false);
             }
         });
     }
@@ -515,13 +540,17 @@
         // Function to toggle dropdown visibility
         function toggleDropdownVisibility() {
             if ($('input[name="propertiesRadioBtn"]:checked').val() === "some") {
+                hasPropertiesSome = true
                 $('#ddlPropertyDiv').show();
             } else {
+                hasPropertiesSome = false;
                 $('#ddlPropertyDiv').hide();
             }
             if ($('input[name="tenantsRadioBtn"]:checked').val() === "some") {
+                hasTenatsSome = true;
                 $('#ddlTenantDiv').show();
             } else {
+                hasTenatsSome = false;
                 $('#ddlTenantDiv').hide();
             }
         }
@@ -604,40 +633,6 @@
         });
     });
 
-    $(document).ready(function () {
-
-        $('#emailSwitch').change(function () {
-            if ($(this).is(':checked')) {
-                $('#deliveryEmailDiv').removeClass('d-none');
-            } else {
-                $('#deliveryEmailDiv').addClass('d-none');
-            }
-        });
-
-        $('#textMessageSwitch').change(function () {
-            if ($(this).is(':checked')) {
-                $('#deliveryTextDiv').removeClass('d-none');
-            } else {
-                $('#deliveryTextDiv').addClass('d-none');
-            }
-        });
-
-        $('#tenantPortalSwitch').change(function () {
-            if ($(this).is(':checked')) {
-                $('#deliveryTenantPortalDiv').removeClass('d-none');
-            } else {
-                $('#deliveryTenantPortalDiv').addClass('d-none');
-            }
-        });
-
-        $('#removePortalSwitch').change(function () {
-            if ($(this).is(':checked')) {
-                $('#removeFeedDateDiv').removeClass('d-none');
-            } else {
-                $('#removeFeedDateDiv').addClass('d-none');
-            }
-        });
-    });
 
 
     document.querySelectorAll('.selection-card').forEach(card => {
@@ -753,7 +748,8 @@
     }
 
     function validateStep1() {
-        return $('#announcementProperties').val() !== null && $('#announcementProperties').val().length > 0;
+        return (hasPropertiesSome ? $('#announcementProperties').val().length > 0 : $('#announcementProperties').val() !== null)
+            && (hasTenatsSome ? $('#announcementTenants').val().length > 0 : $('#announcementTenants').val() !== null);
     }
 
     function validateStep2() {

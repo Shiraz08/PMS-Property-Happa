@@ -1667,7 +1667,7 @@ namespace MagicVilla_VillaAPI.Repository
                 await _db.Lease.AddAsync(newLease);
                 await _db.SaveChangesAsync();
 
-                if (leaseDto.RentCharges != null || leaseDto.SecurityDeposits != null || leaseDto.FeeCharges != null)
+                if (leaseDto.RentCharges != null)
                 {
 
                     foreach (var rentChargeDto in leaseDto.RentCharges)
@@ -1684,7 +1684,10 @@ namespace MagicVilla_VillaAPI.Repository
                         await _db.RentCharge.AddAsync(rentCharge);
                         await _db.SaveChangesAsync();
                     }
+                }
 
+                if (leaseDto.SecurityDeposits != null)
+                {
                     foreach (var securityDepositDto in leaseDto.SecurityDeposits)
                     {
                         var securityDeposit = new SecurityDeposit
@@ -1697,7 +1700,10 @@ namespace MagicVilla_VillaAPI.Repository
                         await _db.SecurityDeposit.AddAsync(securityDeposit);
                         await _db.SaveChangesAsync();
                     }
+                }
 
+                if (leaseDto.FeeCharges != null)
+                {
                     foreach (var feeDto in leaseDto.FeeCharges)
                     {
                         var securityDeposit = new PMS_PropertyHapa.Models.Entities.FeeCharge
@@ -1711,8 +1717,6 @@ namespace MagicVilla_VillaAPI.Repository
                         await _db.FeeCharge.AddAsync(securityDeposit);
                         await _db.SaveChangesAsync();
                     }
-
-
                 }
                 await transaction.CommitAsync();
                 return true;
@@ -1750,6 +1754,7 @@ namespace MagicVilla_VillaAPI.Repository
                 IsMonthToMonth = lease.IsMonthToMonth,
                 HasSecurityDeposit = lease.HasSecurityDeposit,
                 LateFeesPolicy = lease.LateFeesPolicy,
+                TenantId = lease.TenantsTenantId,
                 AppTenantId = lease.AppTenantId,
                 RentCharges = lease.RentCharges.Select(rc => new RentChargeDto
                 {
@@ -1895,76 +1900,85 @@ namespace MagicVilla_VillaAPI.Repository
                 existingLease.AppTenantId = leaseDto.AppTenantId;
 
 
-
-                foreach (var rcDto in leaseDto.RentCharges)
+                if (leaseDto.RentCharges != null)
                 {
-                    var existingRc = existingLease.RentCharges.FirstOrDefault(rc => rc.RentChargeId == rcDto.RentChargeId);
-                    if (existingRc != null)
+                    foreach (var rcDto in leaseDto.RentCharges)
                     {
-                        // Update existing RentCharge
-                        existingRc.Amount = rcDto.Amount;
-                        existingRc.Description = rcDto.Description;
-                        existingRc.RentDate = rcDto.RentDate;
-                        existingRc.RentPeriod = rcDto.RentPeriod;
-                    }
-                    else
-                    {
-
-                        existingLease.RentCharges.Add(new RentCharge
+                        var existingRc = existingLease.RentCharges.FirstOrDefault(rc => rc.RentChargeId == rcDto.RentChargeId);
+                        if (existingRc != null)
                         {
-                            Amount = rcDto.Amount,
-                            Description = rcDto.Description,
-                            LeaseId = existingLease.LeaseId,
-                            RentDate = rcDto.RentDate,
-                            RentPeriod = rcDto.RentPeriod
-                        });
+                            // Update existing RentCharge
+                            existingRc.Amount = rcDto.Amount;
+                            existingRc.Description = rcDto.Description;
+                            existingRc.RentDate = rcDto.RentDate;
+                            existingRc.RentPeriod = rcDto.RentPeriod;
+                        }
+                        else
+                        {
+
+                            existingLease.RentCharges.Add(new RentCharge
+                            {
+                                Amount = rcDto.Amount,
+                                Description = rcDto.Description,
+                                LeaseId = existingLease.LeaseId,
+                                RentDate = rcDto.RentDate,
+                                RentPeriod = rcDto.RentPeriod
+                            });
+                        }
                     }
                 }
 
 
-                foreach (var rcDto in leaseDto.FeeCharges)
+                if (leaseDto.FeeCharges != null)
                 {
-                    var existingRc = existingLease.FeeCharge.FirstOrDefault(rc => rc.FeeChargeId == rcDto.FeeChargeId);
-                    if (existingRc != null)
+                    foreach (var rcDto in leaseDto.FeeCharges)
                     {
-                        // Update existing RentCharge
-                        existingRc.Amount = rcDto.Amount;
-                        existingRc.Description = rcDto.Description;
-                        existingRc.FeeDate = rcDto.FeeDate;
-                    }
-                    else
-                    {
-
-                        existingLease.FeeCharge.Add(new PMS_PropertyHapa.Models.Entities.FeeCharge
+                        var existingRc = existingLease.FeeCharge.FirstOrDefault(rc => rc.FeeChargeId == rcDto.FeeChargeId);
+                        if (existingRc != null)
                         {
-                            Amount = rcDto.Amount,
-                            Description = rcDto.Description,
-                            LeaseId = existingLease.LeaseId,
-                            FeeDate = rcDto.FeeDate,
-                        });
+                            // Update existing RentCharge
+                            existingRc.Amount = rcDto.Amount;
+                            existingRc.Description = rcDto.Description;
+                            existingRc.FeeDate = rcDto.FeeDate;
+                        }
+                        else
+                        {
+
+                            existingLease.FeeCharge.Add(new PMS_PropertyHapa.Models.Entities.FeeCharge
+                            {
+                                Amount = rcDto.Amount,
+                                Description = rcDto.Description,
+                                LeaseId = existingLease.LeaseId,
+                                FeeDate = rcDto.FeeDate,
+                            });
+                        }
                     }
                 }
 
 
-                foreach (var sdDto in leaseDto.SecurityDeposits)
+
+                if (leaseDto.SecurityDeposits != null)
                 {
-                    var existingSd = existingLease.SecurityDeposit.FirstOrDefault(sd => sd.SecurityDepositId == sdDto.SecurityDepositId);
-                    if (existingSd != null)
+                    foreach (var sdDto in leaseDto.SecurityDeposits)
                     {
-
-                        existingSd.Amount = sdDto.Amount;
-                        existingSd.Description = sdDto.Description;
-                        existingLease.LeaseId = sdDto.LeaseId;
-                    }
-                    else
-                    {
-
-                        existingLease.SecurityDeposit.Add(new SecurityDeposit
+                        var existingSd = existingLease.SecurityDeposit.FirstOrDefault(sd => sd.SecurityDepositId == sdDto.SecurityDepositId);
+                        if (existingSd != null)
                         {
-                            Amount = sdDto.Amount,
-                            Description = sdDto.Description,
-                            LeaseId = existingLease.LeaseId
-                        });
+
+                            existingSd.Amount = sdDto.Amount;
+                            existingSd.Description = sdDto.Description;
+                            existingLease.LeaseId = sdDto.LeaseId;
+                        }
+                        else
+                        {
+
+                            existingLease.SecurityDeposit.Add(new SecurityDeposit
+                            {
+                                Amount = sdDto.Amount,
+                                Description = sdDto.Description,
+                                LeaseId = existingLease.LeaseId
+                            });
+                        }
                     }
                 }
 
@@ -2140,6 +2154,8 @@ namespace MagicVilla_VillaAPI.Repository
                     SelectedReserveFundsOption = tenant.SelectedReserveFundsOption,
                     SelectedSubtype = tenant.SelectedSubtype,
                     SelectedOwnershipOption = tenant.SelectedOwnershipOption,
+                    BuildingNo = tenant.BuildingNo,
+                    BuildingName = tenant.BuildingName,
                     Street1 = tenant.Street1,
                     Street2 = tenant.Street2,
                     City = tenant.City,
@@ -2227,6 +2243,8 @@ namespace MagicVilla_VillaAPI.Repository
                 SelectedReserveFundsOption = assetDTO.SelectedReserveFundsOption,
                 SelectedSubtype = assetDTO.SelectedSubtype,
                 SelectedOwnershipOption = assetDTO.SelectedOwnershipOption,
+                BuildingNo = assetDTO.BuildingNo,
+                BuildingName = assetDTO.BuildingName,
                 Street1 = assetDTO.Street1,
                 Street2 = assetDTO.Street2,
                 City = assetDTO.City,
@@ -2291,6 +2309,8 @@ namespace MagicVilla_VillaAPI.Repository
             existingAsset.SelectedReserveFundsOption = assetDTO.SelectedReserveFundsOption;
             existingAsset.SelectedSubtype = assetDTO.SelectedSubtype;
             existingAsset.SelectedOwnershipOption = assetDTO.SelectedOwnershipOption;
+            existingAsset.BuildingNo = assetDTO.BuildingNo;
+            existingAsset.BuildingName = assetDTO.BuildingName;
             existingAsset.Street1 = assetDTO.Street1;
             existingAsset.Street2 = assetDTO.Street2;
             existingAsset.City = assetDTO.City;

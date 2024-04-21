@@ -1,4 +1,10 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@using PMS_PropertyHapa.Models.Roles
+@using Microsoft.AspNetCore.Hosting
+@inject Microsoft.AspNetCore.Hosting.IHostingEnvironment env
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -60,7 +66,18 @@
                                 <li class="nav-item"><a class="nav-link" href="Auth/Register">Sign Up</a></li>
                             </ul>
                             <div class="buy-block">
-                                <a class="btn-landing btn-white">Go To PMC Portal</a>
+                                @if (SignInManager.IsSignedIn(User))
+                                {
+                                    @if (env.IsDevelopment())
+                                    {
+                                        <a href="https://localhost:7247/" class="btn-landing btn-white">Go To PMC Portadfl</a>
+                                    }
+                                    else
+                                    {
+                                        <a href="https://pmc.propertyhapa.com/" class="btn-landing btn-white">Go To PMC Portadfl</a>
+
+                                    }  
+                                }
                                 <div class="toggle-menu"><i class="fa fa-bars"></i></div>
                             </div>
 

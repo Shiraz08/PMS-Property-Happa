@@ -33,8 +33,10 @@
     }
 </style>
 <section class="landing-home" id="home" style="height: 50vh;margin-bottom: 0px !important;margin-top: 90px !important;">
+    <div id="marqueeDiv">
     <div class="marquee-container">
         <marquee behavior="scroll" direction="left" style="width: 100%; color: black; font-size: 20px;" title="Click for more details"></marquee>
+    </div>
     </div>
     <img class="img-fluid bg-img-cover" src="~/Dashboard/assets/images/building.jpg" alt="">
     <div class="custom-container">
@@ -184,6 +186,7 @@
                 fetch('@Url.Action("ViewCommunicationsByTenantId", "Home")' + '?tenantId=' + encodeURIComponent(tenantId))
                     .then(response => {
                         if (!response.ok) {
+                            document.getElementById('marqueeDiv').style.display = 'none';
                             throw new Error('Failed to fetch data: ' + response.statusText);
                         }
                         return response.json();
@@ -201,18 +204,19 @@
                                     <td>${item.AddedBy || ''}</td>
                                 </tr>`;
                         });
-                        announcementDetailsTableBody.innerHTML = tableRows;
+                          announcementDetailsTableBody.innerHTML = tableRows;
                         if (data.length > 0) {
                             var messages = data.map(item => item.Message).join(' *** ');
                             marquee.textContent = `Announcements: ${data.length} : ${messages}`;
                         } else {
-                            marquee.textContent = 'No communications found.';
+                            document.getElementById('marqueeDiv').style.display = 'none';
                         }
                     })
                     .catch(error => {
+                        document.getElementById('marqueeDiv').style.display = 'none';
                         console.error('Error fetching communications:', error);
-                        announcementDetailsTableBody.innerHTML = `<tr><td colspan="6">Failed to load communications.</td></tr>`;
-                        marquee.textContent = 'Failed to load communications.';
+                         announcementDetailsTableBody.innerHTML = `<tr><td colspan="6">Failed to load communications.</td></tr>`;
+                         //marquee.textContent = 'Failed to load communications.';
                     });
             } else {
                 announcementDetailsTableBody.innerHTML = `<tr><td colspan="6">No tenant ID found.</td></tr>`;

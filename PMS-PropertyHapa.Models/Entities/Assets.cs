@@ -13,6 +13,8 @@ namespace PMS_PropertyHapa.Models.Entities
         public int AssetId { get; set; }
         public string SelectedPropertyType { get; set; }
         public string SelectedSubtype { get; set; }
+        public string BuildingNo { get; set; }
+        public string BuildingName { get; set; }
         public string Street1 { get; set; }
         public string Street2 { get; set; }
         public string City { get; set; }

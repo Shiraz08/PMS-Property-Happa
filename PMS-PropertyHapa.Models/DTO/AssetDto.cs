@@ -23,6 +23,8 @@ namespace PMS_PropertyHapa.Models.DTO
 
         public IFormFile PictureFile { get; set; }
 
+        public string BuildingNo { get; set; }
+        public string BuildingName { get; set; }
         public string Street1 { get; set; }
         public string Street2 { get; set; }
         public string City { get; set; }

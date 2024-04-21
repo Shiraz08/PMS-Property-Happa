@@ -227,7 +227,7 @@
                 <!-- Adjusted for alignment and distribution -->
                 <div class="col-auto">
                     <!-- col-auto adjusts the width to its content -->
-                    @if(Model?.LeaseId > 0)
+                    @if (Model?.LeaseId > 0)
                     {
                         <h3>Update New Lease</h3>
                     }
@@ -259,7 +259,7 @@
                                 <li class="breadcrumb-item active" aria-current="page">Create</li>
 
                             }
-                                                   </ol>
+                        </ol>
                     </nav>
                 </div>
             </div>
@@ -313,26 +313,26 @@
                                     <h3 class="text-center my-4">New Lease</h3>
 
                                     <div class="d-flex flex-column align-items-center">
-                                        <div class="col-md-6 mb-3">
+                                        <div class="col-md-6 mb-3 @(isEditMode ? "d-none" : "")">
                                             <label for="propertyDropdown">Choose Property:</label>
-                                            <select id="propertyDropdown" name="SelectedProperty" class="form-select">
+                                            <select id="propertyDropdown" name="propertyDropdown" class="form-select">
                                                 <option value="">Select Property</option>
                                             </select>
                                         </div>
 
-                                        <div class="col-md-6 mb-3">
+                                        <div class="col-md-6 mb-3 @(isEditMode ? "d-none" : "")">
                                             <label for="unitDropdown">Choose Units:</label>
-                                            <select id="unitDropdown" name="SelectedUnit" class="form-select">
+                                            <select id="unitDropdown" name="unitDropdown" class="form-select">
                                                 <option value="">Select Unit</option>
                                             </select>
                                         </div>
 
-                                        <div class="col-md-6 mb-3">
+                                        <div class="col-md-6 mb-3 @(isEditMode ? "" : "d-none")">
                                             <label for="selectedPropertyDisplay">Selected Property:</label>
                                             <input type="text" id="selectedPropertyDisplay" class="form-control" disabled>
                                         </div>
 
-                                        <div class="col-md-6 mb-3">
+                                        <div class="col-md-6 mb-3 @(isEditMode ? "" : "d-none")">
                                             <label for="selectedUnitDisplay">Selected Unit:</label>
                                             <input type="text" id="selectedUnitDisplay" class="form-control" disabled>
                                         </div>
@@ -364,12 +364,12 @@
                                             <div class="d-flex justify-content-between align-items-center w-100 my-3">
                                                 <div class="form-group w-40 pr-1">
                                                     <label for="startDate">Start Date</label>
-                                                    <input type="date" id="startDate" class="form-control" value="@Model?.StartDate.ToString("yyyy-MM-dd")">
+                                                    <input type="date" id="startDate" class="form-control" value="@(isEditMode ? Model?.StartDate.ToString("yyyy-MM-dd") : "" )">
                                                 </div>
 
                                                 <div class="form-group w-40 pl-1">
                                                     <label for="endDate">End Date</label>
-                                                    <input type="date" id="endDate" class="form-control" value="@Model?.EndDate.ToString("yyyy-MM-dd")">
+                                                    <input type="date" id="endDate" class="form-control" value="@(isEditMode ? Model?.EndDate.ToString("yyyy-MM-dd") : "" )">
                                                 </div>
                                             </div>
                                         </div>
@@ -393,6 +393,7 @@
                                                 <th>First Name</th>
                                                 <th>Last Name</th>
                                                 <th>Email</th>
+                                                <th>Phone Number</th>
                                                 <th>Select</th>
                                             </tr>
                                         </thead>
@@ -410,6 +411,7 @@
                                                 <th>First Name</th>
                                                 <th>Last Name</th>
                                                 <th>Email</th>
+                                                <th>Phone Number</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -702,7 +704,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="addNewTenantModalLabel">Add New Tenant</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -729,7 +731,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary" id="saveNewTenant">Save Tenant</button>
             </div>
         </div>
@@ -747,13 +749,16 @@
     var securityDeposits = @Html.Raw(Json.Serialize(Model?.SecurityDeposits)) || [];
     var globalTenantId = @Html.Raw(Model?.TenantId > 0 ? Model?.TenantId.ToString() : "null");
     var userId = localStorage.getItem('userId');
+    var isEditMode = $('#leaseId').val() && $('#leaseId').val() > 0;
+
     var AddTenantId;
 
     $(document).ready(function () {
         var propertyData = $('#propertyData');
         var selectedPropertyId = propertyData.data('selected-property');
         var selectedUnitId = propertyData.data('selected-unit');
-        var isEditMode = selectedPropertyId && selectedUnitId; // Determine edit mode based on existing selections
+
+        var hasPropertyUnit = selectedPropertyId && selectedUnitId; // Determine edit mode based on existing selections
 
         var userId = localStorage.getItem('userId');
         if (!userId) {
@@ -768,167 +773,12 @@
             populateUnits(propertyId, null); // No pre-selected unit when changing properties
         });
 
-        if (isEditMode) {
+        if (hasPropertyUnit) {
             displaySelectedPropertyAndUnit(selectedPropertyId, selectedUnitId); // Display selected in disabled fields
             populateUnits(selectedPropertyId, null); // Ensure unit dropdown is populated without pre-selection
         }
-    });
-
-    function displaySelectedPropertyAndUnit(selectedPropertyId, selectedUnitId) {
-        // Display the selected property and unit IDs directly in the disabled fields
-        $('#selectedPropertyDisplay').val(selectedPropertyId).prop('disabled', true);
-        $('#selectedUnitDisplay').val(selectedUnitId).prop('disabled', true);
-    }
-
-    function populateProperties(userId, selectedPropertyId) {
-        $.ajax({
-            url: '/Lease/ByUser',
-            method: 'GET',
-            data: { userId: userId },
-            success: function (properties) {
-                var $propertyDropdown = $('#propertyDropdown');
-                $propertyDropdown.empty().append('<option value="">Select Property</option>');
-                properties.forEach(function (property) {
-                    var option = `<option value="${property.AssetId}">${property.SelectedPropertyType}</option>`;
-                    $propertyDropdown.append(option);
-                });
-            },
-            error: function (error) {
-                console.error('Error fetching properties:', error.responseText || 'Unknown error');
-            }
-        });
-    }
-
-    function populateUnits(propertyId, selectedUnitId) {
-        $.ajax({
-            url: '/Lease/ByProperty',
-            method: 'GET',
-            data: { propertyId: propertyId },
-            success: function (units) {
-                var $unitDropdown = $('#unitDropdown');
-                $unitDropdown.empty().append('<option value="">Select Unit</option>');
-                units.forEach(function (unit) {
-                    var option = `<option value="${unit.UnitId}">${unit.UnitName}</option>`;
-                    $unitDropdown.append(option);
-                });
-            },
-            error: function (error) {
-                console.error('Error fetching units:', error.responseText || 'Unknown error');
-            }
-        });
-    }
 
 
-    function populateRentCharges() {
-        $("#rentChargesContainer").html("");
-        rentCharges.forEach(function (charge, index) {
-            addRentChargeEntry(charge.Amount, charge.Description, charge.RentDate, charge.RentPeriod, index);
-        });
-    }
-
-    function addRentChargeEntry(amount, description, rentDate, rentPeriod, index) {
-        const formattedRentDate = new Date(rentDate).toISOString().split('T')[0];
-        const entryHtml = `
-                                                <div class="rent-charge-entry rent-charge-entry-inline d-flex flex-row align-items-end mb-5" data-index="${index}">
-                                                    <div class="col">
-                                                        <input type="text" class="form-control" name="RentCharges[${index}].Description" placeholder="Description" value="${description}">
-                                                    </div>
-                                                    <div class="col">
-                                                        <input type="number" class="form-control" name="RentCharges[${index}].Amount" placeholder="Amount" value="${amount}">
-                                                    </div>
-                                                    <div class="col">
-                                                         <input type="date" class="form-control rent-date" name="RentCharges[${index}].RentDate" value="${formattedRentDate}">
-                                                    </div>
-                                                    <div class="col">
-                                                        <select class="form-control" name="RentCharges[${index}].RentPeriod">
-                                                            <option value="daily" ${rentPeriod === 'daily' ? 'selected' : ''}>Daily</option>
-                                                            <option value="weekly" ${rentPeriod === 'weekly' ? 'selected' : ''}>Weekly</option>
-                                                            <option value="monthly" ${rentPeriod === 'monthly' ? 'selected' : ''}>Monthly</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-auto">
-                                                        <button type="button" class="btn btn-danger remove-charge" onclick="removeChargeEntry(this)">x</button>
-                                                    </div>
-                                                </div>
-                                            `;
-
-        // Appending the new entry to the 'rentChargesContainer'
-        $("#rentChargesContainer").append(entryHtml);
-    }
-
-
-    function removeChargeEntry(button) {
-        // Removes the closest '.rent-charge-entry' parent of the button that triggered the event
-        $(button).closest('.rent-charge-entry').remove();
-    }
-
-
-    $('#securityDepositsContainer').on('click', '.remove-deposit', function () {
-        $(this).closest('.security-deposit-entry').remove();
-    });
-
-    function populateSecurityDeposits() {
-        $("#securityDepositsContainer").html(""); // Clear existing entries
-        securityDeposits.forEach(function (deposit, index) {
-            addSecurityDepositEntry(deposit.Description, deposit.Amount, index);
-        });
-    }
-
-    function addSecurityDepositEntry(description = "", amount = "", index = null) {
-        index = index === null ? $("#securityDepositsContainer .security-deposit-entry").length : index;
-        const entryHTML = `
-                                                <div class="security-deposit-entry row">
-                                                    <div class="col-sm">
-                                                        <input type="text" class="form-control" name="SecurityDeposits[${index}].Description" value="${description}" placeholder="Description">
-                                                    </div>
-                                                    <div class="col-sm">
-                                                        <input type="number" class="form-control" name="SecurityDeposits[${index}].Amount" value="${amount}" placeholder="Amount">
-                                                    </div>
-                                                    <div class="col-sm-auto">
-                                                        <button type="button" class="btn btn-danger remove-deposit">Remove</button>
-                                                    </div>
-                                                </div>`;
-        $('#securityDepositsContainer').append(entryHTML);
-    }
-
-
-    let securityDepositIndex = 0;
-
-
-    $('#addSecurityDeposit').on('click', function () {
-        addSecurityDepositEntry();
-    });
-
-    var signaturePad = new SignaturePad(document.getElementById('signatureCanvas'));
-
-    $('#Signed, #UnSigned').on('click', function () {
-        // Remove 'selected' class from both options
-        $('#Signed, #UnSigned').removeClass('selected');
-
-        // Add 'selected' class to the clicked option
-        $(this).addClass('selected');
-
-        // Hide both sections initially
-        $('#signatureUploadSection, #signaturePadSection').hide();
-
-        // Show the relevant section based on the selection
-        if ($(this).attr('id') === 'Signed') {
-            $('#signatureUploadSection').fadeIn();
-        } else {
-            $('#signaturePadSection').fadeIn();
-        }
-    });
-
-    $('#UnSigned').on('click', function () {
-        if (signaturePad) {
-            signaturePad.clear();
-            signaturePad = new SignaturePad(document.getElementById('signatureCanvas'));
-        }
-    });
-
-
-
-    $(document).ready(function () {
         // Determine if you are in edit mode based on the existence of security deposits
         var hasSecurityDeposits = securityDeposits.length > 0;
 
@@ -943,9 +793,6 @@
 
         // Populate existing security deposits if any
 
-
-
-
         // Event handlers for the Yes/No buttons
         $('#yesSecurityFund, #noSecurityFund').on('click', function () {
             $('#yesSecurityFund, #noSecurityFund').removeClass('selected');
@@ -956,28 +803,8 @@
 
         populateSecurityDeposits();
         populateRentCharges();
-    });
 
 
-
-
-    const Toast = Swal.mixin({
-        toast: true,
-        position: 'top-end',
-        showConfirmButton: false,
-        timer: 3000,
-        timerProgressBar: true,
-        didOpen: (toast) => {
-            toast.addEventListener('mouseenter', Swal.stopTimer)
-            toast.addEventListener('mouseleave', Swal.resumeTimer)
-        }
-    });
-
-
-
-
-
-    $(document).ready(function () {
 
         var currentStep = 1;
         var maxSteps = 6;
@@ -988,18 +815,24 @@
             {
                 step: 1,
                 validate: function () {
-                    return ($('#propertyDropdown').val() && $('#unitDropdown').val() &&
-                        ($('#fixedTermCard').hasClass('selected') || $('#monthToMonthCard').hasClass('selected')) &&
-                        $('#startDate').val() && $('#endDate').val())
+                    if (!isEditMode){
+                        return ($('#propertyDropdown').val() && $('#unitDropdown').val() &&
+                            ($('#fixedTermCard').hasClass('selected') || $('#monthToMonthCard').hasClass('selected')) &&
+                            $('#startDate').val() && $('#endDate').val());
+                    }else{
+                        return true;
+                    }
                 },
                 message: 'Please complete all fields in the Overview section.'
             },
             {
                 step: 2,
                 validate: function () {
-                    return $('#hiddenTenantId').val() || $('#tenantList .tenant-row input:checked').length > 0;
+                    return ($('#hiddenTenantId').val() || $('#tenantList .tenant-row input:checked').length > 0)
+                        && $("#selectedTenantId").val() > 0;
+                        // && localStorage.getItem('selectedTenantId') || $('#selectedTenantId').val();;
                 },
-                message: 'Please add at least one tenant.'
+                message: 'Please add at least one tenant. and select atleast one'
             },
             {
                 step: 3,
@@ -1115,26 +948,19 @@
             EmailAddress: "@Model?.Tenant?.EmailAddress"
         }];
 
-        $(document).ready(function () {
-            var isEditMode = $('#leaseId').val() && $('#leaseId').val() > 0;
 
-            // Only attempt to display tenants if in edit mode
-            if (isEditMode && tenants && tenants.length > 0) {
-                tenants.forEach(function (tenant) {
-                    updateSelectedTenantDetails(true);
-                });
-
-
+        // Only attempt to display tenants if in edit mode
+        if (isEditMode && tenants && tenants.length > 0) {
+            tenants.forEach(function (tenant) {
                 updateSelectedTenantDetails(true);
-            } else {
-
-                updateSelectedTenantDetails(false);
-            }
-        });
+            });
 
 
+            updateSelectedTenantDetails(true);
+        } else {
 
-
+            updateSelectedTenantDetails(false);
+        }
 
         $('#yesSecurityFund').click(function () {
             $(this).addClass('selected');
@@ -1149,11 +975,6 @@
             $('#additionalDataSection').hide();
         });
 
-
-    });
-
-
-    $(document).ready(function () {
         // Click event for Fixed Term card
         $('#fixedTermCard').on('click', function () {
 
@@ -1169,60 +990,16 @@
 
             $('#fixedTermCard').removeClass('selected');
         });
-    });
 
 
-
-
-
-    $(document).ready(function () {
         // Function to initialize the DataTable
-
 
         $('#addTenantCard').on('click', function () {
 
             $('#addNewTenantModal').modal('show');
         });
-    });
-
-    function updateTenant(tenantId) {
-        window.location.href = `/Tenant/AddTenant?tenantId=${tenantId}`;
-    }
 
 
-
-    let rentChargeIndex = 0;
-
-    document.getElementById('addAnotherCharge').addEventListener('click', function () {
-        let index = $('#rentChargesContainer .rent-charge-entry').length; // Determine the next index
-        const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
-        const newEntryHtml = `
-                                                <div class="rent-charge-entry row gx-2 gy-2">
-                                            <div class="col-3">
-                                                <input type="text" class="form-control mb-2 mb-md-0" name="RentCharges[${index}].Description" placeholder="Description">
-                                            </div>
-                                            <div class="col-2">
-                                                <input type="number" class="form-control mb-2 mb-md-0" name="RentCharges[${index}].Amount" placeholder="Amount">
-                                            </div>
-                                            <div class="col-3">
-                                                <input type="date" class="form-control mb-2 mb-md-0" name="RentCharges[${index}].RentDate" value="${today}">
-                                            </div>
-                                            <div class="col-3">
-                                                <select class="form-control mb-2 mb-md-0" name="RentCharges[${index}].RentPeriod">
-                                                    <option value="daily">Daily</option>
-                                                    <option value="weekly">Weekly</option>
-                                                    <option value="monthly">Monthly</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-2 d-flex align-items-center">
-                                                <button type="button" class="btn btn-danger remove-charge w-100 mb-5">Remove</button>
-                                            </div>
-                                        </div>
-                                                `;
-        $('#rentChargesContainer').append(newEntryHtml);
-    });
-
-    $(document).ready(function () {
         $('#yesSecurityFund, #noSecurityFund').on('click', function () {
             // Remove 'selected' class from both cards
             $('#yesSecurityFund, #noSecurityFund').removeClass('selected');
@@ -1242,17 +1019,9 @@
         $(document).on('click', '.btn-remove-deposit', function () {
             $(this).closest('.deposit-detail').remove();
         });
-    });
 
-    document.addEventListener('click', function (event) {
-        if (event.target.classList.contains('remove-charge')) {
-            event.target.closest('.rent-charge-entry').remove();
-        } else if (event.target.classList.contains('btn-remove-row')) {
-            event.target.closest('.security-deposit-entry').remove();
-        }
-    });
 
-    $(document).ready(function () {
+
         function updateRemoveButtonVisibility() {
             if ($('.deposit-detail').length > 1) {
                 $('.deposit-detail .btn-remove-row').show();
@@ -1279,11 +1048,9 @@
         });
 
         updateRemoveButtonVisibility();
-    });
 
 
 
-    $(document).ready(function () {
         $('#yesLateFees').on('click', function () {
             $(this).addClass('selected');
             $('#noLateFees').removeClass('selected');
@@ -1305,10 +1072,410 @@
                 $('#specifyPolicyFields').hide();
             }
         });
+
+
+
+        // Initialize the signature pad
+        var signaturePad = new SignaturePad(document.getElementById('signatureCanvas'));
+
+
+        // Check edit mode to decide on selection states
+        if (isEditMode) {
+            // Implement your logic for edit mode here, if needed
+            // For example, selecting a specific card based on data
+        } else {
+
+            $('.card').removeClass('selected');
+        }
+
+        // Clear button functionality for the signature pad
+        $('#clearSignature').on('click', function () {
+            if (signaturePad) {
+                signaturePad.clear();
+            }
+        });
+
+        $('#Signed, #UnSigned').click(function () {
+            $('.signature-option').hide();
+            if ($(this).attr('id') === 'Signed') {
+                $('#signatureUploadSection').show();
+            } else {
+                $('#signaturePadSection').show();
+            }
+        });
+
+
+        // $('#submitForm').click(function (e) {
+        //     e.preventDefault();
+        //     //submitLeaseForm();
+        // });
+
+
+        // function submitLeaseForm() {
+        //     var formData = new FormData(document.getElementById('multiStepForm'));
+
+
+        //     var signatureOption = $('#Signed').hasClass('selected') ? 'Signed' : 'UnSigned';
+
+
+        //     var isSigned = (signatureOption === 'Signed' && $('#signatureImageUpload')[0].files.length > 0) ||
+        //         (signatureOption === 'UnSigned' && !signaturePad.isEmpty());
+        //     formData.append('IsSigned', isSigned ? 'true' : 'false');
+
+        //     if (signatureOption === 'Signed' && $('#signatureImageUpload')[0].files.length > 0) {
+        //         var file = $('#signatureImageUpload')[0].files[0];
+        //         fileToBase64(file, function (base64String) {
+        //             formData.append('SignatureData', base64String);
+
+        //         });
+        //     }
+
+        //     else if (signatureOption === 'UnSigned' && !signaturePad.isEmpty()) {
+        //         var signatureData = signaturePad.toDataURL();
+        //         formData.append('SignatureData', signatureData);
+
+        //     } else {
+
+        //     }
+        // }
+
+        function convertFileToBase64(file, callback) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                callback(e.target.result);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function appendAdditionalFields(formData) {
+            // Append logic for additional form data as needed
+            formData.append('IsSigned', $('#Signed').hasClass('selected') ? 'true' : 'false');
+            // Add other fields as necessary
+        }
+
+
+
+        // Call this function when the page loads to handle edit cases
+        //var isEditMode = $('#hiddenTenantId').val() !== ''; // Determine if in edit mode
+        //initializeUIBasedOnMode(isEditMode);
+
+        $('#yesLateFees, #noLateFees').on('click', function () {
+            // Hide the info box initially
+            $('#lateFeePolicyInfo').hide();
+
+            // Remove 'selected' class from both cards
+            $('#yesLateFees, #noLateFees').removeClass('selected');
+
+            // Add 'selected' class to clicked card
+            $(this).addClass('selected');
+
+            // Show the info box if "Yes" is selected
+            if ($(this).attr('id') === 'yesLateFees') {
+                $('#lateFeePolicyInfo').show();
+            }
+        });
+
+
+        // Set the selected option for the "Choose Property" dropdown
+        var selectedProperty = $('#propertyDropdown').data('selected-property');
+        if (selectedProperty) {
+            $('#propertyDropdown').val(selectedProperty);
+        }
+
+        // Set the selected option for the "Choose Units" dropdown
+        var selectedUnit = $('#unitDropdown').data('selected-property');
+        if (selectedUnit) {
+            $('#unitDropdown').val(selectedUnit);
+        }
+
+        if (isEditMode) {
+            populateFeeCharges();  // Call this function if you are in edit mode
+        }
+
+
+        var userId = localStorage.getItem('userId');
+
+        var isEditHasTenant = $('#hiddenTenantId').val() && $('#hiddenTenantId').val() > 0;
+
+        var tenantIdToPreselect = isEditHasTenant ? $('#hiddenTenantId').val() : null;
+        loadTenants(tenantIdToPreselect);
+
+        $('#openAddTenantModal').on('click', function () {
+            $('#addNewTenantModal').modal('show');
+        });
+
+        $('#saveNewTenant').click(function () {
+            var formData = new FormData(document.getElementById('addTenantForm'));
+            formData.append("Tenant.AppTid", localStorage.getItem('userId'));
+            $.ajax({
+                url: '/Tenant/CreateTenantData',
+                type: 'POST',
+                processData: false,
+                contentType: false,
+                data: formData,
+                success: function (response) {
+                    if (response.success) {
+                        $('#addNewTenantModal').modal('hide');
+                        loadTenants(); // Refresh tenant list
+                    } else {
+                        alert('Failed to save tenant: ' + response.message);
+                    }
+                },
+                error: function () {
+                    alert('Error creating tenant');
+                }
+            });
+        });
+
+        var isEditHasLease = '@Model?.LeaseId' > 0;
+        if (isEditHasLease) {
+            populateProperties(userId);
+            populateUnits('@Model?.SelectedProperty');
+        } else {
+            populateProperties(userId);
+            $('#propertyDropdown').change(function () {
+                populateUnits($(this).val());
+            });
+        }
+
+
+        if (isEditHasLease) {
+
+            var applyLateFees = '@Model?.LateFeesPolicy' === 'true';
+            if (applyLateFees) {
+                $('#yesLateFees').click();
+
+                // Now decide which policy is used
+                var specifyPolicy = '@Model?.LateFeesPolicy' === 'true';
+                if (specifyPolicy) {
+                    $('#specifyPolicy').prop('checked', true);
+                    $('#specifyPolicyFields').show();
+                } else {
+                    $('#usePropertyPolicy').prop('checked', true);
+                }
+            } else {
+                $('#noLateFees').click();
+            }
+
+            populateFeeCharges();
+        }
+    });
+
+    function displaySelectedPropertyAndUnit(selectedPropertyId, selectedUnitId) {
+        // Display the selected property and unit IDs directly in the disabled fields
+        $('#selectedPropertyDisplay').val(selectedPropertyId).prop('disabled', true);
+        $('#selectedUnitDisplay').val(selectedUnitId).prop('disabled', true);
+    }
+
+    function populateProperties(userId, selectedPropertyId) {
+        $.ajax({
+            url: '/Lease/ByUser',
+            method: 'GET',
+            data: { userId: userId },
+            success: function (properties) {
+                var $propertyDropdown = $('#propertyDropdown');
+                $propertyDropdown.empty().append('<option value="">Select Property</option>');
+                properties.forEach(function (property) {
+                    var option = `<option value="${property.AssetId}">${property.SelectedPropertyType}</option>`;
+                    $propertyDropdown.append(option);
+                });
+            },
+            error: function (error) {
+                console.error('Error fetching properties:', error.responseText || 'Unknown error');
+            }
+        });
+    }
+
+    function populateUnits(propertyId, selectedUnitId) {
+        $.ajax({
+            url: '/Lease/ByProperty',
+            method: 'GET',
+            data: { propertyId: propertyId },
+            success: function (units) {
+                var $unitDropdown = $('#unitDropdown');
+                $unitDropdown.empty().append('<option value="">Select Unit</option>');
+                units.forEach(function (unit) {
+                    var option = `<option value="${unit.UnitId}">${unit.UnitName}</option>`;
+                    $unitDropdown.append(option);
+                });
+            },
+            error: function (error) {
+                console.error('Error fetching units:', error.responseText || 'Unknown error');
+            }
+        });
+    }
+
+
+    function populateRentCharges() {
+        $("#rentChargesContainer").html("");
+        rentCharges.forEach(function (charge, index) {
+            addRentChargeEntry(charge.Amount, charge.Description, charge.RentDate, charge.RentPeriod, index);
+        });
+    }
+
+    function addRentChargeEntry(amount, description, rentDate, rentPeriod, index) {
+        const formattedRentDate = new Date(rentDate).toISOString().split('T')[0];
+        const entryHtml = `
+                                                    <div class="rent-charge-entry rent-charge-entry-inline d-flex flex-row align-items-end mb-5" data-index="${index}">
+                                                        <div class="col">
+                                                            <input type="text" class="form-control" name="RentCharges[${index}].Description" placeholder="Description" value="${description}">
+                                                        </div>
+                                                        <div class="col">
+                                                            <input type="number" class="form-control" name="RentCharges[${index}].Amount" placeholder="Amount" value="${amount}">
+                                                        </div>
+                                                        <div class="col">
+                                                             <input type="date" class="form-control rent-date" name="RentCharges[${index}].RentDate" value="${formattedRentDate}">
+                                                        </div>
+                                                        <div class="col">
+                                                            <select class="form-control" name="RentCharges[${index}].RentPeriod">
+                                                                <option value="daily" ${rentPeriod === 'daily' ? 'selected' : ''}>Daily</option>
+                                                                <option value="weekly" ${rentPeriod === 'weekly' ? 'selected' : ''}>Weekly</option>
+                                                                <option value="monthly" ${rentPeriod === 'monthly' ? 'selected' : ''}>Monthly</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-auto">
+                                                            <button type="button" class="btn btn-danger remove-charge" onclick="removeChargeEntry(this)">x</button>
+                                                        </div>
+                                                    </div>
+                                                `;
+
+        // Appending the new entry to the 'rentChargesContainer'
+        $("#rentChargesContainer").append(entryHtml);
+    }
+
+
+    function removeChargeEntry(button) {
+        // Removes the closest '.rent-charge-entry' parent of the button that triggered the event
+        $(button).closest('.rent-charge-entry').remove();
+    }
+
+
+    $('#securityDepositsContainer').on('click', '.remove-deposit', function () {
+        $(this).closest('.security-deposit-entry').remove();
+    });
+
+    function populateSecurityDeposits() {
+        $("#securityDepositsContainer").html(""); // Clear existing entries
+        securityDeposits.forEach(function (deposit, index) {
+            addSecurityDepositEntry(deposit.Description, deposit.Amount, index);
+        });
+    }
+
+    function addSecurityDepositEntry(description = "", amount = "", index = null) {
+        index = index === null ? $("#securityDepositsContainer .security-deposit-entry").length : index;
+        const entryHTML = `
+                                                    <div class="security-deposit-entry row">
+                                                        <div class="col-sm">
+                                                            <input type="text" class="form-control" name="SecurityDeposits[${index}].Description" value="${description}" placeholder="Description">
+                                                        </div>
+                                                        <div class="col-sm">
+                                                            <input type="number" class="form-control" name="SecurityDeposits[${index}].Amount" value="${amount}" placeholder="Amount">
+                                                        </div>
+                                                        <div class="col-sm-auto">
+                                                            <button type="button" class="btn btn-danger remove-deposit">Remove</button>
+                                                        </div>
+                                                    </div>`;
+        $('#securityDepositsContainer').append(entryHTML);
+    }
+
+
+    let securityDepositIndex = 0;
+
+
+    $('#addSecurityDeposit').on('click', function () {
+        addSecurityDepositEntry();
+    });
+
+    var signaturePad = new SignaturePad(document.getElementById('signatureCanvas'));
+
+    $('#Signed, #UnSigned').on('click', function () {
+        // Remove 'selected' class from both options
+        $('#Signed, #UnSigned').removeClass('selected');
+
+        // Add 'selected' class to the clicked option
+        $(this).addClass('selected');
+
+        // Hide both sections initially
+        $('#signatureUploadSection, #signaturePadSection').hide();
+
+        // Show the relevant section based on the selection
+        if ($(this).attr('id') === 'Signed') {
+            $('#signatureUploadSection').fadeIn();
+        } else {
+            $('#signaturePadSection').fadeIn();
+        }
+    });
+
+    $('#UnSigned').on('click', function () {
+        if (signaturePad) {
+            signaturePad.clear();
+            signaturePad = new SignaturePad(document.getElementById('signatureCanvas'));
+        }
     });
 
 
 
+
+
+
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    });
+
+
+    function updateTenant(tenantId) {
+        window.location.href = `/Tenant/AddTenant?tenantId=${tenantId}`;
+    }
+
+
+
+    let rentChargeIndex = 0;
+
+    document.getElementById('addAnotherCharge').addEventListener('click', function () {
+        let index = $('#rentChargesContainer .rent-charge-entry').length; // Determine the next index
+        const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
+        const newEntryHtml = `
+                                                    <div class="rent-charge-entry row gx-2 gy-2">
+                                                <div class="col-3">
+                                                    <input type="text" class="form-control mb-2 mb-md-0" name="RentCharges[${index}].Description" placeholder="Description">
+                                                </div>
+                                                <div class="col-2">
+                                                    <input type="number" class="form-control mb-2 mb-md-0" name="RentCharges[${index}].Amount" placeholder="Amount">
+                                                </div>
+                                                <div class="col-3">
+                                                    <input type="date" class="form-control mb-2 mb-md-0" name="RentCharges[${index}].RentDate" value="${today}">
+                                                </div>
+                                                <div class="col-3">
+                                                    <select class="form-control mb-2 mb-md-0" name="RentCharges[${index}].RentPeriod">
+                                                        <option value="daily">Daily</option>
+                                                        <option value="weekly">Weekly</option>
+                                                        <option value="monthly">Monthly</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-2 d-flex align-items-center">
+                                                    <button type="button" class="btn btn-danger remove-charge w-100 mb-5">Remove</button>
+                                                </div>
+                                            </div>
+                                                    `;
+        $('#rentChargesContainer').append(newEntryHtml);
+    });
+
+
+    document.addEventListener('click', function (event) {
+        if (event.target.classList.contains('remove-charge')) {
+            event.target.closest('.rent-charge-entry').remove();
+        } else if (event.target.classList.contains('btn-remove-row')) {
+            event.target.closest('.security-deposit-entry').remove();
+        }
+    });
 
 
     $('#yesSecurityFund').click(function () {
@@ -1328,14 +1495,18 @@
 
 
 
-    function submitLeaseForm() {
-        debugger;
+    function submitLeaseForm() {    
         var tenantId = localStorage.getItem('selectedTenantId') || $('#selectedTenantId').val();
         var appTenantId = localStorage.getItem('userId');
+
+        var selectedPropertyText = isEditMode ? $("#selectedPropertyDisplay").val() : $("#propertyDropdown option:selected").text()
+        var selectedUnitText = isEditMode ? $("#selectedUnitDisplay").val() : $("#unitDropdown option:selected").text()
+
         var leaseId = $('#leaseId').val();
-        var isEditMode = leaseId && leaseId > 0;
-        var url = isEditMode ? '/Lease/Update/' + leaseId : '/Lease/Create';
+        //var isEditMode = leaseId && leaseId > 0;
+        var url = isEditMode ? '/Lease/Update/' : '/Lease/Create';
         var formData = new FormData(document.getElementById('multiStepForm'));
+        formData.append('LeaseId', leaseId);
         formData.append('TenantIdValue', tenantId);
         formData.append('AppTenantId', appTenantId);
         formData.append('StartDate', $('#startDate').val());
@@ -1345,8 +1516,8 @@
         formData.append('IsMonthToMonth', $('#monthToMonthCard').hasClass('selected') ? 'true' : 'false');
         formData.append('HasSecurityDeposit', $('#yesSecurityFund').hasClass('selected') ? 'true' : 'false');
         formData.append('LateFeesPolicy', $('#yesLateFees').hasClass('selected') ? 'true' : 'false');
-        formData.append("SelectedProperty", $("#propertyDropdown").val());
-        formData.append("SelectedUnit", $("#unitDropdown").val());
+        formData.append("SelectedProperty", selectedPropertyText);
+        formData.append("SelectedUnit", selectedUnitText);
         if (globalTenantId > 0) {
             // This is the edit scenario, append TenantId to formData
             formData.append('TenantId', globalTenantId);
@@ -1370,8 +1541,6 @@
             var amount = $(this).find('[name$=".Amount"]').val();
             var rentDate = $(this).find('[name$=".RentDate"]').val();
 
-            // Debugging: Console log to check the rentDate format
-            console.log("Appending Rent Charge with Date: ", rentDate);
 
             formData.append(`RentCharges[${index}].Description`, description);
             formData.append(`RentCharges[${index}].Amount`, amount);
@@ -1440,99 +1609,6 @@
     }
 
 
-
-
-    $(document).ready(function () {
-        // Initialize the signature pad
-        var signaturePad = new SignaturePad(document.getElementById('signatureCanvas'));
-        var isEditMode = $('#leaseId').val() && $('#leaseId').val() > 0;
-
-        // Check edit mode to decide on selection states
-        if (isEditMode) {
-            // Implement your logic for edit mode here, if needed
-            // For example, selecting a specific card based on data
-        } else {
-
-            $('.card').removeClass('selected');
-        }
-
-        // Clear button functionality for the signature pad
-        $('#clearSignature').on('click', function () {
-            if (signaturePad) {
-                signaturePad.clear();
-            }
-        });
-
-        $('#Signed, #UnSigned').click(function () {
-            $('.signature-option').hide();
-            if ($(this).attr('id') === 'Signed') {
-                $('#signatureUploadSection').show();
-            } else {
-                $('#signaturePadSection').show();
-            }
-        });
-
-
-        $('#submitForm').click(function (e) {
-            e.preventDefault();
-            submitLeaseForm();
-        });
-
-
-        function submitLeaseForm() {
-            debugger;
-            var formData = new FormData(document.getElementById('multiStepForm'));
-
-
-            var signatureOption = $('#Signed').hasClass('selected') ? 'Signed' : 'UnSigned';
-
-
-            var isSigned = (signatureOption === 'Signed' && $('#signatureImageUpload')[0].files.length > 0) ||
-                (signatureOption === 'UnSigned' && !signaturePad.isEmpty());
-            formData.append('IsSigned', isSigned ? 'true' : 'false');
-
-            if (signatureOption === 'Signed' && $('#signatureImageUpload')[0].files.length > 0) {
-                var file = $('#signatureImageUpload')[0].files[0];
-                fileToBase64(file, function (base64String) {
-                    formData.append('SignatureData', base64String);
-
-                });
-            }
-
-            else if (signatureOption === 'UnSigned' && !signaturePad.isEmpty()) {
-                var signatureData = signaturePad.toDataURL();
-                formData.append('SignatureData', signatureData);
-
-            } else {
-
-            }
-        }
-
-        function convertFileToBase64(file, callback) {
-            var reader = new FileReader();
-            reader.onload = function (e) {
-                callback(e.target.result);
-            };
-            reader.readAsDataURL(file);
-        }
-
-        function appendAdditionalFields(formData) {
-            // Append logic for additional form data as needed
-            formData.append('IsSigned', $('#Signed').hasClass('selected') ? 'true' : 'false');
-            // Add other fields as necessary
-        }
-
-    });
-
-
-    // Call this function when the page loads to handle edit cases
-    $(document).ready(function () {
-        var isEditMode = $('#hiddenTenantId').val() !== ''; // Determine if in edit mode
-        initializeUIBasedOnMode(isEditMode);
-    });
-
-
-
     document.addEventListener('DOMContentLoaded', function () {
         // Set selected value for Property based on data-selected-property attribute
         document.querySelectorAll('select[data-selected-property]').forEach(function (selectElement) {
@@ -1552,42 +1628,6 @@
     });
 
 
-
-    $(document).ready(function () {
-        $('#yesLateFees, #noLateFees').on('click', function () {
-            // Hide the info box initially
-            $('#lateFeePolicyInfo').hide();
-
-            // Remove 'selected' class from both cards
-            $('#yesLateFees, #noLateFees').removeClass('selected');
-
-            // Add 'selected' class to clicked card
-            $(this).addClass('selected');
-
-            // Show the info box if "Yes" is selected
-            if ($(this).attr('id') === 'yesLateFees') {
-                $('#lateFeePolicyInfo').show();
-            }
-        });
-    });
-
-
-    $(document).ready(function () {
-        // Set the selected option for the "Choose Property" dropdown
-        var selectedProperty = $('#propertyDropdown').data('selected-property');
-        if (selectedProperty) {
-            $('#propertyDropdown').val(selectedProperty);
-        }
-
-        // Set the selected option for the "Choose Units" dropdown
-        var selectedUnit = $('#unitDropdown').data('selected-property');
-        if (selectedUnit) {
-            $('#unitDropdown').val(selectedUnit);
-        }
-    });
-
-
-
     function populateFeeCharges() {
         $("#feeChargesContainer").html("");
         Model.FeeCharges.forEach(function (charge, index) {
@@ -1598,18 +1638,18 @@
     function addFeeChargeEntry(amount, description, feeDate, index) {
         const formattedFeeDate = new Date(feeDate).toISOString().split('T')[0];
         const entryHtml = `
-                                            <div class="fee-charge-entry fee-charge-entry-inline d-flex flex-row align-items-end mb-5" data-index="${index}">
-                                                <div class="col">
-                                                    <input type="text" class="form-control" name="FeeCharges[${index}].Description" placeholder="Description" value="${description}">
+                                                <div class="fee-charge-entry fee-charge-entry-inline d-flex flex-row align-items-end mb-5" data-index="${index}">
+                                                    <div class="col">
+                                                        <input type="text" class="form-control" name="FeeCharges[${index}].Description" placeholder="Description" value="${description}">
+                                                    </div>
+                                                    <div class="col">
+                                                        <input type="number" class="form-control" name="FeeCharges[${index}].Amount" placeholder="Amount" value="${amount}">
+                                                    </div>
+                                                    <div class="col">
+                                                        <input type="date" class="form-control fee-date" name="FeeCharges[${index}].FeeDate" value="${formattedFeeDate}">
+                                                    </div>
                                                 </div>
-                                                <div class="col">
-                                                    <input type="number" class="form-control" name="FeeCharges[${index}].Amount" placeholder="Amount" value="${amount}">
-                                                </div>
-                                                <div class="col">
-                                                    <input type="date" class="form-control fee-date" name="FeeCharges[${index}].FeeDate" value="${formattedFeeDate}">
-                                                </div>
-                                            </div>
-                                        `;
+                                            `;
         $("#feeChargesContainer").append(entryHtml);
     }
 
@@ -1621,11 +1661,7 @@
 
 
 
-    $(document).ready(function () {
-        if (isEditMode) {
-            populateFeeCharges();  // Call this function if you are in edit mode
-        }
-    });
+
 
     // Ensure your model's data is correctly formatted and available for the JavaScript
     var feeCharges = @Html.Raw(Json.Serialize(Model?.FeeCharges)) || [];
@@ -1652,42 +1688,8 @@
     }
 
 
-    $(document).ready(function () {
-        var userId = localStorage.getItem('userId');
-        var isEditMode = $('#hiddenTenantId').val() && $('#hiddenTenantId').val() > 0;
-        var tenantIdToPreselect = isEditMode ? $('#hiddenTenantId').val() : null;
-        loadTenants(tenantIdToPreselect);
-
-        $('#openAddTenantModal').on('click', function () {
-            $('#addNewTenantModal').modal('show');
-        });
-
-        $('#saveNewTenant').click(function () {
-            var formData = new FormData(document.getElementById('addTenantForm'));
-            formData.append("Tenant.AppTid", localStorage.getItem('userId'));
-            $.ajax({
-                url: '/Tenant/CreateTenantData',
-                type: 'POST',
-                processData: false,
-                contentType: false,
-                data: formData,
-                success: function (response) {
-                    if (response.success) {
-                        $('#addNewTenantModal').modal('hide');
-                        loadTenants(); // Refresh tenant list
-                    } else {
-                        alert('Failed to save tenant: ' + response.message);
-                    }
-                },
-                error: function () {
-                    alert('Error creating tenant');
-                }
-            });
-        });
-    });
-
     function loadTenants(selectedTenantId = null) {
-   
+
         if (!userId) {
             console.error("User ID is not available. Please ensure the user is logged in.");
             return;
@@ -1703,11 +1705,12 @@
                 tenants.forEach(function (tenant) {
                     var isSelected = tenant.TenantId.toString() === selectedTenantId;
                     var row = `<tr class="tenant-row ${isSelected ? 'selected' : ''}" data-id="${tenant.TenantId}">
-                                   <td>${tenant.FirstName}</td>
-                                   <td>${tenant.LastName}</td>
-                                   <td>${tenant.EmailAddress}</td>
-                                   <td><input type="checkbox" class="select-tenant-checkbox" ${isSelected ? 'checked' : ''}></td>
-                               </tr>`;
+                                       <td>${tenant.FirstName}</td>
+                                       <td>${tenant.LastName}</td>
+                                       <td>${tenant.EmailAddress}</td>
+                                           <td>${tenant.PhoneNumber}</td>
+                                       <td><input type="checkbox" class="select-tenant-checkbox" ${isSelected ? 'checked' : ''}></td>
+                                   </tr>`;
                     tbody.append(row);
                 });
                 if (selectedTenantId) {
@@ -1726,12 +1729,14 @@
             var selectedRow = selectedCheckbox.closest('tr');
             var selectedTbody = $('#selectedTenant tbody');
             selectedTbody.empty();
+            $("#selectedTenantId").val(selectedRow.attr('data-id'))
             var rowHtml = `<tr>
-                               <td>Selected</td>
-                               <td>${selectedRow.find('td:eq(0)').text()}</td>
-                               <td>${selectedRow.find('td:eq(1)').text()}</td>
-                               <td>${selectedRow.find('td:eq(2)').text()}</td>
-                           </tr>`;
+                                   <td>Selected</td>
+                                   <td>${selectedRow.find('td:eq(0)').text()}</td>
+                                   <td>${selectedRow.find('td:eq(1)').text()}</td>
+                                   <td>${selectedRow.find('td:eq(2)').text()}</td>
+                                   <td>${selectedRow.find('td:eq(3)').text()}</td>
+                               </tr>`;
             selectedTbody.append(rowHtml);
         }
     }
@@ -1741,47 +1746,6 @@
         updateSelectedTenantDetails();
     });
 
-
-    $(document).ready(function () {
-        var isEditMode = '@Model?.LeaseId' > 0;
-        if (isEditMode) {
-            populateProperties();
-            populateUnits('@Model?.SelectedProperty');
-        } else {
-            populateProperties();
-            $('#propertyDropdown').change(function () {
-                populateUnits($(this).val());
-            });
-        }
-    });
-
-
-
-    $(document).ready(function () {
-        var isEditMode = '@Model?.LeaseId' > 0;
-
-
-        if (isEditMode) {
-
-            var applyLateFees = '@Model?.LateFeesPolicy' === 'true';
-            if (applyLateFees) {
-                $('#yesLateFees').click();
-
-                // Now decide which policy is used
-                var specifyPolicy = '@Model?.LateFeesPolicy' === 'true';
-                if (specifyPolicy) {
-                    $('#specifyPolicy').prop('checked', true);
-                    $('#specifyPolicyFields').show();
-                } else {
-                    $('#usePropertyPolicy').prop('checked', true);
-                }
-            } else {
-                $('#noLateFees').click();
-            }
-
-            populateFeeCharges();
-        }
-    });
 
 
 
@@ -1798,18 +1762,18 @@
     function addFeeChargeEntry(amount, description, feeDate, index) {
         const formattedFeeDate = new Date(feeDate).toISOString().split('T')[0];
         const entryHtml = `
-                <div class="fee-charge-entry fee-charge-entry-inline d-flex flex-row align-items-end mb-5" data-index="${index}">
-                    <div class="col">
-                        <input type="text" class="form-control" name="FeeCharges[${index}].Description" placeholder="Description" value="${description}">
+                    <div class="fee-charge-entry fee-charge-entry-inline d-flex flex-row align-items-end mb-5" data-index="${index}">
+                        <div class="col">
+                            <input type="text" class="form-control" name="FeeCharges[${index}].Description" placeholder="Description" value="${description}">
+                        </div>
+                        <div class="col">
+                            <input type="number" class="form-control" name="FeeCharges[${index}].Amount" placeholder="Amount" value="${amount}">
+                        </div>
+                        <div class="col">
+                            <input type="date" class="form-control fee-date" name="FeeCharges[${index}].FeeDate" value="${formattedFeeDate}">
+                        </div>
                     </div>
-                    <div class="col">
-                        <input type="number" class="form-control" name="FeeCharges[${index}].Amount" placeholder="Amount" value="${amount}">
-                    </div>
-                    <div class="col">
-                        <input type="date" class="form-control fee-date" name="FeeCharges[${index}].FeeDate" value="${formattedFeeDate}">
-                    </div>
-                </div>
-            `;
+                `;
         $("#feeChargesContainer").append(entryHtml);
     }
 </script>

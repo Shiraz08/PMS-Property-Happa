@@ -67,11 +67,11 @@
                                                 <td><i class="fas fa-envelope"></i> @communication?.Subject</td>
                                                 @{
                                                     // Splitting the comma-separated IDs and counting them
-                                                    var tenantIds = communication?.TenantIds.Split(',', StringSplitOptions.RemoveEmptyEntries);
-                                                    var propertyIds = communication?.PropertyIds.Split(',', StringSplitOptions.RemoveEmptyEntries);
+                                                    var tenantIds = communication?.TenantIds?.Split(',', StringSplitOptions.RemoveEmptyEntries);
+                                                    var propertyIds = communication?.PropertyIds?.Split(',', StringSplitOptions.RemoveEmptyEntries);
 
-                                                    bool allTenants = tenantIds.Length == communication?.TotalTenantsCount;
-                                                    bool allProperties = propertyIds.Length == communication?.TotalPropertiesCount;
+                                                    bool allTenants = tenantIds?.Length == communication?.TotalTenantsCount;
+                                                    bool allProperties = propertyIds?.Length == communication?.TotalPropertiesCount;
                                                 }
                                               
                                                     @if (allTenants && allProperties)

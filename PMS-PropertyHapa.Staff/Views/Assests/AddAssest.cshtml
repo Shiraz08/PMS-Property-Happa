@@ -285,6 +285,17 @@
                             </fieldset>
 
                             <fieldset id="step2" class="step-section">
+                                <h3 class="mb-5">Property Info</h3>
+                                <div class="row">
+                                    <div class="col-md-4 mb-2">
+                                        <label class="sr-only" for="buildingNo">Building #</label>
+                                        <input class="form-control" id="buildingNo" type="text" name="buildingNo" placeholder="building #" value="@Model?.Asset?.BuildingNo" required="">
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <label class="sr-only" for="buildingName">Building Name</label>
+                                        <input class="form-control" id="buildingName" type="text" name="buildingName" placeholder="Building Name" value="@Model?.Asset?.BuildingName" required="">
+                                    </div>
+                                </div>
                                 <h3 class="mb-5">Property Address</h3>
                                 <div class="row">
                                     <div class="col-md-4 mb-2">
@@ -627,7 +638,13 @@
                 }
                 break;
             case 2:
-                if (!$('#street1').val() || !$('#city').val() || !$('#state').val() || !$('#country').val() || !$('#zipcode').val()) {
+                if (!$('#buildingName').val() || !$('#buildingNo').val()) {
+                    isValid = false;
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'Please fill in all address info.'
+                    });
+                }else if (!$('#street1').val() || !$('#city').val() || !$('#state').val() || !$('#country').val() || !$('#zipcode').val()) {
                     isValid = false;
                     Toast.fire({
                         icon: 'error',
@@ -1064,6 +1081,8 @@
         var assetDTO = {
             SelectedPropertyType: $('#SelectedPropertyType').val(),
             SelectedSubtype: $('#SelectedSubtype').val(),
+            buildingNo: $('#buildingNo').val(),
+            buildingName: $('#buildingName').val(),
             Street1: $('#street1').val(),
             Street2: $('#street2').val(),
             City: $('#city').val(),
@@ -1107,7 +1126,6 @@
                 var formData = collectFormData();
                 formData.AppTId = userId;
                 var submitUrl = isEditMode ? `$/Assests/UpdateAsset/{Model?.Asset?.AssetId}` : '/Assests/AddAsset';
-                console.log(formData);
 
                 $.ajax({
                     url: submitUrl,

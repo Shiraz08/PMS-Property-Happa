@@ -64,10 +64,10 @@ namespace PMS_PropertyHapa.Staff.Controllers
                 var properties2 = await _authService.GetAllAssetsAsync(); 
 
                 var properties = properties2
-                   .Where(s=>s.AppTid == userId.ToUpperInvariant())
+                    .Where(s=>s.AppTid == userId.ToUpperInvariant())
                     .Select(a => new {
                         AssetId = a.AssetId,
-                        SelectedPropertyType = a.SelectedPropertyType
+                        SelectedPropertyType = a.BuildingNo + " - " + a.BuildingName
                     })
                     .ToList();
 
@@ -138,7 +138,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
         [HttpPost]
         public async Task<IActionResult> Update(LeaseDto lease)
         {
-            
+            lease.TenantId = Convert.ToInt32(lease.TenantIdValue);
             if (lease == null)
             {
                 return Json(new { success = false, message = "Lease data is empty." });
