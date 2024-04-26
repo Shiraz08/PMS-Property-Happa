@@ -348,8 +348,17 @@ namespace PMS_PropertyHapa.Staff.Controllers
         public async Task<IActionResult> SaveTenantOrganizationInfo([FromBody] TenantOrganizationInfoDto tenantOrganizationInfoDto)
         {
             tenantOrganizationInfoDto.TenantUserId = Guid.Parse(tenantOrganizationInfoDto.TempTenantUserId);
-            await _authService.UpdateTenantOrganizationAsync(tenantOrganizationInfoDto);
-            return Json(new { success = true, message = "Color Schema updated successfully" });
+        bool response =    await _authService.UpdateTenantOrganizationAsync(tenantOrganizationInfoDto);
+            if(response)
+            {
+                return Json(new { success = true, message = "Color Schema updated successfully" });
+            }
+            else
+            {
+                return Json(new { success = false, message = "Error" });
+            }
+                
+            
         }
 
         #endregion
