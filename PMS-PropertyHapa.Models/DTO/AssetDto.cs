@@ -52,6 +52,7 @@ namespace PMS_PropertyHapa.Models.DTO
         public string OwnerCountry { get; set; }
 
         public string OwnerImage { get; set; }  
+        public string AddedBy { get; set; }  
 
     }
 

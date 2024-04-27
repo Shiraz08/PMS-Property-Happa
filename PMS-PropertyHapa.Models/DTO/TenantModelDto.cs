@@ -61,6 +61,7 @@ namespace PMS_PropertyHapa.Models.DTO
         public string EmergencyEmailAddress { get; set; }
         public string EmergencyRelation { get; set; }
         public string EmergencyDetails { get; set; }
+        public string AddedBy { get; set; }
 
         public List<PetDto> Pets { get; set; } = new List<PetDto>();
 

@@ -35,6 +35,7 @@ namespace PMS_PropertyHapa.Models.DTO
         public int TenantId { get; set; }
 
         public string TenantIdValue { get; set; }
+        public string AddedBy { get; set; }
 
         public TenantModelDto Tenant { get; set; }
         // Collections for Rent Charges and Security Deposits

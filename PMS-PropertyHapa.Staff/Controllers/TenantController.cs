@@ -7,6 +7,8 @@ using PMS_PropertyHapa.Staff.Models;
 using PMS_PropertyHapa.Staff.Services.IServices;
 using System.Security.Claims;
 using PMS_PropertyHapa.Shared.Email;
+using Humanizer.Localisation;
+using PMS_PropertyHapa.MigrationsFiles.Migrations;
 
 namespace PMS_PropertyHapa.Staff.Controllers
 {
@@ -26,6 +28,11 @@ namespace PMS_PropertyHapa.Staff.Controllers
         public async Task<IActionResult> Index()
         {
             var owner = await _authService.GetAllTenantsAsync();
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
+            if (currenUserId != null)
+            {
+                owner = owner.Where(s => s.AddedBy == currenUserId);
+            }
             return View(owner);
         }
 
@@ -34,7 +41,11 @@ namespace PMS_PropertyHapa.Staff.Controllers
         {
 
             var tenants = await _authService.GetAllTenantsAsync();
-
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
+            if (currenUserId != null)
+            {
+                tenants = tenants.Where(s => s.AddedBy == currenUserId);
+            }
             if (tenants != null)
             {
                 return Ok(tenants);
@@ -105,7 +116,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
                 }
             }
 
-
+            tenant.AddedBy = Request?.Cookies["userId"]?.ToString();
             await _authService.CreateTenantAsync(tenant);
 
 
@@ -113,6 +124,11 @@ namespace PMS_PropertyHapa.Staff.Controllers
             if (tenant.AddTenantAsUser)
             {
                 var newtenant = await _authService.GetAllTenantsAsync();
+                var currenUserId = Request?.Cookies["userId"]?.ToString();
+                if (currenUserId != null)
+                {
+                    newtenant = newtenant.Where(s => s.AddedBy == currenUserId);
+                }
                 var registrationRequest = new RegisterationRequestDTO
                 {
                     UserName = tenant.EmailAddress,
@@ -174,7 +190,11 @@ namespace PMS_PropertyHapa.Staff.Controllers
             if (response2)
             {
                 var tenantdatafetch = await _authService.GetAllTenantsAsync();
-
+                var currenUserId = Request?.Cookies["userId"]?.ToString();
+                if (currenUserId != null)
+                {
+                    tenantdatafetch = tenantdatafetch.Where(s => s.AddedBy == currenUserId);
+                }
                 var maxTenantId = tenantdatafetch.Max(s => s.TenantId);
                 tenant.TenantId = maxTenantId;
 

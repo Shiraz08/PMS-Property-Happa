@@ -19,6 +19,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using static PMS_PropertyHapa.Models.DTO.TenantModelDto;
+using static PMS_PropertyHapa.Shared.Enum.SD;
 
 namespace MagicVilla_VillaAPI.Repository
 {
@@ -1053,6 +1054,7 @@ namespace MagicVilla_VillaAPI.Repository
                 CountryCode = tenant.CountryCode,
                 Picture = tenant.Picture,
                 Document = tenant.Document,
+                AddedBy = tenant.AddedBy,
                 AppTid = tenant.AppTenantId.ToString()
             }).ToList();
             return tenantDtos;
@@ -1236,7 +1238,9 @@ namespace MagicVilla_VillaAPI.Repository
                 CountryCode = tenantDto.CountryCode,
                 AppTenantId = tenantDto.AppTenantId,
                 Picture = tenantDto.Picture,
-                Document = tenantDto.Document
+                Document = tenantDto.Document,
+                AddedBy = tenantDto.AddedBy,
+                AddedDate = DateTime.Now
             };
 
             _db.Tenant.Add(newTenant);
@@ -1616,7 +1620,9 @@ namespace MagicVilla_VillaAPI.Repository
                 PostalCode = tenantDto.PostalCode,
                 Country = tenantDto.Country,
                 CountryCode = tenantDto.CountryCode,
-                Picture = tenantDto.Picture
+                Picture = tenantDto.Picture,
+                AddedBy = tenantDto.AddedBy,
+                AddedDate = DateTime.Now
             };
 
 
@@ -1661,7 +1667,9 @@ namespace MagicVilla_VillaAPI.Repository
                     HasSecurityDeposit = leaseDto.HasSecurityDeposit,
                     LateFeesPolicy = leaseDto.LateFeesPolicy,
                     TenantsTenantId = leaseDto.TenantId,
-                    AppTenantId = leaseDto.AppTenantId
+                    AppTenantId = leaseDto.AppTenantId,
+                    AddedBy = leaseDto.AddedBy,
+                    AddedDate = DateTime.Now
                 };
 
                 await _db.Lease.AddAsync(newLease);
@@ -1799,16 +1807,13 @@ namespace MagicVilla_VillaAPI.Repository
         {
             try
             {
-
-
                 var leases = await _db.Lease
-      .Include(l => l.RentCharges)
-      .Include(l => l.SecurityDeposit)
-      .Include(l => l.FeeCharge)
-      .Include(l => l.Tenants)
-      .AsNoTracking()
-      .ToListAsync();
-
+                          .Include(l => l.RentCharges)
+                          .Include(l => l.SecurityDeposit)
+                          .Include(l => l.FeeCharge)
+                          .Include(l => l.Tenants)
+                          .AsNoTracking()
+                          .ToListAsync();
 
                 var leaseDtos = leases.Select(lease => new LeaseDto
                 {
@@ -1825,6 +1830,7 @@ namespace MagicVilla_VillaAPI.Repository
                     LateFeesPolicy = lease.LateFeesPolicy,
                     TenantId = lease.TenantsTenantId,
                     AppTenantId = lease.AppTenantId,
+                    AddedBy = lease.AddedBy,
                     RentCharges = lease.RentCharges.Select(rc => new RentChargeDto
                     {
 
@@ -2163,6 +2169,7 @@ namespace MagicVilla_VillaAPI.Repository
                     Zipcode = tenant.Zipcode,
                     State = tenant.State,
                     AppTid = tenant.AppTenantId,
+                    AddedBy = tenant.AddedBy,
                     Units = tenant.Units.Select(unit => new UnitDTO
                     {
                         UnitId = unit.UnitId,
@@ -2215,6 +2222,26 @@ namespace MagicVilla_VillaAPI.Repository
 
         public async Task<bool> CreateAssetAsync(AssetDTO assetDTO)
         {
+            var user = await _userManager.FindByIdAsync(assetDTO.AddedBy);
+            if (user != null)
+            {
+                var subscription = await _db.Subscriptions.FirstOrDefaultAsync(x => x.Id == user.SubscriptionId);
+
+                if (subscription.SubscriptionName == SubscriptionTypes.Free.ToString())
+                {
+                    var leaseCount = await _db.Assets
+                        .Where(x => x.AddedBy == assetDTO.AddedBy)
+                        .AsNoTracking()
+                        .CountAsync();
+
+                    if (leaseCount >= 5)
+                    {
+                        return false;
+                    }
+                }
+
+            }
+
             var existingOwner = await _db.Owner.FirstOrDefaultAsync(o => o.EmailAddress == assetDTO.OwnerEmail);
             if (existingOwner == null)
             {
@@ -2253,6 +2280,8 @@ namespace MagicVilla_VillaAPI.Repository
                 State = assetDTO.State,
                 Image = assetDTO.Image,
                 AppTenantId = assetDTO.AppTid,
+                AddedBy = assetDTO.AddedBy,
+                AddedDate = DateTime.Now,
                 Units = new List<AssetsUnits>()
             };
 
@@ -2539,6 +2568,7 @@ namespace MagicVilla_VillaAPI.Repository
                                            OrganizationIcon = org.OrganizationIcon,
                                            OrganizationLogo = org.OrganizationLogo,
                                            Website = org.Website,
+                                           AddedBy = owner.AddedBy,
                                        })
                                        .AsNoTracking()
                                        .ToListAsync();
