@@ -64,7 +64,7 @@
     <link rel="stylesheet" type="text/css" href="~/Dashboard/assets/css/vendors/prism.css">
     <!-- Plugins css Ends-->
     <!-- Plugins css start-->
-    
+
     <link href="~/dashboard/assets/css/customstyle.css" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="~/Dashboard/assets/css/vendors/scrollbar.css">
     <link rel="stylesheet" type="text/css" href="~/Dashboard/assets/css/vendors/datatables.css">
@@ -220,7 +220,7 @@
                                     </a>
                                 </li>
 
-                               
+
                                 <li class="sidebar-list">
                                     <a class="sidebar-link sidebar-title link-nav" href="@Url.Action("Index","Tenant")">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-users"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg><span>Tenant</span>
@@ -284,9 +284,9 @@
                                     <a class="sidebar-link sidebar-title" href="@Url.Action("Index","Communication")">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-activity"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg><span>Communication</span>
                                     </a>
-                                  @*   <ul class="sidebar-submenu">
-                                        <li><a href="@Url.Action("SMS","Communication")">Add SMS</a></li>
-                                        <li><a href="@Url.Action("Email","Communication")"></a></li>
+                                    @*   <ul class="sidebar-submenu">
+                                    <li><a href="@Url.Action("SMS","Communication")">Add SMS</a></li>
+                                    <li><a href="@Url.Action("Email","Communication")"></a></li>
                                     </ul> *@
                                 </li>
                                 <li class="sidebar-list">
@@ -385,11 +385,22 @@
                             <label for="organizationSecondaryColor">Organization Secondary Color</label>
                             <input type="color" class="form-control" id="organizationSecondaryColor" name="organizationSecondaryColor">
                         </div>
+                        <div class="form-group">
+                            <label for="organizationLogoUploader">Organization Logo</label>
+                            <input type="file" class="form-control-file" id="organizationLogoUploader" accept="image/*">
+                            <img id="organizationLogoPreview" src="" alt="Logo Preview" style="max-width: 100%; margin-top: 10px;" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="organizationIconUploader">Organization Icon</label>
+                            <input type="file" class="form-control-file" id="organizationIconUploader" accept="image/*">
+                            <img id="organizationIconPreview" src="" alt="Icon Preview" style="max-width: 100%; margin-top: 10px;" />
+                        </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" onclick="closeModal()" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-success" onclick="saveTenantOrganizationInfo()">Save Changes</button>
+                    <button type="button" class="btn btn-success" id="saveChangesButton">Save Changes</button>
                 </div>
             </div>
         </div>
@@ -463,9 +474,8 @@
             }
             var primaryColor = localStorage.getItem('primaryColor');
             var secondaryColor = localStorage.getItem('secondaryColor');
-            if(organizationLogo != null)
-            {
-                $('#NewPictureBase64').attr('src', 'data:image;base64,' + organizationLogo);
+            if (organizationLogo != null) {
+                $('#NewPictureBase64').attr('src', organizationLogo);
             }
             if (organizationName != null) {
                 document.title = "Dashboard" + " " + "-" + " " + organizationName;
@@ -480,7 +490,7 @@
 
     <script>
         $(document).ready(function () {
-           
+
             function openModal() {
                 $('#exampleModalCenter').modal('show');
             }
@@ -520,43 +530,168 @@
 
 
 
-        function saveTenantOrganizationInfo() {
-            var tenantId = localStorage.getItem('tid');
-            var userId = localStorage.getItem('userId');
-            var organizationLogo = localStorage.getItem('organizationLogo');
-            var organizationIcon = localStorage.getItem('organizationIcon');
-            var tenantOrganizationInfoData = {
-                Id: tenantId,
-                OrganizationName: $('#organizationName').val(),
-                OrganizationDescription: $('#organizationDescription').val(),
-                OrganizationIcon: organizationIcon,
-                OrganizationLogo: organizationLogo,
-                OrganizatioPrimaryColor: $('#organizationPrimaryColor').val(),
-                OrganizationSecondColor: $('#organizationSecondaryColor').val(),
-                TempTenantUserId: userId
-            };
+        $(document).ready(function () {
 
-            $.ajax({
-                url: '/Auth/SaveTenantOrganizationInfo', 
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(tenantOrganizationInfoData),
-                success: function (response) {
-                    console.log('Success:', response);
-                },
-                error: function (xhr, status, error) {
-                    console.error('Error:', error);
+            var Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
                 }
             });
-        }
 
+            function convertFileToBase64(file) {
+                return new Promise((resolve, reject) => {
+                    if (!file) {
+                        resolve(null);
+                    } else {
+                        var reader = new FileReader();
+                        reader.onload = function (e) {
+                            resolve(e.target.result);
+                        };
+                        reader.onerror = reject;
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+
+            function updateColorInputs() {
+                var primaryColor = localStorage.getItem('primaryColor') || '#000000';
+                var secondaryColor = localStorage.getItem('secondaryColor') || '#000000';
+                $('#organizationPrimaryColor').val(primaryColor);
+                $('#organizationSecondaryColor').val(secondaryColor);
+                changePrimaryColor(primaryColor);
+                changeSecondaryColor(secondaryColor);
+            }
+
+            updateColorInputs();
+
+            // Apply stored color settings on page load
+            if (localStorage.getItem("primaryColor")) {
+                changePrimaryColor(localStorage.getItem("primaryColor"));
+            }
+
+            if (localStorage.getItem("secondaryColor")) {
+                changeSecondaryColor(localStorage.getItem("secondaryColor"));
+            }
+
+            // Event bindings for color changes
+            $('#organizationPrimaryColor').change(function () {
+                var color = $(this).val();
+                changePrimaryColor(color);
+                localStorage.setItem("primaryColor", color);
+            });
+
+            $('#organizationSecondaryColor').change(function () {
+                var color = $(this).val();
+                changeSecondaryColor(color);
+                localStorage.setItem("secondaryColor", color);
+            });
+
+            function changePrimaryColor(color) {
+                document.documentElement.style.setProperty('--primary-color', color);
+                $('.primary-color-dependent').css('background-color', color);
+            }
+
+            function changeSecondaryColor(color) {
+                document.documentElement.style.setProperty('--secondary-color', color);
+                $('.secondary-color-dependent').css('background-color', color);
+            }
+
+            $('#saveChangesButton').click(function () {
+                saveTenantOrganizationInfo();
+            });
+
+            $("#organizationLogoUploader").change(function () {
+                readURL(this, '#organizationLogoPreview');
+            });
+
+            $("#organizationIconUploader").change(function () {
+                readURL(this, '#organizationIconPreview');
+            });
+
+            function readURL(input, previewId) {
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        $(previewId).attr('src', e.target.result);
+                    };
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+
+            function saveTenantOrganizationInfo() {
+                var tenantOrganizationInfoData = {
+                    Id: localStorage.getItem('tid'),
+                    OrganizationName: $('#organizationName').val(),
+                    OrganizationDescription: $('#organizationDescription').val(),
+                    OrganizatioPrimaryColor: $('#organizationPrimaryColor').val(),
+                    OrganizationSecondColor: $('#organizationSecondaryColor').val(),
+                    TempTenantUserId: localStorage.getItem('userId')
+                };
+
+                var logoFile = $('#organizationLogoUploader').get(0).files[0];
+                var iconFile = $('#organizationIconUploader').get(0).files[0];
+
+                Promise.all([
+                    convertFileToBase64(logoFile),
+                    convertFileToBase64(iconFile)
+                ]).then(function (values) {
+                    tenantOrganizationInfoData.OrganizationLogo = values[0];
+                    tenantOrganizationInfoData.OrganizationIcon = values[1];
+
+                    $.ajax({
+                        url: '/Auth/SaveTenantOrganizationInfo',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify(tenantOrganizationInfoData),
+                        success: function (response) {
+                            Toast.fire({
+                                icon: 'success',
+                                title: 'Settings saved successfully',
+                                timer: 3000,
+                                willClose: () => {
+                                    $('#exampleModalCenter').modal('hide');
+                                    setTimeout(function () {
+
+                                        if (values[0]) {
+                                            localStorage.setItem('organizationLogo', values[0]);
+                                            $('#NewPictureBase64').attr('src', values[0]);
+                                        }
+                                        if (values[1]) {
+                                            localStorage.setItem('organizationIcon', values[1]);
+                                            $('#faviconIcon').attr('href', values[1]);
+                                            document.getElementById('faviconIcon').href = values[1];
+                                        }
+                                        window.location.reload();
+                                    }, 500);
+                                }
+                            });
+                        },
+                        error: function (xhr, status, error) {
+                            Toast.fire({
+                                icon: 'error',
+                                title: 'Failed to save settings'
+                            });
+                        }
+                    });
+
+                }).catch(function (error) {
+                    console.error('Error converting files', error);
+                });
+            }
+        });
 
 
         var organizationIconBase64 = localStorage.getItem('organizationIcon');
         console.log('organizationIconBase64:', organizationIconBase64);
 
         if (organizationIconBase64) {
-            var organizationIconDataURI = 'data:image;base64,' + organizationIconBase64;
+            var organizationIconDataURI = organizationIconBase64;
             var faviconIcon = document.getElementById('faviconIcon');
             if (faviconIcon) {
                 faviconIcon.href = organizationIconDataURI;
@@ -566,6 +701,8 @@
         } else {
             console.error('organizationIconBase64 is empty or not found in localStorage');
         }
+
+
 
 
     </script>
