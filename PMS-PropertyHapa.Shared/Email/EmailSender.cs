@@ -13,9 +13,9 @@ namespace PMS_PropertyHapa.Shared.Email
                 SmtpClient smtpClient = new SmtpClient("smtp.gmail.com", 587);
                 smtpClient.EnableSsl = true;
                 smtpClient.UseDefaultCredentials = false;
-                smtpClient.Credentials = new NetworkCredential("info@hoozzee.com", "yykbjptkvssnyhih");
+                smtpClient.Credentials = new NetworkCredential("pms@propertyhapa.com", "wvhi qpdu khhx hmnb");
                 MailMessage mailMessage = new MailMessage();
-                mailMessage.From = new MailAddress("info@hoozzee.com");
+                mailMessage.From = new MailAddress("pms@propertyhapa.com");
                 foreach (var address in emails.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries))
                 {
                     mailMessage.To.Add(new MailAddress(address));
@@ -39,7 +39,7 @@ namespace PMS_PropertyHapa.Shared.Email
                 SmtpClient smtpClient = new SmtpClient("smtp.gmail.com", 587);
                 smtpClient.EnableSsl = true;
                 smtpClient.UseDefaultCredentials = false;
-                smtpClient.Credentials = new NetworkCredential("pms@propertyhapa.com", "Shiraz@2454");
+                smtpClient.Credentials = new NetworkCredential("pms@propertyhapa.com", "wvhi qpdu khhx hmnb");
                 MailMessage mailMessage = new MailMessage();
                 mailMessage.From = new MailAddress("pms@propertyhapa.com");
                 foreach (var address in emails.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries))
@@ -47,6 +47,7 @@ namespace PMS_PropertyHapa.Shared.Email
                     mailMessage.To.Add(new MailAddress(address));
                 }
                 mailMessage.Subject = subject;
+                mailMessage.IsBodyHtml = true;
                 mailMessage.Body = message;
                 smtpClient.Send(mailMessage);
             }

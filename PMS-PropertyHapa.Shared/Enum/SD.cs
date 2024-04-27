@@ -26,5 +26,9 @@ namespace PMS_PropertyHapa.Shared.Enum
             Json,
             MultipartFormData,
         }
+        public enum SubscriptionTypes
+        {
+            Free
+        }
     }
 }
