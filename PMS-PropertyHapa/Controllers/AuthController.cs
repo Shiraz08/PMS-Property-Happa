@@ -103,10 +103,11 @@ namespace PMS_PropertyHapa.Controllers
 
 
         [HttpGet]
-        public IActionResult Register(string subscription)
+        public IActionResult Register(string subscription,int id)
         {
             var model = new RegisterationRequestDTO();
             ViewBag.SubscriptionType = subscription; 
+            ViewBag.SubscriptionId = id; 
             return View(model);
         }
 
@@ -121,7 +122,8 @@ namespace PMS_PropertyHapa.Controllers
                     Email = model.Email,
                     NormalizedEmail = model.Email.ToUpperInvariant(),
                     EmailConfirmed = true,
-                    SubscriptionName = model.SubscriptionName
+                    SubscriptionName = model.SubscriptionName,
+                    SubscriptionId = model.SubscriptionId
                 };
 
                 var result = await _userManager.CreateAsync(user, model.Password);
@@ -132,15 +134,36 @@ namespace PMS_PropertyHapa.Controllers
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     var encodedCode = HttpUtility.UrlEncode(code);
                     var callbackUrl = Url.Action("ConfirmEmail", "Auth", new { name = user.UserName, code = encodedCode }, protocol: HttpContext.Request.Scheme);
-
-                    await _emailSender.SendEmailAsync(user.Email, "Confirm your email", $"Please confirm your account by <a href='{callbackUrl}'>clicking here</a>.");
+                    string htmlContent = $@"<!DOCTYPE html>
+                                            <html lang=""en"">
+                                            <head>
+                                                <meta charset=""UTF-8"">
+                                                <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+                                                <title>Email Confirmation</title>
+                                            </head>
+                                            <body>
+                                                <div style=""font-family: Arial, sans-serif;"">
+                                                    <h2>Confirm Your Email Address</h2>
+                                                    <p>Hello,</p>
+                                                    <p>Please confirm your email address by clicking the link below:</p>
+                                                    <p><a href=""{callbackUrl}"" target=""_blank"" style=""background-color: #007bff; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px;"">Confirm Email Address</a></p>
+                                                    <p>If you did not create an account, you can safely ignore this email.</p>
+                                                    <p>Thank you,</p>
+                                                    <p>Your Application Team</p>
+                                                </div>
+                                            </body>
+                                            </html>";
+                    await _emailSender.SendEmailAsync(user.Email, "Confirm your email", htmlContent);
 
                     return RedirectToAction("Index", "Home");
                 }
 
                 foreach (var error in result.Errors)
                 {
-                    return RedirectToAction("Auth", "Register");
+                    ViewBag.SubscriptionType = model.SubscriptionName;
+                    ViewBag.SubscriptionId = model.SubscriptionId;
+                    ModelState.AddModelError("", error.Description);
+                    //return RedirectToAction("Auth", "Register");
                 }
             }
 

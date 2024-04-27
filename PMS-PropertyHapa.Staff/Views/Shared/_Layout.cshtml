@@ -389,7 +389,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" onclick="closeModal()" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-success" id="saveChangesButton">Save Changes</button>
+                    <button type="button" class="btn btn-success" onclick="saveTenantOrganizationInfo()">Save Changes</button>
                 </div>
             </div>
         </div>
@@ -520,106 +520,36 @@
 
 
 
-        $(document).ready(function () {
+        function saveTenantOrganizationInfo() {
+            var tenantId = localStorage.getItem('tid');
+            var userId = localStorage.getItem('userId');
+            var organizationLogo = localStorage.getItem('organizationLogo');
+            var organizationIcon = localStorage.getItem('organizationIcon');
+            var tenantOrganizationInfoData = {
+                Id: tenantId,
+                OrganizationName: $('#organizationName').val(),
+                OrganizationDescription: $('#organizationDescription').val(),
+                OrganizationIcon: organizationIcon,
+                OrganizationLogo: organizationLogo,
+                OrganizatioPrimaryColor: $('#organizationPrimaryColor').val(),
+                OrganizationSecondColor: $('#organizationSecondaryColor').val(),
+                TempTenantUserId: userId
+            };
 
-            var Toast = Swal.mixin({
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+            $.ajax({
+                url: '/Auth/SaveTenantOrganizationInfo', 
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(tenantOrganizationInfoData),
+                success: function (response) {
+                    console.log('Success:', response);
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error:', error);
                 }
             });
+        }
 
-            function updateColorInputs() {
-                var primaryColor = localStorage.getItem('primaryColor') || '#000000';
-                var secondaryColor = localStorage.getItem('secondaryColor') || '#000000'; 
-                $('#organizationPrimaryColor').val(primaryColor);
-                $('#organizationSecondaryColor').val(secondaryColor);
-                changePrimaryColor(primaryColor);
-                changeSecondaryColor(secondaryColor);
-            }
-
-            updateColorInputs();
-
-            // Apply stored color settings on page load
-            if (localStorage.getItem("primaryColor")) {
-                changePrimaryColor(localStorage.getItem("primaryColor"));
-            }
-
-            if (localStorage.getItem("secondaryColor")) {
-                changeSecondaryColor(localStorage.getItem("secondaryColor"));
-            }
-
-            // Event bindings for color changes
-            $('#organizationPrimaryColor').change(function () {
-                var color = $(this).val();
-                changePrimaryColor(color);
-                localStorage.setItem("primaryColor", color);
-            });
-
-            $('#organizationSecondaryColor').change(function () {
-                var color = $(this).val();
-                changeSecondaryColor(color);
-                localStorage.setItem("secondaryColor", color);
-            });
-
-            function changePrimaryColor(color) {
-                document.documentElement.style.setProperty('--primary-color', color);
-                $('.primary-color-dependent').css('background-color', color);
-            }
-
-            function changeSecondaryColor(color) {
-                document.documentElement.style.setProperty('--secondary-color', color);
-                $('.secondary-color-dependent').css('background-color', color);
-            }
-
-            $('#saveChangesButton').click(function () {
-                saveTenantOrganizationInfo();
-            });
-
-            function saveTenantOrganizationInfo() {
-                var tenantOrganizationInfoData = {
-                    Id: localStorage.getItem('tid'),
-                    OrganizationName: $('#organizationName').val(),
-                    OrganizationDescription: $('#organizationDescription').val(),
-                    OrganizationIcon: localStorage.getItem('organizationIcon'),
-                    OrganizationLogo: localStorage.getItem('organizationLogo'),
-                    OrganizatioPrimaryColor: $('#organizationPrimaryColor').val(),
-                    OrganizationSecondColor: $('#organizationSecondaryColor').val(),
-                    TempTenantUserId: localStorage.getItem('userId')
-                };
-
-                $.ajax({
-                    url: '/Auth/SaveTenantOrganizationInfo',
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify(tenantOrganizationInfoData),
-                    success: function (response) {
-                        Toast.fire({
-                            icon: 'success',
-                            title: 'Settings saved successfully',
-                            timer: 3000, 
-                            willClose: () => {
-                                $('#exampleModalCenter').modal('hide');
-                                setTimeout(function () {
-                                    window.location.reload();
-                                }, 500); 
-                            }
-                        });
-                    },
-                    error: function (xhr, status, error) {
-                        Toast.fire({
-                            icon: 'error',
-                            title: 'Failed to save settings'
-                        });
-                    }
-                });
-            }
-        });
 
 
         var organizationIconBase64 = localStorage.getItem('organizationIcon');

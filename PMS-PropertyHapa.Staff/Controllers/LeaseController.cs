@@ -64,7 +64,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
                 var properties2 = await _authService.GetAllAssetsAsync(); 
 
                 var properties = properties2
-                    .Where(s=>s.AppTid == userId.ToUpperInvariant())
+                    .Where(s=>s.AppTid == userId)
                     .Select(a => new {
                         AssetId = a.AssetId,
                         SelectedPropertyType = a.BuildingNo + " - " + a.BuildingName

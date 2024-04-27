@@ -1,6 +1,7 @@
 ﻿@model PMS_PropertyHapa.Models.DTO.RegisterationRequestDTO
 @{
     var subscriptionType = ViewBag.SubscriptionType as string;
+    var subscriptionId = ViewBag.SubscriptionId;
 }
 <head>
     <!-- Include Bootstrap CSS -->
@@ -20,6 +21,12 @@
                         <h5 class="card-title mt-3">Register</h5>
                     </div>
                     <div class="card-body">
+                        @if (!string.IsNullOrEmpty(ViewBag.Error))
+                        {
+                            <div class="alert alert-danger" role="alert">
+                                @ViewBag.Error
+                            </div>
+                        }
                         <form asp-action="Register">
                             <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
 
@@ -39,6 +46,7 @@
                             </div>
 
                             <input type="hidden" asp-for="SubscriptionName" value="@subscriptionType">
+                            <input type="hidden" asp-for="SubscriptionId" value="@subscriptionId">
 
                             <button type="submit" class="btn btn-primary">Register</button>
                         </form>
