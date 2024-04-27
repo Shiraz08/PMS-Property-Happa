@@ -1,156 +1,254 @@
 ﻿@model PMS_PropertyHapa.Models.DTO.SubscriptionDto
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-</head>
-<body>
-    <div class="container mt-5">
-        <h2>Manage Subscriptions</h2>
-        <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#subscriptionModal">Add New Subscription</button>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Subscription Name</th>
-                    <th>Type</th>
-                    <th>Price</th>
-                    <th>Currency</th>
-                    <th>Description</th>
-                    <th>Tax (%)</th>
-                    <th>Units</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody id="subscriptionList"></tbody>
-        </table>
-    </div>
-
-    <!-- Subscription Modal -->
-    <div class="modal fade" id="subscriptionModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalLabel">Subscription Details</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="subscriptionForm">
-                        <input type="hidden" id="subscriptionId">
-                        <div class="mb-3">
-                            <label for="subscriptionName" class="form-label">Subscription Name</label>
-                            <input type="text" class="form-control" id="subscriptionName" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="subscriptionType" class="form-label">Type</label>
-                            <select class="form-control" id="subscriptionType" required>
-                                <option value="" selected disabled hidden>Select a type</option>
-                                <option value="Free">Free</option>
-                                <option value="Standard">Standard</option>
-                                <option value="Premium">Premium</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="price" class="form-label">Price</label>
-                            <input type="number" step="0.01" class="form-control" id="price" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="currency" class="form-label">Currency</label>
-                            <select class="form-control" id="currency" required>
-                                <option value="" selected disabled hidden>Select Currency</option>
-                                <option value="USD">USD - United States Dollar ($)</option>
-                                <option value="EUR">EUR - Euro (€)</option>
-                                <option value="GBP">GBP - British Pound (£)</option>
-                                <option value="JPY">JPY - Japanese Yen (¥)</option>
-                                <option value="INR">INR - Indian Rupee (₹)</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="smallDescription" class="form-label">Description</label>
-                            <textarea class="form-control" id="smallDescription" required></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="tax" class="form-label">Tax (%)</label>
-                            <input type="number" class="form-control" id="tax" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="noOfUnits" class="form-label">No of Units</label>
-                            <input type="number" class="form-control" id="noOfUnits" required>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" onclick="saveSubscription()">Save</button>
+@{
+    ViewData["Title"] = "Subscription";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12">
+                    <h3>Subscription List</h3>
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a class="home-item" href="@Url.Action("Subscription","AddSubscription")"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item">Subscription</li>
+                        <li class="breadcrumb-item active">Add Subscription</li>
+                    </ol>
                 </div>
             </div>
         </div>
     </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h4 class="card-title">
+                            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#subscriptionModal">
+                                <i class="ri-add-line align-bottom me-1"></i>Add New Subscription
+                                </button>
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table" id="grouproles">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Subscription Name</th>
+                                        <th>Type</th>
+                                        <th>Price</th>
+                                        <th>Currency</th>
+                                        <th>Description</th>
+                                        <th>Tax (%)</th>
+                                        <th>Units</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="subscriptionList"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Subscription Modal -->
+<div class="modal fade" id="subscriptionModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalLabel">Subscription Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="subscriptionForm">
+                    <input type="hidden" id="subscriptionId">
+                    <div class="mb-3">
+                        <label for="subscriptionName" class="form-label">Subscription Name</label>
+                        <input type="text" class="form-control" id="subscriptionName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="subscriptionType" class="form-label">Type</label>
+                        <select class="form-control" id="subscriptionType" required>
+                            <option value="" selected disabled hidden>Select a type</option>
+                            <option value="Monthly">Monthly</option>
+                            <option value="Yearly">Yearly</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="price" class="form-label">Price</label>
+                        <input type="number" step="0.01" class="form-control" id="price" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="currency" class="form-label">Currency</label>
+                        <select class="form-control" id="currency" required>
+                            <option value="" selected disabled hidden>Select Currency</option>
+                            <option value="USD">USD - United States Dollar ($)</option>
+                            <option value="EUR">EUR - Euro (€)</option>
+                            <option value="GBP">GBP - British Pound (£)</option>
+                            <option value="JPY">JPY - Japanese Yen (¥)</option>
+                            <option value="INR">INR - Indian Rupee (₹)</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="smallDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="smallDescription" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="tax" class="form-label">Tax (%)</label>
+                        <input type="number" class="form-control" id="tax" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="noOfUnits" class="form-label">No of Units</label>
+                        <input type="number" class="form-control" id="noOfUnits" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="saveSubscription()">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        $(document).ready(function () {
-            fetchSubscriptions();
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    $(document).ready(function () {
+        fetchSubscriptions();
 
-            function fetchSubscriptions() {
-                $.ajax({
-                    url: '/Subscription/GetAllSubscriptions',
-                    type: 'GET',
-                    success: function (response) {
-                        if (response.success) {
-                            var $list = $('#subscriptionList').empty();
-                            response.data.forEach(function (subscription) {
-                                $list.append(`
-                                                         <tr>
-                                                             <td>${subscription.Id}</td>
-                                                             <td>${subscription.SubscriptionName}</td>
-                                                             <td>${subscription.SubscriptionType}</td>
-                                                             <td>${subscription.Price.toFixed(2)}</td>
-                                                             <td>${subscription.Currency}</td>
-                                                             <td>${subscription.SmallDescription}</td>
-                                                             <td>${subscription.Tax.toFixed(2)}</td>
-                                                             <td>${subscription.NoOfUnits}</td>
-                                                             <td>
-                                                                 <button onclick="editSubscription(${subscription.Id})" class="btn btn-primary">Edit</button>
-                                                                 <button onclick="deleteSubscription(${subscription.Id})" class="btn btn-danger">Delete</button>
-                                                             </td>
-                                                         </tr>
-                                    `);
-                            });
-                        } else {
-                            console.error('Failed to fetch subscriptions: ' + response.message);
-                        }
-                    },
-                    error: function (xhr) {
-                        console.error('Error fetching subscriptions: ' + xhr.responseText);
+        function fetchSubscriptions() {
+            $.ajax({
+                url: '/Subscription/GetAllSubscriptions',
+                type: 'GET',
+                success: function (response) {
+                    if (response.success) {
+                        var $list = $('#subscriptionList').empty();
+                        response.data.forEach(function (subscription) {
+                            $list.append(`
+                                                             <tr>
+                                                                 <td>${subscription.Id}</td>
+                                                                 <td>${subscription.SubscriptionName}</td>
+                                                                 <td>${subscription.SubscriptionType}</td>
+                                                                 <td>${subscription.Price.toFixed(2)}</td>
+                                                                 <td>${subscription.Currency}</td>
+                                                                 <td>${subscription.SmallDescription}</td>
+                                                                 <td>${subscription.Tax.toFixed(2)}</td>
+                                                                 <td>${subscription.NoOfUnits}</td>
+                                                                 <td>
+                                                                     <button onclick="editSubscription(${subscription.Id})" class="btn btn-primary">Edit</button>
+                                                                     <button onclick="deleteSubscription(${subscription.Id})" class="btn btn-danger">Delete</button>
+                                                                 </td>
+                                                             </tr>
+                                        `);
+                        });
+                    } else {
+                        console.error('Failed to fetch subscriptions: ' + response.message);
                     }
-                });
-            }
+                },
+                error: function (xhr) {
+                    console.error('Error fetching subscriptions: ' + xhr.responseText);
+                }
+            });
+        }
 
-            window.editSubscription = function (Id) {
+        window.editSubscription = function (Id) {
+            $.ajax({
+                url: '/Subscription/Get/' + Id,
+                type: 'GET',
+                success: function (response) {
+                    if (response.success) {
+                        var data = response.data;
+                        $('#subscriptionId').val(data.Id);
+                        $('#subscriptionName').val(data.SubscriptionName);
+                        $('#subscriptionType').val(data.SubscriptionType);
+                        $('#price').val(data.Price);
+                        $('#currency').val(data.Currency);
+                        $('#smallDescription').val(data.SmallDescription);
+                        $('#tax').val(data.Tax);
+                        $('#noOfUnits').val(data.NoOfUnits);
+                        $('#subscriptionModal').modal('show');
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                            toast: true,
+                            width: '300px',
+                            padding: '0.5rem',
+                            title: 'Failed to fetch data'
+                        });
+                    }
+                }
+            });
+        };
+
+        window.saveSubscription = function () {
+            var id = $('#subscriptionId').val(); // Ensure this is being set correctly.
+            var method = id ? 'PUT' : 'POST';
+            var url = id ? '/Subscription/Edit/' + id : '/Subscription/Create';
+
+            var data = {
+                Id: id ? parseInt(id) : null, // Convert to integer if not null
+                SubscriptionName: $('#subscriptionName').val(),
+                SubscriptionType: $('#subscriptionType').val(),
+                Price: parseFloat($('#price').val()),
+                Currency: $('#currency').val(),
+                SmallDescription: $('#smallDescription').val(),
+                Tax: parseFloat($('#tax').val()),
+                NoOfUnits: parseInt($('#noOfUnits').val())
+            };
+
+            $.ajax({
+                url: url,
+                type: method,
+                contentType: 'application/json', // Ensure this is correct
+                data: JSON.stringify(data), // Convert data object to JSON string
+                success: function (response) {
+                    if (response.success) {
+                        $('#subscriptionModal').modal('hide');
+                        fetchSubscriptions(); // Refresh list
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Subscription saved successfully!',
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Failed to save subscription',
+                            text: response.message,
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true
+                        });
+                    }
+                }
+            });
+        };
+
+
+
+        window.deleteSubscription = function (Id) {
+            if (confirm('Are you sure you want to delete this subscription?')) {
                 $.ajax({
-                    url: '/Subscription/Get/' + Id,
-                    type: 'GET',
-                    success: function (response) {
-                        if (response.success) {
-                            var data = response.data;
-                            $('#subscriptionId').val(data.Id);
-                            $('#subscriptionName').val(data.SubscriptionName);
-                            $('#subscriptionType').val(data.SubscriptionType);
-                            $('#price').val(data.Price);
-                            $('#currency').val(data.Currency);
-                            $('#smallDescription').val(data.SmallDescription);
-                            $('#tax').val(data.Tax);
-                            $('#noOfUnits').val(data.NoOfUnits);
-                            $('#subscriptionModal').modal('show');
-                        } else {
+                    url: '/Subscription/Delete/' + Id,
+                    type: 'DELETE',
+                    success: function (result) {
+                        if (result.success) {
                             Swal.fire({
-                                icon: 'error',
+                                icon: 'success',
                                 position: 'top-end',
                                 showConfirmButton: false,
                                 timer: 3000,
@@ -158,99 +256,10 @@
                                 toast: true,
                                 width: '300px',
                                 padding: '0.5rem',
-                                title: 'Failed to fetch data'
+                                title: 'Subscription deleted successfully'
                             });
-                        }
-                    }
-                });
-            };
-
-            window.saveSubscription = function () {
-                var id = $('#subscriptionId').val(); // Ensure this is being set correctly.
-                var method = id ? 'PUT' : 'POST';
-                var url = id ? '/Subscription/Edit/' + id : '/Subscription/Create';
-
-                var data = {
-                    Id: id ? parseInt(id) : null, // Convert to integer if not null
-                    SubscriptionName: $('#subscriptionName').val(),
-                    SubscriptionType: $('#subscriptionType').val(),
-                    Price: parseFloat($('#price').val()),
-                    Currency: $('#currency').val(),
-                    SmallDescription: $('#smallDescription').val(),
-                    Tax: parseFloat($('#tax').val()),
-                    NoOfUnits: parseInt($('#noOfUnits').val())
-                };
-
-                $.ajax({
-                    url: url,
-                    type: method,
-                    contentType: 'application/json', // Ensure this is correct
-                    data: JSON.stringify(data), // Convert data object to JSON string
-                    success: function (response) {
-                        if (response.success) {
-                            $('#subscriptionModal').modal('hide');
-                            fetchSubscriptions(); // Refresh list
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Subscription saved successfully!',
-                                toast: true,
-                                position: 'top-end',
-                                showConfirmButton: false,
-                                timer: 3000,
-                                timerProgressBar: true
-                            });
+                            fetchSubscriptions();
                         } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Failed to save subscription',
-                                text: response.message,
-                                toast: true,
-                                position: 'top-end',
-                                showConfirmButton: false,
-                                timer: 3000,
-                                timerProgressBar: true
-                            });
-                        }
-                    }
-                });
-            };
-
-
-
-            window.deleteSubscription = function (Id) {
-                if (confirm('Are you sure you want to delete this subscription?')) {
-                    $.ajax({
-                        url: '/Subscription/Delete/' + Id,
-                        type: 'DELETE',
-                        success: function (result) {
-                            if (result.success) {
-                                Swal.fire({
-                                    icon: 'success',
-                                    position: 'top-end',
-                                    showConfirmButton: false,
-                                    timer: 3000,
-                                    timerProgressBar: true,
-                                    toast: true,
-                                    width: '300px',
-                                    padding: '0.5rem',
-                                    title: 'Subscription deleted successfully'
-                                });
-                                fetchSubscriptions();
-                            } else {
-                                Swal.fire({
-                                    icon: 'error',
-                                    position: 'top-end',
-                                    showConfirmButton: false,
-                                    timer: 3000,
-                                    timerProgressBar: true,
-                                    toast: true,
-                                    width: '300px',
-                                    padding: '0.5rem',
-                                    title: 'Failed to delete subscription'
-                                });
-                            }
-                        },
-                        error: function (error) {
                             Swal.fire({
                                 icon: 'error',
                                 position: 'top-end',
@@ -263,13 +272,22 @@
                                 title: 'Failed to delete subscription'
                             });
                         }
-                    });
-                }
-            };
-        });
-    </script>
-
-    <!-- Bootstrap Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+                    },
+                    error: function (error) {
+                        Swal.fire({
+                            icon: 'error',
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                            toast: true,
+                            width: '300px',
+                            padding: '0.5rem',
+                            title: 'Failed to delete subscription'
+                        });
+                    }
+                });
+            }
+        };
+    });
+</script>
