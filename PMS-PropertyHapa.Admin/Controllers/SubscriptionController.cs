@@ -16,6 +16,7 @@ using System.Net;
 using System.Text;
 using System.Web;
 using Humanizer;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PMS_PropertyHapa.Controllers
 {

@@ -62,7 +62,7 @@ namespace PMS_PropertyHapa.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginRequestDTO login)
         {
-            var user = await _userManager.FindByEmailAsync(login.Email);
+            var user = _context.Users.Where(x => x.Email == login.Email).FirstOrDefault();
             if (user == null)
             {
                 ModelState.AddModelError(string.Empty, "Invalid login attempt.");

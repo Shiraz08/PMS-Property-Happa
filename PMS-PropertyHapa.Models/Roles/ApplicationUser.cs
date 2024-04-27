@@ -43,6 +43,7 @@ namespace PMS_PropertyHapa.Models.Roles
         public string TiwiloPhone { get; set; }
 
         public string? SubscriptionName { get; set; }    
+        public int? SubscriptionId { get; set; }    
 
         public bool EmailConfirmed { get; set; }
 

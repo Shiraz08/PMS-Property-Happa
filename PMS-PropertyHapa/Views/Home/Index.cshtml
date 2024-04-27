@@ -63,7 +63,7 @@
                         <div class="price-box">
                             <div>
                                 <h4 class="text-white">$${subscription.Price.toFixed(2)} ${subscription.Currency}</h4>
-                                <p>/ month</p>
+                                        <p>/ ${subscription.SubscriptionType}</p>
                             </div>
                         </div>
                     </div>
@@ -87,7 +87,7 @@
 
     function handleSubscriptionClick(price, id, name) {
         if (price === 0) {
-            window.location.href = `/Auth/Register?subscription=${encodeURIComponent(name)}`;
+            window.location.href = `/Auth/Register?subscription=${encodeURIComponent(name)}&id=${encodeURIComponent(id.toString())}`;
         } else {
             
             Swal.fire({
@@ -97,7 +97,7 @@
                 confirmButtonText: 'Ok'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    window.location.href = `/Auth/Register?subscription=${encodeURIComponent(name)}`;
+                    window.location.href = `/Auth/Register?subscription=${encodeURIComponent(name)}&id=${encodeURIComponent(id.toString())}`;
                 }
             });
         }

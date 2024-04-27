@@ -457,19 +457,105 @@
                                             </div>
                                         </div>
                                     </div>
+@*                                     <div class="modal-body">
+                                        <h3 class="modal-title">Previous Landlords<span class="f-14 pull-right mt-0">Total @Model?.Owners.Count()</span></h3>
+                                        <br />
+                                        <div class="card-body p-0">
+                                            <div class="row list-persons" id="addcon">
+                                                <div class="nav flex-column nav-pills" id="v-pills-tab">
+                                                    @foreach (var item in Model.Owners.OrderBy(a => a.FirstName))
+                                                    {
+                                                        <a class="contact-tab-@item.OwnerId nav-link"
+                                                           href="javascript:void(0);"
+                                                           onclick="selectOwner('@item.OwnerId', '@item.FirstName', '@item.LastName', '@item.EmailAddress', '@item.Picture', '@item.PostalCode', '@item.Address', '@item.District', '@item.Region', '@item.CountryCode', '@item.Country')"
+                                                           role="tab"
+                                                           aria-selected="true">
+                                                            <div class="media">
+                                                                <img class="img-50 img-fluid m-r-20 rounded-circle update_img_0" src="@item.Picture" alt="">
+                                                                <div class="media-body">
+                                                                    <h6>@item.FirstName @item.LastName</h6>
+                                                                    <p>@item.EmailAddress</p>
+                                                                </div>
+                                                            </div>
+                                                        </a>
+                                                    }
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div> *@
+                                    <div class="container my-4">
+                                        <table class="table table-striped" id="ownerList" style="display: none;">
+                                            <thead>
+                                                <tr>
+                                                    <th>First Name</th>
+                                                    <th>Last Name</th>
+                                                    <th>Email</th>
+                                                    <th>Picture</th>
+                                                   @*  <th>Company Name</th>
+                                                    <th>Address</th>
+                                                    <th>District</th>
+                                                    <th>Region</th>
+                                                    <th>CountryCode</th>*@
+                                                    <th>Country</th> 
+                                                    <th>Select</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var item in Model.Owners.OrderBy(a => a.FirstName))
+                                                {
+                                                    <tr class="owner-row " data-id="@item.OwnerId">
+                                                        <td>@item.FirstName</td>
+                                                        <td>@item.LastName</td>
+                                                        <td>@item.EmailAddress</td>
+                                                        <td><img src="@item.Picture" class="img-50 img-fluid m-r-20 rounded-circle" alt="Owner Picture"></td>
+@*                                                         <td>@item.PostalCode</td>
+                                                        <td>@item.Address</td>
+                                                        <td>@item.District</td>
+                                                        <td>@item.Region</td>
+                                                        <td>@item.CountryCode</td> *@
+                                                        <td>@item.Country</td>
+                                                        <td><input type="checkbox" class="select-owner-checkbox"></td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                        <table class="table table-bordered" id="selectedOwnerTable" style="display: none;">
+                                            <thead>
+                                                <tr>
+                                                    <th>Select</th>
+                                                    <th>First Name</th>
+                                                    <th>Last Name</th>
+                                                    <th>Email</th>
+                                                    <th>Picture</th>
+                                                   @*  <th>PostalCode</th>
+                                                    <th>Address</th>
+                                                    <th>District</th>
+                                                    <th>Region</th>
+                                                    <th>CountryCode</th> *@
+                                                    <th>Country</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <!-- Selected owner will be shown here -->
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
-                                <div class="selected-owner-details" style="display: none;">
+@*                                 <div class="selected-owner-details" style="display: none;">
                                     <table id="selectedOwnerTable" class="table">
                                         <thead>
                                             <tr>
-                                                <th>Picture</th>
-                                                <th>Name</th>
+                                                <th>Selected Owner</th>
+                                                <th>First Name</th>
+                                                <th>Last Name</th>
                                                 <th>Email</th>
-                                                <th>Postal Code</th>
+                                                <th>Phone Number</th>
+                                                <th>PostalCode</th>
                                                 <th>Address</th>
                                                 <th>District</th>
                                                 <th>Region</th>
-                                                <th>Country Code</th>
+                                                <th>CountryCode</th>
                                                 <th>Country</th>
                                             </tr>
                                         </thead>
@@ -477,7 +563,7 @@
                                             <!-- Filled dynamically -->
                                         </tbody>
                                     </table>
-                                </div>
+                                </div> *@
 
 
 
@@ -578,40 +664,11 @@
                     </div>
                 </form>
             </div>
-            <hr />
-            @* //Changes by Raas *@
-            <div class="modal-body">
-                <h3 class="modal-title">Previous Landlords<span class="f-14 pull-right mt-0">Total @Model?.Owners.Count()</span></h3>
-                <br />
-                <div class="card-body p-0">
-                    <div class="row list-persons" id="addcon">
-                        <div class="nav flex-column nav-pills" id="v-pills-tab">
-                            @foreach (var item in Model.Owners.OrderBy(a => a.FirstName))
-                            {
-                                <a class="contact-tab-@item.OwnerId nav-link"
-                                   href="javascript:void(0);"
-                                   onclick="selectOwner('@item.OwnerId', '@item.FirstName', '@item.LastName', '@item.EmailAddress', '@item.Picture', '@item.PostalCode', '@item.Address', '@item.District', '@item.Region', '@item.CountryCode', '@item.Country')"
-                                   role="tab"
-                                   aria-selected="true">
-                                    <div class="media">
-                                        <img class="img-50 img-fluid m-r-20 rounded-circle update_img_0" src="@item.Picture" alt="">
-                                        <div class="media-body">
-                                            <h6>@item.FirstName @item.LastName</h6>
-                                            <p>@item.EmailAddress</p>
-                                        </div>
-                                    </div>
-                                </a>
-                            }
-
-                        </div>
-                    </div>
-                </div>
-            </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary closebutton" data-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary" id="saveOwner">Save</button>
-                <button type="button" class="btn btn-success" id="addNewOwner">Add</button>
-            </div>
+@*                 <button type="button" class="btn btn-success" id="addNewOwner">Add</button>
+ *@            </div>
         </div>
     </div>
 </div>
@@ -622,6 +679,71 @@
 <script>
     var currentStep = 1;
     var totalSteps = 6;
+
+
+    function updateSelectedOwnerDetails() {
+        var selectedCheckbox = $('#ownerList .select-owner-checkbox:checked');
+        if (selectedCheckbox.length > 0) {
+            var selectedRow = selectedCheckbox.closest('tr');
+            var selectedTbody = $('#selectedOwnerTable tbody');
+            selectedTbody.empty();
+            $("#selectedOwnerId").val(selectedRow.attr('data-id'))
+            $('#selectedOwnerTable').show();
+
+            console.log("asd")
+            console.log(selectedRow.find('td:eq(0)').text());
+            console.log(selectedRow.find('td:eq(1)').text());
+            console.log(selectedRow.find('td:eq(2)').text());
+            console.log(selectedRow.find('td:eq(3) img').attr('src'));
+            console.log(selectedRow.find('td:eq(4)').text());
+            console.log(selectedRow.find('td:eq(5)').text());
+            console.log(selectedRow.find('td:eq(6)').text());
+            console.log(selectedRow.find('td:eq(7)').text());
+            console.log(selectedRow.find('td:eq(8)').text());
+            console.log(selectedRow.find('td:eq(9)').text());
+
+            var rowHtml = `<tr>
+                           <td>Selected</td>
+                           <td>${selectedRow.find('td:eq(0)').text()}</td>
+                           <td>${selectedRow.find('td:eq(1)').text()}</td>
+                           <td>${selectedRow.find('td:eq(2)').text()}</td>
+                           <td> <img src="${selectedRow.find('td:eq(3) img').attr('src')}" class="img-50 img-fluid m-r-20 rounded-circle" alt="Owner Picture"></td>
+                           @* <td>${selectedRow.find('td:eq(4)').text()}</td>
+                           <td>${selectedRow.find('td:eq(5)').text()}</td>
+                           <td>${selectedRow.find('td:eq(6)').text()}</td>
+                           <td>${selectedRow.find('td:eq(7)').text()}</td>
+                           <td>${selectedRow.find('td:eq(8)').text()}</td> *@
+                           <td>${selectedRow.find('td:eq(9)').text()}</td>
+                           </tr>`;
+            selectedTbody.append(rowHtml);
+
+            // Update hidden inputs with the selected owner's information
+            $('#hiddenOwnerFirstName').val(selectedRow.find('td:eq(0)').text());
+            $('#hiddenOwnerLastName').val(selectedRow.find('td:eq(1)').text());
+            $('#hiddenOwnerEmail').val(selectedRow.find('td:eq(2)').text());
+            $('#hiddenOwnerPostalCode').val(selectedRow.find('td:eq(4)').text());
+            $('#hiddenOwnerAddress').val(selectedRow.find('td:eq(5)').text());
+            $('#hiddenOwnerDistrict').val(selectedRow.find('td:eq(6)').text());
+            $('#hiddenOwnerRegion').val(selectedRow.find('td:eq(7)').text());
+            $('#hiddenOwnerCountryCode').val(selectedRow.find('td:eq(8)').text());
+            $('#hiddenOwnerCountry').val(selectedRow.find('td:eq(9)').text());
+
+            // Optionally, if you store and want to pass the base64 image data, add an input for it and set its value
+            // Assuming you have an input with id="hiddenOwnerImage"
+            // For this, you'd need to ensure the 'picture' variable contains the base64 image string
+            $('#hiddenOwnerImage').val(selectedRow.find('td:eq(3) img').attr('src'));
+
+        }else{
+            $('#selectedOwnerTable').hide();
+
+        }
+    }
+
+    $('#ownerList').on('change', '.select-owner-checkbox', function () {
+        $('.select-owner-checkbox').not(this).prop('checked', false);
+        updateSelectedOwnerDetails();
+    });
+
 
     function validateCurrentStep() {
         var isValid = true;
@@ -1042,8 +1164,11 @@
 
         if ($(this).data('option') === 'owned-by-someone-else') {
             $('#addOwnerSection').show();
+            $('#ownerList').show();
         } else {
             $('#addOwnerSection').hide();
+            $('#ownerList').hide();
+            $('#selectedOwnerTable').hide();
         }
     });
 
@@ -1250,7 +1375,7 @@
                 $('#selectedOwnerTable tbody').empty();
 
                 // Append the new row with owner data including the image
-                var newRowHtml = `<tr>
+                @* var newRowHtml = `<tr>
                     <td><img src="${e.target.result}" class="img-50 img-fluid m-r-20 rounded-circle" alt="Owner Picture"></td>
                     <td>${ownerFirstName} ${ownerLastName}</td>
                     <td>${ownerEmail}</td>
@@ -1260,11 +1385,25 @@
                     <td>${ownerRegion}</td>
                     <td>${ownerCountryCode}</td>
                     <td>${ownerCountry}</td>
-                </tr>`;
+                </tr>`; *@
+                    var newRowHtml = `<tr>
+                                     <td>Selected</td>
+                                     <td>${ownerFirstName}</td>
+                                     <td>${ownerLastName}</td>
+                                     <td>${ownerEmail}</td>
+                                     <td> <img src="${e.target.result}" class="img-50 img-fluid m-r-20 rounded-circle" alt="Owner Picture"></td>
+                                    @*  <td>${ownerPostalCode}</td>
+                                     <td>${ownerAddress}</td>
+                                     <td>${ownerDistrict}</td>
+                                     <td>${ownerRegion}</td>
+                                     <td>${ownerCountryCode}</td> *@
+                                     <td>${ownerCountry}</td>
+                                     </tr>`;
                 $('#selectedOwnerTable tbody').append(newRowHtml);
 
                 // Make sure the table is visible
-                $('.selected-owner-details').show();
+                $('#selectedOwnerTable').show();
+
             };
 
             reader.readAsDataURL(fileInput.files[0]);
@@ -1274,7 +1413,7 @@
             $('#selectedOwnerTable tbody').empty();
 
             // Append the new row with owner data without the image
-            var newRowHtml = `<tr>
+@*             var newRowHtml = `<tr>
                 <td>N/A</td>
                 <td>${ownerFirstName} ${ownerLastName}</td>
                 <td>${ownerEmail}</td>
@@ -1284,11 +1423,25 @@
                 <td>${ownerRegion}</td>
                 <td>${ownerCountryCode}</td>
                 <td>${ownerCountry}</td>
-            </tr>`;
+            </tr>`; *@
+                var newRowHtml = `<tr>
+                                         <td>Selected</td>
+                                         <td>${ownerFirstName}</td>
+                                         <td>${ownerLastName}</td>
+                                         <td>${ownerEmail}</td>
+                                         <td>N/A</td>
+                                         @* <td>${ownerPostalCode}</td>
+                                         <td>${ownerAddress}</td>
+                                         <td>${ownerDistrict}</td>
+                                         <td>${ownerRegion}</td>
+                                         <td>${ownerCountryCode}</td> *@
+                                         <td>${ownerCountry}</td>
+                                         </tr>`;
+            
             $('#selectedOwnerTable tbody').append(newRowHtml);
 
             // Make sure the table is visible
-            $('.selected-owner-details').show();
+            $('#selectedOwnerTable').show();
         }
 
         // Close modal and optionally clear form fields
@@ -1299,14 +1452,14 @@
 
 
 
-    $('#addNewOwner').click(function () {
+@*     $('#addNewOwner').click(function () {
 
         $('#ownerForm')[0].reset();
 
         $('#firstName').focus();
-    });
+    }); *@
 
-    function selectOwner(ownerId, firstName, lastName, email, picture, postalCode, address, district, region, countryCode, country) {
+@*     function selectOwner(ownerId, firstName, lastName, email, picture, postalCode, address, district, region, countryCode, country) {
         // Clear existing data from the table
         $('#selectedOwnerTable tbody').empty();
 
@@ -1344,7 +1497,7 @@
 
         // Show the table container
         $('.selected-owner-details').show();
-    }
+    } *@
 
 
 </script>

@@ -150,12 +150,14 @@ namespace PMS_PropertyHapa.Controllers
             try
             {
                 var subscriptions = await _authService.GetAllSubscriptionsAsync();
+                var sortedItems = subscriptions.OrderBy(item => item.SubscriptionType == "Yearly").ToList();
+
                 if (subscriptions == null || !subscriptions.Any())
                 {
                     return Json(new { success = false, message = "No subscriptions found." });
                 }
 
-                return Json(new { success = true, data = subscriptions });
+                return Json(new { success = true, data = sortedItems });
             }
             catch (Exception ex)
             {
