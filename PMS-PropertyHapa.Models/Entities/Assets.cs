@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace PMS_PropertyHapa.Models.Entities
 {
-    public class Assets
+    public class Assets : BaseEntities
     {
         [Key]
         public int AssetId { get; set; }
