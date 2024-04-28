@@ -16,6 +16,7 @@ using PMS_PropertyHapa.Shared.Email;
 using System.Net;
 using System.Text;
 using System.Web;
+using PMS_PropertyHapa.MigrationsFiles.Migrations;
 
 namespace PMS_PropertyHapa.Controllers
 {
@@ -178,6 +179,77 @@ namespace PMS_PropertyHapa.Controllers
             }
            
             return RedirectToAction("Index2", new { username = name });
+        }
+
+
+        [HttpGet]
+        public async Task<ActionResult> GetAllPropertyTypes()
+        {
+            try
+            {
+                var propertyTypes = await _authService.GetAllPropertyTypesAsync();
+                return Ok(propertyTypes);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while fetching Communications: {ex.Message}");
+            }
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> SendEmailOTP(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                return BadRequest("Email is required.");
+            }
+
+            var success = await _authService.IsEmailExists(email);
+            if (success)
+            {
+                var otp = GenerateOTP();
+                var model = new OTPEmailDto
+                {
+                    OTP = otp,
+                    Email = email
+                };
+                await _authService.SaveEmailOTP(model);
+
+                return Ok(new { success = true, message = "Please Check You email for OTP" });
+
+            }
+            else
+            {
+                return Ok(new { success = false, message = "Email Already Exists." });
+            }
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> VerifyEmailOTP(string otp)
+        {
+            if (string.IsNullOrWhiteSpace(otp))
+            {
+                return BadRequest("OTP is required.");
+            }
+
+            var success = await _authService.IsOTPValid(otp);
+            if (success)
+            {
+                return Ok(new { success = true, message = "Email verification successfull" });
+            }
+            else
+            {
+                return Ok(new { success = false, message = "please enter correct OTP." });
+            }
+        }
+
+
+        private string GenerateOTP()
+        {
+            Random rand = new Random();
+            int otp = rand.Next(100000, 999999);
+            return otp.ToString();
         }
 
         [HttpGet]

@@ -23,95 +23,361 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
-<div class="col-xl-6 p-0">
+<style>
+
+    .switch-container {
+        display: flex;
+        align-items: center;
+    }
+
+    .switch-label {
+        margin-left: 10px; /* Adjust as needed */
+    }
+
+
+</style>
+
+<div class="col-auto p-0">
     <form class="f1" method="post">
         <div class="f1-steps">
             <div class="f1-progress">
-                <div class="f1-progress-line" data-now-value="16.66" data-number-of-steps="3"></div>
+                <div class="f1-progress-line" data-now-value="16.66" data-number-of-steps="2"></div>
             </div>
             <div class="f1-step active">
                 <div class="f1-step-icon"><i class="fa fa-user"></i></div>
-                <p>Registration</p>
+                <p>User Information</p>
             </div>
             <div class="f1-step">
                 <div class="f1-step-icon"><i class="fa fa-key"></i></div>
-                <p>Email</p>
-            </div>
-            <div class="f1-step">
-                <div class="f1-step-icon"><i class="fa fa-twitter"></i></div>
-                <p>Birth Date</p>
+                <p>Plan Selection</p>
             </div>
         </div>
         <fieldset>
-            <div class="mb-2">
-                <label for="f1-first-name">First Name</label>
-                <input class="form-control" id="f1-first-name" type="text" name="f1-first-name" placeholder="name@example.com" required="">
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label for="firstName">First Name</label>
+                    <input class="form-control" id="firstName" type="text" name="firstName" placeholder="First Name" >
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="lastName">Last Name</label>
+                    <input class="form-control" id="lastName" type="text" name="lastName" placeholder="Last Name" >
+                </div>
             </div>
-            <div class="mb-2">
-                <label for="f1-last-name">Last name</label>
-                <input class="f1-last-name form-control" id="f1-last-name" type="text" name="f1-last-name" placeholder="Last name..." required="">
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label for="emailAddress">Email Address</label>
+                    <div class="input-group">
+                        <input class="form-control" id="emailAddress" type="email" name="emailAddress" placeholder="Email Address" >
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary verify-email" @* onclick="sendEmailOtp()" *@ type="button">Verify</button>
+                        </div>
+                    </div>
+                    <input class="form-control mt-2" id="otpEmail" type="text" name="otpEmail" placeholder="Enter OTP"  style="display: none;"  >
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="companyName">Company Name</label>
+                    <input class="form-control" id="companyName" type="text" name="companyName" placeholder="Company Name" >
+                </div>
             </div>
-            <div class="mb-2">
-                <label for="f1-first-name">First Name</label>
-                <input class="form-control" id="f1-first-name" type="text" name="f1-first-name" placeholder="name@example.com" required="">
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label for="phoneNumber">Phone Number</label>
+                    <div class="input-group">
+                        <input class="form-control" id="phoneNumber" type="tel" name="phoneNumber" placeholder="Phone Number" >
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary verify-phone" type="button">Verify</button>
+                        </div>
+                    </div>
+                    <input class="form-control mt-2" id="otpPhone" type="text" name="otpPhone" placeholder="Enter OTP"  style="display: none;"  >
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="country">Country Name</label>
+                    <input class="form-control" id="country" type="text" name="country" placeholder="Country Name" >
+                </div>
             </div>
-            <div class="mb-2">
-                <label for="f1-last-name">Last name</label>
-                <input class="f1-last-name form-control" id="f1-last-name" type="text" name="f1-last-name" placeholder="Last name..." required="">
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label for="propertyType">Property Type</label>
+                    <select class="form-control" id="propertyType" name="propertyType">
+                    </select>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="units">Number of Units</label>
+                    <input class="form-control" id="units" type="number" name="units" placeholder="Number of Units" >
+                </div>
             </div>
-            <div class="mb-2">
-                <label for="f1-first-name">First Name</label>
-                <input class="form-control" id="f1-first-name" type="text" name="f1-first-name" placeholder="name@example.com" required="">
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label for="leadGeneration">SEO Lead Generation</label>
+                    <select class="form-control" id="leadGeneration" name="leadGeneration" >
+                        <option value="">Select</option>
+                        <option value="Content Marketing">Content Marketing</option>
+                        <option value="Search Engine Optimization (SEO)">Search Engine Optimization (SEO)</option>
+                        <option value="Social Media Marketing">Social Media Marketing</option>
+                        <option value="Email Marketing">Email Marketing</option>
+                        <option value="Paid Advertising">Paid Advertising</option>
+                        <option value="Lead Magnets">Lead Magnets</option>
+                        <option value="Webinars and Events">Webinars and Events</option>
+                        <option value="Referral Programs">Referral Programs</option>
+                        <option value="Networking">Networking</option>
+                        <option value="Content Syndication">Content Syndication</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="password">Password</label>
+                    <input class="form-control" id="password" type="password" name="password" placeholder="Password" >
+                </div>
             </div>
-            <div class="mb-2">
-                <label for="f1-last-name">Last name</label>
-                <input class="f1-last-name form-control" id="f1-last-name" type="text" name="f1-last-name" placeholder="Last name..." required="">
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input class="form-control" id="confirmPassword" type="password" name="confirmPassword" placeholder="Confirm Password" >
+                </div>
             </div>
             <div class="f1-buttons">
                 <button class="btn btn-primary btn-next" type="button">Next</button>
             </div>
         </fieldset>
         <fieldset>
-            <div class="mb-2">
-                <label class="sr-only" for="f1-email">Email</label>
-                <input class="f1-email form-control" id="f1-email" type="text" name="f1-email" placeholder="Email..." required="">
+            <div class="media">
+                <label class="col-form-label">Number of Units</label>
+                <input class="form-control" id="unitsFinal" type="number" name="unitsFinal" placeholder="Number of Units">
+                <div class="media-body text-center">
+                    <div class="switch-container">
+                        <span class="switch-label">Monthly</span>
+                        <label class="switch">
+                            <input type="checkbox" id="planSelection"><span class="switch-state"></span>
+                        </label>
+                        <span class="switch-label">Yearly</span>
+                    </div>
+                </div>
             </div>
-            <div class="mb-2">
-                <label class="sr-only" for="f1-password">Password</label>
-                <input class="f1-password form-control" id="f1-password" type="password" name="f1-password" placeholder="Password..." required="">
-            </div>
-            <div class="mb-2">
-                <label class="sr-only" for="f1-repeat-password">Repeat password</label>
-                <input class="f1-repeat-password form-control" id="f1-repeat-password" type="password" name="f1-repeat-password" placeholder="Repeat password..." required="">
-            </div>
-            <div class="f1-buttons">
-                <button class="btn btn-primary btn-previous" type="button">Previous</button>
-                <button class="btn btn-primary btn-next" type="button">Next</button>
-            </div>
-        </fieldset>
-        <fieldset>
-            <div class="mb-2">
-                <label class="sr-only">DD</label>
-                <input class="form-control" id="dd" type="number" placeholder="dd" required="">
-            </div>
-            <div class="mb-2">
-                <label class="sr-only">MM</label>
-                <input class="form-control" id="mm" type="number" placeholder="mm" required="">
-            </div>
-            <div class="mb-2">
-                <label class="sr-only">YYYY</label>
-                <input class="form-control" id="yyyy" type="number" placeholder="yyyy" required="">
+            <div class="container-fluid">
+                <div class="row justify-content-center" id="monthly-container">
+                    <!-- Monthly Subscription blocks will be dynamically inserted here -->
+                </div>
+                <div class="row justify-content-center d-none" id="yearly-container">
+                    <!-- Yearly Subscription blocks will be dynamically inserted here -->
+                </div>
             </div>
             <div class="f1-buttons">
                 <button class="btn btn-primary btn-previous" type="button">Previous</button>
-                <button class="btn btn-primary btn-submit" type="submit">Submit</button>
+                <button class="btn btn-primary btn-add-payment" type="button">Add Payment</button>
+
+                <button class="btn btn-primary btn-submit d-none" type="submit">Register</button>
             </div>
         </fieldset>
     </form>
 </div>
 
 
+
+
+<script>
+    $(document).ready(function () {
+        $('.verify-phone').click(function () {
+            $('#otpPhone').show();
+        });
+        $('.verify-email').click(function () {
+            $('#otpEmail').show();
+        });
+
+        toastr.options = {
+            "closeButton": false,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        };
+
+        $('#planSelection').change(function () {
+            if ($(this).prop('checked')) {
+                $('#monthly-container').addClass('d-none');
+                $('#yearly-container').removeClass('d-none');
+            } else {
+                $('#monthly-container').removeClass('d-none');
+                $('#yearly-container').addClass('d-none');
+            }
+        });
+
+        loadSubscriptions();
+
+
+        $('#subscription-container').on('click', '.subscribe-btn', function () {
+            const subscriptionId = $(this).data('id');
+
+            if (isFree) {
+                window.location.href = '/Auth/Register';
+            } else {
+
+                Swal.fire({
+                    icon: 'success',
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    toast: true,
+                    width: '300px',
+                    padding: '0.5rem',
+                    title: 'Processing your Subscription.'
+                });
+            }
+        });
+
+        $.ajax({
+            url: '@Url.Action("GetAllPropertyTypes", "Auth")',
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                var propertiesDropdown = document.getElementById('propertyType');
+                propertiesDropdown.innerHTML = ''; // Clear existing options
+                data.forEach(function (item) {
+                    var option = new Option(item.PropertyTypeName, item.PropertyTypeId);
+                    propertiesDropdown.appendChild(option);
+                });
+            }
+        });
+
+
+
+    });
+
+    function loadSubscriptions() {
+        $.get('/Subscription/GetAllSubscriptions', function (response) {
+            if (response.success && Array.isArray(response.data)) {
+                const monthlyContainer = $('#monthly-container');
+                const yearlyContainer = $('#yearly-container');
+
+                response.data.forEach(sub => {
+                    const subscriptionBlock = createSubscriptionBlock(sub);
+                    if (sub.SubscriptionType === 'Monthly') {
+                        monthlyContainer.append(subscriptionBlock);
+                    } else if (sub.SubscriptionType === 'Yearly') {
+                        yearlyContainer.append(subscriptionBlock);
+                    }
+                });
+            } else {
+                console.error('Failed to load subscriptions:', response.message);
+            }
+        });
+    }
+
+    function createSubscriptionBlock(subscription) {
+        return `
+            <div class="col-auto">
+                <div class="pricing-block card text-center">
+                    <div class="pricing-header">
+                        <h2>${subscription.SubscriptionName}</h2>
+                        <div class="price-box">
+                            <div>
+                                <h4 class="text-white">$${subscription.Price.toFixed(2)} ${subscription.Currency}</h4>
+                                <p>/ ${subscription.SubscriptionType}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pricing-list">
+                        <ul class="pricing-inner">
+                            <li>
+                                <h6>${subscription.NoOfUnits}<span> Units</span></h6>
+                            </li>
+                            <li>
+                                <h6>${subscription.SmallDescription}</h6>
+                            </li>
+                            <li>
+                                <h6>${subscription.Tax}%
+                                    <span> Tax</span></h6>
+                            </li>
+                        </ul>
+                         <button class="btn btn-primary btn-lg" onclick="handleSubscriptionClick(${subscription.Price}, '${subscription.Id}', '${subscription.SubscriptionName}')" type="button">Subscribe</button>
+                    </div>
+                </div>
+            </div>`;
+    }
+    
+
+
+    function handleSubscriptionClick(price, id, name) {
+        if (price === 0) {
+            window.location.href = `/Auth/Register?subscription=${encodeURIComponent(name)}&id=${encodeURIComponent(id.toString())}`;
+        } else {
+
+            Swal.fire({
+                icon: 'info',
+                title: 'Proceed to Payment',
+                text: 'Please proceed to payment to complete your subscription.',
+                confirmButtonText: 'Ok'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = `/Auth/Register?subscription=${encodeURIComponent(name)}&id=${encodeURIComponent(id.toString())}`;
+                }
+            });
+        }
+    }
+
+
+    function sendEmailOtp() {
+        let email = $("#emailAddress").val().trim();
+        if (email !== "") {
+            $.ajax({
+                url: '@Url.Action("SendEmailOTP", "Auth")',
+                type: 'GET',
+                data: { email: email },
+                success: function (response) {
+                    if (response.success) {
+                        toastr.success(response.message);
+                        $('#otpEmail').show();
+                    } else {
+                        toastr.error(response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    toastr.error("Error in verifying email.");
+                }
+            });
+        } else {
+            toastr.error("Email is Required.");
+        }
+    }
+
+
+    $('#otpEmail').on('input', function () {
+        var otpValue = $(this).val();
+        if (otpValue.length >= 6) {
+            $(this).prop('disabled', true);
+            $.ajax({
+                url: '@Url.Action("VerifyEmailOTP", "Auth")',
+                type: 'GET',
+                data: { otp: otpValue },
+                success: function (response) {
+                    if (response.success) {
+                        toastr.success(response.message);
+                        $('#otpEmail').show();
+                    } else {
+                        toastr.error(response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    toastr.error("Error in verifying email.");
+                }
+            });
+        }
+    });
+    
+
+</script>
 
 
 @* 
