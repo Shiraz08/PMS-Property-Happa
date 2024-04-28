@@ -61,6 +61,11 @@ namespace PMS_PropertyHapa.Staff.Controllers
             try
             {
                 var properties = await _authService.GetAllAssetsAsync();
+                var currenUserId = Request?.Cookies["userId"]?.ToString();
+                if (currenUserId != null)
+                {
+                    properties = properties.Where(s => s.AddedBy == currenUserId);
+                }
                 return Ok(properties);
             }
             catch (Exception ex)
@@ -74,18 +79,21 @@ namespace PMS_PropertyHapa.Staff.Controllers
         {
             try
             {
-                var count = await _authService.GetAllCommunicationAsync();
+                //var count = await _authService.GetAllCommunicationAsync();
                 var tenant = await _authService.GetAllTenantsAsync();
-                var tenants = tenant.Where(s => s.AppTid == count?.FirstOrDefault().UserID);
-                return Ok(tenants);
+                //var tenants = tenant.Where(s => s.AppTid == count?.FirstOrDefault().UserID);
+                var currenUserId = Request?.Cookies["userId"]?.ToString();
+                if (currenUserId != null)
+                {
+                    tenant = tenant.Where(s => s.AddedBy == currenUserId);
+                }
+                return Ok(tenant);
             }
             catch (Exception ex)
             {
                 return StatusCode(500, $"An error occurred while fetching Communications: {ex.Message}");
             }
         }
-
-
 
 
         [HttpPost]

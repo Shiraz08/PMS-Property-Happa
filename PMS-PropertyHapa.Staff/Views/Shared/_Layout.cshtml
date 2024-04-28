@@ -64,6 +64,8 @@
     <link rel="stylesheet" type="text/css" href="~/Dashboard/assets/css/vendors/prism.css">
     <!-- Plugins css Ends-->
     <!-- Plugins css start-->
+    <link href="~/dashboard/assets/css/vendors/select2.css" rel="stylesheet" />
+
 
     <link href="~/dashboard/assets/css/customstyle.css" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="~/Dashboard/assets/css/vendors/scrollbar.css">
@@ -448,6 +450,7 @@
     <script src="~/Dashboard/assets/js/owlcarousel/owl-custom.js"></script>
     <script src="~/Dashboard/assets/js/dashboard/dashboard_2.js"></script>
     <script src="~/Dashboard/assets/js/tooltip-init.js"></script>
+    <script src="~/dashboard/assets/js/select2/select2.full.min.js"></script>
     <!-- Plugins JS Ends-->
     <!-- Theme js-->
     <script src="~/Dashboard/assets/js/script.js"></script>
@@ -461,13 +464,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.2/js/toastr.min.js"></script>
     <script>
         $(document).ready(function () {
-            debugger;
+            // debugger;
             var organizationName = localStorage.getItem('organizationName');
             var organizationLogo = localStorage.getItem('organizationLogo');
             var organizationIcon = localStorage.getItem('organizationIcon');
             var organizationDescription = localStorage.getItem('organizationDescription');
             var tid = localStorage.getItem('tid');
             if (tid) {
+                console.log("tic")
+                console.log(tid)
                 fetchTenantOrganizationInfo(tid);
             } else {
                 console.error('Tenant ID not found');
@@ -485,6 +490,7 @@
                 var imageiconUrl = urls.concat(organizationIcon);
 
             }
+            $('.select2').select2();
         });
     </script>
 
@@ -512,7 +518,7 @@
                 type: 'GET',
                 data: { tenantId: tid },
                 success: function (response) {
-                    debugger
+                    // debugger
                     var data = response.data;
                     $('#organizationName').val(data.OrganizationName);
                     $('#organizationDescription').val(data.OrganizationDescription);
@@ -626,13 +632,15 @@
 
             function saveTenantOrganizationInfo() {
                 var tenantOrganizationInfoData = {
-                    Id: localStorage.getItem('tid'),
+                    // Id: localStorage.getItem('tid'),
                     OrganizationName: $('#organizationName').val(),
                     OrganizationDescription: $('#organizationDescription').val(),
                     OrganizatioPrimaryColor: $('#organizationPrimaryColor').val(),
                     OrganizationSecondColor: $('#organizationSecondaryColor').val(),
                     TempTenantUserId: localStorage.getItem('userId')
                 };
+                console.log(tenantOrganizationInfoData)
+                console.log("tenantOrganizationInfoData1")
 
                 var logoFile = $('#organizationLogoUploader').get(0).files[0];
                 var iconFile = $('#organizationIconUploader').get(0).files[0];
@@ -644,12 +652,16 @@
                     tenantOrganizationInfoData.OrganizationLogo = values[0];
                     tenantOrganizationInfoData.OrganizationIcon = values[1];
 
+                    console.log(tenantOrganizationInfoData)
+                    console.log("tenantOrganizationInfoData2")
+
                     $.ajax({
                         url: '/Auth/SaveTenantOrganizationInfo',
                         type: 'POST',
                         contentType: 'application/json',
                         data: JSON.stringify(tenantOrganizationInfoData),
                         success: function (response) {
+                            console.log(tenantOrganizationInfoData)
                             Toast.fire({
                                 icon: 'success',
                                 title: 'Settings saved successfully',

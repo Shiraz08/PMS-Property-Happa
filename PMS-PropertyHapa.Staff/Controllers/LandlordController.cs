@@ -94,6 +94,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
                 owner.OrganizationLogo = $"data:image/png;base64,{owner.OrganizationLogo}";
                 owner.OrganizationIcon = $"data:image/png;base64,{owner.OrganizationIcon}";
             }
+            owner.AddedBy = Request?.Cookies["userId"]?.ToString();
             await _authService.CreateLandlordAsync(owner);
             return Json(new { success = true, message = "Owner added successfully" });
         }
@@ -149,10 +150,10 @@ namespace PMS_PropertyHapa.Staff.Controllers
                 return Json(new { success = true, message = "Registered Successfully" });
             }
             var roleList = new List<SelectListItem>()
-    {
-        new SelectListItem{Text=SD.Admin, Value=SD.Admin},
-        new SelectListItem{Text=SD.Customer, Value=SD.Customer},
-    };
+                                {
+                                    new SelectListItem{Text=SD.Admin, Value=SD.Admin},
+                                    new SelectListItem{Text=SD.Customer, Value=SD.Customer},
+                                };
             ViewBag.RoleList = roleList;
             return View();
         }

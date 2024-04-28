@@ -23,7 +23,7 @@ namespace PMS_PropertyHapa.Staff.Auth.Controllers
         public IActionResult Index()
         {
 
-            string cookieValue = Request.Cookies["userId"].ToString();
+            //string cookieValue = Request.Cookies["userId"].ToString();
 
             return View();
         }
