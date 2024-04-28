@@ -110,5 +110,14 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
 
 
         Task<IEnumerable<AssetUnitDTO>> GetAllUnitsAsync();
+
+
+
+
+        Task<T> RegisterUserAsync<T>(UserRegisterationDto model);
+        Task<bool> VerifyEmailAsync(string email);
+        Task<bool> VerifyEmailOtpAsync(string email, string otp);
+        Task<bool> VerifyPhoneAsync(string phoneNumber);
+        Task<bool> VerifySmsOtpAsync(string userId, string phoneNumber, string otp);
     }
 }

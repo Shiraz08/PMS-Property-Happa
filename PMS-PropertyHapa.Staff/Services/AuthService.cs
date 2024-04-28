@@ -1137,6 +1137,67 @@ namespace PMS_PropertyHapa.Staff.Services
 
 
 
+
+
+
+
+        public async Task<bool> VerifyEmailAsync(string email)
+        {
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.POST,
+                Data = new { Email = email },
+                Url = $"{villaUrl}/api/v1/UserRegistrationAuth/verify-email"
+            });
+
+            return response.IsSuccess;
+        }
+
+        public async Task<T> RegisterUserAsync<T>(UserRegisterationDto model)
+        {
+            return await _baseService.SendAsync<T>(new APIRequest()
+            {
+                ApiType = SD.ApiType.POST,
+                Data = model,
+                Url = $"{villaUrl}/api/v1/UserRegistrationAuth/register"
+            });
+        }
+
+        public async Task<bool> VerifyEmailOtpAsync(string email, string otp)
+        {
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.POST,
+                Data = new { Email = email, Otp = otp },
+                Url = $"{villaUrl}/api/v1/UserRegistrationAuth/verify-email-otp"
+            });
+
+            return response.IsSuccess;
+        }
+
+        public async Task<bool> VerifyPhoneAsync(string phoneNumber)
+        {
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.POST,
+                Data = new { PhoneNumber = phoneNumber },
+                Url = $"{villaUrl}/api/v1/UserRegistrationAuth/verify-phone"
+            });
+
+            return response.IsSuccess;
+        }
+
+        public async Task<bool> VerifySmsOtpAsync(string userId, string phoneNumber, string otp)
+        {
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.POST,
+                Data = new { UserId = userId, PhoneNumber = phoneNumber, Otp = otp },
+                Url = $"{villaUrl}/api/v1/UserRegistrationAuth/verify-sms-otp"
+            });
+            return response.IsSuccess;
+        }
+
     }
 
 

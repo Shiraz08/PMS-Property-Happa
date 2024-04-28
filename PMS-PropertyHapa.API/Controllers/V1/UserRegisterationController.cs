@@ -30,20 +30,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             _userManager = userManager;
         }
 
-        [HttpGet("Error")]
-        public async Task<IActionResult> Error()
-        {
-            throw new FileNotFoundException();
-        }
-
-        [HttpGet("ImageError")]
-        public async Task<IActionResult> ImageError()
-        {
-            throw new BadImageFormatException("Fake Image Exception");
-        }
-
-
-
+        
         [HttpPost("register")]
         public async Task<IActionResult> RegisterUser(UserRegisterationDto model)
         {
@@ -89,7 +76,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             {
                 _response.StatusCode = HttpStatusCode.BadRequest;
                 _response.IsSuccess = false;
-                _response.ErrorMessages.Add("Invalid OTP or user not found.");
+                _response.ErrorMessages.Add("Invalid OTP.");
                 return BadRequest(_response);
             }
 
@@ -109,7 +96,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             {
                 _response.StatusCode = HttpStatusCode.NotFound;
                 _response.IsSuccess = false;
-                _response.ErrorMessages.Add("User not found.");
+                _response.ErrorMessages.Add("Phone Number not found.");
                 return NotFound(_response);
             }
 
@@ -127,7 +114,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             {
                 _response.StatusCode = HttpStatusCode.BadRequest;
                 _response.IsSuccess = false;
-                _response.ErrorMessages.Add("Invalid OTP or user not found.");
+                _response.ErrorMessages.Add("Invalid OTP.");
                 return BadRequest(_response);
             }
 
