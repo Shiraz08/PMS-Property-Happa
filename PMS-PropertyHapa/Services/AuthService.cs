@@ -118,6 +118,67 @@ namespace PMS_PropertyHapa.Services
             }
         }
 
+        public async Task<bool> IsEmailExists(string email)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Url = $"{villaUrl}/api/v1/UserRegisterationAuth/verify-email/{email}"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when updating profile: {ex.Message}", ex);
+            }
+        }
+       
+
+        public async Task<bool> SaveEmailOTP(OTPEmailDto model)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Data = model,
+                    Url = $"{villaUrl}/api/v1/UserRegisterationAuth/verify-email-otp"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when creating tenant: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<bool> IsOTPValid(OTPEmailDto model)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.GET,
+                    Data = model,
+                    Url = $"{villaUrl}/api/v1/UsersAuth/IsOTPValid"
+                    //Url = $"{villaUrl}/api/v1/UsersAuth/IsOTPValid"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when updating profile: {ex.Message}", ex);
+            }
+        }
+
+
+
+
 
 
         public async Task<T> LogoutAsync<T>(TokenDTO obj)
