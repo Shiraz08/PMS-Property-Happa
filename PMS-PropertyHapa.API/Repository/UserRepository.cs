@@ -445,6 +445,7 @@ namespace MagicVilla_VillaAPI.Repository
                 Country = registrationRequestDTO.Country,
             };
 
+
             var result = await _userManager.CreateAsync(user, registrationRequestDTO.Password);
             if (result.Succeeded)
             {
