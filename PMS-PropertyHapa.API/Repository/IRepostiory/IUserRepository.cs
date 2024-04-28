@@ -149,5 +149,16 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
 
 
         Task<List<AssetUnitDTO>> GetAllUnitsAsync();
+
+
+
+
+        Task<bool> RegisterUserData(UserRegisterationDto registrationRequestDTO);
+
+
+        Task<bool> VerifySmsOtpAsync(string userId, string phoneNumber, string otp);
+        Task<bool> VerifyEmailOtpAsync(string email, string otp);
+
+        Task<ApplicationUser> FindByPhoneNumberAsync(string phoneNumber);
     }
 }
