@@ -53,7 +53,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
         [HttpPost("verify-email")]
         public async Task<IActionResult> VerifyEmail(string email)
         {
-            var user = await _userManager.FindByEmailAsync(email);
+            var user = await _userRepo.FindByEmailAsync(email);
             if (user == null)
             {
                 _response.StatusCode = HttpStatusCode.NotFound;
