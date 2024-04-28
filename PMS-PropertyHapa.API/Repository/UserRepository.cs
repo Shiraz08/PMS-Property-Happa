@@ -464,6 +464,7 @@ namespace MagicVilla_VillaAPI.Repository
                 };
 
                 await _db.AdditionalUserData.AddAsync(additionalData);
+                await _db.SaveChangesAsync();
             }
 
             return true;
