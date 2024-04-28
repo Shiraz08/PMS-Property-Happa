@@ -159,7 +159,7 @@
                                     </div>
 
                                     <div id="propertiesDropdown" class="row d-flex justify-content-center mt-3 d-none">
-                                        <div class="col-auto">
+                                        <div class="col-4">
                                             <label for="announcementProperties">Select Properties</label>
                                             <div id="propertyCount" class="selected-count">0 Selected</div>
                                             <select id="announcementProperties" multiple name="announcementProperties" class="form-control select2" required></select>
@@ -195,7 +195,7 @@
                                         </div>
 
                                         <div id="tenantsDropdown" class="row d-flex justify-content-center mt-3 d-none">
-                                            <div class="col-auto">
+                                            <div class="col-4">
                                                 <label for="announcementTenants">Select Tenants</label>
                                                 <div id="tenantCount" class="selected-count">0 Selected</div>
                                                 <select id="announcementTenants" multiple name="announcementTenants" class="form-control select2" required></select>
@@ -337,6 +337,12 @@
 
     $(document).ready(function () {
         // Initialize form elements with these values
+
+        console.log("propertyIds")
+        console.log(propertyIds)
+        console.log("tenantIds")
+        console.log(tenantIds)
+
         $('#emailSwitch').prop('checked', isByEmail);
         $('#textMessageSwitch').prop('checked', isByText);
         $('#tenantPortalSwitch').prop('checked', isShowCommunicationInTenantPortal);
@@ -611,7 +617,7 @@
                 var propertiesDropdown = document.getElementById('announcementProperties');
                 propertiesDropdown.innerHTML = ''; // Clear existing options
                 data.forEach(function (item) {
-                    var option = new Option(item.SelectedPropertyType, item.AssetId);
+                    var option = new Option(item.BuildingNo + " - " + item.BuildingName, item.AssetId);
                     propertiesDropdown.appendChild(option);
                 });
             }

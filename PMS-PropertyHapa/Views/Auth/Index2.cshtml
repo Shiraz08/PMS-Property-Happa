@@ -1,5 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Hosting
-@inject Microsoft.AspNetCore.Hosting.IHostingEnvironment env
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment env
 
 
 @{
@@ -11,7 +11,7 @@
 <div class="text-center">
     <h2>Welcome, @username! to Property Happa</h2>
     <p>
-        @if (env.IsDevelopment())
+        @if ((env.EnvironmentName == "Development"))
         {
             <a href="https://localhost:7247/" class="btn btn-primary">Click here to login to your PMC Portal</a>
         }
@@ -21,3 +21,10 @@
         }
     </p>
 </div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#pmcPortalDiv').removeClass('d-none');
+    });
+</script>

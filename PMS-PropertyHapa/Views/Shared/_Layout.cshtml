@@ -1,7 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using PMS_PropertyHapa.Models.Roles
 @using Microsoft.AspNetCore.Hosting
-@inject Microsoft.AspNetCore.Hosting.IHostingEnvironment env
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment env
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 <!DOCTYPE html>
@@ -62,24 +62,23 @@
                                 <li class="nav-item"><a class="nav-link" href="#pricing">Pricing</a></li>
                                 <li class="nav-item"><a class="nav-link" href="#blog">Blog</a></li>
                                 <li class="nav-item"><a class="nav-link" href="">Contact Us</a></li>
-                                <li class="nav-item"><a class="nav-link" href="Auth/Login">Login</a></li>
-                                <li class="nav-item"><a class="nav-link" href="Auth/Register">Sign Up</a></li>
+@*                                 <li class="nav-item"><a class="nav-link" href="Auth/Login">Login</a></li>
+ *@                                <li class="nav-item"><a class="nav-link" href="Auth/Register">Sign Up</a></li>
                             </ul>
                             <div class="buy-block">
-                                @if (SignInManager.IsSignedIn(User))
-                                {
-                                    @if (env.IsDevelopment())
+                                <div id="pmcPortalDiv" class="d-none">
+                                    @if ((env.EnvironmentName == "Development"))
                                     {
-                                        <a href="https://localhost:7247/" class="btn-landing btn-white">Go To PMC Portadfl</a>
+                                        <a href="https://localhost:7247/" class="btn-landing btn-white">Go To PMC Portal</a>
                                     }
                                     else
                                     {
-                                        <a href="https://pmc.propertyhapa.com/" class="btn-landing btn-white">Go To PMC Portadfl</a>
+                                        <a href="https://pmc.propertyhapa.com/" class="btn-landing btn-white">Go To PMC Portal</a>
 
-                                    }  
-                                }
+                                    }
+                                </div>
                                 <div class="toggle-menu"><i class="fa fa-bars"></i></div>
-                            </div>
+                            </>
 
                         </nav>
                     </div>

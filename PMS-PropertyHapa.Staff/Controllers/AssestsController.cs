@@ -33,7 +33,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
                 }
 
                 assetDTO.PictureFile = null;
-
+                assetDTO.AddedBy = Request?.Cookies["userId"]?.ToString();
                 await _authService.CreateAssetAsync(assetDTO);
                 return Ok(new { success = true, message = "Asset added successfully" });
             }
@@ -81,6 +81,13 @@ namespace PMS_PropertyHapa.Staff.Controllers
             try
             {
                 var asset = await _authService.GetAllAssetsAsync();
+                var currenUserId = Request?.Cookies["userId"]?.ToString();
+                if (currenUserId != null)
+                {
+                    asset = asset.Where(s => s.AddedBy == currenUserId);
+                }
+
+
                 return Ok(asset);
             }
             catch (Exception ex)
@@ -93,6 +100,11 @@ namespace PMS_PropertyHapa.Staff.Controllers
         public async Task<IActionResult> Index()
         {
             var assets = await _authService.GetAllAssetsAsync();
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
+            if (currenUserId != null)
+            {
+                assets = assets.Where(s => s.AddedBy == currenUserId);
+            }
             return View(assets);
         }
 
@@ -118,6 +130,11 @@ namespace PMS_PropertyHapa.Staff.Controllers
             {
                 var assets = await _authService.GetAllAssetsAsync();
                 asset = assets.FirstOrDefault(s => s.AssetId == assetId);
+                var currenUserId = Request?.Cookies["userId"]?.ToString();
+                if (currenUserId != null)
+                {
+                    assets = assets.Where(s => s.AddedBy == currenUserId);
+                }
 
                 if (asset == null)
                 {
@@ -125,6 +142,10 @@ namespace PMS_PropertyHapa.Staff.Controllers
                 }
 
                 owners = await _authService.GetAllLandlordAsync();
+                if (currenUserId != null)
+                {
+                    owners = owners.Where(s => s.AddedBy == currenUserId);
+                }
             }
             else
             {

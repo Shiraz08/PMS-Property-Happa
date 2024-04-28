@@ -47,6 +47,7 @@
                     contentType: false,
                     success: function (response) {
                         if (response.success) {
+                            localStorage.clear();
                             localStorage.setItem('userId', response.result.userId);
                             setCookie("userId", response.result.userId, 7);
                             localStorage.setItem('userName', response.result.userName);

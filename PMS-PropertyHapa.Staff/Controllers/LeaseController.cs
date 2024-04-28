@@ -35,12 +35,22 @@ namespace PMS_PropertyHapa.Staff.Controllers
         public async Task<IActionResult> Index()
         {
             var lease = await _authService.GetAllLeasesAsync();
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
+            if (currenUserId != null)
+            {
+                lease = lease.Where(s => s.AddedBy == currenUserId);
+            }
             return View(lease);
         }
 
         public async Task<IActionResult> AddLease()
         {
             var selectedAssets = await _authService.GetAllAssetsAsync();
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
+            if (currenUserId != null)
+            {
+                selectedAssets = selectedAssets.Where(s => s.AddedBy == currenUserId);
+            }
             var selectedUnits = selectedAssets.SelectMany(asset => asset.Units).ToList();
             var leaseDto = new LeaseDto
             {
@@ -61,7 +71,12 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
             try
             {
-                var properties2 = await _authService.GetAllAssetsAsync(); 
+                var properties2 = await _authService.GetAllAssetsAsync();
+                var currenUserId = Request?.Cookies["userId"]?.ToString();
+                if (currenUserId != null)
+                {
+                    properties2 = properties2.Where(s => s.AddedBy == currenUserId);
+                }
 
                 var properties = properties2
                     .Where(s=>s.AppTid == userId)
@@ -112,6 +127,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
             }
             else
             {
+                lease.AddedBy = Request?.Cookies["userId"]?.ToString();
                 await _authService.CreateLeaseAsync(lease);
                 return Json(new { success = true, message = "lease added successfully" });
             }
@@ -132,6 +148,11 @@ namespace PMS_PropertyHapa.Staff.Controllers
         public async Task<IActionResult> GetAll()
         {
             var leases = await _authService.GetAllLeasesAsync();
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
+            if (currenUserId != null)
+            {
+                leases = leases.Where(s => s.AddedBy == currenUserId);
+            }
             return Json(new { success = true, data = leases });
         }
 

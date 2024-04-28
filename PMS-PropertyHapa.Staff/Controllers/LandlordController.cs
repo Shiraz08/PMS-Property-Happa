@@ -40,6 +40,11 @@ namespace PMS_PropertyHapa.Staff.Controllers
         public async Task<IActionResult> Index()
         {
             var owner = await _authService.GetAllLandlordAsync();
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
+            if (currenUserId != null)
+            {
+                owner = owner.Where(s => s.AddedBy == currenUserId);
+            }
             return View(owner);
         }
         public IActionResult AddLandlord()
@@ -55,6 +60,11 @@ namespace PMS_PropertyHapa.Staff.Controllers
             try
             {
                 var owner = await _authService.GetAllLandlordAsync();
+                var currenUserId = Request?.Cookies["userId"]?.ToString();
+                if (currenUserId != null)
+                {
+                    owner = owner.Where(s => s.AddedBy == currenUserId);
+                }
                 return Ok(owner);
             }
             catch (Exception ex)
@@ -84,6 +94,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
                 owner.OrganizationLogo = $"data:image/png;base64,{owner.OrganizationLogo}";
                 owner.OrganizationIcon = $"data:image/png;base64,{owner.OrganizationIcon}";
             }
+            owner.AddedBy = Request?.Cookies["userId"]?.ToString();
             await _authService.CreateLandlordAsync(owner);
             return Json(new { success = true, message = "Owner added successfully" });
         }
@@ -105,7 +116,8 @@ namespace PMS_PropertyHapa.Staff.Controllers
                 owner.OrganizationLogo = $"data:image/png;base64,{owner.OrganizationLogo}";
                 owner.OrganizationIcon = $"data:image/png;base64,{owner.OrganizationIcon}";
             }
-                await _authService.UpdateLandlordAsync(owner);
+            owner.AddedBy = Request?.Cookies["userId"]?.ToString();
+            await _authService.UpdateLandlordAsync(owner);
             return Json(new { success = true, message = "Owner updated successfully" });
         }
 
@@ -138,10 +150,10 @@ namespace PMS_PropertyHapa.Staff.Controllers
                 return Json(new { success = true, message = "Registered Successfully" });
             }
             var roleList = new List<SelectListItem>()
-    {
-        new SelectListItem{Text=SD.Admin, Value=SD.Admin},
-        new SelectListItem{Text=SD.Customer, Value=SD.Customer},
-    };
+                                {
+                                    new SelectListItem{Text=SD.Admin, Value=SD.Admin},
+                                    new SelectListItem{Text=SD.Customer, Value=SD.Customer},
+                                };
             ViewBag.RoleList = roleList;
             return View();
         }

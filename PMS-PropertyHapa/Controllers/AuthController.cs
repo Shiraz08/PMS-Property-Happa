@@ -149,13 +149,12 @@ namespace PMS_PropertyHapa.Controllers
                                                     <p><a href=""{callbackUrl}"" target=""_blank"" style=""background-color: #007bff; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px;"">Confirm Email Address</a></p>
                                                     <p>If you did not create an account, you can safely ignore this email.</p>
                                                     <p>Thank you,</p>
-                                                    <p>Your Application Team</p>
                                                 </div>
                                             </body>
                                             </html>";
                     await _emailSender.SendEmailAsync(user.Email, "Confirm your email", htmlContent);
 
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("ConfirmEmailPage", "Auth");
                 }
 
                 foreach (var error in result.Errors)
@@ -187,6 +186,11 @@ namespace PMS_PropertyHapa.Controllers
             ViewData["Username"] = username;
             return View();
         }
-
+        
+        [HttpGet]
+        public IActionResult ConfirmEmailPage()
+        {
+            return View();
+        }
     }
 }
