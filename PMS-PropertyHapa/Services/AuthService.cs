@@ -124,10 +124,8 @@ namespace PMS_PropertyHapa.Services
             {
                 var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
                 {
-                    ApiType = SD.ApiType.GET,
-                    //Data = email,
-                    Url = $"{villaUrl}/api/v1/UsersAuth/{email}"
-                    //Url = $"{villaUrl}/api/v1/UsersAuth/IsEmailExists"
+                    ApiType = SD.ApiType.POST,
+                    Url = $"{villaUrl}/api/v1/UserRegisterationAuth/verify-email/{email}"
                 });
 
                 return response.IsSuccess;
@@ -147,7 +145,7 @@ namespace PMS_PropertyHapa.Services
                 {
                     ApiType = SD.ApiType.POST,
                     Data = model,
-                    Url = $"{villaUrl}/api/v1/UsersAuth/OTPEmail"
+                    Url = $"{villaUrl}/api/v1/UserRegisterationAuth/verify-email-otp"
                 });
 
                 return response.IsSuccess;
@@ -158,15 +156,15 @@ namespace PMS_PropertyHapa.Services
             }
         }
 
-        public async Task<bool> IsOTPValid(string otp)
+        public async Task<bool> IsOTPValid(OTPEmailDto model)
         {
             try
             {
                 var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
                 {
                     ApiType = SD.ApiType.GET,
-                    //Data = otp,
-                    Url = $"{villaUrl}/api/v1/UsersAuth/{otp}"
+                    Data = model,
+                    Url = $"{villaUrl}/api/v1/UsersAuth/IsOTPValid"
                     //Url = $"{villaUrl}/api/v1/UsersAuth/IsOTPValid"
                 });
 

@@ -72,7 +72,7 @@
                     <div class="input-group">
                         <input class="form-control" id="emailAddress" type="email" name="emailAddress" placeholder="Email Address" >
                         <div class="input-group-append">
-                            <button class="btn btn-outline-secondary verify-email" @* onclick="sendEmailOtp()" *@ type="button">Verify</button>
+                            <button class="btn btn-outline-secondary verify-email"  onclick="sendEmailOtp()"  type="button">Verify</button>
                         </div>
                     </div>
                     <input class="form-control mt-2" id="otpEmail" type="text" name="otpEmail" placeholder="Enter OTP"  style="display: none;"  >
@@ -165,8 +165,6 @@
             </div>
             <div class="f1-buttons">
                 <button class="btn btn-primary btn-previous" type="button">Previous</button>
-                <button class="btn btn-primary btn-add-payment" type="button">Add Payment</button>
-
                 <button class="btn btn-primary btn-submit d-none" type="submit">Register</button>
             </div>
         </fieldset>
@@ -250,9 +248,6 @@
                 });
             }
         });
-
-
-
     });
 
     function loadSubscriptions() {
@@ -328,39 +323,40 @@
     }
 
 
-    function sendEmailOtp() {
-        let email = $("#emailAddress").val().trim();
-        if (email !== "") {
-            $.ajax({
-                url: '@Url.Action("SendEmailOTP", "Auth")',
-                type: 'GET',
-                data: { email: email },
-                success: function (response) {
-                    if (response.success) {
-                        toastr.success(response.message);
-                        $('#otpEmail').show();
-                    } else {
-                        toastr.error(response.message);
-                    }
-                },
-                error: function (xhr, status, error) {
-                    toastr.error("Error in verifying email.");
-                }
-            });
-        } else {
-            toastr.error("Email is Required.");
-        }
-    }
+    // function sendEmailOtp() {
+    //     let email = $("#emailAddress").val().trim();
+    //     if (email !== "") {
+    //         $.ajax({
+    //             url: '@Url.Action("SendEmailOTP", "Auth")',
+    //             type: 'GET',
+    //             data: { email: email },
+    //             success: function (response) {
+    //                 if (response.success) {
+    //                     toastr.success(response.message);
+    //                     $('#otpEmail').show();
+    //                 } else {
+    //                     toastr.error(response.message);
+    //                 }
+    //             },
+    //             error: function (xhr, status, error) {
+    //                 toastr.error("Error in verifying email.");
+    //             }
+    //         });
+    //     } else {
+    //         toastr.error("Email is Required.");
+    //     }
+    // }
 
 
     $('#otpEmail').on('input', function () {
         var otpValue = $(this).val();
+           let email = $("#emailAddress").val().trim();
         if (otpValue.length >= 6) {
             $(this).prop('disabled', true);
             $.ajax({
                 url: '@Url.Action("VerifyEmailOTP", "Auth")',
-                type: 'GET',
-                data: { otp: otpValue },
+                type: 'POST',
+                data: { email:email,otp: otpValue },
                 success: function (response) {
                     if (response.success) {
                         toastr.success(response.message);

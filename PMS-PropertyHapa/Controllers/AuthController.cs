@@ -206,7 +206,7 @@ namespace PMS_PropertyHapa.Controllers
             }
 
             var success = await _authService.IsEmailExists(email);
-            if (success)
+            if (!success)
             {
                 var otp = GenerateOTP();
                 var model = new OTPEmailDto
@@ -214,6 +214,29 @@ namespace PMS_PropertyHapa.Controllers
                     OTP = otp,
                     Email = email
                 };
+
+                string htmlContent = $@"<!DOCTYPE html>
+                                        <html lang=""en"">
+                                        <head>
+                                            <meta charset=""UTF-8"">
+                                            <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+                                            <title>OTP Verification</title>
+                                        </head>
+                                        <body>
+                                            <div style=""font-family: Arial, sans-serif;"">
+                                                <h2>OTP Verification</h2>
+                                                <p>Hello,</p>
+                                                <p>Your OTP (One Time Password) for email verification is:</p>
+                                                <p style=""font-size: 24px; color: #007bff; padding: 10px 20px; background-color: #f4f4f4; border-radius: 5px;"">{otp}</p>
+                                                <p>Please enter this OTP on the verification page to confirm your email address.</p>
+                                                <p>If you did not request this verification, you can safely ignore this email.</p>
+                                                <p>Thank you,</p>
+                                            </div>
+                                        </body>
+                                        </html>
+                                        ";
+                await _emailSender.SendEmailAsync(email, "Confirm your email", htmlContent);
+
                 await _authService.SaveEmailOTP(model);
 
                 return Ok(new { success = true, message = "Please Check You email for OTP" });
@@ -226,14 +249,9 @@ namespace PMS_PropertyHapa.Controllers
         }
         
         [HttpPost]
-        public async Task<IActionResult> VerifyEmailOTP(string otp)
+        public async Task<IActionResult> VerifyEmailOTP(OTPEmailDto model)
         {
-            if (string.IsNullOrWhiteSpace(otp))
-            {
-                return BadRequest("OTP is required.");
-            }
-
-            var success = await _authService.IsOTPValid(otp);
+            var success = await _authService.IsOTPValid(model);
             if (success)
             {
                 return Ok(new { success = true, message = "Email verification successfull" });
