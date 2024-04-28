@@ -433,6 +433,44 @@ namespace MagicVilla_VillaAPI.Repository
         }
 
 
+        public async Task<bool> RegisterUserData(UserRegisterationDto registrationRequestDTO)
+        {
+            ApplicationUser user = new ApplicationUser
+            {
+                FirstName = registrationRequestDTO.FirstName,
+                LastName = registrationRequestDTO.LastName,
+                UserName = registrationRequestDTO.EmailAddress,
+                Email = registrationRequestDTO.EmailAddress,
+                PhoneNumber = registrationRequestDTO.PhoneNumber,
+                Country = registrationRequestDTO.Country,
+            };
+
+            var result = await _userManager.CreateAsync(user, registrationRequestDTO.Password);
+            if (result.Succeeded)
+            {
+                if (!await _roleManager.RoleExistsAsync("PropertyManager"))
+                {
+                    await _roleManager.CreateAsync(new IdentityRole("PropertyManager"));
+                }
+                await _userManager.AddToRoleAsync(user, "PropertyManager");
+
+                AdditionalUserData additionalData = new AdditionalUserData
+                {
+                    AppTenantId = user.Id, 
+                    OrganizationName = registrationRequestDTO.OrganizationName,
+                    PropertyType = registrationRequestDTO.PropertyType,
+                    Units = registrationRequestDTO.Units,
+                    SEODropdown = registrationRequestDTO.SEODropdown
+                };
+
+                await _db.AdditionalUserData.AddAsync(additionalData);
+            }
+
+            return true;
+            
+        }
+
+
 
 
         public async Task<bool> ValidateCurrentPassword(string userId, string currentPassword)
@@ -474,6 +512,45 @@ namespace MagicVilla_VillaAPI.Repository
             return await _userManager.Users
                                  .FirstOrDefaultAsync(u => u.Email == email);
         }
+
+
+        public async Task<ApplicationUser> FindByPhoneNumberAsync(string phoneNumber)
+        {
+            if (string.IsNullOrWhiteSpace(phoneNumber))
+            {
+                return null;
+            }
+
+            return await _userManager.Users
+                                 .FirstOrDefaultAsync(u => u.PhoneNumber == phoneNumber);
+        }
+
+
+
+
+        public async Task<bool> VerifyEmailOtpAsync(string email, string otp)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null) return false;
+
+            var result = await _userManager.VerifyUserTokenAsync(user, _userManager.Options.Tokens.EmailConfirmationTokenProvider, "EmailConfirmation", otp);
+            if (!result) return false;
+
+            user.EmailConfirmed = true;
+            await _userManager.UpdateAsync(user);
+            return true;
+        }
+
+        public async Task<bool> VerifySmsOtpAsync(string userId,string phoneNumber, string otp)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null) return false;
+
+            var result = await _userManager.ChangePhoneNumberAsync(user, phoneNumber, otp);
+            return result.Succeeded;
+        }
+
+
 
 
 
