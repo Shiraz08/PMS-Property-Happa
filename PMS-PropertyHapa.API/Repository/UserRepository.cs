@@ -20,6 +20,7 @@ using System.Security.Cryptography;
 using System.Text;
 using static PMS_PropertyHapa.Models.DTO.TenantModelDto;
 using static PMS_PropertyHapa.Shared.Enum.SD;
+using static System.Net.WebRequestMethods;
 
 namespace MagicVilla_VillaAPI.Repository
 {
@@ -504,27 +505,78 @@ namespace MagicVilla_VillaAPI.Repository
 
 
 
+       
+
         public async Task<ApplicationUser> FindByEmailAsync(string email)
         {
-            if (string.IsNullOrWhiteSpace(email))
-            {
-                return null;
-            }
 
-            return await _userManager.Users
-                                 .FirstOrDefaultAsync(u => u.Email == email);
+            return await _userManager.Users.FirstOrDefaultAsync(u => u.Email == email);
+            
         }
 
 
-        public async Task<ApplicationUser> FindByPhoneNumberAsync(string phoneNumber)
+        public async Task<bool> FindByEmailAddressAsync(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                return false;
+            }
+
+            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Email == email);
+            if (user != null)
+            {
+                var otpCode = GenerateOTP();
+
+                var otpRecord = new OTP
+                {
+                    AppTenantId = user.Id,
+                    PhoneNumber = false,
+                    Email = true,
+                    Type = "Email",
+                    Code = otpCode,
+                    Expiry = DateTime.UtcNow.AddMinutes(5)
+                };
+
+                _db.OTP.Add(otpRecord);
+                await _db.SaveChangesAsync();
+
+                return true;
+            }
+
+            return false;
+        }
+
+
+
+        public async Task<bool> FindByPhoneNumberAsync(string phoneNumber)
         {
             if (string.IsNullOrWhiteSpace(phoneNumber))
             {
-                return null;
+                return false;
             }
 
-            return await _userManager.Users
-                                 .FirstOrDefaultAsync(u => u.PhoneNumber == phoneNumber);
+            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.PhoneNumber == phoneNumber);
+            if (user != null)
+            {
+                var otpCode = GenerateOTP();
+
+                var otpRecord = new OTP
+                {
+                    AppTenantId = user.Id,
+                    PhoneNumber = true,
+                    Email = false,
+                    Type = "PhoneNumber",
+                    Code = otpCode,
+                    Expiry = DateTime.UtcNow.AddMinutes(5)
+                };
+
+                _db.OTP.Add(otpRecord);
+                await _db.SaveChangesAsync();
+
+                return true; 
+            }
+
+            return false;
         }
 
 
@@ -532,28 +584,76 @@ namespace MagicVilla_VillaAPI.Repository
 
         public async Task<bool> VerifyEmailOtpAsync(string email, string otp)
         {
-            var user = await _userManager.FindByEmailAsync(email);
-            if (user == null) return false;
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(otp))
+            {
+                return false;
+            }
 
-            var result = await _userManager.VerifyUserTokenAsync(user, _userManager.Options.Tokens.EmailConfirmationTokenProvider, "EmailConfirmation", otp);
-            if (!result) return false;
+            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Email == email);
+            if (user == null)
+            {
+                return false;
+            }
 
-            user.EmailConfirmed = true;
-            await _userManager.UpdateAsync(user);
+            var otpRecord = await _db.OTP.FirstOrDefaultAsync(o => o.AppTenantId == user.Id && o.Email && o.Code == otp && o.Expiry > DateTime.UtcNow);
+            if (otpRecord == null)
+            {
+                return false;
+            }
+
+            _db.OTP.Remove(otpRecord);
+            await _db.SaveChangesAsync();
+
             return true;
         }
 
-        public async Task<bool> VerifySmsOtpAsync(string userId,string phoneNumber, string otp)
+        public async Task<bool> VerifySmsOtpAsync(string userId, string phoneNumber, string otp)
         {
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user == null) return false;
+            if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(phoneNumber) || string.IsNullOrWhiteSpace(otp))
+            {
+                return false;
+            }
 
-            var result = await _userManager.ChangePhoneNumberAsync(user, phoneNumber, otp);
-            return result.Succeeded;
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null || user.PhoneNumber != phoneNumber)
+            {
+                return false;
+            }
+
+            var otpRecord = await _db.OTP.FirstOrDefaultAsync(o => o.AppTenantId == user.Id && o.PhoneNumber && o.Code == otp && o.Expiry > DateTime.UtcNow);
+            if (otpRecord == null)
+            {
+                return false;
+            }
+            _db.OTP.Remove(otpRecord);
+            await _db.SaveChangesAsync();
+
+            return true;
         }
 
 
+        public string GenerateOTP()
+        {
+            const string validChars = "0123456789";
+            StringBuilder sb = new StringBuilder();
+            Random rnd = new Random();
+            for (int i = 0; i < 6; i++) 
+            {
+                int index = rnd.Next(validChars.Length);
+                sb.Append(validChars[index]);
+            }
+            return sb.ToString();
+        }
 
+        public async Task DeleteExpiredOtpRecordsAsync()
+        {
+            var currentTime = DateTime.UtcNow;
+
+            var expiredOtpRecords = _db.OTP.Where(o => o.Expiry < currentTime).ToList();
+
+            _db.OTP.RemoveRange(expiredOtpRecords);
+            await _db.SaveChangesAsync();
+        }
 
 
         public async Task<ApplicationUser> FindByUserId(string userId)
@@ -645,7 +745,6 @@ namespace MagicVilla_VillaAPI.Repository
 
             return result;
         }
-
 
         #endregion
 

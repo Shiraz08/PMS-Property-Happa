@@ -159,6 +159,8 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
         Task<bool> VerifySmsOtpAsync(string userId, string phoneNumber, string otp);
         Task<bool> VerifyEmailOtpAsync(string email, string otp);
 
-        Task<ApplicationUser> FindByPhoneNumberAsync(string phoneNumber);
+        Task<bool> FindByPhoneNumberAsync(string phoneNumber);
+
+        Task<bool> FindByEmailAddressAsync(string email);
     }
 }

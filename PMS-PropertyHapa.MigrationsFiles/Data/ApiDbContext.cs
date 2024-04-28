@@ -24,6 +24,7 @@ namespace PMS_PropertyHapa.MigrationsFiles.Data
         public DbSet<Tenant> Tenant { get; set; }
         public DbSet<Owner> Owner { get; set; }
         public DbSet<Assets> Assets { get; set; }
+        public DbSet<OTP> OTP { get; set; }
         public DbSet<AdditionalUserData> AdditionalUserData { get; set; }
         public DbSet<AssetsUnits> AssetsUnits { get; set; }
         public DbSet<TblAssignRole> TblAssignRoles { get; set; }
