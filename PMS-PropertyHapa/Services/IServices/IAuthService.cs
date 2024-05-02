@@ -23,9 +23,13 @@ namespace PMS_PropertyHapa.Services.IServices
 
         Task<IEnumerable<UserDTO>> GetAllUsersAsync();
 
+        Task<bool> IsPhoneNumberExists(string phoneNumber);
+        Task<bool> SavePhoneOTP(OTPDto model);
+
         Task<bool> IsEmailExists(string email);
-        Task<bool> SaveEmailOTP(OTPEmailDto model);
-        Task<bool> IsOTPValid(OTPEmailDto model);
+        Task<bool> SaveEmailOTP(OTPDto model);
+        Task<bool> IsPhoneOTPValid(OTPDto model);
+        Task<bool> IsEmailOTPValid(OTPDto model);
 
 
         Task<IEnumerable<TenantModelDto>> GetAllTenantsAsync();

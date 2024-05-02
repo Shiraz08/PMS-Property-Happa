@@ -10,6 +10,7 @@ using System.Security.Claims;
 using System.Net.Http.Headers;
 using PMS_PropertyHapa.MigrationsFiles.Data;
 using PMS_PropertyHapa.Models.Roles;
+using PMS_PropertyHapa.Models.Entities;
 
 namespace PMS_PropertyHapa.API.Controllers.V1
 {
@@ -50,28 +51,55 @@ namespace PMS_PropertyHapa.API.Controllers.V1
 
 
 
-        [HttpPost("verify-email")]
+        [HttpPost("verify-email/{email}")]
         public async Task<IActionResult> VerifyEmail(string email)
         {
-            var user = await _userRepo.FindByEmailAddressAsync(email);
-            if (user == null)
+            var user = await _userRepo.FindByEmailAsync(email);
+            if (user != null)
             {
-                _response.StatusCode = HttpStatusCode.NotFound;
-                _response.IsSuccess = false;
-                _response.ErrorMessages.Add("Email not found.");
-                return NotFound(_response);
+                _response.StatusCode = HttpStatusCode.OK;
+                _response.IsSuccess = true;
+                return Ok(_response);
             }
 
-          
-            _response.StatusCode = HttpStatusCode.OK;
-            _response.IsSuccess = true;
-            return Ok(_response);
+            _response.StatusCode = HttpStatusCode.NotFound;
+            _response.IsSuccess = false;
+            _response.ErrorMessages.Add("Email not found.");
+            return NotFound(_response);
         }
 
-        [HttpPost("verify-email-otp")]
-        public async Task<IActionResult> VerifyEmailOtp(string email, string otp)
+        [HttpPost("SavePhoneOTP")]
+        public async Task<IActionResult> SavePhoneOTP(OTPDto otpModel)
         {
-            var result = await _userRepo.VerifyEmailOtpAsync(email, otp);
+            try
+            {
+                var isSuccess = await _userRepo.SavePhoneOTP(otpModel);
+                return Ok(isSuccess);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
+        [HttpPost("SaveEmailOTP")]
+        public async Task<IActionResult> SaveEmailOTP(OTPDto otpModel)
+        {
+            try
+            {
+                var isSuccess = await _userRepo.SaveEamilOTP(otpModel);
+                return Ok(isSuccess);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+        
+        [HttpPost("verify-email-otp")]
+        public async Task<IActionResult> VerifyEmailOtp(OTPDto oTPEmailDto)
+        {
+            var result = await _userRepo.VerifyEmailOtpAsync(oTPEmailDto);
             if (!result)
             {
                 _response.StatusCode = HttpStatusCode.BadRequest;
@@ -85,14 +113,11 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             return Ok(_response);
         }
 
-
-
-
-        [HttpPost("verify-phone")]
+        [HttpPost("verify-phone/{phoneNumber}")]
         public async Task<IActionResult> VerifyPhone(string phoneNumber)
         {
             var user = await _userRepo.FindByPhoneNumberAsync(phoneNumber);
-            if (user == null)
+            if (user == false)
             {
                 _response.StatusCode = HttpStatusCode.NotFound;
                 _response.IsSuccess = false;
@@ -105,11 +130,10 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             return Ok(_response);
         }
 
-
-        [HttpPost("verify-sms-otp")]
-        public async Task<IActionResult> VerifySmsOtp(string userId, string phoneNumber, string otp)
+        [HttpPost("verify-phone-otp")]
+        public async Task<IActionResult> VerifyPhoneOtp(OTPDto oTPDto)
         {
-            var result = await _userRepo.VerifySmsOtpAsync(userId, phoneNumber, otp);
+            var result = await _userRepo.VerifyPhoneOtpAsync(oTPDto);
             if (!result)
             {
                 _response.StatusCode = HttpStatusCode.BadRequest;

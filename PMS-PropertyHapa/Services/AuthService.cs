@@ -118,6 +118,61 @@ namespace PMS_PropertyHapa.Services
             }
         }
 
+        public async Task<bool> IsPhoneNumberExists(string phoneNumber)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Url = $"{villaUrl}/api/v1/UserRegisterationAuth/verify-phone/{phoneNumber}"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when updating profile: {ex.Message}", ex);
+            }
+        }
+        public async Task<bool> SavePhoneOTP(OTPDto model)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Data = model,
+                    Url = $"{villaUrl}/api/v1/UserRegisterationAuth/SavePhoneOTP"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when creating tenant: {ex.Message}", ex);
+            }
+        }
+        public async Task<bool> IsPhoneOTPValid(OTPDto model)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Data = model,
+                    Url = $"{villaUrl}/api/v1/UserRegisterationAuth/verify-phone-otp"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when updating profile: {ex.Message}", ex);
+            }
+        }
+
+
         public async Task<bool> IsEmailExists(string email)
         {
             try
@@ -135,9 +190,7 @@ namespace PMS_PropertyHapa.Services
                 throw new Exception($"An error occurred when updating profile: {ex.Message}", ex);
             }
         }
-       
-
-        public async Task<bool> SaveEmailOTP(OTPEmailDto model)
+        public async Task<bool> SaveEmailOTP(OTPDto model)
         {
             try
             {
@@ -145,7 +198,7 @@ namespace PMS_PropertyHapa.Services
                 {
                     ApiType = SD.ApiType.POST,
                     Data = model,
-                    Url = $"{villaUrl}/api/v1/UserRegisterationAuth/verify-email-otp"
+                    Url = $"{villaUrl}/api/v1/UserRegisterationAuth/SaveEmailOTP"
                 });
 
                 return response.IsSuccess;
@@ -155,17 +208,15 @@ namespace PMS_PropertyHapa.Services
                 throw new Exception($"An error occurred when creating tenant: {ex.Message}", ex);
             }
         }
-
-        public async Task<bool> IsOTPValid(OTPEmailDto model)
+        public async Task<bool> IsEmailOTPValid(OTPDto model)
         {
             try
             {
                 var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
                 {
-                    ApiType = SD.ApiType.GET,
+                    ApiType = SD.ApiType.POST,
                     Data = model,
-                    Url = $"{villaUrl}/api/v1/UsersAuth/IsOTPValid"
-                    //Url = $"{villaUrl}/api/v1/UsersAuth/IsOTPValid"
+                    Url = $"{villaUrl}/api/v1/UserRegisterationAuth/verify-email-otp"
                 });
 
                 return response.IsSuccess;

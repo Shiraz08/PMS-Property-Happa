@@ -156,11 +156,13 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
         Task<bool> RegisterUserData(UserRegisterationDto registrationRequestDTO);
 
 
-        Task<bool> VerifySmsOtpAsync(string userId, string phoneNumber, string otp);
-        Task<bool> VerifyEmailOtpAsync(string email, string otp);
+        Task<bool> SavePhoneOTP(OTPDto oTPDto);
+        Task<bool> SaveEamilOTP(OTPDto oTPDto);
+        Task<bool> VerifyEmailOtpAsync(OTPDto oTPDto);
 
+        Task<bool> VerifyPhoneOtpAsync(OTPDto oTPDto);
         Task<bool> FindByPhoneNumberAsync(string phoneNumber);
 
-        Task<bool> FindByEmailAddressAsync(string email);
+        //Task<bool> FindByEmailAddressAsync(string email);
     }
 }

@@ -514,40 +514,6 @@ namespace MagicVilla_VillaAPI.Repository
             
         }
 
-
-        public async Task<bool> FindByEmailAddressAsync(string email)
-        {
-            if (string.IsNullOrWhiteSpace(email))
-            {
-                return false;
-            }
-
-            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Email == email);
-            if (user != null)
-            {
-                var otpCode = GenerateOTP();
-
-                var otpRecord = new OTP
-                {
-                    AppTenantId = user.Id,
-                    PhoneNumber = false,
-                    Email = true,
-                    Type = "Email",
-                    Code = otpCode,
-                    Expiry = DateTime.UtcNow.AddMinutes(5)
-                };
-
-                _db.OTP.Add(otpRecord);
-                await _db.SaveChangesAsync();
-
-                return true;
-            }
-
-            return false;
-        }
-
-
-
         public async Task<bool> FindByPhoneNumberAsync(string phoneNumber)
         {
             if (string.IsNullOrWhiteSpace(phoneNumber))
@@ -558,69 +524,49 @@ namespace MagicVilla_VillaAPI.Repository
             var user = await _userManager.Users.FirstOrDefaultAsync(u => u.PhoneNumber == phoneNumber);
             if (user != null)
             {
-                var otpCode = GenerateOTP();
+                //var otpCode = GenerateOTP();
 
-                var otpRecord = new OTP
-                {
-                    AppTenantId = user.Id,
-                    PhoneNumber = true,
-                    Email = false,
-                    Type = "PhoneNumber",
-                    Code = otpCode,
-                    Expiry = DateTime.UtcNow.AddMinutes(5)
-                };
+                //var otpRecord = new OTP
+                //{
+                //    PhoneNumber = phoneNumber,
+                //    Type = "PhoneNumber",
+                //    Code = otpCode,
+                //    Expiry = DateTime.UtcNow.AddMinutes(5)
+                //};
 
-                _db.OTP.Add(otpRecord);
-                await _db.SaveChangesAsync();
+                //_db.OTP.Add(otpRecord);
+                //await _db.SaveChangesAsync();
 
-                return true; 
+                return true;
             }
 
             return false;
         }
 
-
-
-
-        public async Task<bool> VerifyEmailOtpAsync(string email, string otp)
+        public async Task<bool> SavePhoneOTP(OTPDto oTPEmailDto)
         {
-            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(otp))
+            //var otpCode = GenerateOTP();
+            var otpRecord = new OTP
             {
-                return false;
-            }
+                PhoneNumber = oTPEmailDto.PhoneNumber,
+                Type = "PhoneNumber",
+                Code = oTPEmailDto.Code,
+                Expiry = DateTime.UtcNow.AddMinutes(20)
+            };
 
-            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Email == email);
-            if (user == null)
-            {
-                return false;
-            }
-
-            var otpRecord = await _db.OTP.FirstOrDefaultAsync(o => o.AppTenantId == user.Id && o.Email && o.Code == otp && o.Expiry > DateTime.UtcNow);
-            if (otpRecord == null)
-            {
-                return false;
-            }
-
-            _db.OTP.Remove(otpRecord);
+            _db.OTP.Add(otpRecord);
             await _db.SaveChangesAsync();
-
             return true;
         }
 
-        public async Task<bool> VerifySmsOtpAsync(string userId, string phoneNumber, string otp)
+        public async Task<bool> VerifyPhoneOtpAsync(OTPDto oTPDto)
         {
-            if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(phoneNumber) || string.IsNullOrWhiteSpace(otp))
+            if (string.IsNullOrWhiteSpace(oTPDto.PhoneNumber) || string.IsNullOrWhiteSpace(oTPDto.Code))
             {
                 return false;
             }
 
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user == null || user.PhoneNumber != phoneNumber)
-            {
-                return false;
-            }
-
-            var otpRecord = await _db.OTP.FirstOrDefaultAsync(o => o.AppTenantId == user.Id && o.PhoneNumber && o.Code == otp && o.Expiry > DateTime.UtcNow);
+            var otpRecord = await _db.OTP.FirstOrDefaultAsync(o => o.PhoneNumber == oTPDto.PhoneNumber && o.Code == oTPDto.Code /*&& o.Expiry > DateTime.UtcNow*/);
             if (otpRecord == null)
             {
                 return false;
@@ -631,6 +577,70 @@ namespace MagicVilla_VillaAPI.Repository
             return true;
         }
 
+        public async Task<bool> SaveEamilOTP(OTPDto oTPEmailDto)
+        {
+            //var otpCode = GenerateOTP();
+            var otpRecord = new OTP
+            {
+                Email = oTPEmailDto.Email,
+                Type = "Email",
+                Code = oTPEmailDto.Code,
+                Expiry = DateTime.UtcNow.AddMinutes(20)
+            };
+
+            _db.OTP.Add(otpRecord);
+            await _db.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> VerifyEmailOtpAsync(OTPDto oTPDto)
+        {
+            if (string.IsNullOrWhiteSpace(oTPDto.Email) || string.IsNullOrWhiteSpace(oTPDto.Code))
+            {
+                return false;
+            }
+
+            var otpRecord = await _db.OTP.FirstOrDefaultAsync(o => o.Email == oTPDto.Email && o.Code == oTPDto.Code /*&& o.Expiry > DateTime.UtcNow.AddMinutes(20)*/);
+            if (otpRecord == null)
+            {
+                return false;
+            }
+            _db.OTP.Remove(otpRecord);
+            await _db.SaveChangesAsync();
+
+            return true;
+        }
+
+        //public async Task<bool> FindByEmailAddressAsync(string email)
+        //{
+        //    if (string.IsNullOrWhiteSpace(email))
+        //    {
+        //        return false;
+        //    }
+
+        //    var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Email == email);
+        //    if (user == null)
+        //    {
+        //        var otpCode = GenerateOTP();
+
+        //        var otpRecord = new OTP
+        //        {
+        //            //AppTenantId = user.Id,
+        //            PhoneNumber = false,
+        //            Email = true,
+        //            Type = "Email",
+        //            Code = otpCode,
+        //            Expiry = DateTime.UtcNow.AddMinutes(5)
+        //        };
+
+        //        _db.OTP.Add(otpRecord);
+        //        await _db.SaveChangesAsync();
+
+        //        return true;
+        //    }
+
+        //    return false;
+        //}
 
         public string GenerateOTP()
         {

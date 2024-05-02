@@ -43,7 +43,19 @@ namespace PMS_PropertyHapa.Models.Roles
         public string TiwiloPhone { get; set; }
 
         public string? SubscriptionName { get; set; }    
-        public int? SubscriptionId { get; set; }    
+        public int? SubscriptionId { get; set; }
+
+        public string CompanyName { get; set; }
+        public int? PropertyTypeId { get; set; }
+        public int? Units { get; set; }
+        public string LeadGenration { get; set; }
+        public string CardholderName { get; set; }
+        public string CardNumber { get; set; }
+        public DateTime? ExpirationDate { get; set; }
+        public string CVV { get; set; }
+        public string StreetAdress { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
 
         public bool EmailConfirmed { get; set; }
 

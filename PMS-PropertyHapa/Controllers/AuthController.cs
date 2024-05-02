@@ -17,6 +17,7 @@ using System.Net;
 using System.Text;
 using System.Web;
 using PMS_PropertyHapa.MigrationsFiles.Migrations;
+using PMS_PropertyHapa.Shared.Twilio;
 
 namespace PMS_PropertyHapa.Controllers
 {
@@ -117,6 +118,7 @@ namespace PMS_PropertyHapa.Controllers
         {
             if (ModelState.IsValid)
             {
+
                 var user = new ApplicationUser
                 {
                     UserName = model.UserName,
@@ -124,13 +126,28 @@ namespace PMS_PropertyHapa.Controllers
                     NormalizedEmail = model.Email.ToUpperInvariant(),
                     EmailConfirmed = true,
                     SubscriptionName = model.SubscriptionName,
-                    SubscriptionId = model.SubscriptionId
+                    SubscriptionId = model.SubscriptionId,
+                    PhoneNumber = model.PhoneNumber,
+                    CompanyName = model.CompanyName,
+                    PropertyTypeId = model.PropertyTypeId,
+                    Units = model.Units,
+                    LeadGenration = model.LeadGenration,
+                    CardholderName = model.CardholderName,
+                    CardNumber = model.CardNumber,
+                    ExpirationDate = model.ExpirationDate,
+                    CVV = model.CVV,
+                    StreetAdress = model.StreetAdress,
+                    City = model.City,
+                    State = model.State,
                 };
 
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
                     await _userManager.AddToRoleAsync(user, "PropertyManager");
+                    user.FirstName = model.FirstName;
+                    user.LastName = model.LastName;
+                    await _userManager.UpdateAsync(user);
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     var encodedCode = HttpUtility.UrlEncode(code);
@@ -153,21 +170,19 @@ namespace PMS_PropertyHapa.Controllers
                                                 </div>
                                             </body>
                                             </html>";
-                    await _emailSender.SendEmailAsync(user.Email, "Confirm your email", htmlContent);
+                    await _emailSender.SendEmailAsync(user.Email, "Confirm your email.", htmlContent);
 
-                    return RedirectToAction("ConfirmEmailPage", "Auth");
+                    return Ok(new { success = true, message = "User registered successfully." });
                 }
-
+                var errorMessage = "";
                 foreach (var error in result.Errors)
                 {
-                    ViewBag.SubscriptionType = model.SubscriptionName;
-                    ViewBag.SubscriptionId = model.SubscriptionId;
-                    ModelState.AddModelError("", error.Description);
-                    //return RedirectToAction("Auth", "Register");
+                    errorMessage += error.Description + " ";
                 }
+                return Ok(new { success = false, message = errorMessage });
             }
 
-            return View(model);
+            return Ok(new { success = false, message = "Model is not valid." });
         }
 
         [HttpGet]
@@ -209,9 +224,9 @@ namespace PMS_PropertyHapa.Controllers
             if (!success)
             {
                 var otp = GenerateOTP();
-                var model = new OTPEmailDto
+                var model = new OTPDto
                 {
-                    OTP = otp,
+                    Code = otp,
                     Email = email
                 };
 
@@ -235,11 +250,11 @@ namespace PMS_PropertyHapa.Controllers
                                         </body>
                                         </html>
                                         ";
-                await _emailSender.SendEmailAsync(email, "Confirm your email", htmlContent);
+                await _emailSender.SendEmailAsync(email, "Confirm your email.", htmlContent);
 
                 await _authService.SaveEmailOTP(model);
 
-                return Ok(new { success = true, message = "Please Check You email for OTP" });
+                return Ok(new { success = true, message = "Please Check Your email for OTP." });
 
             }
             else
@@ -249,9 +264,9 @@ namespace PMS_PropertyHapa.Controllers
         }
         
         [HttpPost]
-        public async Task<IActionResult> VerifyEmailOTP(OTPEmailDto model)
+        public async Task<IActionResult> VerifyEmailOTP(OTPDto model)
         {
-            var success = await _authService.IsOTPValid(model);
+            var success = await _authService.IsEmailOTPValid(model);
             if (success)
             {
                 return Ok(new { success = true, message = "Email verification successfull" });
@@ -262,6 +277,53 @@ namespace PMS_PropertyHapa.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> SendPhoneOTP(string phoneNumber)
+        {
+            if (string.IsNullOrWhiteSpace(phoneNumber))
+            {
+                return BadRequest("Phone Number is required.");
+            }
+
+            var success = await _authService.IsPhoneNumberExists(phoneNumber);
+            if (!success)
+            {
+                var otp = GenerateOTP();
+                var model = new OTPDto
+                {
+                    Code = otp,
+                    PhoneNumber = phoneNumber
+                };
+
+                //Twilio need to replace cresentials
+                //var message = $"Your OTP (One Time Password) for verification is: {otp}. Please enter this OTP to confirm your Phone number.";
+                //var smsSender = new SMSSender();
+                //await smsSender.SmsSender(model.PhoneNumber, message, "accounSid", "authToken", "twilioPhoneNumber");
+
+                await _authService.SavePhoneOTP(model);
+
+                return Ok(new { success = true, message = "Please check your phone for OTP." });
+
+            }
+            else
+            {
+                return Ok(new { success = false, message = "Phone number Already Exists." });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> VerifyPhoneOTP(OTPDto model)
+        {
+            var success = await _authService.IsPhoneOTPValid(model);
+            if (success)
+            {
+                return Ok(new { success = true, message = "Phone number verification successfull." });
+            }
+            else
+            {
+                return Ok(new { success = false, message = "Please enter correct OTP." });
+            }
+        }
 
         private string GenerateOTP()
         {
