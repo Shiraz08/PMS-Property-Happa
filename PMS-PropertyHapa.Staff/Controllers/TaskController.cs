@@ -41,7 +41,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
             return Json(new { success = true, message = "Task added successfully" });
         }
 
-        [HttpDelete]
+        [HttpPost]
         public async Task<IActionResult> DeleteTask(int id)
         {
             await _authService.DeleteTaskAsync(id);
