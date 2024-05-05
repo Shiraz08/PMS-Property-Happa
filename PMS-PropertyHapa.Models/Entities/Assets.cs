@@ -37,5 +37,6 @@ namespace PMS_PropertyHapa.Models.Entities
         public string OwnerCountry { get; set; }
 
         public string AppTenantId { get; set; }
+        public virtual ICollection<TaskRequest> TaskRequest { get; set; }
     }
 }

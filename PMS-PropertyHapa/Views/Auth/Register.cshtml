@@ -70,7 +70,7 @@
                             <button class="btn btn-outline-secondary verify-email" onclick="sendEmailOtp()" type="button">Verify</button>
                         </div>
                     </div>
-                    <input class="form-control mt-2" id="otpEmail" type="text" name="otpEmail" placeholder="Enter OTP" style="display: none;">
+                    <input class="form-control mt-2" id="otpEmail" type="text" name="otpEmail" placeholder="Enter OTP" @* style="display: none;" *@>
                 </div>
                 <div class="form-group col-md-6">
                     <label for="companyName">Company Name</label>
@@ -86,7 +86,7 @@
                             <button class="btn btn-outline-secondary verify-phone" onclick="sendPhoneOtp()" type="button">Verify</button>
                         </div>
                     </div>
-                    <input class="form-control mt-2" id="otpPhone" type="text" name="otpPhone" placeholder="Enter OTP"  style="display: none;" >
+                    <input class="form-control mt-2" id="otpPhone" type="text" name="otpPhone" placeholder="Enter OTP"  @* style="display: none;" *@ >
                 </div>
                 <div class="form-group col-md-6">
                     <label for="country">Country Name</label>
@@ -137,6 +137,25 @@
             </div>
         </fieldset>
         <fieldset>
+@*             <div class="row">
+                <div class="form-group col-md-8 d-flex align-items-center">
+                    <label for="numberOfUnits" class="mr-2">Number of Units</label>
+                    <input class="form-control" type="number" id="unitsFinal" name="unitsFinal" placeholder="Number of Units">
+                </div>
+                <div class="form-group col-md-4 text-center">
+                    <div class="switch-container">
+                        <span class="switch-label">Monthly</span>
+                        <label class="switch">
+                            <input type="checkbox" id="planSelection">
+                            <span class="switch-state"></span>
+                        </label>
+                        <span class="switch-label">Yearly</span>
+                    </div>
+                </div>
+            </div>
+ *@
+
+
             <div class="media">
                 <label class="col-form-label">Number of Units</label>
                 <input class="form-control" id="unitsFinal" type="number" name="unitsFinal" placeholder="Number of Units">
@@ -180,11 +199,11 @@
                         <input type="text" class="form-control" id="cvv" placeholder="CVV" required>
                     </div>
                 </div>
-                <div class="form-group">
+                <div class="form-group mb-2">
                     <label for="streetAddress">Billing Address</label>
                     <input type="text" class="form-control" id="streetAddress" placeholder="Street Address" required>
                 </div>
-                <div class="row">
+                <div class="row mb-2">
                     <div class="form-group col-md-6">
 
                         <input type="text" class="form-control" id="city" placeholder="City" required>

@@ -2415,7 +2415,7 @@ namespace MagicVilla_VillaAPI.Repository
             {
                 var subscription = await _db.Subscriptions.FirstOrDefaultAsync(x => x.Id == user.SubscriptionId);
 
-                if (subscription.SubscriptionName == SubscriptionTypes.Free.ToString())
+                if (subscription != null && subscription.SubscriptionName == SubscriptionTypes.Free.ToString())
                 {
                     var leaseCount = await _db.Assets
                         .Where(x => x.AddedBy == assetDTO.AddedBy)
@@ -2772,7 +2772,7 @@ namespace MagicVilla_VillaAPI.Repository
 
 
         #endregion
-
+        
 
 
 
@@ -2864,11 +2864,258 @@ namespace MagicVilla_VillaAPI.Repository
         }
 
 
+
+        #region Taks Request
+        public async Task<List<TaskRequestDto>> GetTaskRequestsAsync()
+        {
+            try
+            {
+                var result = await (from t in _db.TaskRequest
+                                    from a in _db.Assets.Where(x=>x.AssetId == t.AssetId).DefaultIfEmpty()
+                                    from o in _db.Owner.Where(x=>x.OwnerId == t.OwnerId).DefaultIfEmpty()
+                                    from tnt in _db.Tenant.Where(x=>x.TenantId == t.TenantId).DefaultIfEmpty()
+                                        //from l in _db.LineItem.Where(x=>x.TaskRequestId == t.TaskRequestId).DefaultIfEmpty()
+                                    where t.IsDeleted != true
+                                    select new TaskRequestDto
+                                    {
+                                        TaskRequestId = t.TaskRequestId,
+                                        Type = t.Type,
+                                        Subject = t.Subject,
+                                        Description = t.Description,
+                                        IsOneTimeTask = t.IsOneTimeTask,
+                                        IsRecurringTask = t.IsRecurringTask,
+                                        DueDate = t.DueDate,
+                                        Status = t.Status,
+                                        Priority = t.Priority,
+                                        Assignees = t.Assignees,
+                                        IsNotifyAssignee = t.IsNotifyAssignee,
+                                        AssetId = t.AssetId,
+                                        Asset = a.BuildingNo + "-" + a.BuildingName,
+                                        TaskRequestFile = t.TaskRequestFile,
+                                        OwnerId = t.OwnerId,
+                                        Owner = o.FirstName + " " + o.LastName,
+                                        IsNotifyOwner = t.IsNotifyOwner,
+                                        TenantId = t.TenantId,
+                                        Tenant = tnt.FirstName + " " + tnt.LastName,
+                                        IsNotifyTenant = t.IsNotifyTenant,
+                                        HasPermissionToEnter = t.HasPermissionToEnter,
+                                        EntryNotes = t.EntryNotes,
+                                        VendorId = t.VendorId,
+                                        ApprovedByOwner = t.ApprovedByOwner,
+                                        PartsAndLabor = t.PartsAndLabor,
+                                        AddedBy = t.AddedBy,
+                                        LineItems = (from item in _db.LineItem
+                                                     where item.TaskRequestId == t.TaskRequestId &&  item.IsDeleted != true
+                                                     select new LineItemDto
+                                                     {
+                                                         LineItemId = item.LineItemId,
+                                                         TaskRequestId = item.TaskRequestId,
+                                                         Quantity = item.Quantity,
+                                                         Price = item.Price,
+                                                         Account = item.Account,
+                                                         Memo = item.Memo
+                                                     }).ToList()
+                                    })
+                     .AsNoTracking()
+                     .ToListAsync();
+
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping owners and organizations: {ex.Message}");
+                throw;
+            }
+        }
+        public async Task<TaskRequestDto> GetTaskByIdAsync(int id)
+        {
+            try
+            {
+                var result = await (from t in _db.TaskRequest
+                                    from a in _db.Assets.Where(x => x.AssetId == t.AssetId).DefaultIfEmpty()
+                                    from o in _db.Owner.Where(x => x.OwnerId == t.OwnerId).DefaultIfEmpty()
+                                    from tnt in _db.Tenant.Where(x => x.TenantId == t.TenantId).DefaultIfEmpty()
+                                    where t.TaskRequestId == id
+                                    select new TaskRequestDto
+                                    {
+                                        TaskRequestId = t.TaskRequestId,
+                                        Type = t.Type,
+                                        Subject = t.Subject,
+                                        Description = t.Description,
+                                        IsOneTimeTask = t.IsOneTimeTask,
+                                        IsRecurringTask = t.IsRecurringTask,
+                                        DueDate = t.DueDate,
+                                        Status = t.Status,
+                                        Priority = t.Priority,
+                                        Assignees = t.Assignees,
+                                        IsNotifyAssignee = t.IsNotifyAssignee,
+                                        AssetId = t.AssetId,
+                                        Asset = a.BuildingNo + "-" + a.BuildingName,
+                                        TaskRequestFile = t.TaskRequestFile,
+                                        OwnerId = t.OwnerId,
+                                        Owner = o.FirstName + " " + o.LastName,
+                                        IsNotifyOwner = t.IsNotifyOwner,
+                                        TenantId = t.TenantId,
+                                        Tenant = tnt.FirstName + " " + tnt.LastName,
+                                        IsNotifyTenant = t.IsNotifyTenant,
+                                        HasPermissionToEnter = t.HasPermissionToEnter,
+                                        EntryNotes = t.EntryNotes,
+                                        VendorId = t.VendorId,
+                                        ApprovedByOwner = t.ApprovedByOwner,
+                                        PartsAndLabor = t.PartsAndLabor,
+                                        AddedBy = t.AddedBy,
+                                        LineItems = (from item in _db.LineItem
+                                                     where item.TaskRequestId == t.TaskRequestId && item.IsDeleted != true
+                                                     select new LineItemDto
+                                                     {
+                                                         LineItemId = item.LineItemId,
+                                                         TaskRequestId = item.TaskRequestId,
+                                                         Quantity = item.Quantity,
+                                                         Price = item.Price,
+                                                         Account = item.Account,
+                                                         Memo = item.Memo
+                                                     }).ToList()
+                                    })
+                     .AsNoTracking()
+                     .FirstOrDefaultAsync();
+
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping owners and organizations: {ex.Message}");
+                throw;
+            }
+        }
+        public async Task<bool> SaveTaskAsync(TaskRequestDto taskRequestDto)
+         {
+            var taskRequest = _db.TaskRequest.FirstOrDefault(x => x.TaskRequestId == taskRequestDto.TaskRequestId);
+
+            if (taskRequest == null)
+                taskRequest = new TaskRequest();
+
+            taskRequest.TaskRequestId = taskRequestDto.TaskRequestId;
+            taskRequest.Type = taskRequestDto.Type;
+            taskRequest.Subject = taskRequestDto.Subject;
+            taskRequest.Description = taskRequestDto.Description;
+            taskRequest.IsOneTimeTask = taskRequestDto.IsOneTimeTask;
+            taskRequest.IsRecurringTask = taskRequestDto.IsRecurringTask;
+            taskRequest.DueDate = taskRequestDto.DueDate;
+            taskRequest.Status = taskRequestDto.Status;
+            taskRequest.Priority = taskRequestDto.Priority;
+            taskRequest.Assignees = taskRequestDto.Assignees;
+            taskRequest.IsNotifyAssignee = taskRequestDto.IsNotifyAssignee;
+            taskRequest.AssetId = taskRequestDto.AssetId;
+            if (taskRequestDto.TaskRequestFile != null)
+            {
+                taskRequest.TaskRequestFile = taskRequestDto.TaskRequestFile;
+            }
+            taskRequest.OwnerId = taskRequestDto.OwnerId;
+            taskRequest.IsNotifyOwner = taskRequestDto.IsNotifyOwner;
+            taskRequest.TenantId = taskRequestDto.TenantId;
+            taskRequest.IsNotifyTenant = taskRequestDto.IsNotifyTenant;
+            taskRequest.HasPermissionToEnter = taskRequestDto.HasPermissionToEnter;
+            taskRequest.EntryNotes = taskRequestDto.EntryNotes;
+            taskRequest.VendorId = taskRequestDto.VendorId;
+            taskRequest.ApprovedByOwner = taskRequestDto.ApprovedByOwner;
+            taskRequest.PartsAndLabor = taskRequestDto.PartsAndLabor;
+
+            if (taskRequestDto.TaskRequestId > 0)
+            {
+                taskRequest.ModifiedBy = taskRequestDto.AddedBy;
+                taskRequest.ModifiedDate = DateTime.Now;
+                _db.TaskRequest.Update(taskRequest);
+            }
+            else
+            {
+                taskRequest.AddedBy = taskRequestDto.AddedBy;
+                taskRequest.AddedDate = DateTime.Now;
+                _db.TaskRequest.Add(taskRequest);
+            }
+
+            await _db.SaveChangesAsync();
+
+            var maxId = 0;
+            if (taskRequestDto.TaskRequestId > 0)
+                maxId = taskRequest.TaskRequestId;
+            else
+                maxId = _db.TaskRequest.Max(x => x.TaskRequestId);
+
+
+            int[] lineItemIds = taskRequestDto.LineItems.Select(x => x.LineItemId).ToArray();
+            var lineItemsToBeDeleted = _db.LineItem
+                .Where(item => item.TaskRequestId == taskRequestDto.TaskRequestId && !lineItemIds.Contains(item.LineItemId))
+                .ToList();
+
+            foreach (var lineItemToBeDeleted in lineItemsToBeDeleted)
+            {
+                lineItemToBeDeleted.IsDeleted = true;
+                lineItemToBeDeleted.ModifiedBy = taskRequestDto.AddedBy;
+                lineItemToBeDeleted.ModifiedDate = DateTime.Now;
+                _db.LineItem.Update(lineItemToBeDeleted);
+            }
+            if (taskRequestDto.LineItems != null && taskRequestDto.LineItems.Any())
+            {
+                var existingLineItems = _db.LineItem.Where(item => item.TaskRequestId == taskRequestDto.TaskRequestId).ToList();
+                foreach (var lineItemDto in taskRequestDto.LineItems)
+                {
+                    var existingLineItem = existingLineItems.FirstOrDefault(item => item.LineItemId == lineItemDto.LineItemId);
+
+                    if (existingLineItem != null)
+                    {
+                        existingLineItem.Quantity = lineItemDto.Quantity;
+                        existingLineItem.Price = lineItemDto.Price;
+                        existingLineItem.Account = lineItemDto.Account;
+                        existingLineItem.Memo = lineItemDto.Memo;
+                        existingLineItem.ModifiedBy = taskRequestDto.AddedBy;
+                        existingLineItem.ModifiedDate = DateTime.Now;
+                        _db.LineItem.Update(existingLineItem);
+                    }
+                    else
+                    {
+                        var newLineItem = new LineItem
+                        {
+                            TaskRequestId = maxId,
+                            Quantity = lineItemDto.Quantity,
+                            Price = lineItemDto.Price,
+                            Account = lineItemDto.Account,
+                            Memo = lineItemDto.Memo,
+                            AddedDate = DateTime.Now,
+                            AddedBy = taskRequestDto.AddedBy
+                        };
+                        _db.LineItem.Add(newLineItem);
+                    }
+                }
+            }
+
+            var result = await _db.SaveChangesAsync();
+
+            return result > 0;
+
+        }
+        public async Task<bool> DeleteTaskAsync(int id)
+        {
+            var task = await _db.TaskRequest.FindAsync(id);
+            if (task == null) return false;
+
+            task.IsDeleted = true;
+            _db.TaskRequest.Update(task);
+            var saveResult = await _db.SaveChangesAsync();
+
+            var lineItems = await _db.LineItem.Where(x => x.TaskRequestId == id).ToListAsync();
+
+            lineItems.ForEach(x => x.IsDeleted = true);
+            _db.LineItem.UpdateRange(lineItems);
+            var lineItemSaveResult = await _db.SaveChangesAsync();
+
+            return saveResult > 0 || lineItemSaveResult > 0;
+        }
+
+
+        #endregion
+
+
     }
-
-
-
-
-
-
 }

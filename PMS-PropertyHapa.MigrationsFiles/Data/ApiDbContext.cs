@@ -44,6 +44,8 @@ namespace PMS_PropertyHapa.MigrationsFiles.Data
         public DbSet<RentCharge> RentCharge { get; set; }
         public DbSet<FeeCharge> FeeCharge { get; set; }
         public DbSet<SecurityDeposit> SecurityDeposit { get; set; }
+        public DbSet<TaskRequest> TaskRequest { get; set; }
+        public DbSet<LineItem> LineItem { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Tenant>()

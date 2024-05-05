@@ -1198,9 +1198,83 @@ namespace PMS_PropertyHapa.Staff.Services
             return response.IsSuccess;
         }
 
+        #region TaskRequest
+
+        public async Task<IEnumerable<TaskRequestDto>> GetTaskRequestsAsync()
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = $"{villaUrl}/api/v1/LandlordAuth/Tasks"
+            });
+
+            if (response.IsSuccess == true)
+            {
+                var userListJson = Convert.ToString(response.Result);
+                var asset = JsonConvert.DeserializeObject<IEnumerable<TaskRequestDto>>(userListJson);
+                return asset;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve asset data");
+            }
+        }
+        public async Task<TaskRequestDto> GetTaskRequestByIdAsync(int id)
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = $"{villaUrl}/api/v1/LandlordAuth/GetTaskById/{id}"
+            });
+            if (response.IsSuccess && response.Result != null)
+            {
+                return JsonConvert.DeserializeObject<TaskRequestDto>(Convert.ToString(response.Result));
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve asset data");
+            }
+        }
+        public async Task<bool> SaveTaskAsync(TaskRequestDto taskRequestDto)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Data = taskRequestDto,
+                    Url = $"{villaUrl}/api/v1/LandlordAuth/Task"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when updating lease: {ex.Message}", ex);
+            }
+        }
+        public async Task<bool> DeleteTaskAsync(int id)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.DELETE,
+                    Url = $"{villaUrl}/api/v1/LandlordAuth/Task/{id}"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when deleting tenant: {ex.Message}", ex);
+            }
+        }
+
+
+        #endregion
+
     }
-
-
-
-
 }

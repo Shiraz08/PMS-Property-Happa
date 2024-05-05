@@ -164,5 +164,11 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
         Task<bool> FindByPhoneNumberAsync(string phoneNumber);
 
         //Task<bool> FindByEmailAddressAsync(string email);
+
+        //Tasks Requests
+        Task<List<TaskRequestDto>> GetTaskRequestsAsync();
+        Task<TaskRequestDto> GetTaskByIdAsync(int id);
+        Task<bool> SaveTaskAsync(TaskRequestDto taskRequestDto);
+        Task<bool> DeleteTaskAsync(int id);
     }
 }

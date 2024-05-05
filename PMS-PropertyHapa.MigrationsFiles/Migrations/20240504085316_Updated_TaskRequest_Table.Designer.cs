@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PMS_PropertyHapa.MigrationsFiles.Data;
 
@@ -11,9 +12,10 @@ using PMS_PropertyHapa.MigrationsFiles.Data;
 namespace PMS_PropertyHapa.MigrationsFiles.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    partial class ApiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240504085316_Updated_TaskRequest_Table")]
+    partial class Updated_TaskRequest_Table
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1051,8 +1053,8 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
                     b.Property<DateTime>("DueDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("EntryNotes")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<bool>("EntryNotes")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("HasPermissionToEnter")
                         .HasColumnType("bit");
@@ -1072,7 +1074,13 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
                     b.Property<bool>("IsOneTimeTask")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsOneTimeWorkOrder")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsRecurringTask")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsRecurringWorkOrder")
                         .HasColumnType("bit");
 
                     b.Property<string>("ModifiedBy")
@@ -1096,7 +1104,7 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
                     b.Property<string>("Subject")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("TaskRequestFile")
+                    b.Property<string>("TaksRequestFile")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("TenantId")

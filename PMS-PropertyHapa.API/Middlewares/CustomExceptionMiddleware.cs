@@ -42,7 +42,7 @@ namespace PMS_PropertyHapa.API.Middlewares
                 await context.Response.WriteAsync(JsonConvert.SerializeObject(new
                 {
                     StatusCode = context.Response.StatusCode,
-                    ErrorMessage = "Hello From Middleware! - Finale"
+                    ErrorMessage = context.Response.Body
                 }));
             }
         }

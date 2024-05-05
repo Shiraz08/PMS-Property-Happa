@@ -51,5 +51,6 @@ namespace PMS_PropertyHapa.Models.Entities
 
         [Display(Name = "Currency")]
         public string Account_Currency { get; set; }
+        public virtual ICollection<TaskRequest> TaskRequest { get; set; }
     }
 }

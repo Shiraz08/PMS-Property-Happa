@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PMS_PropertyHapa.MigrationsFiles.Data;
 
@@ -11,9 +12,10 @@ using PMS_PropertyHapa.MigrationsFiles.Data;
 namespace PMS_PropertyHapa.MigrationsFiles.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    partial class ApiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240503055800_Added_TaskRequest_Table")]
+    partial class Added_TaskRequest_Table
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -550,8 +552,8 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LineItemId"), 1L, 1);
 
-                    b.Property<int>("Account")
-                        .HasColumnType("int");
+                    b.Property<string>("Account")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("AddedBy")
                         .HasColumnType("nvarchar(max)");
@@ -1039,7 +1041,7 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
                     b.Property<bool>("ApprovedByOwner")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("AssetId")
+                    b.Property<int>("AssetId")
                         .HasColumnType("int");
 
                     b.Property<string>("Assignees")
@@ -1051,8 +1053,8 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
                     b.Property<DateTime>("DueDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("EntryNotes")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<bool>("EntryNotes")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("HasPermissionToEnter")
                         .HasColumnType("bit");
@@ -1072,7 +1074,13 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
                     b.Property<bool>("IsOneTimeTask")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsOneTimeWorkOrder")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsRecurringTask")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsRecurringWorkOrder")
                         .HasColumnType("bit");
 
                     b.Property<string>("ModifiedBy")
@@ -1081,7 +1089,7 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
                     b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("OwnerId")
+                    b.Property<int>("OwnerId")
                         .HasColumnType("int");
 
                     b.Property<bool>("PartsAndLabor")
@@ -1096,16 +1104,16 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
                     b.Property<string>("Subject")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("TaskRequestFile")
+                    b.Property<string>("TaksRequestFile")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("TenantId")
+                    b.Property<int>("TenantId")
                         .HasColumnType("int");
 
                     b.Property<string>("Type")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("VendorId")
+                    b.Property<int>("VendorId")
                         .HasColumnType("int");
 
                     b.HasKey("TaskRequestId");
@@ -1834,15 +1842,21 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
                 {
                     b.HasOne("PMS_PropertyHapa.Models.Entities.Assets", "Asset")
                         .WithMany("TaskRequest")
-                        .HasForeignKey("AssetId");
+                        .HasForeignKey("AssetId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("PMS_PropertyHapa.Models.Entities.Owner", "Owner")
                         .WithMany("TaskRequest")
-                        .HasForeignKey("OwnerId");
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("PMS_PropertyHapa.Models.Entities.Tenant", "Tenant")
                         .WithMany("TaskRequest")
-                        .HasForeignKey("TenantId");
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Asset");
 

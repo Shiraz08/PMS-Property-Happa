@@ -460,10 +460,10 @@
     <!-- Plugins JS start-->
     <script src="~/Dashboard/assets/js/datatable/datatables/jquery.dataTables.min.js"></script>
     <script src="~/Dashboard/assets/js/datatable/datatables/datatable.custom.js"></script>
-@*     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.all.min.js"></script>
- *@
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.10.8/sweetalert2.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.2/js/toastr.min.js"></script>
+     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.all.min.js"></script>
+ 
+@*     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.10.8/sweetalert2.min.js"></script>
+ *@    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.2/js/toastr.min.js"></script>
     <script>
         $(document).ready(function () {
             // debugger;
@@ -473,8 +473,6 @@
             var organizationDescription = localStorage.getItem('organizationDescription');
             var tid = localStorage.getItem('tid');
             if (tid) {
-                console.log("tic")
-                console.log(tid)
                 fetchTenantOrganizationInfo(tid);
             } else {
                 console.error('Tenant ID not found');
@@ -492,7 +490,9 @@
                 var imageiconUrl = urls.concat(organizationIcon);
 
             }
-            $('.select2').select2();
+            $('.select2').select2({
+                allowClear: true
+            });
         });
     </script>
 
@@ -527,8 +527,6 @@
 
                     $('#organizatioPrimaryColor').val(data.OrganizatioPrimaryColor);
                     $('#organizationSecondColor').val(data.OrganizationSecondColor);
-
-                    console.log('Data fetched successfully:', data);
                 },
                 error: function (xhr, status, error) {
                     console.error('Error fetching data:', error);
@@ -641,8 +639,6 @@
                     OrganizationSecondColor: $('#organizationSecondaryColor').val(),
                     TempTenantUserId: localStorage.getItem('userId')
                 };
-                console.log(tenantOrganizationInfoData)
-                console.log("tenantOrganizationInfoData1")
 
                 var logoFile = $('#organizationLogoUploader').get(0).files[0];
                 var iconFile = $('#organizationIconUploader').get(0).files[0];
@@ -654,8 +650,6 @@
                     tenantOrganizationInfoData.OrganizationLogo = values[0];
                     tenantOrganizationInfoData.OrganizationIcon = values[1];
 
-                    console.log(tenantOrganizationInfoData)
-                    console.log("tenantOrganizationInfoData2")
 
                     $.ajax({
                         url: '/Auth/SaveTenantOrganizationInfo',
@@ -663,7 +657,6 @@
                         contentType: 'application/json',
                         data: JSON.stringify(tenantOrganizationInfoData),
                         success: function (response) {
-                            console.log(tenantOrganizationInfoData)
                             Toast.fire({
                                 icon: 'success',
                                 title: 'Settings saved successfully',
@@ -702,7 +695,6 @@
 
 
         var organizationIconBase64 = localStorage.getItem('organizationIcon');
-        console.log('organizationIconBase64:', organizationIconBase64);
 
         if (organizationIconBase64) {
             var organizationIconDataURI = organizationIconBase64;

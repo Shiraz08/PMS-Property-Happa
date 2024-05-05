@@ -119,5 +119,15 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
         Task<bool> VerifyEmailOtpAsync(string email, string otp);
         Task<bool> VerifyPhoneAsync(string phoneNumber);
         Task<bool> VerifySmsOtpAsync(string userId, string phoneNumber, string otp);
+
+
+        #region Task
+        Task<IEnumerable<TaskRequestDto>> GetTaskRequestsAsync();
+        Task<TaskRequestDto> GetTaskRequestByIdAsync(int id);
+        Task<bool> SaveTaskAsync(TaskRequestDto taskRequestDto);
+        Task<bool> DeleteTaskAsync(int id);
+
+        #endregion
+
     }
 }

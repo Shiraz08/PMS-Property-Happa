@@ -1,8 +1,818 @@
-﻿
+﻿@using PMS_PropertyHapa.Models.DTO
+@model IEnumerable<TaskRequestDto>
 @{
     ViewData["Title"] = "ViewTask";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>ViewTask</h1>
 
+<style>
+    .card {
+        margin-bottom: 0px !important;
+    }
+
+    .list-persons .profile-mail {
+        padding: 0px !important;
+    }
+</style>
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-sm-6">
+                    <h3>Task Request</h3>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index.html"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item">Task Request</li>
+                        <li class="breadcrumb-item active">List</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="email-wrap bookmark-wrap">
+            <div class="row">
+                <div class="col-xl-12 col-md-12 box-col-12 ">
+                    <div class="email-right-aside bookmark-tabcontent contacts-tabs">
+                        <div class="card email-body radius-left">
+                            <div class="ps-0">
+                                <div class="tab-content">
+                                    <div class="tab-pane fade active show" id="pills-personal" role="tabpanel" aria-labelledby="pills-personal-tab">
+                                        <div class="card mb-0">
+
+                                            <div class="card">
+                                                <div class="card-header d-flex justify-content-between align-items-center">
+
+                                                    <div class="left-side-header">
+                                                        <div class="input-group">
+                                                            <span class="input-group-text" id="basic-addon1">
+                                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                    <g>
+                                                                        <g>
+                                                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M11.2753 2.71436C16.0029 2.71436 19.8363 6.54674 19.8363 11.2753C19.8363 16.0039 16.0029 19.8363 11.2753 19.8363C6.54674 19.8363 2.71436 16.0039 2.71436 11.2753C2.71436 6.54674 6.54674 2.71436 11.2753 2.71436Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M19.8987 18.4878C20.6778 18.4878 21.3092 19.1202 21.3092 19.8983C21.3092 20.6783 20.6778 21.3097 19.8987 21.3097C19.1197 21.3097 18.4873 20.6783 18.4873 19.8983C18.4873 19.1202 19.1197 18.4878 19.8987 18.4878Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                                        </g>
+                                                                    </g>
+                                                                </svg>
+
+                                                            </span>
+                                                            <input class="form-control" type="text" id="searchInput" placeholder="Search Task Request" aria-label="search" aria-describedby="basic-addon1">
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="right-side-header">
+                                                        <button class="btn btn-primary" id="newTaskBtn">New Task</button>
+                                                        <button class="btn btn-primary" id="newOwnerRequestBtn">New Owner Request</button>
+                                                        <button class="btn btn-primary" id="newTenantrequestBtn">New Tenant Request</button>
+                                                        <button class="btn btn-primary" id="newWorkOrderBtn">New Work Order</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="card-body p-0">
+                                                <div class="table-responsive">
+                                                    <table class="table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th scope="col" class="text-center tableHeaderbg">Task</th>
+                                                                <th scope="col" class="text-center tableHeaderbg">Due at</th>
+                                                                <th scope="col" class="text-center tableHeaderbg">Related To</th>
+                                                                <th scope="col" class="text-center tableHeaderbg">Status</th>
+                                                                <th scope="col" class="text-center tableHeaderbg">Action</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @foreach (var item in Model?.OrderByDescending(x => x.TaskRequestId) ?? Enumerable.Empty<PMS_PropertyHapa.Models.DTO.TaskRequestDto>())
+                                                            {
+                                                                <tr>
+                                                                    <td>
+                                                                        <a class="contact-tab-@item.TaskRequestId nav-link" id="v-pills-@item.TaskRequestId-tab" data-bs-toggle="pill" onclick="activeDivforowner(@item.TaskRequestId)" href="#v-pills-@item.TaskRequestId" role="tab" aria-controls="v-pills-@item.TaskRequestId" aria-selected="true">
+                                                                            <div class="media">
+                                                                                @if (item.TaskRequestFile != null)
+                                                                                {
+                                                                                    <img class="img-50 img-fluid m-r-20 rounded-circle update_img_0" src="@item.TaskRequestFile" alt="Sample Image">
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <img class="img-50 img-fluid m-r-20 rounded-circle update_img_0" src="data:image/jpeg;base64,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" alt="Sample Image">
+                                                                                }
+                                                                                <div class="media-body">
+                                                                                    <h6> <span class="first_name_0">@item.Subject </span><span class="last_name_0">@item.Status</span></h6>
+                                                                                    <p class="email_add_0" style="width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">@item.Description</p>
+                                                                                </div>
+                                                                            </div>
+                                                                        </a>
+                                                                    </td>
+
+                                                                    <td class="tableFontSize">@item.DueDate.ToString("yyyy-MM-dd")</td>
+                                                                    <td class="tableFontSize">@item.Asset</td>
+                                                                    <td class="tableFontSize">@item.Status</td>
+                                                                    <td class="tableFontSize">
+                                                                        <a class="btn btn-secondary" onclick="editTaskRequest(@item.TaskRequestId)">Edit</a>
+                                                                        <a class="btn btn-primary" onclick="deleteTaskRequest(@item.TaskRequestId)">Delete</a>
+                                                                    </td>
+                                                                </tr>
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="newTaskModal" tabindex="-1" aria-labelledby="taskRequestModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="taskRequestModalLabel">New Task</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="taskForm">
+                <input type="hidden" value="" id="requestTaskId" />
+                <input type="hidden" value="" id="taskRequestType" />
+                <div class="modal-body scrollable-modal-body">
+                    <div class="mb-3  d-none" id="newOwnerDiv">
+                        <label for="newOwner">Owner:</label>
+                        <select class="form-select" id="newOwner" required>
+                            <option value="">Select Owner</option>
+                        </select>
+                    </div>
+                    <div class="mb-3  d-none" id="newTenantDiv">
+                        <label for="newTenant">Tenant:</label>
+                        <select class="form-select" id="newTenant" required>
+                            <option value="">Select Tenant</option>
+                        </select>
+                    </div>
+                    <div class="mb-3  d-none" id="newVendorDiv">
+                        <label for="newVendor">Vendor:</label>
+                        <select class="form-select" id="newVendor" required>
+                            <option value="">Select Vendor</option>
+                            <option value="1">A</option>
+                            <option value="2">B</option>
+                            <option value="3">C</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="taskSubject" class="form-label">Subject *</label>
+                        <input type="text" class="form-control" id="taskSubject" placeholder="Subject" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="taskDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="taskDescription" rows="3" placeholder="Description"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="taskType" id="oneTimeTask" value="oneTime" checked>
+                            <label class="form-check-label" for="oneTimeTask">One Time Task</label>
+                        </div>
+                        <div class="form-check form-check-inline d-none" id="recurringTaskDiv">
+                            <input class="form-check-input" type="radio" id="recurringTask" name="taskType" value="recurring">
+                            <label class="form-check-label" for="recurringTask">Recurring Task</label>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="dueDate" class="form-label">Due Date</label>
+                            <input type="date" class="form-control" id="dueDate" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="taskStatus" class="form-label">Status</label>
+                            <select class="form-select" id="taskStatus" required>
+                                <option value="">Select Status</option>
+                                <option >Not Started</option>
+                                <option>In Progress</option>
+                                <option>Completed</option>
+                                <option>On Hold</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="taskPriority" class="form-label">Priority</label>
+                            <select class="form-select" id="taskPriority" required>
+                                <option value="">Select Priority</option>
+                                <option>Low</option>
+                                <option>Medium</option>
+                                <option>High</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="assignees" class="form-label">Assignees</label>
+                        <select class="form-control select2" multiple id="assignees" required>
+                            <option value="1">Assignee 1</option>
+                            <option value="2">Assignee 2</option>
+                            <option value="3">Assignee 3</option>
+                            <option value="4">Assignee 4</option>
+                        </select>
+                    </div>
+                    <div class="row">
+                        <div class="col-auto">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="notifyAssignees" name="notifyAssignees">
+                                <label class="form-check-label" for="notifyAssignees">Notify Assignees</label>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="form-check d-none" id="notifyOwnerDiv">
+                                <input class="form-check-input" type="checkbox" id="notifyOwner" name="notifyOwner">
+                                <label class="form-check-label" for="notifyOwner">Notify Owner</label>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="form-check d-none" id="notifyTenantDiv">
+                                <input class="form-check-input" type="checkbox" id="notifyTenant" name="notifyTenant">
+                                <label class="form-check-label" for="notifyTenant">Notify Tenant</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="checkbox-container">
+                        <div class="d-none" id="hasPermissionToEnterDiv">
+                        <div class="custom-control custom-switch my-3">
+                            <input type="checkbox" class="custom-control-input" id="hasPermissionToEnter">
+                            <label class="custom-control-label" for="hasPermissionToEnter">Permission to Enter</label>
+                        </div>
+                        <div class="form-group d-none" id="entryNotesDiv">
+                            <label for="entryNotes">Entry Notes</label>
+                            <textarea class="form-control" id="entryNotes" rows="2"></textarea>
+                        </div>
+                        </div>
+                          <div class="d-none" id="aprrovedPartsDiv">
+                            <div class="custom-control custom-switch my-3">
+                                <input type="checkbox" class="custom-control-input" id="isApprovedByOwner">
+                                <label class="custom-control-label" for="isApprovedByOwner">Approved by Owner</label>
+                            </div>
+                            <div class="custom-control custom-switch my-3">
+                                <input type="checkbox" class="custom-control-input" id="isPartsAndLabor">
+                                <label class="custom-control-label" for="isPartsAndLabor">Parts and Labor</label>
+                            </div>
+                        </div>
+                        <div id="lineItemsContainer"></div>
+                    </>
+                    <div class="row mb-3 d-none" id="relatedToDiv">
+                        <div class="col-md-6">
+                            <label for="taskProperty" class="form-label ">Related To</label>
+                            <select class="form-select" id="taskProperty" required>
+                                <option value="">Select Property</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input" id="taskFile">
+                        <label class="custom-file-label" for="taskFile">Choose file</label>
+                    </div>
+                    <div id="uploadedImageContainer" class="mt-3" style="display: none;">
+                        <img id="uploadedImage" src="#" alt="Uploaded Image" style="max-width: 100%;">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="saveBtn">Save</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
+
+<script>
+    $(document).ready(function () {
+        $("#newTaskBtn").on("click", function () {
+            resetModal();
+            $("#taskRequestModalLabel").html("New Task");
+            $("#taskRequestType").val("Task");
+            $("#newOwnerDiv").addClass("d-none");
+            $("#newTenantDiv").addClass("d-none");
+            $("#newVendorDiv").addClass("d-none");
+            $("#recurringTaskDiv").removeClass("d-none");
+            $("#relatedToDiv").removeClass("d-none");
+            $("#notifyOwnerDiv").addClass("d-none");
+            $("#notifyTenantDiv").addClass("d-none");
+            $("#hasPermissionToEnterDiv").addClass("d-none");
+            $("#aprrovedPartsDiv").addClass("d-none");
+            $("#newTaskModal").modal('show');
+            handleRequiredAttribute()
+        });
+
+        $("#newOwnerRequestBtn").on("click", function () {
+            resetModal();
+            $("#taskRequestModalLabel").html("New Owner Request");
+            $("#taskRequestType").val("OwnerRequest");
+            $("#newOwnerDiv").removeClass("d-none");
+            $("#newTenantDiv").addClass("d-none");
+            $("#newVendorDiv").addClass("d-none");
+            $("#recurringTaskDiv").addClass("d-none");
+            $("#notifyOwnerDiv").removeClass("d-none");
+            $("#relatedToDiv").removeClass("d-none");
+            $("#notifyTenantDiv").addClass("d-none");
+            $("#hasPermissionToEnterDiv").addClass("d-none");
+            $("#aprrovedPartsDiv").addClass("d-none");
+            $("#newTaskModal").modal('show');
+            handleRequiredAttribute()
+        });
+
+        $("#newTenantrequestBtn").on("click", function () {
+            resetModal();
+            $("#taskRequestModalLabel").html("New Tenant Request");
+            $("#taskRequestType").val("TenantRequest");
+            $("#newOwnerDiv").addClass("d-none");
+            $("#newTenantDiv").removeClass("d-none");
+            $("#newVendorDiv").addClass("d-none");
+            $("#recurringTaskDiv").addClass("d-none");
+            $("#notifyTenantDiv").removeClass("d-none");
+            $("#hasPermissionToEnterDiv").removeClass("d-none");
+            $("#notifyOwnerDiv").addClass("d-none");
+            $("#relatedToDiv").addClass("d-none");
+            $("#aprrovedPartsDiv").addClass("d-none");
+            $("#newTaskModal").modal('show');
+            handleRequiredAttribute()
+        });
+
+        $("#newWorkOrderBtn").on("click", function () {
+            resetModal();
+            $("#taskRequestModalLabel").html("New WorkOrder Request");
+            $("#taskRequestType").val("WorkOrderRequest");
+            $("#newOwnerDiv").addClass("d-none");
+            $("#newTenantDiv").addClass("d-none");
+            $("#newVendorDiv").removeClass("d-none");
+            $("#recurringTaskDiv").removeClass("d-none");
+            $("#hasPermissionToEnterDiv").removeClass("d-none");
+            $("#aprrovedPartsDiv").removeClass("d-none");
+            $("#relatedToDiv").removeClass("d-none");
+            $("#notifyTenantDiv").addClass("d-none");
+            $("#notifyOwnerDiv").addClass("d-none");
+            $("#newTaskModal").modal('show');
+            handleRequiredAttribute()
+        });
+
+        $.ajax({
+            url: '@Url.Action("GetProperties", "Communication")',
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                var taskPropertyDropdown = document.getElementById('taskProperty');
+                // taskPropertyDropdown.innerHTML = ''; // Clear existing options
+                data.forEach(function (item) {
+                    var option = new Option(item.BuildingNo + " - " + item.BuildingName, item.AssetId);
+                    taskPropertyDropdown.appendChild(option);
+                });
+            }
+        });
+
+        $.ajax({
+            url: '@Url.Action("GetTenants", "Communication")',
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                var tenantsDropdown = document.getElementById('newTenant');
+                // tenantsDropdown.innerHTML = ''; // Clear existing options
+                data.forEach(function (item) {
+                    var option = new Option(item.FirstName + ' ' + item.LastName, item.TenantId);
+                    tenantsDropdown.appendChild(option);
+                });
+            }
+        });
+
+        $.ajax({
+            url: '@Url.Action("GetLandlord", "Landlord")',
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                var ownerDropdown = document.getElementById('newOwner');
+                // ownerDropdown.innerHTML = ''; // Clear existing options
+                data.forEach(function (item) {
+                    var option = new Option(item.FirstName + ' ' + item.LastName, item.OwnerId);
+                    ownerDropdown.appendChild(option);
+                });
+            }
+        });
+
+        $('#hasPermissionToEnter').change(function () {
+            if ($(this).is(':checked')) {
+                $('#entryNotesDiv').removeClass('d-none');
+            } else {
+                $('#entryNotes').val("")
+                $('#entryNotesDiv').addClass('d-none');
+            }
+        });
+
+        $('#isPartsAndLabor').change(function () {
+            if ($(this).is(':checked')) {
+                $('#lineItemsContainer').append('<button type="button" id="addLineItemBtn" class="btn btn-primary mt-3">Add Line Item</button>');
+            } else {
+                $('#lineItemsContainer').empty();
+            }
+        });
+
+        $(document).on("click", '#addLineItemBtn', function () {
+            if (allInputsFilled()) {
+                appendLineItemForm();
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    text: 'Please fill all required fields before adding a new one.',
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+            }
+        });
+
+        $(document).on("click", '.delete-line-item-btn', function () {
+            $(this).closest('.line-item').remove();
+        });
+
+        $(document).on("input", ".line-item-quantity, .line-item-price", function () {
+            var $lineItem = $(this).closest('.line-item');
+            var quantity = parseFloat($lineItem.find('.line-item-quantity').val());
+            var price = parseFloat($lineItem.find('.line-item-price').val());
+            var total = quantity * price || 0;
+            $lineItem.find('.total').text(total.toFixed(2));
+        });
+
+        function appendLineItemForm() {
+            var formHtml = `<div class="card card-body mt-3 line-item" data-item-id="0">
+                        <input type="hidden" class="line-item-id" value="0">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label>Quantity</label>
+                                <input type="number" class="form-control line-item-quantity" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label>Price</label>
+                                <input type="number" class="form-control line-item-price" required>
+                            </div>
+                            <div class="col-md-3">
+                                <span>Total: $<span class="total">0.00</span></span>
+                            </div>
+                            <div class="col-md-3">
+                                <button type="button" class="btn btn-danger delete-line-item-btn">Delete</button>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <label>Account</label>
+                                <select class="form-control line-item-account" required>
+                                    <option value="">Select Account</option>
+                                    <option value="1">Account 1</option>
+                                    <option value="2">Account 2</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label>Memo</label>
+                                <input type="text" class="form-control line-item-memo" required>
+                            </div>
+                        </div>
+                    </div>`;
+            $('#lineItemsContainer').append(formHtml);
+        }
+
+
+        function allInputsFilled() {
+            var allFilled = true;
+            $('#lineItemsContainer').children().last().find('input[required], select[required]').each(function () {
+                if ($(this).val() === '') {
+                    allFilled = false;
+                    return false;
+                }
+            });
+            return allFilled;
+        }
+        
+        $('#taskForm').on('submit', function (event) {
+            event.preventDefault();
+            const jsonFormData = gatherFormData();
+        });
+
+        function gatherFormData() {
+            const formData = {
+                TaskRequestId: $('#requestTaskId').val() || 0,
+                Type: $("#taskRequestType").val(),
+                Subject: $('#taskSubject').val(),
+                Description: $('#taskDescription').val(),
+                IsOneTimeTask: $('#oneTimeTask').is(':checked'),
+                IsRecurringTask: $('#recurringTask').is(':checked'),
+                DueDate: $('#dueDate').val(),
+                Status: $('#taskStatus').val(),
+                Priority: $('#taskPriority').val(),
+                Assignees: $('#assignees').val().join(','),
+                IsNotifyAssignee: $('#notifyAssignees').is(':checked'),
+                AssetId: $('#taskProperty').val() || null,
+                OwnerId: $('#newOwner').val() || null,
+                TenantId: $('#newTenant').val() || null,
+                VendorId: $('#newVendor').val() || null,
+                HasPermissionToEnter: $('#hasPermissionToEnter').is(':checked'),
+                ApprovedByOwner: $('#isApprovedByOwner').is(':checked'),
+                PartsAndLabor: $('#isPartsAndLabor').is(':checked'),
+                IsNotifyOwner: $('#notifyOwner').is(':checked'),
+                IsNotifyTenant: $('#notifyTenant').is(':checked'),
+                EntryNotes: $('#entryNotes').val(), 
+                LineItems: collectLineItems() || null
+            };
+            handleFileUpload(formData);
+            return formData;
+        }
+
+        function collectLineItems() {
+            let lineItems = [];
+            $('.line-item').each(function () {
+                lineItems.push({
+                    LineItemId: $(this).find('.line-item-id').val(),
+                    Quantity: $(this).find('.line-item-quantity').val(),
+                    Price: parseFloat($(this).find('.line-item-price').val()),
+                    Account: $(this).find('.line-item-account').val(),
+                    Memo: $(this).find('.line-item-memo').val()
+                });
+            });
+            return lineItems;
+        }
+
+        function handleFileUpload(formData) {
+            const fileInput = $('#taskFile')[0];
+            if (fileInput.files.length > 0) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    formData.TaskRequestFile = e.target.result;
+                    submitFormData(formData);
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+            } else {
+                submitFormData(formData);
+            }
+        }
+
+        $('#taskFile').on('change', function (event) {
+            const fileInput = $('#taskFile')[0];
+            if (fileInput.files.length > 0) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#uploadedImage').attr('src', e.target.result);
+                    $('#uploadedImageContainer').show();
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+            }
+        });
+
+        function submitFormData(jsonFormData) {
+            $.ajax({
+                url: '@Url.Action("SaveTask", "Task")',
+                type: 'POST',
+                data: JSON.stringify(jsonFormData),
+                contentType: 'application/json',
+                beforeSend: function () {
+                    $('#saveBtn').prop('disabled', true).text('Saving...');
+                },
+                success: function (response) {
+                    $("#newTaskModal").modal('hide');
+                    location.reload()
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error:', error);
+                    alert('Failed to save data');
+                },
+                complete: function () {
+                    $('#saveBtn').prop('disabled', false).text('Save');
+                }
+            });
+        }
+
+    });
+
+    function resetModal() {
+        $("#newTaskModal form")[0].reset();
+        $('#lineItemsContainer').empty();
+        $('#entryNotesDiv').addClass('d-none');
+        $('.select2').val(null).trigger('change');
+        $('#uploadedImageContainer').hide();
+    }
+
+    function displayUploadedImage(base64String) {
+        $('#uploadedImage').attr('src', base64String);
+        $('#uploadedImageContainer').show();
+    }
+
+    function deleteTaskRequest(id) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'You will not be able to recover this task!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '@Url.Action("DeleteTask", "Task")',
+                    type: 'DELETE',
+                    data: { id: id },
+                    success: function (task) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Task deleted successfully',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        location.reload()
+                    },
+                    error: function (xhr, status, error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Something went wrong!'
+                        });
+                    },
+                });
+            }
+        });
+    }
+
+    function handleRequiredAttribute() {
+        if ($("#newOwnerDiv").hasClass("d-none")) {
+            $("#newOwner").removeAttr("required");
+        } else {
+            $("#newOwner").attr("required", true);
+        }
+        if ($("#newTenantDiv").hasClass("d-none")) {
+            $("#newTenant").removeAttr("required");
+        } else {
+            $("#newTenant").attr("required", true);
+        }
+        if ($("#newVendorDiv").hasClass("d-none")) {
+            $("#newVendor").removeAttr("required");
+        } else {
+            $("#newVendor").attr("required", true);
+        }
+        if ($("#relatedToDiv").hasClass("d-none")) {
+            $("#taskProperty").removeAttr("required");
+        } else {
+            $("#taskProperty").attr("required", true);
+        }
+    }
+
+    function editTaskRequest(id) {
+        $.ajax({
+            url: '@Url.Action("GetTaskById", "Task")',
+            type: 'POST',
+            data: { id: id },
+            success: function (task) {
+                resetModal();
+                if (task.Type == "Task") {
+                    $("#taskRequestModalLabel").html("New Task");
+                    $("#taskRequestType").val("Task");
+                    $("#newOwnerDiv").addClass("d-none");
+                    $("#newTenantDiv").addClass("d-none");
+                    $("#newVendorDiv").addClass("d-none");
+                    $("#recurringTaskDiv").removeClass("d-none");
+                    $("#relatedToDiv").removeClass("d-none");
+                    $("#notifyOwnerDiv").addClass("d-none");
+                    $("#notifyTenantDiv").addClass("d-none");
+                    $("#hasPermissionToEnterDiv").addClass("d-none");
+                    $("#aprrovedPartsDiv").addClass("d-none");
+                } else if (task.Type == "OwnerRequest") {
+                    $("#taskRequestModalLabel").html("New Owner Request");
+                    $("#taskRequestType").val("OwnerRequest");
+                    $("#newOwnerDiv").removeClass("d-none");
+                    $("#newTenantDiv").addClass("d-none");
+                    $("#newVendorDiv").addClass("d-none");
+                    $("#recurringTaskDiv").addClass("d-none");
+                    $("#notifyOwnerDiv").removeClass("d-none");
+                    $("#relatedToDiv").removeClass("d-none");
+                    $("#notifyTenantDiv").addClass("d-none");
+                    $("#hasPermissionToEnterDiv").addClass("d-none");
+                    $("#aprrovedPartsDiv").addClass("d-none");
+                } else if (task.Type == "TenantRequest") {
+                    $("#taskRequestModalLabel").html("New Tenant Request");
+                    $("#taskRequestType").val("TenantRequest");
+                    $("#newOwnerDiv").addClass("d-none");
+                    $("#newTenantDiv").removeClass("d-none");
+                    $("#newVendorDiv").addClass("d-none");
+                    $("#recurringTaskDiv").addClass("d-none");
+                    $("#notifyTenantDiv").removeClass("d-none");
+                    $("#hasPermissionToEnterDiv").removeClass("d-none");
+                    $("#notifyOwnerDiv").addClass("d-none");
+                    $("#relatedToDiv").addClass("d-none");
+                    $("#aprrovedPartsDiv").addClass("d-none");
+                } else if (task.Type == "WorkOrderRequest") {
+                    $("#taskRequestModalLabel").html("New WorkOrder Request");
+                    $("#taskRequestType").val("WorkOrderRequest");
+                    $("#newOwnerDiv").addClass("d-none");
+                    $("#newTenantDiv").addClass("d-none");
+                    $("#newVendorDiv").removeClass("d-none");
+                    $("#recurringTaskDiv").removeClass("d-none");
+                    $("#hasPermissionToEnterDiv").removeClass("d-none");
+                    $("#aprrovedPartsDiv").removeClass("d-none");
+                    $("#relatedToDiv").removeClass("d-none");
+                    $("#notifyTenantDiv").addClass("d-none");
+                    $("#notifyOwnerDiv").addClass("d-none");
+                }
+
+                $('#requestTaskId').val(task.TaskRequestId);
+                $('#taskSubject').val(task.Subject);
+                $('#taskDescription').val(task.Description);
+                $('#dueDate').val(task.DueDate.split('T')[0]);
+                $('#taskStatus').val(task.Status);
+                $('#taskPriority').val(task.Priority);
+                $('#taskProperty').val(task.AssetId);
+                $('#oneTimeTask').prop('checked', task.IsOneTimeTask);
+                $('#recurringTask').prop('checked', task.IsRecurringTask);
+                $('#notifyAssignees').prop('checked', task.IsNotifyAssignee);
+                $('#notifyOwner').prop('checked', task.IsNotifyOwner);
+                $('#notifyTenant').prop('checked', task.IsNotifyTenant);
+                $('#hasPermissionToEnter').prop('checked', task.HasPermissionToEnter);
+                $('#newOwner').val(task.OwnerId)
+                $('#newTenant').val(task.TenantId)
+                $('#newVendor').val(task.VendorId)
+                if (task.HasPermissionToEnter) {
+                    $("#entryNotesDiv").removeClass('d-none')
+                    $("#entryNotes").val(task.EntryNotes)
+                }
+                $('#isApprovedByOwner').prop('checked', task.IsApprovedByOwner);
+                $('#isPartsAndLabor').prop('checked', task.PartsAndLabor);
+                if (task.TaskRequestFile) {
+                    displayUploadedImage(task.TaskRequestFile);
+                }else{
+                    $('#uploadedImageContainer').hide();
+                }
+                $('#lineItemsContainer').empty();
+                if(task.PartsAndLabor){
+                    $('#lineItemsContainer').append('<button type="button" id="addLineItemBtn" class="btn btn-primary mt-3">Add Line Item</button>');
+                }
+                if (task.LineItems && task.LineItems.length > 0) {
+                    task.LineItems.forEach(function (item) {
+                        appendLineItemFormEdit(item);
+                    });
+                }
+                var assigneesArray = task.Assignees.split(',');
+
+                $('#assignees').val(assigneesArray).trigger("change");
+                handleRequiredAttribute()
+                $("#newTaskModal").modal('show');
+            },
+            error: function (xhr, status, error) {
+                console.error('Error:', error);
+                alert('Failed to retrieve data');
+            },
+        });
+    }
+
+    function appendLineItemFormEdit(lineItem) {
+        var lineItemHtml = `
+                        <div class="card card-body mt-3 line-item" data-item-id="${lineItem.LineItemId || 0}">
+                            <input type="hidden" class="line-item-id" value="${lineItem.LineItemId || 0}">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label>Quantity</label>
+                                <input type="number" class="form-control line-item-quantity" required value="${lineItem.Quantity || 0}">
+                            </div>
+                            <div class="col-md-3">
+                                <label>Price</label>
+                                <input type="number" class="form-control line-item-price" required value="${lineItem.Price || 0}">
+                            </div>
+                            <div class="col-md-3">
+                                <span>Total: $<span class="total">${(lineItem.Quantity * lineItem.Price).toFixed(2)}</span></span>
+                            </div>
+                            <div class="col-md-3">
+                                <button type="button" class="btn btn-danger delete-line-item-btn">Delete</button>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <label>Account</label>
+                                <select class="form-control line-item-account" required>
+                                    <option value="">Select Account</option>
+                                    <option value="1" ${lineItem.Account === 1 ? 'selected' : ''}>Account 1</option>
+                                    <option value="2" ${lineItem.Account === 2 ? 'selected' : ''}>Account 2</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label>Memo</label>
+                                <input type="text" class="form-control line-item-memo" required value="${lineItem.Memo || ''}">
+                            </div>
+                        </div>
+                    </div>`;
+        $('#lineItemsContainer').append(lineItemHtml);
+    }
+
+</script>
