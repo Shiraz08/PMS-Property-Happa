@@ -126,7 +126,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
         }
 
 
-        [HttpDelete("Task/{id}")]
+        [HttpPost("Task/{id}")]
         public async Task<ActionResult<bool>> DeleteTaskRequest(int id)
         {
             try

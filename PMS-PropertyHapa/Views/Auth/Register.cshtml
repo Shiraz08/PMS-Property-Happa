@@ -70,7 +70,7 @@
                             <button class="btn btn-outline-secondary verify-email" onclick="sendEmailOtp()" type="button">Verify</button>
                         </div>
                     </div>
-                    <input class="form-control mt-2" id="otpEmail" type="text" name="otpEmail" placeholder="Enter OTP" @* style="display: none;" *@>
+                    <input class="form-control mt-2" id="otpEmail" type="number" required name="otpEmail" placeholder="Enter OTP" style="display: none;" >
                 </div>
                 <div class="form-group col-md-6">
                     <label for="companyName">Company Name</label>
@@ -86,7 +86,7 @@
                             <button class="btn btn-outline-secondary verify-phone" onclick="sendPhoneOtp()" type="button">Verify</button>
                         </div>
                     </div>
-                    <input class="form-control mt-2" id="otpPhone" type="text" name="otpPhone" placeholder="Enter OTP"  @* style="display: none;" *@ >
+                    <input class="form-control mt-2" id="otpPhone" type="number" name="otpPhone" placeholder="Enter OTP"  style="display: none;" >
                 </div>
                 <div class="form-group col-md-6">
                     <label for="country">Country Name</label>
@@ -231,6 +231,7 @@
 <script>
 
     var isNotFree = false;
+    var isEmailVerified = false;
     $(document).ready(function () {
         $.ajax({
             url: '@Url.Action("GetAllPropertyTypes", "Auth")',
@@ -368,9 +369,19 @@
 
 
     function registerUser() {
+        var email = $("#emailAddress").val();
+        var otpEmail = $("#otpEmail").val();
         var password = $("#password").val();
         var confirmPassword = $("#confirmPassword").val();
 
+        console.log(email)
+        console.log(isEmailVerified)
+
+        if (!email || isEmailVerified == false) {
+            toastr.error("Please make email verified.");
+            return;
+        }
+        
         if (password !== confirmPassword) {
             toastr.error("Password and Confirm Password do not match.");
             return;
@@ -514,6 +525,7 @@
                     $.unblockUI();
                     if (response.success) {
                         toastr.success(response.message);
+                        isEmailVerified = true
                         $("#emailAddress").attr("readOnly", true)
                     } else {
                         toastr.error(response.message);

@@ -3,13 +3,66 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-        <!-- Container-fluid starts-->
+@*         <!-- Container-fluid starts-->
         <div class="container-fluid">
             <div class="row justify-content-center" id="subscription-container">
                 <!-- Subscription blocks will be dynamically inserted here -->
             </div>
+        </div> *@
+
+
+@* <div class="media">
+    <label class="col-form-label">Number of Units</label>
+    <input class="form-control" id="unitsFinal" type="number" name="unitsFinal" placeholder="Number of Units">
+    <div class="media-body text-center">
+        <div class="switch-container">
+            <span class="switch-label">Monthly</span>
+            <label class="switch">
+                <input type="checkbox" id="planSelection"><span class="switch-state"></span>
+            </label>
+            <span class="switch-label">Yearly</span>
         </div>
-      
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row justify-content-center" id="monthly-container">
+        <!-- Monthly Subscription blocks will be dynamically inserted here -->
+    </div>
+    <div class="row justify-content-center d-none" id="yearly-container">
+        <!-- Yearly Subscription blocks will be dynamically inserted here -->
+    </div>
+</div>
+       *@
+
+
+<div class="container mt-3">
+    <div class="row justify-content-center align-items-center">
+        <div class="col-auto">
+            <h6 class="text-center" style="padding-top: 12px;">Number of Units</h6>
+        </div>
+        <div class="col-auto">
+            <input class="form-control form-control-sm" value="1" readOnly id="unitsFinal" type="number" name="unitsFinal" placeholder="Number of Units" style="max-width: 200px;">
+        </div>
+        <div class="col-auto">
+            <div class="d-flex align-items-center">
+                <span class="me-2">Monthly</span>
+                <label class="switch">
+                    <input type="checkbox" id="planSelection">
+                    <span class="switch-state"></span>
+                </label>
+                <span class="ms-2">Yearly</span>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row justify-content-center" id="monthly-container">
+        <!-- Monthly Subscription blocks will be dynamically inserted here -->
+    </div>
+    <div class="row justify-content-center d-none" id="yearly-container">
+        <!-- Yearly Subscription blocks will be dynamically inserted here -->
+    </div>
+</div>
 
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -39,20 +92,52 @@
                 });
             }
         });
+
+        $('#planSelection').change(function () {
+            if ($(this).prop('checked')) {
+                $('#monthly-container').addClass('d-none');
+                $('#yearly-container').removeClass('d-none');
+            } else {
+                $('#monthly-container').removeClass('d-none');
+                $('#yearly-container').addClass('d-none');
+            }
+        });
+
     });
+
+    // function loadSubscriptions() {
+    //     $.get('/Subscription/GetAllSubscriptions', function (response) {
+    //         if (response.success && Array.isArray(response.data)) {
+    //             const container = $('#subscription-container');
+    //             response.data.forEach(sub => {
+    //                 container.append(createSubscriptionBlock(sub));
+    //             });
+    //         } else {
+    //             console.error('Failed to load subscriptions:', response.message);
+    //         }
+    //     });
+    // }
 
     function loadSubscriptions() {
         $.get('/Subscription/GetAllSubscriptions', function (response) {
             if (response.success && Array.isArray(response.data)) {
-                const container = $('#subscription-container');
+                const monthlyContainer = $('#monthly-container');
+                const yearlyContainer = $('#yearly-container');
+
                 response.data.forEach(sub => {
-                    container.append(createSubscriptionBlock(sub));
+                    const subscriptionBlock = createSubscriptionBlock(sub);
+                    if (sub.SubscriptionType === 'Monthly') {
+                        monthlyContainer.append(subscriptionBlock);
+                    } else if (sub.SubscriptionType === 'Yearly') {
+                        yearlyContainer.append(subscriptionBlock);
+                    }
                 });
             } else {
                 console.error('Failed to load subscriptions:', response.message);
             }
         });
     }
+
 
     function createSubscriptionBlock(subscription) {
         return `
@@ -86,20 +171,22 @@
     }
 
     function handleSubscriptionClick(price, id, name) {
-        if (price === 0) {
-            window.location.href = `/Auth/Register?subscription=${encodeURIComponent(name)}&id=${encodeURIComponent(id.toString())}`;
-        } else {
+        window.location.href = `/Auth/Register?subscription=${encodeURIComponent(name)}&id=${encodeURIComponent(id.toString())}`;
+
+        // if (price === 0) {
+        //     window.location.href = `/Auth/Register?subscription=${encodeURIComponent(name)}&id=${encodeURIComponent(id.toString())}`;
+        // } else {
             
-            Swal.fire({
-                icon: 'info',
-                title: 'Proceed to Payment',
-                text: 'Please proceed to payment to complete your subscription.',
-                confirmButtonText: 'Ok'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = `/Auth/Register?subscription=${encodeURIComponent(name)}&id=${encodeURIComponent(id.toString())}`;
-                }
-            });
-        }
+        //     Swal.fire({
+        //         icon: 'info',
+        //         title: 'Proceed to Payment',
+        //         text: 'Please proceed to payment to complete your subscription.',
+        //         confirmButtonText: 'Ok'
+        //     }).then((result) => {
+        //         if (result.isConfirmed) {
+        //             window.location.href = `/Auth/Register?subscription=${encodeURIComponent(name)}&id=${encodeURIComponent(id.toString())}`;
+        //         }
+        //     });
+        // }
     }
 </script>

@@ -1261,7 +1261,7 @@ namespace PMS_PropertyHapa.Staff.Services
             {
                 var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
                 {
-                    ApiType = SD.ApiType.DELETE,
+                    ApiType = SD.ApiType.POST,
                     Url = $"{villaUrl}/api/v1/LandlordAuth/Task/{id}"
                 });
 
