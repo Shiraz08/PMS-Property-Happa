@@ -2307,20 +2307,33 @@ namespace MagicVilla_VillaAPI.Repository
         {
             if (tenantDto.Id < 0) return false;
 
-            var newTenant = new TenantOrganizationInfo
+            var newTenant = _db.TenantOrganizationInfo.FirstOrDefault(x=>x.TenantUserId == tenantDto.TenantUserId);
+            if (newTenant == null)
+                newTenant = new TenantOrganizationInfo();
+
+
+            newTenant.Id = tenantDto.Id;
+            newTenant.TenantUserId = tenantDto.TenantUserId;
+            newTenant.OrganizationName = tenantDto.OrganizationName;
+            newTenant.OrganizationDescription = tenantDto.OrganizationDescription;
+            if (tenantDto.OrganizationIcon != null)
             {
-                Id = tenantDto.Id,
-                TenantUserId = tenantDto.TenantUserId,
-                OrganizationName = tenantDto.OrganizationName,
-                OrganizationDescription = tenantDto.OrganizationDescription,
-                OrganizationIcon = tenantDto.OrganizationIcon,
-                OrganizationLogo = tenantDto.OrganizationLogo,
-                OrganizatioPrimaryColor = tenantDto.OrganizatioPrimaryColor,
-                OrganizationSecondColor = tenantDto.OrganizationSecondColor,
+                newTenant.OrganizationIcon = tenantDto.OrganizationIcon;
+            }
+            if (tenantDto.OrganizationLogo != null)
+            {
+                newTenant.OrganizationLogo = tenantDto.OrganizationLogo;
+            }
+            newTenant.OrganizatioPrimaryColor = tenantDto.OrganizatioPrimaryColor;
+            newTenant.OrganizationSecondColor = tenantDto.OrganizationSecondColor;
 
-            };
+            if (newTenant.Id > 0)
+                _db.TenantOrganizationInfo.Update(newTenant);
 
-            _db.TenantOrganizationInfo.Update(newTenant);
+            else
+                _db.TenantOrganizationInfo.Add(newTenant);
+
+
             var result = await _db.SaveChangesAsync();
             return result > 0;
         }

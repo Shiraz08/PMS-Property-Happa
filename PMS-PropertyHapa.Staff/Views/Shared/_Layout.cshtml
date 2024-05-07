@@ -462,7 +462,7 @@
  *@    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.2/js/toastr.min.js"></script>
     <script>
         $(document).ready(function () {
-            // debugger;
+            debugger;
             var organizationName = localStorage.getItem('organizationName');
             var organizationLogo = localStorage.getItem('organizationLogo');
             var organizationIcon = localStorage.getItem('organizationIcon');
@@ -516,13 +516,15 @@
                 type: 'GET',
                 data: { tenantId: tid },
                 success: function (response) {
-                    // debugger
+                     debugger
                     var data = response.data;
                     $('#organizationName').val(data.OrganizationName);
                     $('#organizationDescription').val(data.OrganizationDescription);
 
                     $('#organizatioPrimaryColor').val(data.OrganizatioPrimaryColor);
                     $('#organizationSecondColor').val(data.OrganizationSecondColor);
+                    
+
                 },
                 error: function (xhr, status, error) {
                     console.error('Error fetching data:', error);

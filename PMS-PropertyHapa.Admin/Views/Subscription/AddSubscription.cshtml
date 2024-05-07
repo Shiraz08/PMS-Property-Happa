@@ -94,8 +94,8 @@
                     </div>
                     <div class="mb-3">
                         <label for="smallDescription" class="form-label">Description</label>
-                        <textarea class="form-control" id="smallDescription" required></textarea>
-                    </div>
+                        <div id="smallDescription" style="height: 215px;"></div>
+                   </div>
                     <div class="mb-3">
                         <label for="tax" class="form-label">Tax (%)</label>
                         <input type="number" class="form-control" id="tax" required>
@@ -118,6 +118,11 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     $(document).ready(function () {
+
+        var quill = new Quill('#smallDescription', {
+            theme: 'snow'
+        });
+
         fetchSubscriptions();
 
         function fetchSubscriptions() {
@@ -167,7 +172,7 @@
                         $('#subscriptionType').val(data.SubscriptionType);
                         $('#price').val(data.Price);
                         $('#currency').val(data.Currency);
-                        $('#smallDescription').val(data.SmallDescription);
+                        quill.root.innerHTML = data.SmallDescription;
                         $('#tax').val(data.Tax);
                         $('#noOfUnits').val(data.NoOfUnits);
                         $('#subscriptionModal').modal('show');
@@ -193,13 +198,14 @@
             var method = id ? 'PUT' : 'POST';
             var url = id ? '/Subscription/Edit/' + id : '/Subscription/Create';
 
+            var htmlContent = quill.root.innerHTML;
             var data = {
                 Id: id ? parseInt(id) : null, // Convert to integer if not null
                 SubscriptionName: $('#subscriptionName').val(),
                 SubscriptionType: $('#subscriptionType').val(),
                 Price: parseFloat($('#price').val()),
                 Currency: $('#currency').val(),
-                SmallDescription: $('#smallDescription').val(),
+                SmallDescription: htmlContent,
                 Tax: parseFloat($('#tax').val()),
                 NoOfUnits: parseInt($('#noOfUnits').val())
             };
