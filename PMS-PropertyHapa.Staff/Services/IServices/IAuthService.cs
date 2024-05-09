@@ -128,6 +128,13 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
         Task<bool> DeleteTaskAsync(int id);
 
         #endregion
+        
+        #region Calendar
+        Task<List<CalendarEvent>> GetCalendarEventsAsync(CalendarFilterModel filter);
+        Task<List<OccupancyOverviewEvents>> GetOccupancyOverviewEventsAsync(CalendarFilterModel filter);
+        Task<LeaseDataDto> GetLeaseDataByIdAsync(int filter);
+
+        #endregion
 
     }
 }

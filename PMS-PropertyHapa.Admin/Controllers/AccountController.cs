@@ -77,6 +77,12 @@ namespace PMS_PropertyHapa.Admin.Controllers
                 return View(login);
             }
 
+            if (!await _userManager.IsInRoleAsync(user, "SuperAdmin"))
+            {
+                ModelState.AddModelError("", "Login Failed: Only Super Admin are allowed to log in.");
+                return View(login);
+            }
+
             // Manually sign in the user
             if (passwordVerificationResult == PasswordVerificationResult.Success)
             {
