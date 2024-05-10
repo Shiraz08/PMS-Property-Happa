@@ -28,8 +28,8 @@ namespace PMS_PropertyHapa.Staff.Controllers
             return View();
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetEvents([FromQuery] CalendarFilterModel filter)
+        [HttpPost]
+        public async Task<IActionResult> GetEvents([FromBody] CalendarFilterModel filter)
         {
             var currenUserId = Request?.Cookies["userId"]?.ToString();
             if (currenUserId != null)
@@ -124,8 +124,8 @@ namespace PMS_PropertyHapa.Staff.Controllers
             return Ok(list);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetOccupancyOverviewEvents([FromQuery] CalendarFilterModel filter)
+        [HttpPost]
+        public async Task<IActionResult> GetOccupancyOverviewEvents([FromBody] CalendarFilterModel filter)
         {
             var currenUserId = Request?.Cookies["userId"]?.ToString();
             if (currenUserId != null)
@@ -136,7 +136,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
             return Ok(list);
         }
 
-        [HttpGet]
+        [HttpPost]
         public async Task<IActionResult> GetLeaseData(int id)
         {
             var lease = await _authService.GetLeaseDataByIdAsync(id);

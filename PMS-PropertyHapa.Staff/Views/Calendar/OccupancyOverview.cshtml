@@ -173,7 +173,6 @@
         resetForm();
 
         $("#calendar-popup").on("hidden.bs.modal", function () {
-            FUNClearAllModalFields($(this));
             resetForm();
         });
 
@@ -213,9 +212,9 @@
 
         $.ajax({
             url: '../Calendar/GetOccupancyOverviewEvents',
-            type: 'GET',
-            traditional: true,
-            data: filterData,
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(filterData),
 
             success: function (response) {
                 calendar.getEvents().forEach(function (event) {
@@ -304,7 +303,7 @@
     function ShowLeasePopUp(id) {
         $.ajax({
             url: '../Calendar/GetLeaseData',
-            type: 'GET',
+            type: 'POST',
             data: {id: id},
 
             success: function (response) {

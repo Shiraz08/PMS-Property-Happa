@@ -48,7 +48,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
 
 
         //Calender Start
-        [HttpGet("CalendarEvents")]
+        [HttpPost("CalendarEvents")]
         public async Task<ActionResult<CalendarEvent>> GetCalendarEvents(CalendarFilterModel filter)
         {
             try
@@ -76,7 +76,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             }
         }
 
-        [HttpGet("OccupancyOverviewEvents")]
+        [HttpPost("OccupancyOverviewEvents")]
 
         public async Task<ActionResult<OccupancyOverviewEvents>> GetOccupancyOverviewEvents(CalendarFilterModel filter)
         {
@@ -105,7 +105,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             }
         }
         
-        [HttpGet("LeaseData/{id}")]
+        [HttpPost("LeaseData/{id}")]
 
         public async Task<ActionResult<LeaseDataDto>> GetLeaseDataByIdAsync(int id)
         {
