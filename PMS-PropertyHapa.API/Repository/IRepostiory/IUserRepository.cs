@@ -170,5 +170,7 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
         Task<TaskRequestDto> GetTaskByIdAsync(int id);
         Task<bool> SaveTaskAsync(TaskRequestDto taskRequestDto);
         Task<bool> DeleteTaskAsync(int id);
+        Task<object> GetLandlordDataById(int id);
+        Task<object> GetTenantDataById(int id);
     }
 }
