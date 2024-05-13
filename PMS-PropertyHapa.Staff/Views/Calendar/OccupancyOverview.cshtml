@@ -1,0 +1,395 @@
+﻿@{
+    ViewData["Title"] = "OccupancyOverview";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+ <!-- Page Sidebar Ends-->
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-sm-6">
+                    <h3>Occupancy Overview</h3>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index.html"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item">Calendar</li>
+                        <li class="breadcrumb-item active">List</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid my-4">
+        <div class="row">
+            <!-- Column 1: Properties Table (80% on lg screens) -->
+            <div class="col-12 col-md-12 mb-4">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                       <h4 class="card-title mb-0 flex-grow-1 font-weight-bold">Filters</h4>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="row mt-1 d-flex">
+                            <div class="col-lg-4 col-md-6">
+                                <div class="row">
+                                    <label class="col-sm-12 mb-0 font-weight-bold">Tenant</label>
+                                    <div class="col-sm-12">
+                                        <select id="calendarTenantFilter" multiple name="calendarTenantFilter" class="form-control select2"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6">
+                                <div class="row">
+                                    <label class="col-sm-12 mb-0 font-weight-bold">MoveIn/MoveOut Date</label>
+                                    <div class="col-sm-12">
+                                        <input type="text" class="form-control" id="createdAtRange" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer text-end d-flex justify-content-end">
+                        <button onclick="clearFilters()" type="button" class="btn btn-light mr-2 font-weight-bold" style="padding-left: 2.75rem  !important; padding-right: 2.75rem  !important;">Clear</button>
+                        <button onclick="applyFilters()" type="button" class="btn btn-primary font-weight-bold" style="padding-left: 2.75rem  !important; padding-right: 2.75rem  !important;">Apply</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="container-fluid my-4">
+        <div class="row">
+            <!-- Column 1: Properties Table (80% on lg screens) -->
+            <div class="col-12 col-md-12 mb-4">
+                <div class="card">
+
+                    <div class="card-body">
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-auto">
+                                <button id="calendarLinkBtn" class="btn btn-primary mb-3">Get Calendar Link</button>
+                            </div>
+                            <div class="col-6 mt-1">
+                                <input id="calendarLink" class="form-control" />
+                            </div>
+                        </div>
+                        <div id="calendar"></div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="calendar-popup">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-uppercase">Lease</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="javascript:void(0)" id="frm-calendar">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="leaseType" class="form-label">Asset Unit</label>
+                        <input type="text" class="form-control" id="leaseType" name="leaseType" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="propertyAddress" class="form-label">Asset</label>
+                        <input type="text" class="form-control" id="propertyAddress" name="propertyAddress" required>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="moveInDate" class="form-label">Move In Date</label>
+                            <input type="date" class="form-control" id="moveInDate" name="moveInDate" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="moveOutDate" class="form-label">Move out Date</label>
+                            <input type="date" class="form-control" id="moveOutDate" name="moveOutDate">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="tenantName" class="form-label">Tenant</label>
+                        <input type="text" class="form-control" id="tenantName" name="tenantName" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-secondary">View Lease</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+<script>
+    var calendar;
+    var tenantFilterList = [];
+    var startDateFilter = null;
+    var endDateFilter = null;
+
+    $(document).ready(function () {
+        var calendarEl = document.getElementById('calendar');
+
+        calendar = new FullCalendar.Calendar(calendarEl, {
+            headerToolbar: {
+                left: 'today prev,next',
+                center: 'title',
+                right: '',
+
+
+            },
+            aspectRatio: 2.5,
+            initialView: 'resourceTimelineMonth',
+            eventClick: function (info) {
+                ShowLeasePopUp(info.event.id);
+            },
+        });
+     
+        calendar.render();
+        fillTenantsDll();
+        initDatePickers();
+
+        fetchResources();
+        fetchEvents();
+
+        $("#calendarLinkBtn").click(handleCalendarLinkClick);
+
+        
+        
+        resetForm();
+
+        $("#calendar-popup").on("hidden.bs.modal", function () {
+            resetForm();
+        });
+
+    });
+      
+
+    function fetchResources() {
+        if (!calendar) {
+            return;
+        }
+
+        $.ajax({
+            url: '../Calendar/GetOccupancyOverviewResources',
+            type: 'GET',
+
+            success: function (response) {
+                calendar.getEventSources().forEach(source => source.remove());
+
+                response.forEach(function (resourceData) {
+                    calendar.addResource({ id: resourceData.Id, title: resourceData.Title });
+                });
+            },
+            error: handleAjaxError
+        });
+    }
+
+    function fetchEvents() {
+        if (!calendar) {
+            return;
+        }
+
+        var filterData = {
+            TenantFilter: tenantFilterList != null ? tenantFilterList : [],
+            StartDateFilter: startDateFilter ? moment(startDateFilter, 'MM/DD/YYYY').format('YYYY-MM-DD') : null,
+            EndDateFilter: endDateFilter ? moment(endDateFilter, 'MM/DD/YYYY').format('YYYY-MM-DD') : null
+        };
+
+        $.ajax({
+            url: '../Calendar/GetOccupancyOverviewEvents',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(filterData),
+
+            success: function (response) {
+                calendar.getEvents().forEach(function (event) {
+                    event.remove();
+                });
+                if (response.length > 0) {
+                    response.forEach(function (eventData) {
+                        var formattedStartDate = moment(eventData.StartDate, 'YYYY-MM-DD').format('YYYY-MM-DD');
+                        var formattedEndDate = moment(eventData.EndDate, 'YYYY-MM-DD').format('YYYY-MM-DD');
+                        var event = {
+                            id: eventData.Id,
+                            resourceId: eventData.ResourceId,
+                            resourceTitle: eventData.ResourceTitle,
+                            title: eventData.Title,
+                            start: formattedStartDate,
+                            end: formattedEndDate,
+                        };
+                        calendar.addEvent(event);
+                    });
+                }
+            },
+
+            error: function (xhr, status, error) {
+                console.error(xhr.responseText);
+            }
+        });
+    }
+
+
+    //Handle clicking the calendar link button
+    function handleCalendarLinkClick() {
+        if (!calendar) {
+            alert("Calendar is not initialized yet.")
+        }
+        var events = calendar.getEvents();
+        var icsData = generateICS(events);
+
+        var blob = new Blob([icsData], { type: 'text/calendar' });
+        var formData = new FormData();
+        formData.append("calendarFile", blob, "events.ics");
+
+        $.ajax({
+            url: '../Calendar/GetOccupancyCalendarLink',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+
+            success: function (response) {
+                $('#calendarLink').val(response.url);
+            },
+
+            error: function () {
+                alert('Error saving the file.');
+            }
+        });
+    }
+
+    function generateICS(events) {
+        let icsData = "BEGIN:VCALENDAR\nVERSION:2.0\nCALSCALE:GREGORIAN\n";
+        events.forEach(event => {
+            const dtStamp = new Date().toISOString().replace(/[-:]/g, '').slice(0, 15) + 'Z';
+            const startDate = moment(event.start).format("YYYYMMDD");
+            const endDate = event.end ? moment(event.end).format("YYYYMMDD") : startDate;
+
+            const resourceTitle = `${event.resourceTitle || 'No Title'}`;
+            const eventSummary = `${event.title || 'No Title'} - ${resourceTitle}`;
+
+            icsData += "BEGIN:VEVENT\n";
+            icsData += `SUMMARY:${eventSummary}\n`;
+            icsData += `DESCRIPTION:Resource$: ${resourceTitle}\n`;
+            icsData += `DTSTAMP:${dtStamp}\n`;
+            icsData += `DTSTART;VALUE=DATE:${startDate}\n`;
+            icsData += `DTEND;VALUE=DATE:${endDate}\n`;
+            icsData += "END:VEVENT\n";
+        });
+        icsData += "END:VCALENDAR";
+        return icsData;
+    }
+
+    function handleAjaxError(xhr, status, error) {
+        console.error(xhr.responseText);
+        alert("Error fetching data. Please try again later.");
+    }
+
+    function ShowLeasePopUp(id) {
+        $.ajax({
+            url: '../Calendar/GetLeaseData',
+            type: 'POST',
+            data: {id: id},
+
+            success: function (response) {
+                $('#calendarId').val(response.Id);
+                $('#leaseType').val(response.AssetUnit);
+                $('#propertyAddress').val(response.Asset);
+                $('#moveInDate').val(response.StartDate.split('T')[0]);
+                $('#moveOutDate').val(response.EndDate.split('T')[0]);
+                $('#tenantName').val(response.Tenant);
+
+                $('#calendar-popup').modal("show");
+            },
+            error: handleAjaxError
+        });
+    }
+
+
+
+    var initDatePickers = function () {
+        $('#createdAtRange').daterangepicker({
+            autoUpdateInput: false,
+            locale: {
+                format: 'MM/DD/YYYY',
+                cancelLabel: 'Clear'
+            },
+            timePicker: false,
+            startDate: moment().add(-30, 'days'),
+            endDate: moment().add(1, 'days')
+        });
+
+        $('#createdAtRange').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('MM/DD/YYYY') + '-' + picker.endDate.format('MM/DD/YYYY'));
+        });
+
+        $('#createdAtRange').on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('');
+        });
+    };
+
+    function resetForm() {
+        $('#calendarId').val('');
+        $('#leaseType').val('');
+        $('#propertyAddress').val('');
+        $('#moveInDate').val('');
+        $('#moveOutDate').val('');
+        $('#tenantName').val('');
+    }
+
+    function fillTenantsDll() {
+        $.ajax({
+            url: '@Url.Action("GetTenants", "Communication")',
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                var tenantsDropdown = document.getElementById('calendarTenantFilter');
+                // tenantsDropdown.innerHTML = ''; // Clear existing options
+                data.forEach(function (item) {
+                    var option = new Option(item.FirstName + ' ' + item.LastName, item.TenantId);
+                    tenantsDropdown.appendChild(option);
+                });
+            }
+
+        });
+    }
+
+
+    function clearFilters() {
+        $("#calendarTenantFilter").empty();
+        fillTenantsDll();
+        $("#createdAtRange").val('');
+        tenantFilterList = [];
+        startDateFilter = null;
+        endDateFilter = null;
+        fetchEvents();
+    }
+
+
+    function applyFilters() {
+        tenantFilterList = $("#calendarTenantFilter").val();
+        if ($("#createdAtRange").val()) {
+            var dates = $("#createdAtRange").val().split('-');
+            startDateFilter = dates[0];
+            endDateFilter = dates[1];
+        }
+        fetchEvents();
+    }
+
+</script>
+

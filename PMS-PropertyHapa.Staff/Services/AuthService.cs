@@ -1275,6 +1275,73 @@ namespace PMS_PropertyHapa.Staff.Services
 
 
         #endregion
+        
+        #region Calendar
+
+        public async Task<List<CalendarEvent>> GetCalendarEventsAsync(CalendarFilterModel filter)
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.POST,
+                Data = filter,
+                Url = $"{villaUrl}/api/v1/LandlordAuth/CalendarEvents"
+            });
+
+            if (response.IsSuccess == true)
+            {
+                var userListJson = Convert.ToString(response.Result);
+                var events = JsonConvert.DeserializeObject<List<CalendarEvent>>(userListJson);
+                return events;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve asset data");
+            }
+        }
+        
+        public async Task<List<OccupancyOverviewEvents>> GetOccupancyOverviewEventsAsync(CalendarFilterModel filter)
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.POST,
+                Data = filter,
+                Url = $"{villaUrl}/api/v1/LandlordAuth/OccupancyOverviewEvents"
+            });
+
+            if (response.IsSuccess == true)
+            {
+                var userListJson = Convert.ToString(response.Result);
+                var events = JsonConvert.DeserializeObject<List<OccupancyOverviewEvents>>(userListJson);
+                return events;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve asset data");
+            }
+        }
+        public async Task<LeaseDataDto> GetLeaseDataByIdAsync(int id)
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.POST,
+                Url = $"{villaUrl}/api/v1/LandlordAuth/LeaseData/{id}"
+            });
+
+            if (response.IsSuccess == true)
+            {
+                var userListJson = Convert.ToString(response.Result);
+                var lease = JsonConvert.DeserializeObject<LeaseDataDto>(userListJson);
+                return lease;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve asset data");
+            }
+        }
+        #endregion
 
     }
 }

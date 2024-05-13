@@ -15,6 +15,7 @@ using PMS_PropertyHapa.Models.Entities;
 using PMS_PropertyHapa.Models.Roles;
 using System.Drawing;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -2370,6 +2371,7 @@ namespace MagicVilla_VillaAPI.Repository
                     Zipcode = tenant.Zipcode,
                     State = tenant.State,
                     AppTid = tenant.AppTenantId,
+                    Image = tenant.Image,
                     AddedBy = tenant.AddedBy,
                     Units = tenant.Units.Select(unit => new UnitDTO
                     {
@@ -3172,6 +3174,197 @@ namespace MagicVilla_VillaAPI.Repository
 
             return result;
         }
+
+
+        #region Calendar
+
+
+        public async Task<List<CalendarEvent>> GetCalendarEventsAsync(CalendarFilterModel filter)
+        {
+            try
+            {
+                var eventsList = new List<CalendarEvent>();
+
+                var taskRequestsQuery = _db.TaskRequest
+                    .Where(x => !x.IsDeleted && x.AddedBy == filter.UserId)
+                    .Select(x => new CalendarEvent
+                    {
+                        Title = $"TaskRequest: {x.Subject}",
+                        Date = x.DueDate,
+                        BoxColor = "#e2d8f7",
+                        TextColor = "#504c83",
+                        TenantId = x.TenantId
+                    });
+
+                eventsList.AddRange(await taskRequestsQuery.ToListAsync());
+
+                IQueryable<CalendarEvent> moveInLeasesQuery = null;
+                IQueryable<CalendarEvent> moveOutLeasesQuery = null;
+
+                if (filter.StartDateFilter.HasValue)
+                {
+                    moveInLeasesQuery = _db.Lease
+                        .Where(x => !x.IsDeleted && x.StartDate >= filter.StartDateFilter.Value && x.AddedBy == filter.UserId)
+                        .SelectMany(lease => _db.Tenant.Where(t => t.TenantId == lease.TenantsTenantId && t.AddedBy == filter.UserId && t.IsDeleted != true).DefaultIfEmpty(), (lease, tenant) => new
+                        {
+                            Tenant = tenant,
+                            Lease = lease
+                        })
+                        .Select(x => new CalendarEvent
+                        {
+                            Title = $"Move In: {x.Tenant.FirstName} {x.Tenant.LastName}",
+                            Date = x.Lease.StartDate,
+                            BoxColor = "#e5f7dd",
+                            TextColor = "#4ea76a",
+                            TenantId = x.Lease.TenantsTenantId
+                        });
+                }
+                else
+                {
+                    moveInLeasesQuery = _db.Lease
+                        .Where(x => !x.IsDeleted && x.AddedBy == filter.UserId)
+                        .SelectMany(lease => _db.Tenant.Where(t => t.TenantId == lease.TenantsTenantId && t.AddedBy == filter.UserId && t.IsDeleted != true).DefaultIfEmpty(), (lease, tenant) => new
+                        {
+                            Tenant = tenant,
+                            Lease = lease
+                        })
+                        .Select(x => new CalendarEvent
+                        {
+                            Title = $"Move In: {x.Tenant.FirstName} {x.Tenant.LastName}",
+                            Date = x.Lease.StartDate,
+                            BoxColor = "#e5f7dd",
+                            TextColor = "#4ea76a",
+                            TenantId = x.Lease.TenantsTenantId
+                        });
+                }
+
+                eventsList.AddRange(await moveInLeasesQuery.ToListAsync());
+
+
+                if (filter.EndDateFilter.HasValue)
+                {
+                    moveOutLeasesQuery = _db.Lease
+                        .Where(x => !x.IsDeleted && x.EndDate <= filter.EndDateFilter.Value && x.AddedBy == filter.UserId)
+                        .SelectMany(lease => _db.Tenant.Where(t => t.TenantId == lease.TenantsTenantId && t.AddedBy == filter.UserId && t.IsDeleted != true).DefaultIfEmpty(), (lease, tenant) => new
+                        {
+                            Tenant = tenant,
+                            Lease = lease
+                        })
+                        .Select(x => new CalendarEvent
+                        {
+                            Title = $"Move Out: {x.Tenant.FirstName} {x.Tenant.LastName}",
+                            Date = x.Lease.EndDate,
+                            BoxColor = "#f5dde2",
+                            TextColor = "#974249",
+                            TenantId = x.Lease.TenantsTenantId
+                        });
+                }
+                else
+                {
+                    moveOutLeasesQuery = _db.Lease
+                        .Where(x => !x.IsDeleted && x.AddedBy == filter.UserId)
+                        .SelectMany(lease => _db.Tenant.Where(t => t.TenantId == lease.TenantsTenantId  && t.AddedBy == filter.UserId && t.IsDeleted != true).DefaultIfEmpty(), (lease, tenant) => new
+                        {
+                            Tenant = tenant,
+                            Lease = lease
+                        })
+                        .Select(x => new CalendarEvent
+                        {
+                            Title = $"Move Out: {x.Tenant.FirstName} {x.Tenant.LastName}",
+                            Date = x.Lease.EndDate,
+                            BoxColor = "#f5dde2",
+                            TextColor = "#974249",
+                            TenantId = x.Lease.TenantsTenantId
+                        });
+                }
+                eventsList.AddRange(await moveOutLeasesQuery.ToListAsync());
+
+
+                if (filter.TenantFilter != null && filter.TenantFilter.Any())
+                {
+                    var tenantIds = filter.TenantFilter.Select(id => int.Parse(id)).ToList();
+                    eventsList = eventsList.Where(x => tenantIds.Contains(x.TenantId.GetValueOrDefault())).ToList();
+                }
+
+                return eventsList;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping owners and organizations: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<List<OccupancyOverviewEvents>> GetOccupancyOverviewEventsAsync(CalendarFilterModel filter)
+        {
+            try
+            {
+                var eventsList = new List<OccupancyOverviewEvents>();
+
+                var query = _db.Lease.AsQueryable();
+
+                if (filter.TenantFilter != null  && filter.TenantFilter.Any())
+                {
+                    var tenantIds = filter.TenantFilter.Select(id => int.Parse(id)).ToList();
+                    query = query.Where(x => tenantIds.Contains(x.TenantsTenantId) && x.AddedBy == filter.UserId && x.IsDeleted !=true);
+                }
+
+                if (filter.StartDateFilter.HasValue)
+                {
+                    query = query.Where(x => x.StartDate >= filter.StartDateFilter.Value && x.AddedBy == filter.UserId && x.IsDeleted != true); 
+                }
+
+                if (filter.EndDateFilter.HasValue)
+                {
+                    query = query.Where(x => x.EndDate <= filter.EndDateFilter.Value && x.AddedBy == filter.UserId && x.IsDeleted != true); 
+                }
+
+                var leases = await query.Select(x => new OccupancyOverviewEvents
+                {
+                    Id = x.LeaseId,
+                    ResourceTitle = x.SelectedProperty,
+                    ResourceId = x.SelectedProperty,
+                    Title = x.Tenants.FirstName + " " + x.Tenants.LastName,
+                    StartDate = x.StartDate,
+                    EndDate = x.EndDate,
+                }).ToListAsync();
+
+                return leases;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping owners and organizations: {ex.Message}");
+                throw;
+            }
+        }
+        
+        public async Task<LeaseDataDto> GetLeaseDataByIdAsync(int id)
+        {
+            try
+            {
+                var lease = (from l in _db.Lease
+                            from t in _db.Tenant.Where(x => x.TenantId == l.TenantsTenantId && x.IsDeleted != true).DefaultIfEmpty()
+                            where l.LeaseId == id && l.IsDeleted != true
+                            select new LeaseDataDto
+                            {
+                                Id = l.LeaseId,
+                                Asset = l.SelectedProperty,
+                                AssetUnit = l.SelectedUnit,
+                                Tenant = t.FirstName + " " + t.LastName,
+                                StartDate = l.StartDate,
+                                EndDate = l.EndDate
+                            }).FirstOrDefault();
+
+                return lease;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping owners and organizations: {ex.Message}");
+                throw;
+            }
+        }
+
+        #endregion
 
     }
 }
