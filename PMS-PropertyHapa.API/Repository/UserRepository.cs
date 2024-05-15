@@ -459,7 +459,7 @@ namespace MagicVilla_VillaAPI.Repository
 
                 AdditionalUserData additionalData = new AdditionalUserData
                 {
-                    AppTenantId = user.Id, 
+                    AppTenantId = user.Id,
                     OrganizationName = registrationRequestDTO.OrganizationName,
                     PropertyType = registrationRequestDTO.PropertyType,
                     Units = registrationRequestDTO.Units,
@@ -471,7 +471,7 @@ namespace MagicVilla_VillaAPI.Repository
             }
 
             return true;
-            
+
         }
 
 
@@ -506,13 +506,13 @@ namespace MagicVilla_VillaAPI.Repository
 
 
 
-       
+
 
         public async Task<ApplicationUser> FindByEmailAsync(string email)
         {
 
             return await _userManager.Users.FirstOrDefaultAsync(u => u.Email == email);
-            
+
         }
 
         public async Task<bool> FindByPhoneNumberAsync(string phoneNumber)
@@ -648,7 +648,7 @@ namespace MagicVilla_VillaAPI.Repository
             const string validChars = "0123456789";
             StringBuilder sb = new StringBuilder();
             Random rnd = new Random();
-            for (int i = 0; i < 6; i++) 
+            for (int i = 0; i < 6; i++)
             {
                 int index = rnd.Next(validChars.Length);
                 sb.Append(validChars[index]);
@@ -2308,7 +2308,7 @@ namespace MagicVilla_VillaAPI.Repository
         {
             if (tenantDto.Id < 0) return false;
 
-            var newTenant = _db.TenantOrganizationInfo.FirstOrDefault(x=>x.TenantUserId == tenantDto.TenantUserId);
+            var newTenant = _db.TenantOrganizationInfo.FirstOrDefault(x => x.TenantUserId == tenantDto.TenantUserId);
             if (newTenant == null)
                 newTenant = new TenantOrganizationInfo();
 
@@ -2787,7 +2787,7 @@ namespace MagicVilla_VillaAPI.Repository
 
 
         #endregion
-        
+
 
 
 
@@ -2887,9 +2887,9 @@ namespace MagicVilla_VillaAPI.Repository
             try
             {
                 var result = await (from t in _db.TaskRequest
-                                    from a in _db.Assets.Where(x=>x.AssetId == t.AssetId).DefaultIfEmpty()
-                                    from o in _db.Owner.Where(x=>x.OwnerId == t.OwnerId).DefaultIfEmpty()
-                                    from tnt in _db.Tenant.Where(x=>x.TenantId == t.TenantId).DefaultIfEmpty()
+                                    from a in _db.Assets.Where(x => x.AssetId == t.AssetId).DefaultIfEmpty()
+                                    from o in _db.Owner.Where(x => x.OwnerId == t.OwnerId).DefaultIfEmpty()
+                                    from tnt in _db.Tenant.Where(x => x.TenantId == t.TenantId).DefaultIfEmpty()
                                         //from l in _db.LineItem.Where(x=>x.TaskRequestId == t.TaskRequestId).DefaultIfEmpty()
                                     where t.IsDeleted != true
                                     select new TaskRequestDto
@@ -2921,7 +2921,7 @@ namespace MagicVilla_VillaAPI.Repository
                                         PartsAndLabor = t.PartsAndLabor,
                                         AddedBy = t.AddedBy,
                                         LineItems = (from item in _db.LineItem
-                                                     where item.TaskRequestId == t.TaskRequestId &&  item.IsDeleted != true
+                                                     where item.TaskRequestId == t.TaskRequestId && item.IsDeleted != true
                                                      select new LineItemDto
                                                      {
                                                          LineItemId = item.LineItemId,
@@ -3006,7 +3006,7 @@ namespace MagicVilla_VillaAPI.Repository
             }
         }
         public async Task<bool> SaveTaskAsync(TaskRequestDto taskRequestDto)
-         {
+        {
             var taskRequest = _db.TaskRequest.FirstOrDefault(x => x.TaskRequestId == taskRequestDto.TaskRequestId);
 
             if (taskRequest == null)
@@ -3131,6 +3131,49 @@ namespace MagicVilla_VillaAPI.Repository
 
         #endregion
 
+        #region LandloadGetData
+        public async Task<object> GetLandlordDataById(int id)
+        {
+            var result = await (from owner in _db.Owner
+                                where owner.OwnerId == id
+                                join asset in _db.Assets on owner.OwnerId equals asset.AssetId into assets
+                                from a in assets.DefaultIfEmpty()
+                                join lease in _db.Lease on owner.OwnerId equals lease.TenantsTenantId into leases
+                                from l in leases.DefaultIfEmpty()
+                                select new
+                                {
+                                    Owner = owner,
+                                    Asset = a,
+                                    Lease = l,
+                                    Tasks = _db.TaskRequest.Where(task => task.OwnerId == owner.OwnerId || task.AssetId == a.AssetId).ToList(),
+                                    PropertyDetails = _db.PropertyType.FirstOrDefault(property => property.PropertyTypeId == a.AssetId)
+                                }).FirstOrDefaultAsync();
+
+            return result;
+        }
+
+
+        #endregion
+
+        public async Task<object> GetTenantDataById(int id)
+        {
+            var result = await (from tenant in _db.Tenant
+                                where tenant.TenantId == id
+                                join lease in _db.Lease on tenant.TenantId equals lease.TenantsTenantId into leases
+                                from l in leases.DefaultIfEmpty()
+                                join asset in _db.Assets on l.AppTenantId equals asset.AppTenantId into assets
+                                from a in assets.DefaultIfEmpty()
+                                select new
+                                {
+                                    Tenant = tenant,
+                                    Lease = l,
+                                    Asset = a,
+                                    Tasks = _db.TaskRequest.Where(task => task.TenantId == tenant.TenantId || task.AssetId == a.AssetId).ToList(),
+                                    PropertyDetails = _db.PropertyType.FirstOrDefault(property => property.PropertyTypeId == a.AssetId)
+                                }).FirstOrDefaultAsync();
+
+            return result;
+        }
 
 
         #region Calendar

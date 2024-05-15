@@ -180,6 +180,8 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
         Task<LeaseDataDto> GetLeaseDataByIdAsync(int filter);
 
 
+        Task<object> GetLandlordDataById(int id);
+        Task<object> GetTenantDataById(int id);
         //Vendor Category
         Task<List<VendorCategory>> GetVendorCategoriesAsync();
         Task<VendorCategory> GetVendorCategoryByIdAsync(int id);
