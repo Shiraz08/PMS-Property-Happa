@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using PMS_PropertyHapa.MigrationsFiles.Data;
 using PMS_PropertyHapa.Models.DTO;
+using PMS_PropertyHapa.Models.Entities;
 using PMS_PropertyHapa.Models.Roles;
 
 namespace MagicVilla_VillaAPI.Repository.IRepostiory
@@ -177,6 +178,19 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
         Task<List<CalendarEvent>> GetCalendarEventsAsync(CalendarFilterModel filter);
         Task<List<OccupancyOverviewEvents>> GetOccupancyOverviewEventsAsync(CalendarFilterModel filter);
         Task<LeaseDataDto> GetLeaseDataByIdAsync(int filter);
+
+
+        //Vendor Category
+        Task<List<VendorCategory>> GetVendorCategoriesAsync();
+        Task<VendorCategory> GetVendorCategoryByIdAsync(int id);
+        Task<bool> SaveVendorCategoryAsync(VendorCategory vendorCategory);
+        Task<bool> DeleteVendorCategoryAsync(int id);
+        
+        //Vendor
+        Task<List<Vendor>> GetVendorsAsync();
+        Task<Vendor> GetVendorByIdAsync(int id);
+        Task<bool> SaveVendorAsync(Vendor vendor);
+        Task<bool> DeleteVendorAsync(int id);
 
 
     }

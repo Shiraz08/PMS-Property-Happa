@@ -2881,6 +2881,7 @@ namespace MagicVilla_VillaAPI.Repository
 
 
         #region Taks Request
+
         public async Task<List<TaskRequestDto>> GetTaskRequestsAsync()
         {
             try
@@ -3128,13 +3129,11 @@ namespace MagicVilla_VillaAPI.Repository
             return saveResult > 0 || lineItemSaveResult > 0;
         }
 
-
         #endregion
 
 
 
         #region Calendar
-
 
         public async Task<List<CalendarEvent>> GetCalendarEventsAsync(CalendarFilterModel filter)
         {
@@ -3247,7 +3246,7 @@ namespace MagicVilla_VillaAPI.Repository
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"An error occurred while mapping owners and organizations: {ex.Message}");
+                Console.WriteLine($"An error occurred while mapping calendar: {ex.Message}");
                 throw;
             }
         }
@@ -3290,7 +3289,7 @@ namespace MagicVilla_VillaAPI.Repository
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"An error occurred while mapping owners and organizations: {ex.Message}");
+                Console.WriteLine($"An error occurred while mapping occupancy calendar: {ex.Message}");
                 throw;
             }
         }
@@ -3316,10 +3315,217 @@ namespace MagicVilla_VillaAPI.Repository
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"An error occurred while mapping owners and organizations: {ex.Message}");
+                Console.WriteLine($"An error occurred while mapping lease data: {ex.Message}");
                 throw;
             }
         }
+
+        #endregion
+
+
+        #region Vendor Category
+
+        public async Task<List<VendorCategory>> GetVendorCategoriesAsync()
+        {
+            try
+            {
+                var result = await (from v in _db.VendorCategory
+                                    where v.IsDeleted != true
+                                    select new VendorCategory
+                                    {
+                                        VendorCategoryId = v.VendorCategoryId,
+                                        Name = v.Name,
+                                        AddedBy = v.AddedBy,
+                                    })
+                     .AsNoTracking()
+                     .ToListAsync();
+
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping Vendor Categories: {ex.Message}");
+                throw;
+            }
+        }
+        public async Task<VendorCategory> GetVendorCategoryByIdAsync(int id)
+        {
+            try
+            {
+                var result = await (from v in _db.VendorCategory
+                                    where v.VendorCategoryId == id
+                                    select new VendorCategory
+                                    {
+                                        VendorCategoryId = v.VendorCategoryId,
+                                        Name = v.Name,
+                                        AddedBy = v.AddedBy,
+
+                                    })
+                     .AsNoTracking()
+                     .FirstOrDefaultAsync();
+
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping  Vendor Category: {ex.Message}");
+                throw;
+            }
+        }
+        public async Task<bool> SaveVendorCategoryAsync(VendorCategory model)
+        {
+            var vendorCategory = _db.VendorCategory.FirstOrDefault(x => x.VendorCategoryId == model.VendorCategoryId);
+
+            if (vendorCategory == null)
+                vendorCategory = new VendorCategory();
+
+            vendorCategory.VendorCategoryId = model.VendorCategoryId;
+            vendorCategory.Name = model.Name;
+
+            if (vendorCategory.VendorCategoryId > 0)
+            {
+                vendorCategory.ModifiedBy = model.AddedBy;
+                vendorCategory.ModifiedDate = DateTime.Now;
+                _db.VendorCategory.Update(vendorCategory);
+            }
+            else
+            {
+                vendorCategory.AddedBy = model.AddedBy;
+                vendorCategory.AddedDate = DateTime.Now;
+                _db.VendorCategory.Add(vendorCategory);
+            }
+
+            var result = await _db.SaveChangesAsync();
+
+           
+            return result > 0;
+
+        }
+        public async Task<bool> DeleteVendorCategoryAsync(int id)
+        {
+            var vendorCategory = await _db.VendorCategory.FindAsync(id);
+            if (vendorCategory == null) return false;
+
+            vendorCategory.IsDeleted = true;
+            _db.VendorCategory.Update(vendorCategory);
+            var saveResult = await _db.SaveChangesAsync();
+
+            return saveResult > 0;
+        }
+
+        #endregion
+
+
+        #region Vendor 
+
+
+        public async Task<List<Vendor>> GetVendorsAsync()
+        {
+            try
+            {
+                var result = await (from v in _db.Vendor
+                                    where v.IsDeleted != true
+                                    select new Vendor
+                                    {
+                                        VendorId = v.VendorId,
+                                        FirstName = v.FirstName,
+                                        MI = v.MI,
+                                        LastName = v.LastName,
+                                        Company = v.Company,
+                                        JobTitle = v.JobTitle,
+                                        Notes = v.Notes,
+                                        AddedBy = v.AddedBy,
+                                    })
+                     .AsNoTracking()
+                     .ToListAsync();
+
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping Vendors: {ex.Message}");
+                throw;
+            }
+        }
+        public async Task<Vendor> GetVendorByIdAsync(int id)
+        {
+            try
+            {
+                var result = await (from v in _db.Vendor
+                                    where v.VendorId == id
+                                    select new Vendor
+                                    {
+                                        VendorId = v.VendorId,
+                                        FirstName = v.FirstName,
+                                        MI = v.MI,
+                                        LastName = v.LastName,
+                                        Company = v.Company,
+                                        JobTitle = v.JobTitle,
+                                        Notes = v.Notes,
+                                        AddedBy = v.AddedBy,
+
+                                    })
+                     .AsNoTracking()
+                     .FirstOrDefaultAsync();
+
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping  Vendor : {ex.Message}");
+                throw;
+            }
+        }
+        public async Task<bool> SaveVendorAsync(Vendor model)
+        {
+            var vendor = _db.Vendor.FirstOrDefault(x => x.VendorId == model.VendorId);
+
+            if (vendor == null)
+                vendor = new Vendor();
+
+            vendor.VendorId = model.VendorId;
+            vendor.FirstName = model.FirstName;
+            vendor.MI = model.MI;
+            vendor.LastName = model.LastName;
+            vendor.Company = model.Company;
+            vendor.JobTitle = model.JobTitle;
+            vendor.Notes = model.Notes;
+
+            if (vendor.VendorId > 0)
+            {
+                vendor.ModifiedBy = model.AddedBy;
+                vendor.ModifiedDate = DateTime.Now;
+                _db.Vendor.Update(vendor);
+            }
+            else
+            {
+                vendor.AddedBy = model.AddedBy;
+                vendor.AddedDate = DateTime.Now;
+                _db.Vendor.Add(vendor);
+            }
+
+            var result = await _db.SaveChangesAsync();
+
+
+            return result > 0;
+
+        }
+        public async Task<bool> DeleteVendorAsync(int id)
+        {
+            var vendor = await _db.Vendor.FindAsync(id);
+            if (vendor == null) return false;
+
+            vendor.IsDeleted = true;
+            _db.Vendor.Update(vendor);
+            var saveResult = await _db.SaveChangesAsync();
+
+            return saveResult > 0;
+        }
+
 
         #endregion
 
