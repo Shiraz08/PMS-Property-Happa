@@ -1206,7 +1206,7 @@ namespace PMS_PropertyHapa.Staff.Services
             var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
             {
                 ApiType = SD.ApiType.GET,
-                Url = $"{villaUrl}/api/v1/LandlordAuth/Tasks"
+                Url = $"{villaUrl}/api/v1/GetDataByIdAuth/Tasks"
             });
 
             if (response.IsSuccess == true)
@@ -1226,7 +1226,7 @@ namespace PMS_PropertyHapa.Staff.Services
             var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
             {
                 ApiType = SD.ApiType.GET,
-                Url = $"{villaUrl}/api/v1/LandlordAuth/GetTaskById/{id}"
+                Url = $"{villaUrl}/api/v1/GetDataByIdAuth/GetTaskById/{id}"
             });
             if (response.IsSuccess && response.Result != null)
             {
@@ -1245,7 +1245,7 @@ namespace PMS_PropertyHapa.Staff.Services
                 {
                     ApiType = SD.ApiType.POST,
                     Data = taskRequestDto,
-                    Url = $"{villaUrl}/api/v1/LandlordAuth/Task"
+                    Url = $"{villaUrl}/api/v1/GetDataByIdAuth/Task"
                 });
 
                 return response.IsSuccess;
@@ -1262,7 +1262,7 @@ namespace PMS_PropertyHapa.Staff.Services
                 var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
                 {
                     ApiType = SD.ApiType.POST,
-                    Url = $"{villaUrl}/api/v1/LandlordAuth/Task/{id}"
+                    Url = $"{villaUrl}/api/v1/GetDataByIdAuth/Task/{id}"
                 });
 
                 return response.IsSuccess;
@@ -1285,7 +1285,7 @@ namespace PMS_PropertyHapa.Staff.Services
             {
                 ApiType = SD.ApiType.POST,
                 Data = filter,
-                Url = $"{villaUrl}/api/v1/LandlordAuth/CalendarEvents"
+                Url = $"{villaUrl}/api/v1/GetDataByIdAuth/CalendarEvents"
             });
 
             if (response.IsSuccess == true)
@@ -1307,7 +1307,7 @@ namespace PMS_PropertyHapa.Staff.Services
             {
                 ApiType = SD.ApiType.POST,
                 Data = filter,
-                Url = $"{villaUrl}/api/v1/LandlordAuth/OccupancyOverviewEvents"
+                Url = $"{villaUrl}/api/v1/GetDataByIdAuth/OccupancyOverviewEvents"
             });
 
             if (response.IsSuccess == true)
@@ -1327,7 +1327,7 @@ namespace PMS_PropertyHapa.Staff.Services
             var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
             {
                 ApiType = SD.ApiType.POST,
-                Url = $"{villaUrl}/api/v1/LandlordAuth/LeaseData/{id}"
+                Url = $"{villaUrl}/api/v1/GetDataByIdAuth/LeaseData/{id}"
             });
 
             if (response.IsSuccess == true)
