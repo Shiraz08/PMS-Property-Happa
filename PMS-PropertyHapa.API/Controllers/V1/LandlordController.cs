@@ -382,49 +382,5 @@ namespace PMS_PropertyHapa.API.Controllers.V1
         }
         #endregion
 
-        [HttpGet("GetLandlordDataById/{id}")]
-        public async Task<ActionResult> GetLandlordDataById(int id)
-        {
-            try
-            {
-                var landlordData = await _userRepo.GetLandlordDataById(id);
-
-                if (landlordData != null)
-                {
-                    return Ok(landlordData);
-                }
-                else
-                {
-                    return NotFound("No user found with this id.");
-                }
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "Internal server error");
-            }
-        }
-
-        [HttpGet("GetTenantDataById/{id}")]
-        public async Task<ActionResult> GetTenantDataById(int id)
-        {
-            try
-            {
-                var TenantData = await _userRepo.GetTenantDataById(id);
-
-                if (TenantData != null)
-                {
-                    return Ok(TenantData);
-                }
-                else
-                {
-                    return NotFound("No user found with this id.");
-                }
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "Internal server error");
-            }
-        }
-
     }
 }
