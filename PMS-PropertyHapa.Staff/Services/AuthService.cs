@@ -1428,7 +1428,7 @@ namespace PMS_PropertyHapa.Staff.Services
             var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
             {
                 ApiType = SD.ApiType.GET,
-                Url = $"{villaUrl}/api/v1/LandlordAuth/Vendor"
+                Url = $"{villaUrl}/api/v1/LandlordAuth/Vendors"
             });
 
             if (response.IsSuccess == true)

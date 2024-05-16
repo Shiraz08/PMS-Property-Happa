@@ -16,9 +16,9 @@ namespace PMS_PropertyHapa.Models.Entities
         public string JobTitle { get; set; }
         public string Notes { get; set; }
         public string Picture { get; set; }
-        public string Eamil1 { get; set; }
+        public string Email1 { get; set; }
         public string Phone1 { get; set; }
-        public string Eamil2 { get; set; }
+        public string Email2 { get; set; }
         public string Phone2 { get; set; }
         public string Street1 { get; set; }
         public string Street2 { get; set; }
@@ -32,17 +32,13 @@ namespace PMS_PropertyHapa.Models.Entities
         public string AlterCity { get; set; }
         public string AlterState { get; set; }
         public string AlterCountry { get; set; }
-        public string Service { get; set; }
-        public string VendorCategories { get; set; }
-        public string InsuranceCompany { get; set; }
-        public string PolicyNumber { get; set; }
-        public string PropertyName { get; set; }
-        public string PropertyLocation { get; set; }
+        public string Classification { get; set; }
+        public string VendorCategoriesIds { get; set; }
+        public bool? HasInsurance { get; set; }
+        public string PropertyIds { get; set; }
         public string TaxId { get; set; }
-        public string TaxAmount { get; set; }
+        public decimal? TaxAmount { get; set; }
         public string PaymentMethod { get; set; }
-        public string PaymentAmount { get; set; }
-        
-
+        public decimal? PaymentAmount { get; set; }
     }
 }

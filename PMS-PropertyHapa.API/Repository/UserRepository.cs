@@ -13,6 +13,7 @@ using PMS_PropertyHapa.Models;
 using PMS_PropertyHapa.Models.DTO;
 using PMS_PropertyHapa.Models.Entities;
 using PMS_PropertyHapa.Models.Roles;
+using System.Diagnostics.Metrics;
 using System.Drawing;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
@@ -3479,7 +3480,32 @@ namespace MagicVilla_VillaAPI.Repository
                                         Company = v.Company,
                                         JobTitle = v.JobTitle,
                                         Notes = v.Notes,
-                                        AddedBy = v.AddedBy,
+                                        Picture = v.Picture,
+                                        Email1 = v.Email1,
+                                        Phone1 = v.Phone1,
+                                        Email2 = v.Email2,
+                                        Phone2 = v.Phone2,
+                                        Street1 = v.Street1,
+                                        Street2 = v.Street2,
+                                        District = v.District,
+                                        City = v.City,
+                                        State = v.State,
+                                        Country = v.Country,
+                                        AlterStreet1 = v.AlterStreet1,
+                                        AlterStreet2 = v.AlterStreet2,
+                                        AlterDistrict = v.AlterDistrict,
+                                        AlterCity = v.AlterCity,
+                                        AlterState = v.AlterState,
+                                        AlterCountry = v.AlterCountry,
+                                        Classification = v.Classification,
+                                        VendorCategoriesIds = v.VendorCategoriesIds,
+                                        HasInsurance = v.HasInsurance,
+                                        PropertyIds = v.PropertyIds,
+                                        TaxId = v.TaxId,
+                                        TaxAmount = v.TaxAmount,
+                                        PaymentMethod = v.PaymentMethod,
+                                        PaymentAmount = v.PaymentAmount,
+                                        AddedBy = v.AddedBy
                                     })
                      .AsNoTracking()
                      .ToListAsync();
@@ -3508,8 +3534,32 @@ namespace MagicVilla_VillaAPI.Repository
                                         Company = v.Company,
                                         JobTitle = v.JobTitle,
                                         Notes = v.Notes,
-                                        AddedBy = v.AddedBy,
-
+                                        Picture = v.Picture,
+                                        Email1 = v.Email1,
+                                        Phone1 = v.Phone1,
+                                        Email2 = v.Email2,
+                                        Phone2 = v.Phone2,
+                                        Street1 = v.Street1,
+                                        Street2 = v.Street2,
+                                        District = v.District,
+                                        City = v.City,
+                                        State = v.State,
+                                        Country = v.Country,
+                                        AlterStreet1 = v.AlterStreet1,
+                                        AlterStreet2 = v.AlterStreet2,
+                                        AlterDistrict = v.AlterDistrict,
+                                        AlterCity = v.AlterCity,
+                                        AlterState = v.AlterState,
+                                        AlterCountry = v.AlterCountry,
+                                        Classification = v.Classification,
+                                        VendorCategoriesIds = v.VendorCategoriesIds,
+                                        HasInsurance = v.HasInsurance,
+                                        PropertyIds = v.PropertyIds,
+                                        TaxId = v.TaxId,
+                                        TaxAmount = v.TaxAmount,
+                                        PaymentMethod = v.PaymentMethod,
+                                        PaymentAmount = v.PaymentAmount,
+                                        AddedBy = v.AddedBy
                                     })
                      .AsNoTracking()
                      .FirstOrDefaultAsync();
@@ -3537,6 +3587,35 @@ namespace MagicVilla_VillaAPI.Repository
             vendor.Company = model.Company;
             vendor.JobTitle = model.JobTitle;
             vendor.Notes = model.Notes;
+            if (model.Picture != null)
+            {
+                vendor.Picture = model.Picture;
+            }
+            vendor.Email1 = model.Email1;
+            vendor.Phone1 = model.Phone1;
+            vendor.Email2 = model.Email2;
+            vendor.Phone2 = model.Phone2;
+            vendor.Street1 = model.Street1;
+            vendor.Street2 = model.Street2;
+            vendor.District = model.District;
+            vendor.City = model.City;
+            vendor.State = model.State;
+            vendor.Country = model.Country;
+            vendor.AlterStreet1 = model.AlterStreet1;
+            vendor.AlterStreet2 = model.AlterStreet2;
+            vendor.AlterDistrict = model.AlterDistrict;
+            vendor.AlterCity = model.AlterCity;
+            vendor.AlterState = model.AlterState;
+            vendor.AlterCountry = model.AlterCountry;
+            vendor.Classification = model.Classification;
+            vendor.VendorCategoriesIds = model.VendorCategoriesIds;
+            vendor.HasInsurance = model.HasInsurance;
+            vendor.PropertyIds = model.PropertyIds;
+            vendor.TaxId = model.TaxId;
+            vendor.TaxAmount = model.TaxAmount;
+            vendor.PaymentMethod = model.PaymentMethod;
+            vendor.PaymentAmount = model.PaymentAmount;
+
 
             if (vendor.VendorId > 0)
             {

@@ -80,7 +80,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
 
             try
             {
-                var vendor = await _userRepo.GetVendorCategoryByIdAsync(id);
+                var vendor = await _userRepo.GetVendorByIdAsync(id);
 
                 if (vendor != null)
                 {

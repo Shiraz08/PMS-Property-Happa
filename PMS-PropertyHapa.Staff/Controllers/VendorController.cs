@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PMS_PropertyHapa.MigrationsFiles.Migrations;
+using PMS_PropertyHapa.Models;
 using PMS_PropertyHapa.Models.DTO;
 using PMS_PropertyHapa.Models.Entities;
+using PMS_PropertyHapa.Shared.Email;
 using PMS_PropertyHapa.Staff.Services.IServices;
 
 namespace PMS_PropertyHapa.Staff.Controllers
@@ -8,6 +11,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
     public class VendorController : Controller
     {
         private readonly IAuthService _authService;
+        EmailSender _emailSender = new EmailSender();
 
         public VendorController(IAuthService authService)
         {
@@ -15,15 +19,14 @@ namespace PMS_PropertyHapa.Staff.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            //IEnumerable<Vendor> vendors = new List<Vendor>();
-            //vendors = await _authService.GetVendorsAsync();
-            //var currenUserId = Request?.Cookies["userId"]?.ToString();
-            //if (currenUserId != null)
-            //{
-            //    vendors = vendors.Where(s => s.AddedBy == currenUserId);
-            //}
-            //return View(vendors);
-            return View();
+            IEnumerable<Vendor> vendors = new List<Vendor>();
+            vendors = await _authService.GetVendorsAsync();
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
+            if (currenUserId != null)
+            {
+                vendors = vendors.Where(s => s.AddedBy == currenUserId);
+            }
+            return View(vendors);
         }
         public async Task<IActionResult> VendorCategories()
         {
@@ -92,6 +95,25 @@ namespace PMS_PropertyHapa.Staff.Controllers
             }
 
             vendor.AddedBy = Request?.Cookies["userId"]?.ToString();
+
+            //var registrationRequest = new RegisterationRequestDTO
+            //{
+            //    UserName = vendor.Email1,
+            //    Name = $"{vendor.FirstName} {vendor.LastName}",
+            //    Email = vendor.Email1,
+            //    Password = "Test@123",
+            //    Role = "Vendor",
+            //};
+
+            //APIResponse result = await _authService.RegisterAsync<APIResponse>(registrationRequest);
+            //if (!result.IsSuccess)
+            //{
+            //    return Json(new { success = false, message = "Failed to register tenant as user." });
+            //}
+            //var emailContent = $"Welcome {vendor.FirstName} {vendor.LastName},\n\nThank you for registering. Here are your details:\nUsername: {vendor.Email1}\nPassword: Test@123\nTenant ID: {registrationRequest.TenantId}\n\nThank you!";
+            //await _emailSender.SendEmailAsync(vendor.Email1, "Welcome to Our Service!", emailContent);
+
+
             await _authService.SaveVendorAsync(vendor);
             return Json(new { success = true, message = "Vendor added successfully" });
         }
@@ -112,9 +134,6 @@ namespace PMS_PropertyHapa.Staff.Controllers
             }
             return Ok(vendor);
         }
-
-
-
 
     }
 }
