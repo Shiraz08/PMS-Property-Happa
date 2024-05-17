@@ -189,9 +189,9 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
         Task<bool> DeleteVendorCategoryAsync(int id);
         
         //Vendor
-        Task<List<Vendor>> GetVendorsAsync();
-        Task<Vendor> GetVendorByIdAsync(int id);
-        Task<bool> SaveVendorAsync(Vendor vendor);
+        Task<List<VendorDto>> GetVendorsAsync();
+        Task<VendorDto> GetVendorByIdAsync(int id);
+        Task<bool> SaveVendorAsync(VendorDto vendor);
         Task<bool> DeleteVendorAsync(int id);
 
 

@@ -10,6 +10,7 @@ namespace PMS_PropertyHapa.Models.DTO
 
         public string MiddleName { get; set; }
         public string Fax { get; set; }
+        public string TaxId { get; set; }
         public string LastName { get; set; }
         public string EmailAddress { get; set; }
 

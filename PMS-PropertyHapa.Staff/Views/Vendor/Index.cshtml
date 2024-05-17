@@ -1,5 +1,6 @@
-﻿@using PMS_PropertyHapa.Models.Entities
-@model IEnumerable<Vendor>
+﻿@using PMS_PropertyHapa.Models.DTO
+@using PMS_PropertyHapa.Models.Entities
+@model IEnumerable<VendorDto>
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -69,9 +70,11 @@
                         </div>
 
                         <div class="right-side-header">
+                            <a href="@Url.Action("VendorCategories", "Vendor")" class="btn btn-primary">Add Vendor Categories</a>
                             <button type="button" class="btn btn-primary" id="addVendorBtn">
                                 Add New Vendor
                             </button>
+
                         </div>
                     </div>
 
@@ -83,12 +86,11 @@
                                         <th scope="col" class="tableHeaderbg">Vendor</th>
                                         <th scope="col" class="tableHeaderbg">Contact Information</th>
                                         <th scope="col" class="tableHeaderbg">Insurance Status</th>
-                                        @* <th scope="col" class="tableHeaderbg">Open Balance</th> *@
                                         <th scope="col" class="tableHeaderbg">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach (var item in Model?.OrderByDescending(x => x.VendorId) ?? Enumerable.Empty<PMS_PropertyHapa.Models.Entities.Vendor>())
+                                    @foreach (var item in Model?.OrderByDescending(x => x.VendorId) ?? Enumerable.Empty<VendorDto>())
                                     {
                                         <tr>
                                             <td class="tableFontSize align-middle">
@@ -117,7 +119,7 @@
                                                     <span style="vertical-align: middle;">@item.Email1</span>
                                                 </div>
                                                 <div style="display: flex; align-items: center; justify-content: center;">
-                                                    <svg aria-hidden="true" focusable="false" class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="1em" height="1em;">
+                                                    <svg aria-hidden="true" focusable="false" class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="15" height="15" style="margin-right: 5px;">
                                                         <path d="M493.4 24.6l-104-24c-11.3-2.6-22.9 3.3-27.5 13.9l-48 112c-4.2 9.8-1.4 21.3 6.9 28l60.6 49.6c-36 76.7-98.9 140.5-177.2 177.2l-49.6-60.6c-6.8-8.3-18.2-11.1-28-6.9l-112 48C3.9 366.5-2 378.1.6 389.4l24 104C27.1 504.2 36.7 512 48 512c256.1 0 464-207.5 464-464 0-11.2-7.7-20.9-18.6-23.4z"></path>
                                                     </svg>
                                                     <span style="vertical-align: middle;">@item.Phone1</span>
@@ -167,14 +169,14 @@
                             <a class="nav-link" data-form-id="services" href="#">Services</a>
                             <a class="nav-link" data-form-id="insurance" href="#">Insurance</a>
                             <a class="nav-link" data-form-id="properties" href="#">Properties</a>
-                            <a class="nav-link" data-form-id="federalTaxes" href="#">Federal Taxes</a>
                             <a class="nav-link" data-form-id="sendPayments" href="#">Send Payments</a>
                         </nav>
                     </div>
                     <div class="col-9">
                         <!-- Forms for different sections -->
                         <form id="vendorForm" class="form-section">
-                            <h2>Personal Info</h2>
+                            <h2>Personal Information</h2>
+                            <!-- Personal Info Form -->
                             <input type="hidden" value="" id="vendorId" />
                             <div class="mb-3">
                                 <img class="img-account-profile2 rounded-circle mb-2" src="http://bootdey.com/img/Content/avatar/avatar1.png" alt="Profile Image" id="imagePreview" style="width: 140px;">
@@ -216,16 +218,25 @@
                                     </div>
                                 </div>
                             </div>
+                            <!-- Tax Id -->
+                            <div class="row">
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <label for="taxId" class="form-label">Tax ID</label>
+                                        <input type="text" class="form-control" placeholder="Tax ID" id="taxId">
+                                    </div>
+                                </div>
+                            </div>
                             <!-- Notes -->
                             <div class="mb-3">
                                 <label for="notes" class="form-label">Notes</label>
-                                <textarea class="form-control" id="notes" placeholder="Notes.." rows="5" id="notes"></textarea>
+                                <textarea class="form-control" placeholder="Notes.." rows="5" id="notes"></textarea>
                             </div>
                         </form>
 
                         <form id="contactInfo" class="form-section">
                             <!-- Contact Info Form -->
-                            <h2>Contact Info</h2>
+                            <h2>Contact Information</h2>
                             <div class="row">
                                 <div class="col">
                                     <div class="mb-3">
@@ -254,7 +265,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- Add more fields as needed -->
                         </form>
 
 
@@ -359,13 +369,12 @@
 
                         <form id="services" class="form-section">
                             <h2>Services</h2>
-                            <!-- Classification Categories (Example Additional Dropdown) -->
+                            <!-- Classification Categories -->
                             <div class="mb-3">
                                 <label for="classification" class="form-label">Classification</label>
                                 <select class="form-control select2" multiple="multiple" id="classification">
                                     <option value="Maintainance">Maintainance</option>
                                     <option value="LandScaping">LandScaping</option>
-                                    <!-- Add more options as needed -->
                                 </select>
                             </div>
                             <!-- Vendor Categories -->
@@ -388,52 +397,115 @@
                                     <option value="false">No</option>
                                 </select>
                             </div>
-                            <!-- Add more fields as needed -->
                         </form>
 
                         <form id="properties" class="form-section">
                             <!-- Properties Form -->
                             <h2>Properties</h2>
                             <div class="mb-3">
-                                <label for="vendorProperties" class="form-label ">Properties</label>
-                                <select class="select2" multiple id="vendorProperties" required>
+                                <label for="vendorProperty" class="form-label ">Property</label>
+                                <select class="form-control" id="vendorProperty" required>
+                                    <option selected disabled value="">Please Select</option>
                                 </select>
                             </div>
-                            <!-- Add more fields as needed -->
-                        </form>
-
-                        <form id="federalTaxes" class="form-section">
-                            <!-- Federal Taxes Form -->
-                            <h2>Federal Taxes</h2>
                             <div class="mb-3">
-                                <label for="taxId" class="form-label">Tax ID</label>
-                                <input type="text" class="form-control" placeholder="Tax ID" id="taxId">
+                                <label for="vendorUnits" class="form-label">Units</label>
+                                <select class="form-control select2" multiple="multiple" id="vendorUnits" required>
+                                </select>
                             </div>
-                            <div class="mb-3">
-                                <label for="taxAmount" class="form-label">Tax Amount</label>
-                                <input type="number" class="form-control" placeholder="Tax Amount" id="taxAmount">
-                            </div>
-                            <!-- Add more fields as needed -->
                         </form>
 
                         <form id="sendPayments" class="form-section">
                             <!-- Send Payments Form -->
-                            <h2>Send Payments</h2>
-                            <div class="mb-3">
-                                <label for="paymentMethod" class="form-label">Payment Method</label>
-                                <select class="form-select" id="paymentMethod">
-                                    <option selected disabled value="">Please Select</option>
-                                    <option value="paypal">PayPal</option>
-                                    <option value="bankTransfer">Bank Transfer</option>
-                                    <option value="creditCard">Credit Card</option>
-                                    <!-- Add more options as needed -->
-                                </select>
+                            <h2>Account Information</h2>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <label for="accountName">Account Name</label>
+                                        <input type="text" class="form-control" placeholder="Account Name" id="accountName">
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <label for="accountHolder">Account Holder</label>
+                                        <input type="text" class="form-control" placeholder="Account holder's Name" id="accountHolder">
+                                    </div>
+                                </div>
                             </div>
-                            <div class="mb-3">
-                                <label for="paymentAmount" class="form-label">Payment Amount</label>
-                                <input type="number" class="form-control" placeholder="Payment Amount" id="paymentAmount">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <label for="accountIBAN">Account IBAN</label>
+                                        <input type="text" class="form-control" placeholder="Account IBAN" id="accountIBAN">
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <label for="accountSwift">Account Swift/BIC</label>
+                                        <input type="text" class="form-control" placeholder="Account Swift/BIC" id="accountSwift">
+                                    </div>
+                                </div>
                             </div>
-                            <!-- Add more fields as needed -->
+                            <div class="row">
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <label for="accountBank">Account Bank</label>
+                                        <input type="text" class="form-control" placeholder="Bank Name" id="accountBank">
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <label for="accountCurrency">Account Currency</label>
+                                        <input type="text" class="form-control" placeholder="Currency" id="accountCurrency">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Organization Toggle -->
+                            <div class="col">
+                                <div class="mb-3">
+                                    <label class="form-check-label" for="vendorToggleOrgInfo">Organization Info</label>
+                                    <div class="form-check form-switch mt-2">
+                                        <input class="form-check-input" type="checkbox" id="vendorToggleOrgInfo">
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Initially Hidden -->
+                            <div class="row organization-field d-none">
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <label for="vendorOrgName" class="form-label">Organization Name</label>
+                                        <input type="text" class="form-control" placeholder="Organization Name" id="vendorOrgName">
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <label for="vendorOrgDescription" class="form-label">Organization Description</label>
+                                        <input type="text" class="form-control" placeholder="Organization Description" id="vendorOrgDescription">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row organization-field d-none">
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <label for="vendorOrgIconFile" class="form-label">Organization Icon</label>
+                                        <input type="file" class="form-control" id="vendorOrgIconFile" name="OrganizationIconFile" accept="image/*">
+                                        <img id="iconPreview" src="" alt="Icon Preview" style="max-width: 100%;" class="d-none">
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <label for="vendorOrgLogoFile" class="form-label">Organization Logo</label>
+                                        <input type="file" class="form-control" id="vendorOrgLogoFile" name="OrganizationLogoFile" accept="image/*">
+                                        <img id="logoPreview" src="" alt="Logo Preview" style="max-width: 100%;" class="d-none">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3 organization-field d-none">
+                                <label for="vendorOrgWebsite" class="form-label">Website</label>
+                                <input type="url" class="form-control" id="vendorOrgWebsite" placeholder="Website" pattern="https?://.+\.com" title="Please enter a valid URL. For example, http://www.example.com">
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -488,7 +560,9 @@
                 { field: '#hasInsurance', message: 'Please select Insurance.' }
             ],
             6: [
-                { field: '#vendorProperties', message: 'Please select Properties.', validate: (value) => value && value.length > 0 }
+                { field: '#vendorProperty', message: 'Please select Properties.' },
+                { field: '#vendorUnits', message: 'Please select Units.', validate: (value) => value && value.length > 0 }
+
             ]
         };
 
@@ -507,6 +581,50 @@
 
             return errors;
         }
+
+        $('#vendorToggleOrgInfo').on('change', function () {
+            if ($(this).is(':checked')) {
+                $('.organization-field').removeClass('d-none');
+            } else {
+                $('.organization-field').addClass('d-none').find('input').each(function () {
+                    if ($(this).attr('type') === 'file') {
+                        $(this).val('');
+                        $(this).next('img').addClass('d-none').attr('src', '');
+                    } else {
+                        $(this).val('');
+                    }
+                });
+            }
+        });
+
+        $('#vendorOrgIconFile').on('change', function () {
+            const fileInput = $(this)[0];
+            const iconPreview = $('#iconPreview');
+            if (fileInput.files.length > 0) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    iconPreview.attr('src', e.target.result).removeClass('d-none');
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+            } else {
+                iconPreview.addClass('d-none').attr('src', '');
+            }
+        });
+        
+        $('#vendorOrgLogoFile').on('change', function () {
+            const fileInput = $(this)[0];
+            const logoPreview = $('#logoPreview');
+            if (fileInput.files.length > 0) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    logoPreview.attr('src', e.target.result).removeClass('d-none');
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+            } else {
+                logoPreview.addClass('d-none').attr('src', '');
+            }
+        });
+
 
         $('#nextButton').click(function () {
             const errors = validateSection(currentFormIndex);
@@ -559,6 +677,7 @@
                 LastName: $('#lastName').val(),
                 Company: $('#company').val(),
                 JobTitle: $('#jobTitle').val(),
+                TaxId: $('#taxId').val(),
                 Notes: $('#notes').val(),
                 Email1: $('#email1').val(),
                 Phone1: $('#phone1').val(),
@@ -579,11 +698,17 @@
                 Classification: $('#classification').val().join(','),
                 VendorCategoriesIds: $('#vendorCategories').val().join(','),
                 HasInsurance: $('#hasInsurance').val(),
-                PropertyIds: $('#vendorProperties').val().join(','),
-                TaxId: $('#taxId').val(),
-                TaxAmount: $('#taxAmount').val(),
-                PaymentMethod: $('#paymentMethod').val(),
-                PaymentAmount: $('#paymentAmount').val(),
+                PropertyId: $('#vendorProperty').val(),
+                UnitIds: $('#vendorUnits').val().join(','),
+                AccountName: $('#accountName').val(),
+                AccountHolder: $('#accountHolder').val(),
+                AccountIBAN: $('#accountIBAN').val(),
+                AccountSwift: $('#accountSwift').val(),
+                AccountBank: $('#accountBank').val(),
+                AccountCurrency: $('#accountCurrency').val(),
+                OrganizationName: $('#vendorOrgName').val(),
+                OrganizationDescription: $('#vendorOrgDescription').val(),
+                Website: $('#vendorOrgWebsite').val(),
 
             };
             handleFileUpload(formData);
@@ -591,17 +716,33 @@
         }
 
         function handleFileUpload(formData) {
-            const fileInput = $('#PictureUrl')[0];
-            if (fileInput.files.length > 0) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    formData.Picture = e.target.result;
-                    submitFormData(formData);
-                };
-                reader.readAsDataURL(fileInput.files[0]);
-            } else {
+            const fileInputs = [
+                { input: $('#PictureUrl')[0], key: 'Picture' },
+                { input: $('#vendorOrgIconFile')[0], key: 'OrganizationIcon' },
+                { input: $('#vendorOrgLogoFile')[0], key: 'OrganizationLogo' }
+            ];
+
+            const readers = fileInputs.map(({ input, key }) => {
+                return new Promise((resolve, reject) => {
+                    if (input.files.length > 0) {
+                        const reader = new FileReader();
+                        reader.onload = function (e) {
+                            formData[key] = e.target.result;
+                            resolve();
+                        };
+                        reader.onerror = reject;
+                        reader.readAsDataURL(input.files[0]);
+                    } else {
+                        resolve(); 
+                    }
+                });
+            });
+
+            Promise.all(readers).then(() => {
                 submitFormData(formData);
-            }
+            }).catch(error => {
+                console.error('Error reading files:', error);
+            });
         }
 
         function submitFormData(jsonFormData) {
@@ -640,7 +781,43 @@
         });
 
 
+        $('#vendorProperty').on('change', function () {
+            if ($("#vendorProperty").val() != null) {
+                populateUnits($("#vendorProperty").val());
+            } else {
+                $("#vendorUnits").empty();
+            }
+        });
+
     });
+
+
+    function populateUnits(propertyId, selectedUnits) {
+        $.ajax({
+            url: '/Lease/ByProperty',
+            method: 'GET',
+            data: { propertyId: propertyId },
+            success: function (units) {
+                var $vendorUnits = $('#vendorUnits');
+                $vendorUnits.empty();
+                units.forEach(function (unit) {
+                    var option = `<option value="${unit.UnitId}">${unit.UnitName}</option>`;
+                    $vendorUnits.append(option);
+                });
+
+                // Check if selectedUnits is provided and mark options as selected
+                if (selectedUnits && selectedUnits.length > 0) {
+                    selectedUnits.forEach(function (unitId) {
+                        $vendorUnits.find('option[value="' + unitId + '"]').prop('selected', true);
+                    });
+                }
+            },
+            error: function (error) {
+                console.error('Error fetching units:', error.responseText || 'Unknown error');
+            }
+        });
+    }
+
 
     function papulateDropDowns() {
         $.ajax({
@@ -662,7 +839,7 @@
             type: 'GET',
             dataType: 'json',
             success: function (data) {
-                var vendorPropertyDropdown = document.getElementById('vendorProperties');
+                var vendorPropertyDropdown = document.getElementById('vendorProperty');
                 // vendorPropertyDropdown.innerHTML = ''; // Clear existing options
                 data.forEach(function (item) {
                     var option = new Option(item.BuildingNo + " - " + item.BuildingName, item.AssetId);
@@ -700,14 +877,11 @@
         });
         $('.select2').val(null).trigger('change');
         $('#imagePreview').attr('src', "http://bootdey.com/img/Content/avatar/avatar1.png");
+        $('#vendorToggleOrgInfo').prop('checked', false).trigger("change")
         currentFormIndex = 0;
         formSections.hide().first().show();
         toggleButtons();
         updateActiveNav(currentFormIndex);
-    }
-
-    function displayUploadedImage(base64String) {
-        $('#imagePreview').attr('src', base64String);
     }
 
     function deleteVendor(id) {
@@ -754,6 +928,7 @@
             success: function (vendor) {
                 console.log(vendor)
 
+                $('#vendorProperty').val(vendor.PropertyId).trigger("change")
 
                 $('#vendorId').val(vendor.VendorId);
                 $('#firstName').val(vendor.FirstName);
@@ -761,6 +936,7 @@
                 $('#lastName').val(vendor.LastName);
                 $('#company').val(vendor.Company);
                 $('#jobTitle').val(vendor.JobTitle);
+                $('#taxId').val(vendor.TaxId);
                 $('#notes').val(vendor.Notes);
                 $('#email1').val(vendor.Email1);
                 $('#phone1').val(vendor.Phone1);
@@ -778,25 +954,65 @@
                 $('#altCity').val(vendor.AlterCity);
                 $('#altState').val(vendor.AlterState);
                 $('#altCountry').val(vendor.AlterCountry);
-
-                var classificationArray = vendor.Classification.split(',');
-                $('#classification').val(classificationArray).trigger("change");
-                var vendorCategoriesArray = vendor.VendorCategoriesIds.split(',');
-                $('#vendorCategories').val(vendorCategoriesArray).trigger("change");
-
                 $('#hasInsurance').val(vendor.HasInsurance ? "true" : "false");
-                var vendorPropertiesArray = vendor.PropertyIds.split(',');
-                $('#vendorProperties').val(vendorPropertiesArray).trigger("change");
 
-                $('#taxId').val(vendor.TaxId);
-                $('#taxAmount').val(vendor.TaxAmount);
-                $('#paymentMethod').val(vendor.PaymentMethod);
-                $('#paymentAmount').val(vendor.PaymentAmount);
+
+
+                if (vendor.Classification && vendor.Classification.length > 0) {
+                    var classificationArray = vendor.Classification.split(',');
+                    $('#classification').val(classificationArray).trigger("change");
+                } else {
+                    $('#classification').val([]).trigger("change");
+                }
+
+                if (vendor.VendorCategoriesIds && vendor.VendorCategoriesIds.length > 0) {
+                    var vendorCategoriesArray = vendor.VendorCategoriesIds.split(',');
+                    $('#vendorCategories').val(vendorCategoriesArray).trigger("change");
+                } else {
+                    $('#vendorCategories').val([]).trigger("change");
+                }
+
+                $('#accountName').val(vendor.AccountName);
+                $('#accountHolder').val(vendor.AccountHolder);
+                $('#accountIBAN').val(vendor.AccountIBAN);
+                $('#accountSwift').val(vendor.AccountSwift);
+                $('#accountBank').val(vendor.AccountBank);
+                $('#accountCurrency').val(vendor.AccountCurrency);
+
+
+                var hasOrgInfo = vendor.OrganizationName || vendor.OrganizationDescription || vendor.OrganizationIcon || vendor.OrganizationLogo || vendor.Website;
+
+                if (hasOrgInfo) {
+                    $('#vendorToggleOrgInfo').prop('checked', true).trigger("change")
+
+                    $('#vendorOrgName').val(vendor.OrganizationName || '');
+                    $('#vendorOrgDescription').val(vendor.OrganizationDescription || '');
+
+                    if (vendor.OrganizationIcon) {
+                        $("#iconPreview").attr('src', vendor.OrganizationIcon).removeClass('d-none');
+                    } else {
+                        $("#iconPreview").addClass('d-none').attr('src', '');
+                    }
+                    if (vendor.OrganizationLogo) {
+                        $("#logoPreview").attr('src', vendor.OrganizationLogo).removeClass('d-none');
+                    } else {
+                        $("#logoPreview").addClass('d-none').attr('src', '');
+                    }
+
+                    $('#vendorOrgWebsite').val(vendor.Website || '');
+                }
 
                 if (vendor.Picture) {
-                    displayUploadedImage(vendor.Picture);
+                    $('#imagePreview').attr('src', vendor.Picture);
                 } else {
                     $('#imagePreview').attr('src', "http://bootdey.com/img/Content/avatar/avatar1.png");
+                }
+
+                if (vendor.UnitIds && vendor.UnitIds.length > 0) {
+                    var vendorUnitsArray = vendor.UnitIds.split(',');
+                    populateUnits(vendor.PropertyId, vendorUnitsArray);
+                } else {
+                    $('#vendorUnits').val([]).trigger("change");
                 }
 
                 $("#vendorModal").modal('show');

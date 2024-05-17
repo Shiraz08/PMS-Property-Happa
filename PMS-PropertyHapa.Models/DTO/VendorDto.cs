@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PMS_PropertyHapa.Models.Entities
+namespace PMS_PropertyHapa.Models.DTO
 {
-    public class Vendor : BaseEntities
+    public class VendorDto
     {
         public int VendorId { get; set; }
         public string FirstName { get; set; }
@@ -45,5 +45,14 @@ namespace PMS_PropertyHapa.Models.Entities
         public string AccountSwift { get; set; }
         public string AccountBank { get; set; }
         public string AccountCurrency { get; set; }
+
+        public string OrganizationName { get; set; }
+        public string OrganizationDescription { get; set; }
+        public string OrganizationIcon { get; set; }
+        public string OrganizationLogo { get; set; }
+        public string Website { get; set; }
+
+        public string AddedBy { get; set; }
+
     }
 }

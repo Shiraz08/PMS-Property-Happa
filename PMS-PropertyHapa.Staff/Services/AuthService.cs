@@ -1134,7 +1134,7 @@ namespace PMS_PropertyHapa.Staff.Services
 
 
         }
-
+        
 
 
 
@@ -1422,7 +1422,7 @@ namespace PMS_PropertyHapa.Staff.Services
 
         #region Vendor 
 
-        public async Task<IEnumerable<Vendor>> GetVendorsAsync()
+        public async Task<IEnumerable<VendorDto>> GetVendorsAsync()
         {
 
             var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
@@ -1434,7 +1434,7 @@ namespace PMS_PropertyHapa.Staff.Services
             if (response.IsSuccess == true)
             {
                 var userListJson = Convert.ToString(response.Result);
-                var asset = JsonConvert.DeserializeObject<IEnumerable<Vendor>>(userListJson);
+                var asset = JsonConvert.DeserializeObject<IEnumerable<VendorDto>>(userListJson);
                 return asset;
             }
             else
@@ -1442,7 +1442,7 @@ namespace PMS_PropertyHapa.Staff.Services
                 throw new Exception("Failed to retrieve vendor data");
             }
         }
-        public async Task<Vendor> GetVendorByIdAsync(int id)
+        public async Task<VendorDto> GetVendorByIdAsync(int id)
         {
 
             var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
@@ -1452,14 +1452,14 @@ namespace PMS_PropertyHapa.Staff.Services
             });
             if (response.IsSuccess && response.Result != null)
             {
-                return JsonConvert.DeserializeObject<Vendor>(Convert.ToString(response.Result));
+                return JsonConvert.DeserializeObject<VendorDto>(Convert.ToString(response.Result));
             }
             else
             {
                 throw new Exception("Failed to retrieve vendor data");
             }
         }
-        public async Task<bool> SaveVendorAsync(Vendor vendor)
+        public async Task<bool> SaveVendorAsync(VendorDto vendor)
         {
             try
             {

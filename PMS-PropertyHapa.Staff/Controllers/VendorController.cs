@@ -19,7 +19,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            IEnumerable<Vendor> vendors = new List<Vendor>();
+            IEnumerable<VendorDto> vendors = new List<VendorDto>();
             vendors = await _authService.GetVendorsAsync();
             var currenUserId = Request?.Cookies["userId"]?.ToString();
             if (currenUserId != null)
@@ -87,7 +87,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
         //==================================================\
 
         [HttpPost]
-        public async Task<IActionResult> SaveVendor([FromBody] Vendor vendor)
+        public async Task<IActionResult> SaveVendor([FromBody] VendorDto vendor)
         {
             if (vendor == null)
             {
@@ -127,7 +127,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
         public async Task<IActionResult> GetVendorById(int id)
         {
-            Vendor vendor = await _authService.GetVendorByIdAsync(id);
+            VendorDto vendor = await _authService.GetVendorByIdAsync(id);
             if (vendor == null)
             {
                 return StatusCode(500, "Vendor not found");

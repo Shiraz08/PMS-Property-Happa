@@ -1726,6 +1726,7 @@ namespace MagicVilla_VillaAPI.Repository
                 PhoneNumber = tenantDto.PhoneNumber,
                 PhoneNumber2 = tenantDto.PhoneNumber2,
                 Fax = tenantDto.Fax,
+                TaxId = tenantDto.TaxId,
                 Document = tenantDto.Document,
                 EmergencyContactInfo = tenantDto.EmergencyContactInfo,
                 LeaseAgreementId = tenantDto.LeaseAgreementId,
@@ -1787,6 +1788,7 @@ namespace MagicVilla_VillaAPI.Repository
                 PhoneNumber = tenantDto.PhoneNumber,
                 PhoneNumber2 = tenantDto.PhoneNumber2,
                 Fax = tenantDto.Fax,
+                TaxId = tenantDto.TaxId,
                 EmergencyContactInfo = tenantDto.EmergencyContactInfo,
                 LeaseAgreementId = tenantDto.LeaseAgreementId,
                 OwnerNationality = tenantDto.OwnerNationality,
@@ -2208,6 +2210,7 @@ namespace MagicVilla_VillaAPI.Repository
             tenant.PhoneNumber = tenantDto.PhoneNumber;
             tenant.PhoneNumber2 = tenantDto.PhoneNumber2;
             tenant.Fax = tenantDto.Fax;
+            tenant.TaxId = tenantDto.TaxId;
             tenant.Document = tenantDto.Document;
             tenant.EmergencyContactInfo = tenantDto.EmergencyContactInfo;
             tenant.LeaseAgreementId = tenantDto.LeaseAgreementId;
@@ -2748,6 +2751,7 @@ namespace MagicVilla_VillaAPI.Repository
                                            MiddleName = owner.MiddleName,
                                            LastName = owner.LastName,
                                            Fax = owner.Fax,
+                                           TaxId = owner.TaxId,
                                            EmailAddress = owner.EmailAddress,
                                            EmailAddress2 = owner.EmailAddress2,
                                            Picture = owner.Picture,
@@ -3465,13 +3469,14 @@ namespace MagicVilla_VillaAPI.Repository
         #region Vendor 
 
 
-        public async Task<List<Vendor>> GetVendorsAsync()
+        public async Task<List<VendorDto>> GetVendorsAsync()
         {
             try
             {
                 var result = await (from v in _db.Vendor
+                                    from vo in _db.VendorOrganization.Where(x=>x.VendorId == v.VendorId).DefaultIfEmpty()
                                     where v.IsDeleted != true
-                                    select new Vendor
+                                    select new VendorDto
                                     {
                                         VendorId = v.VendorId,
                                         FirstName = v.FirstName,
@@ -3500,11 +3505,20 @@ namespace MagicVilla_VillaAPI.Repository
                                         Classification = v.Classification,
                                         VendorCategoriesIds = v.VendorCategoriesIds,
                                         HasInsurance = v.HasInsurance,
-                                        PropertyIds = v.PropertyIds,
+                                        PropertyId = v.PropertyId,
+                                        UnitIds = v.UnitIds,
                                         TaxId = v.TaxId,
-                                        TaxAmount = v.TaxAmount,
-                                        PaymentMethod = v.PaymentMethod,
-                                        PaymentAmount = v.PaymentAmount,
+                                        AccountName = v.AccountName,
+                                        AccountHolder = v.AccountHolder,
+                                        AccountIBAN = v.AccountIBAN,
+                                        AccountSwift = v.AccountSwift,
+                                        AccountBank = v.AccountBank,
+                                        AccountCurrency = v.AccountCurrency,
+                                        OrganizationName = vo.OrganizationName,
+                                        OrganizationDescription = vo.OrganizationDescription,
+                                        OrganizationIcon = vo.OrganizationIcon,
+                                        OrganizationLogo = vo.OrganizationLogo,
+                                        Website = vo.Website,
                                         AddedBy = v.AddedBy
                                     })
                      .AsNoTracking()
@@ -3519,13 +3533,14 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
-        public async Task<Vendor> GetVendorByIdAsync(int id)
+        public async Task<VendorDto> GetVendorByIdAsync(int id)
         {
             try
             {
                 var result = await (from v in _db.Vendor
+                                    from vo in _db.VendorOrganization.Where(x => x.VendorId == v.VendorId).DefaultIfEmpty()
                                     where v.VendorId == id
-                                    select new Vendor
+                                    select new VendorDto
                                     {
                                         VendorId = v.VendorId,
                                         FirstName = v.FirstName,
@@ -3554,11 +3569,20 @@ namespace MagicVilla_VillaAPI.Repository
                                         Classification = v.Classification,
                                         VendorCategoriesIds = v.VendorCategoriesIds,
                                         HasInsurance = v.HasInsurance,
-                                        PropertyIds = v.PropertyIds,
+                                        PropertyId = v.PropertyId,
+                                        UnitIds = v.UnitIds,
                                         TaxId = v.TaxId,
-                                        TaxAmount = v.TaxAmount,
-                                        PaymentMethod = v.PaymentMethod,
-                                        PaymentAmount = v.PaymentAmount,
+                                        AccountName = v.AccountName,
+                                        AccountHolder = v.AccountHolder,
+                                        AccountIBAN = v.AccountIBAN,
+                                        AccountSwift = v.AccountSwift,
+                                        AccountBank = v.AccountBank,
+                                        AccountCurrency = v.AccountCurrency,
+                                        OrganizationName = vo.OrganizationName,
+                                        OrganizationDescription = vo.OrganizationDescription,
+                                        OrganizationIcon = vo.OrganizationIcon,
+                                        OrganizationLogo = vo.OrganizationLogo,
+                                        Website = vo.Website,
                                         AddedBy = v.AddedBy
                                     })
                      .AsNoTracking()
@@ -3573,7 +3597,7 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
-        public async Task<bool> SaveVendorAsync(Vendor model)
+        public async Task<bool> SaveVendorAsync(VendorDto model)
         {
             var vendor = _db.Vendor.FirstOrDefault(x => x.VendorId == model.VendorId);
 
@@ -3610,12 +3634,15 @@ namespace MagicVilla_VillaAPI.Repository
             vendor.Classification = model.Classification;
             vendor.VendorCategoriesIds = model.VendorCategoriesIds;
             vendor.HasInsurance = model.HasInsurance;
-            vendor.PropertyIds = model.PropertyIds;
+            vendor.PropertyId = model.PropertyId;
+            vendor.UnitIds = model.UnitIds;
             vendor.TaxId = model.TaxId;
-            vendor.TaxAmount = model.TaxAmount;
-            vendor.PaymentMethod = model.PaymentMethod;
-            vendor.PaymentAmount = model.PaymentAmount;
-
+            vendor.AccountName = model.AccountName;
+            vendor.AccountHolder = model.AccountHolder;
+            vendor.AccountIBAN = model.AccountIBAN;
+            vendor.AccountSwift = model.AccountSwift;
+            vendor.AccountBank = model.AccountBank;
+            vendor.AccountCurrency = model.AccountCurrency;
 
             if (vendor.VendorId > 0)
             {
@@ -3630,10 +3657,47 @@ namespace MagicVilla_VillaAPI.Repository
                 _db.Vendor.Add(vendor);
             }
 
-            var result = await _db.SaveChangesAsync();
+            var result1 = await _db.SaveChangesAsync();
 
+            var vendorOrganization = _db.VendorOrganization.FirstOrDefault(x => x.VendorId == vendor.VendorId);
 
-            return result > 0;
+            if (vendorOrganization == null)
+            {
+                vendorOrganization = new VendorOrganization();
+                
+                vendorOrganization.VendorId = vendor.VendorId;
+                vendorOrganization.OrganizationName = model.OrganizationName;
+                vendorOrganization.OrganizationDescription = model.OrganizationDescription;
+                if (model.OrganizationIcon != null)
+                {
+                    vendorOrganization.OrganizationIcon = model.OrganizationIcon;
+                }
+                if (model.OrganizationLogo != null)
+                {
+                    vendorOrganization.OrganizationLogo = model.OrganizationLogo;
+                }
+                vendorOrganization.Website = model.Website;                
+                await _db.VendorOrganization.AddAsync(vendorOrganization);
+            }
+            else
+            {
+                vendorOrganization.OrganizationName = model.OrganizationName;
+                vendorOrganization.OrganizationDescription = model.OrganizationDescription;
+                if (model.OrganizationIcon != null)
+                {
+                    vendorOrganization.OrganizationIcon = model.OrganizationIcon;
+                }
+                if (model.OrganizationLogo != null)
+                {
+                    vendorOrganization.OrganizationLogo = model.OrganizationLogo;
+                }
+                vendorOrganization.Website = model.Website;
+                _db.VendorOrganization.Update(vendorOrganization);
+            }
+
+            var result2 = await _db.SaveChangesAsync();
+
+            return result1 > 0 && result2 > 0;
 
         }
         public async Task<bool> DeleteVendorAsync(int id)

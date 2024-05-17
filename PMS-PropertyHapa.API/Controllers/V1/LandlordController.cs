@@ -107,7 +107,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
         }
 
         [HttpPost("Vendor")]
-        public async Task<ActionResult<bool>> SaveVendor(Vendor vendor)
+        public async Task<ActionResult<bool>> SaveVendor(VendorDto vendor)
         {
             try
             {

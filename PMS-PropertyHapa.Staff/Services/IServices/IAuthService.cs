@@ -147,9 +147,9 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
         
 
         #region Vendor
-        Task<IEnumerable<Vendor>> GetVendorsAsync();
-        Task<Vendor> GetVendorByIdAsync(int id);
-        Task<bool> SaveVendorAsync(Vendor vendor);
+        Task<IEnumerable<VendorDto>> GetVendorsAsync();
+        Task<VendorDto> GetVendorByIdAsync(int id);
+        Task<bool> SaveVendorAsync(VendorDto vendor);
         Task<bool> DeleteVendorAsync(int id);
 
         #endregion

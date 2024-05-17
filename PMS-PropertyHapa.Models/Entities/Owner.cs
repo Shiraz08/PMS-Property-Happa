@@ -11,6 +11,7 @@ namespace PMS_PropertyHapa.Models.Entities
         public string LastName { get; set; }
         public string MiddleName { get; set; }
         public string Fax { get; set; }
+        public string TaxId { get; set; }
         public string EmailAddress { get; set; }
         public string EmailAddress2 { get; set; }
         public string Picture { get; set; }
