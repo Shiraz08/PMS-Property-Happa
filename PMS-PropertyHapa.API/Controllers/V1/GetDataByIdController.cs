@@ -1,7 +1,9 @@
-﻿using MagicVilla_VillaAPI.Repository.IRepostiory;
+﻿using Google.Apis.Storage.v1;
+using MagicVilla_VillaAPI.Repository.IRepostiory;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
+using PMS_PropertyHapa.API.Services;
 using PMS_PropertyHapa.Models;
 using PMS_PropertyHapa.Models.DTO;
 using PMS_PropertyHapa.Models.Roles;
@@ -17,12 +19,14 @@ namespace PMS_PropertyHapa.API.Controllers.V1
         private readonly IEmailSender _emailSender;
         private readonly UserManager<ApplicationUser> _userManager;
         protected APIResponse _response;
+        private readonly GoogleCloudStorageService _storageService;
 
-        public GetDataByIdController(IUserRepository userRepo, UserManager<ApplicationUser> userManager)
+        public GetDataByIdController(IUserRepository userRepo, UserManager<ApplicationUser> userManager , GoogleCloudStorageService storageService)
         {
             _userRepo = userRepo;
             _response = new();
             _userManager = userManager;
+            _storageService = storageService;
         }
 
 
@@ -252,6 +256,13 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             }
         }
 
+        [HttpPost("uploadImage")]
+        
+        public async Task<IActionResult> UploadImage(IFormFile file)
+        {
+            var url = await _storageService.UploadImageAsync(file);
+            return Ok(url);
+        }
 
     }
 }
