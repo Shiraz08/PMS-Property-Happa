@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using PMS_PropertyHapa.MigrationsFiles.Data;
 using PMS_PropertyHapa.Models.DTO;
+using PMS_PropertyHapa.Models.Entities;
 using PMS_PropertyHapa.Models.Roles;
 
 namespace MagicVilla_VillaAPI.Repository.IRepostiory
@@ -181,5 +182,18 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
 
         Task<object> GetLandlordDataById(int id);
         Task<object> GetTenantDataById(int id);
+        //Vendor Category
+        Task<List<VendorCategory>> GetVendorCategoriesAsync();
+        Task<VendorCategory> GetVendorCategoryByIdAsync(int id);
+        Task<bool> SaveVendorCategoryAsync(VendorCategory vendorCategory);
+        Task<bool> DeleteVendorCategoryAsync(int id);
+        
+        //Vendor
+        Task<List<VendorDto>> GetVendorsAsync();
+        Task<VendorDto> GetVendorByIdAsync(int id);
+        Task<bool> SaveVendorAsync(VendorDto vendor);
+        Task<bool> DeleteVendorAsync(int id);
+
+
     }
 }

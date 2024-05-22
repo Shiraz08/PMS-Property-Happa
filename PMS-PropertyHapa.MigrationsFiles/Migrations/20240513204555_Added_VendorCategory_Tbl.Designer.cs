@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PMS_PropertyHapa.MigrationsFiles.Data;
 
@@ -11,9 +12,10 @@ using PMS_PropertyHapa.MigrationsFiles.Data;
 namespace PMS_PropertyHapa.MigrationsFiles.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    partial class ApiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240513204555_Added_VendorCategory_Tbl")]
+    partial class Added_VendorCategory_Tbl
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -739,9 +741,6 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
 
                     b.Property<bool>("Status")
                         .HasColumnType("bit");
-
-                    b.Property<string>("TaxId")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Unit")
                         .HasColumnType("nvarchar(max)");
@@ -1480,145 +1479,6 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
                     b.ToTable("Vehicle");
                 });
 
-            modelBuilder.Entity("PMS_PropertyHapa.Models.Entities.Vendor", b =>
-                {
-                    b.Property<int>("VendorId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VendorId"), 1L, 1);
-
-                    b.Property<string>("AccountBank")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AccountCurrency")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AccountHolder")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AccountIBAN")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AccountName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AccountSwift")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AddedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("AddedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("AlterCity")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AlterCountry")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AlterDistrict")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AlterState")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AlterStreet1")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AlterStreet2")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("AppTenantId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("City")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Classification")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Company")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Country")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("District")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email1")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email2")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FirstName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool?>("HasInsurance")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("JobTitle")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MI")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ModifiedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Notes")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Phone1")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Phone2")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Picture")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("PropertyId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("State")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Status")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Street1")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Street2")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TaxId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UnitIds")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("VendorCategoriesIds")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("VendorId");
-
-                    b.ToTable("Vendor");
-                });
-
             modelBuilder.Entity("PMS_PropertyHapa.Models.Entities.VendorCategory", b =>
                 {
                     b.Property<int>("VendorCategoryId")
@@ -1654,37 +1514,6 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
                     b.HasKey("VendorCategoryId");
 
                     b.ToTable("VendorCategory");
-                });
-
-            modelBuilder.Entity("PMS_PropertyHapa.Models.Entities.VendorOrganization", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("OrganizationDescription")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("OrganizationIcon")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("OrganizationLogo")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("OrganizationName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("VendorId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Website")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("VendorOrganization");
                 });
 
             modelBuilder.Entity("PMS_PropertyHapa.Models.RefreshToken", b =>

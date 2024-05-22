@@ -4,7 +4,6 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
 <style>
     .no-print {
         display: none;
@@ -64,7 +63,7 @@
                                         @foreach (var communication in Model?.Communications)
                                         {
                                             <tr>
-                                                <td><i class="fas fa-envelope"></i> @communication?.Subject</td>
+                                                <td><i class="fa fa-envelope"></i> @communication?.Subject</td>
                                                 @{
                                                     // Splitting the comma-separated IDs and counting them
                                                     var tenantIds = communication?.TenantIds?.Split(',', StringSplitOptions.RemoveEmptyEntries);
@@ -96,15 +95,15 @@
                                                 <td>
                                                     @if ((bool)communication?.IsByEmail)
                                                     {
-                                                        <i class="fas fa-envelope fa-2x text-primary mb-2" title="Email"></i>
+                                                        <i class="fa fa-envelope fa-2x text-primary mb-2" title="Email"></i>
                                                     }
                                                     @if ((bool)communication?.IsByText)
                                                     {
-                                                        <i class="fas fa-sms fa-2x text-success mb-2" title="Text Message"></i>
+                                                        <i class="fa fa-phone fa-2x text-success mb-2" title="Text Message"></i>
                                                     }
                                                     @if ((bool)communication?.IsShowCommunicationInTenantPortal)
                                                     {
-                                                        <i class="fas fa-globe fa-2x text-info mb-2" title="Tenant Portal"></i>
+                                                        <i class="fa fa-globe fa-2x text-info mb-2" title="Tenant Portal"></i>
                                                     }
                                                 </td>
 

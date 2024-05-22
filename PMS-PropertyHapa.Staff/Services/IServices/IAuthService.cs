@@ -2,6 +2,7 @@
 using PMS_PropertyHapa.Staff.Models;
 using PMS_PropertyHapa.Models.DTO;
 using System.Threading.Tasks;
+using PMS_PropertyHapa.Models.Entities;
 
 namespace PMS_PropertyHapa.Staff.Services.IServices
 {
@@ -133,6 +134,23 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
         Task<List<CalendarEvent>> GetCalendarEventsAsync(CalendarFilterModel filter);
         Task<List<OccupancyOverviewEvents>> GetOccupancyOverviewEventsAsync(CalendarFilterModel filter);
         Task<LeaseDataDto> GetLeaseDataByIdAsync(int filter);
+
+        #endregion
+
+        #region Vendor Category
+        Task<IEnumerable<VendorCategory>> GetVendorCategoriesAsync();
+        Task<VendorCategory> GetVendorCategoryByIdAsync(int id);
+        Task<bool> SaveVendorCategoryAsync(VendorCategory vendorCategory);
+        Task<bool> DeleteVendorCategoryAsync(int id);
+
+        #endregion
+        
+
+        #region Vendor
+        Task<IEnumerable<VendorDto>> GetVendorsAsync();
+        Task<VendorDto> GetVendorByIdAsync(int id);
+        Task<bool> SaveVendorAsync(VendorDto vendor);
+        Task<bool> DeleteVendorAsync(int id);
 
         #endregion
 

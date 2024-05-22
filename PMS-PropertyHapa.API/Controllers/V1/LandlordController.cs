@@ -10,6 +10,7 @@ using System.Web;
 using System.Security.Claims;
 using System.Net.Http.Headers;
 using PMS_PropertyHapa.Models.Roles;
+using PMS_PropertyHapa.Models.Entities;
 
 namespace PMS_PropertyHapa.API.Controllers.V1
 {
@@ -43,8 +44,207 @@ namespace PMS_PropertyHapa.API.Controllers.V1
         }
 
 
-        #region Landlord Crud 
+        //Vendor Start
 
+        [HttpGet("Vendors")]
+        public async Task<ActionResult<Vendor>> GetVendors()
+        {
+            try
+            {
+                var vendors = await _userRepo.GetVendorsAsync();
+
+                if (vendors != null)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = vendors;
+                    return Ok(_response);
+                }
+                else
+                {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("No asset found with this id.");
+                    return NotFound(_response);
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
+        [HttpGet("GetVendorById/{id}")]
+        public async Task<IActionResult> GetVendorById(int id)
+        {
+
+            try
+            {
+                var vendor = await _userRepo.GetVendorByIdAsync(id);
+
+                if (vendor != null)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = vendor;
+                    return Ok(_response);
+                }
+                else
+                {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("No user found with this id.");
+                    return NotFound(_response);
+                }
+            }
+            catch (Exception ex)
+            {
+                _response.StatusCode = HttpStatusCode.NotFound;
+                _response.IsSuccess = false;
+                _response.ErrorMessages.Add("Error Occured");
+                return NotFound(_response);
+            }
+        }
+
+        [HttpPost("Vendor")]
+        public async Task<ActionResult<bool>> SaveVendor(VendorDto vendor)
+        {
+            try
+            {
+                var isSuccess = await _userRepo.SaveVendorAsync(vendor);
+                if (isSuccess == true)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = isSuccess;
+                }
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
+        [HttpPost("Vendor/{id}")]
+        public async Task<ActionResult<bool>> DeleteVendorRequest(int id)
+        {
+            try
+            {
+                var isSuccess = await _userRepo.DeleteVendorAsync(id);
+                return Ok(isSuccess);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
+        //Vendor End
+
+
+
+
+        //Vendor Category Start
+
+        [HttpGet("VendorCategories")]
+        public async Task<ActionResult<VendorCategory>> GetVendorCategories()
+        {
+            try
+            {
+                var vendorCategories = await _userRepo.GetVendorCategoriesAsync();
+
+                if (vendorCategories != null)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = vendorCategories;
+                    return Ok(_response);
+                }
+                else
+                {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("No asset found with this id.");
+                    return NotFound(_response);
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
+        [HttpGet("GetVendorCategoryById/{id}")]
+        public async Task<IActionResult> GetVendorCategoryById(int id)
+        {
+
+            try
+            {
+                var vendorCategory = await _userRepo.GetVendorCategoryByIdAsync(id);
+
+                if (vendorCategory != null)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = vendorCategory;
+                    return Ok(_response);
+                }
+                else
+                {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("No user found with this id.");
+                    return NotFound(_response);
+                }
+            }
+            catch (Exception ex)
+            {
+                _response.StatusCode = HttpStatusCode.NotFound;
+                _response.IsSuccess = false;
+                _response.ErrorMessages.Add("Error Occured");
+                return NotFound(_response);
+            }
+        }
+
+        [HttpPost("VendorCategory")]
+        public async Task<ActionResult<bool>> SaveVendorCategory(VendorCategory vendorCategory)
+        {
+            try
+            {
+                var isSuccess = await _userRepo.SaveVendorCategoryAsync(vendorCategory);
+                if (isSuccess == true)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = isSuccess;
+                }
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
+        [HttpPost("VendorCategory/{id}")]
+        public async Task<ActionResult<bool>> DeleteVendorCategoryRequest(int id)
+        {
+            try
+            {
+                var isSuccess = await _userRepo.DeleteVendorCategoryAsync(id);
+                return Ok(isSuccess);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
+        //Vendor Category End
+
+
+        #region Landlord Crud 
 
         [HttpGet("Landlord")]
         public async Task<ActionResult<OwnerDto>> GetAllLandlord()

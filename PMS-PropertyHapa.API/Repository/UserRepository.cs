@@ -13,6 +13,7 @@ using PMS_PropertyHapa.Models;
 using PMS_PropertyHapa.Models.DTO;
 using PMS_PropertyHapa.Models.Entities;
 using PMS_PropertyHapa.Models.Roles;
+using System.Diagnostics.Metrics;
 using System.Drawing;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
@@ -1725,6 +1726,7 @@ namespace MagicVilla_VillaAPI.Repository
                 PhoneNumber = tenantDto.PhoneNumber,
                 PhoneNumber2 = tenantDto.PhoneNumber2,
                 Fax = tenantDto.Fax,
+                TaxId = tenantDto.TaxId,
                 Document = tenantDto.Document,
                 EmergencyContactInfo = tenantDto.EmergencyContactInfo,
                 LeaseAgreementId = tenantDto.LeaseAgreementId,
@@ -1786,6 +1788,7 @@ namespace MagicVilla_VillaAPI.Repository
                 PhoneNumber = tenantDto.PhoneNumber,
                 PhoneNumber2 = tenantDto.PhoneNumber2,
                 Fax = tenantDto.Fax,
+                TaxId = tenantDto.TaxId,
                 EmergencyContactInfo = tenantDto.EmergencyContactInfo,
                 LeaseAgreementId = tenantDto.LeaseAgreementId,
                 OwnerNationality = tenantDto.OwnerNationality,
@@ -2207,6 +2210,7 @@ namespace MagicVilla_VillaAPI.Repository
             tenant.PhoneNumber = tenantDto.PhoneNumber;
             tenant.PhoneNumber2 = tenantDto.PhoneNumber2;
             tenant.Fax = tenantDto.Fax;
+            tenant.TaxId = tenantDto.TaxId;
             tenant.Document = tenantDto.Document;
             tenant.EmergencyContactInfo = tenantDto.EmergencyContactInfo;
             tenant.LeaseAgreementId = tenantDto.LeaseAgreementId;
@@ -2747,6 +2751,7 @@ namespace MagicVilla_VillaAPI.Repository
                                            MiddleName = owner.MiddleName,
                                            LastName = owner.LastName,
                                            Fax = owner.Fax,
+                                           TaxId = owner.TaxId,
                                            EmailAddress = owner.EmailAddress,
                                            EmailAddress2 = owner.EmailAddress2,
                                            Picture = owner.Picture,
@@ -2881,6 +2886,7 @@ namespace MagicVilla_VillaAPI.Repository
 
 
         #region Taks Request
+
         public async Task<List<TaskRequestDto>> GetTaskRequestsAsync()
         {
             try
@@ -3128,7 +3134,6 @@ namespace MagicVilla_VillaAPI.Repository
             return saveResult > 0 || lineItemSaveResult > 0;
         }
 
-
         #endregion
 
         #region LandloadGetData
@@ -3177,7 +3182,6 @@ namespace MagicVilla_VillaAPI.Repository
 
 
         #region Calendar
-
 
         public async Task<List<CalendarEvent>> GetCalendarEventsAsync(CalendarFilterModel filter)
         {
@@ -3290,7 +3294,7 @@ namespace MagicVilla_VillaAPI.Repository
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"An error occurred while mapping owners and organizations: {ex.Message}");
+                Console.WriteLine($"An error occurred while mapping calendar: {ex.Message}");
                 throw;
             }
         }
@@ -3333,7 +3337,7 @@ namespace MagicVilla_VillaAPI.Repository
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"An error occurred while mapping owners and organizations: {ex.Message}");
+                Console.WriteLine($"An error occurred while mapping occupancy calendar: {ex.Message}");
                 throw;
             }
         }
@@ -3359,10 +3363,355 @@ namespace MagicVilla_VillaAPI.Repository
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"An error occurred while mapping owners and organizations: {ex.Message}");
+                Console.WriteLine($"An error occurred while mapping lease data: {ex.Message}");
                 throw;
             }
         }
+
+        #endregion
+
+
+        #region Vendor Category
+
+        public async Task<List<VendorCategory>> GetVendorCategoriesAsync()
+        {
+            try
+            {
+                var result = await (from v in _db.VendorCategory
+                                    where v.IsDeleted != true
+                                    select new VendorCategory
+                                    {
+                                        VendorCategoryId = v.VendorCategoryId,
+                                        Name = v.Name,
+                                        AddedBy = v.AddedBy,
+                                    })
+                     .AsNoTracking()
+                     .ToListAsync();
+
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping Vendor Categories: {ex.Message}");
+                throw;
+            }
+        }
+        public async Task<VendorCategory> GetVendorCategoryByIdAsync(int id)
+        {
+            try
+            {
+                var result = await (from v in _db.VendorCategory
+                                    where v.VendorCategoryId == id
+                                    select new VendorCategory
+                                    {
+                                        VendorCategoryId = v.VendorCategoryId,
+                                        Name = v.Name,
+                                        AddedBy = v.AddedBy,
+
+                                    })
+                     .AsNoTracking()
+                     .FirstOrDefaultAsync();
+
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping  Vendor Category: {ex.Message}");
+                throw;
+            }
+        }
+        public async Task<bool> SaveVendorCategoryAsync(VendorCategory model)
+        {
+            var vendorCategory = _db.VendorCategory.FirstOrDefault(x => x.VendorCategoryId == model.VendorCategoryId);
+
+            if (vendorCategory == null)
+                vendorCategory = new VendorCategory();
+
+            vendorCategory.VendorCategoryId = model.VendorCategoryId;
+            vendorCategory.Name = model.Name;
+
+            if (vendorCategory.VendorCategoryId > 0)
+            {
+                vendorCategory.ModifiedBy = model.AddedBy;
+                vendorCategory.ModifiedDate = DateTime.Now;
+                _db.VendorCategory.Update(vendorCategory);
+            }
+            else
+            {
+                vendorCategory.AddedBy = model.AddedBy;
+                vendorCategory.AddedDate = DateTime.Now;
+                _db.VendorCategory.Add(vendorCategory);
+            }
+
+            var result = await _db.SaveChangesAsync();
+
+           
+            return result > 0;
+
+        }
+        public async Task<bool> DeleteVendorCategoryAsync(int id)
+        {
+            var vendorCategory = await _db.VendorCategory.FindAsync(id);
+            if (vendorCategory == null) return false;
+
+            vendorCategory.IsDeleted = true;
+            _db.VendorCategory.Update(vendorCategory);
+            var saveResult = await _db.SaveChangesAsync();
+
+            return saveResult > 0;
+        }
+
+        #endregion
+
+
+        #region Vendor 
+
+
+        public async Task<List<VendorDto>> GetVendorsAsync()
+        {
+            try
+            {
+                var result = await (from v in _db.Vendor
+                                    from vo in _db.VendorOrganization.Where(x=>x.VendorId == v.VendorId).DefaultIfEmpty()
+                                    where v.IsDeleted != true
+                                    select new VendorDto
+                                    {
+                                        VendorId = v.VendorId,
+                                        FirstName = v.FirstName,
+                                        MI = v.MI,
+                                        LastName = v.LastName,
+                                        Company = v.Company,
+                                        JobTitle = v.JobTitle,
+                                        Notes = v.Notes,
+                                        Picture = v.Picture,
+                                        Email1 = v.Email1,
+                                        Phone1 = v.Phone1,
+                                        Email2 = v.Email2,
+                                        Phone2 = v.Phone2,
+                                        Street1 = v.Street1,
+                                        Street2 = v.Street2,
+                                        District = v.District,
+                                        City = v.City,
+                                        State = v.State,
+                                        Country = v.Country,
+                                        AlterStreet1 = v.AlterStreet1,
+                                        AlterStreet2 = v.AlterStreet2,
+                                        AlterDistrict = v.AlterDistrict,
+                                        AlterCity = v.AlterCity,
+                                        AlterState = v.AlterState,
+                                        AlterCountry = v.AlterCountry,
+                                        Classification = v.Classification,
+                                        VendorCategoriesIds = v.VendorCategoriesIds,
+                                        HasInsurance = v.HasInsurance,
+                                        PropertyId = v.PropertyId,
+                                        UnitIds = v.UnitIds,
+                                        TaxId = v.TaxId,
+                                        AccountName = v.AccountName,
+                                        AccountHolder = v.AccountHolder,
+                                        AccountIBAN = v.AccountIBAN,
+                                        AccountSwift = v.AccountSwift,
+                                        AccountBank = v.AccountBank,
+                                        AccountCurrency = v.AccountCurrency,
+                                        OrganizationName = vo.OrganizationName,
+                                        OrganizationDescription = vo.OrganizationDescription,
+                                        OrganizationIcon = vo.OrganizationIcon,
+                                        OrganizationLogo = vo.OrganizationLogo,
+                                        Website = vo.Website,
+                                        AddedBy = v.AddedBy
+                                    })
+                     .AsNoTracking()
+                     .ToListAsync();
+
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping Vendors: {ex.Message}");
+                throw;
+            }
+        }
+        public async Task<VendorDto> GetVendorByIdAsync(int id)
+        {
+            try
+            {
+                var result = await (from v in _db.Vendor
+                                    from vo in _db.VendorOrganization.Where(x => x.VendorId == v.VendorId).DefaultIfEmpty()
+                                    where v.VendorId == id
+                                    select new VendorDto
+                                    {
+                                        VendorId = v.VendorId,
+                                        FirstName = v.FirstName,
+                                        MI = v.MI,
+                                        LastName = v.LastName,
+                                        Company = v.Company,
+                                        JobTitle = v.JobTitle,
+                                        Notes = v.Notes,
+                                        Picture = v.Picture,
+                                        Email1 = v.Email1,
+                                        Phone1 = v.Phone1,
+                                        Email2 = v.Email2,
+                                        Phone2 = v.Phone2,
+                                        Street1 = v.Street1,
+                                        Street2 = v.Street2,
+                                        District = v.District,
+                                        City = v.City,
+                                        State = v.State,
+                                        Country = v.Country,
+                                        AlterStreet1 = v.AlterStreet1,
+                                        AlterStreet2 = v.AlterStreet2,
+                                        AlterDistrict = v.AlterDistrict,
+                                        AlterCity = v.AlterCity,
+                                        AlterState = v.AlterState,
+                                        AlterCountry = v.AlterCountry,
+                                        Classification = v.Classification,
+                                        VendorCategoriesIds = v.VendorCategoriesIds,
+                                        HasInsurance = v.HasInsurance,
+                                        PropertyId = v.PropertyId,
+                                        UnitIds = v.UnitIds,
+                                        TaxId = v.TaxId,
+                                        AccountName = v.AccountName,
+                                        AccountHolder = v.AccountHolder,
+                                        AccountIBAN = v.AccountIBAN,
+                                        AccountSwift = v.AccountSwift,
+                                        AccountBank = v.AccountBank,
+                                        AccountCurrency = v.AccountCurrency,
+                                        OrganizationName = vo.OrganizationName,
+                                        OrganizationDescription = vo.OrganizationDescription,
+                                        OrganizationIcon = vo.OrganizationIcon,
+                                        OrganizationLogo = vo.OrganizationLogo,
+                                        Website = vo.Website,
+                                        AddedBy = v.AddedBy
+                                    })
+                     .AsNoTracking()
+                     .FirstOrDefaultAsync();
+
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping  Vendor : {ex.Message}");
+                throw;
+            }
+        }
+        public async Task<bool> SaveVendorAsync(VendorDto model)
+        {
+            var vendor = _db.Vendor.FirstOrDefault(x => x.VendorId == model.VendorId);
+
+            if (vendor == null)
+                vendor = new Vendor();
+
+            vendor.VendorId = model.VendorId;
+            vendor.FirstName = model.FirstName;
+            vendor.MI = model.MI;
+            vendor.LastName = model.LastName;
+            vendor.Company = model.Company;
+            vendor.JobTitle = model.JobTitle;
+            vendor.Notes = model.Notes;
+            if (model.Picture != null)
+            {
+                vendor.Picture = model.Picture;
+            }
+            vendor.Email1 = model.Email1;
+            vendor.Phone1 = model.Phone1;
+            vendor.Email2 = model.Email2;
+            vendor.Phone2 = model.Phone2;
+            vendor.Street1 = model.Street1;
+            vendor.Street2 = model.Street2;
+            vendor.District = model.District;
+            vendor.City = model.City;
+            vendor.State = model.State;
+            vendor.Country = model.Country;
+            vendor.AlterStreet1 = model.AlterStreet1;
+            vendor.AlterStreet2 = model.AlterStreet2;
+            vendor.AlterDistrict = model.AlterDistrict;
+            vendor.AlterCity = model.AlterCity;
+            vendor.AlterState = model.AlterState;
+            vendor.AlterCountry = model.AlterCountry;
+            vendor.Classification = model.Classification;
+            vendor.VendorCategoriesIds = model.VendorCategoriesIds;
+            vendor.HasInsurance = model.HasInsurance;
+            vendor.PropertyId = model.PropertyId;
+            vendor.UnitIds = model.UnitIds;
+            vendor.TaxId = model.TaxId;
+            vendor.AccountName = model.AccountName;
+            vendor.AccountHolder = model.AccountHolder;
+            vendor.AccountIBAN = model.AccountIBAN;
+            vendor.AccountSwift = model.AccountSwift;
+            vendor.AccountBank = model.AccountBank;
+            vendor.AccountCurrency = model.AccountCurrency;
+
+            if (vendor.VendorId > 0)
+            {
+                vendor.ModifiedBy = model.AddedBy;
+                vendor.ModifiedDate = DateTime.Now;
+                _db.Vendor.Update(vendor);
+            }
+            else
+            {
+                vendor.AddedBy = model.AddedBy;
+                vendor.AddedDate = DateTime.Now;
+                _db.Vendor.Add(vendor);
+            }
+
+            var result1 = await _db.SaveChangesAsync();
+
+            var vendorOrganization = _db.VendorOrganization.FirstOrDefault(x => x.VendorId == vendor.VendorId);
+
+            if (vendorOrganization == null)
+            {
+                vendorOrganization = new VendorOrganization();
+                
+                vendorOrganization.VendorId = vendor.VendorId;
+                vendorOrganization.OrganizationName = model.OrganizationName;
+                vendorOrganization.OrganizationDescription = model.OrganizationDescription;
+                if (model.OrganizationIcon != null)
+                {
+                    vendorOrganization.OrganizationIcon = model.OrganizationIcon;
+                }
+                if (model.OrganizationLogo != null)
+                {
+                    vendorOrganization.OrganizationLogo = model.OrganizationLogo;
+                }
+                vendorOrganization.Website = model.Website;                
+                await _db.VendorOrganization.AddAsync(vendorOrganization);
+            }
+            else
+            {
+                vendorOrganization.OrganizationName = model.OrganizationName;
+                vendorOrganization.OrganizationDescription = model.OrganizationDescription;
+                if (model.OrganizationIcon != null)
+                {
+                    vendorOrganization.OrganizationIcon = model.OrganizationIcon;
+                }
+                if (model.OrganizationLogo != null)
+                {
+                    vendorOrganization.OrganizationLogo = model.OrganizationLogo;
+                }
+                vendorOrganization.Website = model.Website;
+                _db.VendorOrganization.Update(vendorOrganization);
+            }
+
+            var result2 = await _db.SaveChangesAsync();
+
+            return result1 > 0 && result2 > 0;
+
+        }
+        public async Task<bool> DeleteVendorAsync(int id)
+        {
+            var vendor = await _db.Vendor.FindAsync(id);
+            if (vendor == null) return false;
+
+            vendor.IsDeleted = true;
+            _db.Vendor.Update(vendor);
+            var saveResult = await _db.SaveChangesAsync();
+
+            return saveResult > 0;
+        }
+
 
         #endregion
 
