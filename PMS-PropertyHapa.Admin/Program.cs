@@ -8,6 +8,7 @@ using PMS_PropertyHapa.Shared.Dapper;
 using AutoMapper;
 using PMS_PropertyHapa.Shared.MappingProfiles;
 using PMS_PropertyHapa.Models.Roles;
+using PMS_PropertyHapa.Admin.Models.ViewModels;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,6 +40,7 @@ builder.Services.AddSession(options => {
 builder.Services.Configure<DataProtectionTokenProviderOptions>(opt =>
    opt.TokenLifespan = TimeSpan.FromHours(2));
 builder.Services.AddTransient<IEmailSender, EmailSender>();
+builder.Services.Configure<GoogleCloudStorageOptions>(builder.Configuration.GetSection("GoogleServiceAccount"));
 //Register dapper in scope    
 builder.Services.AddScoped<IDapper, DapperServices>();
 // Auto Mapper Configurations

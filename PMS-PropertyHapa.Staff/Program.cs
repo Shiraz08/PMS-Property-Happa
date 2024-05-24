@@ -12,6 +12,7 @@ using MagicVilla_Web.Services;
 using PMS_PropertyHapa.Shared.EmailSenderFile;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using PMS_PropertyHapa.Shared.Email;
+using PMS_PropertyHapa.Staff.Models.ViewModels;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +23,8 @@ builder.Services.AddSingleton<IApiMessageRequestBuilder, ApiMessageRequestBuilde
 builder.Services.AddScoped<IBaseService, BaseService>();
 builder.Services.AddScoped<EmailSenderBase>();
 builder.Services.AddTransient<IEmailSender, EmailSender>();
+builder.Services.Configure<GoogleCloudStorageOptions>(builder.Configuration.GetSection("GoogleServiceAccount"));
+builder.Services.AddSingleton<GoogleCloudStorageService>();
 builder.Services.AddScoped<ITokenProvider, TokenProvider>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<IAuthService, AuthService>();
