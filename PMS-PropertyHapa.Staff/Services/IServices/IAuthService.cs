@@ -153,6 +153,14 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
         Task<bool> DeleteVendorAsync(int id);
 
         #endregion
+        
+        #region Vendor
+        Task<IEnumerable<ApplicationsDto>> GetApplicationsAsync();
+        Task<ApplicationsDto> GetApplicationByIdAsync(int id);
+        Task<bool> SaveApplicationAsync(ApplicationsDto applicationsDto);
+        Task<bool> DeleteApplicationAsync(int id);
+
+        #endregion
 
     }
 }

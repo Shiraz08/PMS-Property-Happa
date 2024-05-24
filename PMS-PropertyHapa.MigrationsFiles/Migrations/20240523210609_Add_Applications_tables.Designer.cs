@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PMS_PropertyHapa.MigrationsFiles.Data;
 
@@ -11,9 +12,10 @@ using PMS_PropertyHapa.MigrationsFiles.Data;
 namespace PMS_PropertyHapa.MigrationsFiles.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    partial class ApiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240523210609_Add_Applications_tables")]
+    partial class Add_Applications_tables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -307,6 +309,9 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Agree")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("AnnualIncome")
                         .HasColumnType("int");
 
@@ -369,9 +374,6 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
 
                     b.Property<string>("ITIN")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsAgree")
-                        .HasColumnType("bit");
 
                     b.Property<bool?>("IsBankruptcy")
                         .HasColumnType("bit");

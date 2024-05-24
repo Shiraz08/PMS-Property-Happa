@@ -536,10 +536,10 @@
 
         resetModal();
 
-        function updateActiveNav(index) {
-            $('.nav-sidebar .nav-link').removeClass('active');
-            $('.nav-sidebar .nav-link').eq(index).addClass('active');
-        }
+        // function updateActiveNav(index) {
+        //     $('.nav-sidebar .nav-link').removeClass('active');
+        //     $('.nav-sidebar .nav-link').eq(index).addClass('active');
+        // }
 
         $(".form-section").not(":first").hide();
 
@@ -661,7 +661,7 @@
         });
 
         toggleButtons();
-        papulateDropDowns();
+        populateDropDowns();
 
         $('#saveButton').on('click', function (event) {
             event.preventDefault();
@@ -819,7 +819,7 @@
     }
 
 
-    function papulateDropDowns() {
+    function populateDropDowns() {
         $.ajax({
             url: '@Url.Action("GetVendorCategories", "Vendor")',
             type: 'GET',

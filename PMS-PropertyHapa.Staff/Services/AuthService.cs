@@ -1497,5 +1497,84 @@ namespace PMS_PropertyHapa.Staff.Services
 
         #endregion
 
+        
+        #region Applications 
+
+        public async Task<IEnumerable<ApplicationsDto>> GetApplicationsAsync()
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = $"{villaUrl}/api/v1/LandlordAuth/Applications"
+            });
+
+            if (response.IsSuccess == true)
+            {
+                var userListJson = Convert.ToString(response.Result);
+                var asset = JsonConvert.DeserializeObject<IEnumerable<ApplicationsDto>>(userListJson);
+                return asset;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve application data");
+            }
+        }
+        public async Task<ApplicationsDto> GetApplicationByIdAsync(int id)
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = $"{villaUrl}/api/v1/LandlordAuth/GetApplicationById/{id}"
+            });
+            if (response.IsSuccess && response.Result != null)
+            {
+                return JsonConvert.DeserializeObject<ApplicationsDto>(Convert.ToString(response.Result));
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve application data");
+            }
+        }
+        public async Task<bool> SaveApplicationAsync(ApplicationsDto application)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Data = application,
+                    Url = $"{villaUrl}/api/v1/LandlordAuth/Application"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when updating application: {ex.Message}", ex);
+            }
+        }
+        public async Task<bool> DeleteApplicationAsync(int id)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Url = $"{villaUrl}/api/v1/LandlordAuth/Application/{id}"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when deleting application: {ex.Message}", ex);
+            }
+        }
+
+        #endregion
+
+
     }
 }

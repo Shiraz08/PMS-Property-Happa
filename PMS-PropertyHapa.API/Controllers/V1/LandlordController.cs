@@ -11,6 +11,7 @@ using System.Security.Claims;
 using System.Net.Http.Headers;
 using PMS_PropertyHapa.Models.Roles;
 using PMS_PropertyHapa.Models.Entities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PMS_PropertyHapa.API.Controllers.V1
 {
@@ -42,6 +43,112 @@ namespace PMS_PropertyHapa.API.Controllers.V1
         {
             throw new BadImageFormatException("Fake Image Exception");
         }
+
+
+
+
+
+
+        
+
+        //Application Start
+
+        [HttpGet("Applications")]
+        public async Task<ActionResult<ApplicationsDto>> GetApplications()
+        {
+            try
+            {
+                var applications = await _userRepo.GetApplicationsAsync();
+
+                if (applications != null)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = applications;
+                    return Ok(_response);
+                }
+                else
+                {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("No asset found with this id.");
+                    return NotFound(_response);
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
+        [HttpGet("GetApplicationById/{id}")]
+        public async Task<IActionResult> GetApplicationById(int id)
+        {
+
+            try
+            {
+                var application = await _userRepo.GetApplicationByIdAsync(id);
+
+                if (application != null)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = application;
+                    return Ok(_response);
+                }
+                else
+                {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("No user found with this id.");
+                    return NotFound(_response);
+                }
+            }
+            catch (Exception ex)
+            {
+                _response.StatusCode = HttpStatusCode.NotFound;
+                _response.IsSuccess = false;
+                _response.ErrorMessages.Add("Error Occured");
+                return NotFound(_response);
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpPost("Application")]
+        public async Task<ActionResult<bool>> SaveApplication(ApplicationsDto application)
+        {
+            try
+            {
+                var isSuccess = await _userRepo.SaveApplicationAsync(application);
+                if (isSuccess == true)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = isSuccess;
+                }
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
+        [HttpPost("Application/{id}")]
+        public async Task<ActionResult<bool>> DeleteApplicationRequest(int id)
+        {
+            try
+            {
+                var isSuccess = await _userRepo.DeleteApplicationAsync(id);
+                return Ok(isSuccess);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
+        //Application End
 
 
         //Vendor Start

@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using Hangfire.Common;
 using Humanizer.Localisation;
 using MagicVilla_VillaAPI.Repository.IRepostiory;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.DotNet.Scaffolding.Shared.ProjectModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -15,11 +17,14 @@ using PMS_PropertyHapa.Models.Entities;
 using PMS_PropertyHapa.Models.Roles;
 using System.Diagnostics.Metrics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using System.Xml.Linq;
+using Twilio.Types;
 using static PMS_PropertyHapa.Models.DTO.TenantModelDto;
 using static PMS_PropertyHapa.Shared.Enum.SD;
 using static System.Net.WebRequestMethods;
@@ -3715,5 +3720,421 @@ namespace MagicVilla_VillaAPI.Repository
 
         #endregion
 
+
+
+        #region Applications 
+
+
+        public async Task<List<ApplicationsDto>> GetApplicationsAsync()
+        {
+            try
+            {
+                var result = await (from a in _db.Applications
+                                    from p in _db.Assets.Where(x=>x.AssetId == a.PropertyId).DefaultIfEmpty()
+                                    where a.IsDeleted != true
+                                    select new ApplicationsDto
+                                    {
+                                        ApplicationId = a.ApplicationId,
+                                        FirstName = a.FirstName,
+                                        MiddleName = a.MiddleName,
+                                        LastName = a.LastName,
+                                        SSN = a.SSN,
+                                        ITIN = a.ITIN,
+                                        DOB = a.DOB,
+                                        Email = a.Email,
+                                        PhoneNumber = a.PhoneNumber,
+                                        Gender = a.Gender,
+                                        MaritalStatus = a.MaritalStatus,
+                                        DriverLicenseState = a.DriverLicenseState,
+                                        DriverLicenseNumber = a.DriverLicenseNumber,
+                                        Note = a.Note,
+                                        Address = a.Address,
+                                        LandlordName = a.LandlordName,
+                                        ContactEmail = a.ContactEmail,
+                                        ContactPhoneNumber = a.ContactPhoneNumber,
+                                        MoveInDate = a.MoveInDate,
+                                        MonthlyPayment = a.MonthlyPayment,
+                                        JobType = a.JobType,
+                                        JobTitle = a.JobTitle,
+                                        AnnualIncome = a.AnnualIncome,
+                                        CompanyName = a.CompanyName,
+                                        WorkStatus = a.WorkStatus,
+                                        StartDate = a.StartDate,
+                                        EndDate = a.EndDate,
+                                        SupervisorName = a.SupervisorName,
+                                        SupervisorEmail = a.SupervisorEmail,
+                                        SupervisorPhoneNumber = a.SupervisorPhoneNumber,
+                                        EmergencyFirstName = a.EmergencyFirstName,
+                                        EmergencyLastName = a.EmergencyLastName,
+                                        EmergencyEmail = a.EmergencyEmail,
+                                        EmergencyPhoneNumber = a.EmergencyPhoneNumber,
+                                        EmergencyAddress = a.EmergencyAddress,
+                                        SourceOfIncome = a.SourceOfIncome,
+                                        SourceAmount = a.SourceAmount,
+                                        Assets = a.Assets,
+                                        AssetAmount = a.AssetAmount,
+                                        PropertyId = a.PropertyId,
+                                        UnitIds = a.UnitIds,
+                                        IsSmoker = a.IsSmoker,
+                                        IsBankruptcy = a.IsBankruptcy,
+                                        IsEvicted = a.IsEvicted,
+                                        HasPayRentIssue = a.HasPayRentIssue,
+                                        IsCriminal = a.IsCriminal,
+                                        StubPicture = a.StubPicture,
+                                        LicensePicture = a.LicensePicture,
+                                        IsAgree = a.IsAgree,
+                                        Pets = _db.ApplicationPets.Where(x=>x.ApplicationId == a.ApplicationId && x.IsDeleted != true).ToList(),
+                                        Vehicles = _db.ApplicationVehicles.Where(x=>x.ApplicationId == a.ApplicationId && x.IsDeleted != true).ToList(),
+                                        Dependent = _db.ApplicationDependent.Where(x=>x.ApplicationId == a.ApplicationId && x.IsDeleted != true).ToList(),
+                                        AddedBy = p.AddedBy,
+                                        AddedDate = a.AddedDate
+                                    })
+                     .AsNoTracking()
+                     .ToListAsync();
+
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping Applications: {ex.Message}");
+                throw;
+            }
+        }
+        public async Task<ApplicationsDto> GetApplicationByIdAsync(int id)
+        {
+            try
+            {
+                var result = await (from a in _db.Applications
+                                    where a.ApplicationId == id
+                                    select new ApplicationsDto
+                                    {
+                                        ApplicationId = a.ApplicationId,
+                                        FirstName = a.FirstName,
+                                        MiddleName = a.MiddleName,
+                                        LastName = a.LastName,
+                                        SSN = a.SSN,
+                                        ITIN = a.ITIN,
+                                        DOB = a.DOB,
+                                        Email = a.Email,
+                                        PhoneNumber = a.PhoneNumber,
+                                        Gender = a.Gender,
+                                        MaritalStatus = a.MaritalStatus,
+                                        DriverLicenseState = a.DriverLicenseState,
+                                        DriverLicenseNumber = a.DriverLicenseNumber,
+                                        Note = a.Note,
+                                        Address = a.Address,
+                                        LandlordName = a.LandlordName,
+                                        ContactEmail = a.ContactEmail,
+                                        ContactPhoneNumber = a.ContactPhoneNumber,
+                                        MoveInDate = a.MoveInDate,
+                                        MonthlyPayment = a.MonthlyPayment,
+                                        JobType = a.JobType,
+                                        JobTitle = a.JobTitle,
+                                        AnnualIncome = a.AnnualIncome,
+                                        CompanyName = a.CompanyName,
+                                        WorkStatus = a.WorkStatus,
+                                        StartDate = a.StartDate,
+                                        EndDate = a.EndDate,
+                                        SupervisorName = a.SupervisorName,
+                                        SupervisorEmail = a.SupervisorEmail,
+                                        SupervisorPhoneNumber = a.SupervisorPhoneNumber,
+                                        EmergencyFirstName = a.EmergencyFirstName,
+                                        EmergencyLastName = a.EmergencyLastName,
+                                        EmergencyEmail = a.EmergencyEmail,
+                                        EmergencyPhoneNumber = a.EmergencyPhoneNumber,
+                                        EmergencyAddress = a.EmergencyAddress,
+                                        SourceOfIncome = a.SourceOfIncome,
+                                        SourceAmount = a.SourceAmount,
+                                        Assets = a.Assets,
+                                        AssetAmount = a.AssetAmount,
+                                        PropertyId = a.PropertyId,
+                                        UnitIds = a.UnitIds,
+                                        IsSmoker = a.IsSmoker,
+                                        IsBankruptcy = a.IsBankruptcy,
+                                        IsEvicted = a.IsEvicted,
+                                        HasPayRentIssue = a.HasPayRentIssue,
+                                        IsCriminal = a.IsCriminal,
+                                        StubPicture = a.StubPicture,
+                                        LicensePicture = a.LicensePicture,
+                                        IsAgree = a.IsAgree,
+                                        Pets = _db.ApplicationPets.Where(x => x.ApplicationId == a.ApplicationId && x.IsDeleted != true).ToList(),
+                                        Vehicles = _db.ApplicationVehicles.Where(x => x.ApplicationId == a.ApplicationId && x.IsDeleted != true).ToList(),
+                                        Dependent = _db.ApplicationDependent.Where(x => x.ApplicationId == a.ApplicationId && x.IsDeleted != true).ToList(),
+                                        AddedBy = a.AddedBy,
+                                        AddedDate = a.AddedDate
+                                    })
+                     .AsNoTracking()
+                     .FirstOrDefaultAsync();
+
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping Application : {ex.Message}");
+                throw;
+            }
+        }
+        public async Task<bool> SaveApplicationAsync(ApplicationsDto model)
+        {
+            var application = _db.Applications.FirstOrDefault(x => x.ApplicationId == model.ApplicationId);
+
+            if (application == null)
+                application = new Applications();
+
+            application.ApplicationId = model.ApplicationId;
+            application.FirstName = model.FirstName;
+            application.MiddleName = model.MiddleName;
+            application.LastName = model.LastName;
+            application.SSN = model.SSN;
+            application.ITIN = model.ITIN;
+            application.DOB = model.DOB;
+            application.Email = model.Email;
+            application.PhoneNumber = model.PhoneNumber;
+            application.Gender = model.Gender;
+            application.MaritalStatus = model.MaritalStatus;
+            application.DriverLicenseState = model.DriverLicenseState;
+            application.DriverLicenseNumber = model.DriverLicenseNumber;
+            application.Note = model.Note;
+            application.Address = model.Address;
+            application.LandlordName = model.LandlordName;
+            application.ContactEmail = model.ContactEmail;
+            application.ContactPhoneNumber = model.ContactPhoneNumber;
+            application.MoveInDate = model.MoveInDate;
+            application.MonthlyPayment = model.MonthlyPayment;
+            application.JobType = model.JobType;
+            application.JobTitle = model.JobTitle;
+            application.AnnualIncome = model.AnnualIncome;
+            application.CompanyName = model.CompanyName;
+            application.WorkStatus = model.WorkStatus;
+            application.StartDate = model.StartDate;
+            application.EndDate = model.EndDate;
+            application.SupervisorName = model.SupervisorName;
+            application.SupervisorEmail = model.SupervisorEmail;
+            application.SupervisorPhoneNumber = model.SupervisorPhoneNumber;
+            application.EmergencyFirstName = model.EmergencyFirstName;
+            application.EmergencyLastName = model.EmergencyLastName;
+            application.EmergencyEmail = model.EmergencyEmail;
+            application.EmergencyPhoneNumber = model.EmergencyPhoneNumber;
+            application.EmergencyAddress = model.EmergencyAddress;
+            application.SourceOfIncome = model.SourceOfIncome;
+            application.SourceAmount = model.SourceAmount;
+            application.Assets = model.Assets;
+            application.AssetAmount = model.AssetAmount;
+            application.PropertyId = model.PropertyId;
+            application.UnitIds = model.UnitIds;
+            application.IsSmoker = model.IsSmoker;
+            application.IsBankruptcy = model.IsBankruptcy;
+            application.IsEvicted = model.IsEvicted;
+            application.HasPayRentIssue = model.HasPayRentIssue;
+            application.IsCriminal = model.IsCriminal;
+            if (model.LicensePicture != null)
+            {
+                application.LicensePicture = model.LicensePicture;
+            }
+            if (model.StubPicture != null)
+            {
+                application.StubPicture = model.StubPicture;
+            }
+            application.IsAgree = model.IsAgree;
+
+
+            if (application.ApplicationId > 0)
+            {
+                application.ModifiedBy = model.AddedBy;
+                application.ModifiedDate = DateTime.Now;
+                _db.Applications.Update(application);
+            }
+            else
+            {
+                application.AddedBy = model.AddedBy;
+                application.AddedDate = DateTime.Now;
+                _db.Applications.Add(application);
+            }
+
+            var result = await _db.SaveChangesAsync();
+
+            int[] petsIds = model.Pets.Select(x => x.PetId).ToArray();
+            var petsToBeDeleted = _db.ApplicationPets
+                .Where(item => item.ApplicationId == model.ApplicationId && !petsIds.Contains(item.PetId) && item.IsDeleted != true)
+                .ToList();
+
+            foreach (var petToBeDeleted in petsToBeDeleted)
+            {
+                petToBeDeleted.IsDeleted = true;
+                petToBeDeleted.ModifiedBy = model.AddedBy;
+                petToBeDeleted.ModifiedDate = DateTime.Now;
+                _db.ApplicationPets.Update(petToBeDeleted);
+            }
+            if (model.Pets != null && model.Pets.Any())
+            {
+                var existingPets = _db.ApplicationPets.Where(item => item.ApplicationId == model.ApplicationId && item.IsDeleted != true).ToList();
+                foreach (var petDto in model.Pets)
+                {
+                    var existingPet = existingPets.FirstOrDefault(item => item.PetId == petDto.PetId);
+
+                    if (existingPet != null)
+                    {
+                       existingPet.ApplicationId = application.ApplicationId;
+                       existingPet.Name = petDto.Name;
+                       existingPet.Breed = petDto.Breed;
+                       existingPet.Type = petDto.Type;
+                       existingPet.Quantity = petDto.Quantity;
+                       existingPet.Picture = petDto.Picture != null ? petDto.Picture : existingPet.Picture;
+                       existingPet.ModifiedBy = model.AddedBy;
+                       existingPet.ModifiedDate = DateTime.Now;
+                        _db.ApplicationPets.Update(existingPet);
+                    }
+                    else
+                    {
+                        var newPet = new ApplicationPets
+                        {
+                            ApplicationId = application.ApplicationId,
+                            Name = petDto.Name,
+                            Breed = petDto.Breed,
+                            Type = petDto.Type,
+                            Quantity = petDto.Quantity,
+                            Picture = petDto.Picture != null ? petDto.Picture : "",
+                            AddedBy = model.AddedBy,
+                            AddedDate = DateTime.Now,
+                        };
+                        _db.ApplicationPets.Add(newPet);
+                    }
+                }
+            }
+
+            int[] vehiclesIds = model.Vehicles.Select(x => x.VehicleId).ToArray();
+            var vehiclesToBeDeleted = _db.ApplicationVehicles
+                .Where(item => item.ApplicationId == model.ApplicationId && !vehiclesIds.Contains(item.VehicleId) && item.IsDeleted != true)
+                .ToList();
+
+            foreach (var vehicleToBeDeleted in vehiclesToBeDeleted)
+            {
+                vehicleToBeDeleted.IsDeleted = true;
+                vehicleToBeDeleted.ModifiedBy = model.AddedBy;
+                vehicleToBeDeleted.ModifiedDate = DateTime.Now;
+                _db.ApplicationVehicles.Update(vehicleToBeDeleted);
+            }
+            if (model.Vehicles != null && model.Vehicles.Any())
+            {
+                var existingVehicles = _db.ApplicationVehicles.Where(item => item.ApplicationId == model.ApplicationId && item.IsDeleted != true).ToList();
+                foreach (var vehicleDto in model.Vehicles)
+                {
+                    var existingVehicle = existingVehicles.FirstOrDefault(item => item.VehicleId == vehicleDto.VehicleId);
+
+                    if (existingVehicle != null)
+                    {
+                        existingVehicle.ApplicationId = application.ApplicationId;
+                        existingVehicle.Manufacturer = vehicleDto.Manufacturer;
+                        existingVehicle.ModelName = vehicleDto.ModelName;
+                        existingVehicle.Color = vehicleDto.Color;
+                        existingVehicle.LicensePlate = vehicleDto.LicensePlate;
+                        existingVehicle.Year = vehicleDto.Year;
+                        existingVehicle.ModifiedBy = model.AddedBy;
+                        existingVehicle.ModifiedDate = DateTime.Now;
+                        _db.ApplicationVehicles.Update(existingVehicle);
+                    }
+                    else
+                    {
+                        var newVehicle = new ApplicationVehicles
+                        {
+                            ApplicationId = application.ApplicationId,
+                            Manufacturer = vehicleDto.Manufacturer,
+                            ModelName = vehicleDto.ModelName,
+                            Color = vehicleDto.Color,
+                            LicensePlate = vehicleDto.LicensePlate,
+                            Year = vehicleDto.Year,
+                            AddedBy = model.AddedBy,
+                            AddedDate = DateTime.Now,
+                        };
+                        _db.ApplicationVehicles.Add(newVehicle);
+                    }
+                }
+            }
+
+            int[] dependentsIds = model.Dependent.Select(x => x.DependentId).ToArray();
+            var dependentsToBeDeleted = _db.ApplicationDependent
+                .Where(item => item.ApplicationId == model.ApplicationId && !dependentsIds.Contains(item.DependentId) && item.IsDeleted != true)
+                .ToList();
+
+            foreach (var dependentToBeDeleted in dependentsToBeDeleted)
+            {
+                dependentToBeDeleted.IsDeleted = true;
+                dependentToBeDeleted.ModifiedBy = model.AddedBy;
+                dependentToBeDeleted.ModifiedDate = DateTime.Now;
+                _db.ApplicationDependent.Update(dependentToBeDeleted);
+            }
+            if (model.Dependent != null && model.Dependent.Any())
+            {
+                var existingDependents = _db.ApplicationDependent.Where(item => item.ApplicationId == model.ApplicationId && item.IsDeleted != true).ToList();
+                foreach (var dependentDto in model.Dependent)
+                {
+                    var existingDependent = existingDependents.FirstOrDefault(item => item.DependentId == dependentDto.DependentId);
+
+                    if (existingDependent != null)
+                    {
+                       existingDependent.ApplicationId = application.ApplicationId;
+                       existingDependent.FirstName = dependentDto.FirstName;
+                       existingDependent.LastName = dependentDto.LastName;
+                       existingDependent.Email = dependentDto.Email;
+                       existingDependent.PhoneNumber = dependentDto.PhoneNumber;
+                       existingDependent.DOB = dependentDto.DOB;
+                        existingDependent.Relation = dependentDto.Relation;
+                        existingDependent.ModifiedBy = model.AddedBy;
+                        existingDependent.ModifiedDate = DateTime.Now;
+                        _db.ApplicationDependent.Update(existingDependent);
+                    }
+                    else
+                    {
+                        var newPet = new ApplicationDependent
+                        {
+                            ApplicationId = application.ApplicationId,
+                            FirstName = dependentDto.FirstName,
+                            LastName = dependentDto.LastName,
+                            Email = dependentDto.Email,
+                            PhoneNumber = dependentDto.PhoneNumber,
+                            DOB = dependentDto.DOB,
+                            Relation = dependentDto.Relation,
+                            AddedBy = model.AddedBy,
+                            AddedDate = DateTime.Now,
+                        };
+                        _db.ApplicationDependent.Add(newPet);
+                    }
+                }
+            }
+            var result1 = await _db.SaveChangesAsync();
+            return result > 0;
+
+        }
+        public async Task<bool> DeleteApplicationAsync(int id)
+        {
+            var application = await _db.Applications.FindAsync(id);
+            if (application == null) return false;
+
+            application.IsDeleted = true;
+            _db.Applications.Update(application);
+            var saveResult = await _db.SaveChangesAsync();
+
+            if (saveResult <= 0) return false;
+
+            var pets = await _db.ApplicationPets.Where(x => x.ApplicationId == id && x.IsDeleted != true).ToListAsync();
+            pets.ForEach(x => x.IsDeleted = true);
+            _db.ApplicationPets.UpdateRange(pets);
+
+            var vehicles = await _db.ApplicationVehicles.Where(x => x.ApplicationId == id && x.IsDeleted != true).ToListAsync();
+            vehicles.ForEach(x => x.IsDeleted = true);
+            _db.ApplicationVehicles.UpdateRange(vehicles);
+
+            var dependents = await _db.ApplicationDependent.Where(x => x.ApplicationId == id && x.IsDeleted != true).ToListAsync();
+            dependents.ForEach(x => x.IsDeleted = true);
+            _db.ApplicationDependent.UpdateRange(dependents);
+
+            saveResult = await _db.SaveChangesAsync();
+
+            return saveResult > 0;
+        }
+
+        #endregion
     }
 }

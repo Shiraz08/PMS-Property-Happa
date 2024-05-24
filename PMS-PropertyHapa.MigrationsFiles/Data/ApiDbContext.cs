@@ -49,6 +49,10 @@ namespace PMS_PropertyHapa.MigrationsFiles.Data
         public DbSet<VendorCategory> VendorCategory { get; set; }
         public DbSet<Vendor> Vendor { get; set; }
         public DbSet<VendorOrganization> VendorOrganization { get; set; }
+        public DbSet<Applications> Applications { get; set; }
+        public DbSet<ApplicationPets> ApplicationPets { get; set; }
+        public DbSet<ApplicationVehicles> ApplicationVehicles { get; set; }
+        public DbSet<ApplicationDependent> ApplicationDependent { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Tenant>()
