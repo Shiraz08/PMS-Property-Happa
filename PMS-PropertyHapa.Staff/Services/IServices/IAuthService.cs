@@ -2,6 +2,7 @@
 using PMS_PropertyHapa.Staff.Models;
 using PMS_PropertyHapa.Models.DTO;
 using System.Threading.Tasks;
+using PMS_PropertyHapa.Models.Entities;
 
 namespace PMS_PropertyHapa.Staff.Services.IServices
 {
@@ -121,11 +122,47 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
         Task<bool> VerifySmsOtpAsync(string userId, string phoneNumber, string otp);
 
 
-        #region Task
+        #region Task && Task History && Maintenance
+        Task<IEnumerable<TaskRequestHistoryDto>> GetTaskRequestHistoryAsync(int taskRequsetId);
+        Task<IEnumerable<TaskRequestDto>> GetMaintenanceTasksAsync();
         Task<IEnumerable<TaskRequestDto>> GetTaskRequestsAsync();
         Task<TaskRequestDto> GetTaskRequestByIdAsync(int id);
         Task<bool> SaveTaskAsync(TaskRequestDto taskRequestDto);
         Task<bool> DeleteTaskAsync(int id);
+        Task<bool> SaveTaskHistoryAsync(TaskRequestHistoryDto taskRequestHistoryDto);
+
+
+        #endregion
+
+        #region Calendar
+        Task<List<CalendarEvent>> GetCalendarEventsAsync(CalendarFilterModel filter);
+        Task<List<OccupancyOverviewEvents>> GetOccupancyOverviewEventsAsync(CalendarFilterModel filter);
+        Task<LeaseDataDto> GetLeaseDataByIdAsync(int filter);
+
+        #endregion
+
+        #region Vendor Category
+        Task<IEnumerable<VendorCategory>> GetVendorCategoriesAsync();
+        Task<VendorCategory> GetVendorCategoryByIdAsync(int id);
+        Task<bool> SaveVendorCategoryAsync(VendorCategory vendorCategory);
+        Task<bool> DeleteVendorCategoryAsync(int id);
+
+        #endregion
+        
+
+        #region Vendor
+        Task<IEnumerable<VendorDto>> GetVendorsAsync();
+        Task<VendorDto> GetVendorByIdAsync(int id);
+        Task<bool> SaveVendorAsync(VendorDto vendor);
+        Task<bool> DeleteVendorAsync(int id);
+
+        #endregion
+        
+        #region Vendor
+        Task<IEnumerable<ApplicationsDto>> GetApplicationsAsync();
+        Task<ApplicationsDto> GetApplicationByIdAsync(int id);
+        Task<bool> SaveApplicationAsync(ApplicationsDto applicationsDto);
+        Task<bool> DeleteApplicationAsync(int id);
 
         #endregion
 

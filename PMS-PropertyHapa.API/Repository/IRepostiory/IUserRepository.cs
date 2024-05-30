@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using PMS_PropertyHapa.MigrationsFiles.Data;
 using PMS_PropertyHapa.Models.DTO;
+using PMS_PropertyHapa.Models.Entities;
 using PMS_PropertyHapa.Models.Roles;
 
 namespace MagicVilla_VillaAPI.Repository.IRepostiory
@@ -166,9 +167,42 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
         //Task<bool> FindByEmailAddressAsync(string email);
 
         //Tasks Requests
+        Task<List<TaskRequestHistoryDto>> GetTaskRequestHistoryAsync(int id);
+        Task<List<TaskRequestDto>> GetMaintenanceTasksAsync();
         Task<List<TaskRequestDto>> GetTaskRequestsAsync();
         Task<TaskRequestDto> GetTaskByIdAsync(int id);
         Task<bool> SaveTaskAsync(TaskRequestDto taskRequestDto);
         Task<bool> DeleteTaskAsync(int id);
+        Task<bool> SaveTaskHistoryAsync(TaskRequestHistoryDto taskRequestHistoryDto);
+
+        //Calendar Events
+
+        Task<List<CalendarEvent>> GetCalendarEventsAsync(CalendarFilterModel filter);
+        Task<List<OccupancyOverviewEvents>> GetOccupancyOverviewEventsAsync(CalendarFilterModel filter);
+        Task<LeaseDataDto> GetLeaseDataByIdAsync(int filter);
+
+
+        Task<object> GetLandlordDataById(int id);
+        Task<object> GetTenantDataById(int id);
+        //Vendor Category
+        Task<List<VendorCategory>> GetVendorCategoriesAsync();
+        Task<VendorCategory> GetVendorCategoryByIdAsync(int id);
+        Task<bool> SaveVendorCategoryAsync(VendorCategory vendorCategory);
+        Task<bool> DeleteVendorCategoryAsync(int id);
+        
+        //Vendor
+        Task<List<VendorDto>> GetVendorsAsync();
+        Task<VendorDto> GetVendorByIdAsync(int id);
+        Task<bool> SaveVendorAsync(VendorDto vendor);
+        Task<bool> DeleteVendorAsync(int id);
+
+
+        //Applications
+        Task<List<ApplicationsDto>> GetApplicationsAsync();
+        Task<ApplicationsDto> GetApplicationByIdAsync(int id);
+        Task<bool> SaveApplicationAsync(ApplicationsDto vendor);
+        Task<bool> DeleteApplicationAsync(int id);
+
+
     }
 }

@@ -1,0 +1,284 @@
+﻿@{
+    ViewData["Title"] = "Calendar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<!-- Page Sidebar Ends-->
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-sm-6">
+                    <h3>Calendar</h3>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index.html"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item">Calendar</li>
+                        <li class="breadcrumb-item active">List</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid my-4">
+        <div class="row">
+            <!-- Column 1: Properties Table (80% on lg screens) -->
+            <div class="col-12 col-md-12 mb-4">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h4 class="card-title mb-0 flex-grow-1 font-weight-bold">Filters</h4>
+                        <a href="@Url.Action("OccupancyOverview","Calendar")" class="btn btn-primary">Occupancy Overview</a>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mt-1 d-flex">
+                            <div class="col-lg-4 col-md-6">
+                                <div class="row">
+                                    <label class="col-sm-12 mb-0 font-weight-bold">Tenant</label>
+                                    <div col-sm-12>
+                                        <select id="calendarTenantFilter" multiple name="calendarTenantFilter" class="form-control select2"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6">
+                                <div class="row">
+                                    <label class="col-sm-12 mb-0 font-weight-bold">MoveIn/MoveOut Date</label>
+                                    <div class="col-sm-12">
+                                        <input type="text" class="form-control" id="createdAtRange"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer text-end d-flex justify-content-end">
+                        <button onclick="clearFilters()" type="button" class="btn btn-light mr-2 font-weight-bold" style="padding-left: 2.75rem  !important; padding-right: 2.75rem  !important;">Clear</button>
+                        <button onclick="applyFilters()" type="button" class="btn btn-primary font-weight-bold" style="padding-left: 2.75rem  !important; padding-right: 2.75rem  !important;">Apply</button>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    
+    <div class="container-fluid my-4">
+        <div class="row">
+            <!-- Column 1: Properties Table (80% on lg screens) -->
+            <div class="col-12 col-md-12 mb-4">
+                <div class="card">
+                    
+                    <div class="card-body">
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-auto">
+                                <button id="calendarLinkBtn" class="btn btn-primary mb-3">Get Calendar Link</button>
+                            </div>
+                            <div class="col-6 mt-1">
+                                <input id="calendarLink" class="form-control" />
+                            </div>
+                        </div>
+                        <div id="calendar"></div>
+                    </div>
+                    
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+</div>
+
+
+<script>
+    var calendar;
+    var tenantFilterList = [];
+    var startDateFilter = null;
+    var endDateFilter = null;
+
+    $(document).ready(function () {
+        var calendarEl = $("#calendar");
+        calendar = new FullCalendar.Calendar(calendarEl[0], {
+            aspectRatio: 2.5,
+            initialView: 'dayGridMonth',
+            headerToolbar: {
+                left: 'prev, next today',
+                center: 'title',
+                right: 'dayGridMonth, timeGridWeek, timeGridDay listMonth'
+            },
+        });
+
+        
+        calendar.render();
+
+        
+        fillTenantsDll();
+        initDatePickers();
+        fetchEvents();
+
+        $("#calendarLinkBtn").click(function () {
+            var events = calendar.getEvents();
+            var icsData = generateICS(events);
+
+            var blob = new Blob([icsData], { type: 'text/calendar' });
+            var formData = new FormData();
+            formData.append("calendarFile", blob, "events.ics");
+
+            $.ajax({
+                url: '../Calendar/GetCalendarLink',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+
+                success: function (response) {
+                    $('#calendarLink').val(response.url);
+                },
+
+                error: function () {
+                    alert('Error saving the file.');
+                }
+            });
+        });
+
+        function generateICS(events) {
+            let icsData = "BEGIN:VCALENDAR\nVERSION:2.0\nCALSCALE:GREGORIAN\n";
+            events.forEach(event => { 
+                const dtStamp = new Date().toISOString().replace(/[-:]/g, '').slice(0, 15) + 'Z';
+                const startDate = moment(event.start).format("YYYYMMDD");
+                const endDate = event.end ? moment(event.end).format("YYYYMMDD") : startDate;
+
+                icsData += "BEGIN:VEVENT\n";
+                icsData += `SUMMARY:${event.title || 'No Title'}\n`;
+                icsData += `DTSTAMP:${dtStamp}\n`;
+                icsData += `DTSTART;VALUE=DATE:${startDate}\n`;
+                icsData += `DTEND;VALUE=DATE:${endDate}\n`;
+                icsData += "END:VEVENT\n";
+            });
+            icsData += "END:VCALENDAR";
+            return icsData;
+        }
+
+        fetchEvents();
+
+        
+        resetForm();
+        
+
+    });
+
+
+    function fetchEvents() {
+        if (!calendar) {
+            return;
+        }
+
+        var filterData = {
+            TenantFilter: tenantFilterList != null ? tenantFilterList : [],
+            StartDateFilter: startDateFilter ? moment(startDateFilter, 'MM/DD/YYYY').format('YYYY-MM-DD') : null,
+            EndDateFilter: endDateFilter ? moment(endDateFilter, 'MM/DD/YYYY').format('YYYY-MM-DD') : null
+        };
+
+        $.ajax({
+            url: '../Calendar/GetEvents',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(filterData),
+
+            success: function (response) {
+                calendar.getEvents().forEach(function (event) {
+                    event.remove();
+                });
+
+                if (response.length > 0){
+                    response.forEach(function (eventData) {
+                        var formattedDate = moment(eventData.Date, 'YYYY-MM-DD').format('YYYY-MM-DD');
+                        var event = {
+                            title: eventData.Title,
+                            start: formattedDate,
+                            color: eventData.BoxColor,
+                            textColor: eventData.TextColor
+                        };
+                        calendar.addEvent(event);
+                    });
+                }
+                
+            },
+
+            error: function (xhr, status, error) {
+                console.error(xhr.responseText);
+            }
+        });
+    }
+
+    function resetForm() {
+        $('#calendarId').val('');
+        $('#leaseType').val('');
+        $('#propertyAddress').val('');
+        $('#moveInDate').val('');
+        $('#moveOutDate').val('');
+        $('#tenantName').val('');
+    }
+
+    function fillTenantsDll() {
+        $.ajax({
+            url: '@Url.Action("GetTenants", "Communication")',
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                var tenantsDropdown = document.getElementById('calendarTenantFilter');
+                // tenantsDropdown.innerHTML = ''; // Clear existing options
+                data.forEach(function (item) {
+                    var option = new Option(item.FirstName + ' ' + item.LastName, item.TenantId);
+                    tenantsDropdown.appendChild(option);
+                });
+            }
+            
+        });
+
+    }
+
+
+    var initDatePickers = function () {
+        $('#createdAtRange').daterangepicker({
+            autoUpdateInput: false,
+            locale: {
+                format: 'MM/DD/YYYY',
+                cancelLabel: 'Clear'
+            },
+            timePicker: false,
+            startDate: moment().add(-30, 'days'),
+            endDate: moment().add(1, 'days')
+        });
+        $('#createdAtRange').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('MM/DD/YYYY') + '-' + picker.endDate.format('MM/DD/YYYY'));
+        });
+        $('#createdAtRange').on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('');
+        });
+    };
+
+
+    function clearFilters() {
+        $("#calendarTenantFilter").empty();
+        fillTenantsDll();
+        $("#createdAtRange").val('');
+        tenantFilterList = [];
+        startDateFilter = null;
+        endDateFilter = null;
+        fetchEvents();
+    }
+
+
+    function applyFilters() {
+        tenantFilterList = $("#calendarTenantFilter").val();
+        if ($("#createdAtRange").val()){
+            var dates = $("#createdAtRange").val().split('-');
+            startDateFilter = dates[0];
+            endDateFilter = dates[1];
+        }
+        fetchEvents();
+    }
+
+
+
+</script>

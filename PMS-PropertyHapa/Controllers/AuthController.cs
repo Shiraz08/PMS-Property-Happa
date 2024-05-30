@@ -105,12 +105,13 @@ namespace PMS_PropertyHapa.Controllers
 
 
         [HttpGet]
-        public IActionResult Register(string subscription,int id)
+        public IActionResult Register()
         {
-            var model = new RegisterationRequestDTO();
-            ViewBag.SubscriptionType = subscription; 
-            ViewBag.SubscriptionId = id; 
-            return View(model);
+            //var model = new RegisterationRequestDTO();
+            //ViewBag.SubscriptionType = subscription; 
+            //ViewBag.SubscriptionId = id; 
+            //return View(model);
+            return View();
         }
 
         [HttpPost]

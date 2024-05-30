@@ -17,7 +17,12 @@ namespace PMS_PropertyHapa.Models.Entities
         public string Description { get; set; }
         public bool IsOneTimeTask { get; set; }
         public bool IsRecurringTask { get; set; }
-        public DateTime DueDate { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
+        public string Frequency { get; set; }
+        public int? DueDays { get; set; }
+        public bool IsTaskRepeat { get; set; }
+        public DateTime? DueDate { get; set; }
         public string Status { get; set; }
         public string Priority { get; set; }
         public string Assignees { get; set; }

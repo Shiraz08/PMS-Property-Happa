@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using Hangfire.Common;
 using Humanizer.Localisation;
 using MagicVilla_VillaAPI.Repository.IRepostiory;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.DotNet.Scaffolding.Shared.ProjectModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -13,11 +15,16 @@ using PMS_PropertyHapa.Models;
 using PMS_PropertyHapa.Models.DTO;
 using PMS_PropertyHapa.Models.Entities;
 using PMS_PropertyHapa.Models.Roles;
+using System.Diagnostics.Metrics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using System.Xml.Linq;
+using Twilio.Types;
 using static PMS_PropertyHapa.Models.DTO.TenantModelDto;
 using static PMS_PropertyHapa.Shared.Enum.SD;
 using static System.Net.WebRequestMethods;
@@ -458,7 +465,7 @@ namespace MagicVilla_VillaAPI.Repository
 
                 AdditionalUserData additionalData = new AdditionalUserData
                 {
-                    AppTenantId = user.Id, 
+                    AppTenantId = user.Id,
                     OrganizationName = registrationRequestDTO.OrganizationName,
                     PropertyType = registrationRequestDTO.PropertyType,
                     Units = registrationRequestDTO.Units,
@@ -470,7 +477,7 @@ namespace MagicVilla_VillaAPI.Repository
             }
 
             return true;
-            
+
         }
 
 
@@ -505,13 +512,13 @@ namespace MagicVilla_VillaAPI.Repository
 
 
 
-       
+
 
         public async Task<ApplicationUser> FindByEmailAsync(string email)
         {
 
             return await _userManager.Users.FirstOrDefaultAsync(u => u.Email == email);
-            
+
         }
 
         public async Task<bool> FindByPhoneNumberAsync(string phoneNumber)
@@ -647,7 +654,7 @@ namespace MagicVilla_VillaAPI.Repository
             const string validChars = "0123456789";
             StringBuilder sb = new StringBuilder();
             Random rnd = new Random();
-            for (int i = 0; i < 6; i++) 
+            for (int i = 0; i < 6; i++)
             {
                 int index = rnd.Next(validChars.Length);
                 sb.Append(validChars[index]);
@@ -1724,6 +1731,7 @@ namespace MagicVilla_VillaAPI.Repository
                 PhoneNumber = tenantDto.PhoneNumber,
                 PhoneNumber2 = tenantDto.PhoneNumber2,
                 Fax = tenantDto.Fax,
+                TaxId = tenantDto.TaxId,
                 Document = tenantDto.Document,
                 EmergencyContactInfo = tenantDto.EmergencyContactInfo,
                 LeaseAgreementId = tenantDto.LeaseAgreementId,
@@ -1785,6 +1793,7 @@ namespace MagicVilla_VillaAPI.Repository
                 PhoneNumber = tenantDto.PhoneNumber,
                 PhoneNumber2 = tenantDto.PhoneNumber2,
                 Fax = tenantDto.Fax,
+                TaxId = tenantDto.TaxId,
                 EmergencyContactInfo = tenantDto.EmergencyContactInfo,
                 LeaseAgreementId = tenantDto.LeaseAgreementId,
                 OwnerNationality = tenantDto.OwnerNationality,
@@ -2206,6 +2215,7 @@ namespace MagicVilla_VillaAPI.Repository
             tenant.PhoneNumber = tenantDto.PhoneNumber;
             tenant.PhoneNumber2 = tenantDto.PhoneNumber2;
             tenant.Fax = tenantDto.Fax;
+            tenant.TaxId = tenantDto.TaxId;
             tenant.Document = tenantDto.Document;
             tenant.EmergencyContactInfo = tenantDto.EmergencyContactInfo;
             tenant.LeaseAgreementId = tenantDto.LeaseAgreementId;
@@ -2307,20 +2317,33 @@ namespace MagicVilla_VillaAPI.Repository
         {
             if (tenantDto.Id < 0) return false;
 
-            var newTenant = new TenantOrganizationInfo
+            var newTenant = _db.TenantOrganizationInfo.FirstOrDefault(x => x.TenantUserId == tenantDto.TenantUserId);
+            if (newTenant == null)
+                newTenant = new TenantOrganizationInfo();
+
+
+            newTenant.Id = tenantDto.Id;
+            newTenant.TenantUserId = tenantDto.TenantUserId;
+            newTenant.OrganizationName = tenantDto.OrganizationName;
+            newTenant.OrganizationDescription = tenantDto.OrganizationDescription;
+            if (tenantDto.OrganizationIcon != null)
             {
-                Id = tenantDto.Id,
-                TenantUserId = tenantDto.TenantUserId,
-                OrganizationName = tenantDto.OrganizationName,
-                OrganizationDescription = tenantDto.OrganizationDescription,
-                OrganizationIcon = tenantDto.OrganizationIcon,
-                OrganizationLogo = tenantDto.OrganizationLogo,
-                OrganizatioPrimaryColor = tenantDto.OrganizatioPrimaryColor,
-                OrganizationSecondColor = tenantDto.OrganizationSecondColor,
+                newTenant.OrganizationIcon = tenantDto.OrganizationIcon;
+            }
+            if (tenantDto.OrganizationLogo != null)
+            {
+                newTenant.OrganizationLogo = tenantDto.OrganizationLogo;
+            }
+            newTenant.OrganizatioPrimaryColor = tenantDto.OrganizatioPrimaryColor;
+            newTenant.OrganizationSecondColor = tenantDto.OrganizationSecondColor;
 
-            };
+            if (newTenant.Id > 0)
+                _db.TenantOrganizationInfo.Update(newTenant);
 
-            _db.TenantOrganizationInfo.Update(newTenant);
+            else
+                _db.TenantOrganizationInfo.Add(newTenant);
+
+
             var result = await _db.SaveChangesAsync();
             return result > 0;
         }
@@ -2357,6 +2380,7 @@ namespace MagicVilla_VillaAPI.Repository
                     Zipcode = tenant.Zipcode,
                     State = tenant.State,
                     AppTid = tenant.AppTenantId,
+                    Image = tenant.Image,
                     AddedBy = tenant.AddedBy,
                     Units = tenant.Units.Select(unit => new UnitDTO
                     {
@@ -2732,6 +2756,7 @@ namespace MagicVilla_VillaAPI.Repository
                                            MiddleName = owner.MiddleName,
                                            LastName = owner.LastName,
                                            Fax = owner.Fax,
+                                           TaxId = owner.TaxId,
                                            EmailAddress = owner.EmailAddress,
                                            EmailAddress2 = owner.EmailAddress2,
                                            Picture = owner.Picture,
@@ -2772,7 +2797,7 @@ namespace MagicVilla_VillaAPI.Repository
 
 
         #endregion
-        
+
 
 
 
@@ -2866,16 +2891,46 @@ namespace MagicVilla_VillaAPI.Repository
 
 
         #region Taks Request
-        public async Task<List<TaskRequestDto>> GetTaskRequestsAsync()
+
+        public async Task<List<TaskRequestHistoryDto>> GetTaskRequestHistoryAsync(int id)
+        {
+            try
+            {
+                var result = await (from t in _db.TaskRequestHistory
+                                    where t.TaskRequestId == id && t.IsDeleted != true
+                                    select new TaskRequestHistoryDto
+                                    {
+                                        TaskRequestHistoryId = t.TaskRequestHistoryId,
+                                        TaskRequestId = t.TaskRequestId,
+                                        Status = t.Status,
+                                        Date = t.Date,
+                                        Remarks = t.Remarks,
+                                        AddedBy = t.AddedBy,
+
+                                    })
+                     .AsNoTracking()
+                     .ToListAsync();
+
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping owners and organizations: {ex.Message}");
+                throw;
+            }
+        }
+        
+        public async Task<List<TaskRequestDto>> GetMaintenanceTasksAsync()
         {
             try
             {
                 var result = await (from t in _db.TaskRequest
-                                    from a in _db.Assets.Where(x=>x.AssetId == t.AssetId).DefaultIfEmpty()
-                                    from o in _db.Owner.Where(x=>x.OwnerId == t.OwnerId).DefaultIfEmpty()
-                                    from tnt in _db.Tenant.Where(x=>x.TenantId == t.TenantId).DefaultIfEmpty()
+                                    from a in _db.Assets.Where(x => x.AssetId == t.AssetId).DefaultIfEmpty()
+                                    from o in _db.Owner.Where(x => x.OwnerId == t.OwnerId).DefaultIfEmpty()
+                                    from tnt in _db.Tenant.Where(x => x.TenantId == t.TenantId).DefaultIfEmpty()
                                         //from l in _db.LineItem.Where(x=>x.TaskRequestId == t.TaskRequestId).DefaultIfEmpty()
-                                    where t.IsDeleted != true
+                                    where t.Status != TaskStatusTypes.NotStarted.ToString() && t.IsDeleted != true 
                                     select new TaskRequestDto
                                     {
                                         TaskRequestId = t.TaskRequestId,
@@ -2884,6 +2939,11 @@ namespace MagicVilla_VillaAPI.Repository
                                         Description = t.Description,
                                         IsOneTimeTask = t.IsOneTimeTask,
                                         IsRecurringTask = t.IsRecurringTask,
+                                        StartDate = t.StartDate,
+                                        EndDate = t.EndDate,
+                                        Frequency = t.Frequency,
+                                        DueDays = t.DueDays,
+                                        IsTaskRepeat = t.IsTaskRepeat,
                                         DueDate = t.DueDate,
                                         Status = t.Status,
                                         Priority = t.Priority,
@@ -2905,7 +2965,75 @@ namespace MagicVilla_VillaAPI.Repository
                                         PartsAndLabor = t.PartsAndLabor,
                                         AddedBy = t.AddedBy,
                                         LineItems = (from item in _db.LineItem
-                                                     where item.TaskRequestId == t.TaskRequestId &&  item.IsDeleted != true
+                                                     where item.TaskRequestId == t.TaskRequestId && item.IsDeleted != true
+                                                     select new LineItemDto
+                                                     {
+                                                         LineItemId = item.LineItemId,
+                                                         TaskRequestId = item.TaskRequestId,
+                                                         Quantity = item.Quantity,
+                                                         Price = item.Price,
+                                                         Account = item.Account,
+                                                         Memo = item.Memo
+                                                     }).ToList()
+                                    })
+                     .AsNoTracking()
+                     .ToListAsync();
+
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping owners and organizations: {ex.Message}");
+                throw;
+            }
+        }
+        
+        public async Task<List<TaskRequestDto>> GetTaskRequestsAsync()
+        {
+            try
+            {
+                var result = await (from t in _db.TaskRequest
+                                    from a in _db.Assets.Where(x => x.AssetId == t.AssetId).DefaultIfEmpty()
+                                    from o in _db.Owner.Where(x => x.OwnerId == t.OwnerId).DefaultIfEmpty()
+                                    from tnt in _db.Tenant.Where(x => x.TenantId == t.TenantId).DefaultIfEmpty()
+                                        //from l in _db.LineItem.Where(x=>x.TaskRequestId == t.TaskRequestId).DefaultIfEmpty()
+                                    where t.Status == TaskStatusTypes.NotStarted.ToString() && t.IsDeleted != true
+                                    select new TaskRequestDto
+                                    {
+                                        TaskRequestId = t.TaskRequestId,
+                                        Type = t.Type,
+                                        Subject = t.Subject,
+                                        Description = t.Description,
+                                        IsOneTimeTask = t.IsOneTimeTask,
+                                        IsRecurringTask = t.IsRecurringTask,
+                                        StartDate = t.StartDate,
+                                        EndDate = t.EndDate,
+                                        Frequency = t.Frequency,
+                                        DueDays = t.DueDays,
+                                        IsTaskRepeat = t.IsTaskRepeat,
+                                        DueDate = t.DueDate,
+                                        Status = t.Status,
+                                        Priority = t.Priority,
+                                        Assignees = t.Assignees,
+                                        IsNotifyAssignee = t.IsNotifyAssignee,
+                                        AssetId = t.AssetId,
+                                        Asset = a.BuildingNo + "-" + a.BuildingName,
+                                        TaskRequestFile = t.TaskRequestFile,
+                                        OwnerId = t.OwnerId,
+                                        Owner = o.FirstName + " " + o.LastName,
+                                        IsNotifyOwner = t.IsNotifyOwner,
+                                        TenantId = t.TenantId,
+                                        Tenant = tnt.FirstName + " " + tnt.LastName,
+                                        IsNotifyTenant = t.IsNotifyTenant,
+                                        HasPermissionToEnter = t.HasPermissionToEnter,
+                                        EntryNotes = t.EntryNotes,
+                                        VendorId = t.VendorId,
+                                        ApprovedByOwner = t.ApprovedByOwner,
+                                        PartsAndLabor = t.PartsAndLabor,
+                                        AddedBy = t.AddedBy,
+                                        LineItems = (from item in _db.LineItem
+                                                     where item.TaskRequestId == t.TaskRequestId && item.IsDeleted != true
                                                      select new LineItemDto
                                                      {
                                                          LineItemId = item.LineItemId,
@@ -2945,6 +3073,11 @@ namespace MagicVilla_VillaAPI.Repository
                                         Description = t.Description,
                                         IsOneTimeTask = t.IsOneTimeTask,
                                         IsRecurringTask = t.IsRecurringTask,
+                                        StartDate = t.StartDate,
+                                        EndDate = t.EndDate,
+                                        Frequency = t.Frequency,
+                                        DueDays = t.DueDays,
+                                        IsTaskRepeat = t.IsTaskRepeat,
                                         DueDate = t.DueDate,
                                         Status = t.Status,
                                         Priority = t.Priority,
@@ -2990,7 +3123,7 @@ namespace MagicVilla_VillaAPI.Repository
             }
         }
         public async Task<bool> SaveTaskAsync(TaskRequestDto taskRequestDto)
-         {
+        {
             var taskRequest = _db.TaskRequest.FirstOrDefault(x => x.TaskRequestId == taskRequestDto.TaskRequestId);
 
             if (taskRequest == null)
@@ -3002,6 +3135,11 @@ namespace MagicVilla_VillaAPI.Repository
             taskRequest.Description = taskRequestDto.Description;
             taskRequest.IsOneTimeTask = taskRequestDto.IsOneTimeTask;
             taskRequest.IsRecurringTask = taskRequestDto.IsRecurringTask;
+            taskRequest.StartDate = taskRequestDto.StartDate;
+            taskRequest.EndDate = taskRequestDto.EndDate;
+            taskRequest.Frequency = taskRequestDto.Frequency;
+            taskRequest.DueDays = taskRequestDto.DueDays;
+            taskRequest.IsTaskRepeat = taskRequestDto.IsTaskRepeat;
             taskRequest.DueDate = taskRequestDto.DueDate;
             taskRequest.Status = taskRequestDto.Status;
             taskRequest.Priority = taskRequestDto.Priority;
@@ -3090,6 +3228,19 @@ namespace MagicVilla_VillaAPI.Repository
                 }
             }
 
+            await _db.SaveChangesAsync();
+
+
+            var taskRequestHistory = new TaskRequestHistory();
+
+            taskRequestHistory.TaskRequestId = maxId;
+            taskRequestHistory.Date = DateTime.Now;
+            taskRequestHistory.Status = taskRequestDto.Status;
+            taskRequestHistory.Remarks = taskRequestDto.Description;
+            taskRequestHistory.AddedBy = taskRequestDto.AddedBy;
+            taskRequestHistory.AddedDate = DateTime.Now;
+            _db.TaskRequestHistory.Add(taskRequestHistory);
+
             var result = await _db.SaveChangesAsync();
 
             return result > 0;
@@ -3113,9 +3264,1047 @@ namespace MagicVilla_VillaAPI.Repository
             return saveResult > 0 || lineItemSaveResult > 0;
         }
 
+        public async Task<bool> SaveTaskHistoryAsync(TaskRequestHistoryDto taskRequestHistoryDto)
+        {
+
+            var taskRequest = await _db.TaskRequest.FirstOrDefaultAsync(x => x.TaskRequestId == taskRequestHistoryDto.TaskRequestId);
+
+            if (taskRequest != null)
+            {
+                taskRequest.Status = taskRequestHistoryDto.Status;
+                taskRequest.ModifiedBy = taskRequestHistoryDto.AddedBy;
+                taskRequest.ModifiedDate = DateTime.Now;
+                _db.TaskRequest.Update(taskRequest);
+
+                await _db.SaveChangesAsync();
+            }
+
+            var taskRequestHistory = await _db.TaskRequestHistory.FirstOrDefaultAsync(x => x.TaskRequestHistoryId == taskRequestHistoryDto.TaskRequestHistoryId);
+
+            if (taskRequestHistory == null)
+                taskRequestHistory = new TaskRequestHistory();
+
+            taskRequestHistory.TaskRequestHistoryId = taskRequestHistoryDto.TaskRequestHistoryId;
+            taskRequestHistory.TaskRequestId = taskRequestHistoryDto.TaskRequestId;
+            taskRequestHistory.Date = DateTime.Now;
+            taskRequestHistory.Status = taskRequestHistoryDto.Status;
+            taskRequestHistory.Remarks = taskRequestHistoryDto.Remarks;
+
+            if (taskRequestHistoryDto.TaskRequestHistoryId > 0)
+            {
+                taskRequestHistory.ModifiedBy = taskRequestHistoryDto.AddedBy;
+                taskRequestHistory.ModifiedDate = DateTime.Now;
+                _db.TaskRequestHistory.Update(taskRequestHistory);
+            }
+            else
+            {
+                taskRequestHistory.AddedBy = taskRequestHistoryDto.AddedBy;
+                taskRequestHistory.AddedDate = DateTime.Now;
+                _db.TaskRequestHistory.Add(taskRequestHistory);
+            }
+
+            var result = await _db.SaveChangesAsync();
+            return result > 0;
+        }
+
+
+
+        #endregion
+
+        #region LandloadGetData
+        public async Task<object> GetLandlordDataById(int id)
+        {
+            var result = await (from owner in _db.Owner
+                                where owner.OwnerId == id
+                                join asset in _db.Assets on owner.OwnerId equals asset.AssetId into assets
+                                from a in assets.DefaultIfEmpty()
+                                join lease in _db.Lease on owner.OwnerId equals lease.TenantsTenantId into leases
+                                from l in leases.DefaultIfEmpty()
+                                select new
+                                {
+                                    Owner = owner,
+                                    Asset = a,
+                                    Lease = l,
+                                    Tasks = _db.TaskRequest.Where(task => task.OwnerId == owner.OwnerId || task.AssetId == a.AssetId).ToList(),
+                                    PropertyDetails = _db.PropertyType.FirstOrDefault(property => property.PropertyTypeId == a.AssetId)
+                                }).FirstOrDefaultAsync();
+
+            return result;
+        }
+
+
+        #endregion
+
+        public async Task<object> GetTenantDataById(int id)
+        {
+            var result = await (from tenant in _db.Tenant
+                                where tenant.TenantId == id
+                                join lease in _db.Lease on tenant.TenantId equals lease.TenantsTenantId into leases
+                                from l in leases.DefaultIfEmpty()
+                                join asset in _db.Assets on l.AppTenantId equals asset.AppTenantId into assets
+                                from a in assets.DefaultIfEmpty()
+                                select new
+                                {
+                                    Tenant = tenant,
+                                    Lease = l,
+                                    Asset = a,
+                                    Tasks = _db.TaskRequest.Where(task => task.TenantId == tenant.TenantId || task.AssetId == a.AssetId).ToList(),
+                                    PropertyDetails = _db.PropertyType.FirstOrDefault(property => property.PropertyTypeId == a.AssetId)
+                                }).FirstOrDefaultAsync();
+
+            return result;
+        }
+
+
+        #region Calendar
+
+        public async Task<List<CalendarEvent>> GetCalendarEventsAsync(CalendarFilterModel filter)
+        {
+            try
+            {
+                var eventsList = new List<CalendarEvent>();
+
+                var taskRequestsQuery = _db.TaskRequest
+                    .Where(x => !x.IsDeleted && x.AddedBy == filter.UserId)
+                    .Select(x => new CalendarEvent
+                    {
+                        Title = $"TaskRequest: {x.Subject}",
+                        Date = x.DueDate,
+                        BoxColor = "#e2d8f7",
+                        TextColor = "#504c83",
+                        TenantId = x.TenantId
+                    });
+
+                eventsList.AddRange(await taskRequestsQuery.ToListAsync());
+
+                IQueryable<CalendarEvent> moveInLeasesQuery = null;
+                IQueryable<CalendarEvent> moveOutLeasesQuery = null;
+
+                if (filter.StartDateFilter.HasValue)
+                {
+                    moveInLeasesQuery = _db.Lease
+                        .Where(x => !x.IsDeleted && x.StartDate >= filter.StartDateFilter.Value && x.AddedBy == filter.UserId)
+                        .SelectMany(lease => _db.Tenant.Where(t => t.TenantId == lease.TenantsTenantId && t.AddedBy == filter.UserId && t.IsDeleted != true).DefaultIfEmpty(), (lease, tenant) => new
+                        {
+                            Tenant = tenant,
+                            Lease = lease
+                        })
+                        .Select(x => new CalendarEvent
+                        {
+                            Title = $"Move In: {x.Tenant.FirstName} {x.Tenant.LastName}",
+                            Date = x.Lease.StartDate,
+                            BoxColor = "#e5f7dd",
+                            TextColor = "#4ea76a",
+                            TenantId = x.Lease.TenantsTenantId
+                        });
+                }
+                else
+                {
+                    moveInLeasesQuery = _db.Lease
+                        .Where(x => !x.IsDeleted && x.AddedBy == filter.UserId)
+                        .SelectMany(lease => _db.Tenant.Where(t => t.TenantId == lease.TenantsTenantId && t.AddedBy == filter.UserId && t.IsDeleted != true).DefaultIfEmpty(), (lease, tenant) => new
+                        {
+                            Tenant = tenant,
+                            Lease = lease
+                        })
+                        .Select(x => new CalendarEvent
+                        {
+                            Title = $"Move In: {x.Tenant.FirstName} {x.Tenant.LastName}",
+                            Date = x.Lease.StartDate,
+                            BoxColor = "#e5f7dd",
+                            TextColor = "#4ea76a",
+                            TenantId = x.Lease.TenantsTenantId
+                        });
+                }
+
+                eventsList.AddRange(await moveInLeasesQuery.ToListAsync());
+
+
+                if (filter.EndDateFilter.HasValue)
+                {
+                    moveOutLeasesQuery = _db.Lease
+                        .Where(x => !x.IsDeleted && x.EndDate <= filter.EndDateFilter.Value && x.AddedBy == filter.UserId)
+                        .SelectMany(lease => _db.Tenant.Where(t => t.TenantId == lease.TenantsTenantId && t.AddedBy == filter.UserId && t.IsDeleted != true).DefaultIfEmpty(), (lease, tenant) => new
+                        {
+                            Tenant = tenant,
+                            Lease = lease
+                        })
+                        .Select(x => new CalendarEvent
+                        {
+                            Title = $"Move Out: {x.Tenant.FirstName} {x.Tenant.LastName}",
+                            Date = x.Lease.EndDate,
+                            BoxColor = "#f5dde2",
+                            TextColor = "#974249",
+                            TenantId = x.Lease.TenantsTenantId
+                        });
+                }
+                else
+                {
+                    moveOutLeasesQuery = _db.Lease
+                        .Where(x => !x.IsDeleted && x.AddedBy == filter.UserId)
+                        .SelectMany(lease => _db.Tenant.Where(t => t.TenantId == lease.TenantsTenantId  && t.AddedBy == filter.UserId && t.IsDeleted != true).DefaultIfEmpty(), (lease, tenant) => new
+                        {
+                            Tenant = tenant,
+                            Lease = lease
+                        })
+                        .Select(x => new CalendarEvent
+                        {
+                            Title = $"Move Out: {x.Tenant.FirstName} {x.Tenant.LastName}",
+                            Date = x.Lease.EndDate,
+                            BoxColor = "#f5dde2",
+                            TextColor = "#974249",
+                            TenantId = x.Lease.TenantsTenantId
+                        });
+                }
+                eventsList.AddRange(await moveOutLeasesQuery.ToListAsync());
+
+
+                if (filter.TenantFilter != null && filter.TenantFilter.Any())
+                {
+                    var tenantIds = filter.TenantFilter.Select(id => int.Parse(id)).ToList();
+                    eventsList = eventsList.Where(x => tenantIds.Contains(x.TenantId.GetValueOrDefault())).ToList();
+                }
+
+                return eventsList;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping calendar: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<List<OccupancyOverviewEvents>> GetOccupancyOverviewEventsAsync(CalendarFilterModel filter)
+        {
+            try
+            {
+                var eventsList = new List<OccupancyOverviewEvents>();
+
+                var query = _db.Lease.AsQueryable();
+
+                if (filter.TenantFilter != null  && filter.TenantFilter.Any())
+                {
+                    var tenantIds = filter.TenantFilter.Select(id => int.Parse(id)).ToList();
+                    query = query.Where(x => tenantIds.Contains(x.TenantsTenantId) && x.AddedBy == filter.UserId && x.IsDeleted !=true);
+                }
+
+                if (filter.StartDateFilter.HasValue)
+                {
+                    query = query.Where(x => x.StartDate >= filter.StartDateFilter.Value && x.AddedBy == filter.UserId && x.IsDeleted != true); 
+                }
+
+                if (filter.EndDateFilter.HasValue)
+                {
+                    query = query.Where(x => x.EndDate <= filter.EndDateFilter.Value && x.AddedBy == filter.UserId && x.IsDeleted != true); 
+                }
+
+                var leases = await query.Select(x => new OccupancyOverviewEvents
+                {
+                    Id = x.LeaseId,
+                    ResourceTitle = x.SelectedProperty,
+                    ResourceId = x.SelectedProperty,
+                    Title = x.Tenants.FirstName + " " + x.Tenants.LastName,
+                    StartDate = x.StartDate,
+                    EndDate = x.EndDate,
+                }).ToListAsync();
+
+                return leases;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping occupancy calendar: {ex.Message}");
+                throw;
+            }
+        }
+        
+        public async Task<LeaseDataDto> GetLeaseDataByIdAsync(int id)
+        {
+            try
+            {
+                var lease = (from l in _db.Lease
+                            from t in _db.Tenant.Where(x => x.TenantId == l.TenantsTenantId && x.IsDeleted != true).DefaultIfEmpty()
+                            where l.LeaseId == id && l.IsDeleted != true
+                            select new LeaseDataDto
+                            {
+                                Id = l.LeaseId,
+                                Asset = l.SelectedProperty,
+                                AssetUnit = l.SelectedUnit,
+                                Tenant = t.FirstName + " " + t.LastName,
+                                StartDate = l.StartDate,
+                                EndDate = l.EndDate
+                            }).FirstOrDefault();
+
+                return lease;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping lease data: {ex.Message}");
+                throw;
+            }
+        }
 
         #endregion
 
 
+        #region Vendor Category
+
+        public async Task<List<VendorCategory>> GetVendorCategoriesAsync()
+        {
+            try
+            {
+                var result = await (from v in _db.VendorCategory
+                                    where v.IsDeleted != true
+                                    select new VendorCategory
+                                    {
+                                        VendorCategoryId = v.VendorCategoryId,
+                                        Name = v.Name,
+                                        AddedBy = v.AddedBy,
+                                    })
+                     .AsNoTracking()
+                     .ToListAsync();
+
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping Vendor Categories: {ex.Message}");
+                throw;
+            }
+        }
+        public async Task<VendorCategory> GetVendorCategoryByIdAsync(int id)
+        {
+            try
+            {
+                var result = await (from v in _db.VendorCategory
+                                    where v.VendorCategoryId == id
+                                    select new VendorCategory
+                                    {
+                                        VendorCategoryId = v.VendorCategoryId,
+                                        Name = v.Name,
+                                        AddedBy = v.AddedBy,
+
+                                    })
+                     .AsNoTracking()
+                     .FirstOrDefaultAsync();
+
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping  Vendor Category: {ex.Message}");
+                throw;
+            }
+        }
+        public async Task<bool> SaveVendorCategoryAsync(VendorCategory model)
+        {
+            var vendorCategory = _db.VendorCategory.FirstOrDefault(x => x.VendorCategoryId == model.VendorCategoryId);
+
+            if (vendorCategory == null)
+                vendorCategory = new VendorCategory();
+
+            vendorCategory.VendorCategoryId = model.VendorCategoryId;
+            vendorCategory.Name = model.Name;
+
+            if (vendorCategory.VendorCategoryId > 0)
+            {
+                vendorCategory.ModifiedBy = model.AddedBy;
+                vendorCategory.ModifiedDate = DateTime.Now;
+                _db.VendorCategory.Update(vendorCategory);
+            }
+            else
+            {
+                vendorCategory.AddedBy = model.AddedBy;
+                vendorCategory.AddedDate = DateTime.Now;
+                _db.VendorCategory.Add(vendorCategory);
+            }
+
+            var result = await _db.SaveChangesAsync();
+
+           
+            return result > 0;
+
+        }
+        public async Task<bool> DeleteVendorCategoryAsync(int id)
+        {
+            var vendorCategory = await _db.VendorCategory.FindAsync(id);
+            if (vendorCategory == null) return false;
+
+            vendorCategory.IsDeleted = true;
+            _db.VendorCategory.Update(vendorCategory);
+            var saveResult = await _db.SaveChangesAsync();
+
+            return saveResult > 0;
+        }
+
+        #endregion
+
+
+        #region Vendor 
+
+
+        public async Task<List<VendorDto>> GetVendorsAsync()
+        {
+            try
+            {
+                var result = await (from v in _db.Vendor
+                                    from vo in _db.VendorOrganization.Where(x=>x.VendorId == v.VendorId).DefaultIfEmpty()
+                                    where v.IsDeleted != true
+                                    select new VendorDto
+                                    {
+                                        VendorId = v.VendorId,
+                                        FirstName = v.FirstName,
+                                        MI = v.MI,
+                                        LastName = v.LastName,
+                                        Company = v.Company,
+                                        JobTitle = v.JobTitle,
+                                        Notes = v.Notes,
+                                        Picture = v.Picture,
+                                        Email1 = v.Email1,
+                                        Phone1 = v.Phone1,
+                                        Email2 = v.Email2,
+                                        Phone2 = v.Phone2,
+                                        Street1 = v.Street1,
+                                        Street2 = v.Street2,
+                                        District = v.District,
+                                        City = v.City,
+                                        State = v.State,
+                                        Country = v.Country,
+                                        AlterStreet1 = v.AlterStreet1,
+                                        AlterStreet2 = v.AlterStreet2,
+                                        AlterDistrict = v.AlterDistrict,
+                                        AlterCity = v.AlterCity,
+                                        AlterState = v.AlterState,
+                                        AlterCountry = v.AlterCountry,
+                                        Classification = v.Classification,
+                                        VendorCategoriesIds = v.VendorCategoriesIds,
+                                        HasInsurance = v.HasInsurance,
+                                        PropertyId = v.PropertyId,
+                                        UnitIds = v.UnitIds,
+                                        TaxId = v.TaxId,
+                                        AccountName = v.AccountName,
+                                        AccountHolder = v.AccountHolder,
+                                        AccountIBAN = v.AccountIBAN,
+                                        AccountSwift = v.AccountSwift,
+                                        AccountBank = v.AccountBank,
+                                        AccountCurrency = v.AccountCurrency,
+                                        OrganizationName = vo.OrganizationName,
+                                        OrganizationDescription = vo.OrganizationDescription,
+                                        OrganizationIcon = vo.OrganizationIcon,
+                                        OrganizationLogo = vo.OrganizationLogo,
+                                        Website = vo.Website,
+                                        AddedBy = v.AddedBy
+                                    })
+                     .AsNoTracking()
+                     .ToListAsync();
+
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping Vendors: {ex.Message}");
+                throw;
+            }
+        }
+        public async Task<VendorDto> GetVendorByIdAsync(int id)
+        {
+            try
+            {
+                var result = await (from v in _db.Vendor
+                                    from vo in _db.VendorOrganization.Where(x => x.VendorId == v.VendorId).DefaultIfEmpty()
+                                    where v.VendorId == id
+                                    select new VendorDto
+                                    {
+                                        VendorId = v.VendorId,
+                                        FirstName = v.FirstName,
+                                        MI = v.MI,
+                                        LastName = v.LastName,
+                                        Company = v.Company,
+                                        JobTitle = v.JobTitle,
+                                        Notes = v.Notes,
+                                        Picture = v.Picture,
+                                        Email1 = v.Email1,
+                                        Phone1 = v.Phone1,
+                                        Email2 = v.Email2,
+                                        Phone2 = v.Phone2,
+                                        Street1 = v.Street1,
+                                        Street2 = v.Street2,
+                                        District = v.District,
+                                        City = v.City,
+                                        State = v.State,
+                                        Country = v.Country,
+                                        AlterStreet1 = v.AlterStreet1,
+                                        AlterStreet2 = v.AlterStreet2,
+                                        AlterDistrict = v.AlterDistrict,
+                                        AlterCity = v.AlterCity,
+                                        AlterState = v.AlterState,
+                                        AlterCountry = v.AlterCountry,
+                                        Classification = v.Classification,
+                                        VendorCategoriesIds = v.VendorCategoriesIds,
+                                        HasInsurance = v.HasInsurance,
+                                        PropertyId = v.PropertyId,
+                                        UnitIds = v.UnitIds,
+                                        TaxId = v.TaxId,
+                                        AccountName = v.AccountName,
+                                        AccountHolder = v.AccountHolder,
+                                        AccountIBAN = v.AccountIBAN,
+                                        AccountSwift = v.AccountSwift,
+                                        AccountBank = v.AccountBank,
+                                        AccountCurrency = v.AccountCurrency,
+                                        OrganizationName = vo.OrganizationName,
+                                        OrganizationDescription = vo.OrganizationDescription,
+                                        OrganizationIcon = vo.OrganizationIcon,
+                                        OrganizationLogo = vo.OrganizationLogo,
+                                        Website = vo.Website,
+                                        AddedBy = v.AddedBy
+                                    })
+                     .AsNoTracking()
+                     .FirstOrDefaultAsync();
+
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping  Vendor : {ex.Message}");
+                throw;
+            }
+        }
+        public async Task<bool> SaveVendorAsync(VendorDto model)
+        {
+            var vendor = _db.Vendor.FirstOrDefault(x => x.VendorId == model.VendorId);
+
+            if (vendor == null)
+                vendor = new Vendor();
+
+            vendor.VendorId = model.VendorId;
+            vendor.FirstName = model.FirstName;
+            vendor.MI = model.MI;
+            vendor.LastName = model.LastName;
+            vendor.Company = model.Company;
+            vendor.JobTitle = model.JobTitle;
+            vendor.Notes = model.Notes;
+            if (model.Picture != null)
+            {
+                vendor.Picture = model.Picture;
+            }
+            vendor.Email1 = model.Email1;
+            vendor.Phone1 = model.Phone1;
+            vendor.Email2 = model.Email2;
+            vendor.Phone2 = model.Phone2;
+            vendor.Street1 = model.Street1;
+            vendor.Street2 = model.Street2;
+            vendor.District = model.District;
+            vendor.City = model.City;
+            vendor.State = model.State;
+            vendor.Country = model.Country;
+            vendor.AlterStreet1 = model.AlterStreet1;
+            vendor.AlterStreet2 = model.AlterStreet2;
+            vendor.AlterDistrict = model.AlterDistrict;
+            vendor.AlterCity = model.AlterCity;
+            vendor.AlterState = model.AlterState;
+            vendor.AlterCountry = model.AlterCountry;
+            vendor.Classification = model.Classification;
+            vendor.VendorCategoriesIds = model.VendorCategoriesIds;
+            vendor.HasInsurance = model.HasInsurance;
+            vendor.PropertyId = model.PropertyId;
+            vendor.UnitIds = model.UnitIds;
+            vendor.TaxId = model.TaxId;
+            vendor.AccountName = model.AccountName;
+            vendor.AccountHolder = model.AccountHolder;
+            vendor.AccountIBAN = model.AccountIBAN;
+            vendor.AccountSwift = model.AccountSwift;
+            vendor.AccountBank = model.AccountBank;
+            vendor.AccountCurrency = model.AccountCurrency;
+
+            if (vendor.VendorId > 0)
+            {
+                vendor.ModifiedBy = model.AddedBy;
+                vendor.ModifiedDate = DateTime.Now;
+                _db.Vendor.Update(vendor);
+            }
+            else
+            {
+                vendor.AddedBy = model.AddedBy;
+                vendor.AddedDate = DateTime.Now;
+                _db.Vendor.Add(vendor);
+            }
+
+            var result1 = await _db.SaveChangesAsync();
+
+            var vendorOrganization = _db.VendorOrganization.FirstOrDefault(x => x.VendorId == vendor.VendorId);
+
+            if (vendorOrganization == null)
+            {
+                vendorOrganization = new VendorOrganization();
+                
+                vendorOrganization.VendorId = vendor.VendorId;
+                vendorOrganization.OrganizationName = model.OrganizationName;
+                vendorOrganization.OrganizationDescription = model.OrganizationDescription;
+                if (model.OrganizationIcon != null)
+                {
+                    vendorOrganization.OrganizationIcon = model.OrganizationIcon;
+                }
+                if (model.OrganizationLogo != null)
+                {
+                    vendorOrganization.OrganizationLogo = model.OrganizationLogo;
+                }
+                vendorOrganization.Website = model.Website;                
+                await _db.VendorOrganization.AddAsync(vendorOrganization);
+            }
+            else
+            {
+                vendorOrganization.OrganizationName = model.OrganizationName;
+                vendorOrganization.OrganizationDescription = model.OrganizationDescription;
+                if (model.OrganizationIcon != null)
+                {
+                    vendorOrganization.OrganizationIcon = model.OrganizationIcon;
+                }
+                if (model.OrganizationLogo != null)
+                {
+                    vendorOrganization.OrganizationLogo = model.OrganizationLogo;
+                }
+                vendorOrganization.Website = model.Website;
+                _db.VendorOrganization.Update(vendorOrganization);
+            }
+
+            var result2 = await _db.SaveChangesAsync();
+
+            return result1 > 0 && result2 > 0;
+
+        }
+        public async Task<bool> DeleteVendorAsync(int id)
+        {
+            var vendor = await _db.Vendor.FindAsync(id);
+            if (vendor == null) return false;
+
+            vendor.IsDeleted = true;
+            _db.Vendor.Update(vendor);
+            var saveResult = await _db.SaveChangesAsync();
+
+            return saveResult > 0;
+        }
+
+
+        #endregion
+
+
+
+        #region Applications 
+
+
+        public async Task<List<ApplicationsDto>> GetApplicationsAsync()
+        {
+            try
+            {
+                var result = await (from a in _db.Applications
+                                    from p in _db.Assets.Where(x=>x.AssetId == a.PropertyId).DefaultIfEmpty()
+                                    where a.IsDeleted != true
+                                    select new ApplicationsDto
+                                    {
+                                        ApplicationId = a.ApplicationId,
+                                        FirstName = a.FirstName,
+                                        MiddleName = a.MiddleName,
+                                        LastName = a.LastName,
+                                        SSN = a.SSN,
+                                        ITIN = a.ITIN,
+                                        DOB = a.DOB,
+                                        Email = a.Email,
+                                        PhoneNumber = a.PhoneNumber,
+                                        Gender = a.Gender,
+                                        MaritalStatus = a.MaritalStatus,
+                                        DriverLicenseState = a.DriverLicenseState,
+                                        DriverLicenseNumber = a.DriverLicenseNumber,
+                                        Note = a.Note,
+                                        Address = a.Address,
+                                        LandlordName = a.LandlordName,
+                                        ContactEmail = a.ContactEmail,
+                                        ContactPhoneNumber = a.ContactPhoneNumber,
+                                        MoveInDate = a.MoveInDate,
+                                        MonthlyPayment = a.MonthlyPayment,
+                                        JobType = a.JobType,
+                                        JobTitle = a.JobTitle,
+                                        AnnualIncome = a.AnnualIncome,
+                                        CompanyName = a.CompanyName,
+                                        WorkStatus = a.WorkStatus,
+                                        StartDate = a.StartDate,
+                                        EndDate = a.EndDate,
+                                        SupervisorName = a.SupervisorName,
+                                        SupervisorEmail = a.SupervisorEmail,
+                                        SupervisorPhoneNumber = a.SupervisorPhoneNumber,
+                                        EmergencyFirstName = a.EmergencyFirstName,
+                                        EmergencyLastName = a.EmergencyLastName,
+                                        EmergencyEmail = a.EmergencyEmail,
+                                        EmergencyPhoneNumber = a.EmergencyPhoneNumber,
+                                        EmergencyAddress = a.EmergencyAddress,
+                                        SourceOfIncome = a.SourceOfIncome,
+                                        SourceAmount = a.SourceAmount,
+                                        Assets = a.Assets,
+                                        AssetAmount = a.AssetAmount,
+                                        PropertyId = a.PropertyId,
+                                        UnitIds = a.UnitIds,
+                                        IsSmoker = a.IsSmoker,
+                                        IsBankruptcy = a.IsBankruptcy,
+                                        IsEvicted = a.IsEvicted,
+                                        HasPayRentIssue = a.HasPayRentIssue,
+                                        IsCriminal = a.IsCriminal,
+                                        StubPicture = a.StubPicture,
+                                        LicensePicture = a.LicensePicture,
+                                        IsAgree = a.IsAgree,
+                                        Pets = _db.ApplicationPets.Where(x=>x.ApplicationId == a.ApplicationId && x.IsDeleted != true).ToList(),
+                                        Vehicles = _db.ApplicationVehicles.Where(x=>x.ApplicationId == a.ApplicationId && x.IsDeleted != true).ToList(),
+                                        Dependent = _db.ApplicationDependent.Where(x=>x.ApplicationId == a.ApplicationId && x.IsDeleted != true).ToList(),
+                                        AddedBy = p.AddedBy,
+                                        AddedDate = a.AddedDate
+                                    })
+                     .AsNoTracking()
+                     .ToListAsync();
+
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping Applications: {ex.Message}");
+                throw;
+            }
+        }
+        public async Task<ApplicationsDto> GetApplicationByIdAsync(int id)
+        {
+            try
+            {
+                var result = await (from a in _db.Applications
+                                    where a.ApplicationId == id
+                                    select new ApplicationsDto
+                                    {
+                                        ApplicationId = a.ApplicationId,
+                                        FirstName = a.FirstName,
+                                        MiddleName = a.MiddleName,
+                                        LastName = a.LastName,
+                                        SSN = a.SSN,
+                                        ITIN = a.ITIN,
+                                        DOB = a.DOB,
+                                        Email = a.Email,
+                                        PhoneNumber = a.PhoneNumber,
+                                        Gender = a.Gender,
+                                        MaritalStatus = a.MaritalStatus,
+                                        DriverLicenseState = a.DriverLicenseState,
+                                        DriverLicenseNumber = a.DriverLicenseNumber,
+                                        Note = a.Note,
+                                        Address = a.Address,
+                                        LandlordName = a.LandlordName,
+                                        ContactEmail = a.ContactEmail,
+                                        ContactPhoneNumber = a.ContactPhoneNumber,
+                                        MoveInDate = a.MoveInDate,
+                                        MonthlyPayment = a.MonthlyPayment,
+                                        JobType = a.JobType,
+                                        JobTitle = a.JobTitle,
+                                        AnnualIncome = a.AnnualIncome,
+                                        CompanyName = a.CompanyName,
+                                        WorkStatus = a.WorkStatus,
+                                        StartDate = a.StartDate,
+                                        EndDate = a.EndDate,
+                                        SupervisorName = a.SupervisorName,
+                                        SupervisorEmail = a.SupervisorEmail,
+                                        SupervisorPhoneNumber = a.SupervisorPhoneNumber,
+                                        EmergencyFirstName = a.EmergencyFirstName,
+                                        EmergencyLastName = a.EmergencyLastName,
+                                        EmergencyEmail = a.EmergencyEmail,
+                                        EmergencyPhoneNumber = a.EmergencyPhoneNumber,
+                                        EmergencyAddress = a.EmergencyAddress,
+                                        SourceOfIncome = a.SourceOfIncome,
+                                        SourceAmount = a.SourceAmount,
+                                        Assets = a.Assets,
+                                        AssetAmount = a.AssetAmount,
+                                        PropertyId = a.PropertyId,
+                                        UnitIds = a.UnitIds,
+                                        IsSmoker = a.IsSmoker,
+                                        IsBankruptcy = a.IsBankruptcy,
+                                        IsEvicted = a.IsEvicted,
+                                        HasPayRentIssue = a.HasPayRentIssue,
+                                        IsCriminal = a.IsCriminal,
+                                        StubPicture = a.StubPicture,
+                                        LicensePicture = a.LicensePicture,
+                                        IsAgree = a.IsAgree,
+                                        Pets = _db.ApplicationPets.Where(x => x.ApplicationId == a.ApplicationId && x.IsDeleted != true).ToList(),
+                                        Vehicles = _db.ApplicationVehicles.Where(x => x.ApplicationId == a.ApplicationId && x.IsDeleted != true).ToList(),
+                                        Dependent = _db.ApplicationDependent.Where(x => x.ApplicationId == a.ApplicationId && x.IsDeleted != true).ToList(),
+                                        AddedBy = a.AddedBy,
+                                        AddedDate = a.AddedDate
+                                    })
+                     .AsNoTracking()
+                     .FirstOrDefaultAsync();
+
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping Application : {ex.Message}");
+                throw;
+            }
+        }
+        public async Task<bool> SaveApplicationAsync(ApplicationsDto model)
+        {
+            var application = _db.Applications.FirstOrDefault(x => x.ApplicationId == model.ApplicationId);
+
+            if (application == null)
+                application = new Applications();
+
+            application.ApplicationId = model.ApplicationId;
+            application.FirstName = model.FirstName;
+            application.MiddleName = model.MiddleName;
+            application.LastName = model.LastName;
+            application.SSN = model.SSN;
+            application.ITIN = model.ITIN;
+            application.DOB = model.DOB;
+            application.Email = model.Email;
+            application.PhoneNumber = model.PhoneNumber;
+            application.Gender = model.Gender;
+            application.MaritalStatus = model.MaritalStatus;
+            application.DriverLicenseState = model.DriverLicenseState;
+            application.DriverLicenseNumber = model.DriverLicenseNumber;
+            application.Note = model.Note;
+            application.Address = model.Address;
+            application.LandlordName = model.LandlordName;
+            application.ContactEmail = model.ContactEmail;
+            application.ContactPhoneNumber = model.ContactPhoneNumber;
+            application.MoveInDate = model.MoveInDate;
+            application.MonthlyPayment = model.MonthlyPayment;
+            application.JobType = model.JobType;
+            application.JobTitle = model.JobTitle;
+            application.AnnualIncome = model.AnnualIncome;
+            application.CompanyName = model.CompanyName;
+            application.WorkStatus = model.WorkStatus;
+            application.StartDate = model.StartDate;
+            application.EndDate = model.EndDate;
+            application.SupervisorName = model.SupervisorName;
+            application.SupervisorEmail = model.SupervisorEmail;
+            application.SupervisorPhoneNumber = model.SupervisorPhoneNumber;
+            application.EmergencyFirstName = model.EmergencyFirstName;
+            application.EmergencyLastName = model.EmergencyLastName;
+            application.EmergencyEmail = model.EmergencyEmail;
+            application.EmergencyPhoneNumber = model.EmergencyPhoneNumber;
+            application.EmergencyAddress = model.EmergencyAddress;
+            application.SourceOfIncome = model.SourceOfIncome;
+            application.SourceAmount = model.SourceAmount;
+            application.Assets = model.Assets;
+            application.AssetAmount = model.AssetAmount;
+            application.PropertyId = model.PropertyId;
+            application.UnitIds = model.UnitIds;
+            application.IsSmoker = model.IsSmoker;
+            application.IsBankruptcy = model.IsBankruptcy;
+            application.IsEvicted = model.IsEvicted;
+            application.HasPayRentIssue = model.HasPayRentIssue;
+            application.IsCriminal = model.IsCriminal;
+            if (model.LicensePicture != null)
+            {
+                application.LicensePicture = model.LicensePicture;
+            }
+            if (model.StubPicture != null)
+            {
+                application.StubPicture = model.StubPicture;
+            }
+            application.IsAgree = model.IsAgree;
+
+
+            if (application.ApplicationId > 0)
+            {
+                application.ModifiedBy = model.AddedBy;
+                application.ModifiedDate = DateTime.Now;
+                _db.Applications.Update(application);
+            }
+            else
+            {
+                application.AddedBy = model.AddedBy;
+                application.AddedDate = DateTime.Now;
+                _db.Applications.Add(application);
+            }
+
+            var result = await _db.SaveChangesAsync();
+
+            int[] petsIds = model.Pets.Select(x => x.PetId).ToArray();
+            var petsToBeDeleted = _db.ApplicationPets
+                .Where(item => item.ApplicationId == model.ApplicationId && !petsIds.Contains(item.PetId) && item.IsDeleted != true)
+                .ToList();
+
+            foreach (var petToBeDeleted in petsToBeDeleted)
+            {
+                petToBeDeleted.IsDeleted = true;
+                petToBeDeleted.ModifiedBy = model.AddedBy;
+                petToBeDeleted.ModifiedDate = DateTime.Now;
+                _db.ApplicationPets.Update(petToBeDeleted);
+            }
+            if (model.Pets != null && model.Pets.Any())
+            {
+                var existingPets = _db.ApplicationPets.Where(item => item.ApplicationId == model.ApplicationId && item.IsDeleted != true).ToList();
+                foreach (var petDto in model.Pets)
+                {
+                    var existingPet = existingPets.FirstOrDefault(item => item.PetId == petDto.PetId);
+
+                    if (existingPet != null)
+                    {
+                       existingPet.ApplicationId = application.ApplicationId;
+                       existingPet.Name = petDto.Name;
+                       existingPet.Breed = petDto.Breed;
+                       existingPet.Type = petDto.Type;
+                       existingPet.Quantity = petDto.Quantity;
+                       existingPet.Picture = petDto.Picture != null ? petDto.Picture : existingPet.Picture;
+                       existingPet.ModifiedBy = model.AddedBy;
+                       existingPet.ModifiedDate = DateTime.Now;
+                        _db.ApplicationPets.Update(existingPet);
+                    }
+                    else
+                    {
+                        var newPet = new ApplicationPets
+                        {
+                            ApplicationId = application.ApplicationId,
+                            Name = petDto.Name,
+                            Breed = petDto.Breed,
+                            Type = petDto.Type,
+                            Quantity = petDto.Quantity,
+                            Picture = petDto.Picture != null ? petDto.Picture : "",
+                            AddedBy = model.AddedBy,
+                            AddedDate = DateTime.Now,
+                        };
+                        _db.ApplicationPets.Add(newPet);
+                    }
+                }
+            }
+
+            int[] vehiclesIds = model.Vehicles.Select(x => x.VehicleId).ToArray();
+            var vehiclesToBeDeleted = _db.ApplicationVehicles
+                .Where(item => item.ApplicationId == model.ApplicationId && !vehiclesIds.Contains(item.VehicleId) && item.IsDeleted != true)
+                .ToList();
+
+            foreach (var vehicleToBeDeleted in vehiclesToBeDeleted)
+            {
+                vehicleToBeDeleted.IsDeleted = true;
+                vehicleToBeDeleted.ModifiedBy = model.AddedBy;
+                vehicleToBeDeleted.ModifiedDate = DateTime.Now;
+                _db.ApplicationVehicles.Update(vehicleToBeDeleted);
+            }
+            if (model.Vehicles != null && model.Vehicles.Any())
+            {
+                var existingVehicles = _db.ApplicationVehicles.Where(item => item.ApplicationId == model.ApplicationId && item.IsDeleted != true).ToList();
+                foreach (var vehicleDto in model.Vehicles)
+                {
+                    var existingVehicle = existingVehicles.FirstOrDefault(item => item.VehicleId == vehicleDto.VehicleId);
+
+                    if (existingVehicle != null)
+                    {
+                        existingVehicle.ApplicationId = application.ApplicationId;
+                        existingVehicle.Manufacturer = vehicleDto.Manufacturer;
+                        existingVehicle.ModelName = vehicleDto.ModelName;
+                        existingVehicle.Color = vehicleDto.Color;
+                        existingVehicle.LicensePlate = vehicleDto.LicensePlate;
+                        existingVehicle.Year = vehicleDto.Year;
+                        existingVehicle.ModifiedBy = model.AddedBy;
+                        existingVehicle.ModifiedDate = DateTime.Now;
+                        _db.ApplicationVehicles.Update(existingVehicle);
+                    }
+                    else
+                    {
+                        var newVehicle = new ApplicationVehicles
+                        {
+                            ApplicationId = application.ApplicationId,
+                            Manufacturer = vehicleDto.Manufacturer,
+                            ModelName = vehicleDto.ModelName,
+                            Color = vehicleDto.Color,
+                            LicensePlate = vehicleDto.LicensePlate,
+                            Year = vehicleDto.Year,
+                            AddedBy = model.AddedBy,
+                            AddedDate = DateTime.Now,
+                        };
+                        _db.ApplicationVehicles.Add(newVehicle);
+                    }
+                }
+            }
+
+            int[] dependentsIds = model.Dependent.Select(x => x.DependentId).ToArray();
+            var dependentsToBeDeleted = _db.ApplicationDependent
+                .Where(item => item.ApplicationId == model.ApplicationId && !dependentsIds.Contains(item.DependentId) && item.IsDeleted != true)
+                .ToList();
+
+            foreach (var dependentToBeDeleted in dependentsToBeDeleted)
+            {
+                dependentToBeDeleted.IsDeleted = true;
+                dependentToBeDeleted.ModifiedBy = model.AddedBy;
+                dependentToBeDeleted.ModifiedDate = DateTime.Now;
+                _db.ApplicationDependent.Update(dependentToBeDeleted);
+            }
+            if (model.Dependent != null && model.Dependent.Any())
+            {
+                var existingDependents = _db.ApplicationDependent.Where(item => item.ApplicationId == model.ApplicationId && item.IsDeleted != true).ToList();
+                foreach (var dependentDto in model.Dependent)
+                {
+                    var existingDependent = existingDependents.FirstOrDefault(item => item.DependentId == dependentDto.DependentId);
+
+                    if (existingDependent != null)
+                    {
+                       existingDependent.ApplicationId = application.ApplicationId;
+                       existingDependent.FirstName = dependentDto.FirstName;
+                       existingDependent.LastName = dependentDto.LastName;
+                       existingDependent.Email = dependentDto.Email;
+                       existingDependent.PhoneNumber = dependentDto.PhoneNumber;
+                       existingDependent.DOB = dependentDto.DOB;
+                        existingDependent.Relation = dependentDto.Relation;
+                        existingDependent.ModifiedBy = model.AddedBy;
+                        existingDependent.ModifiedDate = DateTime.Now;
+                        _db.ApplicationDependent.Update(existingDependent);
+                    }
+                    else
+                    {
+                        var newPet = new ApplicationDependent
+                        {
+                            ApplicationId = application.ApplicationId,
+                            FirstName = dependentDto.FirstName,
+                            LastName = dependentDto.LastName,
+                            Email = dependentDto.Email,
+                            PhoneNumber = dependentDto.PhoneNumber,
+                            DOB = dependentDto.DOB,
+                            Relation = dependentDto.Relation,
+                            AddedBy = model.AddedBy,
+                            AddedDate = DateTime.Now,
+                        };
+                        _db.ApplicationDependent.Add(newPet);
+                    }
+                }
+            }
+            var result1 = await _db.SaveChangesAsync();
+            return result > 0;
+
+        }
+        public async Task<bool> DeleteApplicationAsync(int id)
+        {
+            var application = await _db.Applications.FindAsync(id);
+            if (application == null) return false;
+
+            application.IsDeleted = true;
+            _db.Applications.Update(application);
+            var saveResult = await _db.SaveChangesAsync();
+
+            if (saveResult <= 0) return false;
+
+            var pets = await _db.ApplicationPets.Where(x => x.ApplicationId == id && x.IsDeleted != true).ToListAsync();
+            pets.ForEach(x => x.IsDeleted = true);
+            _db.ApplicationPets.UpdateRange(pets);
+
+            var vehicles = await _db.ApplicationVehicles.Where(x => x.ApplicationId == id && x.IsDeleted != true).ToListAsync();
+            vehicles.ForEach(x => x.IsDeleted = true);
+            _db.ApplicationVehicles.UpdateRange(vehicles);
+
+            var dependents = await _db.ApplicationDependent.Where(x => x.ApplicationId == id && x.IsDeleted != true).ToListAsync();
+            dependents.ForEach(x => x.IsDeleted = true);
+            _db.ApplicationDependent.UpdateRange(dependents);
+
+            saveResult = await _db.SaveChangesAsync();
+
+            return saveResult > 0;
+        }
+
+        #endregion
     }
 }

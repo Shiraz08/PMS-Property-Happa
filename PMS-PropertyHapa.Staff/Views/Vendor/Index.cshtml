@@ -1,154 +1,1027 @@
-﻿
+﻿@using PMS_PropertyHapa.Models.DTO
+@using PMS_PropertyHapa.Models.Entities
+@model IEnumerable<VendorDto>
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
+<style>
+    .nav-sidebar {
+        background-color: #f8f9fa; /* Background color */
+        border-radius: 10px; /* Rounded corners */
+        padding: 10px; /* Padding around the links */
+    }
+
+        .nav-sidebar .nav-link {
+            color: #212529; /* Link color */
+            padding: 8px 20px; /* Padding for each link */
+            border-radius: 5px; /* Rounded corners for links */
+            margin-bottom: 5px; /* Margin between links */
+        }
+
+            .nav-sidebar .nav-link.active {
+                background-color: #dc3545; /* Red background for active link */
+                color: #fff; /* Active link text color */
+                font-weight: bold; /* Bold font for active link */
+            }
+</style>
+
+<!-- Page Sidebar Ends-->
 <div class="page-body">
     <div class="container-fluid">
         <div class="page-title">
             <div class="row">
-                <div class="col-12">
-                    <h3>Coming Soon</h3>
+                <div class="col-12 col-sm-6">
+                    <h3>Vendor</h3>
+                </div>
+                <div class="col-12 col-sm-6">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a class="home-item" href="index.html"><i data-feather="home"></i></a></li>
-                        <li class="breadcrumb-item">Coming Soon</li>
-                        <li class="breadcrumb-item active">Coming Soon</li>
+                        <li class="breadcrumb-item"><a href="index.html"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item">Vendor</li>
+                        <li class="breadcrumb-item active">List</li>
                     </ol>
                 </div>
             </div>
         </div>
     </div>
-    <div class="container-fluid">
+    <div class="container-fluid my-4">
         <div class="row">
-            <div class="col-12">
+            <!-- Column 1: Properties Table (80% on lg screens) -->
+            <div class="col-xl-12 col-md-12 box-col-12">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h4 class="card-title">
-                            Coming Soon
-                        </h4>
+
+                        <div class="left-side-header">
+                            <div class="input-group">
+                                <span class="input-group-text" id="basic-addon1">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <g>
+                                            <g>
+                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M11.2753 2.71436C16.0029 2.71436 19.8363 6.54674 19.8363 11.2753C19.8363 16.0039 16.0029 19.8363 11.2753 19.8363C6.54674 19.8363 2.71436 16.0039 2.71436 11.2753C2.71436 6.54674 6.54674 2.71436 11.2753 2.71436Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M19.8987 18.4878C20.6778 18.4878 21.3092 19.1202 21.3092 19.8983C21.3092 20.6783 20.6778 21.3097 19.8987 21.3097C19.1197 21.3097 18.4873 20.6783 18.4873 19.8983C18.4873 19.1202 19.1197 18.4878 19.8987 18.4878Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                            </g>
+                                        </g>
+                                    </svg>
+
+                                </span>
+                                <input class="form-control" type="text" id="searchInput" placeholder="Search Vendor" aria-label="search" aria-describedby="basic-addon1">
+                            </div>
+                        </div>
+
+                        <div class="right-side-header">
+                            <a href="@Url.Action("VendorCategories", "Vendor")" class="btn btn-primary">Add Vendor Categories</a>
+                            <button type="button" class="btn btn-primary" id="addVendorBtn">
+                                Add New Vendor
+                            </button>
+
+                        </div>
                     </div>
+
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table" id="grouproles">
-                                <thead>
+                            <table class="table table-hover text-center">
+                                <thead class="table-dark">
                                     <tr>
-                                        <th style="width:290px!Important;text-align:center">.........</th>
-                                        <th style="width:290px!Important;text-align:center">.........</th>
-                                        <th style="width:290px!Important;text-align:center">Action</th>
+                                        <th scope="col" class="tableHeaderbg">Vendor</th>
+                                        <th scope="col" class="tableHeaderbg">Contact Information</th>
+                                        <th scope="col" class="tableHeaderbg">Insurance Status</th>
+                                        <th scope="col" class="tableHeaderbg">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
+                                    @foreach (var item in Model?.OrderByDescending(x => x.VendorId) ?? Enumerable.Empty<VendorDto>())
+                                    {
+                                        <tr>
+                                            <td class="tableFontSize align-middle">
+                                                <a class="contact-tab-@item.VendorId nav-link d-flex justify-content-center align-items-center" id="v-pills-@item.VendorId-tab" data-bs-toggle="pill" onclick="activeDivforowner(@item.VendorId)" href="#v-pills-@item.VendorId" role="tab" aria-controls="v-pills-@item.VendorId" aria-selected="true">
+                                                    <div class="d-flex align-items-center">
+                                                        @if (item.Picture != null)
+                                                        {
+                                                            <img class="img-50 img-fluid rounded-circle me-2" src="@item.Picture" alt="Sample Image">
+                                                        }
+                                                        else
+                                                        {
+                                                            <img class="img-50 img-fluid me-2 rounded-circle" src="http://bootdey.com/img/Content/avatar/avatar1.png" alt="Sample Image">
+                                                        }
+                                                        <div>
+                                                            @item.FirstName @item.LastName
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </td>
+                                            <td class="tableFontSize align-middle" style="text-align: center;">
+                                                <div style="display: flex; align-items: center; justify-content: center;">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 5px;">
+                                                        <path d="M3 6v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2z"></path>
+                                                        <polyline points="3 6 12 13 21 6"></polyline>
+                                                    </svg>
+                                                    <span style="vertical-align: middle;">@item.Email1</span>
+                                                </div>
+                                                <div style="display: flex; align-items: center; justify-content: center;">
+                                                    <svg aria-hidden="true" focusable="false" class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="15" height="15" style="margin-right: 5px;">
+                                                        <path d="M493.4 24.6l-104-24c-11.3-2.6-22.9 3.3-27.5 13.9l-48 112c-4.2 9.8-1.4 21.3 6.9 28l60.6 49.6c-36 76.7-98.9 140.5-177.2 177.2l-49.6-60.6c-6.8-8.3-18.2-11.1-28-6.9l-112 48C3.9 366.5-2 378.1.6 389.4l24 104C27.1 504.2 36.7 512 48 512c256.1 0 464-207.5 464-464 0-11.2-7.7-20.9-18.6-23.4z"></path>
+                                                    </svg>
+                                                    <span style="vertical-align: middle;">@item.Phone1</span>
+                                                </div>
+                                            </td>
+                                            <td class="tableFontSize align-middle">
+                                                @(item.HasInsurance ?? false ? "Yes" : "No")
+                                            </td>
+                                            <td class="tableFontSize align-middle">
+                                                <a class="btn btn-secondary me-1" onclick="editVendor(@item.VendorId)">
+                                                    <i class="fa fa-edit"></i> Edit
+                                                </a>
+                                                <a class="btn btn-danger" onclick="deleteVendor(@item.VendorId)">
+                                                    <i class="fa fa-trash"></i> Delete
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
                                 </tbody>
                             </table>
                         </div>
+
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+
+<div class="modal fade" id="vendorModal" tabindex="-1" aria-labelledby="vendorModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" style="min-height:400px">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="vendorModalLabel">Add New Vendor</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-3">
+                        <!-- Side Navbar -->
+                        <nav class="nav flex-column nav-sidebar">
+                            <a class="nav-link active" data-form-id="personalInfo" href="#">Personal Info</a>
+                            <a class="nav-link" data-form-id="contactInfo" href="#">Contact Info</a>
+                            <a class="nav-link" data-form-id="address" href="#">Address</a>
+                            <a class="nav-link" data-form-id="alternateAddress" href="#">Alternate Address</a>
+                            <a class="nav-link" data-form-id="services" href="#">Services</a>
+                            <a class="nav-link" data-form-id="insurance" href="#">Insurance</a>
+                            <a class="nav-link" data-form-id="properties" href="#">Properties</a>
+                            <a class="nav-link" data-form-id="sendPayments" href="#">Send Payments</a>
+                        </nav>
+                    </div>
+                    <div class="col-9">
+                        <!-- Forms for different sections -->
+                        <form id="vendorForm" class="form-section">
+                            <h2>Personal Information</h2>
+                            <!-- Personal Info Form -->
+                            <input type="hidden" value="" id="vendorId" />
+                            <div class="mb-3">
+                                <img class="img-account-profile2 rounded-circle mb-2" src="http://bootdey.com/img/Content/avatar/avatar1.png" alt="Profile Image" id="imagePreview" style="width: 140px;">
+                                <div class="font-italic text-muted mb-4">Upload a new profile picture</div>
+                                <input id="PictureUrl" class="btn btn-primary" type="file" accept="image/*" required="required" style="width: 219px;">
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <label for="firstName" class="form-label">First Name</label>
+                                        <input type="text" class="form-control" placeholder="First Name" id="firstName">
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <label for="middleName" class="form-label">Middle Name</label>
+                                        <input type="text" class="form-control" placeholder="Middle Name" id="middleName">
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <label for="lastName" class="form-label">Last Name</label>
+                                        <input type="text" class="form-control" placeholder="Last Name" id="lastName">
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Company and Job Title -->
+                            <div class="row">
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <label for="company" class="form-label">Company</label>
+                                        <input type="text" class="form-control" placeholder="Company" id="company">
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <label for="jobTitle" class="form-label">Job Title</label>
+                                        <input type="text" class="form-control" placeholder="Job Title" id="jobTitle">
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Tax Id -->
+                            <div class="row">
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <label for="taxId" class="form-label">Tax ID</label>
+                                        <input type="text" class="form-control" placeholder="Tax ID" id="taxId">
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Notes -->
+                            <div class="mb-3">
+                                <label for="notes" class="form-label">Notes</label>
+                                <textarea class="form-control" placeholder="Notes.." rows="5" id="notes"></textarea>
+                            </div>
+                        </form>
+
+                        <form id="contactInfo" class="form-section">
+                            <!-- Contact Info Form -->
+                            <h2>Contact Information</h2>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <label for="email1" class="form-label">Email</label>
+                                        <input type="email" class="form-control" placeholder="Email" id="email1" required>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <label for="phone1" class="form-label">Phone</label>
+                                        <input type="text" class="form-control" placeholder="Phone Number" id="phone1" required>
+                                    </div>
+                                </div>
+                            </div> <!-- Close the first row here -->
+                            <div class="row">
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <label for="email2" class="form-label">Email(optional)</label>
+                                        <input type="email" class="form-control" placeholder="Email" id="email2">
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <label for="phone2" class="form-label">Phone(optional)</label>
+                                        <input type="text" class="form-control" placeholder="Phone Number" id="phone2">
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+
+
+                        <form id="address" class="form-section">
+                            <!-- Address Form -->
+                            <h2>Address</h2>
+                            <!-- Street -->
+                            <div class="row">
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <label for="street1" class="form-label">Street 1</label>
+                                        <input type="text" class="form-control" placeholder="Street 1" id="street1">
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <label for="street2" class="form-label">Street 2</label>
+                                        <input type="text" class="form-control" placeholder="Street 2" id="street2">
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- District and City -->
+                            <div class="row">
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <label for="district" class="form-label">District</label>
+                                        <input type="text" class="form-control" placeholder="District" id="district">
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <label for="city" class="form-label">City</label>
+                                        <input type="text" class="form-control" placeholder="City" id="city">
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- State and Country -->
+                            <div class="row">
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <label for="state" class="form-label">State</label>
+                                        <input type="text" class="form-control" placeholder="State" id="state">
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <label for="country" class="form-label">Country</label>
+                                        <input type="text" class="form-control" placeholder="Country" id="country">
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+
+                        <form id="alternateAddress" class="form-section">
+                            <!-- District and City  -->
+                            <h2>Alternate Address</h2>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <label for="altStreet1" class="form-label">Street 1</label>
+                                        <input type="text" class="form-control" placeholder="Street 1" id="altStreet1">
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <label for="altStreet2" class="form-label">Street 2</label>
+                                        <input type="text" class="form-control" placeholder="Street 2" id="altStreet2">
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- District and City -->
+                            <div class="row">
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <label for="altDistrict" class="form-label">District</label>
+                                        <input type="text" class="form-control" placeholder="District" id="altDistrict">
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <label for="altCity" class="form-label">City</label>
+                                        <input type="text" class="form-control" placeholder="City" id="altCity">
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- State and Country -->
+                            <div class="row">
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <label for="altState" class="form-label">State</label>
+                                        <input type="text" class="form-control" placeholder="State" id="altState">
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <label for="altCountry" class="form-label">Country</label>
+                                        <input type="text" class="form-control" placeholder="Country" id="altCountry">
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+
+                        <form id="services" class="form-section">
+                            <h2>Services</h2>
+                            <!-- Classification Categories -->
+                            <div class="mb-3">
+                                <label for="classification" class="form-label">Classification</label>
+                                <select class="form-control select2" multiple="multiple" id="classification">
+                                    <option value="Maintainance">Maintainance</option>
+                                    <option value="LandScaping">LandScaping</option>
+                                </select>
+                            </div>
+                            <!-- Vendor Categories -->
+                            <div class="mb-3">
+                                <label for="vendorCategories" class="form-label">Vendor Categories</label>
+                                <select class="form-control select2" multiple="multiple" id="vendorCategories" required>
+                                </select>
+                            </div>
+
+                        </form>
+
+                        <form id="insurance" class="form-section">
+                            <!-- Insurance Form -->
+                            <h2>Insurance</h2>
+                            <div class="mb-3">
+                                <label for="hasInsurance" class="form-label">Do you have valid insurance?</label>
+                                <select class="form-control" id="hasInsurance" name="Insurance" required>
+                                    <option selected disabled value="">Please Select</option>
+                                    <option value="true">Yes</option>
+                                    <option value="false">No</option>
+                                </select>
+                            </div>
+                        </form>
+
+                        <form id="properties" class="form-section">
+                            <!-- Properties Form -->
+                            <h2>Properties</h2>
+                            <div class="mb-3">
+                                <label for="vendorProperty" class="form-label ">Property</label>
+                                <select class="form-control" id="vendorProperty" required>
+                                    <option selected disabled value="">Please Select</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="vendorUnits" class="form-label">Units</label>
+                                <select class="form-control select2" multiple="multiple" id="vendorUnits" required>
+                                </select>
+                            </div>
+                        </form>
+
+                        <form id="sendPayments" class="form-section">
+                            <!-- Send Payments Form -->
+                            <h2>Account Information</h2>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <label for="accountName">Account Name</label>
+                                        <input type="text" class="form-control" placeholder="Account Name" id="accountName">
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <label for="accountHolder">Account Holder</label>
+                                        <input type="text" class="form-control" placeholder="Account holder's Name" id="accountHolder">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <label for="accountIBAN">Account IBAN</label>
+                                        <input type="text" class="form-control" placeholder="Account IBAN" id="accountIBAN">
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <label for="accountSwift">Account Swift/BIC</label>
+                                        <input type="text" class="form-control" placeholder="Account Swift/BIC" id="accountSwift">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <label for="accountBank">Account Bank</label>
+                                        <input type="text" class="form-control" placeholder="Bank Name" id="accountBank">
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <label for="accountCurrency">Account Currency</label>
+                                        <input type="text" class="form-control" placeholder="Currency" id="accountCurrency">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Organization Toggle -->
+                            <div class="col">
+                                <div class="mb-3">
+                                    <label class="form-check-label" for="vendorToggleOrgInfo">Organization Info</label>
+                                    <div class="form-check form-switch mt-2">
+                                        <input class="form-check-input" type="checkbox" id="vendorToggleOrgInfo">
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Initially Hidden -->
+                            <div class="row organization-field d-none">
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <label for="vendorOrgName" class="form-label">Organization Name</label>
+                                        <input type="text" class="form-control" placeholder="Organization Name" id="vendorOrgName">
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <label for="vendorOrgDescription" class="form-label">Organization Description</label>
+                                        <input type="text" class="form-control" placeholder="Organization Description" id="vendorOrgDescription">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row organization-field d-none">
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <label for="vendorOrgIconFile" class="form-label">Organization Icon</label>
+                                        <input type="file" class="form-control" id="vendorOrgIconFile" name="OrganizationIconFile" accept="image/*">
+                                        <img id="iconPreview" src="" alt="Icon Preview" style="max-width: 100%;" class="d-none">
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <label for="vendorOrgLogoFile" class="form-label">Organization Logo</label>
+                                        <input type="file" class="form-control" id="vendorOrgLogoFile" name="OrganizationLogoFile" accept="image/*">
+                                        <img id="logoPreview" src="" alt="Logo Preview" style="max-width: 100%;" class="d-none">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3 organization-field d-none">
+                                <label for="vendorOrgWebsite" class="form-label">Website</label>
+                                <input type="url" class="form-control" id="vendorOrgWebsite" placeholder="Website" pattern="https?://.+\.com" title="Please enter a valid URL. For example, http://www.example.com">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" id="prevButton">Previous</button>
+                <button type="button" class="btn btn-primary" id="nextButton">Next</button>
+                <button type="submit" class="btn btn-primary" id="saveButton" style="display:none;">Save Changes</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentFormIndex = 0;
+    const formSections = $(".form-section");
+    const totalForms = formSections.length;
+    $(document).ready(function () {
+        $("#addVendorBtn").click(function () {
+            $("#vendorModal").modal('show');
+        });
+
+        formSections.hide().first().show();
+        $('#prevButton').hide();
+        updateActiveNav(currentFormIndex);
+
+        resetModal();
+
+        // function updateActiveNav(index) {
+        //     $('.nav-sidebar .nav-link').removeClass('active');
+        //     $('.nav-sidebar .nav-link').eq(index).addClass('active');
+        // }
+
+        $(".form-section").not(":first").hide();
+
+        const validationRules = {
+            0: [
+                { field: '#firstName', message: 'Please enter First Name.' },
+                { field: '#lastName', message: 'Please enter Last Name.' }
+            ],
+            1: [
+                { field: '#email1', message: 'Please enter email.' },
+                { field: '#email1', message: 'Please enter a valid email address.', validate: isValidEmail },
+                { field: '#phone1', message: 'Please enter phone.' }
+            ],
+            4: [
+                { field: '#vendorCategories', message: 'Please select Vendor Categories.', validate: (value) => value && value.length > 0 }
+            ],
+            5: [
+                { field: '#hasInsurance', message: 'Please select Insurance.' }
+            ],
+            6: [
+                { field: '#vendorProperty', message: 'Please select Properties.' },
+                { field: '#vendorUnits', message: 'Please select Units.', validate: (value) => value && value.length > 0 }
+
+            ]
+        };
+
+        function validateSection(index) {
+            const errors = [];
+            const rules = validationRules[index];
+
+            if (rules) {
+                rules.forEach(rule => {
+                    const value = $(rule.field).val();
+                    if (!value || (rule.validate && !rule.validate(value))) {
+                        errors.push(rule.message);
+                    }
+                });
+            }
+
+            return errors;
+        }
+
+        $('#vendorToggleOrgInfo').on('change', function () {
+            if ($(this).is(':checked')) {
+                $('.organization-field').removeClass('d-none');
+            } else {
+                $('.organization-field').addClass('d-none').find('input').each(function () {
+                    if ($(this).attr('type') === 'file') {
+                        $(this).val('');
+                        $(this).next('img').addClass('d-none').attr('src', '');
+                    } else {
+                        $(this).val('');
+                    }
+                });
+            }
+        });
+
+        $('#vendorOrgIconFile').on('change', function () {
+            const fileInput = $(this)[0];
+            const iconPreview = $('#iconPreview');
+            if (fileInput.files.length > 0) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    iconPreview.attr('src', e.target.result).removeClass('d-none');
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+            } else {
+                iconPreview.addClass('d-none').attr('src', '');
+            }
+        });
+        
+        $('#vendorOrgLogoFile').on('change', function () {
+            const fileInput = $(this)[0];
+            const logoPreview = $('#logoPreview');
+            if (fileInput.files.length > 0) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    logoPreview.attr('src', e.target.result).removeClass('d-none');
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+            } else {
+                logoPreview.addClass('d-none').attr('src', '');
+            }
+        });
+
+
+        $('#nextButton').click(function () {
+            const errors = validateSection(currentFormIndex);
+
+            if (errors.length > 0) {
+                errors.forEach(error => toastr.error(error));
+                return;
+            }
+
+            if (currentFormIndex < totalForms - 1) {
+                formSections.eq(currentFormIndex).hide();
+                formSections.eq(++currentFormIndex).show();
+                toggleButtons();
+                updateActiveNav(currentFormIndex);
+            }
+        });
+
+        function isValidEmail(email) {
+            const emailPattern = /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/;
+            return emailPattern.test(email);
+        }
+
+        $('#prevButton').click(function () {
+            if (currentFormIndex > 0) {
+                formSections.eq(currentFormIndex).hide();
+                formSections.eq(--currentFormIndex).show();
+                toggleButtons();
+                updateActiveNav(currentFormIndex);
+            }
+        });
+
+        $('#vendorModal').on('hidden.bs.modal', function () {
+            resetModal();
+        });
+
+        toggleButtons();
+        populateDropDowns();
+
+        $('#saveButton').on('click', function (event) {
+            event.preventDefault();
+            const jsonFormData = gatherFormData();
+        });
+
+
+        function gatherFormData() {
+            const formData = {
+                VendorId: $('#vendorId').val() || 0,
+                FirstName: $("#firstName").val(),
+                MI: $('#middleName').val(),
+                LastName: $('#lastName').val(),
+                Company: $('#company').val(),
+                JobTitle: $('#jobTitle').val(),
+                TaxId: $('#taxId').val(),
+                Notes: $('#notes').val(),
+                Email1: $('#email1').val(),
+                Phone1: $('#phone1').val(),
+                Email2: $('#email2').val(),
+                Phone2: $('#phone2').val(),
+                Street1: $('#street1').val(),
+                Street2: $('#street2').val(),
+                District: $('#district').val(),
+                City: $('#city').val(),
+                State: $('#state').val(),
+                Country: $('#country').val(),
+                AlterStreet1: $('#altStreet1').val(),
+                AlterStreet2: $('#altStreet2').val(),
+                AlterDistrict: $('#altDistrict').val(),
+                AlterCity: $('#altCity').val(),
+                AlterState: $('#altState').val(),
+                AlterCountry: $('#altCountry').val(),
+                Classification: $('#classification').val().join(','),
+                VendorCategoriesIds: $('#vendorCategories').val().join(','),
+                HasInsurance: $('#hasInsurance').val(),
+                PropertyId: $('#vendorProperty').val(),
+                UnitIds: $('#vendorUnits').val().join(','),
+                AccountName: $('#accountName').val(),
+                AccountHolder: $('#accountHolder').val(),
+                AccountIBAN: $('#accountIBAN').val(),
+                AccountSwift: $('#accountSwift').val(),
+                AccountBank: $('#accountBank').val(),
+                AccountCurrency: $('#accountCurrency').val(),
+                OrganizationName: $('#vendorOrgName').val(),
+                OrganizationDescription: $('#vendorOrgDescription').val(),
+                Website: $('#vendorOrgWebsite').val(),
+
+            };
+            handleFileUpload(formData);
+            return formData;
+        }
+
+        function handleFileUpload(formData) {
+            const fileInputs = [
+                { input: $('#PictureUrl')[0], key: 'Picture' },
+                { input: $('#vendorOrgIconFile')[0], key: 'OrganizationIcon' },
+                { input: $('#vendorOrgLogoFile')[0], key: 'OrganizationLogo' }
+            ];
+
+            const readers = fileInputs.map(({ input, key }) => {
+                return new Promise((resolve, reject) => {
+                    if (input.files.length > 0) {
+                        const reader = new FileReader();
+                        reader.onload = function (e) {
+                            formData[key] = e.target.result;
+                            resolve();
+                        };
+                        reader.onerror = reject;
+                        reader.readAsDataURL(input.files[0]);
+                    } else {
+                        resolve(); 
+                    }
+                });
+            });
+
+            Promise.all(readers).then(() => {
+                submitFormData(formData);
+            }).catch(error => {
+                console.error('Error reading files:', error);
+            });
+        }
+
+        function submitFormData(jsonFormData) {
+            console.log(jsonFormData);
+            $.ajax({
+                url: '@Url.Action("SaveVendor", "Vendor")',
+                type: 'POST',
+                data: JSON.stringify(jsonFormData),
+                contentType: 'application/json',
+                beforeSend: function () {
+                    $('#saveButton').prop('disabled', true).text('Saving...');
+                },
+                success: function (response) {
+                    $("#vendorModal").modal('hide');
+                    location.reload();
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error:', error);
+                    alert('Failed to save data');
+                },
+                complete: function () {
+                    $('#saveButton').prop('disabled', false).text('Save');
+                }
+            });
+        }
+
+        $('#PictureUrl').on('change', function (event) {
+            const fileInput = $('#PictureUrl')[0];
+            if (fileInput.files.length > 0) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#imagePreview').attr('src', e.target.result);
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+            }
+        });
+
+
+        $('#vendorProperty').on('change', function () {
+            if ($("#vendorProperty").val() != null) {
+                populateUnits($("#vendorProperty").val());
+            } else {
+                $("#vendorUnits").empty();
+            }
+        });
+
+    });
+
+
+    function populateUnits(propertyId, selectedUnits) {
+        $.ajax({
+            url: '/Lease/ByProperty',
+            method: 'GET',
+            data: { propertyId: propertyId },
+            success: function (units) {
+                var $vendorUnits = $('#vendorUnits');
+                $vendorUnits.empty();
+                units.forEach(function (unit) {
+                    var option = `<option value="${unit.UnitId}">${unit.UnitName}</option>`;
+                    $vendorUnits.append(option);
+                });
+
+                // Check if selectedUnits is provided and mark options as selected
+                if (selectedUnits && selectedUnits.length > 0) {
+                    selectedUnits.forEach(function (unitId) {
+                        $vendorUnits.find('option[value="' + unitId + '"]').prop('selected', true);
+                    });
+                }
+            },
+            error: function (error) {
+                console.error('Error fetching units:', error.responseText || 'Unknown error');
+            }
+        });
+    }
+
+
+    function populateDropDowns() {
+        $.ajax({
+            url: '@Url.Action("GetVendorCategories", "Vendor")',
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                var vendorDropdown = document.getElementById('vendorCategories');
+                // vendorDropdown.innerHTML = ''; // Clear existing options
+                data.forEach(function (item) {
+                    var option = new Option(item.Name, item.VendorCategoryId);
+                    vendorDropdown.appendChild(option);
+                });
+            }
+        });
+
+        $.ajax({
+            url: '@Url.Action("GetProperties", "Communication")',
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                var vendorPropertyDropdown = document.getElementById('vendorProperty');
+                // vendorPropertyDropdown.innerHTML = ''; // Clear existing options
+                data.forEach(function (item) {
+                    var option = new Option(item.BuildingNo + " - " + item.BuildingName, item.AssetId);
+                    vendorPropertyDropdown.appendChild(option);
+                });
+            }
+        });
+    }
+
+    function updateActiveNav(index) {
+        $('.nav-sidebar .nav-link').removeClass('active');
+        $('.nav-sidebar .nav-link').eq(index).addClass('active');
+    }
+
+    function toggleButtons() {
+        $('#nextButton').show();
+        $('#saveButton').hide();
+        if (currentFormIndex === 0) {
+            $('#prevButton').hide();
+        } else {
+            $('#prevButton').show();
+        }
+        if (currentFormIndex === totalForms - 1) {
+            $('#nextButton').hide();
+            $('#saveButton').show();
+        }
+    }
+
+    function resetModal() {
+        $('form').each(function () {
+            this.reset();
+        });
+        $('select').each(function () {
+            $(this).val($(this).find('option[selected]').val());
+        });
+        $('.select2').val(null).trigger('change');
+        $('#imagePreview').attr('src', "http://bootdey.com/img/Content/avatar/avatar1.png");
+        $('#vendorToggleOrgInfo').prop('checked', false).trigger("change")
+        currentFormIndex = 0;
+        formSections.hide().first().show();
+        toggleButtons();
+        updateActiveNav(currentFormIndex);
+    }
+
+    function deleteVendor(id) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'You will not be able to recover this Vendor!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '@Url.Action("DeleteVendor", "Vendor")',
+                    type: 'POST',
+                    data: { id: id },
+                    success: function (task) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Vendor deleted successfully',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        location.reload()
+                    },
+                    error: function (xhr, status, error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Something went wrong!'
+                        });
+                    },
+                });
+            }
+        });
+    }
+
+    function editVendor(id) {
+        $.ajax({
+            url: '@Url.Action("GetVendorById", "Vendor")',
+            type: 'POST',
+            data: { id: id },
+            success: function (vendor) {
+                console.log(vendor)
+
+                $('#vendorProperty').val(vendor.PropertyId).trigger("change")
+
+                $('#vendorId').val(vendor.VendorId);
+                $('#firstName').val(vendor.FirstName);
+                $('#middleName').val(vendor.MI);
+                $('#lastName').val(vendor.LastName);
+                $('#company').val(vendor.Company);
+                $('#jobTitle').val(vendor.JobTitle);
+                $('#taxId').val(vendor.TaxId);
+                $('#notes').val(vendor.Notes);
+                $('#email1').val(vendor.Email1);
+                $('#phone1').val(vendor.Phone1);
+                $('#email2').val(vendor.Email2);
+                $('#phone2').val(vendor.Phone2);
+                $('#street1').val(vendor.Street1);
+                $('#street2').val(vendor.Street2);
+                $('#district').val(vendor.District);
+                $('#city').val(vendor.City);
+                $('#state').val(vendor.State);
+                $('#country').val(vendor.Country);
+                $('#altStreet1').val(vendor.AlterStreet1);
+                $('#altStreet2').val(vendor.AlterStreet2);
+                $('#altDistrict').val(vendor.AlterDistrict);
+                $('#altCity').val(vendor.AlterCity);
+                $('#altState').val(vendor.AlterState);
+                $('#altCountry').val(vendor.AlterCountry);
+                $('#hasInsurance').val(vendor.HasInsurance ? "true" : "false");
+
+
+
+                if (vendor.Classification && vendor.Classification.length > 0) {
+                    var classificationArray = vendor.Classification.split(',');
+                    $('#classification').val(classificationArray).trigger("change");
+                } else {
+                    $('#classification').val([]).trigger("change");
+                }
+
+                if (vendor.VendorCategoriesIds && vendor.VendorCategoriesIds.length > 0) {
+                    var vendorCategoriesArray = vendor.VendorCategoriesIds.split(',');
+                    $('#vendorCategories').val(vendorCategoriesArray).trigger("change");
+                } else {
+                    $('#vendorCategories').val([]).trigger("change");
+                }
+
+                $('#accountName').val(vendor.AccountName);
+                $('#accountHolder').val(vendor.AccountHolder);
+                $('#accountIBAN').val(vendor.AccountIBAN);
+                $('#accountSwift').val(vendor.AccountSwift);
+                $('#accountBank').val(vendor.AccountBank);
+                $('#accountCurrency').val(vendor.AccountCurrency);
+
+
+                var hasOrgInfo = vendor.OrganizationName || vendor.OrganizationDescription || vendor.OrganizationIcon || vendor.OrganizationLogo || vendor.Website;
+
+                if (hasOrgInfo) {
+                    $('#vendorToggleOrgInfo').prop('checked', true).trigger("change")
+
+                    $('#vendorOrgName').val(vendor.OrganizationName || '');
+                    $('#vendorOrgDescription').val(vendor.OrganizationDescription || '');
+
+                    if (vendor.OrganizationIcon) {
+                        $("#iconPreview").attr('src', vendor.OrganizationIcon).removeClass('d-none');
+                    } else {
+                        $("#iconPreview").addClass('d-none').attr('src', '');
+                    }
+                    if (vendor.OrganizationLogo) {
+                        $("#logoPreview").attr('src', vendor.OrganizationLogo).removeClass('d-none');
+                    } else {
+                        $("#logoPreview").addClass('d-none').attr('src', '');
+                    }
+
+                    $('#vendorOrgWebsite').val(vendor.Website || '');
+                }
+
+                if (vendor.Picture) {
+                    $('#imagePreview').attr('src', vendor.Picture);
+                } else {
+                    $('#imagePreview').attr('src', "http://bootdey.com/img/Content/avatar/avatar1.png");
+                }
+
+                if (vendor.UnitIds && vendor.UnitIds.length > 0) {
+                    var vendorUnitsArray = vendor.UnitIds.split(',');
+                    populateUnits(vendor.PropertyId, vendorUnitsArray);
+                } else {
+                    $('#vendorUnits').val([]).trigger("change");
+                }
+
+                $("#vendorModal").modal('show');
+            },
+            error: function (xhr, status, error) {
+                console.error('Error:', error);
+                alert('Failed to retrieve data');
+            },
+        });
+    }
+
+</script>

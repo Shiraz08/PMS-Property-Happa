@@ -20,6 +20,9 @@ using PMS_PropertyHapa.Shared.Dapper;
 using PMS_PropertyHapa.Shared.MappingProfiles;
 using PMS_PropertyHapa.MigrationsFiles.Data;
 using PMS_PropertyHapa.Models.Roles;
+using PMS_PropertyHapa.API.ViewModels;
+using System.Configuration;
+using PMS_PropertyHapa.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +35,11 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddDefaultTokenProviders();
 builder.Services.AddResponseCaching();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
+
+
+builder.Services.Configure<GoogleCloudStorageOptions>(builder.Configuration.GetSection("GoogleServiceAccount"));
+builder.Services.AddSingleton<GoogleCloudStorageService>();
+
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.AddApiVersioning(options => {
     options.AssumeDefaultVersionWhenUnspecified = true;
@@ -55,7 +63,6 @@ builder.Services.AddCors(options =>
                                  .AllowAnyMethod();
                       });
 });
-
 
 var key = builder.Configuration.GetValue<string>("ApiSettings:Secret");
 var ValidAudience = builder.Configuration.GetValue<string>("ApiSettings:ValidAudience");
@@ -114,7 +121,6 @@ builder.Services.AddHangfire(configuration => configuration
     }));
 builder.Services.AddHangfireServer();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-//Register dapper in scope    
 builder.Services.AddScoped<IDapper, DapperServices>();
 // Auto Mapper Configurations
 var mapperConfig = new MapperConfiguration(mc =>
@@ -133,7 +139,6 @@ builder.Services.Configure<IdentityOptions>(opts =>
 var app = builder.Build();
 app.UseSwagger();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwaggerUI(options => {

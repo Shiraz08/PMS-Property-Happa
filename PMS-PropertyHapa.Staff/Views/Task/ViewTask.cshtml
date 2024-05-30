@@ -62,13 +62,6 @@
                                                             <input class="form-control" type="text" id="searchInput" placeholder="Search Task Request" aria-label="search" aria-describedby="basic-addon1">
                                                         </div>
                                                     </div>
-
-                                                    @* <div class="right-side-header">
-                                                        <button class="btn btn-primary" id="newTaskBtn">New Task</button>
-                                                        <button class="btn btn-primary" id="newOwnerRequestBtn">New Owner Request</button>
-                                                    <button class="btn btn-primary" id="newTenantRequestBtn">New Tenant Request</button>
-                                                        <button class="btn btn-primary" id="newWorkOrderBtn">New Work Order</button>
-                                                    </div> *@
                                                     <div class="right-side-header">
                                                         <button class="btn btn-outline-primary" style="margin-right: 5px;" id="newTaskBtn">
                                                             <i class="fa fa-tasks"></i> New Task
@@ -124,18 +117,16 @@
                                                                         </a>
                                                                     </td>
 
-                                                                    <td class="tableFontSize">@item.DueDate.ToString("yyyy-MM-dd")</td>
+                                                                    <td class="tableFontSize">@item.DueDate?.ToString("yyyy-MM-dd")</td>
                                                                     <td class="tableFontSize">@item.Asset</td>
                                                                     <td class="tableFontSize">@item.Status</td>
                                                                     <td class="tableFontSize">
-@*                                                                         <a class="btn btn-secondary" onclick="editTaskRequest(@item.TaskRequestId)">Edit</a>
-                                                                        <a class="btn btn-primary" onclick="deleteTaskRequest(@item.TaskRequestId)">Delete</a> *@
-                                                                        <a class="btn btn-secondary" onclick="editTaskRequest(@item.TaskRequestId)">
-                                                                            <i class="fa fa-edit"></i> Edit
-                                                                        </a>
-                                                                        <a class="btn btn-danger" onclick="deleteTaskRequest(@item.TaskRequestId)">
-                                                                            <i class="fa fa-trash"></i> Delete
-                                                                        </a>
+                                                                    <a class="btn btn-secondary" onclick="editTaskRequest(@item.TaskRequestId)">
+                                                                        <i class="fa fa-edit"></i> Edit
+                                                                    </a>
+                                                                    <a class="btn btn-danger" onclick="deleteTaskRequest(@item.TaskRequestId)">
+                                                                        <i class="fa fa-trash"></i> Delete
+                                                                    </a>
                                                                     </td>
                                                                 </tr>
                                                             }
@@ -183,9 +174,6 @@
                         <label for="newVendor">Vendor:</label>
                         <select class="form-select" id="newVendor" required>
                             <option value="">Select Vendor</option>
-                            <option value="1">A</option>
-                            <option value="2">B</option>
-                            <option value="3">C</option>
                         </select>
                     </div>
                     <div class="mb-3">
@@ -206,7 +194,37 @@
                             <label class="form-check-label" for="recurringTask">Recurring Task</label>
                         </div>
                     </div>
-                    <div class="row mb-3">
+                    <div id="recurringFields" class="d-none">
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label for="recurringTaskStartDate" class="form-label">Start Date</label>
+                                <input type="date" class="form-control" id="recurringTaskStartDate" placeholder="Start Date" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="recurringTaskEndDate" class="form-label">End Date</label>
+                                <input type="date" class="form-control" id="recurringTaskEndDate" placeholder="End Date" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="recurringTaskFrequency" class="form-label">Frequency</label>
+                                <select class="form-select" id="recurringTaskFrequency" required>
+                                    <option value="">Select Frequency</option>
+                                    <option>Daily</option>
+                                    <option>Weekly</option>
+                                    <option>Monthly</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <input type="number" class="form-control" id="recurringTaskDueDays" placeholder="Due Days">
+                            </div>
+                            <div class="form-check form-switch col-md-6">
+                                <input type="checkbox" class="form-check-input" id="recurringTaskHasRepeat" name="recurringTaskHasRepeat">
+                                <label class="form-check-label" for="recurringTaskHasRepeat">Repeat forever</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3" id="dueDateDiv">
                         <div class="col-md-6">
                             <label for="dueDate" class="form-label">Due Date</label>
                             <input type="date" class="form-control" id="dueDate" required>
@@ -216,11 +234,8 @@
                         <div class="col-md-6">
                             <label for="taskStatus" class="form-label">Status</label>
                             <select class="form-select" id="taskStatus" required>
-                                <option value="">Select Status</option>
-                                <option >Not Started</option>
-                                <option>In Progress</option>
-                                <option>Completed</option>
-                                <option>On Hold</option>
+                                <option value="NotStarted">Not Started</option>
+                                 <option value="InProgress">In Progress</option>
                             </select>
                         </div>
                         <div class="col-md-6">
@@ -321,21 +336,6 @@
 <script>
     $(document).ready(function () {
 
-        $('#searchInput').on('input', function () {
-            var searchText = $(this).val().toLowerCase();
-            $('.nav-link').each(function () {
-                var taskRequest = $(this).find('.subjectRow').text().toLowerCase() + ' ' + $(this).find('.typeRow').text().toLowerCase();
-                // Traverse up to the parent <tr> element
-                var row = $(this).closest('tr');
-                if (taskRequest.includes(searchText)) {
-                    row.show(); // Show the complete row
-                } else {
-                    row.hide(); // Hide the complete row
-                }
-            });
-        });
-
-
         $("#newTaskBtn").on("click", function () {
             resetModal();
             $("#taskRequestModalLabel").html("New Task");
@@ -350,6 +350,7 @@
             $("#hasPermissionToEnterDiv").addClass("d-none");
             $("#aprrovedPartsDiv").addClass("d-none");
             $("#newTaskModal").modal('show');
+
             handleRequiredAttribute()
         });
 
@@ -367,6 +368,7 @@
             $("#hasPermissionToEnterDiv").addClass("d-none");
             $("#aprrovedPartsDiv").addClass("d-none");
             $("#newTaskModal").modal('show');
+
             handleRequiredAttribute()
         });
 
@@ -384,6 +386,7 @@
             $("#relatedToDiv").addClass("d-none");
             $("#aprrovedPartsDiv").addClass("d-none");
             $("#newTaskModal").modal('show');
+
             handleRequiredAttribute()
         });
 
@@ -401,6 +404,7 @@
             $("#notifyTenantDiv").addClass("d-none");
             $("#notifyOwnerDiv").addClass("d-none");
             $("#newTaskModal").modal('show');
+
             handleRequiredAttribute()
         });
 
@@ -445,6 +449,51 @@
                 });
             }
         });
+
+
+        $.ajax({
+            url: '@Url.Action("GetVendors", "Vendor")',
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                var vendorDropdown = document.getElementById('newVendor');
+                // vendorDropdown.innerHTML = ''; // Clear existing options
+                data.forEach(function (item) {
+                    var option = new Option(item.FirstName + ' ' + item.LastName, item.VendorId);
+                    vendorDropdown.appendChild(option);
+                });
+            }
+        });
+        function handleTaskTypeChange() {
+            if ($('#recurringTask').is(':checked')) {
+                // Show recurring fields
+                $('#recurringFields').removeClass('d-none');
+                $('#recurringTaskStartDate').attr('required', 'required');
+                $('#recurringTaskEndDate').attr('required', 'required');
+                $('#recurringTaskFrequency').attr('required', 'required');
+
+                // Hide due date field and remove required attribute
+                $('#dueDateDiv').addClass('d-none');
+                $('#dueDate').removeAttr('required').val('');
+            } else {
+                // Hide recurring fields and remove required attributes
+                $('#recurringFields').addClass('d-none');
+                $('#recurringTaskStartDate').removeAttr('required').val('');
+                $('#recurringTaskEndDate').removeAttr('required').val('');
+                $('#recurringTaskFrequency').removeAttr('required').val('');
+                $('#recurringTaskDueDays').val('');
+                $('#recurringTaskHasRepeat').prop('checked', false);
+
+                // Show due date field and add required attribute
+                $('#dueDateDiv').removeClass('d-none');
+                $('#dueDate').attr('required', 'required');
+            }
+        }
+
+        $('input[name="taskType"]').change(handleTaskTypeChange);
+        $('input[name="taskType"]:checked').change();
+
+
 
         $('#hasPermissionToEnter').change(function () {
             if ($(this).is(':checked')) {
@@ -552,6 +601,11 @@
                 Description: $('#taskDescription').val(),
                 IsOneTimeTask: $('#oneTimeTask').is(':checked'),
                 IsRecurringTask: $('#recurringTask').is(':checked'),
+                StartDate: $('#recurringTaskStartDate').val(),
+                EndDate: $('#recurringTaskEndDate').val(),
+                Frequency: $('#recurringTaskFrequency').val(),
+                DueDays: $('#recurringTaskDueDays').val(),
+                IsTaskRepeat: $('#recurringTaskHasRepeat').is(':checked'),
                 DueDate: $('#dueDate').val(),
                 Status: $('#taskStatus').val(),
                 Priority: $('#taskPriority').val(),
@@ -571,7 +625,7 @@
             };
             handleFileUpload(formData);
             return formData;
-        }
+        } 
 
         function collectLineItems() {
             let lineItems = [];
@@ -644,6 +698,9 @@
         $('#entryNotesDiv').addClass('d-none');
         $('.select2').val(null).trigger('change');
         $('#uploadedImageContainer').hide();
+        $('#taskStatus').prop('disabled', true);
+        $('#taskStatus option[value="NotStarted"]').prop('selected', true);
+        $('#oneTimeTask').prop('checked', true).trigger('change');
     }
 
     function displayUploadedImage(base64String) {
@@ -770,12 +827,25 @@
                 $('#requestTaskId').val(task.TaskRequestId);
                 $('#taskSubject').val(task.Subject);
                 $('#taskDescription').val(task.Description);
-                $('#dueDate').val(task.DueDate.split('T')[0]);
+                var dueDate = task.DueDate ? task.DueDate.split('T')[0] : '';
+                $('#dueDate').val(dueDate);
+
+                $('#taskStatus').prop('disabled', false);
                 $('#taskStatus').val(task.Status);
                 $('#taskPriority').val(task.Priority);
                 $('#taskProperty').val(task.AssetId);
-                $('#oneTimeTask').prop('checked', task.IsOneTimeTask);
-                $('#recurringTask').prop('checked', task.IsRecurringTask);
+                $('#oneTimeTask').prop('checked', task.IsOneTimeTask).trigger("change")
+                $('#recurringTask').prop('checked', task.IsRecurringTask).trigger("change");
+                if (task.IsRecurringTask) {
+                    $("#recurringFields").removeClass('d-none');
+                    var startDate = task.StartDate ? task.StartDate.split('T')[0] : '';
+                    var endDate = task.EndDate ? task.EndDate.split('T')[0] : '';
+                    $('#recurringTaskStartDate').val(startDate);
+                    $('#recurringTaskEndDate').val(endDate);
+                    $('#recurringTaskFrequency').val(task.Frequency);
+                    $('#recurringTaskDueDays').val(task.DueDays);
+                    $("#recurringTaskHasRepeat").prop('checked', task.IsTaskRepeat);
+                }
                 $('#notifyAssignees').prop('checked', task.IsNotifyAssignee);
                 $('#notifyOwner').prop('checked', task.IsNotifyOwner);
                 $('#notifyTenant').prop('checked', task.IsNotifyTenant);
@@ -787,7 +857,7 @@
                     $("#entryNotesDiv").removeClass('d-none')
                     $("#entryNotes").val(task.EntryNotes)
                 }
-                $('#isApprovedByOwner').prop('checked', task.IsApprovedByOwner);
+                $('#isApprovedByOwner').prop('checked', task.ApprovedByOwner);
                 $('#isPartsAndLabor').prop('checked', task.PartsAndLabor);
                 if (task.TaskRequestFile) {
                     displayUploadedImage(task.TaskRequestFile);
@@ -804,7 +874,6 @@
                     });
                 }
                 var assigneesArray = task.Assignees.split(',');
-
                 $('#assignees').val(assigneesArray).trigger("change");
                 handleRequiredAttribute()
                 $("#newTaskModal").modal('show');

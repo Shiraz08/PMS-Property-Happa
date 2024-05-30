@@ -30,5 +30,23 @@ namespace PMS_PropertyHapa.Shared.Enum
         {
             Free
         }
+
+        public static class TaskTypes
+        {
+            public const string Task = "Task";
+            public const string TenantRequest = "TenantRequest";
+            public const string OwnerRequest = "OwnerRequest";
+            public const string WorkOrderRequest = "WorkOrderRequest";
+        }
+        
+        public enum TaskStatusTypes
+        {
+          NotStarted,
+          InProgress,
+          Completed,
+          OnHold,
+        }
+
+
     }
 }

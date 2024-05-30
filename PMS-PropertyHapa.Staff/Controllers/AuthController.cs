@@ -12,6 +12,8 @@ using PMS_PropertyHapa.Shared.Enum;
 using PMS_PropertyHapa.Shared.ImageUpload;
 using PMS_PropertyHapa.Staff.Auth.Controllers;
 using PMS_PropertyHapa.Staff.Services.IServices;
+using NuGet.Protocol.Plugins;
+using Humanizer;
 
 namespace PMS_PropertyHapa.Staff.Controllers
 {
@@ -51,7 +53,17 @@ namespace PMS_PropertyHapa.Staff.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginRequestDTO obj)
         {
+
+            ApplicationUser appUser = _context.Users.FirstOrDefault(x => x.Email == obj.Email);
+         
             var response = await _authService.LoginAsync<APIResponse>(obj);
+
+            if (!await _userManager.IsInRoleAsync(appUser, "PropertyManager"))
+            {
+                return Json(new { success = false, message = "Login Failed: Only Property Managers are allowed to log in." });
+            }
+
+
             if (response != null && response.IsSuccess)
             {
                 return Json(new { success = true, message = "Logged In Successfully..!", result = response.Result });

@@ -82,13 +82,18 @@ namespace PMS_PropertyHapa.Controllers
                             }
                             else
                             {
-                                ModelState.AddModelError("", "Login Failed: Only Owner are allowed to log in.");
                                 await _signInManager.SignOutAsync();
+                                return Json(new { success = false, message = "Login Failed: Only Owner are allowed to log in." });
+
                             }
 
 
                         if (!result.Succeeded)
-                            ModelState.Remove(nameof(login.Password));
+                        {
+                            return Json(new { success = false, message = "Login Failed: Invalid Email or password."});
+
+                        }
+
                     }
                     catch (Exception ex)
                     {

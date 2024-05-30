@@ -384,25 +384,25 @@ namespace PMS_PropertyHapa.Staff.Services
 
         public async Task<IEnumerable<AssetDTO>> GetAllAssetsAsync()
         {
-           
-                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
-                {
-                    ApiType = SD.ApiType.GET,
-                    Url = $"{villaUrl}/api/v1/AssetsAuth/Assets"
-                });
 
-                if (response.IsSuccess == true)
-                {
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = $"{villaUrl}/api/v1/AssetsAuth/Assets"
+            });
+
+            if (response.IsSuccess == true)
+            {
                 var userListJson = Convert.ToString(response.Result);
                 var asset = JsonConvert.DeserializeObject<IEnumerable<AssetDTO>>(userListJson);
                 return asset;
             }
-                else
-                {
-                    throw new Exception("Failed to retrieve communication data");
-                }
-            
-           
+            else
+            {
+                throw new Exception("Failed to retrieve communication data");
+            }
+
+
         }
 
 
@@ -1095,7 +1095,7 @@ namespace PMS_PropertyHapa.Staff.Services
 
         public async Task<bool> UpdateAccountAsync(TiwiloDto obj)
         {
-            
+
             var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
             {
                 ApiType = SD.ApiType.POST,
@@ -1134,7 +1134,7 @@ namespace PMS_PropertyHapa.Staff.Services
 
 
         }
-
+        
 
 
 
@@ -1200,13 +1200,34 @@ namespace PMS_PropertyHapa.Staff.Services
 
         #region TaskRequest
 
-        public async Task<IEnumerable<TaskRequestDto>> GetTaskRequestsAsync()
+        public async Task<IEnumerable<TaskRequestHistoryDto>> GetTaskRequestHistoryAsync(int taskRequsetId)
         {
 
             var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
             {
                 ApiType = SD.ApiType.GET,
-                Url = $"{villaUrl}/api/v1/LandlordAuth/Tasks"
+                Url = $"{villaUrl}/api/v1/GetDataByIdAuth/GetTaskRequestHistory/{taskRequsetId}"
+            });
+
+            if (response.IsSuccess == true)
+            {
+                var userListJson = Convert.ToString(response.Result);
+                var asset = JsonConvert.DeserializeObject<IEnumerable<TaskRequestHistoryDto>>(userListJson);
+                return asset;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve task history data");
+            }
+        }
+        
+        public async Task<IEnumerable<TaskRequestDto>> GetMaintenanceTasksAsync()
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = $"{villaUrl}/api/v1/GetDataByIdAuth/MaintenanceTasks"
             });
 
             if (response.IsSuccess == true)
@@ -1217,7 +1238,28 @@ namespace PMS_PropertyHapa.Staff.Services
             }
             else
             {
-                throw new Exception("Failed to retrieve asset data");
+                throw new Exception("Failed to retrieve task data");
+            }
+        }
+        
+        public async Task<IEnumerable<TaskRequestDto>> GetTaskRequestsAsync()
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = $"{villaUrl}/api/v1/GetDataByIdAuth/Tasks"
+            });
+
+            if (response.IsSuccess == true)
+            {
+                var userListJson = Convert.ToString(response.Result);
+                var asset = JsonConvert.DeserializeObject<IEnumerable<TaskRequestDto>>(userListJson);
+                return asset;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve task data");
             }
         }
         public async Task<TaskRequestDto> GetTaskRequestByIdAsync(int id)
@@ -1226,7 +1268,7 @@ namespace PMS_PropertyHapa.Staff.Services
             var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
             {
                 ApiType = SD.ApiType.GET,
-                Url = $"{villaUrl}/api/v1/LandlordAuth/GetTaskById/{id}"
+                Url = $"{villaUrl}/api/v1/GetDataByIdAuth/GetTaskById/{id}"
             });
             if (response.IsSuccess && response.Result != null)
             {
@@ -1234,7 +1276,7 @@ namespace PMS_PropertyHapa.Staff.Services
             }
             else
             {
-                throw new Exception("Failed to retrieve asset data");
+                throw new Exception("Failed to retrieve task data");
             }
         }
         public async Task<bool> SaveTaskAsync(TaskRequestDto taskRequestDto)
@@ -1245,14 +1287,14 @@ namespace PMS_PropertyHapa.Staff.Services
                 {
                     ApiType = SD.ApiType.POST,
                     Data = taskRequestDto,
-                    Url = $"{villaUrl}/api/v1/LandlordAuth/Task"
+                    Url = $"{villaUrl}/api/v1/GetDataByIdAuth/Task"
                 });
 
                 return response.IsSuccess;
             }
             catch (Exception ex)
             {
-                throw new Exception($"An error occurred when updating lease: {ex.Message}", ex);
+                throw new Exception($"An error occurred when updating task: {ex.Message}", ex);
             }
         }
         public async Task<bool> DeleteTaskAsync(int id)
@@ -1262,19 +1304,336 @@ namespace PMS_PropertyHapa.Staff.Services
                 var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
                 {
                     ApiType = SD.ApiType.POST,
-                    Url = $"{villaUrl}/api/v1/LandlordAuth/Task/{id}"
+                    Url = $"{villaUrl}/api/v1/GetDataByIdAuth/Task/{id}"
                 });
 
                 return response.IsSuccess;
             }
             catch (Exception ex)
             {
-                throw new Exception($"An error occurred when deleting tenant: {ex.Message}", ex);
+                throw new Exception($"An error occurred when deleting task: {ex.Message}", ex);
             }
         }
 
+        public async Task<bool> SaveTaskHistoryAsync(TaskRequestHistoryDto taskRequestHistoryDto)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Data = taskRequestHistoryDto,
+                    Url = $"{villaUrl}/api/v1/GetDataByIdAuth/TaskHistory"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when updating task History: {ex.Message}", ex);
+            }
+        }
+        #endregion
+
+        #region Calendar
+
+        public async Task<List<CalendarEvent>> GetCalendarEventsAsync(CalendarFilterModel filter)
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.POST,
+                Data = filter,
+                Url = $"{villaUrl}/api/v1/GetDataByIdAuth/CalendarEvents"
+            });
+
+            if (response.IsSuccess == true)
+            {
+                var userListJson = Convert.ToString(response.Result);
+                var events = JsonConvert.DeserializeObject<List<CalendarEvent>>(userListJson);
+                return events;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve calendar data");
+            }
+        }
+
+        public async Task<List<OccupancyOverviewEvents>> GetOccupancyOverviewEventsAsync(CalendarFilterModel filter)
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.POST,
+                Data = filter,
+                Url = $"{villaUrl}/api/v1/GetDataByIdAuth/OccupancyOverviewEvents"
+            });
+
+            if (response.IsSuccess == true)
+            {
+                var userListJson = Convert.ToString(response.Result);
+                var events = JsonConvert.DeserializeObject<List<OccupancyOverviewEvents>>(userListJson);
+                return events;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve calendar data");
+            }
+        }
+        public async Task<LeaseDataDto> GetLeaseDataByIdAsync(int id)
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.POST,
+                Url = $"{villaUrl}/api/v1/GetDataByIdAuth/LeaseData/{id}"
+            });
+
+            if (response.IsSuccess == true)
+            {
+                var userListJson = Convert.ToString(response.Result);
+                var lease = JsonConvert.DeserializeObject<LeaseDataDto>(userListJson);
+                return lease;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve lease data");
+            }
+        }
+        #endregion
+
+        #region Vendor Category
+
+        public async Task<IEnumerable<VendorCategory>> GetVendorCategoriesAsync()
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = $"{villaUrl}/api/v1/LandlordAuth/VendorCategories"
+            });
+
+            if (response.IsSuccess == true)
+            {
+                var userListJson = Convert.ToString(response.Result);
+                var asset = JsonConvert.DeserializeObject<IEnumerable<VendorCategory>>(userListJson);
+                return asset;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve vendor categories data");
+            }
+        }
+        public async Task<VendorCategory> GetVendorCategoryByIdAsync(int id)
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = $"{villaUrl}/api/v1/LandlordAuth/GetVendorCategoryById/{id}"
+            });
+            if (response.IsSuccess && response.Result != null)
+            {
+                return JsonConvert.DeserializeObject<VendorCategory>(Convert.ToString(response.Result));
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve vendor category data");
+            }
+        }
+        public async Task<bool> SaveVendorCategoryAsync(VendorCategory vendorCategory)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Data = vendorCategory,
+                    Url = $"{villaUrl}/api/v1/LandlordAuth/VendorCategory"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when updating vendor category: {ex.Message}", ex);
+            }
+        }
+        public async Task<bool> DeleteVendorCategoryAsync(int id)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Url = $"{villaUrl}/api/v1/LandlordAuth/VendorCategory/{id}"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when deleting vendor category: {ex.Message}", ex);
+            }
+        }
 
         #endregion
+
+        #region Vendor 
+
+        public async Task<IEnumerable<VendorDto>> GetVendorsAsync()
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = $"{villaUrl}/api/v1/LandlordAuth/Vendors"
+            });
+
+            if (response.IsSuccess == true)
+            {
+                var userListJson = Convert.ToString(response.Result);
+                var asset = JsonConvert.DeserializeObject<IEnumerable<VendorDto>>(userListJson);
+                return asset;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve vendor data");
+            }
+        }
+        public async Task<VendorDto> GetVendorByIdAsync(int id)
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = $"{villaUrl}/api/v1/LandlordAuth/GetVendorById/{id}"
+            });
+            if (response.IsSuccess && response.Result != null)
+            {
+                return JsonConvert.DeserializeObject<VendorDto>(Convert.ToString(response.Result));
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve vendor data");
+            }
+        }
+        public async Task<bool> SaveVendorAsync(VendorDto vendor)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Data = vendor,
+                    Url = $"{villaUrl}/api/v1/LandlordAuth/Vendor"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when updating vendor: {ex.Message}", ex);
+            }
+        }
+        public async Task<bool> DeleteVendorAsync(int id)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Url = $"{villaUrl}/api/v1/LandlordAuth/Vendor/{id}"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when deleting vendor: {ex.Message}", ex);
+            }
+        }
+
+        #endregion
+
+        
+        #region Applications 
+
+        public async Task<IEnumerable<ApplicationsDto>> GetApplicationsAsync()
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = $"{villaUrl}/api/v1/LandlordAuth/Applications"
+            });
+
+            if (response.IsSuccess == true)
+            {
+                var userListJson = Convert.ToString(response.Result);
+                var asset = JsonConvert.DeserializeObject<IEnumerable<ApplicationsDto>>(userListJson);
+                return asset;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve application data");
+            }
+        }
+        public async Task<ApplicationsDto> GetApplicationByIdAsync(int id)
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = $"{villaUrl}/api/v1/LandlordAuth/GetApplicationById/{id}"
+            });
+            if (response.IsSuccess && response.Result != null)
+            {
+                return JsonConvert.DeserializeObject<ApplicationsDto>(Convert.ToString(response.Result));
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve application data");
+            }
+        }
+        public async Task<bool> SaveApplicationAsync(ApplicationsDto application)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Data = application,
+                    Url = $"{villaUrl}/api/v1/LandlordAuth/Application"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when updating application: {ex.Message}", ex);
+            }
+        }
+        public async Task<bool> DeleteApplicationAsync(int id)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Url = $"{villaUrl}/api/v1/LandlordAuth/Application/{id}"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when deleting application: {ex.Message}", ex);
+            }
+        }
+
+        #endregion
+
 
     }
 }

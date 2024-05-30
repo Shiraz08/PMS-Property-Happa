@@ -44,9 +44,14 @@
     <!-- Responsive css-->
     <link rel="stylesheet" type="text/css" href="~/Dashboard/assets/css/responsive.css">
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.min.css" rel="stylesheet">
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <style>
         .page-wrapper.compact-wrapper .page-body-wrapper div.sidebar-wrapper .logo-wrapper, .page-wrapper.compact-wrapper .page-body-wrapper div.sidebar-wrapper .logo-icon-wrapper {
             padding: 3px 30px !important;
+        }
+
+        .page-wrapper.compact-wrapper .page-body-wrapper div.sidebar-wrapper .sidebar-main .simplebar-offset {
+            height: calc(100vh - 15vh);
         }
 
 /*         .profile-greeting {
@@ -247,12 +252,12 @@
                                    
                                 </li>
                             </ul>
-                            <div class="sidebar-img-section">
+                          @*   <div class="sidebar-img-section">
                                 <div class="sidebar-img-content">
                                     <img class="img-fluid" src="../assets/images/side-bar.png" alt="">
                                     <h4>Feed Back</h4><a class="txt" href="#">Feedback is the breakfast of champions."</a><a class="btn btn-secondary" href="#">Give Feedback</a>
                                 </div>
-                            </div>
+                            </div> *@
                         </div>
                         <div class="right-arrow" id="right-arrow"><i data-feather="arrow-right"></i></div>
                     </nav>
@@ -334,7 +339,8 @@
     <script src="~/Dashboard/assets/js/datatable/datatables/jquery.dataTables.min.js"></script>
     <script src="~/Dashboard/assets/js/datatable/datatables/datatable.custom.js"></script>
      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.all.min.js"></script>
- 
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+
 @*     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.10.8/sweetalert2.min.js"></script>
  *@    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.2/js/toastr.min.js"></script>
 

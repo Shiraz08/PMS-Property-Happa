@@ -1,8 +1,1441 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "AddApplication";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    // Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>AddApplication</h1>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="author" content="">
+
+    <link rel="icon" id="faviconIcon" type="image/x-icon">
+    <link rel="shortcut icon" href="" type="image/x-icon" id="Org_iconshort">
+    <title>PMC Portal</title>
+    <!-- Google font-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="~/Dashboard/assets/css/vendors/font-awesome.css">
+    <!-- ico-font-->
+    <link rel="stylesheet" type="text/css" href="~/Dashboard/assets/css/vendors/icofont.css">
+    <!-- Themify icon-->
+    <link rel="stylesheet" type="text/css" href="~/Dashboard/assets/css/vendors/themify.css">
+    <!-- Flag icon-->
+    <link rel="stylesheet" type="text/css" href="~/Dashboard/assets/css/vendors/flag-icon.css">
+    <!-- Feather icon-->
+    <link rel="stylesheet" type="text/css" href="~/Dashboard/assets/css/vendors/feather-icon.css">
+    <!-- Plugins css start-->
+    <link rel="stylesheet" type="text/css" href="~/Dashboard/assets/css/vendors/scrollbar.css">
+    <link rel="stylesheet" type="text/css" href="~/Dashboard/assets/css/vendors/animate.css">
+    <link rel="stylesheet" type="text/css" href="~/Dashboard/assets/css/vendors/chartist.css">
+    <link rel="stylesheet" type="text/css" href="~/Dashboard/assets/css/vendors/date-picker.css">
+    <link rel="stylesheet" type="text/css" href="~/Dashboard/assets/css/vendors/photoswipe.css">
+    <link rel="stylesheet" type="text/css" href="~/Dashboard/assets/css/vendors/owlcarousel.css">
+    <link rel="stylesheet" type="text/css" href="~/Dashboard/assets/css/vendors/prism.css">
+    <!-- Plugins css Ends-->
+    <!-- Plugins css start-->
+    <link href="~/dashboard/assets/css/vendors/select2.css" rel="stylesheet" />
+
+
+    <link href="~/dashboard/assets/css/customstyle.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="~/Dashboard/assets/css/vendors/scrollbar.css">
+    <link rel="stylesheet" type="text/css" href="~/Dashboard/assets/css/vendors/datatables.css">
+    <!-- Bootstrap css-->
+    <link rel="stylesheet" type="text/css" href="~/Dashboard/assets/css/vendors/bootstrap.css">
+    <!-- App css-->
+    <link rel="stylesheet" type="text/css" href="~/Dashboard/assets/css/style.css">
+    <link id="color" rel="stylesheet" href="~/Dashboard/assets/css/color-1.css" media="screen">
+    <!-- Responsive css-->
+    <link rel="stylesheet" type="text/css" href="~/Dashboard/assets/css/responsive.css">
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+
+
+
+
+
+    
+
+       <!-- latest jquery-->
+    <script src="~/Dashboard/assets/js/jquery-3.5.1.min.js"></script>
+    <!-- Bootstrap js-->
+    <script src="~/Dashboard/assets/js/bootstrap/bootstrap.bundle.min.js"></script>
+    <!-- feather icon js-->
+    <script src="~/Dashboard/assets/js/icons/feather-icon/feather.min.js"></script>
+    <script src="~/Dashboard/assets/js/icons/feather-icon/feather-icon.js"></script>
+    <!-- scrollbar js-->
+    <script src="~/Dashboard/assets/js/scrollbar/simplebar.js"></script>
+    <script src="~/Dashboard/assets/js/scrollbar/custom.js"></script>
+    <!-- Sidebar jquery-->
+    <script src="~/Dashboard/assets/js/config.js"></script>
+    <!-- Plugins JS start-->
+    <script src="~/Dashboard/assets/js/sidebar-menu.js"></script>
+    <script src="~/Dashboard/assets/js/chart/knob/knob.min.js"></script>
+    <script src="~/Dashboard/assets/js/chart/knob/knob-chart.js"></script>
+    <script src="~/Dashboard/assets/js/chart/apex-chart/apex-chart.js"></script>
+    <script src="~/Dashboard/assets/js/chart/apex-chart/stock-prices.js"></script>
+    <script src="~/Dashboard/assets/js/notify/bootstrap-notify.min.js"></script>
+    <script src="~/Dashboard/assets/js/dashboard/default.js"></script>
+    <script src="~/Dashboard/assets/js/datepicker/date-picker/datepicker.js"></script>
+    <script src="~/Dashboard/assets/js/datepicker/date-picker/datepicker.en.js"></script>
+    <script src="~/Dashboard/assets/js/datepicker/date-picker/datepicker.custom.js"></script>
+    <script src="~/Dashboard/assets/js/photoswipe/photoswipe.min.js"></script>
+    <script src="~/Dashboard/assets/js/photoswipe/photoswipe-ui-default.min.js"></script>
+    <script src="~/Dashboard/assets/js/photoswipe/photoswipe.js"></script>
+    <script src="~/Dashboard/assets/js/typeahead/handlebars.js"></script>
+    <script src="~/Dashboard/assets/js/typeahead/typeahead.bundle.js"></script>
+    <script src="~/Dashboard/assets/js/typeahead/typeahead.custom.js"></script>
+    <script src="~/Dashboard/assets/js/typeahead-search/handlebars.js"></script>
+    <script src="~/Dashboard/assets/js/typeahead-search/typeahead-custom.js"></script>
+    <script src="~/Dashboard/assets/js/height-equal.js"></script>
+    <script src="~/Dashboard/assets/js/chart/chartjs/chart.min.js"></script>
+    <script src="~/Dashboard/assets/js/chart/chartist/chartist.js"></script>
+    <script src="~/Dashboard/assets/js/chart/chartist/chartist-plugin-tooltip.js"></script>
+    <script src="~/Dashboard/assets/js/prism/prism.min.js"></script>
+    <script src="~/Dashboard/assets/js/counter/jquery.waypoints.min.js"></script>
+    <script src="~/Dashboard/assets/js/counter/jquery.counterup.min.js"></script>
+    <script src="~/Dashboard/assets/js/counter/counter-custom.js"></script>
+    <script src="~/Dashboard/assets/js/owlcarousel/owl.carousel.js"></script>
+    <script src="~/Dashboard/assets/js/owlcarousel/owl-custom.js"></script>
+    <script src="~/Dashboard/assets/js/dashboard/dashboard_2.js"></script>
+    <script src="~/Dashboard/assets/js/tooltip-init.js"></script>
+    <script src="~/dashboard/assets/js/select2/select2.full.min.js"></script>
+    <!-- Plugins JS Ends-->
+    <!-- Theme js-->
+    <script src="~/Dashboard/assets/js/script.js"></script>
+    <script src="~/Dashboard/assets/js/theme-customizer/customizer.js"></script>
+    <!-- login js-->
+    <!-- Plugin used-->
+    <!-- Plugins JS start-->
+    <script src="~/Dashboard/assets/js/datatable/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/Dashboard/assets/js/datatable/datatables/datatable.custom.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.all.min.js"></script>
+
+@*     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.10.8/sweetalert2.min.js"></script>
+    *@
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar-scheduler@6.1.11/index.global.min.js"></script>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.2/js/toastr.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            debugger;
+            
+            $('.select2').select2({
+                allowClear: true
+            });
+            $('.datepickerSingle').datepicker({
+                orientation: "bottom left",
+                format: "mm/dd/yyyy",
+            });
+
+            toastr.options = {
+                "closeButton": false,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "preventDuplicates": false,
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            };
+
+        });
+    </script>
+
+
+
+<style>
+    .nav-sidebar {
+        background-color: #f8f9fa; /* Background color */
+        border-radius: 10px; /* Rounded corners */
+        padding: 10px; /* Padding around the links */
+    }
+
+        .nav-sidebar .nav-link {
+            color: #212529; /* Link color */
+            padding: 8px 20px; /* Padding for each link */
+            border-radius: 5px; /* Rounded corners for links */
+            margin-bottom: 5px; /* Margin between links */
+        }
+
+            .nav-sidebar .nav-link.active {
+                background-color: #dc3545; /* Red background for active link */
+                color: #fff; /* Active link text color */
+                font-weight: bold; /* Bold font for active link */
+            }
+</style>
+
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-sm-12 text-center">
+                    <h3>Application</h3>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid my-4" id="applicationsForm">
+        <div class="row">
+            <!-- Column 1: Application Table (80% on lg screens) -->
+            <div class="col-xl-12 col-md-12 box-col-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-2">
+                                <!-- Side Navbar -->
+                                <nav class="nav flex-column nav-sidebar">
+                                    <a class="nav-link active" data-form-id="applicantInfo" href="#"><i class="fa fa-clipboard"></i>Applicant Info</a>
+                                    <a class="nav-link" data-form-id="residental" href="#"><i class="fa fa-clipboard"></i>Residental</a>
+                                    <a class="nav-link" data-form-id="employment" href="#"><i class="icofont  icofont-briefcase-alt-1"></i>Employment</a>
+                                    <a class="nav-link" data-form-id="pets" href="#"><i class="icofont icofont-paw"></i>Pets</a>
+                                    <a class="nav-link" data-form-id="vehicle" href="#"><i class="icofont icofont-car-alt-3"></i>Vehicle</a>
+                                    <a class="nav-link" data-form-id="dependants" href="#"><i class="icofont icofont-users"></i>Dependants</a>
+                                    <a class="nav-link" data-form-id="emergencyContact" href="#"><i class="icofont icofont-contacts"></i>Emergency Contact</a>
+                                    <a class="nav-link" data-form-id="additionalIncomeAssets" href="#"><i class="fa fa-hand-holding-usd"></i>Additional Income & Assets</a>
+                                    <a class="nav-link" data-form-id="createQuestion" href="#"><i class="fa fa-info-circle"></i>Additional Questions</a>
+                                    <a class="nav-link" data-form-id="requestDocuments" href="#"><i class="icofont icofont-paperclip"></i>Request Documents</a>
+                                    <a class="nav-link" data-form-id="property" href="#"><i class="icofont icofont-home"></i>Property</a>
+                                    <a class="nav-link" data-form-id="termsCondition" href="#"><i class="icofont icofont-file-alt"></i>Terms & Condition</a>
+                                </nav>
+                            </div>
+                            <div class="col-10">
+                                <!-- Forms for different sections -->
+                                <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+
+                                <form id="applicantInfoForm" class="form-section">
+                                    <!-- Applicant Info Form -->
+                                    <h2>Applicant Info</h2>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="mb-3">
+                                                <label for="appFirstName" class="form-label">First Name</label>
+                                                <input type="text" class="form-control" placeholder="First Name" id="appFirstName" required>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="mb-3">
+                                                <label for="appMiddleName" class="form-label">Middle Name</label>
+                                                <input type="text" class="form-control" placeholder="Middle Name" id="appMiddleName">
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="mb-3">
+                                                <label for="appLastName" class="form-label">Last Name</label>
+                                                <input type="text" class="form-control" placeholder="Last Name" id="appLastName" required>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="mb-3">
+                                                <label for="appSSN" class="form-label">SSN</label>
+                                                <input type="text" class="form-control" placeholder="SSN" id="appSSN" required>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="mb-3">
+                                                <label for="appITIN" class="form-label">ITIN</label>
+                                                <input type="text" class="form-control" placeholder="ITIN" id="appITIN">
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="mb-3">
+                                                <label for="appDOB" class="form-label">Date of Birth</label>
+                                                <input type="date" class="form-control" placeholder="Date of Birth" id="appDOB" required>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="mb-3">
+                                                <label for="appEmail" class="form-label">Email</label>
+                                                <input type="email" class="form-control" placeholder="Email" id="appEmail" required>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="mb-3">
+                                                <label for="appPhoneNmbr" class="form-label">Phone Number</label>
+                                                <input type="tel" class="form-control" placeholder="Phone Number" id="appPhoneNmbr" required>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="mb-3">
+                                                <label for="appGender" class="form-label">Gender</label>
+                                                <select class="form-select" id="appGender">
+                                                    <option selected disabled value="">Please Select</option>
+                                                    <option value="male">Male</option>
+                                                    <option value="female">Female</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="mb-3">
+                                                <label for="appMaritalStatus" class="form-label">Marital Status</label>
+                                                <select class="form-select" id="appMaritalStatus">
+                                                    <option selected disabled value="">Please Select</option>
+                                                    <option value="single">Single</option>
+                                                    <option value="married">Married</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="mb-3">
+                                                <label for="appDriverLicenseState" class="form-label">Driver License State</label>
+                                                <input type="text" class="form-control" placeholder="Driver License State" id="appDriverLicenseState">
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="mb-3">
+                                                <label for="appDriverLicenseNmbr" class="form-label">Driver License Number</label>
+                                                <input type="text" class="form-control" placeholder="Driver License Number" id="appDriverLicenseNmbr">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="mb-3">
+                                                <label for="appNotes" class="form-label">Tell us why you're awesome!</label>
+                                                <textarea class="form-control" placeholder="Tell us why you're awesome!" id="appNotes"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+
+                                <form id="residentialForm" class="form-section">
+                                    <!-- Residential Form -->
+                                    <h2>Residential</h2>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="mb-3">
+                                                <label for="resAddress" class="form-label">Address</label>
+                                                <input type="text" class="form-control" placeholder="Address" id="resAddress" required>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="mb-3">
+                                                <label for="resLandlord" class="form-label">Landlord / Company Name</label>
+                                                <input type="text" class="form-control" placeholder="Landlord / Company Name" id="resLandlord">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="mb-3">
+                                                <label for="resContactPhone" class="form-label">Contact Phone</label>
+                                                <input type="tel" class="form-control" placeholder="Contact Phone" id="resContactPhone">
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="mb-3">
+                                                <label for="resContactEmail" class="form-label">Contact Email</label>
+                                                <input type="email" class="form-control" placeholder="Contact Email" id="resContactEmail">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="mb-3">
+                                                <label for="resMoveInDate" class="form-label">Move-in Date</label>
+                                                <input type="date" class="form-control" id="resMoveInDate" required>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="mb-3">
+                                                <label for="resPayment" class="form-label">Monthly Payment</label>
+                                                <input type="number" class="form-control" placeholder="Monthly Payment" id="resPayment">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+
+                                <form id="employmentForm" class="form-section">
+                                    <!-- Employment Form -->
+                                    <h2>Employment</h2>
+
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="mb-3">
+                                                <label for="empJobType" class="form-label">Job Type</label>
+                                                <input type="text" class="form-control" placeholder="Job Type" id="empJobType">
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="mb-3">
+                                                <label for="empTitle" class="form-label">Title/Position</label>
+                                                <input type="text" class="form-control" placeholder="Title/Position" id="empTitle">
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="mb-3">
+                                                <label for="empAnnualIncome" class="form-label">Annual Income</label>
+                                                <input type="number" class="form-control" placeholder="Annual Income" id="empAnnualIncome">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="mb-3">
+                                                <label for="empCompanyName" class="form-label">Company Name</label>
+                                                <input type="text" class="form-control" placeholder="Company Name" id="empCompanyName">
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="mb-3">
+                                                <label for="empWorkStatus" class="form-label">Do you currently work here?</label>
+                                                <select class="form-select" id="empWorkStatus">
+                                                    <option selected disabled value="">Please Select</option>
+                                                    <option value="true">Yes</option>
+                                                    <option value="false">No</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="mb-3">
+                                                <label for="empStartDate" class="form-label">Start Date</label>
+                                                <input type="date" class="form-control" id="empStartDate">
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="mb-3">
+                                                <label for="empEndDate" class="form-label">End Date</label>
+                                                <input type="date" class="form-control" id="empEndDate">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="mb-3">
+                                                <label for="empSupervisorName" class="form-label">Supervisor Name</label>
+                                                <input type="text" class="form-control" placeholder="Supervisor Name" id="empSupervisorName">
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="mb-3">
+                                                <label for="empSupervisorEmail" class="form-label">Supervisor Email</label>
+                                                <input type="email" class="form-control" placeholder="Supervisor Email" id="empSupervisorEmail">
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="mb-3">
+                                                <label for="empSupervisorPhone" class="form-label">Supervisor Phone</label>
+                                                <input type="tel" class="form-control" placeholder="Supervisor Phone" id="empSupervisorPhone">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+
+                                <form id="petForm" class="form-section">
+                                    <!-- Pets Form -->
+                                    <h2>Pets</h2>
+                                    <div id="petContainer">
+                                        <div class="petCount">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="mb-3">
+                                                        <label for="petName" class="form-label">Name</label>
+                                                        <input type="text" class="form-control petName" placeholder="Name">
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="mb-3">
+                                                        <label for="petBreed" class="form-label">Breed</label>
+                                                        <input type="text" class="form-control petBreed" placeholder="Breed">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="mb-3">
+                                                        <label for="petType" class="form-label">Type</label>
+                                                        <input type="text" class="form-control petType" placeholder="Type">
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="mb-3">
+                                                        <label for="petQuantity" class="form-label">Quantity</label>
+                                                        <input type="number" class="form-control petQuantity" placeholder="Quantity">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="mb-3">
+                                                        <label for="petPictureFile" class="form-label">Pet Picture</label>
+                                                        <input type="file" class="form-control petPictureFile" onchange="handlePetPictureChange(this)" name="PetPicture" accept="image/*">
+                                                        <img class="petPreview d-none" src="" alt="Pet Preview" style="max-width: 100%;">
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="mb-3 mt-5">
+                                                        <a onclick="removePet(this);" style="cursor: pointer;">
+                                                            <i class="fa fa-trash"></i>Remove
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="align-self-end mt-3">
+                                        <div class="mb-3">
+                                            <a id="addPetButton" style="cursor: pointer;">
+                                                <i class="fa fa-plus-circle"></i> Add Another Pet
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                </form>
+
+
+
+                                <form id="vehicleForm" class="form-section">
+                                    <!-- Vehicle Form -->
+                                    <h2>Vehicle</h2>
+                                    <div id="vehicleContainer">
+                                        <div class="vehicleCount">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="mb-3">
+                                                        <label for="vehicleMake" class="form-label">Make</label>
+                                                        <input type="text" class="form-control vehicleMake" placeholder="Make">
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="mb-3">
+                                                        <label for="vehicleModel" class="form-label">Model</label>
+                                                        <input type="text" class="form-control vehicleModel" placeholder="Model" >
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="mb-3">
+                                                        <label for="vehicleColor" class="form-label">Color</label>
+                                                        <input type="color" class="form-control vehicleColor" placeholder="Color" >
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="mb-3">
+                                                        <label for="vehicleLicensePlate" class="form-label">License Plate</label>
+                                                        <input type="text" class="form-control vehicleLicensePlate" placeholder="License Plate">
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="mb-3">
+                                                        <label for="vehicleYear" class="form-label">Year</label>
+                                                        <input type="text" class="form-control vehicleYear" placeholder="Year" >
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="mb-3 mt-5">
+                                                        <a onclick="removeVehicle(this);" style="cursor: pointer;">
+                                                            <i class="fa fa-trash"></i>Remove
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="align-self-end mt-3">
+                                        <div class="mb-3">
+                                            <a id="addVehicleButton" style="cursor: pointer;">
+                                                <i class="fa fa-plus-circle"></i> Add Another Vehicle
+                                            </a>
+                                        </div>
+                                    </div>
+                                </form>
+
+                                <form id="dependantsForm" class="form-section">
+                                    <!-- Dependants Form -->
+                                    <h2>Dependants</h2>
+                                    <div id="dependantContainer">
+                                        <div class="dependantCount">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="mb-3">
+                                                        <label for="depFirstName" class="form-label">First Name</label>
+                                                        <input type="text" class="form-control depFirstName" placeholder="First Name">
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="mb-3">
+                                                        <label for="depLastName" class="form-label">Last Name</label>
+                                                        <input type="text" class="form-control depLastName" placeholder="Last Name" >
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="mb-3">
+                                                        <label for="depEmail" class="form-label">Email</label>
+                                                        <input type="email" class="form-control depEmail" placeholder="Email" >
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="mb-3">
+                                                        <label for="depPhoneNmbr" class="form-label">Phone Number</label>
+                                                        <input type="tel" class="form-control depPhoneNmbr" placeholder="Phone Number" >
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="mb-3">
+                                                        <label for="depDOB" class="form-label">Date of Birth</label>
+                                                        <input type="date" class="form-control depDOB" >
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="mb-3">
+                                                        <label for="depRelation" class="form-label">Relation</label>
+                                                        <input type="text" class="form-control depRelation" placeholder="Relation" >
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="mb-3 mt-5">
+                                                        <a onclick="removeDependant(this);" style="cursor: pointer;">
+                                                            <i class="fa fa-trash"></i>Remove
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="align-self-end mt-3">
+                                        <div class="mb-3">
+                                            <a id="addDependantButton" style="cursor: pointer;">
+                                                <i class="fa fa-plus-circle"></i> Add Another Dependant
+                                            </a>
+                                        </div>
+                                    </div>
+                                </form>
+
+                                <form id="emergencyContactForm" class="form-section">
+                                    <!-- Emergency Contact Form -->
+                                    <h2>Emergency Contact</h2>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="mb-3">
+                                                <label for="emergencyFirstName" class="form-label">First Name</label>
+                                                <input type="text" class="form-control" placeholder="First Name" id="emergencyFirstName">
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="mb-3">
+                                                <label for="emergencyLastName" class="form-label">Last Name</label>
+                                                <input type="text" class="form-control" placeholder="Last Name" id="emergencyLastName">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="mb-3">
+                                                <label for="emergencyEmail" class="form-label">Email</label>
+                                                <input type="email" class="form-control" placeholder="Email" id="emergencyEmail">
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="mb-3">
+                                                <label for="emergencyPhoneNmbr" class="form-label">Phone Number</label>
+                                                <input type="tel" class="form-control" placeholder="Phone Number" id="emergencyPhoneNmbr">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="emergencyAddress" class="form-label">Address</label>
+                                        <input type="text" class="form-control" placeholder="Address" id="emergencyAddress">
+                                    </div>
+                                </form>
+
+                                <form id="incomeForm" class="form-section">
+                                    <!-- Additional Income and Assets Form -->
+                                    <h2>Additional Income and Assets</h2>
+
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="mb-3">
+                                                <label for="incomeSource" class="form-label">Source of Income</label>
+                                                <input type="text" class="form-control" placeholder="Source of Income" id="incomeSource">
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="mb-3">
+                                                <label for="incomeAmount" class="form-label">Amount</label>
+                                                <input type="number" class="form-control" placeholder="Amount" id="incomeAmount">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="mb-3">
+                                                <label for="incomeAsset" class="form-label">Type of Asset</label>
+                                                <input type="text" class="form-control" placeholder="Type of Asset" id="incomeAsset">
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="mb-3">
+                                                <label for="incomeValue" class="form-label">Value</label>
+                                                <input type="number" class="form-control" placeholder="Value" id="incomeValue">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+
+                                <form id="questionForm" class="form-section">
+                                    <!-- Create Question Form -->
+                                    <h2>Additional Questions</h2>
+
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="mb-3">
+                                                <label for="questionSmoke" class="form-label">Do you smoke?</label>
+                                                <select class="form-select" id="questionSmoke">
+                                                    <option selected disabled value="">Please Select</option>
+                                                    <option value="true">Yes</option>
+                                                    <option value="false">No</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="mb-3">
+                                                <label for="questionBank" class="form-label">Have you filed for bankruptcy in the past?</label>
+                                                <select class="form-select" id="questionBank">
+                                                    <option selected disabled value="">Please Select</option>
+                                                    <option value="true">Yes</option>
+                                                    <option value="false">No</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="mb-3">
+                                                <label for="questionEvict" class="form-label">Have you ever been evicted from a residential property?</label>
+                                                <select class="form-select" id="questionEvict">
+                                                    <option selected disabled value="">Please Select</option>
+                                                    <option value="true">Yes</option>
+                                                    <option value="false">No</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="mb-3">
+                                                <label for="questionRent" class="form-label">Have you ever refused to pay rent?</label>
+                                                <select class="form-select" id="questionRent">
+                                                    <option selected disabled value="">Please Select</option>
+                                                    <option value="true">Yes</option>
+                                                    <option value="false">No</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="mb-3">
+                                                <label for="questionCrime" class="form-label">Have you ever been convicted of a crime?</label>
+                                                <select class="form-select" id="questionCrime">
+                                                    <option selected disabled value="">Please Select</option>
+                                                    <option value="true">Yes</option>
+                                                    <option value="false">No</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+
+                                <form id="documentForm" class="form-section">
+                                    <!-- Request Documents Form -->
+                                    <h2>Request Documents </h2>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="mb-3">
+                                                <label for="documentLicenceFile" class="form-label">Driver License</label>
+                                                <input type="file" class="form-control" id="documentLicenceFile" name="DocumentLicence" accept="image/*">
+                                                <img id="licensePreview" src="" alt="License Preview" style="max-width: 100%;" class="d-none">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                           
+                                            <div class="mb-3">
+                                                <label for="documentStubFile" class="form-label">Pay Stub</label>
+                                                <input type="file" class="form-control" id="documentStubFile" name="DocumentStub" accept="image/*">
+                                                <img id="stubPreview" src="" alt="Stub Preview" style="max-width: 100%;" class="d-none">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+
+                                <form id="propertyForm" class="form-section">
+                                    <!-- Property Form -->
+                                    <h2>Property </h2>
+                                    <div class="mb-3">
+                                        <label for="applicantProperty" class="form-label ">Property</label>
+                                        <select class="form-control" id="applicantProperty" required>
+                                            <option selected disabled value="">Please Select</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="applicantUnits" class="form-label">Units</label>
+                                        <select class="form-control select2" multiple="multiple" id="applicantUnits" required>
+                                        </select>
+                                    </div>
+                                </form>
+
+                                <form id="termsForm" class="form-section">
+                                    <!-- Terms and Conditions Form -->
+                                    <h2>Terms and Conditions</h2>
+                                    <div class="list-unstyled">
+                                        <ul>
+                                            <li>Applicants must provide accurate information and consent to background checks upon submitting the rental application.</li>
+                                            <li>The application fee, non-refundable, covers processing costs and does not guarantee approval.</li>
+                                            <li>Income verification and rental history may be required as part of the application process.</li>
+                                            <li>Final approval of the application is at the discretion of the landlord or property management.</li>
+                                            <li>Privacy of personal information is maintained in accordance with the landlord's privacy policy.</li>
+                                        </ul>
+                                    </div>
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" id="agreeCheckbox">
+                                        <label class="form-check-label" for="agreeCheckbox">I agree to the terms and conditions</label>
+                                    </div>
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer d-flex justify-content-end">
+                        <button type="button" class="btn btn-secondary" id="prevButton">Previous</button>
+                        <button type="button" class="btn btn-primary" id="nextButton">Next</button>
+                        <button type="submit" class="btn btn-primary" id="saveButton" style="display:none;">Save Changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentFormIndex = 0;
+    const formSections = $(".form-section");
+    const totalForms = formSections.length;
+    $(document).ready(function () {
+
+        formSections.hide().first().show();
+        $('#prevButton').hide();
+        updateActiveNav(currentFormIndex);
+
+
+
+        const validationrules = {
+            0: [
+                { field: '#appFirstName', message: 'Please enter First Name.' },
+                { field: '#appLastName', message: 'Please enter Last Name.' },
+                { field: '#appSSN', message: 'please enter SSN.' },
+                { field: '#appDOB', message: 'please enter Date of Birth.' },
+                { field: '#appEmail', message: 'please enter Email.' },
+                { field: '#appEmail', message: 'please enter a valid Email.', validate: isValidEmail },
+                { field: '#appPhoneNmbr', message: 'Please enter Phone Number.' }
+            ],
+            1: [
+                { field: '#resAddress', message: 'Please enter Address.' },
+                { field: '#resMoveInDate', message: 'Please enter Move-in-Date.' }
+            ],
+            2: [
+                { field: '#empJobType', message: 'Please enter Job Type.' },
+                { field: '#empAnnualIncome', message: 'Please enter Annual Income.' },
+                { field: '#empCompanyName', message: 'Please enter Company Name.' }
+            ],
+            10: [
+                { field: '#applicantProperty', message: 'Please select Property.' },
+                { field: '#applicantUnits', message: 'Please select Units.', validate: (value) => value && value.length > 0 }
+
+            ],
+            11: [
+                { field: '#agreeCheckbox', message: 'Please check I Agree box.', validate: (value) => $('#agreeCheckbox').is(':checked') }
+            ]
+        };
+
+
+        $('#prevButton').click(function () {
+            if (currentFormIndex > 0) {
+                formSections.eq(currentFormIndex).hide();
+                formSections.eq(--currentFormIndex).show();
+                toggleButtons();
+                updateActiveNav(currentFormIndex);
+            }
+        });
+
+        $('#nextButton').click(function () {
+            const errors = validateSection(currentFormIndex);
+
+            if (errors.length > 0) {
+                errors.forEach(error => toastr.error(error));
+                return;
+            }
+
+            if (currentFormIndex < totalForms - 1) {
+                formSections.eq(currentFormIndex).hide();
+                formSections.eq(++currentFormIndex).show();
+                toggleButtons();
+                updateActiveNav(currentFormIndex);
+            }
+        });
+
+
+        toggleButtons();
+        populateDropDown();
+
+        $(".form-section").not(":first").hide();
+
+
+
+        function validateSection(index) {
+            const errors = [];
+            const rules = validationrules[index];
+
+            if (rules) {
+                rules.forEach(rule => {
+                    const value = $(rule.field).val();
+                    if (!value || (rule.validate && !rule.validate(value))) {
+                        errors.push(rule.message);
+                    }
+                });
+            }
+
+            return errors;
+        }
+
+        function isValidEmail(email) {
+            const emailPattern = /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/;
+            return emailPattern.test(email);
+        }
+
+        formSections.hide().eq(currentFormIndex).show();
+        toggleButtons();
+        updateActiveNav(currentFormIndex);
+
+
+
+
+        // show Licence image
+        $('#documentLicenceFile').on('change', function () {
+            console.log("sggd")
+            const fileInput = $(this)[0];
+            const licensePreview = $('#licensePreview');
+            if (fileInput.files.length > 0) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    licensePreview.attr('src', e.target.result).removeClass('d-none'); 
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+            } else {
+                licensePreview.addClass('d-none').attr('src', ''); 
+            }
+        });
+        
+        // show Stub image
+        $('#documentStubFile').on('change', function () {
+            console.log("sggd")
+            const fileInput = $(this)[0];
+            const stubPreview = $('#stubPreview');
+            if (fileInput.files.length > 0) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    stubPreview.attr('src', e.target.result).removeClass('d-none'); 
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+            } else {
+                stubPreview.addClass('d-none').attr('src', ''); 
+            }
+        });
+
+
+        // Add a new Pet
+        $('#addPetButton').click(function (event) {
+            event.preventDefault();
+            addPet();
+        });
+
+        // Add a new Vehicle
+        $('#addVehicleButton').click(function (event) {
+            event.preventDefault();
+            addVehicle();
+        });
+
+        // Add a new Dependant
+        $('#addDependantButton').click(function (event) {
+            event.preventDefault();
+            addDependant();
+        });
+
+
+        $('#saveButton').click(function (e) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            const errors = validateSection(currentFormIndex);
+            if (errors.length === 0) {
+                collectFormData().then(formData => {
+                    var url = '../Applications/SaveApplication'; 
+
+                    // Log formData entries
+                    for (var pair of formData.entries()) {
+                        console.log(pair[0] + ', ' + pair[1]);
+                    }
+
+                    // Send formData via AJAX
+                    $.ajax({
+                        url: url,
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function () {
+                            $('#applicationsForm').modal('hide');
+                            toastr.success("Application submitted successfully");
+                            location.reload();
+                        },
+                        error: function (xhr, textStatus, errorThrown) {
+                            alert('Error', 'Internal Server Error: ' + xhr.responseText);
+                        }
+                    });
+                }).catch(error => {
+                    console.error('Error processing images:', error);
+                });
+            } else {
+                errors.forEach(error => toastr.error(error));
+                return;
+            }
+        });
+
+        $('#applicantProperty').on('change', function () {
+            if ($("#applicantProperty").val() != null) {
+                populateUnits($("#applicantProperty").val());
+            } else {
+                $("#applicantUnits").empty();
+            }
+        });
+
+    });
+
+
+    function populateUnits(propertyId, selectedUnits) {
+        $.ajax({
+            url: '/Lease/ByProperty',
+            method: 'GET',
+            data: { propertyId: propertyId },
+            success: function (units) {
+                var $applicantUnits = $('#applicantUnits');
+                $applicantUnits.empty();
+                units.forEach(function (unit) {
+                    var option = `<option value="${unit.UnitId}">${unit.UnitName}</option>`;
+                    $applicantUnits.append(option);
+                });
+
+                // Check if selectedUnits is provided and mark options as selected
+                if (selectedUnits && selectedUnits.length > 0) {
+                    selectedUnits.forEach(function (unitId) {
+                        $applicantUnits.find('option[value="' + unitId + '"]').prop('selected', true);
+                    });
+                }
+            },
+            error: function (error) {
+                console.error('Error fetching units:', error.responseText || 'Unknown error');
+            }
+        });
+    }
+
+
+    function populateDropDown() {
+        $.ajax({
+            url: '@Url.Action("GetProperties", "Communication")',
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                var applicantPropertyDropdown = document.getElementById('applicantProperty');
+                data.forEach(function (item) {
+                    var option = new Option(item.BuildingNo + " - " + item.BuildingName, item.AssetId);
+                    applicantPropertyDropdown.appendChild(option);
+                });
+            }
+        });
+    }
+
+
+    function handlePetPictureChange(input) {
+        const fileInput = input.files[0];
+        const petPreview = $(input).siblings('.petPreview');
+
+        if (fileInput) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                petPreview.attr('src', e.target.result).removeClass('d-none');
+            };
+            reader.readAsDataURL(fileInput);
+        } else {
+            petPreview.addClass('d-none').attr('src', '');
+        }
+    }
+
+
+    function updateActiveNav(index) {
+        $('.nav-sidebar .nav-link').removeClass('active');
+        $('.nav-sidebar .nav-link').eq(index).addClass('active');
+    }
+
+    function toggleButtons() {
+        $('#nextButton').show();
+        $('#saveButton').hide();
+        if (currentFormIndex === 0) {
+            $('#prevButton').hide();
+        } else {
+            $('#prevButton').show();
+        }
+        if (currentFormIndex === totalForms - 1) {
+            $('#nextButton').hide();
+            $('#saveButton').show();
+        }
+    }
+
+    function addPet() {
+        var newPetHTML = `<div class="petCount">
+            <div class="row">
+                <div class="col">
+                    <div class="mb-3">
+                        <label for="petName" class="form-label">Name</label>
+                        <input type="text" class="form-control petName" placeholder="Name">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="mb-3">
+                        <label for="petBreed" class="form-label">Breed</label>
+                        <input type="text" class="form-control petBreed" placeholder="Breed">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <div class="mb-3">
+                        <label for="petType" class="form-label">Type</label>
+                        <input type="text" class="form-control petType" placeholder="Type">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="mb-3">
+                        <label for="petQuantity" class="form-label">Quantity</label>
+                        <input type="number" class="form-control petQuantity" placeholder="Quantity">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="mb-3">
+                        <label for="petPictureFile" class="form-label">Pet Picture</label>
+                        <input type="file" class="form-control petPictureFile" onchange="handlePetPictureChange(this)" accept="image/*">
+                            <img class="petPreview d-none" src="" alt="Pet Preview" style="max-width: 100%;">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="mb-3 mt-5">
+                        <a onclick="removePet(this);" style="cursor: pointer;">
+                            <i class="fa fa-trash"></i>Remove
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+
+        $('#petContainer').append(newPetHTML);
+    }
+
+    function removePet(element) {
+        $(element).closest('.petCount').remove();
+    }
+
+    //-----------------
+    function addVehicle() {
+        var newVehicleHTML = `<div class="vehicleCount">
+            <div class="row">
+                <div class="col">
+                    <div class="mb-3">
+                        <label for="vehicleMake" class="form-label">Make</label>
+                        <input type="text" class="form-control vehicleMake" placeholder="Make">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="mb-3">
+                        <label for="vehicleModel" class="form-label">Model</label>
+                        <input type="text" class="form-control vehicleModel" placeholder="Model">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="mb-3">
+                        <label for="vehicleColor" class="form-label">Color</label>
+                        <input type="color" class="form-control vehicleColor" placeholder="Color">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="mb-3">
+                        <label for="vehicleLicensePlate" class="form-label">License Plate</label>
+                        <input type="text" class="form-control vehicleLicensePlate" placeholder="License Plate">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="mb-3">
+                        <label for="vehicleYear" class="form-label">Year</label>
+                        <input type="text" class="form-control vehicleYear" placeholder="Year">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="mb-3 mt-5">
+                        <a onclick="removeVehicle(this);" style="cursor: pointer;">
+                            <i class="fa fa-trash"></i>Remove
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+
+        $('#vehicleContainer').append(newVehicleHTML);
+    }
+
+    function removeVehicle(element) {
+        $(element).closest('.vehicleCount').remove();
+    }
+
+
+    function addDependant() {
+        var newDependantHTML = `<div class="dependantCount">
+            <div class="row">
+                <div class="col">
+                    <div class="mb-3">
+                        <label for="depFirstName" class="form-label">First Name</label>
+                        <input type="text" class="form-control depFirstName" placeholder="First Name">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="mb-3">
+                        <label for="depLastName" class="form-label">Last Name</label>
+                        <input type="text" class="form-control depLastName" placeholder="Last Name">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="mb-3">
+                        <label for="depEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control depEmail" placeholder="Email">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="mb-3">
+                        <label for="depPhoneNmbr" class="form-label">Phone Number</label>
+                        <input type="tel" class="form-control depPhoneNmbr" placeholder="Phone Number">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="mb-3">
+                        <label for="depDOB" class="form-label">Date of Birth</label>
+                        <input type="date" class="form-control depDOB">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="mb-3">
+                        <label for="depRelation" class="form-label">Relation</label>
+                        <input type="text" class="form-control depRelation" placeholder="Relation">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="mb-3 mt-5">
+                        <a onclick="removeDependant(this);" style="cursor: pointer;">
+                            <i class="fa fa-trash"></i>Remove
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+
+        $('#dependantContainer').append(newDependantHTML);
+    }
+
+    function removeDependant(element) {
+        $(element).closest('.dependantCount').remove();
+    }
+
+    //------------------------------ save data ----------
+
+
+
+    function collectFormData() {
+        var formData = new FormData();
+        var promises = [];
+
+        // Append Application Info
+        formData.append('ApplicatonId', $('#applicationId').val());
+        formData.append('FirstName', $('#appFirstName').val());
+        formData.append('MiddleName', $('#appMiddleName').val());
+        formData.append('LastName', $('#appLastName').val());
+        formData.append('SSN', $('#appSSN').val());
+        formData.append('ITIN', $('#appITIN').val());
+        formData.append('DOB', $('#appDOB').val());
+        formData.append('Email', $('#appEmail').val());
+        formData.append('PhoneNumber', $('#appPhoneNmbr').val());
+        formData.append('Gender', $('#appGender').val());
+        formData.append('MaritalStatus', $('#appMaritalStatus').val());
+        formData.append('DriverLicenseState', $('#appDriverLicenseState').val());
+        formData.append('DriverLicenseNumber', $('#appDriverLicenseNmbr').val());
+        formData.append('Note', $('#appNotes').val());
+
+        // Append Residential Info
+        formData.append('Address', $('#resAddress').val());
+        formData.append('LandlordName', $('#resLandlord').val());
+        formData.append('ContactEmail', $('#resContactPhone').val());
+        formData.append('ContactPhoneNumber', $('#resContactEmail').val());
+        formData.append('MoveInDate', $('#resMoveInDate').val());
+        formData.append('MonthlyPayment', $('#resPayment').val());
+
+        // Append Employment Info
+        formData.append('JobType', $('#empJobType').val());
+        formData.append('JobTitle', $('#empTitle').val());
+        formData.append('AnnualIncome', $('#empAnnualIncome').val());
+        formData.append('CompanyName', $('#empCompanyName').val());
+        formData.append('WorkStatus', $('#empWorkStatus').val());
+        formData.append('StartDate', $('#empStartDate').val());
+        formData.append('EndDate', $('#empEndDate').val());
+        formData.append('SupervisorName', $('#empSupervisorName').val());
+        formData.append('SupervisorEmail', $('#empSupervisorEmail').val());
+        formData.append('SupervisorPhoneNumber', $('#empSupervisorPhone').val());
+
+        // Append Emergency Contact Info
+        formData.append('EmergencyFirstName', $('#emergencyFirstName').val());
+        formData.append('EmergencyLastName', $('#emergencyLastName').val());
+        formData.append('EmergencyEmail', $('#emergencyEmail').val());
+        formData.append('EmergencyPhoneNumber', $('#emergencyPhoneNmbr').val());
+        formData.append('EmergencyAddress', $('#emergencyAddress').val());
+
+        // Append Income Info
+        formData.append('SourceOfIncome', $('#incomeSource').val());
+        formData.append('SourceAmount', $('#incomeAmount').val());
+        formData.append('Assets', $('#incomeAsset').val());
+        formData.append('AssetAmount', $('#incomeValue').val());
+
+        // Append Questions
+        formData.append('IsSmoker', $('#questionSmoke').val());
+        formData.append('IsBankruptcy', $('#questionBank').val());
+        formData.append('IsEvicted', $('#questionEvict').val());
+        formData.append('HasPayRentIssue', $('#questionRent').val());
+        formData.append('IsCriminal', $('#questionCrime').val());
+
+        // Append Property
+        formData.append('PropertyId', $('#applicantProperty').val());
+        formData.append('UnitIds', $('#applicantUnits').val().join(','));
+
+        // // Function to read file as base64 and append to formData
+        function readFileAsBase64(file, key) {
+            return new Promise((resolve, reject) => {
+                if (file) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        formData.append(key, e.target.result);
+                        resolve();
+                    };
+                    reader.onerror = reject;
+                    reader.readAsDataURL(file);
+                } else {
+                    resolve();
+                }
+            });
+        }
+
+        // // Read and append document images
+        promises.push(readFileAsBase64($('#documentLicenceFile')[0].files[0], 'LicensePicture'));
+        promises.push(readFileAsBase64($('#documentStubFile')[0].files[0], 'StubPicture'));
+
+
+        $('#petForm .petCount').each(function (index) {
+            var $petContainer = $(this);
+
+            var imageFile = $petContainer.find('.petPictureFile')[0].files[0];
+            formData.append('Pets[' + index + '].Name', $petContainer.find('.petName').val());
+            formData.append('Pets[' + index + '].Breed', $petContainer.find('.petBreed').val());
+            formData.append('Pets[' + index + '].Type', $petContainer.find('.petType').val());
+            formData.append('Pets[' + index + '].Quantity', $petContainer.find('.petQuantity').val());
+
+            promises.push(readFileAsBase64(imageFile, 'Pets[' + index + '].Picture'));
+        });
+
+        // Append Vehicles
+        $('#vehicleForm .vehicleCount').each(function (index) {
+            formData.append('Vehicles[' + index + '].Manufacturer', $(this).find('.vehicleMake').val());
+            formData.append('Vehicles[' + index + '].ModelName', $(this).find('.vehicleModel').val());
+            formData.append('Vehicles[' + index + '].Color', $(this).find('.vehicleColor').val());
+            formData.append('Vehicles[' + index + '].LicensePlate', $(this).find('.vehicleLicensePlate').val());
+            formData.append('Vehicles[' + index + '].Year', $(this).find('.vehicleYear').val());
+        });
+
+        // Append Dependents
+        $('#dependantsForm .dependantCount').each(function (index) {
+            formData.append('Dependent[' + index + '].FirstName', $(this).find('.depFirstName').val());
+            formData.append('Dependent[' + index + '].LastName', $(this).find('.depLastName').val());
+            formData.append('Dependent[' + index + '].Email', $(this).find('.depEmail').val());
+            formData.append('Dependent[' + index + '].PhoneNumber', $(this).find('.depPhoneNmbr').val());
+            formData.append('Dependent[' + index + '].DOB', $(this).find('.depDOB').val());
+            formData.append('Dependent[' + index + '].Relation', $(this).find('.depRelation').val());
+        });
+
+        formData.append('IsAgree', $('#agreeCheckbox').is(':checked'));
+
+        // Return a promise that resolves with the formData
+        return Promise.all(promises).then(() => formData);
+    }
+
+</script>
 

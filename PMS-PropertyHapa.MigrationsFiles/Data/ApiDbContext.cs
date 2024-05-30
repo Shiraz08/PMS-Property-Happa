@@ -45,7 +45,15 @@ namespace PMS_PropertyHapa.MigrationsFiles.Data
         public DbSet<FeeCharge> FeeCharge { get; set; }
         public DbSet<SecurityDeposit> SecurityDeposit { get; set; }
         public DbSet<TaskRequest> TaskRequest { get; set; }
+        public DbSet<TaskRequestHistory> TaskRequestHistory { get; set; }
         public DbSet<LineItem> LineItem { get; set; }
+        public DbSet<VendorCategory> VendorCategory { get; set; }
+        public DbSet<Vendor> Vendor { get; set; }
+        public DbSet<VendorOrganization> VendorOrganization { get; set; }
+        public DbSet<Applications> Applications { get; set; }
+        public DbSet<ApplicationPets> ApplicationPets { get; set; }
+        public DbSet<ApplicationVehicles> ApplicationVehicles { get; set; }
+        public DbSet<ApplicationDependent> ApplicationDependent { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Tenant>()

@@ -183,6 +183,343 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
                     b.ToTable("AdditionalUserData");
                 });
 
+            modelBuilder.Entity("PMS_PropertyHapa.Models.Entities.ApplicationDependent", b =>
+                {
+                    b.Property<int>("DependentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DependentId"), 1L, 1);
+
+                    b.Property<string>("AddedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("AddedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("AppTenantId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("ApplicationId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("DOB")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Relation")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("bit");
+
+                    b.HasKey("DependentId");
+
+                    b.ToTable("ApplicationDependent");
+                });
+
+            modelBuilder.Entity("PMS_PropertyHapa.Models.Entities.ApplicationPets", b =>
+                {
+                    b.Property<int>("PetId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PetId"), 1L, 1);
+
+                    b.Property<string>("AddedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("AddedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("AppTenantId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("ApplicationId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Breed")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Picture")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Type")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("PetId");
+
+                    b.ToTable("ApplicationPets");
+                });
+
+            modelBuilder.Entity("PMS_PropertyHapa.Models.Entities.Applications", b =>
+                {
+                    b.Property<int>("ApplicationId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ApplicationId"), 1L, 1);
+
+                    b.Property<string>("AddedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("AddedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("AnnualIncome")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("AppTenantId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int?>("AssetAmount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Assets")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CompanyName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ContactEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ContactPhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DOB")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DriverLicenseNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DriverLicenseState")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EmergencyAddress")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EmergencyEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EmergencyFirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EmergencyLastName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EmergencyPhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Gender")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool?>("HasPayRentIssue")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ITIN")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsAgree")
+                        .HasColumnType("bit");
+
+                    b.Property<bool?>("IsBankruptcy")
+                        .HasColumnType("bit");
+
+                    b.Property<bool?>("IsCriminal")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool?>("IsEvicted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool?>("IsSmoker")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("JobTitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("JobType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LandlordName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LicensePicture")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MaritalStatus")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MiddleName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("MonthlyPayment")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("MoveInDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PropertyId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SSN")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("SourceAmount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SourceOfIncome")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("StubPicture")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SupervisorEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SupervisorName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SupervisorPhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UnitIds")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool?>("WorkStatus")
+                        .HasColumnType("bit");
+
+                    b.HasKey("ApplicationId");
+
+                    b.ToTable("Applications");
+                });
+
+            modelBuilder.Entity("PMS_PropertyHapa.Models.Entities.ApplicationVehicles", b =>
+                {
+                    b.Property<int>("VehicleId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VehicleId"), 1L, 1);
+
+                    b.Property<string>("AddedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("AddedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("AppTenantId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("ApplicationId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Color")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LicensePlate")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Manufacturer")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ModelName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Year")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("VehicleId");
+
+                    b.ToTable("ApplicationVehicles");
+                });
+
             modelBuilder.Entity("PMS_PropertyHapa.Models.Entities.Assets", b =>
                 {
                     b.Property<int>("AssetId")
@@ -740,6 +1077,9 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
                     b.Property<bool>("Status")
                         .HasColumnType("bit");
 
+                    b.Property<string>("TaxId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Unit")
                         .HasColumnType("nvarchar(max)");
 
@@ -1048,10 +1388,19 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("DueDate")
+                    b.Property<DateTime?>("DueDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("DueDays")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("EndDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("EntryNotes")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Frequency")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("HasPermissionToEnter")
@@ -1075,6 +1424,9 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
                     b.Property<bool>("IsRecurringTask")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsTaskRepeat")
+                        .HasColumnType("bit");
+
                     b.Property<string>("ModifiedBy")
                         .HasColumnType("nvarchar(max)");
 
@@ -1089,6 +1441,9 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
 
                     b.Property<string>("Priority")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("StartDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Status")
                         .HasColumnType("nvarchar(max)");
@@ -1117,6 +1472,49 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
                     b.HasIndex("TenantId");
 
                     b.ToTable("TaskRequest");
+                });
+
+            modelBuilder.Entity("PMS_PropertyHapa.Models.Entities.TaskRequestHistory", b =>
+                {
+                    b.Property<int>("TaskRequestHistoryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TaskRequestHistoryId"), 1L, 1);
+
+                    b.Property<string>("AddedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("AddedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("AppTenantId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Remarks")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TaskRequestId")
+                        .HasColumnType("int");
+
+                    b.HasKey("TaskRequestHistoryId");
+
+                    b.ToTable("TaskRequestHistory");
                 });
 
             modelBuilder.Entity("PMS_PropertyHapa.Models.Entities.TblAssignRole", b =>
@@ -1475,6 +1873,213 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
                     b.HasIndex("TenantId");
 
                     b.ToTable("Vehicle");
+                });
+
+            modelBuilder.Entity("PMS_PropertyHapa.Models.Entities.Vendor", b =>
+                {
+                    b.Property<int>("VendorId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VendorId"), 1L, 1);
+
+                    b.Property<string>("AccountBank")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AccountCurrency")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AccountHolder")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AccountIBAN")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AccountName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AccountSwift")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AddedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("AddedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("AlterCity")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AlterCountry")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AlterDistrict")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AlterState")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AlterStreet1")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AlterStreet2")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("AppTenantId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("City")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Classification")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Company")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Country")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("District")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email1")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email2")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool?>("HasInsurance")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("JobTitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MI")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Phone1")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Phone2")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Picture")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PropertyId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("State")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Street1")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Street2")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TaxId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UnitIds")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("VendorCategoriesIds")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("VendorId");
+
+                    b.ToTable("Vendor");
+                });
+
+            modelBuilder.Entity("PMS_PropertyHapa.Models.Entities.VendorCategory", b =>
+                {
+                    b.Property<int>("VendorCategoryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VendorCategoryId"), 1L, 1);
+
+                    b.Property<string>("AddedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("AddedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("AppTenantId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("bit");
+
+                    b.HasKey("VendorCategoryId");
+
+                    b.ToTable("VendorCategory");
+                });
+
+            modelBuilder.Entity("PMS_PropertyHapa.Models.Entities.VendorOrganization", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("OrganizationDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OrganizationIcon")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OrganizationLogo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OrganizationName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("VendorId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Website")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("VendorOrganization");
                 });
 
             modelBuilder.Entity("PMS_PropertyHapa.Models.RefreshToken", b =>

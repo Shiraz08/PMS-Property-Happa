@@ -1,8 +1,142 @@
-﻿
+﻿@using PMS_PropertyHapa.Models.DTO
+@model IEnumerable<ApplicationsDto>
+
 @{
     ViewData["Title"] = "ViewApplication";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>ViewApplication</h1>
 
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-sm-6">
+                    <h3>Application</h3>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index.html"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item">Application</li>
+                        <li class="breadcrumb-item active">List</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid my-4">
+        <div class="row">
+            <!-- Column 1: Application Table (80% on lg screens) -->
+            <div class="col-xl-12 col-md-12 box-col-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+
+                        <div class="left-side-header">
+                            <div class="input-group">
+                                <span class="input-group-text" id="basic-addon1">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <g>
+                                            <g>
+                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M11.2753 2.71436C16.0029 2.71436 19.8363 6.54674 19.8363 11.2753C19.8363 16.0039 16.0029 19.8363 11.2753 19.8363C6.54674 19.8363 2.71436 16.0039 2.71436 11.2753C2.71436 6.54674 6.54674 2.71436 11.2753 2.71436Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M19.8987 18.4878C20.6778 18.4878 21.3092 19.1202 21.3092 19.8983C21.3092 20.6783 20.6778 21.3097 19.8987 21.3097C19.1197 21.3097 18.4873 20.6783 18.4873 19.8983C18.4873 19.1202 19.1197 18.4878 19.8987 18.4878Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                            </g>
+                                        </g>
+                                    </svg>
+
+                                </span>
+                                <input class="form-control" type="text" id="searchInput" placeholder="Search Application" aria-label="search" aria-describedby="basic-addon1">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover text-center">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th scope="col" class="tableHeaderbg">Applicant Name</th>
+                                        <th scope="col" class="tableHeaderbg">Contact Info</th>
+                                        <th scope="col" class="tableHeaderbg">Expected Move In</th>
+                                        <th scope="col" class="tableHeaderbg">Created At</th>
+                                        <th scope="col" class="tableHeaderbg">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var application in Model)
+                                    {
+                                        <tr>
+                                            <td class="tableFontSize align-middle">@application.FirstName  @application.LastName</td>
+
+                                            <td class="tableFontSize align-middle" style="text-align: center;">
+                                                <div style="display: flex; align-items: center; justify-content: center;">
+                                                    <i class="icofont icofont-email"></i>
+                                                    <span style="vertical-align: middle;">@application.Email</span>
+                                                </div>
+                                                <div style="display: flex; align-items: center; justify-content: center;">
+                                                    <i class="icofont icofont-phone"></i>
+                                                    <span style="vertical-align: middle;">@application.PhoneNumber</span>
+                                                </div>
+                                            </td>
+                                            <td class="tableFontSize align-middle">@application.MoveInDate </td>
+                                            <td class="tableFontSize align-middle">@application.AddedDate </td>
+                                            <td class="tableFontSize align-middle">
+                                                <a class="btn btn-danger" onclick="editApplications(@application.ApplicationId)">
+                                                    <i class="fa fa-pencil"></i> Edit
+                                                </a>
+                                                <a class="btn btn-danger" onclick="deleteApplications(@application.ApplicationId)">
+                                                    <i class="fa fa-trash"></i> Delete
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function deleteApplications(id) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'You will not be able to recover this Application!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '@Url.Action("DeleteApplication", "Applications")',
+                    type: 'POST',
+                    data: { id: id },
+                    success: function (task) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Application deleted successfully',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        location.reload()
+                    },
+                    error: function (xhr, status, error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Something went wrong!'
+                        });
+                    },
+                });
+            }
+        });
+    }
+
+    function editApplications(id) {
+        window.location.href = "/Applications/EditApplication/" + id
+    }
+</script>
