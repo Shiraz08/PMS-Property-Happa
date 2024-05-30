@@ -2892,6 +2892,103 @@ namespace MagicVilla_VillaAPI.Repository
 
         #region Taks Request
 
+        public async Task<List<TaskRequestHistoryDto>> GetTaskRequestHistoryAsync(int id)
+        {
+            try
+            {
+                var result = await (from t in _db.TaskRequestHistory
+                                    where t.TaskRequestId == id && t.IsDeleted != true
+                                    select new TaskRequestHistoryDto
+                                    {
+                                        TaskRequestHistoryId = t.TaskRequestHistoryId,
+                                        TaskRequestId = t.TaskRequestId,
+                                        Status = t.Status,
+                                        Date = t.Date,
+                                        Remarks = t.Remarks,
+                                        AddedBy = t.AddedBy,
+
+                                    })
+                     .AsNoTracking()
+                     .ToListAsync();
+
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping owners and organizations: {ex.Message}");
+                throw;
+            }
+        }
+        
+        public async Task<List<TaskRequestDto>> GetMaintenanceTasksAsync()
+        {
+            try
+            {
+                var result = await (from t in _db.TaskRequest
+                                    from a in _db.Assets.Where(x => x.AssetId == t.AssetId).DefaultIfEmpty()
+                                    from o in _db.Owner.Where(x => x.OwnerId == t.OwnerId).DefaultIfEmpty()
+                                    from tnt in _db.Tenant.Where(x => x.TenantId == t.TenantId).DefaultIfEmpty()
+                                        //from l in _db.LineItem.Where(x=>x.TaskRequestId == t.TaskRequestId).DefaultIfEmpty()
+                                    where t.Status != TaskStatusTypes.NotStarted.ToString() && t.IsDeleted != true 
+                                    select new TaskRequestDto
+                                    {
+                                        TaskRequestId = t.TaskRequestId,
+                                        Type = t.Type,
+                                        Subject = t.Subject,
+                                        Description = t.Description,
+                                        IsOneTimeTask = t.IsOneTimeTask,
+                                        IsRecurringTask = t.IsRecurringTask,
+                                        StartDate = t.StartDate,
+                                        EndDate = t.EndDate,
+                                        Frequency = t.Frequency,
+                                        DueDays = t.DueDays,
+                                        IsTaskRepeat = t.IsTaskRepeat,
+                                        DueDate = t.DueDate,
+                                        Status = t.Status,
+                                        Priority = t.Priority,
+                                        Assignees = t.Assignees,
+                                        IsNotifyAssignee = t.IsNotifyAssignee,
+                                        AssetId = t.AssetId,
+                                        Asset = a.BuildingNo + "-" + a.BuildingName,
+                                        TaskRequestFile = t.TaskRequestFile,
+                                        OwnerId = t.OwnerId,
+                                        Owner = o.FirstName + " " + o.LastName,
+                                        IsNotifyOwner = t.IsNotifyOwner,
+                                        TenantId = t.TenantId,
+                                        Tenant = tnt.FirstName + " " + tnt.LastName,
+                                        IsNotifyTenant = t.IsNotifyTenant,
+                                        HasPermissionToEnter = t.HasPermissionToEnter,
+                                        EntryNotes = t.EntryNotes,
+                                        VendorId = t.VendorId,
+                                        ApprovedByOwner = t.ApprovedByOwner,
+                                        PartsAndLabor = t.PartsAndLabor,
+                                        AddedBy = t.AddedBy,
+                                        LineItems = (from item in _db.LineItem
+                                                     where item.TaskRequestId == t.TaskRequestId && item.IsDeleted != true
+                                                     select new LineItemDto
+                                                     {
+                                                         LineItemId = item.LineItemId,
+                                                         TaskRequestId = item.TaskRequestId,
+                                                         Quantity = item.Quantity,
+                                                         Price = item.Price,
+                                                         Account = item.Account,
+                                                         Memo = item.Memo
+                                                     }).ToList()
+                                    })
+                     .AsNoTracking()
+                     .ToListAsync();
+
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping owners and organizations: {ex.Message}");
+                throw;
+            }
+        }
+        
         public async Task<List<TaskRequestDto>> GetTaskRequestsAsync()
         {
             try
@@ -2901,7 +2998,7 @@ namespace MagicVilla_VillaAPI.Repository
                                     from o in _db.Owner.Where(x => x.OwnerId == t.OwnerId).DefaultIfEmpty()
                                     from tnt in _db.Tenant.Where(x => x.TenantId == t.TenantId).DefaultIfEmpty()
                                         //from l in _db.LineItem.Where(x=>x.TaskRequestId == t.TaskRequestId).DefaultIfEmpty()
-                                    where t.IsDeleted != true
+                                    where t.Status == TaskStatusTypes.NotStarted.ToString() && t.IsDeleted != true
                                     select new TaskRequestDto
                                     {
                                         TaskRequestId = t.TaskRequestId,
@@ -2910,6 +3007,11 @@ namespace MagicVilla_VillaAPI.Repository
                                         Description = t.Description,
                                         IsOneTimeTask = t.IsOneTimeTask,
                                         IsRecurringTask = t.IsRecurringTask,
+                                        StartDate = t.StartDate,
+                                        EndDate = t.EndDate,
+                                        Frequency = t.Frequency,
+                                        DueDays = t.DueDays,
+                                        IsTaskRepeat = t.IsTaskRepeat,
                                         DueDate = t.DueDate,
                                         Status = t.Status,
                                         Priority = t.Priority,
@@ -2971,6 +3073,11 @@ namespace MagicVilla_VillaAPI.Repository
                                         Description = t.Description,
                                         IsOneTimeTask = t.IsOneTimeTask,
                                         IsRecurringTask = t.IsRecurringTask,
+                                        StartDate = t.StartDate,
+                                        EndDate = t.EndDate,
+                                        Frequency = t.Frequency,
+                                        DueDays = t.DueDays,
+                                        IsTaskRepeat = t.IsTaskRepeat,
                                         DueDate = t.DueDate,
                                         Status = t.Status,
                                         Priority = t.Priority,
@@ -3028,6 +3135,11 @@ namespace MagicVilla_VillaAPI.Repository
             taskRequest.Description = taskRequestDto.Description;
             taskRequest.IsOneTimeTask = taskRequestDto.IsOneTimeTask;
             taskRequest.IsRecurringTask = taskRequestDto.IsRecurringTask;
+            taskRequest.StartDate = taskRequestDto.StartDate;
+            taskRequest.EndDate = taskRequestDto.EndDate;
+            taskRequest.Frequency = taskRequestDto.Frequency;
+            taskRequest.DueDays = taskRequestDto.DueDays;
+            taskRequest.IsTaskRepeat = taskRequestDto.IsTaskRepeat;
             taskRequest.DueDate = taskRequestDto.DueDate;
             taskRequest.Status = taskRequestDto.Status;
             taskRequest.Priority = taskRequestDto.Priority;
@@ -3116,6 +3228,19 @@ namespace MagicVilla_VillaAPI.Repository
                 }
             }
 
+            await _db.SaveChangesAsync();
+
+
+            var taskRequestHistory = new TaskRequestHistory();
+
+            taskRequestHistory.TaskRequestId = maxId;
+            taskRequestHistory.Date = DateTime.Now;
+            taskRequestHistory.Status = taskRequestDto.Status;
+            taskRequestHistory.Remarks = taskRequestDto.Description;
+            taskRequestHistory.AddedBy = taskRequestDto.AddedBy;
+            taskRequestHistory.AddedDate = DateTime.Now;
+            _db.TaskRequestHistory.Add(taskRequestHistory);
+
             var result = await _db.SaveChangesAsync();
 
             return result > 0;
@@ -3138,6 +3263,51 @@ namespace MagicVilla_VillaAPI.Repository
 
             return saveResult > 0 || lineItemSaveResult > 0;
         }
+
+        public async Task<bool> SaveTaskHistoryAsync(TaskRequestHistoryDto taskRequestHistoryDto)
+        {
+
+            var taskRequest = await _db.TaskRequest.FirstOrDefaultAsync(x => x.TaskRequestId == taskRequestHistoryDto.TaskRequestId);
+
+            if (taskRequest != null)
+            {
+                taskRequest.Status = taskRequestHistoryDto.Status;
+                taskRequest.ModifiedBy = taskRequestHistoryDto.AddedBy;
+                taskRequest.ModifiedDate = DateTime.Now;
+                _db.TaskRequest.Update(taskRequest);
+
+                await _db.SaveChangesAsync();
+            }
+
+            var taskRequestHistory = await _db.TaskRequestHistory.FirstOrDefaultAsync(x => x.TaskRequestHistoryId == taskRequestHistoryDto.TaskRequestHistoryId);
+
+            if (taskRequestHistory == null)
+                taskRequestHistory = new TaskRequestHistory();
+
+            taskRequestHistory.TaskRequestHistoryId = taskRequestHistoryDto.TaskRequestHistoryId;
+            taskRequestHistory.TaskRequestId = taskRequestHistoryDto.TaskRequestId;
+            taskRequestHistory.Date = DateTime.Now;
+            taskRequestHistory.Status = taskRequestHistoryDto.Status;
+            taskRequestHistory.Remarks = taskRequestHistoryDto.Remarks;
+
+            if (taskRequestHistoryDto.TaskRequestHistoryId > 0)
+            {
+                taskRequestHistory.ModifiedBy = taskRequestHistoryDto.AddedBy;
+                taskRequestHistory.ModifiedDate = DateTime.Now;
+                _db.TaskRequestHistory.Update(taskRequestHistory);
+            }
+            else
+            {
+                taskRequestHistory.AddedBy = taskRequestHistoryDto.AddedBy;
+                taskRequestHistory.AddedDate = DateTime.Now;
+                _db.TaskRequestHistory.Add(taskRequestHistory);
+            }
+
+            var result = await _db.SaveChangesAsync();
+            return result > 0;
+        }
+
+
 
         #endregion
 

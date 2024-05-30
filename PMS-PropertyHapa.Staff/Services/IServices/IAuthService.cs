@@ -122,14 +122,18 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
         Task<bool> VerifySmsOtpAsync(string userId, string phoneNumber, string otp);
 
 
-        #region Task
+        #region Task && Task History && Maintenance
+        Task<IEnumerable<TaskRequestHistoryDto>> GetTaskRequestHistoryAsync(int taskRequsetId);
+        Task<IEnumerable<TaskRequestDto>> GetMaintenanceTasksAsync();
         Task<IEnumerable<TaskRequestDto>> GetTaskRequestsAsync();
         Task<TaskRequestDto> GetTaskRequestByIdAsync(int id);
         Task<bool> SaveTaskAsync(TaskRequestDto taskRequestDto);
         Task<bool> DeleteTaskAsync(int id);
+        Task<bool> SaveTaskHistoryAsync(TaskRequestHistoryDto taskRequestHistoryDto);
+
 
         #endregion
-        
+
         #region Calendar
         Task<List<CalendarEvent>> GetCalendarEventsAsync(CalendarFilterModel filter);
         Task<List<OccupancyOverviewEvents>> GetOccupancyOverviewEventsAsync(CalendarFilterModel filter);

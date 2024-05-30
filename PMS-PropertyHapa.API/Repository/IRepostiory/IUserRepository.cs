@@ -167,11 +167,13 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
         //Task<bool> FindByEmailAddressAsync(string email);
 
         //Tasks Requests
+        Task<List<TaskRequestHistoryDto>> GetTaskRequestHistoryAsync(int id);
+        Task<List<TaskRequestDto>> GetMaintenanceTasksAsync();
         Task<List<TaskRequestDto>> GetTaskRequestsAsync();
         Task<TaskRequestDto> GetTaskByIdAsync(int id);
         Task<bool> SaveTaskAsync(TaskRequestDto taskRequestDto);
         Task<bool> DeleteTaskAsync(int id);
-
+        Task<bool> SaveTaskHistoryAsync(TaskRequestHistoryDto taskRequestHistoryDto);
 
         //Calendar Events
 

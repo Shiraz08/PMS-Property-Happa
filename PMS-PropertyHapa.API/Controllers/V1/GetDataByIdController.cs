@@ -103,7 +103,6 @@ namespace PMS_PropertyHapa.API.Controllers.V1
         }
 
         [HttpPost("OccupancyOverviewEvents")]
-
         public async Task<ActionResult<OccupancyOverviewEvents>> GetOccupancyOverviewEvents(CalendarFilterModel filter)
         {
             try
@@ -132,7 +131,6 @@ namespace PMS_PropertyHapa.API.Controllers.V1
         }
 
         [HttpPost("LeaseData/{id}")]
-
         public async Task<ActionResult<LeaseDataDto>> GetLeaseDataByIdAsync(int id)
         {
             try
@@ -161,6 +159,67 @@ namespace PMS_PropertyHapa.API.Controllers.V1
         }
 
         //Calender End
+        [HttpGet("GetTaskRequestHistory/{id}")]
+        public async Task<ActionResult<TaskRequestHistoryDto>> GetTaskRequestHistory(int id)
+        {
+
+            try
+            {
+                var taskDto = await _userRepo.GetTaskRequestHistoryAsync(id);
+
+                if (taskDto != null)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = taskDto;
+                    return Ok(_response);
+                }
+                else
+                {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("No user found with this id.");
+                    return NotFound(_response);
+                }
+            }
+            catch (Exception ex)
+            {
+                _response.StatusCode = HttpStatusCode.NotFound;
+                _response.IsSuccess = false;
+                _response.ErrorMessages.Add("Error Occured");
+                return NotFound(_response);
+            }
+        }
+
+
+        [HttpGet("MaintenanceTasks")]
+        public async Task<ActionResult<TaskRequestDto>> GetMaintenanceTasks()
+        {
+            try
+            {
+                var assets = await _userRepo.GetMaintenanceTasksAsync();
+
+                if (assets != null)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = assets;
+                    return Ok(_response);
+                }
+                else
+                {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("No asset found with this id.");
+                    return NotFound(_response);
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+        
         [HttpGet("Tasks")]
         public async Task<ActionResult<TaskRequestDto>> GetTasks()
         {
@@ -255,6 +314,28 @@ namespace PMS_PropertyHapa.API.Controllers.V1
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
+
+
+        [HttpPost("TaskHistory")]
+        public async Task<ActionResult<bool>> SaveTaskHistory(TaskRequestHistoryDto taskRequestHistoryDto)
+        {
+            try
+            {
+                var isSuccess = await _userRepo.SaveTaskHistoryAsync(taskRequestHistoryDto);
+                if (isSuccess == true)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = isSuccess;
+                }
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
 
         [HttpPost("uploadImage")]
         

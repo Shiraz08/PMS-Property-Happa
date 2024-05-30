@@ -1200,6 +1200,48 @@ namespace PMS_PropertyHapa.Staff.Services
 
         #region TaskRequest
 
+        public async Task<IEnumerable<TaskRequestHistoryDto>> GetTaskRequestHistoryAsync(int taskRequsetId)
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = $"{villaUrl}/api/v1/GetDataByIdAuth/GetTaskRequestHistory/{taskRequsetId}"
+            });
+
+            if (response.IsSuccess == true)
+            {
+                var userListJson = Convert.ToString(response.Result);
+                var asset = JsonConvert.DeserializeObject<IEnumerable<TaskRequestHistoryDto>>(userListJson);
+                return asset;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve task history data");
+            }
+        }
+        
+        public async Task<IEnumerable<TaskRequestDto>> GetMaintenanceTasksAsync()
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = $"{villaUrl}/api/v1/GetDataByIdAuth/MaintenanceTasks"
+            });
+
+            if (response.IsSuccess == true)
+            {
+                var userListJson = Convert.ToString(response.Result);
+                var asset = JsonConvert.DeserializeObject<IEnumerable<TaskRequestDto>>(userListJson);
+                return asset;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve task data");
+            }
+        }
+        
         public async Task<IEnumerable<TaskRequestDto>> GetTaskRequestsAsync()
         {
 
@@ -1273,7 +1315,24 @@ namespace PMS_PropertyHapa.Staff.Services
             }
         }
 
+        public async Task<bool> SaveTaskHistoryAsync(TaskRequestHistoryDto taskRequestHistoryDto)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Data = taskRequestHistoryDto,
+                    Url = $"{villaUrl}/api/v1/GetDataByIdAuth/TaskHistory"
+                });
 
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when updating task History: {ex.Message}", ex);
+            }
+        }
         #endregion
 
         #region Calendar

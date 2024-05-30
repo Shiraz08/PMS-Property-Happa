@@ -17,7 +17,7 @@ namespace PMS_PropertyHapa.Models.DTO
     public class CalendarEvent
     {
         public string Title { get; set; }
-        public DateTime Date { get; set; }
+        public DateTime? Date { get; set; }
         public string BoxColor { get; set; }
         public string TextColor { get; set; }
         public int? TenantId { get; set; }

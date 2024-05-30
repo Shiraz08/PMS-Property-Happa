@@ -45,6 +45,7 @@ namespace PMS_PropertyHapa.MigrationsFiles.Data
         public DbSet<FeeCharge> FeeCharge { get; set; }
         public DbSet<SecurityDeposit> SecurityDeposit { get; set; }
         public DbSet<TaskRequest> TaskRequest { get; set; }
+        public DbSet<TaskRequestHistory> TaskRequestHistory { get; set; }
         public DbSet<LineItem> LineItem { get; set; }
         public DbSet<VendorCategory> VendorCategory { get; set; }
         public DbSet<Vendor> Vendor { get; set; }

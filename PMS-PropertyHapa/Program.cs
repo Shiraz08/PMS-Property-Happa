@@ -13,6 +13,7 @@ using PMS_PropertyHapa.Models.Roles;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using PMS_PropertyHapa.Shared.Email;
 using Microsoft.Extensions.Options;
+using PMS_PropertyHapa.Models.ViewModels;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
