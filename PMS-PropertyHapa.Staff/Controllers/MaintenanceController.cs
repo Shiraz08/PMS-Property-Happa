@@ -36,62 +36,106 @@ namespace PMS_PropertyHapa.Staff.Controllers
                 return Json(new { success = false, message = "Received data is null." });
             }
             TaskRequestDto taskRequestDto = await _authService.GetTaskRequestByIdAsync(taskRequestHistoryDto.TaskRequestId);
-            //var currentDateTime = DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss");
+            var currentDateTime = DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss");
 
-            //switch (taskRequestDto.Type)
-            //{
-            //    case TaskTypes.Task:
-            //        // Assigness Missing
-            //        break;
-            //    case TaskTypes.TenantRequest:
-            //        if (taskRequestDto.IsNotifyTenant && taskRequestDto.TenantId != null)
-            //        {
-            //            var tenant = await _authService.GetSingleTenantAsync(taskRequestDto.TenantId ?? 0);
+            switch (taskRequestDto.Type)
+            {
+                case TaskTypes.Task:
+                    // Assigness Missing
+                    break;
+                case TaskTypes.TenantRequest:
+                    if (taskRequestDto.IsNotifyTenant && taskRequestDto.TenantId != null)
+                    {
+                        var tenant = await _authService.GetSingleTenantAsync(taskRequestDto.TenantId ?? 0);
 
-            //            var emailContent = $"Hello {tenant.FirstName} {tenant.LastName},\n\n" +
-            //                               "We wanted to inform you that the status of your task has been updated. Here are the details:\n\n" +
-            //                               $"Task Type: {taskRequestDto.Type}\n" +
-            //                               $"Task Description: {taskRequestDto.Description}\n\n" +
-            //                               $"New Status: {taskRequestHistoryDto.Status}\n" +
-            //                               $"Remarks: {taskRequestHistoryDto.Remarks}\n\n" +
-            //                               $"Update Date and Time: {currentDateTime}\n\n" +
-            //                               "If you have any questions or need further assistance, please do not hesitate to contact us.\n\n" +
-            //                               "Thank you!";
-            //            await _emailSender.SendEmailAsync(tenant.EmailAddress, taskRequestDto.Subject, emailContent);
-            //        }
-            //        break;
-            //    case TaskTypes.OwnerRequest:
-            //        if (taskRequestDto.IsNotifyOwner && taskRequestDto.OwnerId != null)
-            //        {
-            //            var owner = await _authService.GetSingleLandlordAsync(taskRequestDto.OwnerId ?? 0);
+                        string htmlContent = $@"<!DOCTYPE html>
+                                             <html lang=""en"">
+                                             <head>
+                                                 <meta charset=""UTF-8"">
+                                                 <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+                                                 <title>Task Status Update</title>
+                                             </head>
+                                             <body>
+                                                 <div style=""font-family: Arial, sans-serif; padding: 20px;"">
+                                                     <p>Hello {tenant.FirstName} {tenant.LastName},</p>
+                                                     <p>We wanted to inform you that the status of your task has been updated. Here are the details:</p>
+                                                     <p><strong>Task Type:</strong> {taskRequestDto.Type}</p>
+                                                     <p><strong>Task Description:</strong> {taskRequestDto.Description}</p>
+                                                     <p><strong>New Status:</strong> {taskRequestHistoryDto.Status}</p>
+                                                     <p><strong>Remarks:</strong> {taskRequestHistoryDto.Remarks}</p>
+                                                     <p><strong>Update Date and Time:</strong> {currentDateTime}</p>
+                                                     <p>If you have any questions or need further assistance, please do not hesitate to contact us.</p>
+                                                     <p>Thank you!</p>
+                                                 </div>
+                                             </body>
+                                             </html>";
 
-            //            var emailContent = $"Hello {owner.FirstName} {owner.LastName},\n\n" +
-            //                        "We wanted to inform you that a new task has been assigned to you. Here are the details:\n\n" +
-            //                        $"Task Type: {taskRequestDto.Type}\n" +
-            //                        $"Task Description: {taskRequestDto.Description}\n\n" +
-            //                        $"Assignment Date and Time: {currentDateTime}\n\n" +
-            //                        "If you have any questions or need further assistance, please do not hesitate to contact us.\n\n" +
-            //                        "Thank you!";
-            //            await _emailSender.SendEmailAsync(owner.EmailAddress, taskRequestDto.Subject, emailContent);
-            //        }
-            //        break;
-            //    case TaskTypes.WorkOrderRequest:
-            //        if (taskRequestDto.IsNotifyAssignee && taskRequestDto.VendorId != null)
-            //        {
-            //            var vendor = await _authService.GetVendorByIdAsync(taskRequestDto.VendorId ?? 0);
+                        await _emailSender.SendEmailAsync(tenant.EmailAddress, taskRequestDto.Subject, htmlContent);
+                    }
+                    break;
+                case TaskTypes.OwnerRequest:
+                    if (taskRequestDto.IsNotifyOwner && taskRequestDto.OwnerId != null)
+                    {
+                        var owner = await _authService.GetSingleLandlordAsync(taskRequestDto.OwnerId ?? 0);
+                        string htmlContent = $@"<!DOCTYPE html>
+                                             <html lang=""en"">
+                                             <head>
+                                                 <meta charset=""UTF-8"">
+                                                 <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+                                                 <title>Task Status Update</title>
+                                             </head>
+                                             <body>
+                                                 <div style=""font-family: Arial, sans-serif; padding: 20px;"">
+                                                     <p>Hello {owner.FirstName} {owner.LastName},</p>
+                                                     <p>We wanted to inform you that the status of your task has been updated. Here are the details:</p>
+                                                     <p><strong>Task Type:</strong> {taskRequestDto.Type}</p>
+                                                     <p><strong>Task Description:</strong> {taskRequestDto.Description}</p>
+                                                     <p><strong>New Status:</strong> {taskRequestHistoryDto.Status}</p>
+                                                     <p><strong>Remarks:</strong> {taskRequestHistoryDto.Remarks}</p>
+                                                     <p><strong>Update Date and Time:</strong> {currentDateTime}</p>
+                                                     <p>If you have any questions or need further assistance, please do not hesitate to contact us.</p>
+                                                     <p>Thank you!</p>
+                                                 </div>
+                                             </body>
+                                             </html>";
 
-            //            var emailContent = $"Hello {vendor.FirstName} {vendor.LastName},\n\n" +
-            //                               "We are pleased to inform you that a new task has been assigned to you. Here are the details:\n\n" +
-            //                               $"Task Type: {taskRequestDto.Type}\n" +
-            //                               $"Task Description: {taskRequestDto.Description}\n\n" +
-            //                               "If you have any questions or need further assistance, please do not hesitate to contact us.\n\n" +
-            //                               "Thank you!";
-            //            await _emailSender.SendEmailAsync(vendor.Email1, taskRequestDto.Subject, emailContent);
-            //        }
-            //        break;
-            //    default:
-            //        break;
-            //}
+
+                        await _emailSender.SendEmailAsync(owner.EmailAddress, taskRequestDto.Subject, htmlContent);
+                    }
+                    break;
+                case TaskTypes.WorkOrderRequest:
+                    if (taskRequestDto.IsNotifyAssignee && taskRequestDto.VendorId != null)
+                    {
+                        var vendor = await _authService.GetVendorByIdAsync(taskRequestDto.VendorId ?? 0);
+
+                        string htmlContent = $@"<!DOCTYPE html>
+                                             <html lang=""en"">
+                                             <head>
+                                                 <meta charset=""UTF-8"">
+                                                 <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+                                                 <title>Task Status Update</title>
+                                             </head>
+                                             <body>
+                                                 <div style=""font-family: Arial, sans-serif; padding: 20px;"">
+                                                     <p>Hello {vendor.FirstName} {vendor.LastName},</p>
+                                                     <p>We are pleased to inform you that the status of your task has been updated. Here are the details:</p>
+                                                     <p><strong>Task Type:</strong> {taskRequestDto.Type}</p>
+                                                     <p><strong>Task Description:</strong> {taskRequestDto.Description}</p>
+                                                     <p><strong>New Status:</strong> {taskRequestHistoryDto.Status}</p>
+                                                     <p><strong>Remarks:</strong> {taskRequestHistoryDto.Remarks}</p>
+                                                     <p><strong>Update Date and Time:</strong> {currentDateTime}</p>
+                                                     <p>If you have any questions or need further assistance, please do not hesitate to contact us.</p>
+                                                     <p>Thank you!</p>
+                                                 </div>
+                                             </body>
+                                             </html>";
+
+                        await _emailSender.SendEmailAsync(vendor.Email1, taskRequestDto.Subject, htmlContent);
+                    }
+                    break;
+                default:
+                    break;
+            }
 
 
             taskRequestHistoryDto.AddedBy = Request?.Cookies["userId"]?.ToString();

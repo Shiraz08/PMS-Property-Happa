@@ -756,8 +756,8 @@
                     $('#saveButton').prop('disabled', true).text('Saving...');
                 },
                 success: function (response) {
-                    $("#vendorModal").modal('hide');
-                    location.reload();
+                      $("#vendorModal").modal('hide');
+                      location.reload();
                 },
                 error: function (xhr, status, error) {
                     console.error('Error:', error);

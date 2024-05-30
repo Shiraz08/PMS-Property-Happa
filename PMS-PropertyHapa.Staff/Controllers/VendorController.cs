@@ -108,15 +108,16 @@ namespace PMS_PropertyHapa.Staff.Controllers
                 Password = "Test@123",
                 Role = "Vendor",
             };
-
-            APIResponse result = await _authService.RegisterAsync<APIResponse>(registrationRequest);
-            if (!result.IsSuccess)
+            if (vendor.VendorId == 0)
             {
-                return Json(new { success = false, message = "Failed to register tenant as user." });
+                APIResponse result = await _authService.RegisterAsync<APIResponse>(registrationRequest);
+                if (!result.IsSuccess)
+                {
+                    return Json(new { success = false, message = "Failed to register tenant as user." });
+                }
+                var emailContent = $"Welcome {vendor.FirstName} {vendor.LastName},\n\nThank you for registering. Here are your details:\nUsername: {vendor.Email1}\nPassword: Test@123\nTenant ID: {registrationRequest.TenantId}\n\nThank you!";
+                //await _emailSender.SendEmailAsync(vendor.Email1, "Welcome to Our Service!", emailContent);
             }
-            var emailContent = $"Welcome {vendor.FirstName} {vendor.LastName},\n\nThank you for registering. Here are your details:\nUsername: {vendor.Email1}\nPassword: Test@123\nTenant ID: {registrationRequest.TenantId}\n\nThank you!";
-            //await _emailSender.SendEmailAsync(vendor.Email1, "Welcome to Our Service!", emailContent);
-
 
             await _authService.SaveVendorAsync(vendor);
             return Json(new { success = true, message = "Vendor added successfully" });
