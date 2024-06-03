@@ -56,6 +56,8 @@ namespace PMS_PropertyHapa.Models.Roles
         public string StreetAdress { get; set; }
         public string City { get; set; }
         public string State { get; set; }
+        public string TermsAndConditons { get; set; }
+        public string Currency { get; set; }
 
         public bool EmailConfirmed { get; set; }
 

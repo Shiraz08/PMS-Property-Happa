@@ -140,6 +140,7 @@ namespace PMS_PropertyHapa.Controllers
                     StreetAdress = model.StreetAdress,
                     City = model.City,
                     State = model.State,
+                    Currency = model.Currency,
                 };
 
                 var result = await _userManager.CreateAsync(user, model.Password);

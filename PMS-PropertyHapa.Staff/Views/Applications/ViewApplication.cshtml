@@ -4,6 +4,7 @@
 @{
     ViewData["Title"] = "ViewApplication";
     Layout = "~/Views/Shared/_Layout.cshtml";
+     var userId = ViewBag.UserId as string;
 }
 
 
@@ -47,6 +48,10 @@
                                 <input class="form-control" type="text" id="searchInput" placeholder="Search Application" aria-label="search" aria-describedby="basic-addon1">
                             </div>
                         </div>
+
+                        <div class="right-side-header">
+                            <a href="@Url.Action("AddApplication", "Applications", new { id = userId })" class="btn btn-primary">Add Application</a>
+                        </div>
                     </div>
 
                     <div class="card-body">
@@ -80,7 +85,7 @@
                                             <td class="tableFontSize align-middle">@application.MoveInDate </td>
                                             <td class="tableFontSize align-middle">@application.AddedDate </td>
                                             <td class="tableFontSize align-middle">
-                                                <a class="btn btn-danger" onclick="editApplications(@application.ApplicationId)">
+                                                <a class="btn btn-secondary me-1" onclick="editApplications(@application.ApplicationId)">
                                                     <i class="fa fa-pencil"></i> Edit
                                                 </a>
                                                 <a class="btn btn-danger" onclick="deleteApplications(@application.ApplicationId)">

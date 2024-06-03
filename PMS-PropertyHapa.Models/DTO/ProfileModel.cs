@@ -26,7 +26,9 @@ namespace PMS_PropertyHapa.Models.DTO
         public string Region { get; set; }
         public string PostalCode { get; set; }
         public string Country { get; set; }
+        public string TermsAndConditons { get; set; }
         public bool Status { get; set; }
+        
     }
 
 }

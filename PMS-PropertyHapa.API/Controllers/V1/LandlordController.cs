@@ -45,12 +45,6 @@ namespace PMS_PropertyHapa.API.Controllers.V1
         }
 
 
-
-
-
-
-        
-
         //Application Start
 
         [HttpGet("Applications")]
@@ -135,7 +129,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
         }
 
         [HttpPost("Application/{id}")]
-        public async Task<ActionResult<bool>> DeleteApplicationRequest(int id)
+        public async Task<ActionResult<bool>> DeleteApplication(int id)
         {
             try
             {
@@ -145,6 +139,36 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             catch (Exception ex)
             {
                 return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+        
+        [HttpGet("GetTerms/{id}")]
+        public async Task<ActionResult<bool>> GetTermsbyId(string id)
+        {
+            try
+            {
+                var terms = await _userRepo.GetTermsbyId(id);
+                if (terms != null)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = terms;
+                    return Ok(_response);
+                }
+                else
+                {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("No terms found with this id.");
+                    return NotFound(_response);
+                }
+            }
+            catch (Exception ex)
+            {
+                _response.StatusCode = HttpStatusCode.NotFound;
+                _response.IsSuccess = false;
+                _response.ErrorMessages.Add("Error Occured");
+                return NotFound(_response);
             }
         }
 

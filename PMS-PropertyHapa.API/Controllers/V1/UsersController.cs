@@ -277,6 +277,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             user.PostalCode = model.PostalCode;
             user.Country = model.Country;
             user.Status = model.Status;
+            user.TermsAndConditons = model.TermsAndConditons;
 
             if (!string.IsNullOrEmpty(model.NewPictureBase64))
             {

@@ -131,7 +131,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
             if (success)
             {
 
-                return RedirectToAction("ProfileUpdated");
+                return RedirectToAction("UpdateProfile");
             }
 
             ModelState.AddModelError(string.Empty, "An error occurred while updating the profile.");

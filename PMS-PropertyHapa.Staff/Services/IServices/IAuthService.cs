@@ -163,7 +163,7 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
         Task<ApplicationsDto> GetApplicationByIdAsync(int id);
         Task<bool> SaveApplicationAsync(ApplicationsDto applicationsDto);
         Task<bool> DeleteApplicationAsync(int id);
-
+        Task<string> GetTermsbyId(string id);
         #endregion
 
     }

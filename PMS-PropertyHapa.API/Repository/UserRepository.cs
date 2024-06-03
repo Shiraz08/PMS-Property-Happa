@@ -5,6 +5,7 @@ using MagicVilla_VillaAPI.Repository.IRepostiory;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.DotNet.Scaffolding.Shared.ProjectModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -714,6 +715,7 @@ namespace MagicVilla_VillaAPI.Repository
                 Region = user.Region,
                 PostalCode = user.PostalCode,
                 Country = user.Country,
+                TermsAndConditons = user.TermsAndConditons,
                 Status = true
             };
 
@@ -4303,6 +4305,14 @@ namespace MagicVilla_VillaAPI.Repository
             saveResult = await _db.SaveChangesAsync();
 
             return saveResult > 0;
+        }
+        
+        public async Task<string> GetTermsbyId(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+
+            var TermsAndCondtion = user.TermsAndConditons ?? "";
+            return TermsAndCondtion;
         }
 
         #endregion

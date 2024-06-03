@@ -1632,6 +1632,24 @@ namespace PMS_PropertyHapa.Staff.Services
             }
         }
 
+        public async Task<string> GetTermsbyId(string id)
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = $"{villaUrl}/api/v1/LandlordAuth/GetTerms/{id}"
+            });
+            if (response.IsSuccess && response.Result != null)
+            {
+                return response.Result?.ToString();
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve terms");
+            }
+        }
+
         #endregion
 
 

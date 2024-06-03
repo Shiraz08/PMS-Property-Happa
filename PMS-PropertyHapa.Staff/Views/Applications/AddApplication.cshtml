@@ -1,6 +1,8 @@
 ﻿@{
     ViewData["Title"] = "AddApplication";
     // Layout = "~/Views/Shared/_Layout.cshtml";
+    var TermsAndConditions = ViewBag.Terms as string;
+
 }
 
 
@@ -167,22 +169,22 @@
 
 <style>
     .nav-sidebar {
-        background-color: #f8f9fa; /* Background color */
-        border-radius: 10px; /* Rounded corners */
-        padding: 10px; /* Padding around the links */
+        background-color: #f8f9fa; 
+        border-radius: 10px; 
+        padding: 10px; 
     }
 
         .nav-sidebar .nav-link {
-            color: #212529; /* Link color */
-            padding: 8px 20px; /* Padding for each link */
-            border-radius: 5px; /* Rounded corners for links */
-            margin-bottom: 5px; /* Margin between links */
+            color: #212529; 
+            padding: 8px 20px; 
+            border-radius: 5px; 
+            margin-bottom: 5px; 
         }
 
             .nav-sidebar .nav-link.active {
-                background-color: #dc3545; /* Red background for active link */
-                color: #fff; /* Active link text color */
-                font-weight: bold; /* Bold font for active link */
+                background-color: #dc3545; 
+                color: #fff; 
+                font-weight: bold; 
             }
 </style>
 
@@ -830,13 +832,21 @@
                                     <!-- Terms and Conditions Form -->
                                     <h2>Terms and Conditions</h2>
                                     <div class="list-unstyled">
-                                        <ul>
-                                            <li>Applicants must provide accurate information and consent to background checks upon submitting the rental application.</li>
-                                            <li>The application fee, non-refundable, covers processing costs and does not guarantee approval.</li>
-                                            <li>Income verification and rental history may be required as part of the application process.</li>
-                                            <li>Final approval of the application is at the discretion of the landlord or property management.</li>
-                                            <li>Privacy of personal information is maintained in accordance with the landlord's privacy policy.</li>
-                                        </ul>
+                                        @* <div>@TermsAndConditions</div> *@
+                                        @if (!string.IsNullOrEmpty(TermsAndConditions))
+                                        {
+                                            @Html.Raw(TermsAndConditions)
+                                        }
+                                        else
+                                        {
+                                            <ul>
+                                                <li>Applicants must provide accurate information and consent to background checks upon submitting the rental application.</li>
+                                                <li>The application fee, non-refundable, covers processing costs and does not guarantee approval.</li>
+                                                <li>Income verification and rental history may be required as part of the application process.</li>
+                                                <li>Final approval of the application is at the discretion of the landlord or property management.</li>
+                                                <li>Privacy of personal information is maintained in accordance with the landlord's privacy policy.</li>
+                                            </ul>
+                                        } 
                                     </div>
                                     <div class="form-check mb-3">
                                         <input class="form-check-input" type="checkbox" id="agreeCheckbox">
@@ -860,9 +870,15 @@
 
 <script>
     let currentFormIndex = 0;
+    var userId = "";
     const formSections = $(".form-section");
     const totalForms = formSections.length;
     $(document).ready(function () {
+
+        var url = window.location.href;
+        var parts = url.split('/');
+        userId = parts[parts.length - 1];
+        console.log("User ID:", userId);
 
         formSections.hide().first().show();
         $('#prevButton').hide();
@@ -979,7 +995,6 @@
         
         // show Stub image
         $('#documentStubFile').on('change', function () {
-            console.log("sggd")
             const fileInput = $(this)[0];
             const stubPreview = $('#stubPreview');
             if (fileInput.files.length > 0) {
@@ -1090,10 +1105,12 @@
 
 
     function populateDropDown() {
+        console.log("asdas" + userId)
         $.ajax({
-            url: '@Url.Action("GetProperties", "Communication")',
+            url: '@Url.Action("GetProperties", "Applications")',
             type: 'GET',
             dataType: 'json',
+            data: { id: userId },
             success: function (data) {
                 var applicantPropertyDropdown = document.getElementById('applicantProperty');
                 data.forEach(function (item) {

@@ -16,8 +16,12 @@ namespace PMS_PropertyHapa.Staff.Controllers
             _authService = authService;
         }
         [AllowAnonymous]
-        public IActionResult AddApplication()
+        public async Task<IActionResult> AddApplication(string id)
         {
+
+            var terms = await _authService.GetTermsbyId(id);
+            ViewBag.Terms = terms;
+
             return View();
         }
         public async Task<IActionResult> ViewApplication()
@@ -29,6 +33,11 @@ namespace PMS_PropertyHapa.Staff.Controllers
             {
                 applications = applications.Where(s => s.AddedBy == currenUserId);
             }
+            //var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            ViewBag.UserId = currenUserId;
+
+
             return View(applications);
         }
 
@@ -75,6 +84,25 @@ namespace PMS_PropertyHapa.Staff.Controllers
                 return StatusCode(500, "Application not found");
             }
             return View(application);
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetProperties(string id)
+        {
+            try
+            {
+                var properties = await _authService.GetAllAssetsAsync();
+                if (id != null)
+                {
+                    properties = properties.Where(s => s.AddedBy == id);
+                }
+                return Ok(properties);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while fetching Communications: {ex.Message}");
+            }
         }
 
     }

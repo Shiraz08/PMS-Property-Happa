@@ -140,6 +140,13 @@
                                         </select>
                                     </div>
                                 </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
+                                        <label for="TermsAndConditions" class="form-label">Terms&Conditions</label>
+@*                                         <input class="form-control" type="text" id="TermsAndConditions" name="TermsAndConditions" placeholder="TermsAndConditions" required>
+ *@                                         <div id="TermsAndConditions" style="height: 215px;"></div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="card-footer text-end">
@@ -155,9 +162,12 @@
 
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
 <script>
     $(document).ready(function () {
+        var quill = new Quill('#TermsAndConditions', {
+            theme: 'snow'
+        });
+
         var userId = localStorage.getItem('userId');
         var userName = localStorage.getItem('userName');
         var imageName;
@@ -169,6 +179,7 @@
             dataType: 'json',
             success: function (response)
             {
+                console.log(response.result)
                 if (response.success == true) 
                 {
                     debugger
@@ -184,6 +195,7 @@
                     $('#Region').val(response.result.Region);
                     $('#PostalCode').val(response.result.PostalCode);
                     $('#Country').val(response.result.Country);
+                    quill.root.innerHTML = response.result.TermsAndConditons;
                     if (response.result.Picture) {
                         var imageUrl = 'https://localhost:7178' + response.result.Picture;
                         $('#profile-picture-container').css('background-image', 'url(' + imageUrl + ')');
@@ -214,38 +226,50 @@
             }
         });
 
-    });
+        $('form').submit(function (e) {
 
-    $('form').submit(function (e) {
+            e.preventDefault();
+            var htmlContent = quill.root.innerHTML;
 
-        e.preventDefault();
-
-        var formData = new FormData(this);
-        var userId = localStorage.getItem('userId');
-        var userName = localStorage.getItem('userName');
-        formData.append('UserId', userId);
-        formData.append('UserName', userName);
-        $.ajax({
-            url: "/Auth/UpdateProfile",
-            type: 'POST',
-            data: formData,
-            contentType: false,
-            processData: false,
-            success: function (response) {
-                console.log(response);
-                var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
-                Toast.fire({ icon: 'success', title: 'Profile updated successfully' });
-                var imageUrl = 'https://localhost:7178/wwwroot' + response.pictureUrl;
-                $('#profile-picture-container').css('background-image', 'url(' + imagePath + ')');
-                imageName = response.pictureUrl.split('/').pop();
-                $('#imageName').text(imageName);
-            },
-            error: function (xhr, status, error) {
-                var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
-                Toast.fire({ icon: 'error', title: 'Error updating profile' });
-                console.error(xhr.responseText);
+            var formData = new FormData(this);
+            var userId = localStorage.getItem('userId');
+            var userName = localStorage.getItem('userName');
+            formData.append('UserId', userId);
+            formData.append('UserName', userName);
+            // formData.append('TermsAndConditons', htmlContent);
+            // Check if htmlContent has value (non-empty, non-whitespace)
+            if (htmlContent) {
+                console.log("dgfd");
+                console.log(htmlContent);
+                formData.append('TermsAndConditons', htmlContent);
+            } else {
+                formData.append('TermsAndConditons', null);
             }
+            $.ajax({
+                url: "/Auth/UpdateProfile",
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    console.log(response);
+                    var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
+                    Toast.fire({ icon: 'success', title: 'Profile updated successfully' });
+                    var imageUrl = 'https://localhost:7178/wwwroot' + response.pictureUrl;
+                    $('#profile-picture-container').css('background-image', 'url(' + imagePath + ')');
+                    imageName = response.pictureUrl.split('/').pop();
+                    $('#imageName').text(imageName);
+                },
+                error: function (xhr, status, error) {
+                    var Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, progressBar: true, timer: 3000 });
+                    Toast.fire({ icon: 'error', title: 'Error updating profile' });
+                    console.error(xhr.responseText);
+                }
+            });
         });
+
     });
+
+    
 
 </script>

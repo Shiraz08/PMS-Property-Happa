@@ -14,6 +14,8 @@ namespace PMS_PropertyHapa.Models.DTO
         public string Type { get; set; }
         public string Status { get; set; }
         public string Remarks { get; set; }
+        public string DocumentFile { get; set; }
+        public int? Expense { get; set; }
         public string AddedBy { get; set; }
     }
 }

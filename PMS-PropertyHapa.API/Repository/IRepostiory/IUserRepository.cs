@@ -202,6 +202,7 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
         Task<ApplicationsDto> GetApplicationByIdAsync(int id);
         Task<bool> SaveApplicationAsync(ApplicationsDto vendor);
         Task<bool> DeleteApplicationAsync(int id);
+        Task<string> GetTermsbyId(string id);
 
 
     }
