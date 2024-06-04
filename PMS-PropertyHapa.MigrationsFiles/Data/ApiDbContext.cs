@@ -54,6 +54,9 @@ namespace PMS_PropertyHapa.MigrationsFiles.Data
         public DbSet<ApplicationPets> ApplicationPets { get; set; }
         public DbSet<ApplicationVehicles> ApplicationVehicles { get; set; }
         public DbSet<ApplicationDependent> ApplicationDependent { get; set; }
+        public DbSet<AccountSubType> AccountSubType { get; set; }
+        public DbSet<AccountType> AccountType { get; set; }
+        public DbSet<ChartAccount> ChartAccount { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Tenant>()

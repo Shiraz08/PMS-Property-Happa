@@ -1653,5 +1653,240 @@ namespace PMS_PropertyHapa.Staff.Services
         #endregion
 
 
+        #region AccountType
+
+        public async Task<IEnumerable<AccountType>> GetAccountTypesAsync()
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = $"{villaUrl}/api/v1/GetDataByIdAuth/AccountTypes"
+            });
+
+            if (response.IsSuccess == true)
+            {
+                var userListJson = Convert.ToString(response.Result);
+                var asset = JsonConvert.DeserializeObject<IEnumerable<AccountType>>(userListJson);
+                return asset;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve account types data");
+            }
+        }
+        public async Task<AccountType> GetAccountTypeByIdAsync(int id)
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = $"{villaUrl}/api/v1/GetDataByIdAuth/GetAccountTypeById/{id}"
+            });
+            if (response.IsSuccess && response.Result != null)
+            {
+                return JsonConvert.DeserializeObject<AccountType>(Convert.ToString(response.Result));
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve account types data");
+            }
+        }
+        public async Task<bool> SaveAccountTypeAsync(AccountType accountType)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Data = accountType,
+                    Url = $"{villaUrl}/api/v1/GetDataByIdAuth/AccountType"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when updating account type: {ex.Message}", ex);
+            }
+        }
+        public async Task<bool> DeleteAccountTypeAsync(int id)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Url = $"{villaUrl}/api/v1/GetDataByIdAuth/AccountType/{id}"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when deleting account type: {ex.Message}", ex);
+            }
+        }
+
+        #endregion
+
+        #region AccountSubType
+
+        public async Task<IEnumerable<AccountSubTypeDto>> GetAccountSubTypesAsync()
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = $"{villaUrl}/api/v1/GetDataByIdAuth/AccountSubTypes"
+            });
+
+            if (response.IsSuccess == true)
+            {
+                var userListJson = Convert.ToString(response.Result);
+                var asset = JsonConvert.DeserializeObject<IEnumerable<AccountSubTypeDto>>(userListJson);
+                return asset;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve account sub types data");
+            }
+        }
+        public async Task<AccountSubType> GetAccountSubTypeByIdAsync(int id)
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = $"{villaUrl}/api/v1/GetDataByIdAuth/GetAccountSubTypeById/{id}"
+            });
+            if (response.IsSuccess && response.Result != null)
+            {
+                return JsonConvert.DeserializeObject<AccountSubType>(Convert.ToString(response.Result));
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve account sub types data");
+            }
+        }
+        public async Task<bool> SaveAccountSubTypeAsync(AccountSubType accountSubType)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Data = accountSubType,
+                    Url = $"{villaUrl}/api/v1/GetDataByIdAuth/AccountSubType"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when updating account sub type: {ex.Message}", ex);
+            }
+        }
+        public async Task<bool> DeleteAccountSubTypeAsync(int id)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Url = $"{villaUrl}/api/v1/GetDataByIdAuth/AccountSubType/{id}"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when deleting account sub type: {ex.Message}", ex);
+            }
+        }
+
+        #endregion
+
+
+
+        #region ChartAccount
+
+        public async Task<IEnumerable<ChartAccountDto>> GetChartAccountsAsync()
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = $"{villaUrl}/api/v1/GetDataByIdAuth/ChartAccounts"
+            });
+
+            if (response.IsSuccess == true)
+            {
+                var userListJson = Convert.ToString(response.Result);
+                var asset = JsonConvert.DeserializeObject<IEnumerable<ChartAccountDto>>(userListJson);
+                return asset;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve account sub types data");
+            }
+        }
+        public async Task<ChartAccount> GetChartAccountByIdAsync(int id)
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = $"{villaUrl}/api/v1/GetDataByIdAuth/GetChartAccountById/{id}"
+            });
+            if (response.IsSuccess && response.Result != null)
+            {
+                return JsonConvert.DeserializeObject<ChartAccount>(Convert.ToString(response.Result));
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve account sub types data");
+            }
+        }
+        public async Task<bool> SaveChartAccountAsync(ChartAccount chartAccount)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Data = chartAccount,
+                    Url = $"{villaUrl}/api/v1/GetDataByIdAuth/ChartAccount"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when updating account sub type: {ex.Message}", ex);
+            }
+        }
+        public async Task<bool> DeleteChartAccountAsync(int id)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Url = $"{villaUrl}/api/v1/GetDataByIdAuth/ChartAccount/{id}"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when deleting account sub type: {ex.Message}", ex);
+            }
+        }
+
+        #endregion
+
+
+
     }
 }

@@ -1,0 +1,390 @@
+﻿@using PMS_PropertyHapa.Models.DTO
+@model IEnumerable<ChartAccountDto>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-sm-6">
+                    <h3>Chart of Accounts</h3>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index.html"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item">Chart of Accounts</li>
+                        <li class="breadcrumb-item active">List</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="email-wrap bookmark-wrap">
+            <div class="row">
+                <div class="col-xl-12 col-md-12 box-col-12 ">
+                    <div class="email-right-aside bookmark-tabcontent contacts-tabs">
+                        <div class="card email-body radius-left">
+                            <div class="ps-0">
+                                <div class="tab-content">
+                                    <div class="tab-pane fade active show" id="pills-personal" role="tabpanel" aria-labelledby="pills-personal-tab">
+                                        <div class="card mb-0">
+
+                                            <div class="card">
+                                                <div class="card-header d-flex justify-content-between align-items-center">
+
+                                                    <div class="left-side-header">
+                                                        <div class="input-group">
+                                                            <span class="input-group-text" id="basic-addon1">
+                                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                    <g>
+                                                                        <g>
+                                                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M11.2753 2.71436C16.0029 2.71436 19.8363 6.54674 19.8363 11.2753C19.8363 16.0039 16.0029 19.8363 11.2753 19.8363C6.54674 19.8363 2.71436 16.0039 2.71436 11.2753C2.71436 6.54674 6.54674 2.71436 11.2753 2.71436Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M19.8987 18.4878C20.6778 18.4878 21.3092 19.1202 21.3092 19.8983C21.3092 20.6783 20.6778 21.3097 19.8987 21.3097C19.1197 21.3097 18.4873 20.6783 18.4873 19.8983C18.4873 19.1202 19.1197 18.4878 19.8987 18.4878Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                                        </g>
+                                                                    </g>
+                                                                </svg>
+
+                                                            </span>
+                                                            <input class="form-control" type="text" id="searchInput" placeholder="Search Chart of Accounts" aria-label="search" aria-describedby="basic-addon1">
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="right-side-header">
+                                                        <button class="btn btn-primary" id="addAccountBtn">Add Account</button>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                            <div class="card-body p-0">
+                                                <div class="table-responsive">
+                                                    <table class="table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th scope="col" class="text-center tableHeaderbg">Account Type</th>
+                                                                <th scope="col" class="text-center tableHeaderbg">Sub Account Type</th>
+                                                                <th scope="col" class="text-center tableHeaderbg">Account Name</th>
+                                                                <th scope="col" class="text-center tableHeaderbg">Description</th>
+                                                                <th scope="col" class="text-center tableHeaderbg">Action</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @foreach (var item in Model?.OrderByDescending(x => x.ChartAccountId) ?? Enumerable.Empty<ChartAccountDto>())
+                                                            {
+                                                                <tr>
+                                                                    <td class="tableFontSize">@item.AccountType</td>
+                                                                    <td class="tableFontSize">@item.AccountSubType</td>
+                                                                    <td class="tableFontSize">@item.Name</td>
+                                                                    <td class="tableFontSize">@item.Description</td>
+                                                                    <td class="tableFontSize">
+                                                                        <a class="btn btn-secondary" onclick="editAccount(@item.ChartAccountId)">
+                                                                            <i class="fa fa-edit"></i> Edit
+                                                                        </a>
+                                                                        <a class="btn btn-danger" onclick="deleteAccount(@item.ChartAccountId)">
+                                                                            <i class="fa fa-trash"></i> Delete
+                                                                        </a>
+                                                                    </td>
+                                                                </tr>
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addAccountModal" tabindex="-1" aria-labelledby="addAccountModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addAccountModalLabel">Account Info</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="accountInfoForm">
+                <input type="hidden" value="" id="chartAccountId" />
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="accountTypeName" class="form-label">Account Type *</label>
+                        <select class="form-control select2" id="accountTypeName" required>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="accountSubTypeName" class="form-label">Account Sub Type *</label>
+                        <select class="form-control select2" id="accountSubTypeName" required>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="accountName" class="form-label">Account Name *</label>
+                        <input type="text" class="form-control" name="accountName" id="accountName" placeholder="Account Name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="accountDescription" class="form-label">Description *</label>
+                        <input type="text" class="form-control" name="accountDescription" id="accountDescription" placeholder="Description" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-check-label" for="isActiveAccount">Active Account</label>
+                        <div class="form-check form-switch mt-2">
+                            <input class="form-check-input" type="checkbox" id="isActiveAccount">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-check-label" for="isSubAccount">This is a Sub-Account.</label>
+                        <div class="form-check form-switch mt-2">
+                            <input class="form-check-input" type="checkbox" id="isSubAccount">
+                        </div>
+                    </div>
+                    <div class="mb-3 d-none parentAccountDiv">
+                        <label for="parentAccountName" class="form-label">Parent Account Name *</label>
+                        <select class="form-control select2" id="parentAccountName"></select>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary" id="saveBtn">Save</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
+
+<script>
+    $(document).ready(function () {
+        resetModal();
+
+        $('#addAccountModal').on('hidden.bs.modal', function () {
+            resetModal();
+        });
+
+        $('#searchInput').on('input', function () {
+            var searchText = $(this).val().toLowerCase();
+            $('tbody tr').each(function () {
+                var account = $(this).find('td:first').text().toLowerCase();
+
+                if (account.includes(searchText)) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        });
+
+        populateDropDown();
+        //chartAccountsDropDown(null);
+
+        $("#addAccountBtn").on("click", function () {
+            $("#addAccountModalLabel").html("Account Info");
+            $("#addAccountModal").modal('show');
+        });
+
+        $('#accountInfoForm').on('submit', function (event) {
+            event.preventDefault();
+
+            var formData = {
+                ChartAccountId: Number($('#chartAccountId').val()),
+                AccountTypeId: Number($('#accountTypeName').val()),
+                AccountSubTypeId: Number($('#accountSubTypeName').val()),
+                Name: $('#accountName').val(),
+                Description: $('#accountDescription').val(),
+                IsActive: $('#isActiveAccount').is(':checked'),
+                IsSubAccount: $('#isSubAccount').is(':checked'),
+                ParentAccountId: $('#parentAccountName').val(),
+            };
+
+            $.ajax({
+                url: '@Url.Action("SaveChartAccount", "ChartAccounts")',
+                type: 'POST',
+                data: JSON.stringify(formData),
+                contentType: 'application/json',
+                beforeSend: function () {
+                    $('#saveBtn').prop('disabled', true).text('Saving...');
+                },
+                success: function (response) {
+                    $("#addAccountModal").modal('hide');
+                    location.reload();
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error:', error);
+                    alert('Failed to save data');
+                },
+                complete: function () {
+                    $('#saveBtn').prop('disabled', false).text('Save');
+                }
+            });
+        });
+
+        $('#accountTypeName').on('change', function () {
+            $("#accountSubTypeName").empty();
+            if ($("#accountTypeName").val() != null) {
+                subTypeDropDown($("#accountTypeName").val(), null);
+            }
+        });
+
+        $('#isSubAccount').on('change', function () {
+            if ($(this).is(':checked')) {
+                $('.parentAccountDiv').removeClass('d-none');
+                $('#parentAccountName').attr('required', 'required');
+                chartAccountsDropDown(null);
+            } else {
+                $('#parentAccountName').val(null).removeAttr('required');
+                $('.parentAccountDiv').addClass('d-none');
+            }
+        });
+
+
+    });
+
+
+    function subTypeDropDown(accountTypeId, selectedId) {
+        $.ajax({
+            url: '@Url.Action("AccountSubTypeDll", "AccountSubType")',
+            type: 'GET',
+            dataType: 'json',
+            data: { accountTypeId: accountTypeId },
+            success: function (data) {
+                var accountSubTypeDropdown = document.getElementById('accountSubTypeName');
+                accountSubTypeDropdown.innerHTML = ''; // Clear existing options
+                var placeholderOption = new Option("Please select an option", "", true, true);
+                accountSubTypeDropdown.append(placeholderOption);
+                data.forEach(function (item) {
+                    var option = new Option(item.Type, item.AccountSubTypeId);
+                    accountSubTypeDropdown.appendChild(option);
+                });
+                if (selectedId) {
+                    $("#accountSubTypeName").val(selectedId).trigger('change');
+                }
+            }
+        });
+    }
+
+    function populateDropDown() {
+        $.ajax({
+            url: '@Url.Action("AccountTypeDll", "AccountType")',
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                var accountTypeDropdown = document.getElementById('accountTypeName');
+                var placeholderOption = new Option("Please select an option", "", true, true);
+                accountTypeDropdown.append(placeholderOption);
+                data.forEach(function (item) {
+                    var option = new Option(item.Type, item.AccountTypeId);
+                    accountTypeDropdown.appendChild(option);
+                });
+            }
+        });
+    }
+
+    function chartAccountsDropDown(parentAccountId) {
+        console.log("asd")
+        $.ajax({
+            url: '@Url.Action("ChartAccountDll", "ChartAccounts")',
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                var chartAccountsDropdown = $('#parentAccountName');
+                chartAccountsDropdown.empty();
+                var placeholderOption = new Option("Please select an option", "", true, true);
+                chartAccountsDropdown.append(placeholderOption);
+                data.forEach(function (item) {
+                    var option = new Option(item.Name, item.ChartAccountId);
+                    chartAccountsDropdown.append(option);
+                });
+                if (parentAccountId) {
+                    $("#parentAccountName").val(parentAccountId).trigger("change")
+                }
+            }
+        });
+    }
+
+    function resetModal() {
+        $("#addAccountModal form")[0].reset();
+        $('#parentAccountName').val(null).removeAttr('required');
+        $('.parentAccountDiv').addClass('d-none');
+        $('select').each(function () {
+            $(this).val($(this).find('option[selected]').val());
+        });
+        $('.select2').val(null).trigger('change');
+    }
+
+    function deleteAccount(id) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'You will not be able to recover this Account!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '@Url.Action("DeleteChartAccount", "ChartAccounts")',
+                    type: 'POST',
+                    data: { id: id },
+                    success: function (res) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Account Info deleted successfully',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        location.reload()
+                    },
+                    error: function (xhr, status, error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Something went wrong!'
+                        });
+                    },
+                });
+            }
+        });
+    }
+
+    function editAccount(id) {
+        $.ajax({
+            url: '@Url.Action("GetChartAccountById", "ChartAccounts")',
+            type: 'POST',
+            data: { id: id },
+            success: function (res) {
+                $("#addAccountModalLabel").html("Edit Account Type");
+                $("#chartAccountId").val(res.ChartAccountId);
+                $("#accountTypeName").val(res.AccountTypeId).trigger('change');
+                subTypeDropDown(res.AccountTypeId, res.AccountSubTypeId)
+                $("#accountName").val(res.Name);
+                $("#accountDescription").val(res.Description);
+                $("#isActiveAccount").prop('checked', res.IsActive);
+                $("#isSubAccount").prop('checked', res.IsSubAccount);
+                if (res.IsSubAccount) {
+                    $('.parentAccountDiv').removeClass('d-none');
+                    $('#parentAccountName').attr('required', 'required');
+                    chartAccountsDropDown(res.ParentAccountId);
+                }
+                $("#addAccountModal").modal('show');
+            },
+            error: function (xhr, status, error) {
+                console.error('Error:', error);
+                alert('Failed to retrieve data');
+            },
+        });
+    }
+</script>

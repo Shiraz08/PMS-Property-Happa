@@ -716,6 +716,7 @@ namespace MagicVilla_VillaAPI.Repository
                 PostalCode = user.PostalCode,
                 Country = user.Country,
                 TermsAndConditons = user.TermsAndConditons,
+                Currency = user.Currency,
                 Status = true
             };
 
@@ -4316,5 +4317,321 @@ namespace MagicVilla_VillaAPI.Repository
         }
 
         #endregion
+
+
+        #region AccountType
+
+        public async Task<List<AccountType>> GetAccountTypesAsync()
+        {
+            try
+            {
+                var result = await (from at in _db.AccountType
+                                    where at.IsDeleted != true
+                                    select new AccountType
+                                    {
+                                        AccountTypeId = at.AccountTypeId,
+                                        Type = at.Type,
+                                        AddedBy = at.AddedBy,
+                                    })
+                     .AsNoTracking()
+                     .ToListAsync();
+
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping Account Types: {ex.Message}");
+                throw;
+            }
+        }
+        public async Task<AccountType> GetAccountTypeByIdAsync(int id)
+        {
+            try
+            {
+                var result = await (from at in _db.AccountType
+                                    where at.AccountTypeId == id
+                                    select new AccountType
+                                    {
+                                        AccountTypeId = at.AccountTypeId,
+                                        Type = at.Type,
+                                        AddedBy = at.AddedBy,
+
+                                    })
+                     .AsNoTracking()
+                     .FirstOrDefaultAsync();
+
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping  Account Type: {ex.Message}");
+                throw;
+            }
+        }
+        public async Task<bool> SaveAccountTypeAsync(AccountType model)
+        {
+            var accountType = _db.AccountType.FirstOrDefault(x => x.AccountTypeId == model.AccountTypeId);
+
+            if (accountType == null)
+                accountType = new AccountType();
+
+            accountType.AccountTypeId = model.AccountTypeId;
+            accountType.Type = model.Type;
+
+            if (accountType.AccountTypeId > 0)
+            {
+                accountType.ModifiedBy = model.AddedBy;
+                accountType.ModifiedDate = DateTime.Now;
+                _db.AccountType.Update(accountType);
+            }
+            else
+            {
+                accountType.AddedBy = model.AddedBy;
+                accountType.AddedDate = DateTime.Now;
+                _db.AccountType.Add(accountType);
+            }
+
+            var result = await _db.SaveChangesAsync();
+
+
+            return result > 0;
+
+        }
+        public async Task<bool> DeleteAccountTypeAsync(int id)
+        {
+            var accountType = await _db.AccountType.FindAsync(id);
+            if (accountType == null) return false;
+
+            accountType.IsDeleted = true;
+            _db.AccountType.Update(accountType);
+            var saveResult = await _db.SaveChangesAsync();
+
+            return saveResult > 0;
+        }
+
+        #endregion
+
+        #region AccountSubType
+
+        public async Task<List<AccountSubTypeDto>> GetAccountSubTypesAsync()
+        {
+            try
+            {
+                var result = await (from ast in _db.AccountSubType
+                                    from at in _db.AccountType.Where(x => x.AccountTypeId == ast.AccountTypeId && x.IsDeleted != true).DefaultIfEmpty()
+                                    where ast.IsDeleted != true
+                                    select new AccountSubTypeDto
+                                    {
+                                        AccountSubTypeId = ast.AccountSubTypeId,
+                                        AccountTypeId = ast.AccountTypeId,
+                                        AccountType = at.Type,
+                                        Type = ast.Type,
+                                        Description = ast.Description,
+                                        AddedBy = ast.AddedBy,
+                                    })
+                     .AsNoTracking()
+                     .ToListAsync();
+
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping Account Sub Types: {ex.Message}");
+                throw;
+            }
+        }
+        public async Task<AccountSubType> GetAccountSubTypeByIdAsync(int id)
+        {
+            try
+            {
+                var result = await (from ast in _db.AccountSubType
+                                    where ast.AccountSubTypeId == id
+                                    select new AccountSubType
+                                    {
+                                        AccountSubTypeId = ast.AccountSubTypeId,
+                                        AccountTypeId = ast.AccountTypeId,
+                                        Type = ast.Type,
+                                        Description = ast.Description,
+                                        AddedBy = ast.AddedBy,
+
+                                    })
+                     .AsNoTracking()
+                     .FirstOrDefaultAsync();
+
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping  Account Sub Type: {ex.Message}");
+                throw;
+            }
+        }
+        public async Task<bool> SaveAccountSubTypeAsync(AccountSubType model)
+        {
+            var accountSubType = _db.AccountSubType.FirstOrDefault(x => x.AccountSubTypeId == model.AccountSubTypeId);
+
+            if (accountSubType == null)
+                accountSubType = new AccountSubType();
+
+            accountSubType.AccountSubTypeId = model.AccountSubTypeId;
+            accountSubType.AccountTypeId = model.AccountTypeId;
+            accountSubType.Type = model.Type;
+            accountSubType.Description = model.Description;
+
+            if (accountSubType.AccountSubTypeId > 0)
+            {
+                accountSubType.ModifiedBy = model.AddedBy;
+                accountSubType.ModifiedDate = DateTime.Now;
+                _db.AccountSubType.Update(accountSubType);
+            }
+            else
+            {
+                accountSubType.AddedBy = model.AddedBy;
+                accountSubType.AddedDate = DateTime.Now;
+                _db.AccountSubType.Add(accountSubType);
+            }
+
+            var result = await _db.SaveChangesAsync();
+
+
+            return result > 0;
+
+        }
+        public async Task<bool> DeleteAccountSubTypeAsync(int id)
+        {
+            var accountSubType = await _db.AccountSubType.FindAsync(id);
+            if (accountSubType == null) return false;
+
+            accountSubType.IsDeleted = true;
+            _db.AccountSubType.Update(accountSubType);
+            var saveResult = await _db.SaveChangesAsync();
+
+            return saveResult > 0;
+        }
+
+        #endregion
+
+
+        #region ChartAccount
+
+        public async Task<List<ChartAccountDto>> GetChartAccountsAsync()
+        {
+            try
+            {
+                var result = await (from ca in _db.ChartAccount
+                                    from ast in _db.AccountSubType.Where(x => x.AccountSubTypeId == ca.AccountSubTypeId && x.IsDeleted != true).DefaultIfEmpty()
+                                    from at in _db.AccountType.Where(x => x.AccountTypeId == ca.AccountTypeId && x.IsDeleted != true).DefaultIfEmpty()
+                                    where ca.IsDeleted != true
+                                    select new ChartAccountDto
+                                    {
+                                        ChartAccountId = ca.ChartAccountId,
+                                        AccountSubTypeId = ca.AccountSubTypeId,
+                                        AccountSubType = ast.Type,
+                                        AccountTypeId = ca.AccountTypeId,
+                                        AccountType = at.Type,
+                                        Name = ca.Name,
+                                        Description = ca.Description,
+                                        ParentAccountId = ca.ParentAccountId,
+                                        IsActive = ca.IsActive,
+                                        IsSubAccount = ca.IsSubAccount,
+                                        ParentAccount = ca.ParentAccountId != null ? _db.ChartAccount.FirstOrDefault(x=>x.ChartAccountId == ca.ParentAccountId && x.IsDeleted != true).Name : "",
+                                        AddedBy = ca.AddedBy
+                                    })
+                     .AsNoTracking()
+                     .ToListAsync();
+
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping Account Sub Types: {ex.Message}");
+                throw;
+            }
+        }
+        public async Task<ChartAccount> GetChartAccountByIdAsync(int id)
+        {
+            try
+            {
+                var result = await (from ca in _db.ChartAccount
+                                    from ast in _db.AccountSubType.Where(x => x.AccountSubTypeId == ca.AccountSubTypeId && x.IsDeleted != true).DefaultIfEmpty()
+                                    from at in _db.AccountType.Where(x => x.AccountTypeId == ca.AccountTypeId && x.IsDeleted != true).DefaultIfEmpty()
+                                    where ca.ChartAccountId == id
+                                    select new ChartAccount
+                                    {
+                                        ChartAccountId = ca.ChartAccountId,
+                                        AccountSubTypeId = ca.AccountSubTypeId,
+                                        AccountTypeId = ca.AccountTypeId,
+                                        Name = ca.Name,
+                                        Description = ca.Description,
+                                        ParentAccountId = ca.ParentAccountId,
+                                        IsActive = ca.IsActive,
+                                        IsSubAccount = ca.IsSubAccount,
+                                        AddedBy = ca.AddedBy
+                                    })
+                     .AsNoTracking()
+                     .FirstOrDefaultAsync();
+
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping  Account Sub Type: {ex.Message}");
+                throw;
+            }
+        }
+        public async Task<bool> SaveChartAccountAsync(ChartAccount model)
+        {
+            var chartAccount = _db.ChartAccount.FirstOrDefault(x => x.ChartAccountId == model.ChartAccountId);
+
+            if (chartAccount == null)
+                chartAccount = new ChartAccount();
+
+            chartAccount.AccountSubTypeId = model.AccountSubTypeId;
+            chartAccount.AccountTypeId = model.AccountTypeId;
+            chartAccount.Name = model.Name;
+            chartAccount.Description = model.Description;
+            chartAccount.IsActive = model.IsActive;
+            chartAccount.IsSubAccount = model.IsSubAccount;
+            chartAccount.ParentAccountId = model.ParentAccountId;
+
+            if (chartAccount.ChartAccountId > 0)
+            {
+                chartAccount.ModifiedBy = model.AddedBy;
+                chartAccount.ModifiedDate = DateTime.Now;
+                _db.ChartAccount.Update(chartAccount);
+            }
+            else
+            {
+                chartAccount.AddedBy = model.AddedBy;
+                chartAccount.AddedDate = DateTime.Now;
+                _db.ChartAccount.Add(chartAccount);
+            }
+
+            var result = await _db.SaveChangesAsync();
+
+
+            return result > 0;
+
+        }
+        public async Task<bool> DeleteChartAccountAsync(int id)
+        {
+            var chartAccount = await _db.ChartAccount.FindAsync(id);
+            if (chartAccount == null) return false;
+
+            chartAccount.IsDeleted = true;
+            _db.ChartAccount.Update(chartAccount);
+            var saveResult = await _db.SaveChangesAsync();
+
+            return saveResult > 0;
+        }
+
+        #endregion
+
     }
 }

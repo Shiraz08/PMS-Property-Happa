@@ -142,9 +142,21 @@
                                 </div>
                                 <div class="col-sm-6 col-md-3">
                                     <div class="mb-3">
+                                        <label for="Currency" class="form-label">Currency</label>
+                                        <select class="form-control" id="Currency" name="Currency">
+                                            <option value="" selected disabled hidden>Select Currency</option>
+                                            <option value="USD">USD - United States Dollar ($)</option>
+                                            <option value="EUR">EUR - Euro (€)</option>
+                                            <option value="GBP">GBP - British Pound (£)</option>
+                                            <option value="JPY">JPY - Japanese Yen (¥)</option>
+                                            <option value="INR">INR - Indian Rupee (₹)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="mb-3">
                                         <label for="TermsAndConditions" class="form-label">Terms&Conditions</label>
-@*                                         <input class="form-control" type="text" id="TermsAndConditions" name="TermsAndConditions" placeholder="TermsAndConditions" required>
- *@                                         <div id="TermsAndConditions" style="height: 215px;"></div>
+                                         <div id="TermsAndConditions" style="height: 215px;"></div>
                                     </div>
                                 </div>
                             </div>
@@ -179,7 +191,6 @@
             dataType: 'json',
             success: function (response)
             {
-                console.log(response.result)
                 if (response.success == true) 
                 {
                     debugger
@@ -195,6 +206,7 @@
                     $('#Region').val(response.result.Region);
                     $('#PostalCode').val(response.result.PostalCode);
                     $('#Country').val(response.result.Country);
+                    $('#Currency').val(response.result.Currency);
                     quill.root.innerHTML = response.result.TermsAndConditons;
                     if (response.result.Picture) {
                         var imageUrl = 'https://localhost:7178' + response.result.Picture;
@@ -236,11 +248,8 @@
             var userName = localStorage.getItem('userName');
             formData.append('UserId', userId);
             formData.append('UserName', userName);
-            // formData.append('TermsAndConditons', htmlContent);
-            // Check if htmlContent has value (non-empty, non-whitespace)
+           // formData.append('Currency', $("#Currency").val()));
             if (htmlContent) {
-                console.log("dgfd");
-                console.log(htmlContent);
                 formData.append('TermsAndConditons', htmlContent);
             } else {
                 formData.append('TermsAndConditons', null);

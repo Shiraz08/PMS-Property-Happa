@@ -278,6 +278,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             user.Country = model.Country;
             user.Status = model.Status;
             user.TermsAndConditons = model.TermsAndConditons;
+            user.Currency = model.Currency;
 
             if (!string.IsNullOrEmpty(model.NewPictureBase64))
             {

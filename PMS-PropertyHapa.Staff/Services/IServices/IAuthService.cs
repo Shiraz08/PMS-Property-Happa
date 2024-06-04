@@ -158,7 +158,7 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
 
         #endregion
         
-        #region Vendor
+        #region Applications
         Task<IEnumerable<ApplicationsDto>> GetApplicationsAsync();
         Task<ApplicationsDto> GetApplicationByIdAsync(int id);
         Task<bool> SaveApplicationAsync(ApplicationsDto applicationsDto);
@@ -166,5 +166,31 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
         Task<string> GetTermsbyId(string id);
         #endregion
 
+        #region AccountType
+
+        Task<IEnumerable<AccountType>> GetAccountTypesAsync();
+        Task<AccountType> GetAccountTypeByIdAsync(int id);
+        Task<bool> SaveAccountTypeAsync(AccountType accountType);
+        Task<bool> DeleteAccountTypeAsync(int id);
+
+        #endregion
+
+        #region AccountSubType
+
+        Task<IEnumerable<AccountSubTypeDto>> GetAccountSubTypesAsync();
+        Task<AccountSubType> GetAccountSubTypeByIdAsync(int id);
+        Task<bool> SaveAccountSubTypeAsync(AccountSubType accountSubType);
+        Task<bool> DeleteAccountSubTypeAsync(int id);
+
+        #endregion
+
+        #region ChartAccount
+
+        Task<IEnumerable<ChartAccountDto>> GetChartAccountsAsync();
+        Task<ChartAccount> GetChartAccountByIdAsync(int id);
+        Task<bool> SaveChartAccountAsync(ChartAccount chartAccount);
+        Task<bool> DeleteChartAccountAsync(int id);
+
+        #endregion
     }
 }

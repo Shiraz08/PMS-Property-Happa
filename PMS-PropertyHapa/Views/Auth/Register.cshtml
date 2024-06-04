@@ -415,8 +415,6 @@
         var password = $("#password").val();
         var confirmPassword = $("#confirmPassword").val();
 
-        console.log(email)
-        console.log(isEmailVerified)
 
         if (!email || isEmailVerified == false) {
             toastr.error("Please make email verified.");

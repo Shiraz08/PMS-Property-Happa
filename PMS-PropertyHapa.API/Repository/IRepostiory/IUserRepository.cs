@@ -205,5 +205,27 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
         Task<string> GetTermsbyId(string id);
 
 
+
+        //Account Type
+        Task<List<AccountType>> GetAccountTypesAsync();
+        Task<AccountType> GetAccountTypeByIdAsync(int id);
+        Task<bool> SaveAccountTypeAsync(AccountType accountType);
+        Task<bool> DeleteAccountTypeAsync(int id);
+
+
+
+        //Account Sub Type
+        Task<List<AccountSubTypeDto>> GetAccountSubTypesAsync();
+        Task<AccountSubType> GetAccountSubTypeByIdAsync(int id);
+        Task<bool> SaveAccountSubTypeAsync(AccountSubType accountSubType);
+        Task<bool> DeleteAccountSubTypeAsync(int id);
+
+
+        //Account ChartAccount
+        Task<List<ChartAccountDto>> GetChartAccountsAsync();
+        Task<ChartAccount> GetChartAccountByIdAsync(int id);
+        Task<bool> SaveChartAccountAsync(ChartAccount chartAccount);
+        Task<bool> DeleteChartAccountAsync(int id);
+
     }
 }
