@@ -47,6 +47,27 @@ namespace PMS_PropertyHapa.Shared.Enum
           OnHold,
         }
 
+        public enum BudgetType
+        {
+            ProfitAndLoss = 1,
+            BalanceSheet = 2,
+        }
 
+        public enum BudgetBy
+        {
+            Property = 1,
+            Portfolio = 2,
+        }
+        public enum BudgetPeriod
+        {
+            Monthly = 1,
+            Quarterly = 2,
+            Yearly = 3,
+        }
+        public enum AccountingMethod
+        {
+            Cash = 1,
+            Accrual = 2,
+        }
     }
 }

@@ -3,6 +3,7 @@ using PMS_PropertyHapa.Staff.Models;
 using PMS_PropertyHapa.Models.DTO;
 using System.Threading.Tasks;
 using PMS_PropertyHapa.Models.Entities;
+using Microsoft.AspNetCore.Mvc;
 
 namespace PMS_PropertyHapa.Staff.Services.IServices
 {
@@ -109,6 +110,15 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
         Task<bool> UpdateAccountAsync(TiwiloDto obj);
 
 
+        // Invoices 
+        Task<List<Invoice>> GetInvoicesAsync(int leaseId);
+        Task<bool> AllInvoicePaidAsync(int leaseId);
+        Task<bool> AllInvoiceOwnerPaidAsync(int leaseId);
+        Task<bool> InvoicePaidAsync(int invoiceId);
+        Task<bool> InvoiceOwnerPaidAsync(int invoiceId);
+        Task<Invoice> GetInvoiceByIdAsync(int invoiceId);
+
+
 
         Task<IEnumerable<AssetUnitDTO>> GetAllUnitsAsync();
 
@@ -191,6 +201,15 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
         Task<bool> SaveChartAccountAsync(ChartAccount chartAccount);
         Task<bool> DeleteChartAccountAsync(int id);
 
+        #endregion
+
+        #region Budget
+
+        Task<IEnumerable<BudgetDto>> GetBudgetsAsync();
+        Task<Budget> GetBudgetByIdAsync(int id);
+        Task<bool> SaveBudgetAsync(BudgetDto budget);
+        Task<bool> SaveDuplicateBudgetAsync(BudgetDto budget);
+        Task<bool> DeleteBudgetAsync(int id);
         #endregion
     }
 }

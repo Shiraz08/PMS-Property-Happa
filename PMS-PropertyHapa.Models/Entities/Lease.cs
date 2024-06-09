@@ -12,6 +12,7 @@ namespace PMS_PropertyHapa.Models.Entities
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
 
+        public int? PropertyId { get; set; }
         public string SelectedProperty { get; set; }
 
         public string SelectedUnit { get; set; }

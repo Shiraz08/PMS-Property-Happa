@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using NuGet.ContentModel;
 using PMS_PropertyHapa.MigrationsFiles.Data;
+using PMS_PropertyHapa.MigrationsFiles.Migrations;
 using PMS_PropertyHapa.Models.DTO;
 using PMS_PropertyHapa.Models.Entities;
 using PMS_PropertyHapa.Models.Roles;
@@ -192,6 +193,54 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
             return View("AddLease", lease);
         }
+        
+        public async Task<IActionResult> InvoiceDetails(int leaseId)
+        {
+            List<Invoice> invoices = await _authService.GetInvoicesAsync(leaseId);
+
+            ViewBag.Paid = invoices?.Where(x => x.InvoicePaid == true).Select(x => x.RentAmount).Sum() ?? 0;
+            ViewBag.UnPaid = invoices?.Where(x => x.InvoicePaid != true).Select(x => x.RentAmount).Sum() ?? 0;
+            ViewBag.OwnerPaid = invoices?.Where(x => x.InvoicePaidToOwner == true).Select(x => x.RentAmount).Sum() ?? 0;
+            ViewBag.OwnerUnPaid = invoices?.Where(x => x.InvoicePaidToOwner != true).Select(x => x.RentAmount).Sum() ?? 0;
+
+            return View(invoices);
+        }
+
+        public async Task<IActionResult> AllInvoicePaid(int leaseId)
+        {
+            await _authService.AllInvoicePaidAsync(leaseId);
+            return Json(new { success = true, message = "All invoice paid successfully" });
+        }
+
+        public async Task<IActionResult> AllInvoiceOwnerPaid(int leaseId)
+        {
+            await _authService.AllInvoiceOwnerPaidAsync(leaseId);
+            return Json(new { success = true, message = "All invoice paid to owner successfully" });
+        }
+
+        public async Task<IActionResult> InvoicePaid(int invoiceId)
+        {
+            await _authService.InvoicePaidAsync(invoiceId);
+            return Json(new { success = true, message = "Invoice paid successfully" });
+        }
+
+        public async Task<IActionResult> InvoiceOwnerPaid(int invoiceId)
+        {
+            await _authService.InvoiceOwnerPaidAsync(invoiceId);
+            return Json(new { success = true, message = "Invoice paid to owner successfully" });
+        }
+
+        public async Task<IActionResult> DownloadInvoice(int id)
+        {
+            Invoice invoice = await _authService.GetInvoiceByIdAsync(id);
+            var lease = await _authService.GetLeaseByIdAsync(invoice.LeaseId.Value);
+
+            ViewBag.invoice = invoice;
+            return View(lease);
+        }
+
+
+
 
     }
 }

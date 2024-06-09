@@ -1,0 +1,148 @@
+﻿@{
+    ViewData["Title"] = "Accounting";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12">
+                    <h3>Accounting</h3>
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a class="home-item" href="index.html"><i data-feather="home" fa-3x"></i></a></li>
+                        <li class="breadcrumb-item">Accounting</li>
+                        <li class="breadcrumb-item active">Index</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <!-- Row for three cards -->
+        <div class="row">
+            <!-- Card for Account Type -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body d-flex justify-content-center align-items-center">
+                        <i class="icon-folder fa-3x"></i> <!-- Updated icon class -->
+                    </div>
+                    <div class="card-footer">
+                        <h4 class="card-title text-center">
+                            <a href="@Url.Action("Index", "AccountType")">Account Type</a>
+                        </h4>
+                    </div>
+                </div>
+            </div>
+            <!-- Card for Account Sub Type -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body d-flex justify-content-center align-items-center">
+                        <i class="icon-folder fa-3x"></i> <!-- Updated icon class -->
+                    </div>
+                    <div class="card-footer">
+                        <h4 class="card-title text-center">
+                            <a href="@Url.Action("Index", "AccountSubType")">Account Sub Type</a>
+                        </h4>
+                    </div>
+                </div>
+            </div>
+            <!-- Card for Chart of Accounts -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body d-flex justify-content-center align-items-center">
+                        <i class="icon-bar-chart fa-3x"></i> <!-- Updated icon class -->
+                    </div>
+                    <div class="card-footer">
+                        <h4 class="card-title text-center">
+                            <a href="@Url.Action("Index", "ChartAccounts")">Chart of Accounts</a>
+                        </h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Repeat the row structure for the next set of three cards -->
+        <div class="row">
+            <!-- Card for View Rent -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body d-flex justify-content-center align-items-center">
+                        <i class="icon-eye fa-3x"></i> <!-- Updated icon class -->
+                    </div>
+                    <div class="card-footer">
+                        <h4 class="card-title text-center">
+                            <a href="@Url.Action("Rent", "Accounting")">View Rent</a>
+                        </h4>
+                    </div>
+                </div>
+            </div>
+            <!-- Card for View Assest Expense -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body d-flex justify-content-center align-items-center">
+                        <i class="icon-wallet fa-3x"></i> <!-- Updated icon class -->
+                    </div>
+                    <div class="card-footer">
+                        <h4 class="card-title text-center">
+                            <a href="@Url.Action("AssestExpense", "Accounting")">View Assest Expense</a>
+                        </h4>
+                    </div>
+                </div>
+            </div>
+            <!-- Card for View Deposit -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body d-flex justify-content-center align-items-center">
+                        <i class="icon-bag fa-3x"></i> <!-- Updated icon class -->
+                    </div>
+                    <div class="card-footer">
+                        <h4 class="card-title text-center">
+                            <a href="@Url.Action("Deposit", "Accounting")">View Deposit</a>
+                        </h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Continue for remaining cards -->
+        <div class="row">
+            <!-- Card for View Billing -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body d-flex justify-content-center align-items-center">
+                        <i class="icon-clipboard fa-3x"></i> <!-- Updated icon class -->
+                    </div>
+                    <div class="card-footer">
+                        <h4 class="card-title text-center">
+                            <a href="@Url.Action("Billing", "Accounting")">View Billing</a>
+                        </h4>
+                    </div>
+                </div>
+            </div>
+            <!-- Card for View Invoices -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body d-flex justify-content-center align-items-center">
+                        <i class="icon-clipboard fa-3x"></i> <!-- Updated icon class -->
+                    </div>
+                    <div class="card-footer">
+                        <h4 class="card-title text-center">
+                            <a href="@Url.Action("Invoices", "Accounting")">View Invoices</a>
+                        </h4>
+                    </div>
+                </div>
+            </div>
+            <!-- Card for Budgeting -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body d-flex justify-content-center align-items-center">
+                        <i class="icon-money fa-3x"></i> <!-- Updated icon class -->
+                    </div>
+                    <div class="card-footer">
+                        <h4 class="card-title text-center">
+                            <a href="@Url.Action("Index", "Budget")">Budgeting</a>
+                        </h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

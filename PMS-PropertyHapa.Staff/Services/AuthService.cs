@@ -1091,6 +1091,122 @@ namespace PMS_PropertyHapa.Staff.Services
             }
         }
 
+        //Invoices
+        public async Task<List<Invoice>> GetInvoicesAsync(int leaseId)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.GET,
+                    Url = $"{villaUrl}/api/v1/LeaseAuth/Invoices/{leaseId}"
+                });
+
+                if (response.IsSuccess && response.Result != null)
+                {
+                    return JsonConvert.DeserializeObject<List<Invoice>>(Convert.ToString(response.Result));
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when fetching lease by ID: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<bool> AllInvoicePaidAsync(int leaseId)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Url = $"{villaUrl}/api/v1/LeaseAuth/AllInvoicePaid/{leaseId}"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when in all paid invoices: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<bool> AllInvoiceOwnerPaidAsync(int leaseId)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Url = $"{villaUrl}/api/v1/LeaseAuth/AllInvoiceOwnerPaid/{leaseId}"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when all owner paid invoices: {ex.Message}", ex);
+            }
+        }
+        
+        public async Task<bool> InvoicePaidAsync(int invoiceId)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Url = $"{villaUrl}/api/v1/LeaseAuth/InvoicePaid/{invoiceId}"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when in paid invoices: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<bool> InvoiceOwnerPaidAsync(int invoiceId)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Url = $"{villaUrl}/api/v1/LeaseAuth/InvoiceOwnerPaid/{invoiceId}"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when owner paid invoices: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<Invoice> GetInvoiceByIdAsync(int invoiceId)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.GET,
+                    Url = $"{villaUrl}/api/v1/LeaseAuth/Invoice/{invoiceId}"
+                });
+
+                if (response.IsSuccess && response.Result != null)
+                {
+                    return JsonConvert.DeserializeObject<Invoice>(Convert.ToString(response.Result));
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when fetching invoice by ID: {ex.Message}", ex);
+            }
+        }
 
 
         public async Task<bool> UpdateAccountAsync(TiwiloDto obj)
@@ -1108,9 +1224,6 @@ namespace PMS_PropertyHapa.Staff.Services
         }
 
         #endregion
-
-
-
 
         public async Task<IEnumerable<AssetUnitDTO>> GetAllUnitsAsync()
         {
@@ -1134,12 +1247,6 @@ namespace PMS_PropertyHapa.Staff.Services
 
 
         }
-        
-
-
-
-
-
 
         public async Task<bool> VerifyEmailAsync(string email)
         {
@@ -1206,7 +1313,7 @@ namespace PMS_PropertyHapa.Staff.Services
             var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
             {
                 ApiType = SD.ApiType.GET,
-                Url = $"{villaUrl}/api/v1/GetDataByIdAuth/GetTaskRequestHistory/{taskRequsetId}"
+                Url = $"{villaUrl}/api/v1/TaskAuth/GetTaskRequestHistory/{taskRequsetId}"
             });
 
             if (response.IsSuccess == true)
@@ -1220,14 +1327,13 @@ namespace PMS_PropertyHapa.Staff.Services
                 throw new Exception("Failed to retrieve task history data");
             }
         }
-        
         public async Task<IEnumerable<TaskRequestDto>> GetMaintenanceTasksAsync()
         {
 
             var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
             {
                 ApiType = SD.ApiType.GET,
-                Url = $"{villaUrl}/api/v1/GetDataByIdAuth/MaintenanceTasks"
+                Url = $"{villaUrl}/api/v1/TaskAuth/MaintenanceTasks"
             });
 
             if (response.IsSuccess == true)
@@ -1241,14 +1347,13 @@ namespace PMS_PropertyHapa.Staff.Services
                 throw new Exception("Failed to retrieve task data");
             }
         }
-        
         public async Task<IEnumerable<TaskRequestDto>> GetTaskRequestsAsync()
         {
 
             var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
             {
                 ApiType = SD.ApiType.GET,
-                Url = $"{villaUrl}/api/v1/GetDataByIdAuth/Tasks"
+                Url = $"{villaUrl}/api/v1/TaskAuth/Tasks"
             });
 
             if (response.IsSuccess == true)
@@ -1268,7 +1373,7 @@ namespace PMS_PropertyHapa.Staff.Services
             var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
             {
                 ApiType = SD.ApiType.GET,
-                Url = $"{villaUrl}/api/v1/GetDataByIdAuth/GetTaskById/{id}"
+                Url = $"{villaUrl}/api/v1/TaskAuth/GetTaskById/{id}"
             });
             if (response.IsSuccess && response.Result != null)
             {
@@ -1287,7 +1392,7 @@ namespace PMS_PropertyHapa.Staff.Services
                 {
                     ApiType = SD.ApiType.POST,
                     Data = taskRequestDto,
-                    Url = $"{villaUrl}/api/v1/GetDataByIdAuth/Task"
+                    Url = $"{villaUrl}/api/v1/TaskAuth/Task"
                 });
 
                 return response.IsSuccess;
@@ -1304,7 +1409,7 @@ namespace PMS_PropertyHapa.Staff.Services
                 var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
                 {
                     ApiType = SD.ApiType.POST,
-                    Url = $"{villaUrl}/api/v1/GetDataByIdAuth/Task/{id}"
+                    Url = $"{villaUrl}/api/v1/TaskAuth/Task/{id}"
                 });
 
                 return response.IsSuccess;
@@ -1314,7 +1419,6 @@ namespace PMS_PropertyHapa.Staff.Services
                 throw new Exception($"An error occurred when deleting task: {ex.Message}", ex);
             }
         }
-
         public async Task<bool> SaveTaskHistoryAsync(TaskRequestHistoryDto taskRequestHistoryDto)
         {
             try
@@ -1323,7 +1427,7 @@ namespace PMS_PropertyHapa.Staff.Services
                 {
                     ApiType = SD.ApiType.POST,
                     Data = taskRequestHistoryDto,
-                    Url = $"{villaUrl}/api/v1/GetDataByIdAuth/TaskHistory"
+                    Url = $"{villaUrl}/api/v1/TaskAuth/TaskHistory"
                 });
 
                 return response.IsSuccess;
@@ -1344,7 +1448,7 @@ namespace PMS_PropertyHapa.Staff.Services
             {
                 ApiType = SD.ApiType.POST,
                 Data = filter,
-                Url = $"{villaUrl}/api/v1/GetDataByIdAuth/CalendarEvents"
+                Url = $"{villaUrl}/api/v1/CalendarAuth/CalendarEvents"
             });
 
             if (response.IsSuccess == true)
@@ -1358,7 +1462,6 @@ namespace PMS_PropertyHapa.Staff.Services
                 throw new Exception("Failed to retrieve calendar data");
             }
         }
-
         public async Task<List<OccupancyOverviewEvents>> GetOccupancyOverviewEventsAsync(CalendarFilterModel filter)
         {
 
@@ -1366,7 +1469,7 @@ namespace PMS_PropertyHapa.Staff.Services
             {
                 ApiType = SD.ApiType.POST,
                 Data = filter,
-                Url = $"{villaUrl}/api/v1/GetDataByIdAuth/OccupancyOverviewEvents"
+                Url = $"{villaUrl}/api/v1/CalendarAuth/OccupancyOverviewEvents"
             });
 
             if (response.IsSuccess == true)
@@ -1386,7 +1489,7 @@ namespace PMS_PropertyHapa.Staff.Services
             var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
             {
                 ApiType = SD.ApiType.POST,
-                Url = $"{villaUrl}/api/v1/GetDataByIdAuth/LeaseData/{id}"
+                Url = $"{villaUrl}/api/v1/CalendarAuth/LeaseData/{id}"
             });
 
             if (response.IsSuccess == true)
@@ -1410,7 +1513,7 @@ namespace PMS_PropertyHapa.Staff.Services
             var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
             {
                 ApiType = SD.ApiType.GET,
-                Url = $"{villaUrl}/api/v1/LandlordAuth/VendorCategories"
+                Url = $"{villaUrl}/api/v1/VendorAuth/VendorCategories"
             });
 
             if (response.IsSuccess == true)
@@ -1430,7 +1533,7 @@ namespace PMS_PropertyHapa.Staff.Services
             var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
             {
                 ApiType = SD.ApiType.GET,
-                Url = $"{villaUrl}/api/v1/LandlordAuth/GetVendorCategoryById/{id}"
+                Url = $"{villaUrl}/api/v1/VendorAuth/GetVendorCategoryById/{id}"
             });
             if (response.IsSuccess && response.Result != null)
             {
@@ -1449,7 +1552,7 @@ namespace PMS_PropertyHapa.Staff.Services
                 {
                     ApiType = SD.ApiType.POST,
                     Data = vendorCategory,
-                    Url = $"{villaUrl}/api/v1/LandlordAuth/VendorCategory"
+                    Url = $"{villaUrl}/api/v1/VendorAuth/VendorCategory"
                 });
 
                 return response.IsSuccess;
@@ -1466,7 +1569,7 @@ namespace PMS_PropertyHapa.Staff.Services
                 var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
                 {
                     ApiType = SD.ApiType.POST,
-                    Url = $"{villaUrl}/api/v1/LandlordAuth/VendorCategory/{id}"
+                    Url = $"{villaUrl}/api/v1/VendorAuth/VendorCategory/{id}"
                 });
 
                 return response.IsSuccess;
@@ -1487,7 +1590,7 @@ namespace PMS_PropertyHapa.Staff.Services
             var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
             {
                 ApiType = SD.ApiType.GET,
-                Url = $"{villaUrl}/api/v1/LandlordAuth/Vendors"
+                Url = $"{villaUrl}/api/v1/VendorAuth/Vendors"
             });
 
             if (response.IsSuccess == true)
@@ -1507,7 +1610,7 @@ namespace PMS_PropertyHapa.Staff.Services
             var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
             {
                 ApiType = SD.ApiType.GET,
-                Url = $"{villaUrl}/api/v1/LandlordAuth/GetVendorById/{id}"
+                Url = $"{villaUrl}/api/v1/VendorAuth/GetVendorById/{id}"
             });
             if (response.IsSuccess && response.Result != null)
             {
@@ -1526,7 +1629,7 @@ namespace PMS_PropertyHapa.Staff.Services
                 {
                     ApiType = SD.ApiType.POST,
                     Data = vendor,
-                    Url = $"{villaUrl}/api/v1/LandlordAuth/Vendor"
+                    Url = $"{villaUrl}/api/v1/VendorAuth/Vendor"
                 });
 
                 return response.IsSuccess;
@@ -1543,7 +1646,7 @@ namespace PMS_PropertyHapa.Staff.Services
                 var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
                 {
                     ApiType = SD.ApiType.POST,
-                    Url = $"{villaUrl}/api/v1/LandlordAuth/Vendor/{id}"
+                    Url = $"{villaUrl}/api/v1/VendorAuth/Vendor/{id}"
                 });
 
                 return response.IsSuccess;
@@ -1565,7 +1668,7 @@ namespace PMS_PropertyHapa.Staff.Services
             var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
             {
                 ApiType = SD.ApiType.GET,
-                Url = $"{villaUrl}/api/v1/LandlordAuth/Applications"
+                Url = $"{villaUrl}/api/v1/ApplicationsAuth/Applications"
             });
 
             if (response.IsSuccess == true)
@@ -1585,7 +1688,7 @@ namespace PMS_PropertyHapa.Staff.Services
             var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
             {
                 ApiType = SD.ApiType.GET,
-                Url = $"{villaUrl}/api/v1/LandlordAuth/GetApplicationById/{id}"
+                Url = $"{villaUrl}/api/v1/ApplicationsAuth/GetApplicationById/{id}"
             });
             if (response.IsSuccess && response.Result != null)
             {
@@ -1604,7 +1707,7 @@ namespace PMS_PropertyHapa.Staff.Services
                 {
                     ApiType = SD.ApiType.POST,
                     Data = application,
-                    Url = $"{villaUrl}/api/v1/LandlordAuth/Application"
+                    Url = $"{villaUrl}/api/v1/ApplicationsAuth/Application"
                 });
 
                 return response.IsSuccess;
@@ -1621,7 +1724,7 @@ namespace PMS_PropertyHapa.Staff.Services
                 var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
                 {
                     ApiType = SD.ApiType.POST,
-                    Url = $"{villaUrl}/api/v1/LandlordAuth/Application/{id}"
+                    Url = $"{villaUrl}/api/v1/ApplicationsAuth/Application/{id}"
                 });
 
                 return response.IsSuccess;
@@ -1631,14 +1734,13 @@ namespace PMS_PropertyHapa.Staff.Services
                 throw new Exception($"An error occurred when deleting application: {ex.Message}", ex);
             }
         }
-
         public async Task<string> GetTermsbyId(string id)
         {
 
             var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
             {
                 ApiType = SD.ApiType.GET,
-                Url = $"{villaUrl}/api/v1/LandlordAuth/GetTerms/{id}"
+                Url = $"{villaUrl}/api/v1/ApplicationsAuth/GetTerms/{id}"
             });
             if (response.IsSuccess && response.Result != null)
             {
@@ -1652,7 +1754,6 @@ namespace PMS_PropertyHapa.Staff.Services
 
         #endregion
 
-
         #region AccountType
 
         public async Task<IEnumerable<AccountType>> GetAccountTypesAsync()
@@ -1661,7 +1762,7 @@ namespace PMS_PropertyHapa.Staff.Services
             var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
             {
                 ApiType = SD.ApiType.GET,
-                Url = $"{villaUrl}/api/v1/GetDataByIdAuth/AccountTypes"
+                Url = $"{villaUrl}/api/v1/AccountTypeAuth/AccountTypes"
             });
 
             if (response.IsSuccess == true)
@@ -1681,7 +1782,7 @@ namespace PMS_PropertyHapa.Staff.Services
             var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
             {
                 ApiType = SD.ApiType.GET,
-                Url = $"{villaUrl}/api/v1/GetDataByIdAuth/GetAccountTypeById/{id}"
+                Url = $"{villaUrl}/api/v1/AccountTypeAuth/GetAccountTypeById/{id}"
             });
             if (response.IsSuccess && response.Result != null)
             {
@@ -1700,7 +1801,7 @@ namespace PMS_PropertyHapa.Staff.Services
                 {
                     ApiType = SD.ApiType.POST,
                     Data = accountType,
-                    Url = $"{villaUrl}/api/v1/GetDataByIdAuth/AccountType"
+                    Url = $"{villaUrl}/api/v1/AccountTypeAuth/AccountType"
                 });
 
                 return response.IsSuccess;
@@ -1717,7 +1818,7 @@ namespace PMS_PropertyHapa.Staff.Services
                 var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
                 {
                     ApiType = SD.ApiType.POST,
-                    Url = $"{villaUrl}/api/v1/GetDataByIdAuth/AccountType/{id}"
+                    Url = $"{villaUrl}/api/v1/AccountTypeAuth/AccountType/{id}"
                 });
 
                 return response.IsSuccess;
@@ -1738,7 +1839,7 @@ namespace PMS_PropertyHapa.Staff.Services
             var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
             {
                 ApiType = SD.ApiType.GET,
-                Url = $"{villaUrl}/api/v1/GetDataByIdAuth/AccountSubTypes"
+                Url = $"{villaUrl}/api/v1/AccountSubTypeAuth/AccountSubTypes"
             });
 
             if (response.IsSuccess == true)
@@ -1758,7 +1859,7 @@ namespace PMS_PropertyHapa.Staff.Services
             var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
             {
                 ApiType = SD.ApiType.GET,
-                Url = $"{villaUrl}/api/v1/GetDataByIdAuth/GetAccountSubTypeById/{id}"
+                Url = $"{villaUrl}/api/v1/AccountSubTypeAuth/GetAccountSubTypeById/{id}"
             });
             if (response.IsSuccess && response.Result != null)
             {
@@ -1777,7 +1878,7 @@ namespace PMS_PropertyHapa.Staff.Services
                 {
                     ApiType = SD.ApiType.POST,
                     Data = accountSubType,
-                    Url = $"{villaUrl}/api/v1/GetDataByIdAuth/AccountSubType"
+                    Url = $"{villaUrl}/api/v1/AccountSubTypeAuth/AccountSubType"
                 });
 
                 return response.IsSuccess;
@@ -1794,7 +1895,7 @@ namespace PMS_PropertyHapa.Staff.Services
                 var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
                 {
                     ApiType = SD.ApiType.POST,
-                    Url = $"{villaUrl}/api/v1/GetDataByIdAuth/AccountSubType/{id}"
+                    Url = $"{villaUrl}/api/v1/AccountSubTypeAuth/AccountSubType/{id}"
                 });
 
                 return response.IsSuccess;
@@ -1807,8 +1908,6 @@ namespace PMS_PropertyHapa.Staff.Services
 
         #endregion
 
-
-
         #region ChartAccount
 
         public async Task<IEnumerable<ChartAccountDto>> GetChartAccountsAsync()
@@ -1817,7 +1916,7 @@ namespace PMS_PropertyHapa.Staff.Services
             var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
             {
                 ApiType = SD.ApiType.GET,
-                Url = $"{villaUrl}/api/v1/GetDataByIdAuth/ChartAccounts"
+                Url = $"{villaUrl}/api/v1/ChartAccountsAuth/ChartAccounts"
             });
 
             if (response.IsSuccess == true)
@@ -1837,7 +1936,7 @@ namespace PMS_PropertyHapa.Staff.Services
             var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
             {
                 ApiType = SD.ApiType.GET,
-                Url = $"{villaUrl}/api/v1/GetDataByIdAuth/GetChartAccountById/{id}"
+                Url = $"{villaUrl}/api/v1/ChartAccountsAuth/GetChartAccountById/{id}"
             });
             if (response.IsSuccess && response.Result != null)
             {
@@ -1845,7 +1944,7 @@ namespace PMS_PropertyHapa.Staff.Services
             }
             else
             {
-                throw new Exception("Failed to retrieve account sub types data");
+                throw new Exception("Failed to retrieve chart account data");
             }
         }
         public async Task<bool> SaveChartAccountAsync(ChartAccount chartAccount)
@@ -1856,14 +1955,14 @@ namespace PMS_PropertyHapa.Staff.Services
                 {
                     ApiType = SD.ApiType.POST,
                     Data = chartAccount,
-                    Url = $"{villaUrl}/api/v1/GetDataByIdAuth/ChartAccount"
+                    Url = $"{villaUrl}/api/v1/ChartAccountsAuth/ChartAccount"
                 });
 
                 return response.IsSuccess;
             }
             catch (Exception ex)
             {
-                throw new Exception($"An error occurred when updating account sub type: {ex.Message}", ex);
+                throw new Exception($"An error occurred when updating chart account: {ex.Message}", ex);
             }
         }
         public async Task<bool> DeleteChartAccountAsync(int id)
@@ -1873,20 +1972,111 @@ namespace PMS_PropertyHapa.Staff.Services
                 var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
                 {
                     ApiType = SD.ApiType.POST,
-                    Url = $"{villaUrl}/api/v1/GetDataByIdAuth/ChartAccount/{id}"
+                    Url = $"{villaUrl}/api/v1/ChartAccountsAuth/ChartAccount/{id}"
                 });
 
                 return response.IsSuccess;
             }
             catch (Exception ex)
             {
-                throw new Exception($"An error occurred when deleting account sub type: {ex.Message}", ex);
+                throw new Exception($"An error occurred when deleting chart account: {ex.Message}", ex);
             }
         }
 
         #endregion
 
+        #region Budget
 
+        public async Task<IEnumerable<BudgetDto>> GetBudgetsAsync()
+        {
 
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = $"{villaUrl}/api/v1/BudgetAuth/Budgets"
+            });
+
+            if (response.IsSuccess == true)
+            {
+                var userListJson = Convert.ToString(response.Result);
+                var asset = JsonConvert.DeserializeObject<IEnumerable<BudgetDto>>(userListJson);
+                return asset;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve budget data");
+            }
+        }
+        public async Task<Budget> GetBudgetByIdAsync(int id)
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = $"{villaUrl}/api/v1/BudgetAuth/GetBudgetById/{id}"
+            });
+            if (response.IsSuccess && response.Result != null)
+            {
+                return JsonConvert.DeserializeObject<Budget>(Convert.ToString(response.Result));
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve chart account data");
+            }
+        }
+        public async Task<bool> SaveBudgetAsync(BudgetDto budget)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Data = budget,
+                    Url = $"{villaUrl}/api/v1/BudgetAuth/Budget"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when updating budget: {ex.Message}", ex);
+            }
+        }
+        public async Task<bool> SaveDuplicateBudgetAsync(BudgetDto budget)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Data = budget,
+                    Url = $"{villaUrl}/api/v1/BudgetAuth/DuplicateBudget"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when updating budget: {ex.Message}", ex);
+            }
+        }
+        public async Task<bool> DeleteBudgetAsync(int id)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Url = $"{villaUrl}/api/v1/BudgetAuth/Budget/{id}"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when deleting budget: {ex.Message}", ex);
+            }
+        }
+        #endregion
     }
 }

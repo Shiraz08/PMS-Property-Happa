@@ -116,7 +116,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
                     return Json(new { success = false, message = "Failed to register tenant as user." });
                 }
                 var emailContent = $"Welcome {vendor.FirstName} {vendor.LastName},\n\nThank you for registering. Here are your details:\nUsername: {vendor.Email1}\nPassword: Test@123\nTenant ID: {registrationRequest.TenantId}\n\nThank you!";
-                await _emailSender.SendEmailAsync(vendor.Email1, "Welcome to Our Service!", emailContent);
+               await _emailSender.SendEmailAsync(vendor.Email1, "Welcome to Our Service!", emailContent);
             }
 
             await _authService.SaveVendorAsync(vendor);

@@ -526,6 +526,19 @@
     const formSections = $(".form-section");
     const totalForms = formSections.length;
     $(document).ready(function () {
+        $('#searchInput').on('input', function () {
+            var searchText = $(this).val().toLowerCase();
+            $('tbody tr').each(function () {
+                var accountType = $(this).find('td:first').text().toLowerCase();
+
+                if (accountType.includes(searchText)) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        });
+
         $("#addVendorBtn").click(function () {
             $("#vendorModal").modal('show');
         });
@@ -983,7 +996,7 @@
                 var hasOrgInfo = vendor.OrganizationName || vendor.OrganizationDescription || vendor.OrganizationIcon || vendor.OrganizationLogo || vendor.Website;
 
                 if (hasOrgInfo) {
-                    $('#vendorToggleOrgInfo').prop('checked', true).trigger("change")
+                    $('#vendorToggleOrgInfo').prop('checked', true).trigger("change");
 
                     $('#vendorOrgName').val(vendor.OrganizationName || '');
                     $('#vendorOrgDescription').val(vendor.OrganizationDescription || '');

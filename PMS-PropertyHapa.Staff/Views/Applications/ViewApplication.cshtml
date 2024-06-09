@@ -105,6 +105,21 @@
     </div>
 </div>
 <script>
+    $(document).ready(function () {
+        $('#searchInput').on('input', function () {
+            var searchText = $(this).val().toLowerCase();
+            $('tbody tr').each(function () {
+                var accountType = $(this).find('td:first').text().toLowerCase();
+
+                if (accountType.includes(searchText)) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        });
+    });
+
     function deleteApplications(id) {
         Swal.fire({
             title: 'Are you sure?',

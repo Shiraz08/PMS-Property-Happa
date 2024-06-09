@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PMS_PropertyHapa.MigrationsFiles.Data;
 
@@ -11,9 +12,10 @@ using PMS_PropertyHapa.MigrationsFiles.Data;
 namespace PMS_PropertyHapa.MigrationsFiles.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    partial class ApiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240605191633_added_Invoice_Tbl")]
+    partial class added_Invoice_Tbl
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -730,203 +732,6 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
                     b.ToTable("AssetsUnits");
                 });
 
-            modelBuilder.Entity("PMS_PropertyHapa.Models.Entities.Budget", b =>
-                {
-                    b.Property<int>("BudgetId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BudgetId"), 1L, 1);
-
-                    b.Property<int>("AccountingMethod")
-                        .HasColumnType("int");
-
-                    b.Property<string>("AddedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("AddedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("AppTenantId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("BudgetBy")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("BudgetDuplicateId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("BudgetName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("BudgetType")
-                        .HasColumnType("int");
-
-                    b.Property<string>("DuplicatedBudgetName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("DuplicationDate")
-                        .HasColumnType("date");
-
-                    b.Property<string>("FiscalYear")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDuplicated")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("ModifiedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Period")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PropertyId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ReferenceData")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("ShowReferenceData")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("StartingMonth")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Status")
-                        .HasColumnType("bit");
-
-                    b.HasKey("BudgetId");
-
-                    b.ToTable("Budgets");
-                });
-
-            modelBuilder.Entity("PMS_PropertyHapa.Models.Entities.BudgetItem", b =>
-                {
-                    b.Property<int>("BudgetItemId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BudgetItemId"), 1L, 1);
-
-                    b.Property<string>("AccountName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AddedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("AddedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("AppTenantId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int?>("BudgetId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("ModifiedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Period")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Status")
-                        .HasColumnType("bit");
-
-                    b.Property<decimal>("Total")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("BudgetItemId");
-
-                    b.HasIndex("BudgetId");
-
-                    b.ToTable("BudgetItem");
-                });
-
-            modelBuilder.Entity("PMS_PropertyHapa.Models.Entities.BudgetItemMonth", b =>
-                {
-                    b.Property<int>("BudgetItemMonthID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BudgetItemMonthID"), 1L, 1);
-
-                    b.Property<decimal?>("April")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("Aug")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("BudgetItemId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal?>("Dec")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("Feb")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("Jan")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("July")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("June")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("March")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("May")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("Nov")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("Oct")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("Sep")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("YearEnd")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("YearStart")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("quat1")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("quat2")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("quat4")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("quat5")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("BudgetItemMonthID");
-
-                    b.HasIndex("BudgetItemId")
-                        .IsUnique();
-
-                    b.ToTable("BudgetItemMonth");
-                });
-
             modelBuilder.Entity("PMS_PropertyHapa.Models.Entities.ChartAccount", b =>
                 {
                     b.Property<int>("ChartAccountId")
@@ -1189,8 +994,8 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
                     b.Property<string>("OwnerName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal>("RentAmount")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<string>("RentAmount")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("Status")
                         .HasColumnType("bit");
@@ -1249,9 +1054,6 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
 
                     b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<int?>("PropertyId")
-                        .HasColumnType("int");
 
                     b.Property<string>("SelectedProperty")
                         .HasColumnType("nvarchar(max)");
@@ -2765,24 +2567,6 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
                     b.Navigation("Asset");
                 });
 
-            modelBuilder.Entity("PMS_PropertyHapa.Models.Entities.BudgetItem", b =>
-                {
-                    b.HasOne("PMS_PropertyHapa.Models.Entities.Budget", null)
-                        .WithMany("Items")
-                        .HasForeignKey("BudgetId");
-                });
-
-            modelBuilder.Entity("PMS_PropertyHapa.Models.Entities.BudgetItemMonth", b =>
-                {
-                    b.HasOne("PMS_PropertyHapa.Models.Entities.BudgetItem", "BudgetItem")
-                        .WithOne("BudgetItemMonth")
-                        .HasForeignKey("PMS_PropertyHapa.Models.Entities.BudgetItemMonth", "BudgetItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("BudgetItem");
-                });
-
             modelBuilder.Entity("PMS_PropertyHapa.Models.Entities.CoTenant", b =>
                 {
                     b.HasOne("PMS_PropertyHapa.Models.Entities.Tenant", "Tenant")
@@ -2906,16 +2690,6 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
                     b.Navigation("TaskRequest");
 
                     b.Navigation("Units");
-                });
-
-            modelBuilder.Entity("PMS_PropertyHapa.Models.Entities.Budget", b =>
-                {
-                    b.Navigation("Items");
-                });
-
-            modelBuilder.Entity("PMS_PropertyHapa.Models.Entities.BudgetItem", b =>
-                {
-                    b.Navigation("BudgetItemMonth");
                 });
 
             modelBuilder.Entity("PMS_PropertyHapa.Models.Entities.Lease", b =>

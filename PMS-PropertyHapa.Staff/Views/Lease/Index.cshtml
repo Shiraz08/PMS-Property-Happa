@@ -87,7 +87,8 @@
                                             <td class="tableFontSize">@lease.RentCharges.Count()</td>
                                             <td class="tableFontSize">@lease.SecurityDeposits.Count()</td>
                                             <td class="tableFontSize">
-                                                <a href="@Url.Action("EditLease", "Lease", new { leaseId = lease.LeaseId })" class="btn btn-primary">Edit</a>
+                                                <a href="@Url.Action("EditLease", "Lease", new { leaseId = lease.LeaseId })" class="btn btn-primary mb-1">Edit</a>
+                                                <a href="@Url.Action("InvoiceDetails", "Lease", new { leaseId = lease.LeaseId })" class="btn btn-primary mb-1">Invoice</a>
                                             </td>
                                         </tr>
                                     }

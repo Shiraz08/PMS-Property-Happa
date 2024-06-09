@@ -80,6 +80,15 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
         Task<bool> UpdateLeaseAsync(LeaseDto leaseDto);
 
 
+        //Invoices 
+        Task<List<Invoice>> GetInvoicesAsync(int leaseId);
+        Task<bool> AllInvoicePaidAsync(int leaseId);
+        Task<bool> AllInvoiceOwnerPaidAsync(int leaseId);
+        Task<bool> InvoicePaidAsync(int invoiceId);
+        Task<bool> InvoiceOwnerPaidAsync(int invoiceId);
+        Task<Invoice> GetInvoiceByIdAsync(int invoiceId);
+
+
         #region PropertySubType
 
         Task<List<PropertySubTypeDto>> GetPropertySubTypeByIdAllAsync(string tenantId);
@@ -227,5 +236,11 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
         Task<bool> SaveChartAccountAsync(ChartAccount chartAccount);
         Task<bool> DeleteChartAccountAsync(int id);
 
+        //Budget
+        Task<List<BudgetDto>> GetBudgetsAsync();
+        Task<Budget> GetBudgetByIdAsync(int id);
+        Task<bool> SaveBudgetAsync(BudgetDto budgetDto);
+        Task<bool> SaveDuplicateBudgetAsync(BudgetDto budgetDto);
+        Task<bool> DeleteBudgetAsync(int id);
     }
 }

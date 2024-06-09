@@ -1,0 +1,215 @@
+﻿@model PMS_PropertyHapa.Models.DTO.LeaseDto
+@{
+    ViewData["Title"] = "DownloadInvoice";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var invoice_info = ViewBag.invoice;
+}
+
+<div class="container-fluid page-body">
+    <div class="page-title">
+        <div class="row">
+            <div class="col-12 col-sm-6">
+                <h3>Download Invoice</h3>
+            </div>
+        </div>
+    </div>
+
+    <button class="btn btn-danger mb-3" id="pdf">PDF</button>
+
+    <div class="card" id="download">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <img src="~/Dashboard/assets/images/logo/logo.png" class="img-fluid" alt="Logo" style="max-width: 10em; max-height: 10em;">
+                </div>
+                <div class="col-md-6 text-right">
+                    <span>@DateTime.UtcNow</span>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-12">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <th>From</th>
+                                <td>@invoice_info.OwnerName</td>
+                            </tr>
+                            <tr>
+                                <th>Owner Identity Card Number</th>
+                                <td>123456789</td>
+                            </tr>
+                            <tr>
+                                <th>Owner EmailId</th>
+                                <td>test@gmail.com</td>
+                            </tr>
+                            <tr>
+                                <th>Owner WhatsappNumber</th>
+                                <td>12345678</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-12">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <th>To</th>
+                                <td>@invoice_info.TenantName</td>
+                            </tr>
+                            <tr>
+                                <th>Tenant Identity Card</th>
+                                <td>123456789</td>
+                            </tr>
+                            <tr>
+                                <th>Tenant Email</th>
+                                <td>test@gmail.com</td>
+                            </tr>
+                            <tr>
+                                <th>Tenant Contact</th>
+                                <td>12345678</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-12">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <th>Invoice No</th>
+                                <td>@invoice_info.InvoiceId</td>
+                            </tr>
+                            <tr>
+                                <th>Agreement #</th>
+                                <td>@Model.LeaseId</td>
+                            </tr>
+                            <tr>
+                                <th>Invoice Paid</th>
+                                <td>
+                                    @if (invoice_info.InvoicePaid == true)
+                                    {
+                                        <span class="text-success">Yes</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-danger">No</span>
+                                    }
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Invoice Paid To Owner</th>
+                                <td>
+                                    @if (invoice_info.InvoicePaidToOwner == true)
+                                    {
+                                        <span class="text-success">Yes</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-danger">No</span>
+                                    }
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-12">
+                    <h5>Payment Information</h5>
+                </div>
+                <div class="col-md-6">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <th>Rent Amount</th>
+                                <td>@Model.RentCharges.Select(x => x.Amount).Sum()</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-6">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <th>Security Deposit</th>
+                                <td>@Model.SecurityDeposits.Select(x => x.Amount).Sum()</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-md-3">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <th>Sr #</th>
+                                <td>@Model.PropertyId</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-3">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <th>Building Name</th>
+                                <td>@Model.SelectedProperty</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-3">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <th>Unit No</th>
+                                <td>@Model.SelectedUnit</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.7/dist/html2canvas.min.js"></script>
+<script>
+        $(document).ready(function () {
+        $('#pdf').click(function () {
+            var data = document.getElementById('download');
+
+            html2canvas(data).then(canvas => {
+                var imgWidth = 210; // A4 width in mm
+                var pageHeight = 297; // A4 height in mm
+
+                // Adjust the image width and height based on the canvas and screen dimensions
+                var canvasWidth = canvas.width;
+                var canvasHeight = canvas.height;
+                var scaleFactor = imgWidth / canvasWidth; // Scale based on the width of A4 size
+
+                var imgHeight = canvasHeight * scaleFactor; // Maintain aspect ratio
+                var heightLeft = imgHeight;
+
+                const contentDataURL = canvas.toDataURL('image/png');
+                let pdf = new jsPDF('p', 'mm', 'a4');
+                var position = 0;
+
+                pdf.addImage(contentDataURL, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+
+                while (heightLeft > 0) {
+                    position = heightLeft - imgHeight;
+                    pdf.addPage();
+                    pdf.addImage(contentDataURL, 'PNG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                }
+
+                pdf.save('invoice.pdf');
+            });
+        });
+    });
+
+</script>

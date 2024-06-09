@@ -4,6 +4,10 @@ namespace PMS_PropertyHapa.Staff.Controllers
 {
     public class AccountingController : Controller
     {
+        public IActionResult Index()
+        {
+            return View();
+        }
         public IActionResult Rent()
         {
             return View();

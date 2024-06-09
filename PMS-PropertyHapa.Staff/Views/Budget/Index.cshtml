@@ -1,0 +1,489 @@
+﻿@using PMS_PropertyHapa.Models.DTO
+@model IEnumerable<BudgetDto>
+@{
+    ViewData["Title"] = "Budget";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-sm-6">
+                    <h3>Budget</h3>
+                    @* <small>Create Budgets to plan your finances, compare against actual performance and maximize your company's potential.</small> *@
+                </div>
+                <div class="col-12 col-sm-6">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index.html"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item">Budgeting</li>
+                        <li class="breadcrumb-item active">List</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid my-4">
+        <div class="row">
+            <!-- Column 1: Properties Table (80% on lg screens) -->
+            <div class="col-xl-12 col-md-12 box-col-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+
+                        <div class="left-side-header">
+                            <div class="input-group">
+                                <span class="input-group-text" id="basic-addon1">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <g>
+                                            <g>
+                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M11.2753 2.71436C16.0029 2.71436 19.8363 6.54674 19.8363 11.2753C19.8363 16.0039 16.0029 19.8363 11.2753 19.8363C6.54674 19.8363 2.71436 16.0039 2.71436 11.2753C2.71436 6.54674 6.54674 2.71436 11.2753 2.71436Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M19.8987 18.4878C20.6778 18.4878 21.3092 19.1202 21.3092 19.8983C21.3092 20.6783 20.6778 21.3097 19.8987 21.3097C19.1197 21.3097 18.4873 20.6783 18.4873 19.8983C18.4873 19.1202 19.1197 18.4878 19.8987 18.4878Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                            </g>
+                                        </g>
+                                    </svg>
+
+                                </span>
+                                <input class="form-control" type="text" id="searchInput" placeholder="Search Budget" aria-label="search" aria-describedby="basic-addon1">
+                            </div>
+                        </div>
+
+                        <div class="right-side-header">
+                            <a href="@Url.Action("Create","Budget")" class="btn btn-primary float-right ml-2"><i class="fa fa-plus"></i>New Budget</a>
+
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="budgetBtn" class="budgetBtn text-center text-center" style="margin-block: 80px;">
+                            <i class="fa-solid fa-calculator mb-5" style="font-size: 85px;"></i>
+                            <h4 class="mb-3"><b>No Active Budgets</b></h4>
+                            <p>Create budgets to plan your finances, compare against actual performance,<br /> and maximize your company's potential</p>
+                            <a href="@Url.Action("Create","Budget")" class="btn btn-primary float-center ml-2 mt-2"><i class="fa fa-plus"></i>New Budget</a>
+
+                        </div>
+                        <div id="budgetData" class="budgetData d-none">
+                            <ul class="nav nav-tabs nav-primary" id="pills-warningtab" role="tablist">
+                                <li class="nav-item"><a style="font-size: 19px;" class="nav-link active" id="pills-warningAll-tab" data-bs-toggle="pill" href="#pills-warningall" role="tab" aria-controls="pills-warningall" aria-selected="true">All @* (@Model.ToList().Count()) *@</a></li>
+                            </ul>
+                            <div class="tab-content" id="pills-warningtabContent">
+                               @*  <div class="tab-pane fade show active" id="pills-warningall" role="tabpanel" aria-labelledby="pills-warningAll-tab">
+                                    <br /> *@
+                                    <div class="table-responsive">
+                                        <table id="all" class="table table-hover text-center" style="width:100%">
+                                            <thead class="table-dark">
+                                                <tr>
+                                                <th scope="col" class="tableHeaderbg">
+                                                        BudgetName
+                                                    </th>
+                                                <th scope="col" class="tableHeaderbg">
+                                                        BudgetType
+                                                    </th>
+                                                <th scope="col" class="tableHeaderbg">
+                                                        BudgetBy
+                                                    </th>
+                                                <th scope="col" class="tableHeaderbg">
+                                                        TimePeriod
+                                                    </th>
+                                                <th scope="col" class="tableHeaderbg">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var item in Model)
+                                                {
+                                                    <tr>
+                                                        <td style="text-align:center!important">@item.BudgetName</td>
+                                                        <td style="text-align:center!important">@item.BudgetType</td>
+                                                        <td style="text-align:center!important">@item.PropertyId</td>
+                                                        <td style="text-align:center!important">@item.FiscalYear</td>
+                                                        <td style="text-align:center!important">
+                                                        @Html.ActionLink("Delete", "DeleteBudget", "Budget", new { id = item.BudgetId }, null)
+                                                        @Html.ActionLink("DuplicateBudget", "DuplicateBudget", new { id = item.BudgetId })
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                @* </div> *@
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        $('#searchInput').on('input', function () {
+            var searchText = $(this).val().toLowerCase();
+            $('tbody tr').each(function () {
+                var accountType = $(this).find('td:first').text().toLowerCase();
+
+                if (accountType.includes(searchText)) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        });
+
+        $('.nav-tabs a').click(function () {
+            $(this).tab('show');
+        });
+        if (@Model.ToList().Count() > 0) { 
+            $("#budgetData").removeClass('d-none');
+            $("#budgetBtn").addClass('d-none');
+        }
+    });
+</script>
+
+
+
+@*<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12">
+                    <h3>Budget</h3>
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a class="home-item" href="index.html"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item">Budget</li>
+                        <li class="breadcrumb-item active">list</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid my-4">
+        <div class="row">
+            <!-- Column 1: Properties Table (80% on lg screens) -->
+            <div class="col-xl-12 col-md-12 box-col-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+
+                        <div class="left-side-header">
+                            <div class="input-group">
+                                <span class="input-group-text" id="basic-addon1">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <g>
+                                            <g>
+                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M11.2753 2.71436C16.0029 2.71436 19.8363 6.54674 19.8363 11.2753C19.8363 16.0039 16.0029 19.8363 11.2753 19.8363C6.54674 19.8363 2.71436 16.0039 2.71436 11.2753C2.71436 6.54674 6.54674 2.71436 11.2753 2.71436Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M19.8987 18.4878C20.6778 18.4878 21.3092 19.1202 21.3092 19.8983C21.3092 20.6783 20.6778 21.3097 19.8987 21.3097C19.1197 21.3097 18.4873 20.6783 18.4873 19.8983C18.4873 19.1202 19.1197 18.4878 19.8987 18.4878Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                            </g>
+                                        </g>
+                                    </svg>
+
+                                </span>
+                                <input class="form-control" type="text" id="searchInput" placeholder="Search Budget" aria-label="search" aria-describedby="basic-addon1">
+                            </div>
+                        </div>
+
+                        <div class="right-side-header">
+                            <!-- Button to Open the Modal -->
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newBudgetingModal">
+                                Create Budget
+                            </button>
+
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover text-center">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th scope="col" class="tableHeaderbg">Budget Name</th>
+                                        <th scope="col" class="tableHeaderbg">Budget Type</th>
+                                        <th scope="col" class="tableHeaderbg">Budget By</th>
+                                        <th scope="col" class="tableHeaderbg">Time Period</th>
+                                        <th scope="col" class="tableHeaderbg">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="tableFontSize align-middle"></td>
+                                        <td class="tableFontSize align-middle"></td>
+                                        <td class="tableFontSize align-middle"></td>
+                                        <td class="tableFontSize align-middle"></td>
+                                        <td class="tableFontSize align-middle">
+                                            <a class="btn btn-danger" onclick="deleteBudget()">
+                                                    <i class="fa fa-trash"></i> Delete
+                                                </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="newBudgetingModal" tabindex="-1" aria-labelledby="budgetingModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="budgetingModalLabel">New Budget</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="budgetingForm">
+                <input type="hidden" value="" id="budgetId" />
+                <div class="modal-body scrollable-modal-body">
+                    <div class="mb-3">
+                        <p><b>Budget Type</b></p>
+                    </div>
+                    <div class="mb-3">
+                        <label for="budgetType">Budget Type</label>
+                        <select class="form-select" id="budgetType" required>
+                            <option selected value="">Select Budget Type</option>
+                            <option value="1">Profit & Loss</option>
+                            <option value="2">Balance Sheet</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="budgetBy">Budget By</label>
+                        <select class="form-select" id="budgetBy" required onchange="budgetBy()">
+                            <option selected value="">Select Value</option>
+                            <option value="1">Property</option>
+                            <option value="2">Portfolio</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="property">Property</label>
+                        <select class="form-control" id="property">
+                            <option selected disabled>Select Property</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <p><b>Budget Period</b></p>
+                    </div>
+                    <div class="mb-3">
+                        <label for="startingMonth">Select a Month</label>
+                        <select class="form-control" id="startingMonth" onchange="Month()>
+                            <option selected value="">Select Month</option>
+                            <option value="1">January</option>
+                            <option value="2">February</option>
+                            <option value="3">March</option>
+                            <option value="4">April</option>
+                            <option value="5">May</option>
+                            <option value="6">June</option>
+                            <option value="7">July</option>
+                            <option value="8">August</option>
+                            <option value="9">September</option>
+                            <option value="10">October</option>
+                            <option value="11">November</option>
+                            <option value="12">December</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="fiscalYear">Fiscal Year</label>
+                        <input type="text"  class="form-control" id="fiscalYear" />
+                       @*  <label for="fiscalYearInput">Select Fiscal Year</label>
+                        <div class="input-group date" id="fiscalYearPicker" data-td-target-input="nearest" data-td-target-toggle="nearest">
+                            <input type="text" class="form-control" data-td-target="#fiscalYearPicker" id="fiscalYearInput" />
+                            <div class="input-group-append" data-td-target="#fiscalYearPicker" data-td-toggle="datetimepicker">
+                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                            </div>
+                        </div> 
+                    </div>
+                    <div class="mb-3">
+                        <label for="budgetName">Budget Name</label>
+                        <input type="text" class="form-control" id="budgetName" placeholder="Budget Name" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="referenceData">Reference data</label>
+                        <input type="text" class="form-control" id="year" placeholder="Budget Name"  />
+                    </div>
+                    <div class="d-flex justify-content-end mb-3">
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-secondary">Monthly</button>
+                            <button type="button" class="btn btn-secondary">Quarterly</button>
+                            <button type="button" class="btn btn-secondary">Yearly</button>
+                        </div>
+                    </div>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="tableHeaderbg text-center">Account</th>
+                                <th scope="col" class="tableHeaderbg text-center">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="account">
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="saveBtn">Save</button>
+                </div>
+            </form>
+           
+
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    $(document).ready(function () {
+        $("#searchInput").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("tbody tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+
+        populateDropDown();
+        populateAccountDropDown();
+
+        // $("#year").datepicker({
+        //     changeMonth: false,
+        //     changeYear: true
+        // });
+
+        // new tempusDominus.TempusDominus(document.getElementById('fiscalYearPicker'), {
+        //     display: {
+        //         components: {
+        //             decades: false,
+        //             year: true,
+        //             month: true,
+        //             date: false,
+        //             hours: false,
+        //             minutes: false,
+        //             seconds: false
+        //         },
+        //         buttons: {
+        //             today: true,
+        //             clear: true,
+        //             close: true
+        //         }
+        //     },
+        //     format: 'MM/YYYY'
+        // });
+
+        var selectedValue = "";
+        function Month() {
+
+
+            // find fiscal year value and bind in fiscalYear input tag
+
+            let month = document.getElementById("startingMonth").value;
+            const currentdate = new Date();
+            let year = currentdate.getFullYear;
+            const currentFiscalYear = moment(`01/${month}/${year}`, "DD-MM-YYYY"); // 28th Feb 2024
+
+            const nextFiscalYearEndDate = currentFiscalYear.clone()
+                .add(-1, "month")
+                .add(1, "year") // 01/03/2024
+
+            document.getElementById("fiscalYear").value = currentFiscalYear.format("MM-YYYY") + " To " + nextFiscalYearEndDate.format("MM-YYYY");
+
+            const periods = divideFiscalYear(currentFiscalYear, nextFiscalYearEndDate);
+
+
+            $('#account').empty();
+            $('#tableCell').empty();
+            $("#tableCell").append('<th scope="col" class="tableHeaderbg text-center">Account</th>');
+            $("#tableCell").append('<th scope="col" class="tableHeaderbg text-center">Total</th>');
+
+            $.ajax({
+                url: "/AccountType/AccountTypeDll",
+                async: false,
+                dataType: "json",
+                type: "GET",
+                contentType: 'application/json; charset=utf-8',
+                cache: false,
+                success: function (response) {
+                    //console.log(response)
+                    var x = 0;
+                    for (var i = 0; i < response.length; i++) {
+
+                        if (response[i].childAccounts !== null) {
+
+                            $('#account').append('<tr class = "total" data-account-row="' + x + '" onclick = "subAccount(event)"><td class = "accountClick" style="text-align:center!important">' + response[i].AccountType + '<i class="text-center fa-sharp fa-solid fa-caret-down"></i></td>' +
+                                '<td onclick = "editable(event)" class= "editable-cell" style="text-align:center!important">0.00</td>' +
+                                '</tr>');
+                            for (var j = 0; j < response[i].childAccounts.length; j++) {
+                                $("#account").append('<tr data-sub-account="' + x + '" class = "subAccount  total is-hidden"><td style="text-align:center!important">' + response[i].childAccounts[j].AccountSubType + '</td>' +
+                                    '<td onclick = "editable(event)" class= "editable-cell" style="text-align:center!important">0.00</td>' +
+                                    '</tr></table>');
+                            }
+                            x++;
+                        }
+                        else {
+                            $('#account').append('<tr class = "total"><td style="text-align:center!important">' + response[i].AccountType + '</td>' +
+                                '<td onclick = "editable(event)" class= "editable-cell" style="text-align:center!important">0.00</td>' +
+                                '</tr>');
+                        }
+                    }
+                },
+                error: function (xhr) {
+                    alert('Property Does not Exist...!');
+                }
+            });
+        }
+       
+    });
+
+    function populateDropDown() {
+        $.ajax({
+            url: '@Url.Action("GetProperties", "Communication")',
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                var vendorPropertyDropdown = document.getElementById('property');
+                // vendorPropertyDropdown.innerHTML = ''; // Clear existing options
+                data.forEach(function (item) {
+                    var option = new Option(item.BuildingNo + " - " + item.BuildingName, item.AssetId);
+                    vendorPropertyDropdown.appendChild(option);
+                });
+            }
+        });
+    }
+
+    // function subTypeDropDown(accountTypeId, selectedId) {
+    //     $.ajax({
+    //         url: '@Url.Action("AccountSubTypeDll", "AccountSubType")',
+    //         type: 'GET',
+    //         dataType: 'json',
+    //         data: { accountTypeId: accountTypeId },
+    //         success: function (data) {
+    //             var accountSubTypeDropdown = document.getElementById('accountSubTypeName');
+    //             accountSubTypeDropdown.innerHTML = ''; // Clear existing options
+    //             var placeholderOption = new Option("Please select an option", "", true, true);
+    //             accountSubTypeDropdown.append(placeholderOption);
+    //             data.forEach(function (item) {
+    //                 var option = new Option(item.Type, item.AccountSubTypeId);
+    //                 accountSubTypeDropdown.appendChild(option);
+    //             });
+    //             if (selectedId) {
+    //                 $("#accountSubTypeName").val(selectedId).trigger('change');
+    //             }
+    //         }
+    //     });
+    // }
+
+    // function populateAccountDropDown() {
+    //     $.ajax({
+    //         url: '@Url.Action("AccountTypeDll", "AccountType")',
+    //         type: 'GET',
+    //         dataType: 'json',
+    //         success: function (data) {
+    //             var accountTypeDropdown = document.getElementById('accountTypeName');
+    //             var placeholderOption = new Option("Please select an option", "", true, true);
+    //             accountTypeDropdown.append(placeholderOption);
+    //             data.forEach(function (item) {
+    //                 var option = new Option(item.Type, item.AccountTypeId);
+    //                 accountTypeDropdown.appendChild(option);
+    //             });
+    //         }
+    //     });
+    // }
+</script> *@

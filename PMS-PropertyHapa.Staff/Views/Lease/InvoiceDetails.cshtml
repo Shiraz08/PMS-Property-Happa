@@ -1,0 +1,253 @@
+﻿@using PMS_PropertyHapa.Models.Entities
+@model IEnumerable<Invoice>
+@{
+    ViewData["Title"] = "InvoiceDetails";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-sm-6">
+                    <h3>Invoice List</h3>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index.html"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item">Invoices</li>
+                        <li class="breadcrumb-item active">List</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="card mb-2">
+            <div class="card-body">
+                <div class="d-flex justify-content-start">
+                    <div class="mr-5">
+                        <h3><b>Paid</b></h3>
+                        <h3 style="color: royalblue">@ViewBag.Paid</h3>
+                    </div>
+                    <div class="mr-5">
+                        <h3><b>Paid To Owner</b></h3>
+                        <h3 style="color: royalblue">@ViewBag.OwnerPaid</h3>
+                    </div>
+                    <div class="mr-5">
+                        <h3><b>Un-Paid</b></h3>
+                        <h3 style="color: red;">@ViewBag.UnPaid</h3>
+                    </div>
+                    <div class="mr-5">
+                        <h3><b>Un-Paid To Owner</b></h3>
+                        <h3 style="color: red;">@ViewBag.OwnerUnPaid</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container-fluid">
+        <div class="email-wrap bookmark-wrap">
+            <div class="row">
+                <div class="col-xl-12 col-md-12 box-col-12 ">
+                    <div class="email-right-aside bookmark-tabcontent contacts-tabs">
+                        <div class="card email-body radius-left">
+                            <div class="ps-0">
+                                <div class="tab-content">
+                                    <div class="tab-pane fade active show" id="pills-personal" role="tabpanel" aria-labelledby="pills-personal-tab">
+                                        <div class="card mb-0">
+
+                                            <div class="card">
+                                                <div class="card-header d-flex justify-content-between align-items-center">
+
+                                                    <div class="left-side-header">
+                                                        <div class="input-group">
+                                                            <span class="input-group-text" id="basic-addon1">
+                                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                    <g>
+                                                                        <g>
+                                                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M11.2753 2.71436C16.0029 2.71436 19.8363 6.54674 19.8363 11.2753C19.8363 16.0039 16.0029 19.8363 11.2753 19.8363C6.54674 19.8363 2.71436 16.0039 2.71436 11.2753C2.71436 6.54674 6.54674 2.71436 11.2753 2.71436Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M19.8987 18.4878C20.6778 18.4878 21.3092 19.1202 21.3092 19.8983C21.3092 20.6783 20.6778 21.3097 19.8987 21.3097C19.1197 21.3097 18.4873 20.6783 18.4873 19.8983C18.4873 19.1202 19.1197 18.4878 19.8987 18.4878Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                                        </g>
+                                                                    </g>
+                                                                </svg>
+
+                                                            </span>
+                                                            <input class="form-control" type="text" id="searchInput" placeholder="Search Invoice" aria-label="search" aria-describedby="basic-addon1">
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                            <div class="card-body p-0">
+
+                                                @{
+                                                    var leaseId = Model.Select(x => x.LeaseId).FirstOrDefault();
+                                                    // var leaseId = Model?.FirstOrDefault()?.LeaseId;
+                                                    <input type="button" class="btn btn-primary mb-2 ml-2" value="All Invoice Paid" onclick="AllInvoicePaid(@leaseId);" />
+                                                    <input type="button" class="btn btn-primary mb-2" value="All Invoice Paid to Owner" onclick="AllInvoicePaidToOwner(@leaseId);" />
+                                                   
+                                                }
+
+                                                <div class="table-responsive">
+                                                    <table class="table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th scope="col" class="text-center tableHeaderbg">Invoice Created Date</th>
+                                                                <th scope="col" class="text-center tableHeaderbg">Invoice Paid</th>
+                                                                <th scope="col" class="text-center tableHeaderbg">Tenant Name</th>
+                                                                <th scope="col" class="text-center tableHeaderbg">Owner Name</th>
+                                                                <th scope="col" class="text-center tableHeaderbg">Rent Amount</th>
+                                                                <th scope="col" class="text-center tableHeaderbg">Invoice Date</th>
+                                                                <th scope="col" class="text-center tableHeaderbg">Invoice Paid To Owner</th>
+                                                                <th scope="col" class="text-center tableHeaderbg">Invoice Paid</th>
+                                                                <th scope="col" class="text-center tableHeaderbg">Invoice Paid To Owner</th>
+                                                                <th scope="col" class="text-center tableHeaderbg">Download Invoice</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @foreach (var item in Model?.OrderByDescending(x => x.InvoiceId) ?? Enumerable.Empty<Invoice>())
+                                                            {
+                                                                <tr>
+                                                                    <td class="tableFontSize">@item.InvoiceCreatedDate?.ToString("MM/dd/yyyy")</td>
+                                                                    <td class="tableFontSize">
+                                                                        @if(item.InvoicePaid == true)
+                                                                        {
+                                                                            <span style="border-radius:3px; color:royalblue !important">Yes</span>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <span style="border-radius:3px; color:red !important">No</span>
+                                                                        }
+                                                                    </td>
+                                                                    <td class="tableFontSize">@item.TenantName</td>
+                                                                    <td class="tableFontSize">@item.OwnerName</td>
+                                                                    <td class="tableFontSize">@item.RentAmount.ToString("C")</td>
+                                                                    <td class="tableFontSize">@item.InvoiceDate?.ToString("MM/dd/yyyy")</td>
+                                                                    <td class="tableFontSize">
+                                                                        @if (item.InvoicePaidToOwner == true)
+                                                                        {
+                                                                            <span style="border-radius:3px; color:royalblue !important">Yes</span>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <span style="border-radius:3px; color:red !important">No</span>
+                                                                        }
+                                                                    </td>
+                                                                    <td class="tableFontSize">
+                                                                        <input type="button" value="Invoice Paid" onclick="PaidInvoice(@item.InvoiceId);" class="btn btn-primary" />
+                                                                    </td>
+                                                                    <td class="tableFontSize">
+                                                                        <input type="button" value="Invoice Paid to Owner" onclick="PaidInvoiceToOwner(@item.InvoiceId);" class="btn btn-primary" />
+                                                                    </td>
+                                                                    <td class="tableFontSize">
+                                                                        @Html.ActionLink("Download Invoice", "DownloadInvoice", new { id = item.InvoiceId })
+                                                                    </td>
+                                                                </tr>
+                                                            }
+
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+
+        $('#searchInput').on('input', function () {
+            var searchText = $(this).val().toLowerCase();
+            $('tbody tr').each(function () {
+                var account = $(this).find('td:first').text().toLowerCase();
+
+                if (account.includes(searchText)) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        });
+    });
+    function AllInvoicePaid(leaseId) {
+        $.ajax({
+            url: '@Url.Action("AllInvoicePaid", "Lease")',
+            type: 'GET',
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            cache: false,
+            data: { leaseId: leaseId },
+            success: function (response) {
+                location.reload();
+            },
+            error: function (xhr) {
+                alert("Error..");
+            }
+        });
+    }
+
+    function AllInvoicePaidToOwner(leaseId) {
+        $.ajax({
+            url: '@Url.Action("AllInvoiceOwnerPaid", "Lease")',
+            type: 'GET',
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            cache: false,
+            data: { leaseId: leaseId },
+            success: function (response) {
+                location.reload();
+            },
+            error: function (xhr) {
+                alert("Error..");
+            }
+        });
+    }
+
+    function PaidInvoice(id) {
+        $.ajax({
+            url: '@Url.Action("InvoicePaid", "Lease")',
+            type: 'GET',
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            cache: false,
+            data: { invoiceId: id },
+            success: function (response) {
+                location.reload();
+            },
+            error: function (xhr) {
+                alert("Error..");
+            }
+        });
+    }
+
+    function PaidInvoiceToOwner(id) {
+        $.ajax({
+            url: '@Url.Action("InvoiceOwnerPaid", "Lease")',
+            type: 'GET',
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            cache: false,
+            data: { invoiceId: id },
+            success: function (response) {
+                location.reload();
+            },
+            error: function (xhr) {
+                alert("Error..");
+            }
+        });
+    }
+</script>

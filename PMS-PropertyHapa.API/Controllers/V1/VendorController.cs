@@ -12,9 +12,9 @@ using System.Net;
 
 namespace PMS_PropertyHapa.API.Controllers.V1
 {
-    [Route("api/v1/TaskAuth")]
+    [Route("api/v1/VendorAuth")]
     [ApiController]
-    public class TaskController : Controller
+    public class VendorController : Controller
     {
         private readonly IUserRepository _userRepo;
         private readonly IEmailSender _emailSender;
@@ -22,7 +22,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
         protected APIResponse _response;
         private readonly GoogleCloudStorageService _storageService;
 
-        public TaskController(IUserRepository userRepo, UserManager<ApplicationUser> userManager, GoogleCloudStorageService storageService)
+        public VendorController(IUserRepository userRepo, UserManager<ApplicationUser> userManager, GoogleCloudStorageService storageService)
         {
             _userRepo = userRepo;
             _response = new();
@@ -30,19 +30,48 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             _storageService = storageService;
         }
 
-        [HttpGet("GetTaskRequestHistory/{id}")]
-        public async Task<ActionResult<TaskRequestHistoryDto>> GetTaskRequestHistory(int id)
+
+        [HttpGet("Vendors")]
+        public async Task<ActionResult<Vendor>> GetVendors()
+        {
+            try
+            {
+                var vendors = await _userRepo.GetVendorsAsync();
+
+                if (vendors != null)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = vendors;
+                    return Ok(_response);
+                }
+                else
+                {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("No asset found with this id.");
+                    return NotFound(_response);
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
+        [HttpGet("GetVendorById/{id}")]
+        public async Task<IActionResult> GetVendorById(int id)
         {
 
             try
             {
-                var taskDto = await _userRepo.GetTaskRequestHistoryAsync(id);
+                var vendor = await _userRepo.GetVendorByIdAsync(id);
 
-                if (taskDto != null)
+                if (vendor != null)
                 {
                     _response.StatusCode = HttpStatusCode.OK;
                     _response.IsSuccess = true;
-                    _response.Result = taskDto;
+                    _response.Result = vendor;
                     return Ok(_response);
                 }
                 else
@@ -62,100 +91,12 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             }
         }
 
-        [HttpGet("MaintenanceTasks")]
-        public async Task<ActionResult<TaskRequestDto>> GetMaintenanceTasks()
+        [HttpPost("Vendor")]
+        public async Task<ActionResult<bool>> SaveVendor(VendorDto vendor)
         {
             try
             {
-                var assets = await _userRepo.GetMaintenanceTasksAsync();
-
-                if (assets != null)
-                {
-                    _response.StatusCode = HttpStatusCode.OK;
-                    _response.IsSuccess = true;
-                    _response.Result = assets;
-                    return Ok(_response);
-                }
-                else
-                {
-                    _response.StatusCode = HttpStatusCode.NotFound;
-                    _response.IsSuccess = false;
-                    _response.ErrorMessages.Add("No asset found with this id.");
-                    return NotFound(_response);
-                }
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"An error occurred: {ex.Message}");
-            }
-        }
-
-        [HttpGet("Tasks")]
-        public async Task<ActionResult<TaskRequestDto>> GetTasks()
-        {
-            try
-            {
-                var assets = await _userRepo.GetTaskRequestsAsync();
-
-                if (assets != null)
-                {
-                    _response.StatusCode = HttpStatusCode.OK;
-                    _response.IsSuccess = true;
-                    _response.Result = assets;
-                    return Ok(_response);
-                }
-                else
-                {
-                    _response.StatusCode = HttpStatusCode.NotFound;
-                    _response.IsSuccess = false;
-                    _response.ErrorMessages.Add("No asset found with this id.");
-                    return NotFound(_response);
-                }
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"An error occurred: {ex.Message}");
-            }
-        }
-
-        [HttpGet("GetTaskById/{id}")]
-        public async Task<IActionResult> GetTaskById(int id)
-        {
-
-            try
-            {
-                var taskDto = await _userRepo.GetTaskByIdAsync(id);
-
-                if (taskDto != null)
-                {
-                    _response.StatusCode = HttpStatusCode.OK;
-                    _response.IsSuccess = true;
-                    _response.Result = taskDto;
-                    return Ok(_response);
-                }
-                else
-                {
-                    _response.StatusCode = HttpStatusCode.NotFound;
-                    _response.IsSuccess = false;
-                    _response.ErrorMessages.Add("No user found with this id.");
-                    return NotFound(_response);
-                }
-            }
-            catch (Exception ex)
-            {
-                _response.StatusCode = HttpStatusCode.NotFound;
-                _response.IsSuccess = false;
-                _response.ErrorMessages.Add("Error Occured");
-                return NotFound(_response);
-            }
-        }
-
-        [HttpPost("Task")]
-        public async Task<ActionResult<bool>> SaveTaskRequest(TaskRequestDto taskRequestDto)
-        {
-            try
-            {
-                var isSuccess = await _userRepo.SaveTaskAsync(taskRequestDto);
+                var isSuccess = await _userRepo.SaveVendorAsync(vendor);
                 if (isSuccess == true)
                 {
                     _response.StatusCode = HttpStatusCode.OK;
@@ -170,13 +111,12 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             }
         }
 
-
-        [HttpPost("Task/{id}")]
-        public async Task<ActionResult<bool>> DeleteTaskRequest(int id)
+        [HttpPost("Vendor/{id}")]
+        public async Task<ActionResult<bool>> DeleteVendorRequest(int id)
         {
             try
             {
-                var isSuccess = await _userRepo.DeleteTaskAsync(id);
+                var isSuccess = await _userRepo.DeleteVendorAsync(id);
                 return Ok(isSuccess);
             }
             catch (Exception ex)
@@ -185,13 +125,72 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             }
         }
 
-
-        [HttpPost("TaskHistory")]
-        public async Task<ActionResult<bool>> SaveTaskHistory(TaskRequestHistoryDto taskRequestHistoryDto)
+        [HttpGet("VendorCategories")]
+        public async Task<ActionResult<VendorCategory>> GetVendorCategories()
         {
             try
             {
-                var isSuccess = await _userRepo.SaveTaskHistoryAsync(taskRequestHistoryDto);
+                var vendorCategories = await _userRepo.GetVendorCategoriesAsync();
+
+                if (vendorCategories != null)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = vendorCategories;
+                    return Ok(_response);
+                }
+                else
+                {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("No asset found with this id.");
+                    return NotFound(_response);
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
+        [HttpGet("GetVendorCategoryById/{id}")]
+        public async Task<IActionResult> GetVendorCategoryById(int id)
+        {
+
+            try
+            {
+                var vendorCategory = await _userRepo.GetVendorCategoryByIdAsync(id);
+
+                if (vendorCategory != null)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = vendorCategory;
+                    return Ok(_response);
+                }
+                else
+                {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("No user found with this id.");
+                    return NotFound(_response);
+                }
+            }
+            catch (Exception ex)
+            {
+                _response.StatusCode = HttpStatusCode.NotFound;
+                _response.IsSuccess = false;
+                _response.ErrorMessages.Add("Error Occured");
+                return NotFound(_response);
+            }
+        }
+
+        [HttpPost("VendorCategory")]
+        public async Task<ActionResult<bool>> SaveVendorCategory(VendorCategory vendorCategory)
+        {
+            try
+            {
+                var isSuccess = await _userRepo.SaveVendorCategoryAsync(vendorCategory);
                 if (isSuccess == true)
                 {
                     _response.StatusCode = HttpStatusCode.OK;
@@ -205,5 +204,20 @@ namespace PMS_PropertyHapa.API.Controllers.V1
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
+
+        [HttpPost("VendorCategory/{id}")]
+        public async Task<ActionResult<bool>> DeleteVendorCategoryRequest(int id)
+        {
+            try
+            {
+                var isSuccess = await _userRepo.DeleteVendorCategoryAsync(id);
+                return Ok(isSuccess);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
     }
 }

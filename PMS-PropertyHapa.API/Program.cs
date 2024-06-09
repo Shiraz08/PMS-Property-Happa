@@ -53,6 +53,7 @@ builder.Services.AddVersionedApiExplorer(options =>
 });
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<WebJobService>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: "AllowSpecificOrigin",
@@ -165,6 +166,7 @@ app.MapHangfireDashboard();
 app.UseCors("AllowSpecificOrigin");
 app.MapControllers();
 ApplyMigration();
+SendInvoices();
 app.Run();
 
 void ApplyMigration()
@@ -179,4 +181,28 @@ void ApplyMigration()
             _db.Database.Migrate();
         }
     }
+}
+
+void SendInvoices()
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var hangfireServiceProvider = scope.ServiceProvider;
+        var hangfireDataService = hangfireServiceProvider.GetService<WebJobService>();
+
+        RecurringJob.AddOrUpdate(
+            "SendInvoicesJob",
+            () => hangfireDataService.SendInvoices(),
+            "48 5 * * *",
+            TimeZoneInfo.Local
+        );
+
+        RecurringJob.AddOrUpdate(
+        "ReminderInvoicesJob",
+        () => hangfireDataService.ReminderInvoices(),
+        "0 22 * * *",  // Cron expression for 6:00 AM every day
+        TimeZoneInfo.Local  // Use local time zone
+    );
+    }
+
 }

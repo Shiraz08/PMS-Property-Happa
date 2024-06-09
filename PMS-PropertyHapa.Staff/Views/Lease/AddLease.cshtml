@@ -1517,6 +1517,7 @@
         formData.append('HasSecurityDeposit', $('#yesSecurityFund').hasClass('selected') ? 'true' : 'false');
         formData.append('LateFeesPolicy', $('#yesLateFees').hasClass('selected') ? 'true' : 'false');
         formData.append("SelectedProperty", selectedPropertyText);
+        formData.append("PropertyId", $('#propertyDropdown').val());
         formData.append("SelectedUnit", selectedUnitText);
         if (globalTenantId > 0) {
             // This is the edit scenario, append TenantId to formData

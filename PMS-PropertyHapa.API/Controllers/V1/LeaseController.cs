@@ -10,6 +10,7 @@ using System.Web;
 using System.Security.Claims;
 using System.Net.Http.Headers;
 using PMS_PropertyHapa.Models.Roles;
+using PMS_PropertyHapa.Models.Entities;
 
 namespace PMS_PropertyHapa.API.Controllers.V1
 {
@@ -85,6 +86,110 @@ namespace PMS_PropertyHapa.API.Controllers.V1
                 {
                     return NotFound($"Lease with ID {leaseId} not found.");
                 }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+        
+        [HttpGet("Invoices/{leaseId}")]
+        public async Task<ActionResult<List<Invoice>>> GetInvoices(int leaseId)
+        {
+            try
+            {
+                var invoices = await _userRepo.GetInvoicesAsync(leaseId);
+                if (invoices != null)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = invoices;
+                    return Ok(_response);
+                }
+                else
+                {
+                    return NotFound($"Invoices with ID {leaseId} not found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+    
+        [HttpGet("Invoice/{invoiceId}")]
+        public async Task<ActionResult<Invoice>> GetInvoiceById(int invoiceId)
+        {
+            try
+            {
+                var invoice = await _userRepo.GetInvoiceByIdAsync(invoiceId);
+                if (invoice != null)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = invoice;
+                    return Ok(_response);
+                }
+                else
+                {
+                    return NotFound($"Invoices with ID {invoiceId} not found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
+        [HttpPost("AllInvoicePaid/{leaseId}")]
+        public async Task<ActionResult<bool>> AllInvoicePaid(int leaseId)
+        {
+            try
+            {
+                var isSuccess = await _userRepo.AllInvoicePaidAsync(leaseId);
+                return Ok(isSuccess);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+        
+        [HttpPost("AllInvoiceOwnerPaid/{leaseId}")]
+        public async Task<ActionResult<bool>> AllInvoiceOwnerPaid(int leaseId)
+        {
+            try
+            {
+                var isSuccess = await _userRepo.AllInvoiceOwnerPaidAsync(leaseId);
+                return Ok(isSuccess);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+        
+        [HttpPost("InvoicePaid/{invoiceId}")]
+        public async Task<ActionResult<bool>> InvoicePaid(int invoiceId)
+        {
+            try
+            {
+                var isSuccess = await _userRepo.InvoicePaidAsync(invoiceId);
+                return Ok(isSuccess);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+        
+        [HttpPost("InvoiceOwnerPaid/{invoiceId}")]
+        public async Task<ActionResult<bool>> InvoiceOwnerPaid(int invoiceId)
+        {
+            try
+            {
+                var isSuccess = await _userRepo.InvoiceOwnerPaidAsync(invoiceId);
+                return Ok(isSuccess);
             }
             catch (Exception ex)
             {

@@ -19,6 +19,15 @@ namespace PMS_PropertyHapa.Models.DTO
         public bool IsSubAccount { get; set; }
         public int? ParentAccountId { get; set; }
         public string ParentAccount { get; set; }
+        public List<ChildAccountDto?>? ChildAccountsDto { get; set; }
         public string AddedBy { get; set; }
+    }
+
+    public class ChildAccountDto
+    {
+        public int ChartAccountId { get; set; }
+        public int AccountTypeId { get; set; }
+        public string Name { get; set; }
+        public int? ParentAccountId { get; set; }
     }
 }

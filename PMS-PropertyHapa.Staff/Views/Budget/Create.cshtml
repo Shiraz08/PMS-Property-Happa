@@ -1,0 +1,661 @@
+﻿<!-- Views/Budget/NewBudget.cshtml -->
+@using PMS_PropertyHapa.Models.Entities
+@model Budget
+@{
+    ViewData["Title"] = "New Budget";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .TimePeriod {
+        border-left-width: 0;
+        border-right-width: 0;
+    }
+
+        .TimePeriod input[type=radio] {
+            position: absolute;
+            left: -10000px;
+        }
+
+        .TimePeriod label {
+            cursor: pointer;
+            display: inline-block;
+            width: 5em;
+            height: 2em;
+            background-color: #fff;
+            color: skyblue;
+            font-weight: bold;
+            text-align: center;
+            line-height: 2em;
+            margin: 0 0.5em;
+            border-radius: 0.5em;
+        }
+
+        .TimePeriod input[type=radio]:checked + label {
+            color: #fff;
+            background-color: skyblue;
+        }
+
+    .is-hidden {
+        display: none;
+    }
+
+    .editable-cell {
+        cursor: pointer;
+    }
+
+        .editable-cell input {
+            width: 100%;
+        }
+</style>
+
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-sm-6">
+                    <h3>New Budget</h3>
+                    @* <small>Create Budgets to plan your finances, compare against actual performance and maximize your company's potential.</small> *@
+                </div>
+                <div class="col-12 col-sm-6">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index.html"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item">Budgeting</li>
+                        <li class="breadcrumb-item active">List</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        @* <h3><b>New Budget</b></h3>
+        <hr class="mt-0 mb-4">
+        <div class="row"><div class="col-xl-12"> <center><h3>@Html.ValidationSummary(true, "", new { @class = "text-danger" })</h3></center></div></div> *@
+        <div class="row">
+            <div class="col-lg-12">
+                <form id="msform" asp-action="SaveBudget" asp-controller="Budget" enctype="multipart/form-data" method="post" onsubmit="return validateForm()">
+                    <div class="col-xl-12">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="form-horizontal">
+                                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                    <div class="row gx-3">
+
+                                        <div class="row col-md-6" style="margin-left: auto;">
+                                            <div class="col-md-12" style="padding-left: 5px;">
+                                                <h4><b>Budget Type</b></h4>
+                                            </div>
+                                            <br />
+                                            <div class="col-md-4" style="padding-left: 5px; padding-right: 5px;">
+                                                <label class=" mb-1" for="inputFirstName">BudgetType</label>
+                                                <select asp-for="BudgetType" class="form-control dropdownheight" required>
+                                                    <option value="1">Profit & Loss</option>
+                                                    <option value="2">Balance Sheet</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-4" style="padding-left: 5px; padding-right: 5px;">
+                                                <label class=" mb-1">Type</label>
+                                                <select id="BudgetBy" name="BudgetBy" asp-for="BudgetBy" class="form-control dropdownheight" required onchange="budgetBy()">
+                                                    <option value="">Select Value</option>
+                                                    <option value="1">Property</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-4" style="padding-left: 5px; padding-right: 5px;">
+                                                <label class="mb-1">Property</label>
+                                    <select id="property" name="propertyId" class="form-control dropdownheight" required>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="row col-md-6" style="margin-left: 15px;">
+                                            <div class=" col-md-12" style="padding-left: 5px;">
+                                                <h4><b>Budget Period</b></h4>
+                                            </div>
+                                            <br />
+                                            <div class="col-md-6" style="padding-left: 5px; padding-right: 5px;">
+                                                <label class="mb-1" for="StartingMonth">Starting Month</label>
+                                                <select id="StartingMonth" name="StartingMonth" asp-for="StartingMonth" class="form-control dropdownheight" required onchange="Month()">
+                                                    <option value="">Select Month</option>
+                                                    <option value="1">January</option>
+                                                    <option value="2">February</option>
+                                                    <option value="3">March</option>
+                                                    <option value="4">April</option>
+                                                    <option value="5">May</option>
+                                                    <option value="6">June</option>
+                                                    <option value="7">July</option>
+                                                    <option value="8">August</option>
+                                                    <option value="9">September</option>
+                                                    <option value="10">October</option>
+                                                    <option value="11">November</option>
+                                                    <option value="12">December</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6" style="padding-left: 5px; padding-right: 5px;">
+                                                <label class=" mb-1" for="FiscalYear">Fiscal Year</label>
+                                                <input id="year" asp-for="FiscalYear" type="text" class="form-control" />
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="row gx-3 mb-3">
+                                    <div class="col-md-4">
+                                        <input asp-for="BudgetName" class="form-control" aria-required="true" placeholder="Budgetname*" required />
+                                    </div>
+                                </div>
+                                <hr />
+                                <div class="row gx-3 mb-3">
+                                    <div class="col-md-4">
+                                        @* <select id="ReferenceData" class="form-control">
+                                        <option value="">Reference Data</option>
+                                        <!-- Add options for reference data -->
+                                        </select> *@
+                                    </div>
+                                    <div class="col-md-8">
+                                        <fieldset id="period" class="TimePeriod float-right">
+                                            <input id="monthly" value="monthly" name="period" type="radio" asp-for="Period">
+                                            <label for="monthly">Monthly</label>
+                                            <input id="quarterly" value="quarterly" name="period" type="radio" asp-for="Period">
+                                            <label for="quarterly">Quarterly</label>
+                                            <input id="yearly" value="yearly" name="period" type="radio" asp-for="Period">
+                                            <label for="yearly">Yearly</label>
+                                        </fieldset>
+                                    </div>
+                                </div>
+                                <div class="table-responsive form-group">
+                                    <table id="all" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" style="width:100%">
+                                        <thead>
+                                            <tr id="tableCell" style="text-align:center!important">
+                                                <th style="text-align:center!important">
+                                                    AccountName
+                                                </th>
+                                                <th style="text-align:center!important">
+                                                    Total
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="account">
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="row gx-3 mb-3 mr-1 justify-content-end">
+                                    <div class="col-auto d-flex justify-content-end" style="padding-top:25px!important">
+                                        <input type="button" value="Discard" id="discardButton" class="btn btn-default" />
+                                        <input onclick="getTableData()" type="submit" value="Submit" class="btn btn-warning" />
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function validateForm() {
+    // Get the radio buttons
+    const radios = document.getElementsByName('period');
+    
+    // Check if any radio button is selected
+    for (let i = 0; i < radios.length; i++) {
+        if (radios[i].checked) {
+            return true; // If one is selected, return true to allow form submission
+        }
+    }
+    
+    // If no radio button is selected, show an alert and prevent form submission
+       toastr.warning('Please select a period before submitting the form.');
+    return false;
+}
+
+
+
+    document.getElementById('discardButton').addEventListener('click', function () {
+        window.location.href = '@Url.Action("Index", "Budget")';
+    });
+    var selectedValue = "";
+    function Month() {
+
+
+        // find fiscal year value and bind in fiscalYear input tag
+
+        let month = document.getElementById("StartingMonth").value;
+        const currentdate = new Date();
+        let year = currentdate.getFullYear;
+        const currentFiscalYear = moment(`01/${month}/${year}`, "DD-MM-YYYY"); // 28th Feb 2024
+
+        const nextFiscalYearEndDate = currentFiscalYear.clone()
+            .add(-1, "month")
+            .add(1, "year") // 01/03/2024
+
+        document.getElementById("year").value = currentFiscalYear.format("MM-YYYY") + " To " + nextFiscalYearEndDate.format("MM-YYYY");
+
+        const periods = divideFiscalYear(currentFiscalYear, nextFiscalYearEndDate);
+
+
+        $('#account').empty();
+        $('#tableCell').empty();
+        $("#tableCell").append('<th style="text-align:center!important">AccountName</th>');
+        $("#tableCell").append('<th style="text-align:center!important">Total</th>');
+
+
+        $.ajax({
+            url: "/ChartAccounts/ChartAccountDll",
+            async: false,
+            dataType: "json",
+            type: "GET",
+            contentType: 'application/json; charset=utf-8',
+            cache: false,
+            success: function (response) {
+                console.log(response)
+                var x = 0;
+                for (var i = 0; i < response.length; i++) {
+
+                    if (response[i].ChildAccountsDto !== null) {
+                         var hasChildAccounts = response[i].ChildAccountsDto.length > 0;
+
+                        $('#account').append('<tr class = "total" data-account-row="' + x + '" onclick = "subAccount(event)"><td class = "accountClick" style="text-align:center!important">' + response[i].Name +  (hasChildAccounts ? '<i class="text-center fa fa-caret-down"></i>' : '') + '</td>' +
+                            '<td onclick = "editable(event)" class= "editable-cell" style="text-align:center!important">0.00</td>' +
+                            '</tr>');
+                        for (var j = 0; j < response[i].ChildAccountsDto.length; j++) {
+                            $("#account").append('<tr data-sub-account="' + x + '" class = "subAccount  total is-hidden"><td style="text-align:center!important">' + response[i].ChildAccountsDto[j].Name + '</td>' +
+                                '<td onclick = "editable(event)" class= "editable-cell" style="text-align:center!important">0.00</td>' +
+                                '</tr></table>');
+                        }
+                        x++;
+                    }
+                    else {
+                        $('#account').append('<tr class = "total"><td style="text-align:center!important">' + response[i].Name + '</td>' +
+                            '<td onclick = "editable(event)" class= "editable-cell" style="text-align:center!important">0.00</td>' +
+                            '</tr>');
+                    }
+                }
+            },
+            error: function (xhr) {
+                alert('Chart Account Does not Exist...!');
+            }
+        });
+
+        var radioButtons = document.querySelectorAll('input[type="radio"][name="period"]');
+
+        radioButtons.forEach(function (radio) {
+            radio.addEventListener('change', function () {
+                selectedValue = this.value;
+
+
+                if (selectedValue === 'monthly') {
+                    const thElements = document.getElementsByTagName("th");
+                    const thArray = Array.from(thElements);
+                    thArray.forEach(th => th.remove());
+
+                    // Get all rows in the table
+                    const rows = document.querySelectorAll('tbody tr');
+
+                    // Iterate over each row
+                    rows.forEach(row => {
+                        const cells = Array.from(row.getElementsByTagName('td'));
+
+                        // Separate the first two cells
+                        const firstTwoCells = cells.slice(0, 2);
+
+                        // Remove the remaining cells
+                        const remainingCells = cells.slice(2);
+                        remainingCells.forEach(cell => cell.remove());
+                    });
+
+                    $("#tableCell").append('<th style="text-align:center!important">AccountName</th>');
+                    $("#tableCell").append('<th style="text-align:center!important">Total</th>');
+
+                    for (var x = 0; x <= periods.monthly.length; x++) {
+                        if (x === 0) {
+                            $("#tableCell").append('<th style="text-align:center!important">' + periods.monthly[x].start + '</th>');
+                            $(".total").append('<td onclick = "editable(event)" class= "editable-cell" style="text-align:center!important">0.00</td>');
+                        }
+                        $("#tableCell").append('<th style="text-align:center!important">' + periods.monthly[x].end + '</th>');
+                        $(".total").append('<td onclick = "editable(event)" class= "editable-cell" style="text-align:center!important">0.00</td>');
+
+                    }
+                }
+                else if (selectedValue === "quarterly") {
+                    const thElements = document.getElementsByTagName("th");
+                    const thArray = Array.from(thElements);
+                    thArray.forEach(th => th.remove());
+
+
+                    // Get all rows in the table
+                    const rows = document.querySelectorAll('tbody tr');
+
+                    // Iterate over each row
+                    rows.forEach(row => {
+                        const cells = Array.from(row.getElementsByTagName('td'));
+
+                        // Separate the first two cells
+                        const firstTwoCells = cells.slice(0, 2);
+
+                        // Remove the remaining cells
+                        const remainingCells = cells.slice(2);
+                        remainingCells.forEach(cell => cell.remove());
+                    });
+
+                    $("#tableCell").append('<th style="text-align:center!important">AccountName</th>');
+                    $("#tableCell").append('<th style="text-align:center!important">Total</th>');
+
+                    for (var x = 0; x <= periods.quarterly.length; x++) {
+                        if (x === 0) {
+                            $("#tableCell").append('<th style="text-align:center!important">' + periods.quarterly[x].start + '</th>');
+                            $(".total").append('<td onclick = "editable(event)" class= "editable-cell" style="text-align:center!important">0.00</td>');
+
+                        }
+                        if (x !== 0) {
+                            $("#tableCell").append('<th style="text-align:center!important">' + periods.quarterly[x].end + '</th>');
+                            $(".total").append('<td onclick = "editable(event)" class= "editable-cell" style="text-align:center!important">0.00</td>');
+
+                        }
+
+                    }
+                }
+                else if (selectedValue === "yearly") {
+                    const thElements = document.getElementsByTagName("th");
+                    const thArray = Array.from(thElements);
+                    thArray.forEach(th => th.remove());
+
+                    // Get all rows in the table
+                    const rows = document.querySelectorAll('tbody tr');
+
+                    // Iterate over each row
+                    rows.forEach(row => {
+                        const cells = Array.from(row.getElementsByTagName('td'));
+
+                        // Separate the first two cells
+                        const firstTwoCells = cells.slice(0, 2);
+
+                        // Remove the remaining cells
+                        const remainingCells = cells.slice(2);
+                        remainingCells.forEach(cell => cell.remove());
+                    });
+
+
+                    $("#tableCell").append('<th style="text-align:center!important">AccountName</th>');
+                    $("#tableCell").append('<th style="text-align:center!important">Total</th>');
+                    for (var x = 0; x <= periods.yearly.length; x++) {
+                        if (x === 0) {
+                            $("#tableCell").append('<th style="text-align:center!important">' + periods.yearly[x].start + '</th>');
+                            $(".total").append('<td onclick = "editable(event)" class= "editable-cell" style="text-align:center!important">0.00</td>');
+
+                        }
+                        $("#tableCell").append('<th style="text-align:center!important">' + periods.yearly[x].end + '</th>');
+                        $(".total").append('<td onclick = "editable(event)" class= "editable-cell" style="text-align:center!important">0.00</td>');
+
+                    }
+                }
+            });
+        });
+
+
+    }
+    function budgetBy() {
+        var val = document.getElementById("BudgetBy").value;
+        // console.log(val);
+        if (val === "1") {
+            $.ajax({
+                url: "/Communication/GetProperties",
+                async: false,
+                dataType: "json",
+                type: "GET",
+                contentType: 'application/json; charset=utf-8',
+                cache: false,
+                success: function (response) {
+                    $('#property').html('');
+                    var options = '';
+                    options += '<option value="">Select value</option>';
+                    for (var i = 0; i < response.length; i++) {
+                        options += '<option value="' + response[i].AssetId + '">' + response[i].BuildingNo + " - " + response[i].BuildingName+ '</option>';
+                    }
+                    $('#property').append(options);
+                },
+                error: function (xhr) {
+                    alert('Property Does not Exist...!');
+                }
+            });
+        }
+    }
+
+
+    function subAccount(event) {
+
+        var clickedElement = event.target;
+        //console.log("Clicked Element:", clickedElement);
+
+        // Find the closest ancestor <tr> element with a data-account-row attribute
+        const accountRow = clickedElement.closest('tr[data-account-row]');
+        //  console.log("Account Row:", accountRow);
+
+        if (accountRow) {
+            // Get the value of the data-account-row attribute
+            const accountRowId = accountRow.getAttribute('data-account-row');
+
+            // Select all sub-account rows with the matching data-sub-account attribute
+            const subAccountRows = document.querySelectorAll(`tr[data-sub-account="${accountRowId}"]`);
+
+            // Toggle visibility of the sub-account rows
+            subAccountRows.forEach(row => {
+                row.classList.toggle('is-hidden');
+            });
+        }
+
+    }
+
+
+    // Function to divide a fiscal year range into monthly, quarterly, and yearly periods
+    function divideFiscalYear(fiscalYearStart, fiscalYearEnd) {
+        // Initialize arrays to store the periods
+        const monthlyPeriods = [];
+        const quarterlyPeriods = [];
+        const yearlyPeriods = [];
+
+        // Start from the fiscal year start
+        let currentPeriodStart = new Date(fiscalYearStart);
+
+        // Iterate through each month until the fiscal year end
+        while (currentPeriodStart < fiscalYearEnd) {
+            // Calculate the end of the current month
+            const currentPeriodEnd = new Date(currentPeriodStart);
+            currentPeriodEnd.setMonth(currentPeriodEnd.getMonth() + 1);
+
+            // Add the monthly period to the array
+            monthlyPeriods.push({
+                start: formatDate(currentPeriodStart),
+                end: formatDate(currentPeriodEnd)
+            });
+
+            // Check if the current month is the end of a quarter
+            if (currentPeriodEnd.getMonth() % 3 === 0) {
+                // Add the quarterly period to the array
+                quarterlyPeriods.push({
+                    start: formatDate(currentPeriodStart),
+                    end: formatDate(currentPeriodEnd)
+                });
+            }
+
+            // Check if the current month is December
+            if (currentPeriodEnd.getMonth() === 0) {
+                // Add the yearly period to the array
+                yearlyPeriods.push({
+                    start: formatDate(currentPeriodStart),
+                    end: formatDate(currentPeriodEnd)
+                });
+            }
+
+            // Move to the next month
+            currentPeriodStart = currentPeriodEnd;
+        }
+
+        // Return the divided periods
+        return {
+            monthly: monthlyPeriods,
+            quarterly: quarterlyPeriods,
+            yearly: yearlyPeriods
+        };
+    }
+
+    // Function to format a date as "yyyy-MM"
+    function formatDate(date) {
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Add leading zero if necessary
+        return `${year}-${month}`;
+    }
+
+
+    function editable(event) {
+        var $element = $(event.target);
+        var currentValue = $element.text().trim();
+
+        var $input = $("<input>", {
+            val: currentValue,
+            type: "text",
+            blur: function () {
+                var newValue = $(this).val();
+                $element.text(newValue);
+            },
+            keyup: function (e) {
+                if (e.key === "Enter") {
+                    var newValue = $(this).val();
+                    $element.text(newValue);
+                }
+            }
+        });
+
+        $element.html($input);
+        $input.focus();
+    }
+
+
+
+
+
+
+    // Function to extract table data
+    function getTableData() {
+        // Get the table element (assuming there's only one table on the page)
+        const table = document.querySelector('table');
+
+        // Initialize an array to store the extracted data
+        const tableData = [];
+        var radioButtons = document.querySelectorAll('input[type="radio"][name="period"]');
+        radioButtons.forEach(function (radio) {
+            radio.addEventListener('change', function () {
+                selectedValue = this.value;
+            });
+        });
+        // Loop through each row in the table
+        table.querySelectorAll('tr').forEach(row => {
+            // Initialize an object to store the row data
+            const rowData = {};
+
+            // Get all cells in the current row
+            const cells = row.querySelectorAll('td, th');
+
+            // If the row is a parent row (Income or General Maintenance, for example)
+            if (row.classList.contains('parent-row-class')) {
+
+                // rowData.AccountName = cells[0].textContent.trim();
+                //     rowData.total = cells[1].textContent.trim();
+                //     rowData.period = selectedValue;
+                // if (selectedValue == "monthly") {
+                //     rowData.BudgetItemMonth = {
+                //             '1': cells[2].textContent.trim(),
+                //             '2': cells[3].textContent.trim(),
+                //             '3': cells[4].textContent.trim(),
+                //             '4': cells[5].textContent.trim(),
+                //             '5': cells[6].textContent.trim(),
+                //             '6': cells[7].textContent.trim(),
+                //             '7': cells[8].textContent.trim(),
+                //             '8': cells[9].textContent.trim(),
+                //             '9': cells[10].textContent.trim(),
+                //             '10': cells[11].textContent.trim(),
+                //             '11': cells[12].textContent.trim(),
+                //             '12': cells[13].textContent.trim(),
+                //         };
+                //     }
+                // else if (selectedValue =='quarterly') {
+                //     rowData.BudgetItemMonth = {
+                //             '1': cells[2].textContent.trim(),
+                //             '2': cells[3].textContent.trim(),
+                //             '3': cells[4].textContent.trim(),
+                //             '4': cells[5].textContent.trim(),
+                //         };
+                //     }
+                //     else if(selectedValue == 'yearly') {
+                //     rowData.BudgetItemMonth = {
+                //             '1': cells[2].textContent.trim(),
+                //             '2': cells[3].textContent.trim(),
+                //         };
+                //     }
+
+                //     // Add more months if necessary
+            }
+            else {
+                // For child rows
+
+                rowData.AccountName = cells[0].textContent.trim();
+                rowData.total = cells[1].textContent.trim();
+                rowData.period = selectedValue;
+                if (selectedValue === 'monthly') {
+                    rowData.BudgetItemMonth = {
+                        'Jan': cells[2].textContent.trim(),
+                        'Feb': cells[3].textContent.trim(),
+                        'March': cells[4].textContent.trim(),
+                        'April': cells[5].textContent.trim(),
+                        'May': cells[6].textContent.trim(),
+                        'June': cells[7].textContent.trim(),
+                        'July': cells[8].textContent.trim(),
+                        'Aug': cells[9].textContent.trim(),
+                        'Sep': cells[10].textContent.trim(),
+                        'Oct': cells[11].textContent.trim(),
+                        'Nov': cells[12].textContent.trim(),
+                        'Dec': cells[13].textContent.trim(),
+                    };
+                }
+                else if (selectedValue === 'quarterly') {
+                    rowData.BudgetItemMonth = {
+                        'Quat1': cells[2].textContent.trim(),
+                        'Quat2': cells[3].textContent.trim(),
+                        'Quat4': cells[4].textContent.trim(),
+                        'Quat5': cells[5].textContent.trim(),
+                    };
+                }
+                else if (selectedValue === 'yearly') {
+                    rowData.BudgetItemMonth = {
+                        'YearStart': cells[2].textContent.trim(),
+                        'YearEnd': cells[3].textContent.trim(),
+                    };
+                }
+
+
+            }
+
+            // Add the row data to the table data array
+            tableData.push(rowData);
+        });
+        console.log(tableData);
+        // return tableData;
+        $('<input>').attr({
+            type: 'hidden',
+            name: 'BudgetItemsJson',
+            value: JSON.stringify(tableData)
+        }).appendTo('#msform');
+    }
+
+    // Example usage
+
+
+
+
+</script>

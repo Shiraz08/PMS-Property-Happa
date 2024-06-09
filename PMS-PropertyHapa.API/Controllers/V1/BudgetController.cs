@@ -1,70 +1,54 @@
-﻿using MagicVilla_VillaAPI.Repository.IRepostiory;
+﻿using Google.Apis.Storage.v1;
+using MagicVilla_VillaAPI.Repository.IRepostiory;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
+using PMS_PropertyHapa.API.Services;
 using PMS_PropertyHapa.Models;
 using PMS_PropertyHapa.Models.DTO;
-using System.Net;
-using PMS_PropertyHapa.Shared.Email;
-using Microsoft.AspNetCore.Identity.UI.Services;
-using System.Web;
-using System.Security.Claims;
-using System.Net.Http.Headers;
-using PMS_PropertyHapa.Models.Roles;
 using PMS_PropertyHapa.Models.Entities;
-using Microsoft.AspNetCore.Authorization;
+using PMS_PropertyHapa.Models.Roles;
+using System.Net;
 
 namespace PMS_PropertyHapa.API.Controllers.V1
 {
-    [Route("api/v1/LandlordAuth")]
+    [Route("api/v1/BudgetAuth")]
     [ApiController]
-    //  [ApiVersionNeutral]
-    public class LandlordController : Controller
+    public class BudgetController : Controller
     {
         private readonly IUserRepository _userRepo;
         private readonly IEmailSender _emailSender;
         private readonly UserManager<ApplicationUser> _userManager;
         protected APIResponse _response;
+        private readonly GoogleCloudStorageService _storageService;
 
-        public LandlordController(IUserRepository userRepo, UserManager<ApplicationUser> userManager)
+        public BudgetController(IUserRepository userRepo, UserManager<ApplicationUser> userManager, GoogleCloudStorageService storageService)
         {
             _userRepo = userRepo;
             _response = new();
             _userManager = userManager;
+            _storageService = storageService;
         }
 
-        [HttpGet("Error")]
-        public async Task<IActionResult> Error()
-        {
-            throw new FileNotFoundException();
-        }
-
-        [HttpGet("ImageError")]
-        public async Task<IActionResult> ImageError()
-        {
-            throw new BadImageFormatException("Fake Image Exception");
-        }
-
-        #region Landlord Crud 
-
-        [HttpGet("Landlord")]
-        public async Task<ActionResult<OwnerDto>> GetAllLandlord()
+        [HttpGet("Budgets")]
+        public async Task<ActionResult<BudgetDto>> GetBudgets()
         {
             try
             {
-                var assets = await _userRepo.GetAllLandlordAsync();
+                var budgets = await _userRepo.GetBudgetsAsync();
 
-                if (assets != null)
+                if (budgets != null)
                 {
                     _response.StatusCode = HttpStatusCode.OK;
                     _response.IsSuccess = true;
-                    _response.Result = assets;
+                    _response.Result = budgets;
                     return Ok(_response);
                 }
                 else
                 {
                     _response.StatusCode = HttpStatusCode.NotFound;
                     _response.IsSuccess = false;
-                    _response.ErrorMessages.Add("No asset found with this id.");
+                    _response.ErrorMessages.Add("No sub account found with this id.");
                     return NotFound(_response);
                 }
             }
@@ -74,44 +58,41 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             }
         }
 
-        [HttpGet("GetSingleLandlord/{ownerId}")]
-        public async Task<IActionResult> GetSingleLandlord(int ownerId)
+        [HttpGet("GetBudgetById/{id}")]
+        public async Task<ActionResult<BudgetDto>> GetBudget(int id)
         {
             try
             {
-                var tenantDto = await _userRepo.GetSingleLandlordByIdAsync(ownerId);
+                var budget = await _userRepo.GetBudgetByIdAsync(id);
 
-                if (tenantDto != null)
+                if (budget != null)
                 {
                     _response.StatusCode = HttpStatusCode.OK;
                     _response.IsSuccess = true;
-                    _response.Result = tenantDto;
+                    _response.Result = budget;
                     return Ok(_response);
                 }
                 else
                 {
                     _response.StatusCode = HttpStatusCode.NotFound;
                     _response.IsSuccess = false;
-                    _response.ErrorMessages.Add("No user found with this id.");
+                    _response.ErrorMessages.Add("No sub account found with this id.");
                     return NotFound(_response);
                 }
             }
             catch (Exception ex)
             {
-                _response.StatusCode = HttpStatusCode.NotFound;
-                _response.IsSuccess = false;
-                _response.ErrorMessages.Add("Error Occured");
-                return NotFound(_response);
+                return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
 
 
-        [HttpPost("Landlord")]
-        public async Task<ActionResult<bool>> CreateOwner(OwnerDto owner)
+        [HttpPost("Budget")]
+        public async Task<ActionResult<bool>> SaveBudget(BudgetDto budgetDto)
         {
             try
             {
-                var isSuccess = await _userRepo.CreateOwnerAsync(owner);
+                var isSuccess = await _userRepo.SaveBudgetAsync(budgetDto);
                 if (isSuccess == true)
                 {
                     _response.StatusCode = HttpStatusCode.OK;
@@ -126,14 +107,19 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             }
         }
 
-        [HttpPut("Landlord/{OwnerId}")]
-        public async Task<ActionResult<bool>> UpdateOwner(int OwnerId, OwnerDto owner)
+        [HttpPost("DuplicateBudget")]
+        public async Task<ActionResult<bool>> SaveDuplicateBudget(BudgetDto budgetDto)
         {
             try
             {
-                owner.OwnerId = OwnerId; // Ensure ownerId is set
-                var isSuccess = await _userRepo.UpdateOwnerAsync(owner);
-                return Ok(isSuccess);
+                var isSuccess = await _userRepo.SaveDuplicateBudgetAsync(budgetDto);
+                if (isSuccess == true)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = isSuccess;
+                }
+                return Ok(_response);
             }
             catch (Exception ex)
             {
@@ -141,12 +127,12 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             }
         }
 
-        [HttpDelete("Landlord/{ownerId}")]
-        public async Task<ActionResult<bool>> DeleteOwner(string ownerId)
+        [HttpPost("Budget/{id}")]
+        public async Task<ActionResult<bool>> DeleteBudget(int id)
         {
             try
             {
-                var isSuccess = await _userRepo.DeleteOwnerAsync(ownerId);
+                var isSuccess = await _userRepo.DeleteBudgetAsync(id);
                 return Ok(isSuccess);
             }
             catch (Exception ex)
@@ -154,7 +140,6 @@ namespace PMS_PropertyHapa.API.Controllers.V1
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
-        #endregion
 
     }
 }

@@ -142,14 +142,15 @@
 <div class="modal fade" id="statusChangeModal" tabindex="-1" aria-labelledby="statusChangeModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="statusChangeModalLabel">Change Task Status</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <input type="hidden" id="taskRequestIdInput">
-                <input type="hidden" id="currentStatusInput">
-                <div class="d-none" id="completedDiv">
+            <form id="statusChangeForm">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="statusChangeModalLabel">Change Task Status</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="taskRequestIdInput" name="TaskRequestId">
+                    <input type="hidden" id="currentStatusInput" name="Status">
+                     @*                <div class="d-none" id="completedDiv">
                     <div class="mb-3">
                         <label for="maintenanceExpense" class="form-label">Expense Amount</label>
                         <input type="number" class="form-control" placeholder="Maintenance Expense" id="maintenanceExpense">
@@ -158,16 +159,17 @@
                         <label for="documentFile" class="form-label">Document Upload</label>
                         <input type="file" class="form-control" id="documentFile" name="documentFile" />
                     </div>
+                </div> *@
+                    <div class="mb-3">
+                        <label for="remarksTextArea" class="form-label">Remarks</label>
+                        <textarea class="form-control" id="remarksTextArea" name="Remarks" required rows="3"></textarea>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label for="remarksTextArea" class="form-label">Remarks</label>
-                    <textarea class="form-control" id="remarksTextArea" rows="3"></textarea>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" id="saveStatusChangeBtn">Save changes</button>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="saveStatusChangeBtn">Save changes</button>
-            </div>
+            </form>
         </div>
     </div>
 </div>
@@ -238,7 +240,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.0.0/js/buttons.html5.min.js"></script>
-<script>
+ <script>
     $(document).ready(function () {
         $('#searchInput').on('input', function () {
             var searchText = $(this).val().toLowerCase();
@@ -261,11 +263,11 @@
             var taskRequestId = $this.data('task-request-id');
             var currentStatus = $this.val();
 
-            if (currentStatus === 'Completed') {
+@*             if (currentStatus === 'Completed') {
                 $("#completedDiv").removeClass("d-none");
             } else {
                 $("#completedDiv").addClass("d-none");
-            }
+            } *@
 
             if (!$this.data('original-value')) {
                 $this.data('original-value', $this.find('option:selected').val());
@@ -292,84 +294,60 @@
             });
         }
 
-        $('#saveStatusChangeBtn').click(function () {
-            var taskRequestId = $('#taskRequestIdInput').val();
-            var currentStatus = $('#currentStatusInput').val();
-            var remarks = $('#remarksTextArea').val();
-            var expense = $('#maintenanceExpense').val();
-            var documentFile = $('#documentFile')[0].files[0];
+        // $('#saveStatusChangeBtn').click(function () {
+        //     var taskRequestId = $('#taskRequestIdInput').val();
+        //     var currentStatus = $('#currentStatusInput').val();
+        //     var remarks = $('#remarksTextArea').val();
+        //      var expense = $('#maintenanceExpense').val();
+        //     var documentFile = $('#documentFile')[0].files[0];
+ 
+        //     readFileAsBase64(documentFile).then(function (base64Document) {
+        //         var data = {
+        //             TaskRequestId: taskRequestId,
+        //             Status: currentStatus,
+        //             Remarks: remarks,
+        //             DocumentFile: base64Document, Include the base64 string
+        //             Expense: expense, 
+        //             Date: new Date().toISOString()
+        //         };
 
-            readFileAsBase64(documentFile).then(function (base64Document) {
-                var data = {
-                    TaskRequestId: taskRequestId,
-                    Status: currentStatus,
-                    Remarks: remarks,
-                    DocumentFile: base64Document, // Include the base64 string
-                    Expense: expense,
-                    Date: new Date().toISOString()
-                };
-
-                $.ajax({
-                    url: '@Url.Action("SaveTaskHistory", "Maintenance")',
-                    type: 'POST',
-                    data: JSON.stringify(data),
-                    contentType: 'application/json',
-                    beforeSend: function () {
-                        $('#saveStatusChangeBtn').prop('disabled', true).text('Saving...');
-                    },
-                    success: function (response) {
-                        $('#statusChangeModal').modal('hide');
-                        location.reload();
-                    },
-                    error: function (xhr, status, error) {
-                        console.error('Error:', error);
-                        alert('Failed to save data');
-                    },
-                    complete: function () {
-                        $('#saveStatusChangeBtn').prop('disabled', false).text('Save');
-                    }
-                });
-            }).catch(function (error) {
-                console.error('Error reading file:', error);
-                alert('Failed to read document file');
-            });
-        });
+        //         $.ajax({
+        //             url: '@Url.Action("SaveTaskHistory", "Maintenance")',
+        //             type: 'POST',
+        //             data: JSON.stringify(data),
+        //             contentType: 'application/json',
+        //             beforeSend: function () {
+        //                 $('#saveStatusChangeBtn').prop('disabled', true).text('Saving...');
+        //             },
+        //             success: function (response) {
+        //                 $('#statusChangeModal').modal('hide');
+        //                 location.reload();
+        //             },
+        //             error: function (xhr, status, error) {
+        //                 console.error('Error:', error);
+        //                 alert('Failed to save data');
+        //             },
+        //             complete: function () {
+        //                 $('#saveStatusChangeBtn').prop('disabled', false).text('Save');
+        //             }
+        //         });
+        //     }).catch(function (error) {
+        //         console.error('Error reading file:', error);
+        //         alert('Failed to read document file');
+        //     });
+        // });
 
         // $('#saveStatusChangeBtn').click(function () {
-        //     var promises = [];
 
         //     var taskRequestId = $('#taskRequestIdInput').val();
         //     var currentStatus = $('#currentStatusInput').val();
         //     var remarks = $('#remarksTextArea').val();
-        //     // var document = $('#documentFile').val();
-        //     var document = promises.push(readFileAsBase64($('#documentFile')[0].files[0]));
-        //     var expense = $('#maintenanceExpense').val();
-        //     var vendorId = $('#vendorId').val();
-
-        //     // Function to read file as base64
-        //     function readFileAsBase64(file) {
-        //         return new Promise((resolve, reject) => {
-        //             if (file) {
-        //                 var reader = new FileReader();
-        //                 reader.onload = function (e) {
-        //                     resolve(e.target.result); // Resolve with base64 string
-        //                 };
-        //                 reader.onerror = reject;
-        //                 reader.readAsDataURL(file);
-        //             } else {
-        //                 resolve(null); // No file provided
-        //             }
-        //         });
-        //     }
 
         //     var data = {
         //         TaskRequestId: taskRequestId,
         //         Status: currentStatus,
         //         Remarks: remarks,
-        //         DocumentFile: document,
-        //         Expense: expense,
-        //         VendorId: vendorId,
-        //             Date: new Date().toISOString()
+        //         Date: new Date().toISOString()
         //     };
 
         //     $.ajax({
@@ -393,6 +371,41 @@
         //         }
         //     });
         // });
+        $('#statusChangeForm').submit(function (event) {
+        event.preventDefault(); // Prevent the default form submission
+
+        var taskRequestId = $('#taskRequestIdInput').val();
+        var currentStatus = $('#currentStatusInput').val();
+        var remarks = $('#remarksTextArea').val();
+
+        var data = {
+            TaskRequestId: taskRequestId,
+            Status: currentStatus,
+            Remarks: remarks,
+            Date: new Date().toISOString()
+        };
+
+        $.ajax({
+            url: '@Url.Action("SaveTaskHistory", "Maintenance")',
+            type: 'POST',
+            data: JSON.stringify(data),
+            contentType: 'application/json',
+            beforeSend: function () {
+                $('#saveStatusChangeBtn').prop('disabled', true).text('Saving...');
+            },
+            success: function (response) {
+                $('#statusChangeModal').modal('hide');
+                location.reload();
+            },
+            error: function (xhr, status, error) {
+                console.error('Error:', error);
+                alert('Failed to save data');
+            },
+            complete: function () {
+                $('#saveStatusChangeBtn').prop('disabled', false).text('Save');
+            }
+        });
+    });
 
         $('#statusChangeModal').on('hidden.bs.modal', function () {
             var taskRequestId = $('#taskRequestIdInput').val();
@@ -409,10 +422,10 @@
         $('#taskRequestIdInput').val('');
         $('#currentStatusInput').val('');
         $('#remarksTextArea').val('');
-        $('#documentFile').val('');
-        $('#maintenanceExpense').val('');
-        $('#completedDiv').addClass('d-none');
-    }
+@*         $('#documentFile').val('');
+        $('#maintenanceExpense').val(''); *@
+        @* $('#completedDiv').addClass('d-none');
+ *@    }
 
 
     function showTaskRequestHistory(taskRequestId) {

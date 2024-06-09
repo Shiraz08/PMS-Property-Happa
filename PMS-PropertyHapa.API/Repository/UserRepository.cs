@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.DotNet.Scaffolding.Shared.ProjectModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using NuGet.ContentModel;
 using PMS_PropertyHapa.MigrationsFiles.Data;
 using PMS_PropertyHapa.MigrationsFiles.Migrations;
@@ -1862,6 +1863,7 @@ namespace MagicVilla_VillaAPI.Repository
                     SignatureImagePath = leaseDto.SignatureImagePath,
                     IsFixedTerm = leaseDto.IsFixedTerm,
                     SelectedProperty = leaseDto.SelectedProperty,
+                    PropertyId = leaseDto.PropertyId,
                     SelectedUnit = leaseDto.SelectedUnit,
                     IsMonthToMonth = leaseDto.IsMonthToMonth,
                     HasSecurityDeposit = leaseDto.HasSecurityDeposit,
@@ -1926,6 +1928,70 @@ namespace MagicVilla_VillaAPI.Repository
                         await _db.SaveChangesAsync();
                     }
                 }
+
+                var maxLeaseId = await _db.Lease.MaxAsync(x => x.LeaseId);
+                decimal totalRentAmount = 0;
+
+                if (leaseDto.RentCharges != null)
+                {
+                    totalRentAmount += leaseDto.RentCharges.Sum(rc => rc.Amount);
+                }
+
+                if (leaseDto.SecurityDeposits != null)
+                {
+                    totalRentAmount += leaseDto.SecurityDeposits.Sum(sd => sd.Amount);
+                }
+
+                if (leaseDto.FeeCharges != null)
+                {
+                    totalRentAmount += leaseDto.FeeCharges.Sum(fc => fc.Amount);
+                }
+
+                //var ownerName = await _db.Assets.FirstOrDefaultAsync(x => x.AssetId == leaseDto.PropertyId).OwnerId;
+
+                if (leaseDto.IsMonthToMonth)
+                {
+                    DateTime invoiceDate = leaseDto.StartDate;
+                    while (invoiceDate <= leaseDto.EndDate)
+                    {
+                        var newInvoice = new Invoice
+                        {
+                            LeaseId = maxLeaseId,
+                            //OwnerId = leaseDto.OwnerId,
+                            OwnerName = "Test",
+                            InvoiceCreatedDate = DateTime.Now,
+                            TenantId = leaseDto.TenantId,
+                            TenantName = leaseDto.TenantIdValue,
+                            RentAmount = totalRentAmount,
+                            AddedBy = leaseDto.AddedBy,
+                            AddedDate = DateTime.Now,
+                            InvoiceDate = invoiceDate
+                        };
+
+                        await _db.Invoices.AddAsync(newInvoice);
+                        invoiceDate = invoiceDate.AddMonths(1);
+                    }
+                }
+                else if (leaseDto.IsFixedTerm)
+                {
+                    var newInvoice = new Invoice
+                    {
+                        LeaseId = maxLeaseId,
+                        //OwnerId = leaseDto.OwnerId,
+                        OwnerName = "Test",
+                        InvoiceCreatedDate = DateTime.Now,
+                        TenantId = leaseDto.TenantId,
+                        TenantName = leaseDto.TenantIdValue,
+                        RentAmount = totalRentAmount,
+                        AddedBy = leaseDto.AddedBy,
+                        AddedDate = DateTime.Now,
+                        InvoiceDate = leaseDto.StartDate
+                    };
+
+                    await _db.Invoices.AddAsync(newInvoice);
+                }
+
+                await _db.SaveChangesAsync();
                 await transaction.CommitAsync();
                 return true;
             }
@@ -2096,6 +2162,7 @@ namespace MagicVilla_VillaAPI.Repository
                 existingLease.EndDate = leaseDto.EndDate;
                 existingLease.IsSigned = leaseDto.IsSigned;
                 existingLease.SelectedProperty = leaseDto.SelectedProperty;
+                existingLease.PropertyId = leaseDto.PropertyId;
                 existingLease.SelectedUnit = leaseDto.SelectedUnit;
                 existingLease.SignatureImagePath = leaseDto.SignatureImagePath;
                 existingLease.IsFixedTerm = leaseDto.IsFixedTerm;
@@ -2188,6 +2255,71 @@ namespace MagicVilla_VillaAPI.Repository
                     }
                 }
 
+                var oldInvoices = await _db.Invoices.Where(x => x.LeaseId == leaseDto.LeaseId).ToListAsync();
+
+                    oldInvoices.ForEach(x => x.IsDeleted = true);
+                    _db.UpdateRange(oldInvoices);
+
+                decimal totalRentAmount = 0;
+
+                if (leaseDto.RentCharges != null)
+                {
+                    totalRentAmount += leaseDto.RentCharges.Sum(rc => rc.Amount);
+                }
+
+                if (leaseDto.SecurityDeposits != null)
+                {
+                    totalRentAmount += leaseDto.SecurityDeposits.Sum(sd => sd.Amount);
+                }
+
+                if (leaseDto.FeeCharges != null)
+                {
+                    totalRentAmount += leaseDto.FeeCharges.Sum(fc => fc.Amount);
+                }
+
+                if (leaseDto.IsMonthToMonth)
+                {
+                    DateTime invoiceDate = leaseDto.StartDate;
+                    while (invoiceDate <= leaseDto.EndDate)
+                    {
+                        var newInvoice = new Invoice
+                        {
+                            LeaseId = leaseDto.LeaseId,
+                            //OwnerId = leaseDto.OwnerId,
+                            OwnerName = "Test up",
+                            InvoiceCreatedDate = DateTime.Now,
+                            TenantId = leaseDto.TenantId,
+                            TenantName = leaseDto.TenantIdValue,
+                            RentAmount = totalRentAmount,
+                            AddedBy = leaseDto.AddedBy,
+                            AddedDate = DateTime.Now,
+                            InvoiceDate = invoiceDate
+                        };
+
+                        await _db.Invoices.AddAsync(newInvoice);
+                        invoiceDate = invoiceDate.AddMonths(1);
+                    }
+                }
+                else if (leaseDto.IsFixedTerm)
+                {
+                    var newInvoice = new Invoice
+                    {
+                        LeaseId = leaseDto.LeaseId,
+                        //OwnerId = leaseDto.OwnerId,
+                        OwnerName = "Test up",
+                        InvoiceCreatedDate = DateTime.Now,
+                        TenantId = leaseDto.TenantId,
+                        TenantName = leaseDto.TenantIdValue,
+                        RentAmount = totalRentAmount,
+                        AddedBy = leaseDto.AddedBy,
+                        AddedDate = DateTime.Now,
+                        InvoiceDate = leaseDto.StartDate
+                    };
+
+                    await _db.Invoices.AddAsync(newInvoice);
+                }
+
+
                 await _db.SaveChangesAsync();
                 await transaction.CommitAsync();
 
@@ -2274,6 +2406,63 @@ namespace MagicVilla_VillaAPI.Repository
             return result > 0;
         }
 
+
+        //Inovices
+        public async Task<List<Invoice>> GetInvoicesAsync(int leaseId)
+        {
+            var invoices = await _db.Invoices.Where(l => l.LeaseId == leaseId && l.IsDeleted != true).ToListAsync();
+
+            return invoices;
+        }  
+        
+        public async Task<Invoice> GetInvoiceByIdAsync(int invoiceId)
+        {
+            var invoice = await _db.Invoices.FirstOrDefaultAsync(l => l.InvoiceId == invoiceId && l.IsDeleted != true);
+
+            return invoice;
+        }
+
+        public async Task<bool> AllInvoicePaidAsync(int leaseId)
+        {
+            var invoices = await _db.Invoices.Where(t => t.LeaseId == leaseId && t.InvoicePaid != true &&  t.IsDeleted != true).ToListAsync();
+
+            invoices.ForEach(x => x.InvoicePaid = true);
+            _db.Invoices.UpdateRange(invoices);
+            var result = await _db.SaveChangesAsync();
+            return result > 0;
+        }
+        
+        
+        public async Task<bool> AllInvoiceOwnerPaidAsync(int leaseId)
+        {
+            var invoices = await _db.Invoices.Where(t => t.LeaseId == leaseId && t.InvoicePaidToOwner != true &&  t.IsDeleted != true).ToListAsync();
+
+            invoices.ForEach(x => x.InvoicePaidToOwner = true);
+            _db.Invoices.UpdateRange(invoices);
+            var result = await _db.SaveChangesAsync();
+            return result > 0;
+        }
+        
+        public async Task<bool> InvoicePaidAsync(int invoiceId)
+        {
+            var invoice = await _db.Invoices.FirstOrDefaultAsync(t => t.InvoiceId == invoiceId);
+
+            invoice.InvoicePaid = true;
+             _db.Invoices.Update(invoice);
+            var result = await _db.SaveChangesAsync();
+            return result > 0;
+        }
+        
+        
+        public async Task<bool> InvoiceOwnerPaidAsync(int invoiceId)
+        {
+            var invoice = await _db.Invoices.FirstOrDefaultAsync(t => t.InvoiceId == invoiceId);
+
+            invoice.InvoicePaidToOwner = true;
+            _db.Invoices.Update(invoice);
+            var result = await _db.SaveChangesAsync();
+            return result > 0;
+        }
 
 
         public async Task<bool> DeleteOwnerAsync(string ownerId)
@@ -3269,7 +3458,6 @@ namespace MagicVilla_VillaAPI.Repository
 
         public async Task<bool> SaveTaskHistoryAsync(TaskRequestHistoryDto taskRequestHistoryDto)
         {
-
             var taskRequest = await _db.TaskRequest.FirstOrDefaultAsync(x => x.TaskRequestId == taskRequestHistoryDto.TaskRequestId);
 
             if (taskRequest != null)
@@ -3280,6 +3468,11 @@ namespace MagicVilla_VillaAPI.Repository
                 _db.TaskRequest.Update(taskRequest);
 
                 await _db.SaveChangesAsync();
+            }
+
+            if (taskRequest.Type == TaskTypes.WorkOrderRequest)
+            {
+
             }
 
             var taskRequestHistory = await _db.TaskRequestHistory.FirstOrDefaultAsync(x => x.TaskRequestHistoryId == taskRequestHistoryDto.TaskRequestHistoryId);
@@ -4538,11 +4731,20 @@ namespace MagicVilla_VillaAPI.Repository
                                         ParentAccountId = ca.ParentAccountId,
                                         IsActive = ca.IsActive,
                                         IsSubAccount = ca.IsSubAccount,
-                                        ParentAccount = ca.ParentAccountId != null ? _db.ChartAccount.FirstOrDefault(x=>x.ChartAccountId == ca.ParentAccountId && x.IsDeleted != true).Name : "",
-                                        AddedBy = ca.AddedBy
+                                        ParentAccount = ca.ParentAccountId != null ? _db.ChartAccount.FirstOrDefault(x => x.ChartAccountId == ca.ParentAccountId && x.IsDeleted != true).Name : "",
+                                        AddedBy = ca.AddedBy,
+                                        ChildAccountsDto = (from cca in _db.ChartAccount
+                                                           where cca.ParentAccountId == ca.ChartAccountId && cca.IsDeleted != true
+                                                           select new ChildAccountDto
+                                                           {
+                                                               ChartAccountId = cca.ChartAccountId,
+                                                               AccountTypeId = cca.AccountTypeId,
+                                                               Name = cca.Name,
+                                                               ParentAccountId = cca.ParentAccountId,
+                                                           }).ToList()
                                     })
-                     .AsNoTracking()
-                     .ToListAsync();
+                    .AsNoTracking()
+                    .ToListAsync();
 
 
                 return result;
@@ -4633,5 +4835,203 @@ namespace MagicVilla_VillaAPI.Repository
 
         #endregion
 
+        #region Buget
+
+        public async Task<List<BudgetDto>> GetBudgetsAsync()
+        {
+            try
+            {
+                var result = await (from b in _db.Budgets
+                                    where b.IsDeleted != true
+                                    select new BudgetDto
+                                    {
+                                        BudgetId = b.BudgetId,
+                                        BudgetType = b.BudgetType,
+                                        BudgetBy = b.BudgetBy,
+                                        PropertyId = b.PropertyId,
+                                        StartingMonth = b.StartingMonth,
+                                        FiscalYear = b.FiscalYear,
+                                        BudgetName = b.BudgetName,
+                                        Period = b.Period,
+                                        ReferenceData = b.ReferenceData,
+                                        AccountingMethod = b.AccountingMethod,
+                                        ShowReferenceData = b.ShowReferenceData,
+                                        AddedBy = b.AddedBy
+                                    })
+                     .AsNoTracking()
+                     .ToListAsync();
+
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping Budget: {ex.Message}");
+                throw;
+            }
+        }
+        
+        public async Task<Budget> GetBudgetByIdAsync(int id)
+        {
+            try
+            {
+                var result = await _db.Budgets.Include(x=>x.Items).Where(x=>x.BudgetId == id && x.IsDeleted != true).FirstOrDefaultAsync();
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping Budget: {ex.Message}");
+                throw;
+            }
+        }
+        
+        public async Task<bool> SaveBudgetAsync(BudgetDto model)
+        {
+            var budget = new Budget();
+
+            List<BudgetItem> li = new List<BudgetItem>();
+            var budgetItems = JsonConvert.DeserializeObject<List<BudgetItemDto>>(model.ItemsJson);
+            foreach(var x in budgetItems) 
+            {
+                if(x.Total != "Total" && x.AccountName != "AccountName")
+                {
+                    BudgetItem item = new BudgetItem()
+                    {
+                        AccountName = x.AccountName,
+                        Total = decimal.Parse(x.Total.Replace(".", ",")),
+                        Period = x.Period,
+                        BudgetItemMonth = new BudgetItemMonth()
+                        {
+                            Jan = x.BudgetItemMonth.Jan != null ? decimal.Parse(x.BudgetItemMonth.Jan.Replace(".",",")) : 0,
+                            Feb = x.BudgetItemMonth.Feb != null ? decimal.Parse(x.BudgetItemMonth.Feb.Replace(".",",")) : 0,
+                            March = x.BudgetItemMonth.March != null ? decimal.Parse(x.BudgetItemMonth.March.Replace(".",",")) : 0,
+                            April = x.BudgetItemMonth.April != null ? decimal.Parse(x.BudgetItemMonth.April.Replace(".",",")) : 0,
+                            May = x.BudgetItemMonth.May != null ? decimal.Parse(x.BudgetItemMonth.May.Replace(".",",")) : 0,
+                            June = x.BudgetItemMonth.June != null ? decimal.Parse(x.BudgetItemMonth.June.Replace(".",",")) : 0,
+                            July = x.BudgetItemMonth.July != null ? decimal.Parse(x.BudgetItemMonth.July.Replace(".",",")) : 0,
+                            Aug = x.BudgetItemMonth.Aug != null ? decimal.Parse(x.BudgetItemMonth.Aug.Replace(".",",")) : 0,
+                            Sep = x.BudgetItemMonth.Sep != null ? decimal.Parse(x.BudgetItemMonth.Sep.Replace(".",",")) : 0,
+                            Oct = x.BudgetItemMonth.Oct != null ? decimal.Parse(x.BudgetItemMonth.Oct.Replace(".",",")) : 0,
+                            Nov = x.BudgetItemMonth.Nov != null ? decimal.Parse(x.BudgetItemMonth.Nov.Replace(".",",")) : 0,
+                            Dec = x.BudgetItemMonth.Dec != null ? decimal.Parse(x.BudgetItemMonth.Dec.Replace(".",",")) : 0,
+                            quat1 = x.BudgetItemMonth.quat1 != null ? decimal.Parse(x.BudgetItemMonth.quat1.Replace(".",",")) : 0,
+                            quat2 = x.BudgetItemMonth.quat2 != null ? decimal.Parse(x.BudgetItemMonth.quat2.Replace(".",",")) : 0,
+                            quat4 = x.BudgetItemMonth.quat4 != null ? decimal.Parse(x.BudgetItemMonth.quat4.Replace(".",",")) : 0,
+                            quat5 = x.BudgetItemMonth.quat5 != null ? decimal.Parse(x.BudgetItemMonth.quat5.Replace(".",",")) : 0,
+                            YearStart = x.BudgetItemMonth.YearStart != null ? decimal.Parse(x.BudgetItemMonth.YearStart.Replace(".",",")) : 0,
+                            YearEnd = x.BudgetItemMonth.YearEnd != null ? decimal.Parse(x.BudgetItemMonth.YearEnd.Replace(".",",")) : 0,
+                        }
+
+                    };
+                    li.Add(item);
+                }
+            }
+
+            budget.Items = li;
+            budget.AddedDate = DateTime.Now;
+            budget.IsDeleted = false;
+            budget.AddedBy = model.AddedBy;
+            budget.BudgetType = model.BudgetType;
+            budget.BudgetBy = model.BudgetBy;
+            budget.PropertyId = model.PropertyId;
+            budget.StartingMonth = model.StartingMonth;
+            budget.FiscalYear = model.FiscalYear;
+            budget.BudgetName = model.BudgetName;
+            budget.Period = model.Period;
+            budget.ReferenceData = model.ReferenceData;
+            budget.AccountingMethod = model.AccountingMethod;
+            budget.ShowReferenceData = model.ShowReferenceData;
+            await _db.Budgets.AddAsync(budget);
+            var result = await _db.SaveChangesAsync();
+
+            return result > 0;
+
+        }
+
+        public async Task<bool> SaveDuplicateBudgetAsync(BudgetDto model)
+        {
+            var budget = new Budget();
+
+            List<BudgetItem> li = new List<BudgetItem>();
+            try
+            {
+                var budgetItems = JsonConvert.DeserializeObject<List<BudgetItemDto>>(model.ItemsJson);
+                foreach (var x in budgetItems)
+                {
+                    if (x.Total != "Total" && x.AccountName != "AccountName")
+                    {
+                        BudgetItem item = new BudgetItem()
+                        {
+                            AccountName = x.AccountName,
+                            Total = decimal.Parse(x.Total.Replace(".", ",")),
+                            Period = x.Period,
+                            BudgetItemMonth = new BudgetItemMonth()
+                            {
+                                Jan = x.BudgetItemMonth.Jan != null ? decimal.Parse(x.BudgetItemMonth.Jan.Replace(".", ",")) : 0,
+                                Feb = x.BudgetItemMonth.Feb != null ? decimal.Parse(x.BudgetItemMonth.Feb.Replace(".", ",")) : 0,
+                                March = x.BudgetItemMonth.March != null ? decimal.Parse(x.BudgetItemMonth.March.Replace(".", ",")) : 0,
+                                April = x.BudgetItemMonth.April != null ? decimal.Parse(x.BudgetItemMonth.April.Replace(".", ",")) : 0,
+                                May = x.BudgetItemMonth.May != null ? decimal.Parse(x.BudgetItemMonth.May.Replace(".", ",")) : 0,
+                                June = x.BudgetItemMonth.June != null ? decimal.Parse(x.BudgetItemMonth.June.Replace(".", ",")) : 0,
+                                July = x.BudgetItemMonth.July != null ? decimal.Parse(x.BudgetItemMonth.July.Replace(".", ",")) : 0,
+                                Aug = x.BudgetItemMonth.Aug != null ? decimal.Parse(x.BudgetItemMonth.Aug.Replace(".", ",")) : 0,
+                                Sep = x.BudgetItemMonth.Sep != null ? decimal.Parse(x.BudgetItemMonth.Sep.Replace(".", ",")) : 0,
+                                Oct = x.BudgetItemMonth.Oct != null ? decimal.Parse(x.BudgetItemMonth.Oct.Replace(".", ",")) : 0,
+                                Nov = x.BudgetItemMonth.Nov != null ? decimal.Parse(x.BudgetItemMonth.Nov.Replace(".", ",")) : 0,
+                                Dec = x.BudgetItemMonth.Dec != null ? decimal.Parse(x.BudgetItemMonth.Dec.Replace(".", ",")) : 0,
+                                quat1 = x.BudgetItemMonth.quat1 != null ? decimal.Parse(x.BudgetItemMonth.quat1.Replace(".", ",")) : 0,
+                                quat2 = x.BudgetItemMonth.quat2 != null ? decimal.Parse(x.BudgetItemMonth.quat2.Replace(".", ",")) : 0,
+                                quat4 = x.BudgetItemMonth.quat4 != null ? decimal.Parse(x.BudgetItemMonth.quat4.Replace(".", ",")) : 0,
+                                quat5 = x.BudgetItemMonth.quat5 != null ? decimal.Parse(x.BudgetItemMonth.quat5.Replace(".", ",")) : 0,
+                                YearStart = x.BudgetItemMonth.YearStart != null ? decimal.Parse(x.BudgetItemMonth.YearStart.Replace(".", ",")) : 0,
+                                YearEnd = x.BudgetItemMonth.YearEnd != null ? decimal.Parse(x.BudgetItemMonth.YearEnd.Replace(".", ",")) : 0,
+                            }
+
+                        };
+                        li.Add(item);
+                    }
+                }
+
+                budget.Items = li;
+                budget.AddedDate = DateTime.Now;
+                budget.IsDeleted = false;
+                budget.AddedBy = model.AddedBy;
+                budget.BudgetType = model.BudgetType;
+                budget.BudgetBy = model.BudgetBy;
+                budget.PropertyId = model.PropertyId;
+                budget.StartingMonth = model.StartingMonth;
+                budget.FiscalYear = model.FiscalYear;
+                budget.BudgetName = model.BudgetName;
+                budget.Period = model.Period;
+                budget.ReferenceData = model.ReferenceData;
+                budget.AccountingMethod = model.AccountingMethod;
+                budget.ShowReferenceData = model.ShowReferenceData;
+                await _db.Budgets.AddAsync(budget);
+                var result = await _db.SaveChangesAsync();
+
+                return result > 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping Budget: {ex.Message}");
+                throw;
+            }
+
+        }
+
+        public async Task<bool> DeleteBudgetAsync(int id)
+        {
+            var budget = await _db.Budgets.FindAsync(id);
+            if (budget == null) return false;
+
+            budget.IsDeleted = true;
+            _db.Budgets.Update(budget);
+            var saveResult = await _db.SaveChangesAsync();
+
+            return saveResult > 0;
+        }
+
+        #endregion
     }
 }
