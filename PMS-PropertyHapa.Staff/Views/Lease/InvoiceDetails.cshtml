@@ -1,5 +1,5 @@
-﻿@using PMS_PropertyHapa.Models.Entities
-@model IEnumerable<Invoice>
+﻿@using PMS_PropertyHapa.Models.DTO
+@model IEnumerable<InvoiceDto>
 @{
     ViewData["Title"] = "InvoiceDetails";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -110,7 +110,7 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            @foreach (var item in Model?.OrderByDescending(x => x.InvoiceId) ?? Enumerable.Empty<Invoice>())
+                                                            @foreach (var item in Model?.OrderByDescending(x => x.InvoiceId) ?? Enumerable.Empty<InvoiceDto>())
                                                             {
                                                                 <tr>
                                                                     <td class="tableFontSize">@item.InvoiceCreatedDate?.ToString("MM/dd/yyyy")</td>

@@ -31,6 +31,10 @@ namespace PMS_PropertyHapa.API.Services
                 var tenant = await _db.Tenant.FirstOrDefaultAsync(x => x.TenantId == invoice.TenantId && x.IsDeleted != true);
                 var tenantEmail = tenant.EmailAddress;
                 var tenantName = tenant.FirstName + " " + tenant.LastName;
+                
+                var owner = await _db.Owner.FirstOrDefaultAsync(x => x.OwnerId == invoice.OwnerId && x.IsDeleted != true);
+                var ownerEmail = owner.EmailAddress;
+                var ownerName = owner.FirstName + " " + owner.LastName;
 
                 var propertyManager = await _userManager.FindByIdAsync(invoice.AddedBy);
                 var propertyManagerEmail = propertyManager.Email;
@@ -46,7 +50,7 @@ namespace PMS_PropertyHapa.API.Services
                 var emailSubject = "Invoice Generated";
 
                 // Sending email to both tenant and property manager
-                var recipients = $"{tenantEmail},{propertyManagerEmail}";
+                var recipients = $"{tenantEmail},{propertyManagerEmail}.{ownerEmail}";
                 await _emailSender.SendEmailAsync(recipients, emailSubject, emailContent);
 
                 //await _emailSender.SendEmailAsync(user.Email, Subject, emailContent);
@@ -67,21 +71,25 @@ namespace PMS_PropertyHapa.API.Services
                 var tenantEmail = tenant.EmailAddress;
                 var tenantName = tenant.FirstName + " " + tenant.LastName;
 
+                var owner = await _db.Owner.FirstOrDefaultAsync(x => x.OwnerId == invoice.OwnerId && x.IsDeleted != true);
+                var ownerEmail = owner.EmailAddress;
+                var ownerName = owner.FirstName + " " + owner.LastName;
+
                 var propertyManager = await _userManager.FindByIdAsync(invoice.AddedBy);
                 var propertyManagerEmail = propertyManager.Email;
                 var propertyManagerName = propertyManager.Name;
 
                 var emailContent = $@"
-            <p>Dear {tenantName},</p>
-            <p>This is a reminder that the invoice dated {invoice.InvoiceDate.Value.ToString("yyyy-MM-dd")} is due.</p>
-            <p>Please make the payment at your earliest convenience.</p>
-            <p>Thank you,</p>
-            <p>{propertyManagerName}</p>
-            ";
+                    <p>Dear {tenantName},</p>
+                    <p>This is a reminder that the invoice dated {invoice.InvoiceDate.Value.ToString("yyyy-MM-dd")} is due.</p>
+                    <p>Please make the payment at your earliest convenience.</p>
+                    <p>Thank you,</p>
+                    <p>{propertyManagerName}</p>
+                    ";
 
                 var emailSubject = "Invoice Payment Reminder";
 
-                var recipients = $"{tenantEmail},{propertyManagerEmail}";
+                var recipients = $"{tenantEmail},{propertyManagerEmail}.{ownerEmail}";
                 await _emailSender.SendEmailAsync(recipients, emailSubject, emailContent);
 
             }

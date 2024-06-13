@@ -1947,7 +1947,7 @@ namespace MagicVilla_VillaAPI.Repository
                     totalRentAmount += leaseDto.FeeCharges.Sum(fc => fc.Amount);
                 }
 
-                //var ownerName = await _db.Assets.FirstOrDefaultAsync(x => x.AssetId == leaseDto.PropertyId).OwnerId;
+                var assest = await _db.Assets.FirstOrDefaultAsync(x => x.AssetId == leaseDto.PropertyId);
 
                 if (leaseDto.IsMonthToMonth)
                 {
@@ -1957,11 +1957,9 @@ namespace MagicVilla_VillaAPI.Repository
                         var newInvoice = new Invoice
                         {
                             LeaseId = maxLeaseId,
-                            //OwnerId = leaseDto.OwnerId,
-                            OwnerName = "Test",
+                            OwnerId = assest.OwnerId,
                             InvoiceCreatedDate = DateTime.Now,
                             TenantId = leaseDto.TenantId,
-                            TenantName = leaseDto.TenantIdValue,
                             RentAmount = totalRentAmount,
                             AddedBy = leaseDto.AddedBy,
                             AddedDate = DateTime.Now,
@@ -1977,11 +1975,9 @@ namespace MagicVilla_VillaAPI.Repository
                     var newInvoice = new Invoice
                     {
                         LeaseId = maxLeaseId,
-                        //OwnerId = leaseDto.OwnerId,
-                        OwnerName = "Test",
+                        OwnerId = assest.OwnerId,
                         InvoiceCreatedDate = DateTime.Now,
                         TenantId = leaseDto.TenantId,
-                        TenantName = leaseDto.TenantIdValue,
                         RentAmount = totalRentAmount,
                         AddedBy = leaseDto.AddedBy,
                         AddedDate = DateTime.Now,
@@ -2255,6 +2251,7 @@ namespace MagicVilla_VillaAPI.Repository
                     }
                 }
 
+                var assest = await _db.Assets.FirstOrDefaultAsync(x => x.AssetId == leaseDto.PropertyId);
                 var oldInvoices = await _db.Invoices.Where(x => x.LeaseId == leaseDto.LeaseId).ToListAsync();
 
                     oldInvoices.ForEach(x => x.IsDeleted = true);
@@ -2285,11 +2282,9 @@ namespace MagicVilla_VillaAPI.Repository
                         var newInvoice = new Invoice
                         {
                             LeaseId = leaseDto.LeaseId,
-                            //OwnerId = leaseDto.OwnerId,
-                            OwnerName = "Test up",
+                            OwnerId = assest.OwnerId,
                             InvoiceCreatedDate = DateTime.Now,
                             TenantId = leaseDto.TenantId,
-                            TenantName = leaseDto.TenantIdValue,
                             RentAmount = totalRentAmount,
                             AddedBy = leaseDto.AddedBy,
                             AddedDate = DateTime.Now,
@@ -2305,11 +2300,9 @@ namespace MagicVilla_VillaAPI.Repository
                     var newInvoice = new Invoice
                     {
                         LeaseId = leaseDto.LeaseId,
-                        //OwnerId = leaseDto.OwnerId,
-                        OwnerName = "Test up",
+                        OwnerId = assest.OwnerId,
                         InvoiceCreatedDate = DateTime.Now,
                         TenantId = leaseDto.TenantId,
-                        TenantName = leaseDto.TenantIdValue,
                         RentAmount = totalRentAmount,
                         AddedBy = leaseDto.AddedBy,
                         AddedDate = DateTime.Now,
@@ -2408,17 +2401,52 @@ namespace MagicVilla_VillaAPI.Repository
 
 
         //Inovices
-        public async Task<List<Invoice>> GetInvoicesAsync(int leaseId)
+        public async Task<List<InvoiceDto>> GetInvoicesAsync(int leaseId)
         {
-            var invoices = await _db.Invoices.Where(l => l.LeaseId == leaseId && l.IsDeleted != true).ToListAsync();
+            var invoices = await (from i in _db.Invoices
+                                  from t in _db.Tenant.Where(x => x.TenantId == i.TenantId).DefaultIfEmpty()
+                                  from o in _db.Owner.Where(x => x.OwnerId == i.OwnerId).DefaultIfEmpty()
+                                  where i.LeaseId == leaseId && i.IsDeleted != true
+                                  select new InvoiceDto
+                                  {
+                                      InvoiceId = i.InvoiceId,
+                                      OwnerId = i.OwnerId,
+                                      OwnerName = o.FirstName + " " + o.LastName,
+                                      TenantId = i.TenantId,
+                                      TenantName = t.FirstName + " " + t.LastName,
+                                      InvoiceCreatedDate = i.InvoiceCreatedDate,
+                                      InvoicePaid = i.InvoicePaid,
+                                      RentAmount = i.RentAmount,
+                                      LeaseId = i.LeaseId,
+                                      InvoiceDate = i.InvoiceDate,
+                                      InvoicePaidToOwner = i.InvoicePaidToOwner,
+                                      AddedBy = i.AddedBy,
+                                  }).ToListAsync();
 
             return invoices;
         }  
         
-        public async Task<Invoice> GetInvoiceByIdAsync(int invoiceId)
+        public async Task<InvoiceDto> GetInvoiceByIdAsync(int invoiceId)
         {
-            var invoice = await _db.Invoices.FirstOrDefaultAsync(l => l.InvoiceId == invoiceId && l.IsDeleted != true);
-
+            var invoice = await (from i in _db.Invoices
+                                  from t in _db.Tenant.Where(x => x.TenantId == i.TenantId).DefaultIfEmpty()
+                                  from o in _db.Owner.Where(x => x.OwnerId == i.OwnerId).DefaultIfEmpty()
+                                  where i.InvoiceId == invoiceId && i.IsDeleted != true
+                                  select new InvoiceDto
+                                  {
+                                      InvoiceId = i.InvoiceId,
+                                      OwnerId = i.OwnerId,
+                                      OwnerName = o.FirstName + " " + o.LastName,
+                                      TenantId = i.TenantId,
+                                      TenantName = t.FirstName + " " + t.LastName,
+                                      InvoiceCreatedDate = i.InvoiceCreatedDate,
+                                      InvoicePaid = i.InvoicePaid,
+                                      RentAmount = i.RentAmount,
+                                      LeaseId = i.LeaseId,
+                                      InvoiceDate = i.InvoiceDate,
+                                      InvoicePaidToOwner = i.InvoicePaidToOwner,
+                                      AddedBy = i.AddedBy,
+                                  }).FirstOrDefaultAsync();
             return invoice;
         }
 
@@ -2453,7 +2481,6 @@ namespace MagicVilla_VillaAPI.Repository
             return result > 0;
         }
         
-        
         public async Task<bool> InvoiceOwnerPaidAsync(int invoiceId)
         {
             var invoice = await _db.Invoices.FirstOrDefaultAsync(t => t.InvoiceId == invoiceId);
@@ -2463,7 +2490,6 @@ namespace MagicVilla_VillaAPI.Repository
             var result = await _db.SaveChangesAsync();
             return result > 0;
         }
-
 
         public async Task<bool> DeleteOwnerAsync(string ownerId)
         {
@@ -2626,7 +2652,7 @@ namespace MagicVilla_VillaAPI.Repository
 
         public async Task<bool> CreateAssetAsync(AssetDTO assetDTO)
         {
-            var user = await _userManager.FindByIdAsync(assetDTO.AddedBy);
+            var user = await _db.ApplicationUsers.FirstOrDefaultAsync(x => x.Id == assetDTO.AddedBy);
             if (user != null)
             {
                 var subscription = await _db.Subscriptions.FirstOrDefaultAsync(x => x.Id == user.SubscriptionId);
@@ -2646,29 +2672,40 @@ namespace MagicVilla_VillaAPI.Repository
 
             }
 
-            var existingOwner = await _db.Owner.FirstOrDefaultAsync(o => o.EmailAddress == assetDTO.OwnerEmail);
-            if (existingOwner == null)
+            if (assetDTO.SelectedOwnershipOption == "owned-by-me")
             {
 
-                existingOwner = new Owner
+                var existingOwner = await _db.Owner.FirstOrDefaultAsync(o => o.EmailAddress == user.Email);
+                if (existingOwner == null)
                 {
-                    FirstName = assetDTO.OwnerFirstName,
-                    LastName = assetDTO.OwnerLastName,
-                    EmailAddress = assetDTO.OwnerEmail,
-                    Address = assetDTO.OwnerAddress,
-                    District = assetDTO.OwnerDistrict,
-                    Region = assetDTO.OwnerRegion,
-                    CountryCode = assetDTO.OwnerCountryCode,
-                    Country = assetDTO.OwnerCountry,
-                    AppTenantId = Guid.Parse(assetDTO.AppTid),
-                    Picture = assetDTO.OwnerImage
+                    bool isValidGuid = Guid.TryParse(user.Id, out Guid userIdGuid);
+                    var tenantOrganization = await _db.TenantOrganizationInfo.AsNoTracking().FirstOrDefaultAsync(to => to.TenantUserId == userIdGuid);
+                    existingOwner = new Owner
+                    {
+                        FirstName = user.FirstName,
+                        LastName = user.LastName,
+                        EmailAddress = user.Email,
+                        Address = user.Address,
+                        District = user.District,
+                        Region = user.Region,
+                        Country = user.Country,
+                        PostalCode= user.PostalCode,
+                        AppTenantId = Guid.Parse(assetDTO.AppTid),
+                        Picture = tenantOrganization.OrganizationLogo,
+                        AddedDate= DateTime.Now,
+                        AddedBy = assetDTO.AddedBy
 
-                };
-                await _db.Owner.AddAsync(existingOwner);
+                    };
+                    await _db.Owner.AddAsync(existingOwner);
+                    await _db.SaveChangesAsync();
+                }
+
+                assetDTO.OwnerId = existingOwner.OwnerId;
             }
 
             var newAsset = new Assets
             {
+                OwnerId = assetDTO.OwnerId,
                 SelectedPropertyType = assetDTO.SelectedPropertyType,
                 SelectedBankAccountOption = assetDTO.SelectedBankAccountOption,
                 SelectedReserveFundsOption = assetDTO.SelectedReserveFundsOption,
@@ -2710,24 +2747,36 @@ namespace MagicVilla_VillaAPI.Repository
 
         public async Task<bool> UpdateAssetAsync(AssetDTO assetDTO)
         {
-            var existingOwner = await _db.Owner.FirstOrDefaultAsync(o => o.EmailAddress == assetDTO.OwnerEmail);
-            if (existingOwner == null)
-            {
 
-                existingOwner = new Owner
+            if (assetDTO.SelectedOwnershipOption == "owned-by-me")
+            {
+                var user = await _db.ApplicationUsers.FirstOrDefaultAsync(x => x.Id == assetDTO.AddedBy);
+                var existingOwner = await _db.Owner.FirstOrDefaultAsync(o => o.EmailAddress == user.Email);
+                if (existingOwner == null)
                 {
-                    FirstName = assetDTO.OwnerFirstName,
-                    LastName = assetDTO.OwnerLastName,
-                    EmailAddress = assetDTO.OwnerEmail,
-                    Address = assetDTO.OwnerAddress,
-                    District = assetDTO.OwnerDistrict,
-                    Region = assetDTO.OwnerRegion,
-                    CountryCode = assetDTO.OwnerCountryCode,
-                    Country = assetDTO.OwnerCountry,
-                    AppTenantId = Guid.Parse(assetDTO.AppTid),
-                    Picture = assetDTO.OwnerImage
-                };
-                await _db.Owner.AddAsync(existingOwner);
+                    bool isValidGuid = Guid.TryParse(user.Id, out Guid userIdGuid);
+                    var tenantOrganization = await _db.TenantOrganizationInfo.AsNoTracking().FirstOrDefaultAsync(to => to.TenantUserId == userIdGuid);
+                    existingOwner = new Owner
+                    {
+                        FirstName = user.FirstName,
+                        LastName = user.LastName,
+                        EmailAddress = user.Email,
+                        Address = user.Address,
+                        District = user.District,
+                        Region = user.Region,
+                        Country = user.Country,
+                        PostalCode = user.PostalCode,
+                        AppTenantId = Guid.Parse(assetDTO.AppTid),
+                        Picture = tenantOrganization.OrganizationLogo,
+                        AddedDate = DateTime.Now,
+                        AddedBy = assetDTO.AddedBy
+
+                    };
+                    await _db.Owner.AddAsync(existingOwner);
+                    await _db.SaveChangesAsync();
+                }
+
+                assetDTO.OwnerId = existingOwner.OwnerId;
             }
 
 
@@ -2737,6 +2786,7 @@ namespace MagicVilla_VillaAPI.Repository
                 return false;
             }
 
+            existingAsset.OwnerId = assetDTO.OwnerId;
             existingAsset.SelectedPropertyType = assetDTO.SelectedPropertyType;
             existingAsset.SelectedBankAccountOption = assetDTO.SelectedBankAccountOption;
             existingAsset.SelectedReserveFundsOption = assetDTO.SelectedReserveFundsOption;
@@ -5033,5 +5083,273 @@ namespace MagicVilla_VillaAPI.Repository
         }
 
         #endregion
+
+
+
+        #region Reports
+
+        public async Task<List<LeaseReportDto>> GetLeaseReportAsync(ReportFilter reportFilter)
+        {
+            try
+            {
+                var leasesWithProperties = await (from l in _db.Lease
+                                                  join p in _db.Assets on l.PropertyId equals p.AssetId into properties
+                                                  from p in properties.DefaultIfEmpty()
+                                                  where l.IsDeleted != true && (p == null || p.IsDeleted != true)
+                                                  select new
+                                                  {
+                                                      l.LeaseId,
+                                                      l.StartDate,
+                                                      l.EndDate,
+                                                      l.Status,
+                                                      PropertyId = (int?)p.AssetId,
+                                                      Property = p != null ? p.BuildingNo + " - " + p.BuildingName : null,
+                                                      l.SelectedUnit
+                                                  }).ToListAsync();
+
+
+                var rentCharges = await _db.RentCharge
+                          .GroupBy(rc => rc.LeaseId)
+                          .Select(g => new
+                          {
+                              LeaseId = g.Key,
+                              TotalRentCharges = g.Sum(x => x.Amount)
+                          }).ToListAsync();
+
+                var leaseReportDtoList = (from l in leasesWithProperties
+                                          join rc in rentCharges on l.LeaseId equals rc.LeaseId into leaseRentCharges
+                                          from rc in leaseRentCharges.DefaultIfEmpty()
+                                          select new LeaseReportDto
+                                          {
+                                              Lease = l.LeaseId.ToString(),
+                                              StartDate = l.StartDate,
+                                              EndDate = l.EndDate,
+                                              Status = l.Status,
+                                              PropertyId = l.PropertyId,
+                                              Property = l.Property,
+                                              Unit = l.SelectedUnit,
+                                              RentCharges = rc != null ? rc.TotalRentCharges : 0
+                                          }).ToList();
+
+                if (reportFilter.PropertiesIds.Count() > 0 && reportFilter.PropertiesIds.Any())
+                {
+                    leaseReportDtoList = leaseReportDtoList.Where(x => reportFilter.PropertiesIds.Contains(x.PropertyId)).ToList();
+                }
+
+                if (reportFilter.LeaseStartDateFilter != null && reportFilter.LeaseEndDateFilter != null)
+                {
+                    leaseReportDtoList = leaseReportDtoList
+                        .Where(x => x.StartDate >= reportFilter.LeaseStartDateFilter && x.EndDate <= reportFilter.LeaseEndDateFilter)
+                        .ToList();
+                }
+
+
+                return leaseReportDtoList;
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping Leases: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<List<InvoiceReportDto>> GetInvoiceReportAsync(ReportFilter reportFilter)
+        {
+            try
+            {
+                var invoiceReportDtoList = await (from i in _db.Invoices
+                                                  from l in _db.Lease.Where(x => x.LeaseId == i.LeaseId).DefaultIfEmpty()
+                                                  join p in _db.Assets on l.PropertyId equals p.AssetId into properties
+                                                  from p in properties.DefaultIfEmpty()
+                                                  where i.IsDeleted != true && (p == null || p.IsDeleted != true)
+                                                  select new
+                                                  {
+                                                      i.InvoiceId,
+                                                      l.LeaseId,
+                                                      l.StartDate,
+                                                      l.EndDate,
+                                                      i.InvoiceDate,
+                                                      i.Status,
+                                                      PropertyId = (int?)p.AssetId,
+                                                      Property = p != null ? p.BuildingNo + " - " + p.BuildingName : null,
+                                                      l.SelectedUnit
+                                                  }).ToListAsync();
+
+                var invoiceRentCharges = await (from rc in _db.RentCharge
+                                                group rc by rc.LeaseId into g
+                                                select new
+                                                {
+                                                    LeaseId = g.Key,
+                                                    TotalRentCharges = g.Sum(x => x.Amount)
+                                                }).ToListAsync();
+
+                var invoiceReportDtoListWithCharges = (from i in invoiceReportDtoList
+                                                       from rc in invoiceRentCharges.Where(x=>x.LeaseId == i.LeaseId).DefaultIfEmpty()
+                                                       select new InvoiceReportDto
+                                                       {
+                                                           Invoice = i.InvoiceId.ToString(),
+                                                           StartDate = i.StartDate,
+                                                           EndDate = i.EndDate,
+                                                           Status = i.Status,
+                                                           PropertyId = i.PropertyId,
+                                                           Property = i.Property,
+                                                           Unit = i.SelectedUnit,
+                                                           InvoiceDate = i.InvoiceDate,
+                                                           RentCharges = rc != null ? rc.TotalRentCharges : 0
+                                                       }).ToList();
+
+                if (reportFilter.PropertiesIds.Count() > 0 && reportFilter.PropertiesIds.Any())
+                {
+                    invoiceReportDtoListWithCharges = invoiceReportDtoListWithCharges
+                        .Where(x => reportFilter.PropertiesIds.Contains(x.PropertyId))
+                        .ToList();
+                }
+
+                if (reportFilter.LeaseStartDateFilter != null && reportFilter.LeaseEndDateFilter != null)
+                {
+                    invoiceReportDtoListWithCharges = invoiceReportDtoListWithCharges
+                        .Where(x => x.StartDate >= reportFilter.LeaseStartDateFilter && x.EndDate <= reportFilter.LeaseEndDateFilter)
+                        .ToList();
+                }
+
+
+                if (reportFilter.InvoiceStartDateFilter != null && reportFilter.InvoiceEndDateFilter != null)
+                {
+                    invoiceReportDtoListWithCharges = invoiceReportDtoListWithCharges
+                        .Where(x => x.InvoiceDate >= reportFilter.InvoiceStartDateFilter && x.InvoiceDate <= reportFilter.InvoiceEndDateFilter)
+                        .ToList();
+                }
+
+                return invoiceReportDtoListWithCharges;
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping Invoices: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<List<TaskRequestReportDto>> GetTaskRequestReportAsync(ReportFilter reportFilter)
+        {
+            try
+            {
+                var taskRequestReports = await (from t in _db.TaskRequest
+                                                join p in _db.Assets on t.AssetId equals p.AssetId into properties
+                                                from p in properties.DefaultIfEmpty()
+                                                where t.IsDeleted != true && (p == null || p.IsDeleted != true)
+                                                select new TaskRequestReportDto
+                                                {
+                                                    Task = t.Subject,
+                                                    DueDate = t.DueDate,
+                                                    StartDate = t.StartDate,
+                                                    EndDate = t.EndDate,
+                                                    PropertyId = p.AssetId,
+                                                    Property = p != null ? p.BuildingNo + " - " + p.BuildingName : null,
+                                                    Status = t.Status 
+                                                }).ToListAsync();
+
+                // Apply filters
+                if (reportFilter.PropertiesIds != null && reportFilter.PropertiesIds.Any())
+                {
+                    taskRequestReports = taskRequestReports
+                        .Where(x => reportFilter.PropertiesIds.Contains(x.PropertyId))
+                        .ToList();
+                }
+
+                if (reportFilter.TaskStartDateFilter != null && reportFilter.TaskEndDateFilter != null)
+                {
+                    taskRequestReports = taskRequestReports
+                        .Where(x => x.StartDate >= reportFilter.TaskStartDateFilter && x.EndDate <= reportFilter.TaskEndDateFilter)
+                        .ToList();
+                }
+
+                if (reportFilter.TaskDueStartDateFilter != null && reportFilter.TaskDueEndDateFilter != null)
+                {
+                    taskRequestReports = taskRequestReports
+                        .Where(x => x.DueDate >= reportFilter.TaskDueStartDateFilter && x.DueDate <= reportFilter.TaskDueEndDateFilter)
+                        .ToList();
+                }
+
+
+                return taskRequestReports;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping Task Requests: {ex.Message}");
+                throw;
+            }
+        }
+
+
+        //public async Task<List<TaskRequestReportDto>> GetTaskRequestReportAsync(ReportFilter reportFilter)
+        //{
+        //    try
+        //    {
+        //        var tasksWithProperties = await (from t in _db.TaskRequest
+        //                                          join p in _db.Assets on t.PropertyId equals p.AssetId into properties
+        //                                          from p in properties.DefaultIfEmpty()
+        //                                          where l.IsDeleted != true && (p == null || p.IsDeleted != true)
+        //                                          select new
+        //                                          {
+        //                                              l.LeaseId,
+        //                                              l.StartDate,
+        //                                              l.EndDate,
+        //                                              l.Status,
+        //                                              PropertyId = (int?)p.AssetId,
+        //                                              Property = p != null ? p.BuildingNo + " - " + p.BuildingName : null,
+        //                                              l.SelectedUnit
+        //                                          }).ToListAsync();
+
+
+        //        var rentCharges = await _db.RentCharge
+        //                  .GroupBy(rc => rc.LeaseId)
+        //                  .Select(g => new
+        //                  {
+        //                      LeaseId = g.Key,
+        //                      TotalRentCharges = g.Sum(x => x.Amount)
+        //                  }).ToListAsync();
+
+        //        var leaseReportDtoList = (from l in leasesWithProperties
+        //                                  join rc in rentCharges on l.LeaseId equals rc.LeaseId into leaseRentCharges
+        //                                  from rc in leaseRentCharges.DefaultIfEmpty()
+        //                                  select new LeaseReportDto
+        //                                  {
+        //                                      Lease = l.LeaseId.ToString(),
+        //                                      StartDate = l.StartDate,
+        //                                      EndDate = l.EndDate,
+        //                                      Status = l.Status,
+        //                                      PropertyId = l.PropertyId,
+        //                                      Property = l.Property,
+        //                                      Unit = l.SelectedUnit,
+        //                                      RentCharges = rc != null ? rc.TotalRentCharges : 0
+        //                                  }).ToList();
+
+        //        if (reportFilter.PropertiesIds.Count() > 0 && reportFilter.PropertiesIds.Any())
+        //        {
+        //            leaseReportDtoList = leaseReportDtoList.Where(x => reportFilter.PropertiesIds.Contains(x.PropertyId)).ToList();
+        //        }
+
+        //        if (reportFilter.LeaseStartDateFilter != null && reportFilter.LeaseEndDateFilter != null)
+        //        {
+        //            leaseReportDtoList = leaseReportDtoList
+        //                .Where(x => x.StartDate >= reportFilter.LeaseStartDateFilter && x.EndDate <= reportFilter.LeaseEndDateFilter)
+        //                .ToList();
+        //        }
+
+
+        //        return leaseReportDtoList;
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine($"An error occurred while mapping Leases: {ex.Message}");
+        //        throw;
+        //    }
+        //}
+
+        #endregion
+
     }
 }

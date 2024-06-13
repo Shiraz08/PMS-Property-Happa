@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PMS_PropertyHapa.MigrationsFiles.Data;
 
@@ -11,9 +12,10 @@ using PMS_PropertyHapa.MigrationsFiles.Data;
 namespace PMS_PropertyHapa.MigrationsFiles.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    partial class ApiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240610211619_added_OwnerId_In_Asset_Tbl")]
+    partial class added_OwnerId_In_Asset_Tbl
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1168,6 +1170,9 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
                     b.Property<int?>("OwnerId")
                         .HasColumnType("int");
 
+                    b.Property<string>("OwnerName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<decimal>("RentAmount")
                         .HasColumnType("decimal(18,2)");
 
@@ -1176,6 +1181,9 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
 
                     b.Property<int?>("TenantId")
                         .HasColumnType("int");
+
+                    b.Property<string>("TenantName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("InvoiceId");
 

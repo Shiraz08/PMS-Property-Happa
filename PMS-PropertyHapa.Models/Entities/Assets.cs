@@ -11,6 +11,7 @@ namespace PMS_PropertyHapa.Models.Entities
     {
         [Key]
         public int AssetId { get; set; }
+        public int OwnerId { get; set; }
         public string SelectedPropertyType { get; set; }
         public string SelectedSubtype { get; set; }
         public string BuildingNo { get; set; }
@@ -28,13 +29,6 @@ namespace PMS_PropertyHapa.Models.Entities
         public string SelectedReserveFundsOption { get; set; }
         public string SelectedOwnershipOption { get; set; }
 
-        public string OwnerName { get; set; }
-        public string OwnerCompanyName { get; set; }
-        public string OwnerAddress { get; set; }
-        public string OwnerStreet { get; set; }
-        public string OwnerZipcode { get; set; }
-        public string OwnerCity { get; set; }
-        public string OwnerCountry { get; set; }
 
         public string AppTenantId { get; set; }
         public virtual ICollection<TaskRequest> TaskRequest { get; set; }

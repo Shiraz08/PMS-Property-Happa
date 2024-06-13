@@ -41,6 +41,7 @@ namespace PMS_PropertyHapa.Models.DTO
         public string SelectedReserveFundsOption { get; set; }
         public string SelectedOwnershipOption { get; set; }
 
+        public int OwnerId { get; set; }
         public string OwnerFirstName { get; set; }
         public string OwnerLastName { get; set; }
         public string OwnerEmail { get; set; }

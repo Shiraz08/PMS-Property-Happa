@@ -200,17 +200,12 @@
 <script>
 
     function validateForm() {
-    // Get the radio buttons
     const radios = document.getElementsByName('period');
-    
-    // Check if any radio button is selected
     for (let i = 0; i < radios.length; i++) {
         if (radios[i].checked) {
-            return true; // If one is selected, return true to allow form submission
+            return true; 
         }
     }
-    
-    // If no radio button is selected, show an alert and prevent form submission
        toastr.warning('Please select a period before submitting the form.');
     return false;
 }

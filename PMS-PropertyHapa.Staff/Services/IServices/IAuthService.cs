@@ -111,12 +111,12 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
 
 
         // Invoices 
-        Task<List<Invoice>> GetInvoicesAsync(int leaseId);
+        Task<List<InvoiceDto>> GetInvoicesAsync(int leaseId);
         Task<bool> AllInvoicePaidAsync(int leaseId);
         Task<bool> AllInvoiceOwnerPaidAsync(int leaseId);
         Task<bool> InvoicePaidAsync(int invoiceId);
         Task<bool> InvoiceOwnerPaidAsync(int invoiceId);
-        Task<Invoice> GetInvoiceByIdAsync(int invoiceId);
+        Task<InvoiceDto> GetInvoiceByIdAsync(int invoiceId);
 
 
 
@@ -210,6 +210,13 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
         Task<bool> SaveBudgetAsync(BudgetDto budget);
         Task<bool> SaveDuplicateBudgetAsync(BudgetDto budget);
         Task<bool> DeleteBudgetAsync(int id);
+        #endregion
+        
+        #region Reports
+
+        Task<IEnumerable<LeaseReportDto>> GetLeaseReports(ReportFilter reportFilter);
+        Task<IEnumerable<InvoiceReportDto>> GetInvoiceReports(ReportFilter reportFilter);
+        Task<IEnumerable<TaskRequestReportDto>> GetTaskRequestReports(ReportFilter reportFilter);
         #endregion
     }
 }

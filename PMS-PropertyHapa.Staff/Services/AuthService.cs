@@ -1092,7 +1092,7 @@ namespace PMS_PropertyHapa.Staff.Services
         }
 
         //Invoices
-        public async Task<List<Invoice>> GetInvoicesAsync(int leaseId)
+        public async Task<List<InvoiceDto>> GetInvoicesAsync(int leaseId)
         {
             try
             {
@@ -1104,7 +1104,7 @@ namespace PMS_PropertyHapa.Staff.Services
 
                 if (response.IsSuccess && response.Result != null)
                 {
-                    return JsonConvert.DeserializeObject<List<Invoice>>(Convert.ToString(response.Result));
+                    return JsonConvert.DeserializeObject<List<InvoiceDto>>(Convert.ToString(response.Result));
                 }
                 return null;
             }
@@ -1186,7 +1186,7 @@ namespace PMS_PropertyHapa.Staff.Services
             }
         }
 
-        public async Task<Invoice> GetInvoiceByIdAsync(int invoiceId)
+        public async Task<InvoiceDto> GetInvoiceByIdAsync(int invoiceId)
         {
             try
             {
@@ -1198,7 +1198,7 @@ namespace PMS_PropertyHapa.Staff.Services
 
                 if (response.IsSuccess && response.Result != null)
                 {
-                    return JsonConvert.DeserializeObject<Invoice>(Convert.ToString(response.Result));
+                    return JsonConvert.DeserializeObject<InvoiceDto>(Convert.ToString(response.Result));
                 }
                 return null;
             }
@@ -2075,6 +2075,77 @@ namespace PMS_PropertyHapa.Staff.Services
             catch (Exception ex)
             {
                 throw new Exception($"An error occurred when deleting budget: {ex.Message}", ex);
+            }
+        }
+        #endregion
+
+        #region Report
+
+        
+
+        public async Task<IEnumerable<LeaseReportDto>> GetLeaseReports(ReportFilter reportFilter)
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Data = reportFilter,
+                Url = $"{villaUrl}/api/v1/ReportsAuth/LeaseReport"
+            });
+
+            if (response.IsSuccess == true)
+            {
+                var userListJson = Convert.ToString(response.Result);
+                var asset = JsonConvert.DeserializeObject<IEnumerable<LeaseReportDto>>(userListJson);
+                return asset;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve Lease data");
+            }
+        }
+
+        public async Task<IEnumerable<InvoiceReportDto>> GetInvoiceReports(ReportFilter reportFilter)
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Data = reportFilter,
+                Url = $"{villaUrl}/api/v1/ReportsAuth/InvoiceReport"
+            });
+
+            if (response.IsSuccess == true)
+            {
+                var userListJson = Convert.ToString(response.Result);
+                var asset = JsonConvert.DeserializeObject<IEnumerable<InvoiceReportDto>>(userListJson);
+                return asset;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve Invoice data");
+            }
+        }
+
+        public async Task<IEnumerable<TaskRequestReportDto>> GetTaskRequestReports(ReportFilter reportFilter)
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Data = reportFilter,
+                Url = $"{villaUrl}/api/v1/ReportsAuth/TaskReport"
+            });
+
+            if (response.IsSuccess == true)
+            {
+                var userListJson = Convert.ToString(response.Result);
+                var asset = JsonConvert.DeserializeObject<IEnumerable<TaskRequestReportDto>>(userListJson);
+                return asset;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve Task Request data");
             }
         }
         #endregion

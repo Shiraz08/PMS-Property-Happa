@@ -3,152 +3,220 @@
     ViewData["Title"] = "LeaseReports";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
+
+<!-- Page Sidebar Ends-->
 <div class="page-body">
     <div class="container-fluid">
         <div class="page-title">
             <div class="row">
-                <div class="col-12">
-                    <h3>Coming Soon</h3>
+                <div class="col-12 col-sm-6">
+                    <h3>Lease Report</h3>
+                </div>
+                <div class="col-12 col-sm-6">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a class="home-item" href="index.html"><i data-feather="home"></i></a></li>
-                        <li class="breadcrumb-item">Coming Soon</li>
-                        <li class="breadcrumb-item active">Coming Soon</li>
+                        <li class="breadcrumb-item"><a href="index.html"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item">Lease</li>
+                        <li class="breadcrumb-item active">List</li>
                     </ol>
                 </div>
             </div>
         </div>
     </div>
-    <div class="container-fluid">
+
+    <div class="container-fluid my-4">
         <div class="row">
-            <div class="col-12">
+            <!-- Column 1: Properties Table (80% on lg screens) -->
+            <div class="col-12 col-md-12 mb-4">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h4 class="card-title">
-                            Coming Soon
-                        </h4>
+                        <h4 class="card-title mb-0 flex-grow-1 font-weight-bold">Filters</h4>
+                        @* <a href="@Url.Action("OccupancyOverview","Calendar")" class="btn btn-primary">Occupancy Overview</a> *@
+                    </div>
+                    <div class="card-body">
+                        <div class="row mt-1 d-flex">
+                            <div class="col-lg-4 col-md-6">
+                                <div class="row">
+                                    <label class="col-sm-12 mb-0 font-weight-bold">Property</label>
+                                    <div col-sm-12>
+                                        <select id="reportPropertyFilter" multiple name="reportPropertyFilter" class="form-control select2"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-6">
+                                <div class="row">
+                                    <label class="col-sm-12 mb-0 font-weight-bold">MoveIn/MoveOut Date</label>
+                                    <div class="col-sm-12">
+                                        <input type="text" class="form-control" id="createdAtRange" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer text-end d-flex justify-content-end">
+                        <button onclick="clearFilters()" type="button" class="btn btn-light mr-2 font-weight-bold" style="padding-left: 2.75rem  !important; padding-right: 2.75rem  !important;">Clear</button>
+                        <button onclick="applyFilters()" type="button" class="btn btn-primary font-weight-bold" style="padding-left: 2.75rem  !important; padding-right: 2.75rem  !important;">Apply</button>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table" id="grouproles">
+                            <table class="table" id="leaseReportsTbl">
                                 <thead>
                                     <tr>
-                                        <th style="width:290px!Important;text-align:center">.........</th>
-                                        <th style="width:290px!Important;text-align:center">.........</th>
-                                        <th style="width:290px!Important;text-align:center">Action</th>
+                                        <th scope="col" class="tableHeaderbg">Lease</th>
+                                        <th scope="col" class="tableHeaderbg">Start Date</th>
+                                        <th scope="col" class="tableHeaderbg">End Date</th>
+                                        <th scope="col" class="tableHeaderbg">Status</th>
+                                        <th scope="col" class="tableHeaderbg">Property</th>
+                                        <th scope="col" class="tableHeaderbg">Unit</th>
+                                        <th scope="col" class="tableHeaderbg">Rent Charges</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                        <td style="text-align:center">.........</td>
-                                    </tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 </div>
+
+ <script>
+    var propertiesIdsList = [];
+    var leaseStartDateFilter = null;
+    var leaseEndDateFilter = null;
+
+    $(document).ready(function () {
+        initDatePickers();
+        populateDropDowns();
+        loadLeaseDataTable();
+    });
+
+    var initDatePickers = function () {
+        $('#createdAtRange').daterangepicker({
+            autoUpdateInput: false,
+            locale: {
+                format: 'MM/DD/YYYY',
+                cancelLabel: 'Clear'
+            },
+            timePicker: false,
+            startDate: moment().subtract(30, 'days'),
+            endDate: moment().add(1, 'days')
+        });
+
+        $('#createdAtRange').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+        });
+
+        $('#createdAtRange').on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('');
+        });
+    };
+
+    function populateDropDowns() {
+        $.ajax({
+            url: '@Url.Action("GetProperties", "Communication")',
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                var vendorPropertyDropdown = document.getElementById('reportPropertyFilter');
+                // vendorPropertyDropdown.innerHTML = ''; // Clear existing options
+                data.forEach(function (item) {
+                    var option = new Option(item.BuildingNo + " - " + item.BuildingName, item.AssetId);
+                    vendorPropertyDropdown.appendChild(option);
+                });
+            }
+        });
+    }
+
+
+    function clearFilters() {
+        $("#reportPropertyFilter").empty();
+        populateDropDowns();
+        $("#createdAtRange").val('');
+        propertiesIdsList = [];
+        leaseStartDateFilter = null;
+        leaseEndDateFilter = null;
+        $("#leaseReportsTbl tbody").empty();
+        loadLeaseDataTable();
+    }
+
+
+    function applyFilters() {
+        propertiesIdsList = $("#reportPropertyFilter").val();
+        if ($("#createdAtRange").val()) {
+            var dates = $("#createdAtRange").val().split('-');
+            leaseStartDateFilter = dates[0];
+            leaseEndDateFilter = dates[1];
+        }
+        loadLeaseDataTable();
+    }
+
+
+    function loadLeaseDataTable() {
+        // Show a loading message or spinner here if needed
+        // ShowPleaseWait();
+
+        console.log("Loading Lease Data Table...");
+        console.log(propertiesIdsList);
+
+        // Destroy the existing table if it exists
+        if ($.fn.dataTable.isDataTable('#leaseReportsTbl')) {
+            $('#leaseReportsTbl').DataTable().clear().destroy();
+        }
+
+        // Reinitialize the DataTable with new data
+        objLeaseTable = $("#leaseReportsTbl").DataTable({
+            ajax: {
+                url: "/Reports/GetLeaseReports", // Replace with your API URL
+                type: 'POST',
+                contentType: 'application/json',
+                data: function (d) {
+                    return JSON.stringify({
+                        PropertiesIds: propertiesIdsList,
+                        LeaseStartDateFilter: leaseStartDateFilter,
+                        LeaseEndDateFilter: leaseEndDateFilter
+                    });
+                },
+                dataSrc: "",
+                error: function (xhr, error, thrown) {
+                    console.error("Error occurred: ", error, thrown);
+                    alert("An error occurred while loading the data table: " + error);
+                }
+            },
+            initComplete: function () {
+                // Hide the loading message or spinner here
+                // ClosePleaseWait();
+            },
+            order: [[0, "asc"]],
+            columns: [
+                { data: "Lease" },
+                {
+                    data: "StartDate",
+                    render: function (data, type, row) {
+                        return moment(data).format('MM/DD/YYYY');
+                    }
+                },
+                {
+                    data: "EndDate",
+                    render: function (data, type, row) {
+                        return moment(data).format('MM/DD/YYYY');
+                    }
+                },
+                {
+                    data: "Status",
+                    render: function (data, type, row) {
+                        return data ? "Yes" : "No";
+                    }
+                },
+                { data: "Property" },
+                { data: "Unit" },
+                { data: "RentCharges" }
+            ]
+        });
+    }
+
+
+ </script>

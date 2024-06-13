@@ -1,9 +1,8 @@
 ﻿
 @{
-    ViewData["Title"] = "InvoiceReports";
+    ViewData["Title"] = "TaskReports";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 
 
 
@@ -13,12 +12,12 @@
         <div class="page-title">
             <div class="row">
                 <div class="col-12 col-sm-6">
-                    <h3>Invoice Report</h3>
+                    <h3>Task Report</h3>
                 </div>
                 <div class="col-12 col-sm-6">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="index.html"><i data-feather="home"></i></a></li>
-                        <li class="breadcrumb-item">Invoice</li>
+                        <li class="breadcrumb-item">Task</li>
                         <li class="breadcrumb-item active">List</li>
                     </ol>
                 </div>
@@ -47,17 +46,17 @@
                             </div>
                             <div class="col-lg-4 col-md-4">
                                 <div class="row">
-                                    <label class="col-sm-12 mb-0 font-weight-bold">MoveIn/MoveOut Date</label>
+                                    <label class="col-sm-12 mb-0 font-weight-bold">Due Date</label>
                                     <div class="col-sm-12">
-                                        <input type="text" class="form-control" id="createdAtRange" />
+                                        <input type="text" class="form-control" id="createdDueRange" />
                                     </div>
                                 </div>
                             </div>
                             <div class="col-lg-4 col-md-4">
                                 <div class="row">
-                                    <label class="col-sm-12 mb-0 font-weight-bold">Invoice Start/End Date</label>
+                                    <label class="col-sm-12 mb-0 font-weight-bold">Task Start/End Date</label>
                                     <div class="col-sm-12">
-                                        <input type="text" class="form-control" id="createdInvoiceRange" />
+                                        <input type="text" class="form-control" id="createdAtRange" />
                                     </div>
                                 </div>
                             </div>
@@ -69,17 +68,15 @@
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table" id="invoiceReportsTbl">
+                            <table class="table" id="taskReportsTbl">
                                 <thead>
                                     <tr>
-                                        <th scope="col" class="tableHeaderbg">Invoice</th>
+                                        <th scope="col" class="tableHeaderbg">Task Type</th>
+                                        <th scope="col" class="tableHeaderbg">Due At</th>
                                         <th scope="col" class="tableHeaderbg">Start Date</th>
-                                        <th scope="col" class="tableHeaderbg">End Date</th>
-                                        <th scope="col" class="tableHeaderbg">Status</th>
+                                        <th scope="col" class="tableHeaderbg">Expiring Date</th>
                                         <th scope="col" class="tableHeaderbg">Property</th>
-                                        <th scope="col" class="tableHeaderbg">Unit</th>
-                                        <th scope="col" class="tableHeaderbg">Rent Charges</th>
-                                        <th scope="col" class="tableHeaderbg">Invoice Date</th>
+                                        <th scope="col" class="tableHeaderbg">Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -94,23 +91,23 @@
     </div>
 </div>
 
+
+
 <script>
     var propertiesIdsList = [];
-    var leaseStartDateFilter = null;
-    var leaseEndDateFilter = null;
-    var invoiceStartDateFilter = null;
-    var invoiceEndDateFilter = null;
+    var taskStartDateFilter = null;
+    var taskEndDateFilter = null;
+    var taskDueStartDateFilter = null;
+    var taskDueEndDateFilter = null;
 
     $(document).ready(function () {
-        console.log("Document is ready");
         initDatePickers();
-        initInvoiceDatePickers();
+        initDueDatePickers();
         populateDropDowns();
-        loadInvoiceDataTable();
+        loadTaskRequestDataTable();
     });
 
     var initDatePickers = function () {
-        console.log("Initializing date pickers");
         $('#createdAtRange').daterangepicker({
             autoUpdateInput: false,
             locale: {
@@ -131,9 +128,8 @@
         });
     };
 
-    var initInvoiceDatePickers = function () {
-        console.log("Initializing date pickers");
-        $('#createdInvoiceRange').daterangepicker({
+    var initDueDatePickers = function () {
+        $('#createdDueRange').daterangepicker({
             autoUpdateInput: false,
             locale: {
                 format: 'MM/DD/YYYY',
@@ -144,11 +140,11 @@
             endDate: moment().add(1, 'days')
         });
 
-        $('#createdInvoiceRange').on('apply.daterangepicker', function (ev, picker) {
+        $('#createdDueRange').on('apply.daterangepicker', function (ev, picker) {
             $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
         });
 
-        $('#createdInvoiceRange').on('cancel.daterangepicker', function (ev, picker) {
+        $('#createdDueRange').on('cancel.daterangepicker', function (ev, picker) {
             $(this).val('');
         });
     };
@@ -169,61 +165,54 @@
         });
     }
 
-
     function clearFilters() {
         $("#reportPropertyFilter").empty();
         populateDropDowns();
         $("#createdAtRange").val('');
-        $("#createdInvoiceRange").val('');
+        $("#createdDueRange").val('');
         propertiesIdsList = [];
-        leaseStartDateFilter = null;
-        leaseEndDateFilter = null;
-        invoiceStartDateFilter = null;
-        invoiceEndDateFilter = null;
-        $("#invoiceReportsTbl tbody").empty();
-        loadInvoiceDataTable();
+        taskStartDateFilter = null;
+        taskEndDateFilter = null;
+        taskDueStartDateFilter = null;
+        taskDueEndDateFilter = null;
+        $("#taskReportsTbl tbody").empty();
+        loadTaskRequestDataTable();
     }
-    
-
 
     function applyFilters() {
         propertiesIdsList = $("#reportPropertyFilter").val();
         if ($("#createdAtRange").val()) {
             var dates = $("#createdAtRange").val().split('-');
-            leaseStartDateFilter = dates[0];
-            leaseEndDateFilter = dates[1];
+            taskStartDateFilter = dates[0];
+            taskEndDateFilter = dates[1];
         }
-        if ($("#createdInvoiceRange").val()) {
-            var dates = $("#createdInvoiceRange").val().split('-');
-            invoiceStartDateFilter = dates[0];
-            invoiceEndDateFilter = dates[1];
+        if ($("#createdDueRange").val()) {
+            var dates = $("#createdDueRange").val().split('-');
+            taskDueStartDateFilter = dates[0];
+            taskDueEndDateFilter = dates[1];
         }
-        loadInvoiceDataTable();
+        loadTaskRequestDataTable();
     }
 
-    function loadInvoiceDataTable() {
-        // Show a loading message or spinner here if needed
-        // ShowPleaseWait();
-
-
+    function loadTaskRequestDataTable() {
         // Destroy the existing table if it exists
-        if ($.fn.dataTable.isDataTable('#invoiceReportsTbl')) {
-            $('#invoiceReportsTbl').DataTable().clear().destroy();
+        if ($.fn.dataTable.isDataTable('#taskReportsTbl')) {
+            $('#taskReportsTbl').DataTable().clear().destroy();
         }
 
         // Reinitialize the DataTable with new data
-        objLeaseTable = $("#invoiceReportsTbl").DataTable({
+        objLeaseTable = $("#taskReportsTbl").DataTable({
             ajax: {
-                url: "/Reports/GetInvoiceReports", // Replace with your API URL
+                url: "/Reports/GetTaskRequestReports", // Replace with your API URL
                 type: 'POST',
                 contentType: 'application/json',
                 data: function (d) {
                     return JSON.stringify({
                         PropertiesIds: propertiesIdsList,
-                        LeaseStartDateFilter: leaseStartDateFilter,
-                        LeaseEndDateFilter: leaseEndDateFilter,
-                        InvoiceStartDateFilter: invoiceStartDateFilter,
-                        InvoiceEndDateFilter: invoiceEndDateFilter,
+                        TaskStartDateFilter: taskStartDateFilter,
+                        TaskEndDateFilter: taskEndDateFilter,
+                        TaskDueStartDateFilter: taskDueStartDateFilter,
+                        TaskDueEndDateFilter: taskDueEndDateFilter,
                     });
                 },
                 dataSrc: "",
@@ -233,40 +222,38 @@
                 }
             },
             initComplete: function () {
-                // Hide the loading message or spinner here
-                // ClosePleaseWait();
             },
             order: [[0, "asc"]],
             columns: [
-                { data: "Invoice" },
+                { data: "Task" },
+                {
+                    data: "DueDate",
+                    render: function (data, type, row) {
+                        return data ? moment(data).format('MM/DD/YYYY') : '';
+                    }
+                },
                 {
                     data: "StartDate",
                     render: function (data, type, row) {
-                        return moment(data).format('MM/DD/YYYY');
+                        return data ? moment(data).format('MM/DD/YYYY') : '';
                     }
                 },
                 {
                     data: "EndDate",
                     render: function (data, type, row) {
-                        return moment(data).format('MM/DD/YYYY');
+                        return data ? moment(data).format('MM/DD/YYYY') : '';
                     }
                 },
+                { data: "Property" },
                 {
                     data: "Status",
                     render: function (data, type, row) {
                         return data ? "Yes" : "No";
                     }
-                },
-                { data: "Property" },
-                { data: "Unit" },
-                { data: "RentCharges" },
-                { data: "InvoiceDate",
-                    render: function (data, type, row) {
-                        return moment(data).format('MM/DD/YYYY');
-                    }
                 }
             ]
         });
     }
+
 
 </script>

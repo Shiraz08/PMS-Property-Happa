@@ -576,8 +576,9 @@
                             <input type="hidden" name="SelectedBankAccountOption" id="SelectedBankAccountOption">
                             <input type="hidden" name="SelectedReserveFundsOption" id="SelectedReserveFundsOption">
                             <input type="hidden" name="SelectedOwnershipOption" id="SelectedOwnershipOption">
+                            <input type="hidden" name="selectedOwnerId" id="selectedOwnerId">
                             <!-- Hidden inputs for owner details -->
-                            <input type="hidden" name="OwnerFirstName" id="hiddenOwnerFirstName">
+@*                             <input type="hidden" name="OwnerFirstName" id="hiddenOwnerFirstName">
                             <input type="hidden" name="OwnerLastName" id="hiddenOwnerLastName">
                             <input type="hidden" name="OwnerEmail" id="hiddenOwnerEmail">
                             <input type="hidden" name="OwnerPostalCode" id="hiddenOwnerPostalCode">
@@ -586,7 +587,7 @@
                             <input type="hidden" name="OwnerRegion" id="hiddenOwnerRegion">
                             <input type="hidden" name="OwnerCountryCode" id="hiddenOwnerCountryCode">
                             <input type="hidden" name="OwnerCountry" id="hiddenOwnerCountry">
-                            <input type="hidden" name="OwnerImage" id="hiddenOwnerImage">
+                            <input type="hidden" name="OwnerImage" id="hiddenOwnerImage"> *@
                             <input type="hidden" id="hiddenImage" name="Image">
 
 
@@ -687,11 +688,10 @@
             var selectedRow = selectedCheckbox.closest('tr');
             var selectedTbody = $('#selectedOwnerTable tbody');
             selectedTbody.empty();
-            $("#selectedOwnerId").val(selectedRow.attr('data-id'))
+                $("#selectedOwnerId").val(selectedRow.attr('data-id'))
             $('#selectedOwnerTable').show();
 
-            console.log("asd")
-            console.log(selectedRow.find('td:eq(0)').text());
+@*             console.log(selectedRow.find('td:eq(0)').text());
             console.log(selectedRow.find('td:eq(1)').text());
             console.log(selectedRow.find('td:eq(2)').text());
             console.log(selectedRow.find('td:eq(3) img').attr('src'));
@@ -701,7 +701,7 @@
             console.log(selectedRow.find('td:eq(7)').text());
             console.log(selectedRow.find('td:eq(8)').text());
             console.log(selectedRow.find('td:eq(9)').text());
-
+ *@
             var rowHtml = `<tr>
                            <td>Selected</td>
                            <td>${selectedRow.find('td:eq(0)').text()}</td>
@@ -718,7 +718,7 @@
             selectedTbody.append(rowHtml);
 
             // Update hidden inputs with the selected owner's information
-            $('#hiddenOwnerFirstName').val(selectedRow.find('td:eq(0)').text());
+@*             $('#hiddenOwnerFirstName').val(selectedRow.find('td:eq(0)').text());
             $('#hiddenOwnerLastName').val(selectedRow.find('td:eq(1)').text());
             $('#hiddenOwnerEmail').val(selectedRow.find('td:eq(2)').text());
             $('#hiddenOwnerPostalCode').val(selectedRow.find('td:eq(4)').text());
@@ -726,7 +726,7 @@
             $('#hiddenOwnerDistrict').val(selectedRow.find('td:eq(6)').text());
             $('#hiddenOwnerRegion').val(selectedRow.find('td:eq(7)').text());
             $('#hiddenOwnerCountryCode').val(selectedRow.find('td:eq(8)').text());
-            $('#hiddenOwnerCountry').val(selectedRow.find('td:eq(9)').text());
+            $('#hiddenOwnerCountry').val(selectedRow.find('td:eq(9)').text()); *@
 
             // Optionally, if you store and want to pass the base64 image data, add an input for it and set its value
             // Assuming you have an input with id="hiddenOwnerImage"
@@ -1219,7 +1219,8 @@
             SelectedBankAccountOption: $('#SelectedBankAccountOption').val(),
             SelectedReserveFundsOption: $('#SelectedReserveFundsOption').val(),
             SelectedOwnershipOption: $('#SelectedOwnershipOption').val(),
-            OwnerFirstName: $('#hiddenOwnerFirstName').val(),
+            OwnerId: $('#selectedOwnerId').val(),
+@*             OwnerFirstName: $('#hiddenOwnerFirstName').val(),
             OwnerLastName: $('#hiddenOwnerLastName').val(),
             OwnerEmail: $('#hiddenOwnerEmail').val(),
             OwnerPostalCode: $('#hiddenOwnerPostalCode').val(),
@@ -1228,7 +1229,7 @@
             OwnerRegion: $('#hiddenOwnerRegion').val(),
             OwnerCountryCode: $('#hiddenOwnerCountryCode').val(),
             OwnerCountry: $('#hiddenOwnerCountry').val(),
-            OwnerImage: $('#hiddenOwnerImage').val(),
+            OwnerImage: $('#hiddenOwnerImage').val(), *@
         };
 
 
@@ -1352,7 +1353,7 @@
         var ownerCountry = $('#OwnerCountry').val();
 
         // Update hidden inputs
-        $('#hiddenOwnerFirstName').val(ownerFirstName);
+@*         $('#hiddenOwnerFirstName').val(ownerFirstName);
         $('#hiddenOwnerLastName').val(ownerLastName);
         $('#hiddenOwnerEmail').val(ownerEmail);
         $('#hiddenOwnerPostalCode').val(ownerPostalCode);
@@ -1360,7 +1361,7 @@
         $('#hiddenOwnerDistrict').val(ownerDistrict);
         $('#hiddenOwnerRegion').val(ownerRegion);
         $('#hiddenOwnerCountryCode').val(ownerCountryCode);
-        $('#hiddenOwnerCountry').val(ownerCountry);
+        $('#hiddenOwnerCountry').val(ownerCountry); *@
 
         // Handle the owner's picture if uploaded
         var fileInput = document.getElementById('PictureUrl');

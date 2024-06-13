@@ -196,7 +196,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
         
         public async Task<IActionResult> InvoiceDetails(int leaseId)
         {
-            List<Invoice> invoices = await _authService.GetInvoicesAsync(leaseId);
+            List<InvoiceDto> invoices = await _authService.GetInvoicesAsync(leaseId);
 
             ViewBag.Paid = invoices?.Where(x => x.InvoicePaid == true).Select(x => x.RentAmount).Sum() ?? 0;
             ViewBag.UnPaid = invoices?.Where(x => x.InvoicePaid != true).Select(x => x.RentAmount).Sum() ?? 0;
@@ -232,7 +232,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
         public async Task<IActionResult> DownloadInvoice(int id)
         {
-            Invoice invoice = await _authService.GetInvoiceByIdAsync(id);
+            InvoiceDto invoice = await _authService.GetInvoiceByIdAsync(id);
             var lease = await _authService.GetLeaseByIdAsync(invoice.LeaseId.Value);
 
             ViewBag.invoice = invoice;
