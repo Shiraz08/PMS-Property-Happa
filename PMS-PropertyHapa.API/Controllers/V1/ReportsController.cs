@@ -31,8 +31,8 @@ namespace PMS_PropertyHapa.API.Controllers.V1
         }
 
 
-        [HttpGet("LeaseReport")]
-        public async Task<ActionResult> GetLeaseReport(ReportFilter reportFilter)
+        [HttpPost("LeaseReport")]
+        public async Task<ActionResult<LeaseReportDto>> GetLeaseReport(ReportFilter reportFilter)
         {
             try
             {
@@ -61,8 +61,8 @@ namespace PMS_PropertyHapa.API.Controllers.V1
 
 
 
-        [HttpGet("InvoiceReport")]
-        public async Task<ActionResult> GetInvoiceReports(ReportFilter reportFilter)
+        [HttpPost("InvoiceReport")]
+        public async Task<ActionResult<InvoiceReportDto>> GetInvoiceReports(ReportFilter reportFilter)
         {
             try
             {
@@ -89,8 +89,8 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             }
         }
 
-        [HttpGet("TaskReport")]
-        public async Task<ActionResult> GetTaskRequestReports(ReportFilter reportFilter)
+        [HttpPost("TaskReport")]
+        public async Task<ActionResult<TaskRequestReportDto>> GetTaskRequestReports(ReportFilter reportFilter)
         {
             try
             {

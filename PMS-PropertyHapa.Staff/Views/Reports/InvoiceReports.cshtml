@@ -102,7 +102,6 @@
     var invoiceEndDateFilter = null;
 
     $(document).ready(function () {
-        console.log("Document is ready");
         initDatePickers();
         initInvoiceDatePickers();
         populateDropDowns();
@@ -110,7 +109,6 @@
     });
 
     var initDatePickers = function () {
-        console.log("Initializing date pickers");
         $('#createdAtRange').daterangepicker({
             autoUpdateInput: false,
             locale: {
@@ -192,29 +190,29 @@
             var dates = $("#createdAtRange").val().split('-');
             leaseStartDateFilter = dates[0];
             leaseEndDateFilter = dates[1];
+        } else {
+            leaseStartDateFilter = null;
+            leaseEndDateFilter = null;
         }
         if ($("#createdInvoiceRange").val()) {
             var dates = $("#createdInvoiceRange").val().split('-');
             invoiceStartDateFilter = dates[0];
             invoiceEndDateFilter = dates[1];
+        } else {
+            invoiceStartDateFilter = null;
+            invoiceEndDateFilter = null;
         }
         loadInvoiceDataTable();
     }
 
     function loadInvoiceDataTable() {
-        // Show a loading message or spinner here if needed
-        // ShowPleaseWait();
-
-
-        // Destroy the existing table if it exists
         if ($.fn.dataTable.isDataTable('#invoiceReportsTbl')) {
             $('#invoiceReportsTbl').DataTable().clear().destroy();
         }
 
-        // Reinitialize the DataTable with new data
         objLeaseTable = $("#invoiceReportsTbl").DataTable({
             ajax: {
-                url: "/Reports/GetInvoiceReports", // Replace with your API URL
+                url: "/Reports/GetInvoiceReports",
                 type: 'POST',
                 contentType: 'application/json',
                 data: function (d) {
@@ -233,8 +231,6 @@
                 }
             },
             initComplete: function () {
-                // Hide the loading message or spinner here
-                // ClosePleaseWait();
             },
             order: [[0, "asc"]],
             columns: [

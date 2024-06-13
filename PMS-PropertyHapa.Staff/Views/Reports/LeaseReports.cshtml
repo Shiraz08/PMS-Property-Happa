@@ -150,27 +150,23 @@
             var dates = $("#createdAtRange").val().split('-');
             leaseStartDateFilter = dates[0];
             leaseEndDateFilter = dates[1];
+        } else {
+            leaseStartDateFilter = null;
+            leaseEndDateFilter = null;
         }
         loadLeaseDataTable();
     }
 
 
     function loadLeaseDataTable() {
-        // Show a loading message or spinner here if needed
-        // ShowPleaseWait();
 
-        console.log("Loading Lease Data Table...");
-        console.log(propertiesIdsList);
-
-        // Destroy the existing table if it exists
         if ($.fn.dataTable.isDataTable('#leaseReportsTbl')) {
             $('#leaseReportsTbl').DataTable().clear().destroy();
         }
 
-        // Reinitialize the DataTable with new data
         objLeaseTable = $("#leaseReportsTbl").DataTable({
             ajax: {
-                url: "/Reports/GetLeaseReports", // Replace with your API URL
+                url: "/Reports/GetLeaseReports",
                 type: 'POST',
                 contentType: 'application/json',
                 data: function (d) {
@@ -187,8 +183,7 @@
                 }
             },
             initComplete: function () {
-                // Hide the loading message or spinner here
-                // ClosePleaseWait();
+
             },
             order: [[0, "asc"]],
             columns: [

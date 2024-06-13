@@ -185,25 +185,29 @@
             var dates = $("#createdAtRange").val().split('-');
             taskStartDateFilter = dates[0];
             taskEndDateFilter = dates[1];
+        }else{
+            taskStartDateFilter = null;
+                taskEndDateFilter = null;
         }
         if ($("#createdDueRange").val()) {
             var dates = $("#createdDueRange").val().split('-');
             taskDueStartDateFilter = dates[0];
             taskDueEndDateFilter = dates[1];
+        } else {
+            taskDueStartDateFilter = null;
+            taskDueEndDateFilter = null;
         }
         loadTaskRequestDataTable();
     }
 
     function loadTaskRequestDataTable() {
-        // Destroy the existing table if it exists
         if ($.fn.dataTable.isDataTable('#taskReportsTbl')) {
             $('#taskReportsTbl').DataTable().clear().destroy();
         }
 
-        // Reinitialize the DataTable with new data
         objLeaseTable = $("#taskReportsTbl").DataTable({
             ajax: {
-                url: "/Reports/GetTaskRequestReports", // Replace with your API URL
+                url: "/Reports/GetTaskRequestReports",
                 type: 'POST',
                 contentType: 'application/json',
                 data: function (d) {

@@ -2088,7 +2088,7 @@ namespace PMS_PropertyHapa.Staff.Services
 
             var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
             {
-                ApiType = SD.ApiType.GET,
+                ApiType = SD.ApiType.POST,
                 Data = reportFilter,
                 Url = $"{villaUrl}/api/v1/ReportsAuth/LeaseReport"
             });
@@ -2110,7 +2110,7 @@ namespace PMS_PropertyHapa.Staff.Services
 
             var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
             {
-                ApiType = SD.ApiType.GET,
+                ApiType = SD.ApiType.POST,
                 Data = reportFilter,
                 Url = $"{villaUrl}/api/v1/ReportsAuth/InvoiceReport"
             });
@@ -2132,7 +2132,7 @@ namespace PMS_PropertyHapa.Staff.Services
 
             var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
             {
-                ApiType = SD.ApiType.GET,
+                ApiType = SD.ApiType.POST,
                 Data = reportFilter,
                 Url = $"{villaUrl}/api/v1/ReportsAuth/TaskReport"
             });
