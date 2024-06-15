@@ -243,7 +243,7 @@
                         <ol class="breadcrumb mb-0">
                             <!-- mb-0 removes the bottom margin -->
                             <li class="breadcrumb-item">
-                                <a href="index.html">
+                                <a href="Index">
                                     <i data-feather="home"></i>
                                 </a>
                             </li>
@@ -1518,6 +1518,7 @@
         formData.append('LateFeesPolicy', $('#yesLateFees').hasClass('selected') ? 'true' : 'false');
         formData.append("SelectedProperty", selectedPropertyText);
         formData.append("PropertyId", $('#propertyDropdown').val());
+        formData.append("UnitId", $('#unitDropdown').val());
         formData.append("SelectedUnit", selectedUnitText);
         if (globalTenantId > 0) {
             // This is the edit scenario, append TenantId to formData

@@ -37,9 +37,10 @@ namespace PMS_PropertyHapa.Models.Entities
         public string Classification { get; set; }
         public string VendorCategoriesIds { get; set; }
         public bool? HasInsurance { get; set; }
-        public int PropertyId { get; set; }
-        public string UnitIds { get; set; }
         public string TaxId { get; set; }
+        public string InsuranceCompany { get; set; }
+        public string PolicyNumber { get; set; }
+        public decimal? Amount { get; set; }
 
         public string AccountName { get; set; }
         public string AccountHolder { get; set; }

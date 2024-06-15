@@ -13,7 +13,7 @@
                 </div>
                 <div class="col-12 col-sm-6">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="index.html"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item"><a href="/Accounting/Index"><i data-feather="home"></i></a></li>
                         <li class="breadcrumb-item">Account Type</li>
                         <li class="breadcrumb-item active">List</li>
                     </ol>
@@ -74,12 +74,21 @@
                                                                 <tr>
                                                                     <td class="tableFontSize">@item.Type</td>
                                                                     <td class="tableFontSize">
-                                                                        <a class="btn btn-secondary" onclick="editAccountType(@item.AccountTypeId)">
-                                                                            <i class="fa fa-edit"></i> Edit
-                                                                        </a>
-                                                                        <a class="btn btn-danger" onclick="deleteAccountType(@item.AccountTypeId)">
-                                                                            <i class="fa fa-trash"></i> Delete
-                                                                        </a>
+                                                                        <div class="dropdown-basic">
+                                                                            <div class="dropdown">
+                                                                                <div class="btn-group mb-0">
+                                                                                    <button class="dropbtn btn-danger" type="button">Action <span><i class="icofont icofont-arrow-down"></i></span></button>
+                                                                                    <div class="dropdown-content">
+                                                                                        <a class="btn btn-secondary" onclick="editAccountType(@item.AccountTypeId)">
+                                                                                            <i class="fa fa-edit"></i> Edit
+                                                                                        </a>
+                                                                                        <a class="btn btn-secondary" onclick="deleteAccountType(@item.AccountTypeId)">
+                                                                                            <i class="fa fa-trash"></i> Delete
+                                                                                        </a>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
                                                                     </td>
                                                                 </tr>
                                                             }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,7 +13,12 @@ namespace PMS_PropertyHapa.Models.Entities
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
 
-        public int? PropertyId { get; set; }
+        public int? AssetId { get; set; }
+        [ForeignKey("AssetId")]
+        public virtual Assets Assets { get; set; }
+        public int? UnitId { get; set; }
+        [ForeignKey("UnitId")]
+        public virtual AssetsUnits AssetsUnits { get; set; }
         public string SelectedProperty { get; set; }
 
         public string SelectedUnit { get; set; }

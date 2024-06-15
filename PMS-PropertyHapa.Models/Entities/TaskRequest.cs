@@ -30,6 +30,9 @@ namespace PMS_PropertyHapa.Models.Entities
         public int? AssetId { get; set; }
         [ForeignKey("AssetId")]
         public virtual Assets Asset { get; set; }
+        public int? UnitId { get; set; }
+        [ForeignKey("UnitId")]
+        public virtual AssetsUnits Unit { get; set; }
         public string TaskRequestFile { get; set; }
         public int? OwnerId { get; set; }
         [ForeignKey("OwnerId")]

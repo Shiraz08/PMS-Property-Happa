@@ -37,7 +37,7 @@
                 </div>
                 <div class="col-12 col-sm-6">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="index.html"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item"><a href="Index"><i data-feather="home"></i></a></li>
                         <li class="breadcrumb-item">Vendor</li>
                         <li class="breadcrumb-item active">List</li>
                     </ol>
@@ -129,12 +129,21 @@
                                                 @(item.HasInsurance ?? false ? "Yes" : "No")
                                             </td>
                                             <td class="tableFontSize align-middle">
-                                                <a class="btn btn-secondary me-1" onclick="editVendor(@item.VendorId)">
-                                                    <i class="fa fa-edit"></i> Edit
-                                                </a>
-                                                <a class="btn btn-danger" onclick="deleteVendor(@item.VendorId)">
-                                                    <i class="fa fa-trash"></i> Delete
-                                                </a>
+                                                <div class="dropdown-basic">
+                                                    <div class="dropdown">
+                                                        <div class="btn-group mb-0">
+                                                            <button class="dropbtn btn-danger" type="button">Action <span><i class="icofont icofont-arrow-down"></i></span></button>
+                                                            <div class="dropdown-content">
+                                                                <a class="btn btn-secondary me-1" onclick="editVendor(@item.VendorId)">
+                                                                    <i class="fa fa-edit"></i> Edit
+                                                                </a>
+                                                                <a class="btn btn-secondary" onclick="deleteVendor(@item.VendorId)">
+                                                                    <i class="fa fa-trash"></i> Delete
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </td>
                                         </tr>
                                     }
@@ -167,9 +176,8 @@
                             <a class="nav-link" data-form-id="address" href="#">Address</a>
                             <a class="nav-link" data-form-id="alternateAddress" href="#">Alternate Address</a>
                             <a class="nav-link" data-form-id="services" href="#">Services</a>
-                            <a class="nav-link" data-form-id="insurance" href="#">Insurance</a>
-                            <a class="nav-link" data-form-id="properties" href="#">Properties</a>
-                            <a class="nav-link" data-form-id="sendPayments" href="#">Send Payments</a>
+                            <a class="nav-link" data-form-id="insurance" href="#">Insurance</a
+                            <a class="nav-link" data-form-id="accountInfo" href="#">Account Information</a>
                         </nav>
                     </div>
                     <div class="col-9">
@@ -397,25 +405,29 @@
                                     <option value="false">No</option>
                                 </select>
                             </div>
+                            <div class="row d-none hasInsuranceDiv">
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <label for="insuranceCompany" class="form-label">Insurance Company Name</label>
+                                        <input type="text" class="form-control" placeholder="Insurance Company Name" id="insuranceCompany" required>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <label for="insurancePolicyNumber" class="form-label">Policy Number</label>
+                                        <input type="text" class="form-control" placeholder="Policy number" id="insurancePolicyNumber" required>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <label for="insuranceAmount" class="form-label">Amount</label>
+                                        <input type="number" class="form-control" placeholder="Amount" id="insuranceAmount" required>
+                                    </div>
+                                </div>
+                            </div>
                         </form>
 
-                        <form id="properties" class="form-section">
-                            <!-- Properties Form -->
-                            <h2>Properties</h2>
-                            <div class="mb-3">
-                                <label for="vendorProperty" class="form-label ">Property</label>
-                                <select class="form-control" id="vendorProperty" required>
-                                    <option selected disabled value="">Please Select</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="vendorUnits" class="form-label">Units</label>
-                                <select class="form-control select2" multiple="multiple" id="vendorUnits" required>
-                                </select>
-                            </div>
-                        </form>
-
-                        <form id="sendPayments" class="form-section">
+                        <form id="accountInfo" class="form-section">
                             <!-- Send Payments Form -->
                             <h2>Account Information</h2>
                             <div class="row">
@@ -549,10 +561,6 @@
 
         resetModal();
 
-        // function updateActiveNav(index) {
-        //     $('.nav-sidebar .nav-link').removeClass('active');
-        //     $('.nav-sidebar .nav-link').eq(index).addClass('active');
-        // }
 
         $(".form-section").not(":first").hide();
 
@@ -571,11 +579,6 @@
             ],
             5: [
                 { field: '#hasInsurance', message: 'Please select Insurance.' }
-            ],
-            6: [
-                { field: '#vendorProperty', message: 'Please select Properties.' },
-                { field: '#vendorUnits', message: 'Please select Units.', validate: (value) => value && value.length > 0 }
-
             ]
         };
 
@@ -674,7 +677,7 @@
         });
 
         toggleButtons();
-        populateDropDowns();
+         populateDropDowns();
 
         $('#saveButton').on('click', function (event) {
             event.preventDefault();
@@ -711,8 +714,9 @@
                 Classification: $('#classification').val().join(','),
                 VendorCategoriesIds: $('#vendorCategories').val().join(','),
                 HasInsurance: $('#hasInsurance').val(),
-                PropertyId: $('#vendorProperty').val(),
-                UnitIds: $('#vendorUnits').val().join(','),
+                InsuranceCompany: $('#insuranceCompany').val(),
+                PolicyNumber: $('#insurancePolicyNumber').val(),
+                Amount: $('#insuranceAmount').val(),
                 AccountName: $('#accountName').val(),
                 AccountHolder: $('#accountHolder').val(),
                 AccountIBAN: $('#accountIBAN').val(),
@@ -793,43 +797,24 @@
             }
         });
 
-
-        $('#vendorProperty').on('change', function () {
-            if ($("#vendorProperty").val() != null) {
-                populateUnits($("#vendorProperty").val());
+        $('#hasInsurance').change(function () {
+            if ($(this).val() === 'true') {
+                $('.hasInsuranceDiv').removeClass('d-none');
+                validationRules[5].push(
+                    { field: '#insuranceCompany', message: 'Please enter Insurance Company Name.' },
+                    { field: '#insurancePolicyNumber', message: 'Please enter Policy Number.' },
+                    { field: '#insuranceAmount', message: 'Please enter Amount.' }
+                );
             } else {
-                $("#vendorUnits").empty();
+                $('.hasInsuranceDiv').addClass('d-none');
+                validationRules[5] = [{ field: '#hasInsurance', message: 'Please select Insurance.' }];
             }
         });
+        
 
     });
 
 
-    function populateUnits(propertyId, selectedUnits) {
-        $.ajax({
-            url: '/Lease/ByProperty',
-            method: 'GET',
-            data: { propertyId: propertyId },
-            success: function (units) {
-                var $vendorUnits = $('#vendorUnits');
-                $vendorUnits.empty();
-                units.forEach(function (unit) {
-                    var option = `<option value="${unit.UnitId}">${unit.UnitName}</option>`;
-                    $vendorUnits.append(option);
-                });
-
-                // Check if selectedUnits is provided and mark options as selected
-                if (selectedUnits && selectedUnits.length > 0) {
-                    selectedUnits.forEach(function (unitId) {
-                        $vendorUnits.find('option[value="' + unitId + '"]').prop('selected', true);
-                    });
-                }
-            },
-            error: function (error) {
-                console.error('Error fetching units:', error.responseText || 'Unknown error');
-            }
-        });
-    }
 
 
     function populateDropDowns() {
@@ -843,20 +828,6 @@
                 data.forEach(function (item) {
                     var option = new Option(item.Name, item.VendorCategoryId);
                     vendorDropdown.appendChild(option);
-                });
-            }
-        });
-
-        $.ajax({
-            url: '@Url.Action("GetProperties", "Communication")',
-            type: 'GET',
-            dataType: 'json',
-            success: function (data) {
-                var vendorPropertyDropdown = document.getElementById('vendorProperty');
-                // vendorPropertyDropdown.innerHTML = ''; // Clear existing options
-                data.forEach(function (item) {
-                    var option = new Option(item.BuildingNo + " - " + item.BuildingName, item.AssetId);
-                    vendorPropertyDropdown.appendChild(option);
                 });
             }
         });
@@ -941,8 +912,6 @@
             success: function (vendor) {
                 console.log(vendor)
 
-                $('#vendorProperty').val(vendor.PropertyId).trigger("change")
-
                 $('#vendorId').val(vendor.VendorId);
                 $('#firstName').val(vendor.FirstName);
                 $('#middleName').val(vendor.MI);
@@ -967,9 +936,17 @@
                 $('#altCity').val(vendor.AlterCity);
                 $('#altState').val(vendor.AlterState);
                 $('#altCountry').val(vendor.AlterCountry);
-                $('#hasInsurance').val(vendor.HasInsurance ? "true" : "false");
-
-
+                $('#hasInsurance').val(vendor.HasInsurance ? "true" : "false").trigger("change");
+                
+                if (vendor.HasInsurance) {
+                    $('#insuranceCompany').val(vendor.InsuranceCompany);
+                    $('#insurancePolicyNumber').val(vendor.PolicyNumber);
+                    $('#insuranceAmount').val(vendor.Amount);
+                } else {
+                    $('#insuranceCompany').val('');
+                    $('#insurancePolicyNumber').val('');
+                    $('#insuranceAmount').val('');
+                }
 
                 if (vendor.Classification && vendor.Classification.length > 0) {
                     var classificationArray = vendor.Classification.split(',');
@@ -1021,12 +998,6 @@
                     $('#imagePreview').attr('src', "http://bootdey.com/img/Content/avatar/avatar1.png");
                 }
 
-                if (vendor.UnitIds && vendor.UnitIds.length > 0) {
-                    var vendorUnitsArray = vendor.UnitIds.split(',');
-                    populateUnits(vendor.PropertyId, vendorUnitsArray);
-                } else {
-                    $('#vendorUnits').val([]).trigger("change");
-                }
 
                 $("#vendorModal").modal('show');
             },

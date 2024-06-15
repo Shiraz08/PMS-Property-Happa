@@ -15,7 +15,7 @@
                 </div>
                 <div class="col-12 col-sm-6">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="index.html"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item"><a href="/Accounting/Index"><i data-feather="home"></i></a></li>
                         <li class="breadcrumb-item">Budgeting</li>
                         <li class="breadcrumb-item active">List</li>
                     </ol>
@@ -95,8 +95,17 @@
                                                         <td style="text-align:center!important">@item.PropertyId</td>
                                                         <td style="text-align:center!important">@item.FiscalYear</td>
                                                         <td style="text-align:center!important">
-                                                        @Html.ActionLink("Delete", "DeleteBudget", "Budget", new { id = item.BudgetId }, null)
-                                                        @Html.ActionLink("DuplicateBudget", "DuplicateBudget", new { id = item.BudgetId })
+                                                            <div class="dropdown-basic">
+                                                                <div class="dropdown">
+                                                                    <div class="btn-group mb-0">
+                                                                        <button class="dropbtn btn-danger" type="button">Action <span><i class="icofont icofont-arrow-down"></i></span></button>
+                                                                        <div class="dropdown-content">
+                                                                            @Html.ActionLink("Delete", "DeleteBudget", "Budget", new { id = item.BudgetId }, null)
+                                                                            @Html.ActionLink("DuplicateBudget", "DuplicateBudget", new { id = item.BudgetId })
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                         </td>
                                                     </tr>
                                                 }

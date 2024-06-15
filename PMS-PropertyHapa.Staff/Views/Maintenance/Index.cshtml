@@ -17,7 +17,7 @@
                 </div>
                 <div class="col-12 col-sm-6">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="index.html"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item"><a href="Index"><i data-feather="home"></i></a></li>
                         <li class="breadcrumb-item">Maintenance</li>
                         <li class="breadcrumb-item active">List</li>
                     </ol>
@@ -100,7 +100,7 @@
                                                                     <td class="tableFontSize">@item.DueDate?.ToString("yyyy-MM-dd")</td>
                                                                     <td class="tableFontSize">@item.Asset</td>
                                                                     <td class="tableFontSize">
-                                                                        @item.LineItems.Sum(x => x.Price * x.Quantity)
+                                                                        <h3>$@item.LineItems.Sum(x => x.Price * x.Quantity)</h3>
                                                                         @if (@item.Type == "WorkOrderRequest")
                                                                         {
 

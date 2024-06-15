@@ -16,11 +16,11 @@
                     <ol class="breadcrumb">
                         @if (Model?.PropertyTypeId == 0)
                         {
-                            <li class="breadcrumb-item"><a href="@Url.Action("Create", "PropertyTypes")"><i data-feather="home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="@Url.Action("Index", "PropertyTypes")"><i data-feather="home"></i></a></li>
                         }
                         else
                         {
-                            <li class="breadcrumb-item"><a href="@Url.Action("Update", "PropertyTypes")"><i data-feather="home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="@Url.Action("Index", "PropertyTypes")"><i data-feather="home"></i></a></li>
                         }
                         <li class="breadcrumb-item">PropertyType</li>
                         <li class="breadcrumb-item active">@(Model?.PropertyTypeId == 0 ? "Add PropertyType" : "Edit PropertyType")</li>

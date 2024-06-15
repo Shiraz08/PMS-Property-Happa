@@ -1863,7 +1863,8 @@ namespace MagicVilla_VillaAPI.Repository
                     SignatureImagePath = leaseDto.SignatureImagePath,
                     IsFixedTerm = leaseDto.IsFixedTerm,
                     SelectedProperty = leaseDto.SelectedProperty,
-                    PropertyId = leaseDto.PropertyId,
+                    AssetId = leaseDto.PropertyId,
+                    UnitId = leaseDto.UnitId,
                     SelectedUnit = leaseDto.SelectedUnit,
                     IsMonthToMonth = leaseDto.IsMonthToMonth,
                     HasSecurityDeposit = leaseDto.HasSecurityDeposit,
@@ -2158,7 +2159,8 @@ namespace MagicVilla_VillaAPI.Repository
                 existingLease.EndDate = leaseDto.EndDate;
                 existingLease.IsSigned = leaseDto.IsSigned;
                 existingLease.SelectedProperty = leaseDto.SelectedProperty;
-                existingLease.PropertyId = leaseDto.PropertyId;
+                existingLease.AssetId = leaseDto.PropertyId;
+                existingLease.UnitId = leaseDto.UnitId;
                 existingLease.SelectedUnit = leaseDto.SelectedUnit;
                 existingLease.SignatureImagePath = leaseDto.SignatureImagePath;
                 existingLease.IsFixedTerm = leaseDto.IsFixedTerm;
@@ -3169,6 +3171,7 @@ namespace MagicVilla_VillaAPI.Repository
             {
                 var result = await (from t in _db.TaskRequest
                                     from a in _db.Assets.Where(x => x.AssetId == t.AssetId).DefaultIfEmpty()
+                                    from u in _db.AssetsUnits.Where(x => x.UnitId == t.UnitId).DefaultIfEmpty()
                                     from o in _db.Owner.Where(x => x.OwnerId == t.OwnerId).DefaultIfEmpty()
                                     from tnt in _db.Tenant.Where(x => x.TenantId == t.TenantId).DefaultIfEmpty()
                                         //from l in _db.LineItem.Where(x=>x.TaskRequestId == t.TaskRequestId).DefaultIfEmpty()
@@ -3193,6 +3196,8 @@ namespace MagicVilla_VillaAPI.Repository
                                         IsNotifyAssignee = t.IsNotifyAssignee,
                                         AssetId = t.AssetId,
                                         Asset = a.BuildingNo + "-" + a.BuildingName,
+                                        UnitId = t.UnitId,
+                                        Unit = u.UnitName,
                                         TaskRequestFile = t.TaskRequestFile,
                                         OwnerId = t.OwnerId,
                                         Owner = o.FirstName + " " + o.LastName,
@@ -3214,7 +3219,7 @@ namespace MagicVilla_VillaAPI.Repository
                                                          TaskRequestId = item.TaskRequestId,
                                                          Quantity = item.Quantity,
                                                          Price = item.Price,
-                                                         Account = item.Account,
+                                                         ChartAccountId = item.ChartAccountId,
                                                          Memo = item.Memo
                                                      }).ToList()
                                     })
@@ -3237,6 +3242,7 @@ namespace MagicVilla_VillaAPI.Repository
             {
                 var result = await (from t in _db.TaskRequest
                                     from a in _db.Assets.Where(x => x.AssetId == t.AssetId).DefaultIfEmpty()
+                                    from u in _db.AssetsUnits.Where(x => x.UnitId == t.UnitId).DefaultIfEmpty()
                                     from o in _db.Owner.Where(x => x.OwnerId == t.OwnerId).DefaultIfEmpty()
                                     from tnt in _db.Tenant.Where(x => x.TenantId == t.TenantId).DefaultIfEmpty()
                                         //from l in _db.LineItem.Where(x=>x.TaskRequestId == t.TaskRequestId).DefaultIfEmpty()
@@ -3261,6 +3267,8 @@ namespace MagicVilla_VillaAPI.Repository
                                         IsNotifyAssignee = t.IsNotifyAssignee,
                                         AssetId = t.AssetId,
                                         Asset = a.BuildingNo + "-" + a.BuildingName,
+                                        UnitId = t.UnitId,
+                                        Unit = u.UnitName,
                                         TaskRequestFile = t.TaskRequestFile,
                                         OwnerId = t.OwnerId,
                                         Owner = o.FirstName + " " + o.LastName,
@@ -3275,6 +3283,7 @@ namespace MagicVilla_VillaAPI.Repository
                                         PartsAndLabor = t.PartsAndLabor,
                                         AddedBy = t.AddedBy,
                                         LineItems = (from item in _db.LineItem
+                                                     from ca in _db.ChartAccount.Where(x => x.ChartAccountId == item.ChartAccountId).DefaultIfEmpty()
                                                      where item.TaskRequestId == t.TaskRequestId && item.IsDeleted != true
                                                      select new LineItemDto
                                                      {
@@ -3282,7 +3291,8 @@ namespace MagicVilla_VillaAPI.Repository
                                                          TaskRequestId = item.TaskRequestId,
                                                          Quantity = item.Quantity,
                                                          Price = item.Price,
-                                                         Account = item.Account,
+                                                         ChartAccountId = item.ChartAccountId,
+                                                         AccountName = ca.Name,
                                                          Memo = item.Memo
                                                      }).ToList()
                                     })
@@ -3304,6 +3314,7 @@ namespace MagicVilla_VillaAPI.Repository
             {
                 var result = await (from t in _db.TaskRequest
                                     from a in _db.Assets.Where(x => x.AssetId == t.AssetId).DefaultIfEmpty()
+                                    from u in _db.AssetsUnits.Where(x => x.UnitId == t.UnitId).DefaultIfEmpty()
                                     from o in _db.Owner.Where(x => x.OwnerId == t.OwnerId).DefaultIfEmpty()
                                     from tnt in _db.Tenant.Where(x => x.TenantId == t.TenantId).DefaultIfEmpty()
                                     where t.TaskRequestId == id
@@ -3327,6 +3338,8 @@ namespace MagicVilla_VillaAPI.Repository
                                         IsNotifyAssignee = t.IsNotifyAssignee,
                                         AssetId = t.AssetId,
                                         Asset = a.BuildingNo + "-" + a.BuildingName,
+                                        UnitId = t.UnitId,
+                                        Unit = u.UnitName,
                                         TaskRequestFile = t.TaskRequestFile,
                                         OwnerId = t.OwnerId,
                                         Owner = o.FirstName + " " + o.LastName,
@@ -3341,6 +3354,7 @@ namespace MagicVilla_VillaAPI.Repository
                                         PartsAndLabor = t.PartsAndLabor,
                                         AddedBy = t.AddedBy,
                                         LineItems = (from item in _db.LineItem
+                                                     from ca in _db.ChartAccount.Where(x => x.ChartAccountId == item.ChartAccountId).DefaultIfEmpty()
                                                      where item.TaskRequestId == t.TaskRequestId && item.IsDeleted != true
                                                      select new LineItemDto
                                                      {
@@ -3348,7 +3362,8 @@ namespace MagicVilla_VillaAPI.Repository
                                                          TaskRequestId = item.TaskRequestId,
                                                          Quantity = item.Quantity,
                                                          Price = item.Price,
-                                                         Account = item.Account,
+                                                         ChartAccountId = item.ChartAccountId,
+                                                         AccountName = ca.Name,
                                                          Memo = item.Memo
                                                      }).ToList()
                                     })
@@ -3388,6 +3403,7 @@ namespace MagicVilla_VillaAPI.Repository
             taskRequest.Assignees = taskRequestDto.Assignees;
             taskRequest.IsNotifyAssignee = taskRequestDto.IsNotifyAssignee;
             taskRequest.AssetId = taskRequestDto.AssetId;
+            taskRequest.UnitId = taskRequestDto.UnitId;
             if (taskRequestDto.TaskRequestFile != null)
             {
                 taskRequest.TaskRequestFile = taskRequestDto.TaskRequestFile;
@@ -3447,7 +3463,7 @@ namespace MagicVilla_VillaAPI.Repository
                     {
                         existingLineItem.Quantity = lineItemDto.Quantity;
                         existingLineItem.Price = lineItemDto.Price;
-                        existingLineItem.Account = lineItemDto.Account;
+                        existingLineItem.ChartAccountId = lineItemDto.ChartAccountId;
                         existingLineItem.Memo = lineItemDto.Memo;
                         existingLineItem.ModifiedBy = taskRequestDto.AddedBy;
                         existingLineItem.ModifiedDate = DateTime.Now;
@@ -3460,7 +3476,7 @@ namespace MagicVilla_VillaAPI.Repository
                             TaskRequestId = maxId,
                             Quantity = lineItemDto.Quantity,
                             Price = lineItemDto.Price,
-                            Account = lineItemDto.Account,
+                            ChartAccountId = lineItemDto.ChartAccountId,
                             Memo = lineItemDto.Memo,
                             AddedDate = DateTime.Now,
                             AddedBy = taskRequestDto.AddedBy
@@ -3926,8 +3942,9 @@ namespace MagicVilla_VillaAPI.Repository
                                         Classification = v.Classification,
                                         VendorCategoriesIds = v.VendorCategoriesIds,
                                         HasInsurance = v.HasInsurance,
-                                        PropertyId = v.PropertyId,
-                                        UnitIds = v.UnitIds,
+                                        InsuranceCompany = v.InsuranceCompany,
+                                        PolicyNumber = v.PolicyNumber,
+                                        Amount = v.Amount,
                                         TaxId = v.TaxId,
                                         AccountName = v.AccountName,
                                         AccountHolder = v.AccountHolder,
@@ -3990,8 +4007,9 @@ namespace MagicVilla_VillaAPI.Repository
                                         Classification = v.Classification,
                                         VendorCategoriesIds = v.VendorCategoriesIds,
                                         HasInsurance = v.HasInsurance,
-                                        PropertyId = v.PropertyId,
-                                        UnitIds = v.UnitIds,
+                                        InsuranceCompany = v.InsuranceCompany,
+                                        PolicyNumber = v.PolicyNumber,
+                                        Amount = v.Amount,
                                         TaxId = v.TaxId,
                                         AccountName = v.AccountName,
                                         AccountHolder = v.AccountHolder,
@@ -4055,8 +4073,9 @@ namespace MagicVilla_VillaAPI.Repository
             vendor.Classification = model.Classification;
             vendor.VendorCategoriesIds = model.VendorCategoriesIds;
             vendor.HasInsurance = model.HasInsurance;
-            vendor.PropertyId = model.PropertyId;
-            vendor.UnitIds = model.UnitIds;
+            vendor.InsuranceCompany = model.HasInsurance == true ? model.InsuranceCompany : "";
+            vendor.PolicyNumber = model.HasInsurance == true ? model.PolicyNumber : "";
+            vendor.Amount = model.HasInsurance == true ? model.Amount : 0;
             vendor.TaxId = model.TaxId;
             vendor.AccountName = model.AccountName;
             vendor.AccountHolder = model.AccountHolder;
@@ -5093,7 +5112,7 @@ namespace MagicVilla_VillaAPI.Repository
             try
             {
                 var leasesWithProperties = await (from l in _db.Lease
-                                                  join p in _db.Assets on l.PropertyId equals p.AssetId into properties
+                                                  join p in _db.Assets on l.AssetId equals p.AssetId into properties
                                                   from p in properties.DefaultIfEmpty()
                                                   where l.IsDeleted != true && (p == null || p.IsDeleted != true)
                                                   select new
@@ -5104,6 +5123,7 @@ namespace MagicVilla_VillaAPI.Repository
                                                       l.Status,
                                                       PropertyId = (int?)p.AssetId,
                                                       Property = p != null ? p.BuildingNo + " - " + p.BuildingName : null,
+                                                      l.UnitId,
                                                       l.SelectedUnit
                                                   }).ToListAsync();
 
@@ -5116,9 +5136,19 @@ namespace MagicVilla_VillaAPI.Repository
                               TotalRentCharges = g.Sum(x => x.Amount)
                           }).ToListAsync();
 
+                var securityDeposits = await _db.SecurityDeposit
+                         .GroupBy(rc => rc.LeaseId)
+                         .Select(g => new
+                         {
+                             LeaseId = g.Key,
+                             TotalSecurityDeposit = g.Sum(x => x.Amount)
+                         }).ToListAsync();
+
                 var leaseReportDtoList = (from l in leasesWithProperties
                                           join rc in rentCharges on l.LeaseId equals rc.LeaseId into leaseRentCharges
                                           from rc in leaseRentCharges.DefaultIfEmpty()
+                                          join sc in securityDeposits on l.LeaseId equals sc.LeaseId into leaseSecurityDeposits
+                                          from sc in leaseSecurityDeposits.DefaultIfEmpty()
                                           select new LeaseReportDto
                                           {
                                               Lease = l.LeaseId.ToString(),
@@ -5128,13 +5158,20 @@ namespace MagicVilla_VillaAPI.Repository
                                               PropertyId = l.PropertyId,
                                               Property = l.Property,
                                               Unit = l.SelectedUnit,
-                                              RentCharges = rc != null ? rc.TotalRentCharges : 0
+                                              UnitId = l.UnitId,
+                                              RentCharges = rc != null ? rc.TotalRentCharges : 0,
+                                              SecurityDeposit = sc != null ? sc.TotalSecurityDeposit : 0
                                           }).ToList();
 
                 if (reportFilter.PropertiesIds.Count() > 0 && reportFilter.PropertiesIds.Any())
                 {
                     leaseReportDtoList = leaseReportDtoList.Where(x => reportFilter.PropertiesIds.Contains(x.PropertyId)).ToList();
+                } 
+                if (reportFilter.UnitsIds.Count() > 0 && reportFilter.UnitsIds.Any())
+                {
+                    leaseReportDtoList = leaseReportDtoList.Where(x => reportFilter.UnitsIds.Contains(x.UnitId)).ToList();
                 }
+
 
                 if (reportFilter.LeaseStartDateFilter != null && reportFilter.LeaseEndDateFilter != null)
                 {
@@ -5160,7 +5197,7 @@ namespace MagicVilla_VillaAPI.Repository
             {
                 var invoiceReportDtoList = await (from i in _db.Invoices
                                                   from l in _db.Lease.Where(x => x.LeaseId == i.LeaseId).DefaultIfEmpty()
-                                                  join p in _db.Assets on l.PropertyId equals p.AssetId into properties
+                                                  join p in _db.Assets on l.AssetId equals p.AssetId into properties
                                                   from p in properties.DefaultIfEmpty()
                                                   where i.IsDeleted != true && (p == null || p.IsDeleted != true)
                                                   select new
@@ -5247,6 +5284,8 @@ namespace MagicVilla_VillaAPI.Repository
                                                     EndDate = t.EndDate,
                                                     PropertyId = p.AssetId,
                                                     Property = p != null ? p.BuildingNo + " - " + p.BuildingName : null,
+                                                    UnitId = t.UnitId,
+                                                    Unit = t.Unit.UnitName,
                                                     Status = t.Status 
                                                 }).ToListAsync();
 
@@ -5255,6 +5294,13 @@ namespace MagicVilla_VillaAPI.Repository
                 {
                     taskRequestReports = taskRequestReports
                         .Where(x => reportFilter.PropertiesIds.Contains(x.PropertyId))
+                        .ToList();
+                }
+
+                if (reportFilter.UnitsIds != null && reportFilter.UnitsIds.Any())
+                {
+                    taskRequestReports = taskRequestReports
+                        .Where(x => reportFilter.UnitsIds.Contains(x.UnitId))
                         .ToList();
                 }
 

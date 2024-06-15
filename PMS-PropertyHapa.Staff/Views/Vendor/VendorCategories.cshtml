@@ -1,6 +1,4 @@
-﻿@using PMS_PropertyHapa.Models.Entities
-@model IEnumerable<VendorCategory>
-@{
+﻿ @{
     ViewData["Title"] = "VendorCategories";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -14,7 +12,7 @@
                 </div>
                 <div class="col-12 col-sm-6">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="index.html"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item"><a href="Index"><i data-feather="home"></i></a></li>
                         <li class="breadcrumb-item">Vendor Categories</li>
                         <li class="breadcrumb-item active">List</li>
                     </ol>
@@ -35,24 +33,6 @@
 
                                             <div class="card">
                                                 <div class="card-header d-flex justify-content-between align-items-center">
-
-                                                    <div class="left-side-header">
-                                                        <div class="input-group">
-                                                            <span class="input-group-text" id="basic-addon1">
-                                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                    <g>
-                                                                        <g>
-                                                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M11.2753 2.71436C16.0029 2.71436 19.8363 6.54674 19.8363 11.2753C19.8363 16.0039 16.0029 19.8363 11.2753 19.8363C6.54674 19.8363 2.71436 16.0039 2.71436 11.2753C2.71436 6.54674 6.54674 2.71436 11.2753 2.71436Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M19.8987 18.4878C20.6778 18.4878 21.3092 19.1202 21.3092 19.8983C21.3092 20.6783 20.6778 21.3097 19.8987 21.3097C19.1197 21.3097 18.4873 20.6783 18.4873 19.8983C18.4873 19.1202 19.1197 18.4878 19.8987 18.4878Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                                        </g>
-                                                                    </g>
-                                                                </svg>
-
-                                                            </span>
-                                                            <input class="form-control" type="text" id="searchInput" placeholder="Search Vendor Category" aria-label="search" aria-describedby="basic-addon1">
-                                                        </div>
-                                                    </div>
-
                                                     <div class="right-side-header">
                                                         <button class="btn btn-primary" id="newVendorCategoryBtn">New Vendor Categories</button>
                                                     </div>
@@ -62,7 +42,7 @@
 
                                             <div class="card-body p-0">
                                                 <div class="table-responsive">
-                                                    <table class="table">
+                                                    <table class="table display" id="vendorCategoryTable">
                                                         <thead>
                                                             <tr>
                                                                 <th scope="col" class="text-center tableHeaderbg">Name</th>
@@ -70,20 +50,6 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            @foreach (var item in Model?.OrderByDescending(x => x.VendorCategoryId) ?? Enumerable.Empty<VendorCategory>())
-                                                            {
-                                                                <tr>
-                                                                    <td class="tableFontSize">@item.Name</td>
-                                                                    <td class="tableFontSize">
-                                                                        <a class="btn btn-secondary" onclick="editVendorCategory(@item.VendorCategoryId)">
-                                                                            <i class="fa fa-edit"></i> Edit
-                                                                        </a>
-                                                                        <a class="btn btn-danger" onclick="deleteVendorCategory(@item.VendorCategoryId)">
-                                                                            <i class="fa fa-trash"></i> Delete
-                                                                        </a>
-                                                                    </td>
-                                                                </tr>
-                                                            }
                                                         </tbody>
                                                     </table>
                                                 </div>
@@ -125,26 +91,46 @@
 </div>
 
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-<script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
-<link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
 
 <script>
     $(document).ready(function () {
+        $('#vendorCategoryTable').DataTable({
+            "ajax": {
+                "url": "/Vendor/GetVendorCategories", 
+                "type": "GET",
+                "dataSrc": ""
+            },
 
-        $('#searchInput').on('input', function () {
-            var searchText = $(this).val().toLowerCase();
-            $('tbody tr').each(function () {
-                var vendorCategory = $(this).find('td:first').text().toLowerCase();
-
-                if (vendorCategory.includes(searchText)) {
-                    $(this).show();
-                } else {
-                    $(this).hide();
+            "columns": [
+                { 
+                  "data": "Name", 
+                  "className": "text-center" 
+                },{
+                    "className": "text-center",
+                    "data": "VendorCategoryId",
+                    "render": function (data, type, row, meta) {
+                        return `
+                                <div class="dropdown-basic">
+                                    <div class="dropdown">
+                                        <div class="btn-group mb-0">
+                                            <button class="dropbtn btn-danger" type="button">Action <span><i class="icofont icofont-arrow-down"></i></span></button>
+                                            <div class="dropdown-content">
+                                                <a class="btn btn-secondary" onclick="editVendorCategory(${data})">
+                                                    <i class="fa fa-edit"></i> Edit
+                                                </a>
+                                                <a class="btn btn-secondary" onclick="deleteVendorCategory(${data})">
+                                                    <i class="fa fa-trash"></i> Delete
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                    }
                 }
-            });
+            ]
         });
+
 
 
         $("#newVendorCategoryBtn").on("click", function () {

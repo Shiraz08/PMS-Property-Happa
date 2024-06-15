@@ -28,6 +28,8 @@ namespace PMS_PropertyHapa.Models.DTO
         public bool IsNotifyAssignee { get; set; }
         public int? AssetId { get; set; }
         public string Asset { get; set; }
+        public int? UnitId { get; set; }
+        public string Unit { get; set; }
         public string TaskRequestFile { get; set; }
         public int? OwnerId { get; set; }
         public string Owner { get; set; }
@@ -49,7 +51,8 @@ namespace PMS_PropertyHapa.Models.DTO
         public int? TaskRequestId { get; set; }
         public int Quantity { get; set; }
         public decimal Price { get; set; }
-        public int Account { get; set; }
+        public int ChartAccountId { get; set; }
+        public string AccountName { get; set; }
         public string Memo { get; set; }
     }
 }

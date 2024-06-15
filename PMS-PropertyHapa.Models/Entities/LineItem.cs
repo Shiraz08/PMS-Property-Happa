@@ -17,7 +17,9 @@ namespace PMS_PropertyHapa.Models.Entities
         public virtual TaskRequest TaskRequest { get; set; }
         public int Quantity { get; set; }
         public decimal Price { get; set; }
-        public int Account { get; set; }
+        public int ChartAccountId { get; set; }
+        [ForeignKey("ChartAccountId")]
+        public virtual ChartAccount ChartAccount { get; set; }
         public string Memo { get; set; }
     }
 }

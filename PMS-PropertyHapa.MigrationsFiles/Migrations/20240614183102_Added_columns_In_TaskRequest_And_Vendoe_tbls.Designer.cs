@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PMS_PropertyHapa.MigrationsFiles.Data;
 
@@ -11,9 +12,10 @@ using PMS_PropertyHapa.MigrationsFiles.Data;
 namespace PMS_PropertyHapa.MigrationsFiles.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    partial class ApiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240614183102_Added_columns_In_TaskRequest_And_Vendoe_tbls")]
+    partial class Added_columns_In_TaskRequest_And_Vendoe_tbls
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1199,9 +1201,6 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
                     b.Property<string>("AppTenantId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("AssetId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
@@ -1229,6 +1228,9 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
                     b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("PropertyId")
+                        .HasColumnType("int");
+
                     b.Property<string>("SelectedProperty")
                         .HasColumnType("nvarchar(max)");
 
@@ -1247,16 +1249,9 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
                     b.Property<int>("TenantsTenantId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("UnitId")
-                        .HasColumnType("int");
-
                     b.HasKey("LeaseId");
 
-                    b.HasIndex("AssetId");
-
                     b.HasIndex("TenantsTenantId");
-
-                    b.HasIndex("UnitId");
 
                     b.ToTable("Lease");
                 });
@@ -1269,6 +1264,9 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LineItemId"), 1L, 1);
 
+                    b.Property<int>("Account")
+                        .HasColumnType("int");
+
                     b.Property<string>("AddedBy")
                         .HasColumnType("nvarchar(max)");
 
@@ -1277,9 +1275,6 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
 
                     b.Property<Guid>("AppTenantId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("ChartAccountId")
-                        .HasColumnType("int");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -1306,8 +1301,6 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("LineItemId");
-
-                    b.HasIndex("ChartAccountId");
 
                     b.HasIndex("TaskRequestId");
 
@@ -2798,42 +2791,22 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
 
             modelBuilder.Entity("PMS_PropertyHapa.Models.Entities.Lease", b =>
                 {
-                    b.HasOne("PMS_PropertyHapa.Models.Entities.Assets", "Assets")
-                        .WithMany()
-                        .HasForeignKey("AssetId");
-
                     b.HasOne("PMS_PropertyHapa.Models.Entities.Tenant", "Tenants")
                         .WithMany()
                         .HasForeignKey("TenantsTenantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("PMS_PropertyHapa.Models.Entities.AssetsUnits", "AssetsUnits")
-                        .WithMany()
-                        .HasForeignKey("UnitId");
-
-                    b.Navigation("Assets");
-
-                    b.Navigation("AssetsUnits");
-
                     b.Navigation("Tenants");
                 });
 
             modelBuilder.Entity("PMS_PropertyHapa.Models.Entities.LineItem", b =>
                 {
-                    b.HasOne("PMS_PropertyHapa.Models.Entities.ChartAccount", "ChartAccount")
-                        .WithMany()
-                        .HasForeignKey("ChartAccountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("PMS_PropertyHapa.Models.Entities.TaskRequest", "TaskRequest")
                         .WithMany("LineItem")
                         .HasForeignKey("TaskRequestId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("ChartAccount");
 
                     b.Navigation("TaskRequest");
                 });

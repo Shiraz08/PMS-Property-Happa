@@ -23,6 +23,7 @@ namespace PMS_PropertyHapa.Models.DTO
         public IEnumerable<AssetDTO> Assets { get; set; } 
         public IEnumerable<UnitDTO> SelectedUnits { get; set; }   
 
+        public int? UnitId { get; set; }
         public string SelectedUnit { get; set; }
 
         public bool IsFixedTerm { get; set; }

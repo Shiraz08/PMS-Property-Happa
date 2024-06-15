@@ -24,7 +24,7 @@
                 </div>
                 <div class="col-12 col-sm-6">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="index.html"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item"><a href="ViewTask"><i data-feather="home"></i></a></li>
                         <li class="breadcrumb-item">Task Request</li>
                         <li class="breadcrumb-item active">List</li>
                     </ol>
@@ -121,12 +121,21 @@
                                                                     <td class="tableFontSize">@item.Asset</td>
                                                                     <td class="tableFontSize">@item.Status</td>
                                                                     <td class="tableFontSize">
-                                                                    <a class="btn btn-secondary" onclick="editTaskRequest(@item.TaskRequestId)">
-                                                                        <i class="fa fa-edit"></i> Edit
-                                                                    </a>
-                                                                    <a class="btn btn-danger" onclick="deleteTaskRequest(@item.TaskRequestId)">
-                                                                        <i class="fa fa-trash"></i> Delete
-                                                                    </a>
+                                                                        <div class="dropdown-basic">
+                                                                            <div class="dropdown">
+                                                                                <div class="btn-group mb-0">
+                                                                                    <button class="dropbtn btn-danger" type="button">Action <span><i class="icofont icofont-arrow-down"></i></span></button>
+                                                                                    <div class="dropdown-content">
+                                                                                        <a class="btn btn-secondary" onclick="editTaskRequest(@item.TaskRequestId)">
+                                                                                            <i class="fa fa-edit"></i> Edit
+                                                                                        </a>
+                                                                                        <a class="btn btn-secondary" onclick="deleteTaskRequest(@item.TaskRequestId)">
+                                                                                            <i class="fa fa-trash"></i> Delete
+                                                                                        </a>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
                                                                     </td>
                                                                 </tr>
                                                             }
@@ -307,6 +316,13 @@
                                 <option value="">Select Property</option>
                             </select>
                         </div>
+                                
+                        <div class="col-md-6">
+                                <label for="taskProperty" class="form-label "></label>
+                            <select class="form-select mt-2" id="taskUnit" required>
+                                <option value="">Select Unit</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="custom-file">
                         <input type="file" class="custom-file-input" id="taskFile">
@@ -423,6 +439,14 @@
             }
         });
 
+        $('#taskProperty').on('change', function () {
+            if ($("#taskProperty").val() != null) {
+                populateUnits($("#taskProperty").val());
+            } else {
+                $("#taskUnit").empty();
+            }
+        });
+
         $.ajax({
             url: '@Url.Action("GetTenants", "Communication")',
             type: 'GET',
@@ -465,6 +489,7 @@
                 });
             }
         });
+
         function handleTaskTypeChange() {
             if ($('#recurringTask').is(':checked')) {
                 // Show recurring fields
@@ -515,6 +540,7 @@
 
         $(document).on("click", '#addLineItemBtn', function () {
             if (allInputsFilled()) {
+                chartAccountsDropDown(null);
                 appendLineItemForm();
             } else {
                 Swal.fire({
@@ -563,9 +589,6 @@
                             <div class="col-md-6">
                                 <label>Account</label>
                                 <select class="form-control line-item-account" required>
-                                    <option value="">Select Account</option>
-                                    <option value="1">Account 1</option>
-                                    <option value="2">Account 2</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
@@ -613,6 +636,7 @@
                 Assignees: $('#assignees').val().join(','),
                 IsNotifyAssignee: $('#notifyAssignees').is(':checked'),
                 AssetId: $('#taskProperty').val() || null,
+                UnitId: $('#taskUnit').val() || null,
                 OwnerId: $('#newOwner').val() || null,
                 TenantId: $('#newTenant').val() || null,
                 VendorId: $('#newVendor').val() || null,
@@ -693,6 +717,70 @@
 
     });
 
+    function populateUnits(propertyId, selectedUnit) {
+        $.ajax({
+            url: '/Lease/ByProperty',
+            method: 'GET',
+            data: { propertyId: propertyId },
+            success: function (units) {
+                var $taskUnit = $('#taskUnit');
+                $taskUnit.empty();
+                units.forEach(function (unit) {
+                    var option = `<option value="${unit.UnitId}">${unit.UnitName}</option>`;
+                    $taskUnit.append(option);
+                });
+
+                if (selectedUnit) {
+                    $("#taskUnit").val(selectedUnit).trigger("change")
+                }
+            },
+            error: function (error) {
+                console.error('Error fetching units:', error.responseText || 'Unknown error');
+            }
+        });
+    }
+
+    function chartAccountsDropDown(selectedId, itemId) {
+        console.log("selectedId", selectedId);
+        $.ajax({
+            url: '@Url.Action("ChartAccountDll", "ChartAccounts")',
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                var chartAccountsDropdowns;
+                if (itemId) {
+                    chartAccountsDropdowns = document.querySelectorAll('.line-item-account[data-item-id="' + itemId + '"]');
+                } else {
+                    chartAccountsDropdowns = document.getElementsByClassName('line-item-account');
+                }
+
+                Array.prototype.forEach.call(chartAccountsDropdowns, function (chartAccountsDropdown) {
+                    if (chartAccountsDropdown.options.length === 0 || selectedId != null) {
+                        chartAccountsDropdown.innerHTML = '';
+
+                        var placeholderOption = new Option("Please select an option", "", true, false);
+                        chartAccountsDropdown.add(placeholderOption);
+
+                        data.forEach(function (item) {
+                            var option = new Option(item.Name, item.ChartAccountId);
+                            chartAccountsDropdown.add(option);
+                        });
+
+                        if (selectedId) {
+                            var optionToSelect = chartAccountsDropdown.querySelector('option[value="' + selectedId + '"]');
+                            if (optionToSelect) {
+                                optionToSelect.selected = true;
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    }
+               
+
+
+
     function resetModal() {
         $("#newTaskModal form")[0].reset();
         $('#lineItemsContainer').empty();
@@ -763,8 +851,10 @@
         }
         if ($("#relatedToDiv").hasClass("d-none")) {
             $("#taskProperty").removeAttr("required");
+            $("#taskUnit").removeAttr("required");
         } else {
             $("#taskProperty").attr("required", true);
+            $("#taskUnit").attr("required", true);
         }
     }
 
@@ -835,6 +925,8 @@
                 $('#taskStatus').val(task.Status);
                 $('#taskPriority').val(task.Priority);
                 $('#taskProperty').val(task.AssetId);
+                populateUnits(task.AssetId, task.UnitId)
+                $('#taskUnit').val(task.UnitId);
                 $('#oneTimeTask').prop('checked', task.IsOneTimeTask).trigger("change")
                 $('#recurringTask').prop('checked', task.IsRecurringTask).trigger("change");
                 if (task.IsRecurringTask) {
@@ -909,11 +1001,8 @@
                         <div class="row mt-3">
                             <div class="col-md-6">
                                 <label>Account</label>
-                                <select class="form-control line-item-account" required>
-                                    <option value="">Select Account</option>
-                                    <option value="1" ${lineItem.Account === 1 ? 'selected' : ''}>Account 1</option>
-                                    <option value="2" ${lineItem.Account === 2 ? 'selected' : ''}>Account 2</option>
-                                </select>
+                                <select class="form-control line-item-account" data-item-id="${lineItem.LineItemId}" required>
+                                    </select>
                             </div>
                             <div class="col-md-6">
                                 <label>Memo</label>
@@ -922,6 +1011,8 @@
                         </div>
                     </div>`;
         $('#lineItemsContainer').append(lineItemHtml);
+
+        chartAccountsDropDown(lineItem.Account, lineItem.LineItemId);
     }
 
 </script>

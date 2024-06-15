@@ -33,14 +33,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
         }
         public async Task<IActionResult> VendorCategories()
         {
-            IEnumerable<VendorCategory> vendorCategories = new List<VendorCategory>();
-            vendorCategories = await _authService.GetVendorCategoriesAsync();
-            var currenUserId = Request?.Cookies["userId"]?.ToString();
-            if (currenUserId != null)
-            {
-                vendorCategories = vendorCategories.Where(s => s.AddedBy == currenUserId);
-            }
-            return View(vendorCategories);
+            return View();
         }
 
         [HttpPost]

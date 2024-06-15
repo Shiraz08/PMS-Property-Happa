@@ -22,11 +22,11 @@
                     <ol class="breadcrumb">
                         @if (Model?.OwnerId == null)
                         {
-                            <li class="breadcrumb-item"><a href="@Url.Action("AddLandlord", "Landlord")"><i data-feather="home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="@Url.Action("Index", "Landlord")"><i data-feather="home"></i></a></li>
                         }
                         else
                         {
-                            <li class="breadcrumb-item"><a href="@Url.Action("EditLandlord", "Landlord")"><i data-feather="home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="@Url.Action("Index", "Landlord")"><i data-feather="home"></i></a></li>
                         }
 
 

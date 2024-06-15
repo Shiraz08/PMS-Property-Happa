@@ -14,6 +14,8 @@ namespace PMS_PropertyHapa.Models.DTO
         public DateTime? EndDate { get; set; }
         public int? PropertyId { get; set; }
         public string Property { get; set; }
+        public int? UnitId { get; set; }
+        public string Unit { get; set; }
         public string Status { get; set; }
     }
 }

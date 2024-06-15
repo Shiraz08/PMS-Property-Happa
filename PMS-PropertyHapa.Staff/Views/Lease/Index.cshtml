@@ -5,6 +5,8 @@
 
 }
 
+
+
 <!-- Page Sidebar Ends-->
 <div class="page-body">
     <div class="container-fluid">
@@ -15,7 +17,7 @@
                 </div>
                 <div class="col-12 col-sm-6">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="index.html"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item"><a href="Index"><i data-feather="home"></i></a></li>
                         <li class="breadcrumb-item">Lease</li>
                         <li class="breadcrumb-item active">List</li>
                     </ol>
@@ -69,11 +71,9 @@
                                         <tr>
                                             <td>
                                                 <div class="d-flex border-0 gap-2 align-items-center">
-                                                    <img class="img-fluid rounded-1" src="@lease.SignatureImagePath" alt="" style="max-width: 50px; height: auto;">
                                                     <div class="d-flex flex-column border-0">
                                                         <div class="d-flex border-0 flex-column align-items-baseline">
-                                                            <span class="fw-bold tableFontSize">@lease.LeaseId</span>@* 
-                                                            <span class="fw-bold tableFontSize">@lease.StartDate.ToString("d") - @lease.EndDate.ToString("d")</span> *@
+                                                            <span class="fw-bold tableFontSize">@lease.LeaseId</span>
                                                         </div>
                                                         <div class="d-flex border-0 flex-column align-items-baseline">
                                                         </div>
@@ -87,8 +87,17 @@
                                             <td class="tableFontSize">@lease.RentCharges.Count()</td>
                                             <td class="tableFontSize">@lease.SecurityDeposits.Count()</td>
                                             <td class="tableFontSize">
-                                                <a href="@Url.Action("EditLease", "Lease", new { leaseId = lease.LeaseId })" class="btn btn-primary mb-1">Edit</a>
-                                                <a href="@Url.Action("InvoiceDetails", "Lease", new { leaseId = lease.LeaseId })" class="btn btn-primary mb-1">Invoice</a>
+                                                <div class="dropdown-basic">
+                                                    <div class="dropdown">
+                                                        <div class="btn-group mb-0">
+                                                            <button class="dropbtn btn-danger" type="button">Action <span><i class="icofont icofont-arrow-down"></i></span></button>
+                                                            <div class="dropdown-content">
+                                                                <a class="dropdown-item btn-secondary rounded" href="@Url.Action("EditLease", "Lease", new { leaseId = lease.LeaseId })">Edit</a>
+                                                                <a class="dropdown-item btn-secondary rounded" href="@Url.Action("InvoiceDetails", "Lease", new { leaseId = lease.LeaseId })">Invoice</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </td>
                                         </tr>
                                     }

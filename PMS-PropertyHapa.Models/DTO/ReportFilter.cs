@@ -9,6 +9,7 @@ namespace PMS_PropertyHapa.Models.DTO
     public class ReportFilter
     {
         public List<int?>? PropertiesIds { get; set; }
+        public List<int?>? UnitsIds { get; set; }
         public DateTime? LeaseStartDateFilter { get; set; }
         public DateTime? LeaseEndDateFilter { get; set; }
         public DateTime? InvoiceStartDateFilter { get; set; }

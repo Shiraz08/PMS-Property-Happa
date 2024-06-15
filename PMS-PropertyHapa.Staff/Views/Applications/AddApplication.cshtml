@@ -1034,7 +1034,7 @@
             const errors = validateSection(currentFormIndex);
             if (errors.length === 0) {
                 collectFormData().then(formData => {
-                    var url = '../Applications/SaveApplication'; 
+                    var url = "/Applications/SaveApplication"; 
 
                     // Log formData entries
                     for (var pair of formData.entries()) {
