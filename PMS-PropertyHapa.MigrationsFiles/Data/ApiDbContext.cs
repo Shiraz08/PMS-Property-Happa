@@ -48,6 +48,7 @@ namespace PMS_PropertyHapa.MigrationsFiles.Data
         public DbSet<TaskRequestHistory> TaskRequestHistory { get; set; }
         public DbSet<LineItem> LineItem { get; set; }
         public DbSet<VendorCategory> VendorCategory { get; set; }
+        public DbSet<VendorClassification> VendorClassification { get; set; }
         public DbSet<Vendor> Vendor { get; set; }
         public DbSet<VendorOrganization> VendorOrganization { get; set; }
         public DbSet<Applications> Applications { get; set; }

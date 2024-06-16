@@ -22,16 +22,15 @@ namespace PMS_PropertyHapa.Staff.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            IEnumerable<VendorDto> vendors = new List<VendorDto>();
-            vendors = await _authService.GetVendorsAsync();
-            var currenUserId = Request?.Cookies["userId"]?.ToString();
-            if (currenUserId != null)
-            {
-                vendors = vendors.Where(s => s.AddedBy == currenUserId);
-            }
-            return View(vendors);
+            return View();
         }
+
         public async Task<IActionResult> VendorCategories()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> VendorClassification()
         {
             return View();
         }
@@ -77,6 +76,50 @@ namespace PMS_PropertyHapa.Staff.Controllers
                 vendorCategories = vendorCategories.Where(s => s.AddedBy == currenUserId);
             }
             return Ok(vendorCategories);
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> SaveVendorClassification([FromBody] VendorClassification vendorClassification)
+        {
+            if (vendorClassification == null)
+            {
+                return Json(new { success = false, message = "Received data is null." });
+            }
+
+            vendorClassification.AddedBy = Request?.Cookies["userId"]?.ToString();
+            await _authService.SaveVendorClassificationAsync(vendorClassification);
+            return Json(new { success = true, message = "Vendor Classification added successfully" });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteVendorClassification(int id)
+        {
+            await _authService.DeleteVendorClassificationAsync(id);
+            return Json(new { success = true, message = "Vendor Classification deleted successfully" });
+        }
+
+        public async Task<IActionResult> GetVendorClassificationById(int id)
+        {
+            VendorClassification vendorClassification = await _authService.GetVendorClassificationByIdAsync(id);
+            if (vendorClassification == null)
+            {
+                return StatusCode(500, "Vendor Classification not found");
+            }
+            return Ok(vendorClassification);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetVendorClassifications()
+        {
+            IEnumerable<VendorClassification> vendorClassifications = new List<VendorClassification>();
+            vendorClassifications = await _authService.GetVendorClassificationsAsync();
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
+            if (currenUserId != null)
+            {
+                vendorClassifications = vendorClassifications.Where(s => s.AddedBy == currenUserId);
+            }
+            return Ok(vendorClassifications);
         }
 
         [HttpPost]

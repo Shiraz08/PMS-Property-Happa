@@ -21,7 +21,7 @@
                 </div>
                 <div class="col-12 col-sm-6">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="Index"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item"><a href="/Home/Index"><i data-feather="home"></i></a></li>
                         <li class="breadcrumb-item">Tenant</li>
                         <li class="breadcrumb-item active">Index</li>
                     </ol>
@@ -61,7 +61,7 @@
                                                     </div>
 
                                                     <div class="right-side-header" >
-                                                        <a class="btn btn-primary" href="@Url.Action("AddTenant","Tenant")">Add New Tenant</a>
+                                                        <a class="btn btn-success" href="@Url.Action("AddTenant","Tenant")">Add New Tenant</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -141,7 +141,7 @@
 
                                                                             </div>
                                                                             <div class="right-side-header" style="padding-top:18px!important;padding-right: 27px!important;">
-                                                                                <button class="btn" style="background-color: #c9c9c9;color: black;" type="button" onclick="editTenant(@item.TenantId)">
+                                                                                <button class="btn btn-success" style="background-color: #c9c9c9;color: white;" type="button" onclick="editTenant(@item.TenantId)">
                                                                                     Edit Tenant
                                                                                 </button>
                                                                             </div>

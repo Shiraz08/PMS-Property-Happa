@@ -50,7 +50,7 @@
                                          src="@(string.IsNullOrEmpty(Model?.Picture) ? "http://bootdey.com/img/Content/avatar/avatar1.png" : $"{Model?.Picture}")"
                                          alt="" style="width: 140px;">
                                     <div class="font-italic text-muted mb-4"></div>
-                                    @Html.EditorFor(model => model.PictureUrl, new { htmlAttributes = new {  @id="PictureUrl",@class = "btn btn-primary", @type="file", @accept="image/*", @required="required", @style="width: 219px;"} })
+                                    @Html.EditorFor(model => model.PictureUrl, new { htmlAttributes = new { @id = "PictureUrl", @class = "btn btn-success", @type = "file", @accept = "image/*", @required = "required", @style = "width: 219px;" } })
                                 </div>
                             </div>
 
@@ -324,7 +324,7 @@
                                         <br />
                                         <div class="col-sm-6 col-md-3">
                                             <div class="mb-3">
-                                                <button type="button" id="saveButton" class="btn btn-primary">@(Model?.OwnerId == null ? "Add" : "Edit") Owner</button>
+                                                <button type="button" id="saveButton" class="btn btn-success">@(Model?.OwnerId == null ? "Add" : "Edit") Owner</button>
                                             </div>
                                         </div>
                                     </div>

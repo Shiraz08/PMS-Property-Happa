@@ -50,5 +50,13 @@ namespace PMS_PropertyHapa.Models.Entities
         public bool ApprovedByOwner { get; set; }
         public bool PartsAndLabor { get; set; }
         public virtual ICollection<LineItem> LineItem { get; set; }
+
+        public string AccountName { get; set; }
+        public string AccountHolder { get; set; }
+        public string AccountIBAN { get; set; }
+        public string AccountSwift { get; set; }
+        public string AccountBank { get; set; }
+        public string AccountCurrency { get; set; }
+        public string DocumentFile { get; set; }
     }
 }

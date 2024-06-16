@@ -219,5 +219,101 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             }
         }
 
+
+
+        [HttpGet("VendorClassifications")]
+        public async Task<ActionResult<VendorClassification>> GetVendorClassifications()
+        {
+            try
+            {
+                var vendorClassifications = await _userRepo.GetVendorClassificationsAsync();
+
+                if (vendorClassifications != null)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = vendorClassifications;
+                    return Ok(_response);
+                }
+                else
+                {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("No classification found with this id.");
+                    return NotFound(_response);
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
+        [HttpGet("GetVendorClassificationById/{id}")]
+        public async Task<IActionResult> GetVendorClassificationById(int id)
+        {
+
+            try
+            {
+                var vendorClassification = await _userRepo.GetVendorClassificationByIdAsync(id);
+
+                if (vendorClassification != null)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = vendorClassification;
+                    return Ok(_response);
+                }
+                else
+                {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("No classification found with this id.");
+                    return NotFound(_response);
+                }
+            }
+            catch (Exception ex)
+            {
+                _response.StatusCode = HttpStatusCode.NotFound;
+                _response.IsSuccess = false;
+                _response.ErrorMessages.Add("Error Occured");
+                return NotFound(_response);
+            }
+        }
+
+        [HttpPost("VendorClassification")]
+        public async Task<ActionResult<bool>> SaveVendorClassification(VendorClassification vendorClassification)
+        {
+            try
+            {
+                var isSuccess = await _userRepo.SaveVendorClassificationAsync(vendorClassification);
+                if (isSuccess == true)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = isSuccess;
+                }
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
+        [HttpPost("VendorClassification/{id}")]
+        public async Task<ActionResult<bool>> DeleteVendorClassificationRequest(int id)
+        {
+            try
+            {
+                var isSuccess = await _userRepo.DeleteVendorClassificationAsync(id);
+                return Ok(isSuccess);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
     }
 }

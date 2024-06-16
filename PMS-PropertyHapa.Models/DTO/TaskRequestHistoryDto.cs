@@ -14,6 +14,12 @@ namespace PMS_PropertyHapa.Models.DTO
         public string Type { get; set; }
         public string Status { get; set; }
         public string Remarks { get; set; }
+        public string AccountName { get; set; }
+        public string AccountHolder { get; set; }
+        public string AccountIBAN { get; set; }
+        public string AccountSwift { get; set; }
+        public string AccountBank { get; set; }
+        public string AccountCurrency { get; set; }
         public string DocumentFile { get; set; }
         public int? Expense { get; set; }
         public string AddedBy { get; set; }

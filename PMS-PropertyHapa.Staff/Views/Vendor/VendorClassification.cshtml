@@ -1,0 +1,230 @@
+﻿@{
+    ViewData["Title"] = "VendorClassification";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-sm-6">
+                    <h3>Vendor Classification</h3>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="Index"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item">Classification</li>
+                        <li class="breadcrumb-item active">List</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="email-wrap bookmark-wrap">
+            <div class="row">
+                <div class="col-xl-12 col-md-12 box-col-12 ">
+                    <div class="email-right-aside bookmark-tabcontent contacts-tabs">
+                        <div class="card email-body radius-left">
+                            <div class="ps-0">
+                                <div class="tab-content">
+                                    <div class="tab-pane fade active show" id="pills-personal" role="tabpanel" aria-labelledby="pills-personal-tab">
+                                        <div class="card mb-0">
+
+                                            <div class="card">
+                                                <div class="card-header d-flex justify-content-between align-items-center">
+                                                    <div class="right-side-header">
+                                                        <button class="btn btn-success" id="newVendorClassificationBtn">New Vendor Classification</button>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                            <div class="card-body p-0">
+                                                <div class="table-responsive">
+                                                    <table class="table display" id="vendorClassificationTable">
+                                                        <thead>
+                                                            <tr>
+                                                                <th scope="col" class="text-center tableHeaderbg">Name</th>
+                                                                <th scope="col" class="text-center tableHeaderbg">Action</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="newVendorClassificationModal" tabindex="-1" aria-labelledby="vendorClassificationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="vendorClassificationModalLabel">New Vendor Classification</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="vendorClassificationForm">
+                <input type="hidden" value="" id="vendorClassificationId" />
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="vendorClassificationName" class="form-label">Name *</label>
+                        <input type="text" class="form-control" name="vendorClassificationName" id="vendorClassificationName" placeholder="Vendor Classification..." required>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-success" id="saveBtn">Save</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    $(document).ready(function () {
+        $('#vendorClassificationTable').DataTable({
+            "ajax": {
+                "url": "/Vendor/GetVendorClassifications",
+                "type": "GET",
+                "dataSrc": ""
+            },
+
+            "columns": [
+                {
+                    "data": "Name",
+                    "className": "text-center"
+                }, {
+                    "className": "text-center",
+                    "data": "VendorClassificationId",
+                    "render": function (data, type, row, meta) {
+                        return `
+                                    <div class="dropdown-basic">
+                                        <div class="dropdown">
+                                            <div class="btn-group mb-0">
+                                                    <button class="dropbtn btn btn-success" type="button">Action <span><i class="icofont icofont-arrow-down"></i></span></button>
+                                                <div class="dropdown-content">
+                                                        <a class="btn btn-secondary" onclick="editVendorClassification(${data})">
+                                                        <i class="fa fa-edit"></i> Edit
+                                                    </a>
+                                                        <a class="btn btn-secondary" onclick="deleteVendorClassification(${data})">
+                                                        <i class="fa fa-trash"></i> Delete
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                    }
+                }
+            ]
+        });
+
+
+
+        $("#newVendorClassificationBtn").on("click", function () {
+            resetModal();
+            $("#vendorClassificationModalLabel").html("New Vendor Classification");
+            $("#newVendorClassificationModal").modal('show');
+        });
+
+        $('#vendorClassificationForm').on('submit', function (event) {
+            event.preventDefault();
+
+            var formData = {
+                VendorClassificationId: Number($('#vendorClassificationId').val()),
+                Name: $('#vendorClassificationName').val(),
+            };
+
+            $.ajax({
+                url: '@Url.Action("SaveVendorClassification", "Vendor")',
+                type: 'POST',
+                data: JSON.stringify(formData),
+                contentType: 'application/json',
+                beforeSend: function () {
+                    $('#saveBtn').prop('disabled', true).text('Saving...');
+                },
+                success: function (response) {
+                    $("#newVendorClassificationModal").modal('hide');
+                    location.reload();
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error:', error);
+                    alert('Failed to save data');
+                },
+                complete: function () {
+                    $('#saveBtn').prop('disabled', false).text('Save');
+                }
+            });
+        });
+    });
+
+    function resetModal() {
+        $("#newVendorClassificationModal form")[0].reset();
+    }
+
+    function deleteVendorClassification(id) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'You will not be able to recover this Vendor Classification!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '@Url.Action("DeleteVendorClassification", "Vendor")',
+                    type: 'POST',
+                    data: { id: id },
+                    success: function (res) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Vendor Classification deleted successfully',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        location.reload()
+                    },
+                    error: function (xhr, status, error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Something went wrong!'
+                        });
+                    },
+                });
+            }
+        });
+    }
+
+    function editVendorClassification(id) {
+        $.ajax({
+            url: '@Url.Action("GetVendorClassificationById", "Vendor")',
+            type: 'POST',
+            data: { id: id },
+            success: function (res) {
+                $("#vendorClassificationModalLabel").html("Edit Vendor Classification");
+                $("#vendorClassificationId").val(res.VendorClassificationId);
+                $("#vendorClassificationName").val(res.Name);
+                $("#newVendorClassificationModal").modal('show');
+            },
+            error: function (xhr, status, error) {
+                console.error('Error:', error);
+                alert('Failed to retrieve data');
+            },
+        });
+    }
+</script>

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PMS_PropertyHapa.MigrationsFiles.Data;
 
@@ -11,9 +12,10 @@ using PMS_PropertyHapa.MigrationsFiles.Data;
 namespace PMS_PropertyHapa.MigrationsFiles.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    partial class ApiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240616085852_added_TaskRequestHistory_rowChanges")]
+    partial class added_TaskRequestHistory_rowChanges
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1751,24 +1753,6 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TaskRequestId"), 1L, 1);
 
-                    b.Property<string>("AccountBank")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AccountCurrency")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AccountHolder")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AccountIBAN")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AccountName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AccountSwift")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("AddedBy")
                         .HasColumnType("nvarchar(max)");
 
@@ -1788,9 +1772,6 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DocumentFile")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("DueDate")

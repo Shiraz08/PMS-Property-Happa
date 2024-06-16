@@ -1582,6 +1582,83 @@ namespace PMS_PropertyHapa.Staff.Services
 
         #endregion
 
+        #region Vendor Classification
+
+        public async Task<IEnumerable<VendorClassification>> GetVendorClassificationsAsync()
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = $"{villaUrl}/api/v1/VendorAuth/VendorClassifications"
+            });
+
+            if (response.IsSuccess == true)
+            {
+                var userListJson = Convert.ToString(response.Result);
+                var asset = JsonConvert.DeserializeObject<IEnumerable<VendorClassification>>(userListJson);
+                return asset;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve vendor classifications data");
+            }
+        }
+        public async Task<VendorClassification> GetVendorClassificationByIdAsync(int id)
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = $"{villaUrl}/api/v1/VendorAuth/GetVendorClassificationById/{id}"
+            });
+            if (response.IsSuccess && response.Result != null)
+            {
+                return JsonConvert.DeserializeObject<VendorClassification>(Convert.ToString(response.Result));
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve vendor classification data");
+            }
+        }
+        public async Task<bool> SaveVendorClassificationAsync(VendorClassification vendorClassification)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Data = vendorClassification,
+                    Url = $"{villaUrl}/api/v1/VendorAuth/VendorClassification"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when updating vendor classification: {ex.Message}", ex);
+            }
+        }
+        public async Task<bool> DeleteVendorClassificationAsync(int id)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Url = $"{villaUrl}/api/v1/VendorAuth/VendorClassification/{id}"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when deleting vendor classification: {ex.Message}", ex);
+            }
+        }
+
+        #endregion
+
         #region Vendor 
 
         public async Task<IEnumerable<VendorDto>> GetVendorsAsync()

@@ -48,7 +48,7 @@
                         </div>
 
                         <div class="right-side-header">
-                            <a href="@Url.Action("Create","Budget")" class="btn btn-primary float-right ml-2"><i class="fa fa-plus"></i>New Budget</a>
+                            <a href="@Url.Action("Create","Budget")" class="btn btn-success float-right ml-2"><i class="fa fa-plus"></i>New Budget</a>
 
                         </div>
                     </div>
@@ -57,12 +57,12 @@
                             <i class="fa-solid fa-calculator mb-5" style="font-size: 85px;"></i>
                             <h4 class="mb-3"><b>No Active Budgets</b></h4>
                             <p>Create budgets to plan your finances, compare against actual performance,<br /> and maximize your company's potential</p>
-                            <a href="@Url.Action("Create","Budget")" class="btn btn-primary float-center ml-2 mt-2"><i class="fa fa-plus"></i>New Budget</a>
+                            <a href="@Url.Action("Create","Budget")" class="btn btn-success float-center ml-2 mt-2"><i class="fa fa-plus"></i>New Budget</a>
 
                         </div>
                         <div id="budgetData" class="budgetData d-none">
                             <ul class="nav nav-tabs nav-primary" id="pills-warningtab" role="tablist">
-                                <li class="nav-item"><a style="font-size: 19px;" class="nav-link active" id="pills-warningAll-tab" data-bs-toggle="pill" href="#pills-warningall" role="tab" aria-controls="pills-warningall" aria-selected="true">All @* (@Model.ToList().Count()) *@</a></li>
+                                <li class="nav-item"><a style="font-size: 19px;" class="nav-link active btn-success" id="pills-warningAll-tab" data-bs-toggle="pill" href="#pills-warningall" role="tab" aria-controls="pills-warningall" aria-selected="true">All @* (@Model.ToList().Count()) *@</a></li>
                             </ul>
                             <div class="tab-content" id="pills-warningtabContent">
                                @*  <div class="tab-pane fade show active" id="pills-warningall" role="tabpanel" aria-labelledby="pills-warningAll-tab">
@@ -98,7 +98,7 @@
                                                             <div class="dropdown-basic">
                                                                 <div class="dropdown">
                                                                     <div class="btn-group mb-0">
-                                                                        <button class="dropbtn btn-danger" type="button">Action <span><i class="icofont icofont-arrow-down"></i></span></button>
+                                                                    <button class="dropbtn btn-success" type="button">Action <span><i class="icofont icofont-arrow-down"></i></span></button>
                                                                         <div class="dropdown-content">
                                                                             @Html.ActionLink("Delete", "DeleteBudget", "Budget", new { id = item.BudgetId }, null)
                                                                             @Html.ActionLink("DuplicateBudget", "DuplicateBudget", new { id = item.BudgetId })

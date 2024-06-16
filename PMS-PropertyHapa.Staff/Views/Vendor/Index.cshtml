@@ -1,7 +1,4 @@
-﻿@using PMS_PropertyHapa.Models.DTO
-@using PMS_PropertyHapa.Models.Entities
-@model IEnumerable<VendorDto>
-@{
+﻿@{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -21,7 +18,7 @@
         }
 
             .nav-sidebar .nav-link.active {
-                background-color: #dc3545; 
+                background-color: #7dc006; 
                 color: #fff; 
                 font-weight: bold; 
             }
@@ -37,7 +34,7 @@
                 </div>
                 <div class="col-12 col-sm-6">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="Index"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item"><a href="/Home/Index"><i data-feather="home"></i></a></li>
                         <li class="breadcrumb-item">Vendor</li>
                         <li class="breadcrumb-item active">List</li>
                     </ol>
@@ -51,27 +48,10 @@
             <div class="col-xl-12 col-md-12 box-col-12">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-
-                        <div class="left-side-header">
-                            <div class="input-group">
-                                <span class="input-group-text" id="basic-addon1">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <g>
-                                            <g>
-                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M11.2753 2.71436C16.0029 2.71436 19.8363 6.54674 19.8363 11.2753C19.8363 16.0039 16.0029 19.8363 11.2753 19.8363C6.54674 19.8363 2.71436 16.0039 2.71436 11.2753C2.71436 6.54674 6.54674 2.71436 11.2753 2.71436Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M19.8987 18.4878C20.6778 18.4878 21.3092 19.1202 21.3092 19.8983C21.3092 20.6783 20.6778 21.3097 19.8987 21.3097C19.1197 21.3097 18.4873 20.6783 18.4873 19.8983C18.4873 19.1202 19.1197 18.4878 19.8987 18.4878Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                                            </g>
-                                        </g>
-                                    </svg>
-
-                                </span>
-                                <input class="form-control" type="text" id="searchInput" placeholder="Search Vendor" aria-label="search" aria-describedby="basic-addon1">
-                            </div>
-                        </div>
-
                         <div class="right-side-header">
-                            <a href="@Url.Action("VendorCategories", "Vendor")" class="btn btn-primary">Add Vendor Categories</a>
-                            <button type="button" class="btn btn-primary" id="addVendorBtn">
+                            <a href="@Url.Action("VendorClassification", "Vendor")" class="btn btn-success">Add Vendor Classification</a>
+                            <a href="@Url.Action("VendorCategories", "Vendor")" class="btn btn-success">Add Vendor Categories</a>
+                            <button type="button" class="btn btn-success" id="addVendorBtn">
                                 Add New Vendor
                             </button>
 
@@ -80,7 +60,7 @@
 
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-hover text-center">
+                            <table class="table table-hover text-center display" id="vendorTable">
                                 <thead class="table-dark">
                                     <tr>
                                         <th scope="col" class="tableHeaderbg">Vendor</th>
@@ -90,63 +70,6 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach (var item in Model?.OrderByDescending(x => x.VendorId) ?? Enumerable.Empty<VendorDto>())
-                                    {
-                                        <tr>
-                                            <td class="tableFontSize align-middle">
-                                                <a class="contact-tab-@item.VendorId nav-link d-flex justify-content-center align-items-center" id="v-pills-@item.VendorId-tab" data-bs-toggle="pill" onclick="activeDivforowner(@item.VendorId)" href="#v-pills-@item.VendorId" role="tab" aria-controls="v-pills-@item.VendorId" aria-selected="true">
-                                                    <div class="d-flex align-items-center">
-                                                        @if (item.Picture != null)
-                                                        {
-                                                            <img class="img-50 img-fluid rounded-circle me-2" src="@item.Picture" alt="Sample Image">
-                                                        }
-                                                        else
-                                                        {
-                                                            <img class="img-50 img-fluid me-2 rounded-circle" src="http://bootdey.com/img/Content/avatar/avatar1.png" alt="Sample Image">
-                                                        }
-                                                        <div>
-                                                            @item.FirstName @item.LastName
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </td>
-                                            <td class="tableFontSize align-middle" style="text-align: center;">
-                                                <div style="display: flex; align-items: center; justify-content: center;">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 5px;">
-                                                        <path d="M3 6v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2z"></path>
-                                                        <polyline points="3 6 12 13 21 6"></polyline>
-                                                    </svg>
-                                                    <span style="vertical-align: middle;">@item.Email1</span>
-                                                </div>
-                                                <div style="display: flex; align-items: center; justify-content: center;">
-                                                    <svg aria-hidden="true" focusable="false" class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="15" height="15" style="margin-right: 5px;">
-                                                        <path d="M493.4 24.6l-104-24c-11.3-2.6-22.9 3.3-27.5 13.9l-48 112c-4.2 9.8-1.4 21.3 6.9 28l60.6 49.6c-36 76.7-98.9 140.5-177.2 177.2l-49.6-60.6c-6.8-8.3-18.2-11.1-28-6.9l-112 48C3.9 366.5-2 378.1.6 389.4l24 104C27.1 504.2 36.7 512 48 512c256.1 0 464-207.5 464-464 0-11.2-7.7-20.9-18.6-23.4z"></path>
-                                                    </svg>
-                                                    <span style="vertical-align: middle;">@item.Phone1</span>
-                                                </div>
-                                            </td>
-                                            <td class="tableFontSize align-middle">
-                                                @(item.HasInsurance ?? false ? "Yes" : "No")
-                                            </td>
-                                            <td class="tableFontSize align-middle">
-                                                <div class="dropdown-basic">
-                                                    <div class="dropdown">
-                                                        <div class="btn-group mb-0">
-                                                            <button class="dropbtn btn-danger" type="button">Action <span><i class="icofont icofont-arrow-down"></i></span></button>
-                                                            <div class="dropdown-content">
-                                                                <a class="btn btn-secondary me-1" onclick="editVendor(@item.VendorId)">
-                                                                    <i class="fa fa-edit"></i> Edit
-                                                                </a>
-                                                                <a class="btn btn-secondary" onclick="deleteVendor(@item.VendorId)">
-                                                                    <i class="fa fa-trash"></i> Delete
-                                                                </a>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    }
                                 </tbody>
                             </table>
                         </div>
@@ -189,7 +112,7 @@
                             <div class="mb-3">
                                 <img class="img-account-profile2 rounded-circle mb-2" src="http://bootdey.com/img/Content/avatar/avatar1.png" alt="Profile Image" id="imagePreview" style="width: 140px;">
                                 <div class="font-italic text-muted mb-4">Upload a new profile picture</div>
-                                <input id="PictureUrl" class="btn btn-primary" type="file" accept="image/*" required="required" style="width: 219px;">
+                                <input id="PictureUrl" class="btn btn-success" type="file" accept="image/*" required="required" style="width: 219px;">
                             </div>
                             <div class="row">
                                 <div class="col">
@@ -381,8 +304,6 @@
                             <div class="mb-3">
                                 <label for="classification" class="form-label">Classification</label>
                                 <select class="form-control select2" multiple="multiple" id="classification">
-                                    <option value="Maintainance">Maintainance</option>
-                                    <option value="LandScaping">LandScaping</option>
                                 </select>
                             </div>
                             <!-- Vendor Categories -->
@@ -523,10 +444,10 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-secondary" id="prevButton">Previous</button>
-                <button type="button" class="btn btn-primary" id="nextButton">Next</button>
-                <button type="submit" class="btn btn-primary" id="saveButton" style="display:none;">Save Changes</button>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" id="prevButton">Previous</button>
+                <button type="button" class="btn btn-success" id="nextButton">Next</button>
+                <button type="submit" class="btn btn-success" id="saveButton" style="display:none;">Save Changes</button>
             </div>
 
         </div>
@@ -538,18 +459,97 @@
     const formSections = $(".form-section");
     const totalForms = formSections.length;
     $(document).ready(function () {
-        $('#searchInput').on('input', function () {
-            var searchText = $(this).val().toLowerCase();
-            $('tbody tr').each(function () {
-                var accountType = $(this).find('td:first').text().toLowerCase();
+        // $('#searchInput').on('input', function () {
+        //     var searchText = $(this).val().toLowerCase();
+        //     $('tbody tr').each(function () {
+        //         var accountType = $(this).find('td:first').text().toLowerCase();
 
-                if (accountType.includes(searchText)) {
-                    $(this).show();
-                } else {
-                    $(this).hide();
-                }
+        //         if (accountType.includes(searchText)) {
+        //             $(this).show();
+        //         } else {
+        //             $(this).hide();
+        //         }
+        //     });
+        // });
+
+        $('#vendorTable').DataTable({
+                "ajax": {
+                    "url": "/Vendor/GetVendors", 
+                    "type": "GET",
+                    "dataSrc": ""
+                },
+
+                "columns": [
+                    {
+                        "data": "Picture",
+                        "className": "tableFontSize align-middle",
+                        "render": function(data, type, row, meta) {
+                            return `
+                                <a class="contact-tab-${row.VendorId} nav-link d-flex justify-content-center align-items-center" id="v-pills-${row.VendorId}-tab" data-bs-toggle="pill" onclick="activeDivforowner(${row.VendorId})" href="#v-pills-${row.VendorId}" role="tab" aria-controls="v-pills-${row.VendorId}" aria-selected="true">
+                                    <div class="d-flex align-items-center">
+                                        <img class="img-50 img-fluid rounded-circle me-2" src="${data ? data : 'http://bootdey.com/img/Content/avatar/avatar1.png'}" alt="Sample Image">
+                                        <div>
+                                            ${row.FirstName} ${row.LastName}
+                                        </div>
+                                    </div>
+                                </a>
+                            `;
+                        }
+                    },
+                    {
+                        "data": "Email1",
+                        "className": "tableFontSize align-middle",
+                        "render": function(data, type, row, meta) {
+                            return `
+                                <div style="display: flex; align-items: center; justify-content: center;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 5px;">
+                                        <path d="M3 6v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2z"></path>
+                                        <polyline points="3 6 12 13 21 6"></polyline>
+                                    </svg>
+                                    <span style="vertical-align: middle;">${data}</span>
+                                </div>
+                                <div style="display: flex; align-items: center; justify-content: center;">
+                                    <svg aria-hidden="true" focusable="false" class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="15" height="15" style="margin-right: 5px;">
+                                        <path d="M493.4 24.6l-104-24c-11.3-2.6-22.9 3.3-27.5 13.9l-48 112c-4.2 9.8-1.4 21.3 6.9 28l60.6 49.6c-36 76.7-98.9 140.5-177.2 177.2l-49.6-60.6c-6.8-8.3-18.2-11.1-28-6.9l-112 48C3.9 366.5-2 378.1.6 389.4l24 104C27.1 504.2 36.7 512 48 512c256.1 0 464-207.5 464-464 0-11.2-7.7-20.9-18.6-23.4z"></path>
+                                    </svg>
+                                    <span style="vertical-align: middle;">${row.Phone1}</span>
+                                </div>
+                            `;
+                        }
+                    },
+                    {
+                        "data": "HasInsurance",
+                        "className": "tableFontSize align-middle",
+                        "render": function(data, type, row, meta) {
+                            return data ? "Yes" : "No";
+                        }
+                    },
+                    {
+                        "data": "VendorId",
+                        "className": "tableFontSize align-middle",
+                        "render": function(data, type, row, meta) {
+                            return `
+                                <div class="dropdown-basic">
+                                    <div class="dropdown">
+                                        <div class="btn-group mb-0">
+                                            <button class="dropbtn btn btn-success" type="button">Action <span><i class="icofont icofont-arrow-down"></i></span></button>
+                                            <div class="dropdown-content">
+                                                <a class="btn btn-secondary me-1" onclick="editVendor(${data})">
+                                                    <i class="fa fa-edit"></i> Edit
+                                                </a>
+                                                <a class="btn btn-secondary" onclick="deleteVendor(${data})">
+                                                    <i class="fa fa-trash"></i> Delete
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    }
+                ]
             });
-        });
+
 
         $("#addVendorBtn").click(function () {
             $("#vendorModal").modal('show');
@@ -818,6 +818,21 @@
 
 
     function populateDropDowns() {
+        $.ajax({
+            url: '@Url.Action("GetVendorClassifications", "Vendor")',
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                var vendorDropdown = document.getElementById('classification');
+                // vendorDropdown.innerHTML = ''; // Clear existing options
+                data.forEach(function (item) {
+                    var option = new Option(item.Name, item.VendorCategoryId);
+                    vendorDropdown.appendChild(option);
+                });
+            }
+        });
+
+
         $.ajax({
             url: '@Url.Action("GetVendorCategories", "Vendor")',
             type: 'GET',

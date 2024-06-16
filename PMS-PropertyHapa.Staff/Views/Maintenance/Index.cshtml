@@ -1,6 +1,4 @@
-﻿@using Newtonsoft.Json
-@using PMS_PropertyHapa.Models.DTO
-@model IEnumerable<TaskRequestDto>
+﻿
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -17,7 +15,7 @@
                 </div>
                 <div class="col-12 col-sm-6">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="Index"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item"><a href="/Home/Index"><i data-feather="home"></i></a></li>
                         <li class="breadcrumb-item">Maintenance</li>
                         <li class="breadcrumb-item active">List</li>
                     </ol>
@@ -25,113 +23,33 @@
             </div>
         </div>
     </div>
-    <div class="container-fluid">
-        <div class="email-wrap bookmark-wrap">
-            <div class="row">
-                <div class="col-xl-12 col-md-12 box-col-12 ">
-                    <div class="email-right-aside bookmark-tabcontent contacts-tabs">
-                        <div class="card email-body radius-left">
-                            <div class="ps-0">
-                                <div class="tab-content">
-                                    <div class="tab-pane fade active show" id="pills-personal" role="tabpanel" aria-labelledby="pills-personal-tab">
-                                        <div class="card mb-0">
+    <div class="container-fluid my-4">
+        <div class="row">
+            <!-- Column 1: Properties Table (80% on lg screens) -->
+            <div class="col-xl-12 col-md-12 box-col-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        
+                    </div>
 
-                                            <div class="card">
-                                                <div class="card-header d-flex justify-content-between align-items-center">
-
-                                                    <div class="left-side-header">
-                                                        <div class="input-group">
-                                                            <span class="input-group-text" id="basic-addon1">
-                                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                    <g>
-                                                                        <g>
-                                                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M11.2753 2.71436C16.0029 2.71436 19.8363 6.54674 19.8363 11.2753C19.8363 16.0039 16.0029 19.8363 11.2753 19.8363C6.54674 19.8363 2.71436 16.0039 2.71436 11.2753C2.71436 6.54674 6.54674 2.71436 11.2753 2.71436Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M19.8987 18.4878C20.6778 18.4878 21.3092 19.1202 21.3092 19.8983C21.3092 20.6783 20.6778 21.3097 19.8987 21.3097C19.1197 21.3097 18.4873 20.6783 18.4873 19.8983C18.4873 19.1202 19.1197 18.4878 19.8987 18.4878Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                                        </g>
-                                                                    </g>
-                                                                </svg>
-
-                                                            </span>
-                                                            <input class="form-control" type="text" id="searchInput" placeholder="Search Maintenance" aria-label="search" aria-describedby="basic-addon1">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="card-body p-0">
-                                                <div class="table-responsive">
-                                                    <table class="table">
-                                                        <thead>
-                                                            <tr>
-                                                                <th scope="col" class="text-center tableHeaderbg">Task</th>
-                                                                <th scope="col" class="text-center tableHeaderbg">Due at</th>
-                                                                <th scope="col" class="text-center tableHeaderbg">Related To</th>
-                                                                <th scope="col" class="text-center tableHeaderbg">Total Amount</th>
-                                                                <th scope="col" class="text-center tableHeaderbg">Status</th>
-                                                                <th scope="col" class="text-center tableHeaderbg">Action</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            @foreach (var item in Model?.OrderByDescending(x => x.TaskRequestId) ?? Enumerable.Empty<PMS_PropertyHapa.Models.DTO.TaskRequestDto>())
-                                                            {
-                                                                <tr>
-                                                                    <td>
-                                                                        <a class="contact-tab-@item.TaskRequestId nav-link" id="v-pills-@item.TaskRequestId-tab" data-bs-toggle="pill" onclick="activeDivforowner(@item.TaskRequestId)" href="#v-pills-@item.TaskRequestId" role="tab" aria-controls="v-pills-@item.TaskRequestId" aria-selected="true">
-                                                                            <div class="media">
-                                                                                @if (item.TaskRequestFile != null)
-                                                                                {
-                                                                                    <img class="img-50 img-fluid m-r-20 rounded-circle update_img_0" src="@item.TaskRequestFile" alt="Sample Image">
-                                                                                }
-                                                                                else
-                                                                                {
-                                                                                    <img class="img-50 img-fluid m-r-20 rounded-circle update_img_0" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQwNGg8PGjclHyU3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3N//AABEIAJQAswMBIgACEQEDEQH/xAAbAAABBQEBAAAAAAAAAAAAAAADAAIEBQYBB//EAD4QAAEDAgQDBQUGBQIHAAAAAAEAAgMEEQUSITETQVEGImFxkRQyQoGxI1KhwdHwFTNiY3IHkhYlU3OCo7L/xAAaAQADAQEBAQAAAAAAAAAAAAABAgMABAUG/8QAJxEAAgICAgIBAgcAAAAAAAAAAAECEQMSIUEEMRMiMgVCUWFxkaH/2gAMAwEAAhEDEQA/ANGBZIzxMNnGxRi24WI7Wz1VKeJA4iydAZtRUREaPCfDK292kFeRt7SVsZGZ9xdazs7j4qrZjrsUGzG8hrTE4WVm3HHBtt1n2Oa+PONVV1eMxUsoa9wFzzW2NqaqrxJ9QLKIDdVMGLU8gBu3VWcErJR3Sg3YUqHlVuKsvA7yVrk0UaphztIIQCeIdrKd4qtGEi6zxiePgK9mxPAo533cL/JUsvZlhcbNQs1HmOR9/dKcInn4SvR/+F2Ddq6OzcQGrQtZqPN+E/7hS4Dz8BXoT8Ep2HYIseAwutYBawUVv+nz6qimLmAi55r1Z+K1c0GUkWI5LOYLhkMHu2WjZE0CwtsjswUiJG1wNyiEI0pjjF3aIAnifsULCDeEB4UlxadnBAls0EkrGI9l1RX18bXkZtkljFmJ3Kg7Tx8aBx8EN2MX91xUPEKuSpgLWg7IKQ1GFkdleW8wdUehrJKOZsjCd0T+D1k9QbMsCVd4f2NqZ7ZybHkqJbehPRq+zuNipp2hx3G11RdsyXd6O976WC1vZzsa2kYLnXxV7L2Xp5rZ4wfNOsTvliuZ4nSHFBbhMktyut32Yqq8MtUNNwtiOz1JELCNungixYdDEdGgIyhFI0XZHbM7ILgoc9WI2F0mjQpz4WWtZZXtBVh0ogiOjfeXOkVfCJMmKUztDJ+CA/EKTL/MAPLRUhCaQqaInsyXV17nX4JYfMqvkrKo8mf7wi28vVLKfH1C2qBsyqqjVucSwNHnMESCrrWDvtZcf3W/qp7m+DvQJjmaaj/1ramtiosWqon2kjGXqJGn81pqTFOIwdbLzntNiXscLYactE7ze+W2ULZ9mZosTwqGrj3d3Xt+64bqU3RWCbGdosTqGRnhAk20CzFLjOIRnvtK3VRRRyCzmglQX4RAfgCn8g+hT4ZjdTPUFr43ZQbX6qbjeJvhp7hp2UyLDIonBzAAUKuoGztIct8htDz2bGKp0riAbErq1pwKK/uhJH5ED42XVPgrG209VObhcTRYhSWyAJ4eSpqRXUHTUEEbhZoV1SMjZsFWx7qdASF0Y5kpRLqneANFJLrhV0D9FK4gsr7EXE5KFFebI0j9FBqalkMbnvNgAlkx4ogY5iHslOWtP2j9Asa8lziSbk7lSq+qdWTukdexPdB5BRbeaKVCSdsbbzSAH7KcP3qukdboijLef1THWA1Pq1P0OmhXCMu+YeWqBgZtyDfk6yjVkzaaB0smYADTvc1JcRzLf/IWWexWo9om4bLFjLi45lJknpGzp8Xx3nya9GcxQvqKh80ly9xvryWj/wBNsV9lxJ2Hyu+zqtW35PA/NU9RECOagRNmpZmTx3a5r+67o4Lli9uD0vLwLHTR7k9vTZAcCEHBMRZimFw1Q0cWjO3o4bqW4XUG6ZypcEVzigvfopT2KPIxDYNIDn8Elws1XVtjUiyjbdSGAILAitNkyYtB4xqpkKgsdzUiKTVWjInJFnGQBuEdouLqsjlJfZTWy90BdCkScRTvsNOSyWPV5lk4ETjkb71uvRaPEGyvgcKf3yOaxVTDNC8tqAWu3ueaMeWLNugJKb6HwTjoNdlzYdB6qpIXLW4HqueQHmF06C9rf4lMJvqLFYwnOtu7X+oJhFtm2/xKRPiR4OSykkBrbucbANO5QbMNymaXgtcRzdfoqLE4jC2IFrM+eUXa3LcAiy0uG07KbG61sz3uyMiGjb3JBJ+qpu0/CNRTcESZcj3d8AG5cenkuPLLZWe14EHjzqP7X/g2lo3yYUx8b3sJlAuw2uM3VCnwwVlBWuG5qnlpHhayvcGOTB6NpgjkBkvd7j94nZFwaDiYK1xAPEe93q4oVSQmaVuf8mc7C4q6irJKOc5Wy7A/C4L0ASsOnNeY4/RuoMRbUw90F3LkVs8KrBX0MVQD3zo4dCFPKuLOfG+i6drsgPGiE2VzdCSumUFc5UblXU3OksYnBye03QAU8OsmsFB81tEWN+UXKjM6rkst0ykBosIH3OYqayRVNK+7dVOidz6K6kTlEmAglV2NMbJTueWg5eqkxyZgSmTxCqpnx3tm0VIu2RnwjK4tCyjbBIwHLI0uJvtpdQwRpa9yL6forXtPBwaGljJvla5t+vdQhTNkpBffhsKtFvkWUVqmVzjfW17cwmE5jyP1CnUGHOqKB8rpSHMke3XoD13USaF8TWulALXaBwI18j+/JMpJiSg4ugfgHWJ5O1urXAaPO72qRrRyj8epUCkpX1lQ2Fl+FvI4jUDp5la2GIMaGtAAAsB4KeSfSGhGuWUNDDxcdxcgCzZIwSfBgWa7Us4eIRNJYbRa5Xg2OY9PNLHYZqntFXMgBcTJqAbbABUzm5HFtrEGxXHLI61PpvG8ZLIst9Lg1FJi+GU+FU0L5JjLG0Zmtj2OvP5q5wCG2A0g/trE+yN/hjqrMc1wA3zK9EwqPh4XSt6RN+iaMnL2cPm48cI3Dt8lLjGCsxJpie8sB1uBsVDwPB6vCZpGcVk1NJ8i0+S1FQ0NjLvFQnv5hSySadHHCKasE9puhEHmjZ7ochbzKlZSgJLkk5Jaw0TQ4DmiRg7ndAjbc3duiOeG6c1gBXPsNN0Muu4DmUIu1TQ77UajRMjFkx7Iy0PdlaeaveFFh0MZkhFRVSNzMjebNY3q5ZwFrmAyNu3cjwV12jq3U+OzNlFoXBpY8D3Rb6LrwafmOXMpXwPlxLELaVTYwNmxRANCr34u+Oce3Ma+MnWSJuVzfMbH5WTpHAjQ6KtrNWm67XBVwcmzF2uewxwRteHlzXPjcNpG23H59EOlN6Jh/stQC41GFVUN/tKUipp3fdsQHjyIP4IVPiTS0sqBkeW5Q8e78wkXA8pWkWmCj/lM9tft5P8A6UCF0NXQH2ctfJSu4uW1wbEgj0up3Zp7X4fJsW8eTY+KkCggo2Vc0FxxIiMvTQn81NcIplf1sNT08LWA07GMjf3hlFt+akgWCFRACjg/7bfojKVDGCjbM/tXW+zsL3cYZrC9m5hf6LNSEmR5O+Y3VjiNbPT4vXPpp5Ii+RwcWOtcXVUXXJJOpXLKV8H1WDFr9b7SLR5pRg7I46guqXvBfFl90C/P5r0aBuSniaNgwD8F5VStMlTGxrSbvGwvzXpk+JU1P3XvuQPh1srY02eV+JawqKf6s7iJtEwdSVWyEjQIdZjtLUFrI8zyDswX9Ux8myjmVSOTF9o8mw1TCQ4Lma4Qnk3uFIoEuEkC7/BJAxaZrbIRdqmF640pgIKNUaKMF17JkQzEBSCWsDbuDGg6ucbAeaBmFaM0l2XdbS1uatDlxWkhpqh7I66NpZFxHfz2Dl5gfS6gUz2cO8b2OaObXXQa2qpqYNqat7WtjBIuLm/gOq6YRpHNOTb4H0sZia8PkcGAkNY9tnNsfp0UTEKujhfw5qhjHEZrO38rfl+qp2drqaWW7GNsD7j2lzj8hp+Kt8MxqY4c51DSYb/EXue98kt3Oa08y7Zp6DkAumE5Lgi4r2dw6AVEFYKUl75YmxtuNO8eXO3dsTsLrK1jqzjSQtiijLTlJJzFXBxGOOSGKV1GyVpOSaEGzH75ruN9DyGnQKBSUwjicAcxdZwJ26qWbLKKKYcal7CYHislFdjhYu1Lb913iOi1EdfFV0MxbdjuG67Ty0WXkpmh1iLtO6HGJqOQtBMsDuQPeaPDqhj8lPiRsnju7ibqlIFJBbbht+iDPiNJAbPnYXfcBufQLITV1TMAzJIWAWaJX2Fv8QopE5a4GUtaPhjblH6oyzY49hjim+ivr6GV9bNJLNDG173O1drYlDZS07f+pMf9oVgKZgJIHe8V0wgclzPOl9qPS+TLJU5f0AY6cNyw5YWjkxuvqnNgDyDMXPP9RujxxkctUURiwIU3llLsk4RQ6mDYyGs0Cml4sC5Q8liCDYjcW3CM11hY7IADyaAOZqOiDI8jkuMlGbhiwJ2HUJsjM2rSsYWcdSkhFr7+6uIgLAAnmiMPJBBKMzbTdYBNpwBqfVMq2QzwOjlHEDjYNG56ABDbLlaWknbU2TKqshw2AVNWcpOjNL5R181SENuWTnKuEQK/EaPs/TR00+a7+8Y4dddw25+p6rOw/wAV7X1VOyZvBhiFnluwBN/XkrWHCocSrpa14c6N7u40/CP3qtFhdThlBDw2lzCTdxyblXjNN0RcWlZGpOyFBTzMkj4oLPEX9bK9pMHpog/h0zQX+8balS6DEsLML3e0ML9mtdp81NgmgzsDJ4zm274V010Sd9mar+xNLWnNHxI376ahVAwWqwWZsM0hMct2tuvWaaJpGmU38V5/2xrBXdpODB/JoW5SRzeRc/vwSZ3FQKYr2KpzMzWkCwItbxQpGaFlrObspTxuCbEt3QbAuvz2cvNO1Ai3v6bAFDezvG2ml/VSMv4pr2fQhKORXMPNcdHrb5qQ4Eta7mk/u5SfmsayKGkHdFLbC7fROcByC62249ETDBqdl0XBCc4AHNyXCmFGTRseGkjvDZw3BXA9w5976pxcLILt7j0TexQvEH3klFI13SWoxcNa3onZg3YaBRn1BHdC6xxJ33ToQLLieH0jc9TUMzjVsR1LiqcsfjdaKmZpZTtIcyMkm/ip5pIHymSSJrndbKbBGBfKAGgXTOTqkIoK7YaBjY4i1oAHgFVVmGSPkc9k0jL62B09FbtIAA8U8OzuN0noczLqCvY4Bswd/kz9FyVtfF3THG7+oGxWmaO/rYhR6mPNq2wIRTBRS02JYpT3cz2pgFrcOVW9HG9sIe+/EecziddVIZG1sTQ4WJRAG2sNkJNsMVRHe3M4G2wTHm5Bby3CkGwQHkZtrBK0MmMcC5/d2Sfy8N07TKSDqmuN27KVFLB6Nu1o3umO91PuM1lw2uUaBYE+4bE6FMa4X1RXWa3N99CAsNUaNY82f5EahDOj7W0slmO42XHOvqigCdqEJzrHZEuPkhusigAS4X2STrDokmsBIk9+6kQC7C7nZJJMIPZrHdEie6x1XEkGFBonGzhdOe5xbvsuJJWFBYz3XeAQ5DoVxJOhSRcljL9Ex7iNkkkrChr+RQb3dZdSQCMboSnfAUkkg/RHbumn30kkTHHas15FDdskkigDMxDEInW66ksYVyU0lJJEAy6SSSJj/9k=" alt="Sample Image">
-                                                                                }
-                                                                                <div class="media-body">
-                                                                                    <div class="email-item" style="margin-bottom: 10px;">
-                                                                                        <div class="typeRow" style="color: green; font-weight: bold;">@item.Type</div>
-                                                                                        <h6 class="subjectRow" style="margin-top: 5px;">@item.Subject</h6>
-                                                                                        <p class="email_add_0" style="width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">@item.Description</p>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </a>
-                                                                    </td>
-
-                                                                    <td class="tableFontSize">@item.DueDate?.ToString("yyyy-MM-dd")</td>
-                                                                    <td class="tableFontSize">@item.Asset</td>
-                                                                    <td class="tableFontSize">
-                                                                        <h3>$@item.LineItems.Sum(x => x.Price * x.Quantity)</h3>
-                                                                        @if (@item.Type == "WorkOrderRequest")
-                                                                        {
-
-                                                                            <a class="info-button" onclick="showTaskLineItems(@JsonConvert.SerializeObject(item.LineItems.ToList()))">
-                                                                                <i class="fa fa-info-circle"></i>
-                                                                                <span class="button-text">Details</span>
-                                                                            </a>
-                                                                        }
-                                                                    </td>
-                                                                    <td class="tableFontSize">
-                                                                        <select class="form-select task-status-dropdown" data-task-request-id="@item.TaskRequestId" data-original-value="@item.Status" id="taskStatus-@item.TaskRequestId" required>
-                                                                            <option value="" disabled>Select Status</option>
-                                                                            <option value="NotStarted" selected="@(item.Status == "NotStarted")">Not Started</option>
-                                                                            <option value="InProgress" selected="@(item.Status == "InProgress")">In Progress</option>
-                                                                            <option value="Completed" selected="@(item.Status == "Completed")">Completed</option>
-                                                                            <option value="OnHold" selected="@(item.Status == "OnHold")">On Hold</option>
-                                                                        </select>
-                                                                    <td class="tableFontSize">
-                                                                        <a class="btn btn-danger" onclick="showTaskRequestHistory(@item.TaskRequestId)"><i class="fa fa-eye"></i></a>
-                                                                    </td>
-                                                                </tr>
-                                                            }
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table display" id="maintenanceTasksTable">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" class="text-center tableHeaderbg">Task</th>
+                                        <th scope="col" class="text-center tableHeaderbg">Due at</th>
+                                        <th scope="col" class="text-center tableHeaderbg">Related To</th>
+                                        <th scope="col" class="text-center tableHeaderbg">Total Amount</th>
+                                        <th scope="col" class="text-center tableHeaderbg">Status</th>
+                                        <th scope="col" class="text-center tableHeaderbg">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -150,24 +68,62 @@
                 <div class="modal-body">
                     <input type="hidden" id="taskRequestIdInput" name="TaskRequestId">
                     <input type="hidden" id="currentStatusInput" name="Status">
-                     @*                <div class="d-none" id="completedDiv">
-                    <div class="mb-3">
-                        <label for="maintenanceExpense" class="form-label">Expense Amount</label>
-                        <input type="number" class="form-control" placeholder="Maintenance Expense" id="maintenanceExpense">
-                    </div>
+                <div class="d-none" id="completedDiv">
+                        <div class="row">
+                            <div class="col">
+                                <div class="mb-3">
+                                    <label for="accountName">Account Name</label>
+                                    <input type="text" class="form-control" placeholder="Account Name" id="accountName">
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="mb-3">
+                                    <label for="accountHolder">Account Holder</label>
+                                    <input type="text" class="form-control" placeholder="Account holder's Name" id="accountHolder">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="mb-3">
+                                    <label for="accountIBAN">Account IBAN</label>
+                                    <input type="text" class="form-control" placeholder="Account IBAN" id="accountIBAN">
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="mb-3">
+                                    <label for="accountSwift">Account Swift/BIC</label>
+                                    <input type="text" class="form-control" placeholder="Account Swift/BIC" id="accountSwift">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="mb-3">
+                                    <label for="accountBank">Account Bank</label>
+                                    <input type="text" class="form-control" placeholder="Bank Name" id="accountBank">
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="mb-3">
+                                    <label for="accountCurrency">Account Currency</label>
+                                    <input type="text" class="form-control" placeholder="Currency" id="accountCurrency">
+                                </div>
+                            </div>
+                        </div>
                     <div class="mb-3">
                         <label for="documentFile" class="form-label">Document Upload</label>
                         <input type="file" class="form-control" id="documentFile" name="documentFile" />
                     </div>
-                </div> *@
+                </div>
                     <div class="mb-3">
                         <label for="remarksTextArea" class="form-label">Remarks</label>
                         <textarea class="form-control" id="remarksTextArea" name="Remarks" required rows="3"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary" id="saveStatusChangeBtn">Save changes</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-success" id="saveStatusChangeBtn">Save changes</button>
                 </div>
             </form>
         </div>
@@ -195,7 +151,7 @@
                 </table>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -224,7 +180,7 @@
                 </table>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -242,37 +198,117 @@
 <script src="https://cdn.datatables.net/buttons/2.0.0/js/buttons.html5.min.js"></script>
  <script>
     $(document).ready(function () {
-        $('#searchInput').on('input', function () {
-            var searchText = $(this).val().toLowerCase();
-            $('.nav-link').each(function () {
-                var taskRequest = $(this).find('.subjectRow').text().toLowerCase() + ' ' + $(this).find('.typeRow').text().toLowerCase();
-                var row = $(this).closest('tr');
-                if (taskRequest.includes(searchText)) {
-                    row.show();
-                } else {
-                    row.hide();
+        $('#maintenanceTasksTable').DataTable({
+            "ajax": {
+                "url": "/Maintenance/GetMaintenanceTasks",
+                "type": "GET",
+                "dataSrc": "",
+                "error": function (xhr, error, code) {
+                    console.log("AJAX error in request: " + JSON.stringify(xhr, null, 2));
                 }
-            });
+            },
+            "columns": [
+                {
+                    "data": "TaskRequestId",
+                    "className": "text-left",
+                    "render": function (data, type, row, meta) {
+                        return `
+                        <a class="contact-tab-${row.TaskRequestId} nav-link" id="v-pills-${row.TaskRequestId}-tab" data-bs-toggle="pill" onclick="activeDivforowner(${row.TaskRequestId})" href="#v-pills-${row.TaskRequestId}" role="tab" aria-controls="v-pills-${row.TaskRequestId}" aria-selected="true">
+                            <div class="media align-items-center">
+                                <img class="img-50 img-fluid m-r-20 rounded-circle update_img_0" src="${row.TaskRequestFile ? row.TaskRequestFile : 'data:image/jpeg'}" alt="Sample Image">
+                                <div class="media-body">
+                                    <div class="email-item">
+                                        <div class="typeRow" style="color: green; font-weight: bold;">${row.Type}</div>
+                                        <h6 class="subjectRow" style="margin-top: 5px;">${row.Subject}</h6>
+                                        <p class="email_add_0" style="width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${row.Description}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                        `;
+                    }
+                },
+                {
+                    "data": "DueDate",
+                    "className": "text-center",
+                    "render": function (data, type, row, meta) {
+                        return data ? new Date(data).toISOString().split('T')[0] : '';
+                    }
+                },
+                {
+                    "data": "Asset",
+                    "className": "text-center"
+                },
+                {
+                    "data": "LineItems",
+                    "className": "text-center",
+                    "render": function (data, type, row, meta) {
+                        const totalAmount = data.reduce((sum, item) => sum + (item.Price * item.Quantity), 0);
+                        return `<h3>$${totalAmount.toFixed(2)}</h3>`;
+                    }
+                },
+                {
+                    "data": "Status",
+                    "className": "text-center"
+                },
+                {
+                    "data": "TaskRequestId",
+                    "className": "text-center",
+                    "render": function (data, type, row, meta) {
+                        return `
+            <div class="dropdown-basic">
+                <div class="dropdown">
+                    <div class="btn-group mb-0">
+                        <button class="dropbtn btn btn-success" type="button">Action <span><i class="icofont icofont-arrow-down"></i></span></button>
+                        <div class="dropdown-content">
+                            ${row.Type == "WorkOrderRequest" ? `
+                            <a class="info-button btn-secondary" onclick="showTaskLineItems(${JSON.stringify(row.LineItems)})">
+                                <i class="fa fa-info-circle"></i> <span class="button-text">Details</span>
+                            </a>
+                            ` : ""}
+                            <a class="btn btn-secondary" onclick="showTaskRequestHistory(${data})">
+                                <i class="fa fa-eye"></i> History
+                            </a>
+                                <div class="dropdown-divider"></div>
+                            <div class="dropdown-item">
+                                <label for="taskStatus-${row.TaskRequestId}" class="form-label">Change Status:</label>
+                                <select class="form-select task-status-dropdown" data-task-request-id="${row.TaskRequestId}" data-original-value="${row.Status}" id="taskStatus-${row.TaskRequestId}" required>
+                                    <option value="" disabled>Select Status</option>
+                                    <option value="NotStarted" ${row.Status == "NotStarted" ? "selected" : ""}>Not Started</option>
+                                    <option value="InProgress" ${row.Status == "InProgress" ? "selected" : ""}>In Progress</option>
+                                    <option value="Completed" ${row.Status == "Completed" ? "selected" : ""}>Completed</option>
+                                    <option value="OnHold" ${row.Status == "OnHold" ? "selected" : ""}>On Hold</option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            `;
+                    }
+                }
+            ]
         });
 
 
-
-
-        $('.task-status-dropdown').change(function () {
+        // Change event for task status dropdown
+        $(document).on('change', '.task-status-dropdown', function () {
             var $this = $(this);
             var taskRequestId = $this.data('task-request-id');
             var currentStatus = $this.val();
 
-@*             if (currentStatus === 'Completed') {
+            if (currentStatus === 'Completed') {
                 $("#completedDiv").removeClass("d-none");
             } else {
                 $("#completedDiv").addClass("d-none");
-            } *@
+            }
 
             if (!$this.data('original-value')) {
                 $this.data('original-value', $this.find('option:selected').val());
             }
 
+            // Example of how to access modal inputs if you're using Bootstrap Modal
             $('#taskRequestIdInput').val(taskRequestId);
             $('#currentStatusInput').val(currentStatus);
             $('#statusChangeModal').modal('show');
@@ -376,34 +412,50 @@
 
         var taskRequestId = $('#taskRequestIdInput').val();
         var currentStatus = $('#currentStatusInput').val();
+        var accountName = $('#accountName').val();
+        var accountHolder = $('#accountHolder').val();
+        var accountIBAN = $('#accountIBAN').val();
+        var accountSwift = $('#accountSwift').val();
+        var accountBank = $('#accountBank').val();
+        var accountCurrency = $('#accountCurrency').val();
+        var documentFile = $('#documentFile')[0].files[0];
         var remarks = $('#remarksTextArea').val();
 
-        var data = {
-            TaskRequestId: taskRequestId,
-            Status: currentStatus,
-            Remarks: remarks,
-            Date: new Date().toISOString()
-        };
+         readFileAsBase64(documentFile).then(function (base64Document) {
+            var data = {
+                TaskRequestId: taskRequestId,
+                Status: currentStatus,
+                AccountName: accountName,
+                AccountHolder: accountHolder,
+                AccountIBAN: accountIBAN,
+                AccountSwift: accountSwift,
+                AccountBank: accountBank,
+                AccountCurrency: accountCurrency,
+                DocumentFile: base64Document,
+                Remarks: remarks,
+                Date: new Date().toISOString()
+            };
 
-        $.ajax({
-            url: '@Url.Action("SaveTaskHistory", "Maintenance")',
-            type: 'POST',
-            data: JSON.stringify(data),
-            contentType: 'application/json',
-            beforeSend: function () {
-                $('#saveStatusChangeBtn').prop('disabled', true).text('Saving...');
-            },
-            success: function (response) {
-                $('#statusChangeModal').modal('hide');
-                location.reload();
-            },
-            error: function (xhr, status, error) {
-                console.error('Error:', error);
-                alert('Failed to save data');
-            },
-            complete: function () {
-                $('#saveStatusChangeBtn').prop('disabled', false).text('Save');
-            }
+            $.ajax({
+                url: '@Url.Action("SaveTaskHistory", "Maintenance")',
+                type: 'POST',
+                data: JSON.stringify(data),
+                contentType: 'application/json',
+                beforeSend: function () {
+                    $('#saveStatusChangeBtn').prop('disabled', true).text('Saving...');
+                },
+                success: function (response) {
+                    $('#statusChangeModal').modal('hide');
+                    location.reload();
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error:', error);
+                    alert('Failed to save data');
+                },
+                complete: function () {
+                    $('#saveStatusChangeBtn').prop('disabled', false).text('Save');
+                }
+            });
         });
     });
 
@@ -421,6 +473,13 @@
     function resetModal() {
         $('#taskRequestIdInput').val('');
         $('#currentStatusInput').val('');
+        $('#accountName').val();
+        $('#accountHolder').val();
+        $('#accountIBAN').val();
+        $('#accountSwift').val();
+        $('#accountBank').val();
+        $('#accountCurrency').val();
+        $('#documentFile').val();
         $('#remarksTextArea').val('');
 @*         $('#documentFile').val('');
         $('#maintenanceExpense').val(''); *@
@@ -480,15 +539,7 @@
             );
         });
 
-        // Initialize DataTable with Export Buttons
-        var dataTable = $('#taskLineItemsTbl').DataTable({
-            dom: 'Bfrtip',
-            buttons: [
-                'copy', 'csv', 'excel', 'pdf', 'print'
-            ]
-        });
-
-        console.log("DataTable instance:", dataTable);
+        $('#taskLineItemsTbl').DataTable();
 
         // Show the modal
         $('#taskLineItemsModal').modal('show');
@@ -513,15 +564,6 @@
     //             '<td>' + item.Account + '</td>' +
     //             '</tr>'
     //         );
-    //     });
-
-    //     // Initialize DataTable with Buttons extension
-    //     var table = $('#taskLineItemsTbl').DataTable({
-    //         dom: 'Bfrtip',
-    //         buttons: [
-    //             'excel', // Excel export button
-    //             'pdf' // PDF export button
-    //         ]
     //     });
 
     //     // Show the modal

@@ -3550,6 +3550,7 @@ namespace MagicVilla_VillaAPI.Repository
             taskRequestHistory.TaskRequestId = taskRequestHistoryDto.TaskRequestId;
             taskRequestHistory.Date = DateTime.Now;
             taskRequestHistory.Status = taskRequestHistoryDto.Status;
+            
             taskRequestHistory.Remarks = taskRequestHistoryDto.Remarks;
 
             if (taskRequestHistoryDto.TaskRequestHistoryId > 0)
@@ -3895,6 +3896,100 @@ namespace MagicVilla_VillaAPI.Repository
 
             vendorCategory.IsDeleted = true;
             _db.VendorCategory.Update(vendorCategory);
+            var saveResult = await _db.SaveChangesAsync();
+
+            return saveResult > 0;
+        }
+
+        #endregion
+
+        #region Vendor Classification
+
+        public async Task<List<VendorClassification>> GetVendorClassificationsAsync()
+        {
+            try
+            {
+                var result = await (from v in _db.VendorClassification
+                                    where v.IsDeleted != true
+                                    select new VendorClassification
+                                    {
+                                        VendorClassificationId = v.VendorClassificationId,
+                                        Name = v.Name,
+                                        AddedBy = v.AddedBy,
+                                    })
+                     .AsNoTracking()
+                     .ToListAsync();
+
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping Vendor Classifications: {ex.Message}");
+                throw;
+            }
+        }
+        public async Task<VendorClassification> GetVendorClassificationByIdAsync(int id)
+        {
+            try
+            {
+                var result = await (from v in _db.VendorClassification
+                                    where v.VendorClassificationId == id
+                                    select new VendorClassification
+                                    {
+                                        VendorClassificationId = v.VendorClassificationId,
+                                        Name = v.Name,
+                                        AddedBy = v.AddedBy,
+
+                                    })
+                     .AsNoTracking()
+                     .FirstOrDefaultAsync();
+
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping  Vendor Classification: {ex.Message}");
+                throw;
+            }
+        }
+        public async Task<bool> SaveVendorClassificationAsync(VendorClassification model)
+        {
+            var vendorClassification = _db.VendorClassification.FirstOrDefault(x => x.VendorClassificationId == model.VendorClassificationId);
+
+            if (vendorClassification == null)
+                vendorClassification = new VendorClassification();
+
+            vendorClassification.VendorClassificationId = model.VendorClassificationId;
+            vendorClassification.Name = model.Name;
+
+            if (vendorClassification.VendorClassificationId > 0)
+            {
+                vendorClassification.ModifiedBy = model.AddedBy;
+                vendorClassification.ModifiedDate = DateTime.Now;
+                _db.VendorClassification.Update(vendorClassification);
+            }
+            else
+            {
+                vendorClassification.AddedBy = model.AddedBy;
+                vendorClassification.AddedDate = DateTime.Now;
+                _db.VendorClassification.Add(vendorClassification);
+            }
+
+            var result = await _db.SaveChangesAsync();
+
+
+            return result > 0;
+
+        }
+        public async Task<bool> DeleteVendorClassificationAsync(int id)
+        {
+            var vendorClassification = await _db.VendorClassification.FindAsync(id);
+            if (vendorClassification == null) return false;
+
+            vendorClassification.IsDeleted = true;
+            _db.VendorClassification.Update(vendorClassification);
             var saveResult = await _db.SaveChangesAsync();
 
             return saveResult > 0;

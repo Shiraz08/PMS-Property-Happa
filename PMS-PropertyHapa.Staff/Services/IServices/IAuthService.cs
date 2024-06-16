@@ -158,7 +158,15 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
         Task<bool> DeleteVendorCategoryAsync(int id);
 
         #endregion
-        
+
+        #region Vendor Classification
+        Task<IEnumerable<VendorClassification>> GetVendorClassificationsAsync();
+        Task<VendorClassification> GetVendorClassificationByIdAsync(int id);
+        Task<bool> SaveVendorClassificationAsync(VendorClassification vendorClassification);
+        Task<bool> DeleteVendorClassificationAsync(int id);
+
+        #endregion
+
 
         #region Vendor
         Task<IEnumerable<VendorDto>> GetVendorsAsync();

@@ -21,6 +21,12 @@ namespace PMS_PropertyHapa.Staff.Controllers
         }
         public async Task<IActionResult> ViewTask()
         {
+            return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetTaskRequests()
+        {
             IEnumerable<TaskRequestDto> taskRequests = new List<TaskRequestDto>();
             taskRequests = await _authService.GetTaskRequestsAsync();
             var currenUserId = Request?.Cookies["userId"]?.ToString();
@@ -28,7 +34,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
             {
                 taskRequests = taskRequests.Where(s => s.AddedBy == currenUserId);
             }
-            return View(taskRequests);
+            return Ok(taskRequests);
         }
 
         [HttpPost]

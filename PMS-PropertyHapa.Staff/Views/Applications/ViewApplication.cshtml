@@ -17,7 +17,7 @@
                 </div>
                 <div class="col-12 col-sm-6">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="ViewApplication"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item"><a href="/Home/Index"><i data-feather="home"></i></a></li>
                         <li class="breadcrumb-item">Application</li>
                         <li class="breadcrumb-item active">List</li>
                     </ol>
@@ -50,7 +50,7 @@
                         </div>
 
                         <div class="right-side-header">
-                            <a href="@Url.Action("AddApplication", "Applications", new { id = userId })" class="btn btn-primary">Add Application</a>
+                            <a href="@Url.Action("AddApplication", "Applications", new { id = userId })" class="btn btn-success">Add Application</a>
                         </div>
                     </div>
 
@@ -88,7 +88,7 @@
                                                 <div class="dropdown-basic">
                                                     <div class="dropdown">
                                                         <div class="btn-group mb-0">
-                                                            <button class="dropbtn btn-danger" type="button">Action <span><i class="icofont icofont-arrow-down"></i></span></button>
+                                                            <button class="dropbtn btn-success" type="button">Action <span><i class="icofont icofont-arrow-down"></i></span></button>
                                                             <div class="dropdown-content">
                                                                 <a class="btn btn-secondary me-1" onclick="editApplications(@application.ApplicationId)">
                                                                     <i class="fa fa-pencil"></i> Edit

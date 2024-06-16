@@ -14,7 +14,7 @@
                 </div>
                 <div class="col-12 col-sm-6">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="Index"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item"><a href="/Home/Index"><i data-feather="home"></i></a></li>
                         <li class="breadcrumb-item">Calendar</li>
                         <li class="breadcrumb-item active">List</li>
                     </ol>
@@ -30,7 +30,7 @@
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h4 class="card-title mb-0 flex-grow-1 font-weight-bold">Filters</h4>
-                        <a href="@Url.Action("OccupancyOverview","Calendar")" class="btn btn-primary">Occupancy Overview</a>
+                        <a href="@Url.Action("OccupancyOverview","Calendar")" class="btn btn-success">Occupancy Overview</a>
                     </div>
                     <div class="card-body">
                         <div class="row mt-1 d-flex">
@@ -53,8 +53,8 @@
                         </div>
                     </div>
                     <div class="card-footer text-end d-flex justify-content-end">
-                        <button onclick="clearFilters()" type="button" class="btn btn-light mr-2 font-weight-bold" style="padding-left: 2.75rem  !important; padding-right: 2.75rem  !important;">Clear</button>
-                        <button onclick="applyFilters()" type="button" class="btn btn-primary font-weight-bold" style="padding-left: 2.75rem  !important; padding-right: 2.75rem  !important;">Apply</button>
+                        <button onclick="clearFilters()" type="button" class="btn btn-danger mr-2 font-weight-bold" style="padding-left: 2.75rem  !important; padding-right: 2.75rem  !important;">Clear</button>
+                        <button onclick="applyFilters()" type="button" class="btn btn-success font-weight-bold" style="padding-left: 2.75rem  !important; padding-right: 2.75rem  !important;">Apply</button>
                     </div>
                 </div>
             </div>
@@ -71,8 +71,8 @@
                     <div class="card-body">
                         <div class="row d-flex justify-content-center">
                             <div class="col-auto">
-                                <button id="calendarLinkBtn" class="btn btn-primary mb-3">Get Calendar Link</button>
-                            </div>
+                                <button id="calendarLinkBtn" class="btn btn-success  mb-3">Get Calendar Link</button>
+                            </div>                                           
                             <div class="col-6 mt-1">
                                 <input id="calendarLink" class="form-control" />
                             </div>
