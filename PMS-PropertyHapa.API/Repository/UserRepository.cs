@@ -3531,14 +3531,21 @@ namespace MagicVilla_VillaAPI.Repository
                 taskRequest.Status = taskRequestHistoryDto.Status;
                 taskRequest.ModifiedBy = taskRequestHistoryDto.AddedBy;
                 taskRequest.ModifiedDate = DateTime.Now;
+
+                if (taskRequest.Type == TaskTypes.WorkOrderRequest)
+                {
+                    taskRequest.AccountName = taskRequestHistoryDto.AccountName;
+                    taskRequest.AccountHolder = taskRequestHistoryDto.AccountHolder;
+                    taskRequest.AccountIBAN = taskRequestHistoryDto.AccountIBAN;
+                    taskRequest.AccountSwift = taskRequestHistoryDto.AccountSwift;
+                    taskRequest.AccountBank = taskRequestHistoryDto.AccountBank;
+                    taskRequest.AccountCurrency = taskRequestHistoryDto.AccountCurrency;
+                    taskRequest.DocumentFile = taskRequestHistoryDto.DocumentFile;
+                }
+
                 _db.TaskRequest.Update(taskRequest);
 
                 await _db.SaveChangesAsync();
-            }
-
-            if (taskRequest.Type == TaskTypes.WorkOrderRequest)
-            {
-
             }
 
             var taskRequestHistory = await _db.TaskRequestHistory.FirstOrDefaultAsync(x => x.TaskRequestHistoryId == taskRequestHistoryDto.TaskRequestHistoryId);

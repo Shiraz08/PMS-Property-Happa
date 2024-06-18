@@ -29,93 +29,37 @@
             <div class="col-xl-12 col-md-12 box-col-12">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-
-                        <div class="left-side-header">
-                            <div class="input-group">
-                                <span class="input-group-text" id="basic-addon1">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <g>
-                                            <g>
-                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M11.2753 2.71436C16.0029 2.71436 19.8363 6.54674 19.8363 11.2753C19.8363 16.0039 16.0029 19.8363 11.2753 19.8363C6.54674 19.8363 2.71436 16.0039 2.71436 11.2753C2.71436 6.54674 6.54674 2.71436 11.2753 2.71436Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M19.8987 18.4878C20.6778 18.4878 21.3092 19.1202 21.3092 19.8983C21.3092 20.6783 20.6778 21.3097 19.8987 21.3097C19.1197 21.3097 18.4873 20.6783 18.4873 19.8983C18.4873 19.1202 19.1197 18.4878 19.8987 18.4878Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                                            </g>
-                                        </g>
-                                    </svg>
-
-                                </span>
-                                <input class="form-control" type="text" id="searchInput" placeholder="Search Budget" aria-label="search" aria-describedby="basic-addon1">
-                            </div>
-                        </div>
-
                         <div class="right-side-header">
                             <a href="@Url.Action("Create","Budget")" class="btn btn-success float-right ml-2"><i class="fa fa-plus"></i>New Budget</a>
-
                         </div>
                     </div>
+
                     <div class="card-body">
-                        <div id="budgetBtn" class="budgetBtn text-center text-center" style="margin-block: 80px;">
-                            <i class="fa-solid fa-calculator mb-5" style="font-size: 85px;"></i>
-                            <h4 class="mb-3"><b>No Active Budgets</b></h4>
-                            <p>Create budgets to plan your finances, compare against actual performance,<br /> and maximize your company's potential</p>
-                            <a href="@Url.Action("Create","Budget")" class="btn btn-success float-center ml-2 mt-2"><i class="fa fa-plus"></i>New Budget</a>
-
+                        <div class="table-responsive">
+                            <table class="table table-hover text-center display" id="budgetTable">
+                                <thead class="table-dark">
+                                    <tr>
+                                    <tr>
+                                        <th scope="col" class="tableHeaderbg">
+                                            BudgetName
+                                        </th>
+                                        <th scope="col" class="tableHeaderbg">
+                                            BudgetType
+                                        </th>
+                                        <th scope="col" class="tableHeaderbg">
+                                            BudgetBy
+                                        </th>
+                                        <th scope="col" class="tableHeaderbg">
+                                            TimePeriod
+                                        </th>
+                                        <th scope="col" class="tableHeaderbg">Action</th>
+                                    </tr>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
                         </div>
-                        <div id="budgetData" class="budgetData d-none">
-                            <ul class="nav nav-tabs nav-primary" id="pills-warningtab" role="tablist">
-                                <li class="nav-item"><a style="font-size: 19px;" class="nav-link active btn-success" id="pills-warningAll-tab" data-bs-toggle="pill" href="#pills-warningall" role="tab" aria-controls="pills-warningall" aria-selected="true">All @* (@Model.ToList().Count()) *@</a></li>
-                            </ul>
-                            <div class="tab-content" id="pills-warningtabContent">
-                               @*  <div class="tab-pane fade show active" id="pills-warningall" role="tabpanel" aria-labelledby="pills-warningAll-tab">
-                                    <br /> *@
-                                    <div class="table-responsive">
-                                        <table id="all" class="table table-hover text-center" style="width:100%">
-                                            <thead class="table-dark">
-                                                <tr>
-                                                <th scope="col" class="tableHeaderbg">
-                                                        BudgetName
-                                                    </th>
-                                                <th scope="col" class="tableHeaderbg">
-                                                        BudgetType
-                                                    </th>
-                                                <th scope="col" class="tableHeaderbg">
-                                                        BudgetBy
-                                                    </th>
-                                                <th scope="col" class="tableHeaderbg">
-                                                        TimePeriod
-                                                    </th>
-                                                <th scope="col" class="tableHeaderbg">Action</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach (var item in Model)
-                                                {
-                                                    <tr>
-                                                        <td style="text-align:center!important">@item.BudgetName</td>
-                                                        <td style="text-align:center!important">@item.BudgetType</td>
-                                                        <td style="text-align:center!important">@item.PropertyId</td>
-                                                        <td style="text-align:center!important">@item.FiscalYear</td>
-                                                        <td style="text-align:center!important">
-                                                            <div class="dropdown-basic">
-                                                                <div class="dropdown">
-                                                                    <div class="btn-group mb-0">
-                                                                    <button class="dropbtn btn-success" type="button">Action <span><i class="icofont icofont-arrow-down"></i></span></button>
-                                                                        <div class="dropdown-content">
-                                                                            @Html.ActionLink("Delete", "DeleteBudget", "Budget", new { id = item.BudgetId }, null)
-                                                                            @Html.ActionLink("DuplicateBudget", "DuplicateBudget", new { id = item.BudgetId })
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                }
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                @* </div> *@
-                            </div>
-                        </div>
-
                     </div>
                 </div>
             </div>
@@ -126,26 +70,61 @@
 
 <script>
     $(document).ready(function () {
-        $('#searchInput').on('input', function () {
-            var searchText = $(this).val().toLowerCase();
-            $('tbody tr').each(function () {
-                var accountType = $(this).find('td:first').text().toLowerCase();
-
-                if (accountType.includes(searchText)) {
-                    $(this).show();
-                } else {
-                    $(this).hide();
+        $('#budgetTable').DataTable({
+            "ajax": {
+                "url": "/Budget/GetBudgets",
+                "type": "GET",
+                "dataSrc": ""
+            },
+            "columns": [
+                {
+                    "data": "BudgetName",
+                    "className": "text-center"
+                },
+                {
+                    "data": "BudgetType",
+                    "className": "text-center"
+                },
+                {
+                    "data": "PropertyId",
+                    "className": "text-center",
+                    "render": function (data, type, row, meta) {
+                        return data ? data : '';  // Handle null or undefined values
+                    }
+                },
+                {
+                    "data": "FiscalYear",
+                    "className": "text-center"
+                },
+                {
+                    "className": "text-center",
+                    "data": "BudgetId",
+                    "render": function (data, type, row, meta) {
+                        return `
+                            <div class="dropdown-basic">
+                                <div class="dropdown">
+                                    <div class="btn-group mb-0">
+                                        <button class="dropbtn btn btn-success" type="button">Action <span><i class="icofont icofont-arrow-down"></i></span></button>
+                                        <div class="dropdown-content">
+                                            <a class="btn btn-secondary" onclick="deleteBudget(${data})">
+                                                <i class="fa fa-trash"></i> Delete
+                                            </a>
+                                            <a class="btn btn-secondary" onclick="duplicateBudget(${data})">
+                                                <i class="fa fa-copy"></i> Duplicate
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }
                 }
-            });
+            ]
         });
 
         $('.nav-tabs a').click(function () {
             $(this).tab('show');
         });
-        if (@Model.ToList().Count() > 0) { 
-            $("#budgetData").removeClass('d-none');
-            $("#budgetBtn").addClass('d-none');
-        }
     });
 </script>
 

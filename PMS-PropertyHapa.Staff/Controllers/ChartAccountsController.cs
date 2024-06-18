@@ -17,6 +17,13 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
         public async Task<IActionResult> Index()
         {
+           
+            return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetChartAccounts()
+        {
             IEnumerable<ChartAccountDto> chartAccounts = new List<ChartAccountDto>();
             chartAccounts = await _authService.GetChartAccountsAsync();
             var currenUserId = Request?.Cookies["userId"]?.ToString();
@@ -24,7 +31,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
             {
                 chartAccounts = chartAccounts.Where(s => s.AddedBy == currenUserId);
             }
-            return View(chartAccounts);
+            return Ok(chartAccounts);
         }
 
         [HttpPost]

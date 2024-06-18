@@ -52,7 +52,7 @@ namespace PMS_PropertyHapa.Staff.Services
             {
                 var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
                 {
-                    ApiType = SD.ApiType.PUT,
+                    ApiType = SD.ApiType.POST,
                     Data = model,
                     Url = $"{villaUrl}/api/v1/UsersAuth/Update"
                 });

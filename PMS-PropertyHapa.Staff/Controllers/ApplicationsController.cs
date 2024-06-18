@@ -26,6 +26,12 @@ namespace PMS_PropertyHapa.Staff.Controllers
         }
         public async Task<IActionResult> ViewApplication()
         {
+            return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetApplications()
+        {
             IEnumerable<ApplicationsDto> applications = new List<ApplicationsDto>();
             applications = await _authService.GetApplicationsAsync();
             var currenUserId = Request?.Cookies["userId"]?.ToString();
@@ -36,9 +42,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
             //var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             ViewBag.UserId = currenUserId;
-
-
-            return View(applications);
+            return Ok(applications);
         }
 
 

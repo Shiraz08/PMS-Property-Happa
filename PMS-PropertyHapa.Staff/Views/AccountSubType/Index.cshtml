@@ -21,7 +21,38 @@
             </div>
         </div>
     </div>
-    <div class="container-fluid">
+    <div class="container-fluid my-4">
+        <div class="row">
+            <!-- Column 1: Properties Table (80% on lg screens) -->
+            <div class="col-xl-12 col-md-12 box-col-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <div class="right-side-header">
+                            <button class="btn btn-success" id="addAccountBtn">Add Account</button>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover text-center display" id="accountSubTypeTable">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th scope="col" class="text-center tableHeaderbg">Sub Account Type</th>
+                                        <th scope="col" class="text-center tableHeaderbg">Account Type</th>
+                                        <th scope="col" class="text-center tableHeaderbg">Description</th>
+                                        <th scope="col" class="text-center tableHeaderbg">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @* <div class="container-fluid">
         <div class="email-wrap bookmark-wrap">
             <div class="row">
                 <div class="col-xl-12 col-md-12 box-col-12 ">
@@ -109,7 +140,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> *@
 </div>
 
 <div class="modal fade" id="newAccountSubTypeModal" tabindex="-1" aria-labelledby="accountSubTypeModalLabel" aria-hidden="true">
@@ -154,17 +185,49 @@
 <script>
     $(document).ready(function () {
 
-        $('#searchInput').on('input', function () {
-            var searchText = $(this).val().toLowerCase();
-            $('tbody tr').each(function () {
-                var accountSubType = $(this).find('td:first').text().toLowerCase();
-
-                if (accountSubType.includes(searchText)) {
-                    $(this).show();
-                } else {
-                    $(this).hide();
+        $('#accountSubTypeTable').DataTable({
+            "ajax": {
+                "url": "/AccountSubType/GetAccountSubTypes",
+                "type": "GET",
+                "dataSrc": ""
+            },
+            "columns": [
+                {
+                    "data": "Type",
+                    "className": "text-center"
+                },
+                {
+                    "data": "AccountType",
+                    "className": "text-center"
+                },
+                {
+                    "data": "Description",
+                    "className": "text-center"
+                },
+                {
+                    "className": "text-center",
+                    "data": "AccountSubTypeId",
+                    "render": function (data, type, row, meta) {
+                        return `
+                            <div class="dropdown-basic">
+                                <div class="dropdown">
+                                    <div class="btn-group mb-0">
+                                        <button class="dropbtn btn btn-success" type="button">Action <span><i class="icofont icofont-arrow-down"></i></span></button>
+                                        <div class="dropdown-content">
+                                            <a class="btn btn-secondary" onclick="editAccountSubType(${data})">
+                                                <i class="fa fa-edit"></i> Edit
+                                            </a>
+                                            <a class="btn btn-secondary" onclick="deleteAccountSubType(${data})">
+                                                <i class="fa fa-trash"></i> Delete
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }
                 }
-            });
+            ]
         });
 
         populateDropDown();

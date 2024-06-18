@@ -17,6 +17,12 @@ namespace PMS_PropertyHapa.Staff.Controllers
         }
         public async Task<IActionResult> Index()
         {
+           
+            return View();
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetBudgets()
+        {
             IEnumerable<BudgetDto> budgets = new List<BudgetDto>();
             budgets = await _authService.GetBudgetsAsync();
             var currenUserId = Request?.Cookies["userId"]?.ToString();
@@ -24,8 +30,9 @@ namespace PMS_PropertyHapa.Staff.Controllers
             {
                 budgets = budgets.Where(s => s.AddedBy == currenUserId);
             }
-            return View(budgets);
+            return Ok(budgets);
         }
+
         public IActionResult Create()
         {
             return View();

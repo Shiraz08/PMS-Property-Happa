@@ -232,7 +232,7 @@
 
 
                                 <li class="sidebar-list">
-                                    <a class="sidebar-link sidebar-title" href="@Url.Action("Index","Tenant")">
+                                    <a class="sidebar-link sidebar-title link-nav no-arrow" href="@Url.Action("Index","Tenant")">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-users"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg><span>Tenant</span>
                                     </a>
                                 </li>
@@ -266,23 +266,6 @@
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-book"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg><span>Accounting</span>
                                     </a>
                                 </li>
-
-                @*                 <li class="sidebar-list">
-                                    <a class="sidebar-link sidebar-title" href="#">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-book"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg><span>Accounting</span>
-                                    </a>
-                                    <ul class="sidebar-submenu">
-                                        <li><a href="@Url.Action("Index","AccountType")">Account Type</a></li>
-                                        <li><a href="@Url.Action("Index","AccountSubType")">Account Sub Type</a></li>
-                                        <li><a href="@Url.Action("Index","ChartAccounts")">Chart of Accounts</a></li>
-                                        <li><a href="@Url.Action("Rent","Accounting")">View Rent</a></li>
-                                        <li><a href="@Url.Action("AssestExpense","Accounting")">View Assest Expense</a></li>
-                                        <li><a href="@Url.Action("Deposit","Accounting")">View Deposit</a></li>
-                                        <li><a href="@Url.Action("Billing","Accounting")">View Billing</a></li>
-                                        <li><a href="@Url.Action("Invoices","Accounting")">View Invoices</a></li>
-                                        <li><a href="@Url.Action("Index","Budget")">Budgeting</a></li>
-                                    </ul>
-                                </li> *@
                                 <li class="sidebar-link">
                                     <a class="sidebar-link sidebar-title link-nav" href="@Url.Action("ViewTask","Task")">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-aperture"><circle cx="12" cy="12" r="10"></circle><line x1="14.31" y1="8" x2="20.05" y2="17.94"></line><line x1="9.69" y1="8" x2="21.17" y2="8"></line><line x1="7.38" y1="12" x2="13.12" y2="2.06"></line><line x1="9.69" y1="16" x2="3.95" y2="6.06"></line><line x1="14.31" y1="16" x2="2.83" y2="16"></line><line x1="16.62" y1="12" x2="10.88" y2="21.94"></line></svg><span>Task</span>
@@ -301,15 +284,10 @@
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg><span>Calendar</span>
                                     </a>
                                 </li>
-                                <li class="sidebar-list">
-                                    <a class="sidebar-link sidebar-title" href="#">
+                                <li class="sidebar-link">
+                                    <a class="sidebar-link sidebar-title link-nav no-arrow" href="@Url.Action("Index","Reports")">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg><span> Reports</span>
                                     </a>
-                                    <ul class="sidebar-submenu">
-                                        <li><a href="@Url.Action("TaskReports","Reports")">View Task Report</a></li>
-                                        <li><a href="@Url.Action("LeaseReports","Reports")">View Lease Report</a></li>
-                                        <li><a href="@Url.Action("InvoiceReports","Reports")">View Invoice Report</a></li>
-                                    </ul>
                                 </li>
                                 <li class="sidebar-list">
                                     <a class="sidebar-link sidebar-title" href="#">

@@ -12,6 +12,10 @@ namespace PMS_PropertyHapa.Staff.Controllers
         {
             _authService = authService;
         }
+        public IActionResult Index()
+        {
+            return View();
+        }
         public IActionResult TaskReports()
         {
             return View();

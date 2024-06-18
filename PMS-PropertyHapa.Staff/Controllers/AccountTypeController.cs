@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PMS_PropertyHapa.Models.DTO;
 using PMS_PropertyHapa.Models.Entities;
 using PMS_PropertyHapa.Staff.Services.IServices;
 
@@ -16,6 +17,12 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
         public async Task<IActionResult> Index()
         {
+            return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAccountTypes()
+        {
             IEnumerable<AccountType> accountTypes = new List<AccountType>();
             accountTypes = await _authService.GetAccountTypesAsync();
             var currenUserId = Request?.Cookies["userId"]?.ToString();
@@ -23,8 +30,9 @@ namespace PMS_PropertyHapa.Staff.Controllers
             {
                 accountTypes = accountTypes.Where(s => s.AddedBy == currenUserId);
             }
-            return View(accountTypes);
+            return Ok(accountTypes);
         }
+
 
         [HttpPost]
         public async Task<IActionResult> SaveAccountType([FromBody] AccountType accountType)

@@ -16,6 +16,11 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
         public async Task<IActionResult> Index()
         {
+            return View();
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetAccountSubTypes()
+        {
             IEnumerable<AccountSubTypeDto> accountSubTypes = new List<AccountSubTypeDto>();
             accountSubTypes = await _authService.GetAccountSubTypesAsync();
             var currenUserId = Request?.Cookies["userId"]?.ToString();
@@ -23,7 +28,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
             {
                 accountSubTypes = accountSubTypes.Where(s => s.AddedBy == currenUserId);
             }
-            return View(accountSubTypes);
+            return Ok(accountSubTypes);
         }
 
         [HttpPost]

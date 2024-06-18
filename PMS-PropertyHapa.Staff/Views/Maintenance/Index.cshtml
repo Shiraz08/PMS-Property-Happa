@@ -67,6 +67,7 @@
                 </div>
                 <div class="modal-body">
                     <input type="hidden" id="taskRequestIdInput" name="TaskRequestId">
+                    <input type="hidden" value="" id="taskRequestType" />
                     <input type="hidden" id="currentStatusInput" name="Status">
                 <div class="d-none" id="completedDiv">
                         <div class="row">
@@ -256,36 +257,38 @@
                     "className": "text-center",
                     "render": function (data, type, row, meta) {
                         return `
-            <div class="dropdown-basic">
-                <div class="dropdown">
-                    <div class="btn-group mb-0">
-                        <button class="dropbtn btn btn-success" type="button">Action <span><i class="icofont icofont-arrow-down"></i></span></button>
-                        <div class="dropdown-content">
-                            ${row.Type == "WorkOrderRequest" ? `
-                            <a class="info-button btn-secondary" onclick="showTaskLineItems(${JSON.stringify(row.LineItems)})">
-                                <i class="fa fa-info-circle"></i> <span class="button-text">Details</span>
-                            </a>
-                            ` : ""}
-                            <a class="btn btn-secondary" onclick="showTaskRequestHistory(${data})">
-                                <i class="fa fa-eye"></i> History
-                            </a>
-                                <div class="dropdown-divider"></div>
-                            <div class="dropdown-item">
-                                <label for="taskStatus-${row.TaskRequestId}" class="form-label">Change Status:</label>
-                                <select class="form-select task-status-dropdown" data-task-request-id="${row.TaskRequestId}" data-original-value="${row.Status}" id="taskStatus-${row.TaskRequestId}" required>
-                                    <option value="" disabled>Select Status</option>
-                                    <option value="NotStarted" ${row.Status == "NotStarted" ? "selected" : ""}>Not Started</option>
-                                    <option value="InProgress" ${row.Status == "InProgress" ? "selected" : ""}>In Progress</option>
-                                    <option value="Completed" ${row.Status == "Completed" ? "selected" : ""}>Completed</option>
-                                    <option value="OnHold" ${row.Status == "OnHold" ? "selected" : ""}>On Hold</option>
-                                </select>
-                            </div>
-                        </div>
+                                <div class="dropdown-basic">
+                                    <div class="dropdown">
+                                        <div class="btn-group mb-0">
+                                            <button class="dropbtn btn btn-success" type="button">Action <span><i class="icofont icofont-arrow-down"></i></span></button>
+                                            <div class="dropdown-content">
+                                                ${row.Type == "WorkOrderRequest" ? `
+                                                <a class="info-button btn-secondary" onclick="showTaskLineItems(${JSON.stringify(row.LineItems)})">
+                                                    <i class="fa fa-info-circle"></i> <span class="button-text">Details</span>
+                                                </a>
+                                                ` : ""}
+                                                <a class="btn btn-secondary" onclick="showTaskRequestHistory(${data})">
+                                                    <i class="fa fa-eye"></i> History
+                                                </a>
+                                                    <div class="dropdown-divider"></div>
+                                                 ${row.Status !== "Completed" ? `
+                                                    <div class="dropdown-item">
+                                                        <label for="taskStatus-${row.TaskRequestId}" class="form-label">Change Status:</label>
+                                                        <select class="form-select task-status-dropdown" data-task-request-type="${row.Type}" data-task-request-id="${row.TaskRequestId}" data-original-value="${row.Status}" id="taskStatus-${row.TaskRequestId}" required>
+                                                            <option value="" disabled>Select Status</option>
+                                                            <option value="NotStarted" ${row.Status == "NotStarted" ? "selected" : ""}>Not Started</option>
+                                                            <option value="InProgress" ${row.Status == "InProgress" ? "selected" : ""}>In Progress</option>
+                                                            <option value="Completed" ${row.Status == "Completed" ? "selected" : ""}>Completed</option>
+                                                            <option value="OnHold" ${row.Status == "OnHold" ? "selected" : ""}>On Hold</option>
+                                                        </select>
+                                                    </div>
+                                                    ` : ""}
+                                            </div>
 
-                    </div>
-                </div>
-            </div>
-            `;
+                                        </div>
+                                    </div>
+                                </div>
+                        `;
                     }
                 }
             ]
@@ -296,6 +299,7 @@
         $(document).on('change', '.task-status-dropdown', function () {
             var $this = $(this);
             var taskRequestId = $this.data('task-request-id');
+            var taskRequestType = $this.data('task-request-type');
             var currentStatus = $this.val();
 
             if (currentStatus === 'Completed') {
@@ -310,6 +314,7 @@
 
             // Example of how to access modal inputs if you're using Bootstrap Modal
             $('#taskRequestIdInput').val(taskRequestId);
+            $('#taskRequestType').val(taskRequestType);
             $('#currentStatusInput').val(currentStatus);
             $('#statusChangeModal').modal('show');
         });
@@ -411,6 +416,7 @@
         event.preventDefault(); // Prevent the default form submission
 
         var taskRequestId = $('#taskRequestIdInput').val();
+        var type = $('#taskRequestType').val();
         var currentStatus = $('#currentStatusInput').val();
         var accountName = $('#accountName').val();
         var accountHolder = $('#accountHolder').val();
@@ -424,6 +430,7 @@
          readFileAsBase64(documentFile).then(function (base64Document) {
             var data = {
                 TaskRequestId: taskRequestId,
+                Type: type,
                 Status: currentStatus,
                 AccountName: accountName,
                 AccountHolder: accountHolder,
@@ -472,6 +479,7 @@
 
     function resetModal() {
         $('#taskRequestIdInput').val('');
+        $('#taskRequestType').val('');
         $('#currentStatusInput').val('');
         $('#accountName').val();
         $('#accountHolder').val();

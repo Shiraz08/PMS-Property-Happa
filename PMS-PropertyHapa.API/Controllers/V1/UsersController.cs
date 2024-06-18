@@ -257,7 +257,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             }
         }
 
-        [HttpPut("Update")]
+        [HttpPost("Update")]
         public async Task<IActionResult> UpdateProfile(ProfileModel model)
         {
             var user = await _userManager.FindByIdAsync(model.UserId);

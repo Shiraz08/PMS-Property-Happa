@@ -1,6 +1,4 @@
-﻿@using PMS_PropertyHapa.Models.DTO
-@model IEnumerable<ApplicationsDto>
-
+﻿
 @{
     ViewData["Title"] = "ViewApplication";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -26,6 +24,38 @@
         </div>
     </div>
     <div class="container-fluid my-4">
+        <div class="row">
+            <!-- Column 1: Properties Table (80% on lg screens) -->
+            <div class="col-xl-12 col-md-12 box-col-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <div class="right-side-header">
+                            <a href="@Url.Action("AddApplication", "Applications", new { id = userId })" class="btn btn-success">Add Application</a>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover text-center display" id="applicationsTable">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th scope="col" class="tableHeaderbg">Applicant Name</th>
+                                        <th scope="col" class="tableHeaderbg">Contact Info</th>
+                                        <th scope="col" class="tableHeaderbg">Expected Move In</th>
+                                        <th scope="col" class="tableHeaderbg">Created At</th>
+                                        <th scope="col" class="tableHeaderbg">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @* <div class="container-fluid my-4">
         <div class="row">
             <!-- Column 1: Application Table (80% on lg screens) -->
             <div class="col-xl-12 col-md-12 box-col-12">
@@ -111,21 +141,78 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> *@
 </div>
 <script>
     $(document).ready(function () {
-        $('#searchInput').on('input', function () {
-            var searchText = $(this).val().toLowerCase();
-            $('tbody tr').each(function () {
-                var accountType = $(this).find('td:first').text().toLowerCase();
-
-                if (accountType.includes(searchText)) {
-                    $(this).show();
-                } else {
-                    $(this).hide();
+        $('#applicationsTable').DataTable({
+            "ajax": {
+                "url": "/Applications/GetApplications", // Adjust the URL to your actual endpoint
+                "type": "GET",
+                "dataSrc": ""
+            },
+            "columns": [
+                {
+                    "data": null,
+                    "className": "text-center tableFontSize align-middle",
+                    "render": function (data, type, row, meta) {
+                        return `${row.FirstName} ${row.LastName}`;
+                    }
+                },
+                {
+                    "data": null,
+                    "className": "text-center tableFontSize align-middle",
+                    "render": function (data, type, row, meta) {
+                        return `
+                            <div style="display: flex; align-items: center; justify-content: center;">
+                                <i class="icofont icofont-email"></i>
+                                <span style="vertical-align: middle;">${row.Email}</span>
+                            </div>
+                            <div style="display: flex; align-items: center; justify-content: center;">
+                                <i class="icofont icofont-phone"></i>
+                                <span style="vertical-align: middle;">${row.PhoneNumber}</span>
+                            </div>
+                        `;
+                    }
+                },
+                {
+                    "data": "MoveInDate",
+                    "className": "text-center tableFontSize align-middle",
+                    "render": function (data, type, row, meta) {
+                        return new Date(data).toLocaleDateString(); // Format date as needed
+                    }
+                },
+                {
+                    "data": "AddedDate",
+                    "className": "text-center tableFontSize align-middle",
+                    "render": function (data, type, row, meta) {
+                        return new Date(data).toLocaleDateString(); // Format date as needed
+                    }
+                },
+                {
+                    "className": "text-center tableFontSize align-middle",
+                    "data": "ApplicationId",
+                    "render": function (data, type, row, meta) {
+                        return `
+                            <div class="dropdown-basic">
+                                <div class="dropdown">
+                                    <div class="btn-group mb-0">
+                                        <button class="dropbtn btn btn-success" type="button">Action <span><i class="icofont icofont-arrow-down"></i></span></button>
+                                        <div class="dropdown-content">
+                                            <a class="btn btn-secondary me-1" onclick="editApplications(${data})">
+                                                <i class="fa fa-pencil"></i> Edit
+                                            </a>
+                                            <a class="btn btn-secondary" onclick="deleteApplications(${data})">
+                                                <i class="fa fa-trash"></i> Delete
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }
                 }
-            });
+            ]
         });
     });
 
