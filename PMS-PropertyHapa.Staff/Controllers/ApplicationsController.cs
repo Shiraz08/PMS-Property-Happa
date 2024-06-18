@@ -26,6 +26,8 @@ namespace PMS_PropertyHapa.Staff.Controllers
         }
         public async Task<IActionResult> ViewApplication()
         {
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
+            ViewBag.UserId = currenUserId;
             return View();
         }
 
@@ -39,9 +41,6 @@ namespace PMS_PropertyHapa.Staff.Controllers
             {
                 applications = applications.Where(s => s.AddedBy == currenUserId);
             }
-            //var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            ViewBag.UserId = currenUserId;
             return Ok(applications);
         }
 

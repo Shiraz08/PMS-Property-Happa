@@ -131,10 +131,9 @@
             if ($("#reportPropertyFilter").val() != null) {
                 populateUnits($("#reportPropertyFilter").val().join(','));
             } else {
-                populateUnits("");
+                $("#reportPropertyFilter").empty();
             }
         });
-        populateUnits("");
     });
 
     var initDatePickers = function () {
@@ -209,21 +208,10 @@
             success: function (data) {
                 var vendorPropertyDropdown = document.getElementById('reportPropertyFilter');
                 // vendorPropertyDropdown.innerHTML = ''; // Clear existing options
-
-                while (vendorPropertyDropdown.options.length > 0) {
-                    vendorPropertyDropdown.remove(0);
-                }
-
-                // Add the "Select All" option
-                var selectAllOption = new Option('Select All Properties', '');
-                vendorPropertyDropdown.appendChild(selectAllOption);
-
                 data.forEach(function (item) {
                     var option = new Option(item.BuildingNo + " - " + item.BuildingName, item.AssetId);
                     vendorPropertyDropdown.appendChild(option);
                 });
-
-                $('#reportPropertyFilter').select2();
             }
         });
     }
@@ -232,7 +220,6 @@
         $("#reportPropertyFilter").empty();
         populateDropDowns();
         $("#reportUnitFilter").empty();
-        populateUnits();
         $("#createdAtRange").val('');
         $("#createdDueRange").val('');
         propertiesIdsList = [];
