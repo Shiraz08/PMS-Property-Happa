@@ -79,7 +79,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
         
         public async Task<IActionResult> UploadImage(IFormFile file)
         {
-            var url = await _storageService.UploadImageAsync(file);
+            var url = await _storageService.UploadImageAsync(file, file.FileName);
             return Ok(url);
         }
 

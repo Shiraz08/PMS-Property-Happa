@@ -8,9 +8,12 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.DotNet.Scaffolding.Shared.ProjectModel;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using NuGet.ContentModel;
+using PMS_PropertyHapa.API.Services;
+using PMS_PropertyHapa.API.ViewModels;
 using PMS_PropertyHapa.MigrationsFiles.Data;
 using PMS_PropertyHapa.MigrationsFiles.Migrations;
 using PMS_PropertyHapa.Models;
@@ -42,9 +45,13 @@ namespace MagicVilla_VillaAPI.Repository
         private string secretKey;
         private readonly IMapper _mapper;
         private readonly IEmailSender _emailSender;
+        private readonly GoogleCloudStorageService _googleCloudStorageService;
+        private readonly GoogleCloudStorageOptions _googleCloudStorageOptions;
+
 
         public UserRepository(ApiDbContext db, IConfiguration configuration,
-            UserManager<ApplicationUser> userManager, IMapper mapper, RoleManager<IdentityRole> roleManager, IEmailSender emailSender, SignInManager<ApplicationUser> signInManager)
+                              UserManager<ApplicationUser> userManager, IMapper mapper, RoleManager<IdentityRole> roleManager, IEmailSender emailSender, SignInManager<ApplicationUser> signInManager,
+                               GoogleCloudStorageService googleCloudStorageService, IOptions<GoogleCloudStorageOptions> googleCloudStorageOptions)
         {
             _db = db;
             _mapper = mapper;
@@ -53,6 +60,8 @@ namespace MagicVilla_VillaAPI.Repository
             _roleManager = roleManager;
             _emailSender = emailSender;
             _signInManager = signInManager;
+            _googleCloudStorageService = googleCloudStorageService;
+            _googleCloudStorageOptions = googleCloudStorageOptions.Value;
         }
 
         public bool IsUniqueUser(string username)
@@ -5430,6 +5439,116 @@ namespace MagicVilla_VillaAPI.Repository
             }
         }
 
+        #endregion
+
+        #region Documents
+
+        public async Task<List<DocumentsDto>> GetDocumentsAsync()
+        {
+            try
+            {
+                var result = await (from d in _db.Documents
+                                    where d.IsDeleted != true
+                                    select new DocumentsDto
+                                    {
+                                        DocumentsId = d.DocumentsId,
+                                        Title = d.Title,
+                                        Description = d.Description,
+                                        DocumentName = d.DocumentUrl,
+                                        DocumentUrl = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Documents_" + d.DocumentsId + Path.GetExtension(d.DocumentUrl)}",
+                                        AddedBy = d.AddedBy,
+                                    })
+                     .AsNoTracking()
+                     .ToListAsync();
+
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping Document: {ex.Message}");
+                throw;
+            }
+        }
+        public async Task<DocumentsDto> GetDocumentByIdAsync(int id)
+        {
+            try
+            {
+                var result = await (from d in _db.Documents
+                                    where d.DocumentsId == id
+                                    select new DocumentsDto
+                                    {
+                                        DocumentsId = d.DocumentsId,
+                                        Title = d.Title,
+                                        Description = d.Description,
+                                        DocumentName = d.DocumentUrl,
+                                        DocumentUrl = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Documents_" + d.DocumentsId + Path.GetExtension(d.DocumentUrl)}",
+                                        AddedBy = d.AddedBy,
+
+                                    })
+                     .AsNoTracking()
+                     .FirstOrDefaultAsync();
+
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping  Document: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<bool> SaveDocumentAsync(DocumentsDto model)
+        {
+            var document = _db.Documents.FirstOrDefault(x => x.DocumentsId == model.DocumentsId);
+
+            if (document == null)
+                document = new Documents();
+
+            document.DocumentsId = model.DocumentsId;
+            document.Title = model.Title;
+            document.Description = model.Description;
+            document.DocumentUrl = model.Document.FileName;
+
+            if (document.DocumentsId > 0)
+            {
+                document.ModifiedBy = model.AddedBy;
+                document.ModifiedDate = DateTime.Now;
+                _db.Documents.Update(document);
+            }
+            else
+            {
+                document.AddedBy = model.AddedBy;
+                document.AddedDate = DateTime.Now;
+                _db.Documents.Add(document);
+            }
+
+            var result = await _db.SaveChangesAsync();
+
+
+            if (model.Document != null)
+            {
+                var ext = Path.GetExtension(model.Document.FileName);
+                var res = await _googleCloudStorageService.UploadImageAsync(model.Document, "Documents_" + document.DocumentsId+ ext);
+            }
+
+            return result > 0;
+
+        }
+
+        public async Task<bool> DeleteDocumentAsync(int id)
+        {
+            var document = await _db.Documents.FindAsync(id);
+            if (document == null) return false;
+
+            document.IsDeleted = true;
+            _db.Documents.Update(document);
+            var saveResult = await _db.SaveChangesAsync();
+
+            return saveResult > 0;
+        }
+    
         #endregion
 
     }

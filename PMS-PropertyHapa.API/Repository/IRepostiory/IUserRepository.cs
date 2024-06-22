@@ -252,5 +252,11 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
         Task<List<LeaseReportDto>> GetLeaseReportAsync(ReportFilter reportFilter);
         Task<List<InvoiceReportDto>> GetInvoiceReportAsync(ReportFilter reportFilter);
         Task<List<TaskRequestReportDto>> GetTaskRequestReportAsync(ReportFilter reportFilter);
+
+        //Document
+        Task<List<DocumentsDto>> GetDocumentsAsync();
+        Task<DocumentsDto> GetDocumentByIdAsync(int id);
+        Task<bool> SaveDocumentAsync(DocumentsDto document);
+        Task<bool> DeleteDocumentAsync(int id);
     }
 }

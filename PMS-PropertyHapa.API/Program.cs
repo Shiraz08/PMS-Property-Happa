@@ -38,7 +38,7 @@ builder.Services.AddScoped<IEmailSender, EmailSender>();
 
 
 builder.Services.Configure<GoogleCloudStorageOptions>(builder.Configuration.GetSection("GoogleServiceAccount"));
-builder.Services.AddSingleton<GoogleCloudStorageService>();
+builder.Services.AddScoped<GoogleCloudStorageService>();
 
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.AddApiVersioning(options => {

@@ -24,7 +24,7 @@ builder.Services.AddScoped<IBaseService, BaseService>();
 builder.Services.AddScoped<EmailSenderBase>();
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 builder.Services.Configure<GoogleCloudStorageOptions>(builder.Configuration.GetSection("GoogleServiceAccount"));
-builder.Services.AddSingleton<GoogleCloudStorageService>();
+builder.Services.AddScoped<GoogleCloudStorageService>();
 builder.Services.AddScoped<ITokenProvider, TokenProvider>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<IAuthService, AuthService>();

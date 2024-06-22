@@ -60,6 +60,7 @@ namespace PMS_PropertyHapa.MigrationsFiles.Data
         public DbSet<ChartAccount> ChartAccount { get; set; }
         public DbSet<Invoice> Invoices { get; set; }
         public DbSet<Budget> Budgets { get; set; }
+        public DbSet<Documents> Documents { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Tenant>()

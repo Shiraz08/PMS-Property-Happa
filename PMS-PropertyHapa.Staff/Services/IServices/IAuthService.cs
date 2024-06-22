@@ -226,5 +226,14 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
         Task<IEnumerable<InvoiceReportDto>> GetInvoiceReports(ReportFilter reportFilter);
         Task<IEnumerable<TaskRequestReportDto>> GetTaskRequestReports(ReportFilter reportFilter);
         #endregion
+
+        #region Documents
+
+        Task<IEnumerable<DocumentsDto>> GetDocumentsAsync();
+        Task<DocumentsDto> GetDocumentByIdAsync(int id);
+        Task<bool> SaveDocumentAsync(DocumentsDto document);
+        Task<bool> DeleteDocumentAsync(int id);
+
+        #endregion
     }
 }

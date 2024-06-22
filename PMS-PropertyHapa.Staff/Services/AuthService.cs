@@ -2181,7 +2181,6 @@ namespace PMS_PropertyHapa.Staff.Services
                 throw new Exception("Failed to retrieve Lease data");
             }
         }
-
         public async Task<IEnumerable<InvoiceReportDto>> GetInvoiceReports(ReportFilter reportFilter)
         {
 
@@ -2203,7 +2202,6 @@ namespace PMS_PropertyHapa.Staff.Services
                 throw new Exception("Failed to retrieve Invoice data");
             }
         }
-
         public async Task<IEnumerable<TaskRequestReportDto>> GetTaskRequestReports(ReportFilter reportFilter)
         {
 
@@ -2225,6 +2223,84 @@ namespace PMS_PropertyHapa.Staff.Services
                 throw new Exception("Failed to retrieve Task Request data");
             }
         }
+        #endregion
+
+        #region Documents
+
+        public async Task<IEnumerable<DocumentsDto>> GetDocumentsAsync()
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = $"{villaUrl}/api/v1/DocumentsAuth/Documents"
+            });
+
+            if (response.IsSuccess == true)
+            {
+                var userListJson = Convert.ToString(response.Result);
+                var asset = JsonConvert.DeserializeObject<IEnumerable<DocumentsDto>>(userListJson);
+                return asset;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve documents data");
+            }
+        }
+        public async Task<DocumentsDto> GetDocumentByIdAsync(int id)
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = $"{villaUrl}/api/v1/DocumentsAuth/GetDocumentById/{id}"
+            });
+            if (response.IsSuccess && response.Result != null)
+            {
+                return JsonConvert.DeserializeObject<DocumentsDto>(Convert.ToString(response.Result));
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve documents data");
+            }
+        }
+        public async Task<bool> SaveDocumentAsync(DocumentsDto document)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Data = document,
+                    ContentType = SD.ContentType.MultipartFormData,
+                    Url = $"{villaUrl}/api/v1/DocumentsAuth/Document"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when updating document: {ex.Message}", ex);
+            }
+        }
+        public async Task<bool> DeleteDocumentAsync(int id)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Url = $"{villaUrl}/api/v1/DocumentsAuth/Document/{id}"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when deleting account type: {ex.Message}", ex);
+            }
+        }
+
         #endregion
     }
 }
