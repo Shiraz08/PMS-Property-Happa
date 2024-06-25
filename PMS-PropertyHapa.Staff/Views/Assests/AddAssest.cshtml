@@ -587,8 +587,8 @@
                             <input type="hidden" name="OwnerRegion" id="hiddenOwnerRegion">
                             <input type="hidden" name="OwnerCountryCode" id="hiddenOwnerCountryCode">
                             <input type="hidden" name="OwnerCountry" id="hiddenOwnerCountry">
-                            <input type="hidden" name="OwnerImage" id="hiddenOwnerImage"> *@
-                            <input type="hidden" id="hiddenImage" name="Image">
+                            <input type="hidden" name="OwnerImage" id="hiddenOwnerImage"> 
+                            <input type="hidden" id="hiddenImage" name="Image">*@
 
 
                             <div class="form-navigation" style="text-align: right;">
@@ -1200,7 +1200,7 @@
 
 
 
-    function collectFormData() {
+    @* function collectFormData() {
         var units = collectUnitsData();
 
         var assetDTO = {
@@ -1215,21 +1215,11 @@
             Country: $('#country').val(),
             Zipcode: $('#zipcode').val(),
             Units: units,
-            Image: $('#hiddenImage').val(),
+            Image: $('#assetPicture').val(),
             SelectedBankAccountOption: $('#SelectedBankAccountOption').val(),
             SelectedReserveFundsOption: $('#SelectedReserveFundsOption').val(),
             SelectedOwnershipOption: $('#SelectedOwnershipOption').val(),
             OwnerId: $('#selectedOwnerId').val(),
-@*             OwnerFirstName: $('#hiddenOwnerFirstName').val(),
-            OwnerLastName: $('#hiddenOwnerLastName').val(),
-            OwnerEmail: $('#hiddenOwnerEmail').val(),
-            OwnerPostalCode: $('#hiddenOwnerPostalCode').val(),
-            OwnerAddress: $('#hiddenOwnerAddress').val(),
-            OwnerDistrict: $('#hiddenOwnerDistrict').val(),
-            OwnerRegion: $('#hiddenOwnerRegion').val(),
-            OwnerCountryCode: $('#hiddenOwnerCountryCode').val(),
-            OwnerCountry: $('#hiddenOwnerCountry').val(),
-            OwnerImage: $('#hiddenOwnerImage').val(), *@
         };
 
 
@@ -1271,8 +1261,67 @@
 
             console.log('Form validation failed. Please check the inputs.');
         }
-    });
+    }); *@
 
+        function collectFormData() {
+        var units = collectUnitsData();
+
+        var formData = new FormData();
+        formData.append("SelectedPropertyType", $('#SelectedPropertyType').val());
+        formData.append("SelectedSubtype", $('#SelectedSubtype').val());
+        formData.append("buildingNo", $('#buildingNo').val());
+        formData.append("buildingName", $('#buildingName').val());
+        formData.append("Street1", $('#street1').val());
+        formData.append("Street2", $('#street2').val());
+        formData.append("City", $('#city').val());
+        formData.append("State", $('#state').val());
+        formData.append("Country", $('#country').val());
+        formData.append("Zipcode", $('#zipcode').val());
+        formData.append("Units", JSON.stringify(units)); // Assuming units is an object or array
+                formData.append("PictureFile", $('#assetPicture')[0].files[0]);
+        formData.append("SelectedBankAccountOption", $('#SelectedBankAccountOption').val());
+        formData.append("SelectedReserveFundsOption", $('#SelectedReserveFundsOption').val());
+        formData.append("SelectedOwnershipOption", $('#SelectedOwnershipOption').val());
+        formData.append("OwnerId", $('#selectedOwnerId').val());
+
+        return formData;
+    }
+
+    var isEditMode = '@Model?.Asset?.AssetId' !== '';
+
+    $('#submitForm').click(function (event) {
+        event.preventDefault();
+
+        debugger;
+        var isValid = validateCurrentStep();
+        if (isValid) {
+            if (currentStep < totalSteps) {
+                navigateToStep(currentStep + 1);
+            } else {
+                var userId = localStorage.getItem('userId');
+                var formData = collectFormData();
+                formData.append("AppTId", userId);
+                var submitUrl = isEditMode ? `$/Assests/UpdateAsset/{Model?.Asset?.AssetId}` : '/Assests/AddAsset';
+
+                $.ajax({
+                    url: submitUrl,
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        console.log("Success:", response);
+                        window.location.href = '/Assests/Index';
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error:", error);
+                    }
+                });
+            }
+        } else {
+            console.log('Form validation failed. Please check the inputs.');
+        }
+    });
 
 
     function collectUnitsData() {
@@ -1550,7 +1599,7 @@
             }
         });
 
-        $("#assetPicture").change(function () {
+@*         $("#assetPicture").change(function () {
             if (this.files && this.files[0]) {
                 var reader = new FileReader();
 
@@ -1564,7 +1613,7 @@
 
                 reader.readAsDataURL(this.files[0]);
             }
-        });
+        }); *@
 
 
     });

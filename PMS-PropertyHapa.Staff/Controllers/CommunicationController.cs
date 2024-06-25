@@ -60,12 +60,15 @@ namespace PMS_PropertyHapa.Staff.Controllers
         {
             try
             {
-                var properties = await _authService.GetAllAssetsAsync();
                 var currenUserId = Request?.Cookies["userId"]?.ToString();
-                if (currenUserId != null)
-                {
-                    properties = properties.Where(s => s.AddedBy == currenUserId);
-                }
+
+                var filter = new Filter();
+                filter.AddedBy = currenUserId;
+                var properties = await _authService.GetAssetsDllAsync(filter);
+                //if (currenUserId != null)
+                //{
+                //    properties = properties.Where(s => s.AddedBy == currenUserId);
+                //}
                 return Ok(properties);
             }
             catch (Exception ex)
@@ -87,6 +90,28 @@ namespace PMS_PropertyHapa.Staff.Controllers
                 {
                     tenant = tenant.Where(s => s.AddedBy == currenUserId);
                 }
+                return Ok(tenant);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while fetching Communications: {ex.Message}");
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetTenantsDll()
+        {
+            try
+            {
+                
+                var currenUserId = Request?.Cookies["userId"]?.ToString();
+                var filter = new Filter();
+                filter.AddedBy = currenUserId;
+                var tenant = await _authService.GetAllTenantsDllAsync(filter);
+                //if (currenUserId != null)
+                //{
+                //    tenant = tenant.Where(s => s.AddedBy == currenUserId);
+                //}
                 return Ok(tenant);
             }
             catch (Exception ex)

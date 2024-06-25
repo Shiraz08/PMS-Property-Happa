@@ -315,15 +315,13 @@
                                     <div class="d-flex flex-column align-items-center">
                                         <div class="col-md-6 mb-3 @(isEditMode ? "d-none" : "")">
                                             <label for="propertyDropdown">Choose Property:</label>
-                                            <select id="propertyDropdown" name="propertyDropdown" class="form-select">
-                                                <option value="">Select Property</option>
+                                            <select id="propertyDropdown" name="propertyDropdown" class="form-control select2">
                                             </select>
                                         </div>
 
                                         <div class="col-md-6 mb-3 @(isEditMode ? "d-none" : "")">
                                             <label for="unitDropdown">Choose Units:</label>
-                                            <select id="unitDropdown" name="unitDropdown" class="form-select">
-                                                <option value="">Select Unit</option>
+                                            <select id="unitDropdown" name="unitDropdown" class="form-control select2">
                                             </select>
                                         </div>
 
@@ -1288,9 +1286,9 @@
 
     function populateUnits(propertyId, selectedUnitId) {
         $.ajax({
-            url: '/Lease/ByProperty',
+            url: '/Lease/GetUnitsDll',
             method: 'GET',
-            data: { propertyId: propertyId },
+            data: { AssetIds: propertyId },
             success: function (units) {
                 var $unitDropdown = $('#unitDropdown');
                 $unitDropdown.empty().append('<option value="">Select Unit</option>');

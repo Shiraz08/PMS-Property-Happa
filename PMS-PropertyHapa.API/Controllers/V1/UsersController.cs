@@ -10,6 +10,9 @@ using System.Security.Claims;
 using System.Net.Http.Headers;
 using PMS_PropertyHapa.MigrationsFiles.Data;
 using PMS_PropertyHapa.Models.Roles;
+using PMS_PropertyHapa.API.Services;
+using PMS_PropertyHapa.API.ViewModels;
+using Microsoft.Extensions.Options;
 
 namespace PMS_PropertyHapa.API.Controllers.V1
 {
@@ -22,12 +25,16 @@ namespace PMS_PropertyHapa.API.Controllers.V1
         private readonly IEmailSender _emailSender;
         private readonly UserManager<ApplicationUser> _userManager;
         protected APIResponse _response;
+        private readonly GoogleCloudStorageService _googleCloudStorageService;
+        private readonly GoogleCloudStorageOptions _googleCloudStorageOptions;
 
-        public UsersController(IUserRepository userRepo, UserManager<ApplicationUser> userManager)
+        public UsersController(IUserRepository userRepo, UserManager<ApplicationUser> userManager, GoogleCloudStorageService googleCloudStorageService, IOptions<GoogleCloudStorageOptions> googleCloudStorageOptions)
         {
             _userRepo = userRepo;
             _response = new();
             _userManager = userManager;
+            _googleCloudStorageService = googleCloudStorageService;
+            _googleCloudStorageOptions = googleCloudStorageOptions.Value;
         }
 
         [HttpGet("Error")]
@@ -258,7 +265,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
         }
 
         [HttpPost("Update")]
-        public async Task<IActionResult> UpdateProfile(ProfileModel model)
+        public async Task<IActionResult> UpdateProfile([FromForm] ProfileModel model)
         {
             var user = await _userManager.FindByIdAsync(model.UserId);
             if (user == null)
@@ -280,16 +287,24 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             user.TermsAndConditons = model.TermsAndConditons;
             user.Currency = model.Currency;
 
-            if (!string.IsNullOrEmpty(model.NewPictureBase64))
+            if (model.NewPicture != null)
             {
-                // Handle updating profile picture with base64 string
-                user.Picture = model.NewPictureBase64;
+                user.Picture = model.NewPicture.FileName;
             }
 
             var result = await _userManager.UpdateAsync(user);
+
+
+            if (model.NewPicture != null)
+            {
+                var ext = Path.GetExtension(model.NewPicture.FileName);
+                var res = await _googleCloudStorageService.UploadImageAsync(model.NewPicture, "AspNetUsers_Picture_" + user.Id + ext);
+            }
+
+
             if (result.Succeeded)
             {
-                return Ok(new { pictureUrl = user.Picture });
+                return Ok(new { pictureUrl = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"AspNetUsers_Picture_" + user.Id + Path.GetExtension(user.Picture)}" });
             }
 
             return BadRequest(result.Errors);

@@ -58,6 +58,35 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             }
         }
 
+        [HttpGet("ChartAccountsDll")]
+        public async Task<ActionResult<ChartAccountDto>> GetChartAccountsDll(Filter filter)
+        {
+            try
+            {
+                var chartAccounts = await _userRepo.GetChartAccountsDllAsync(filter);
+
+                if (chartAccounts != null)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = chartAccounts;
+                    return Ok(_response);
+                }
+                else
+                {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("No sub account found with this id.");
+                    return NotFound(_response);
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
+
         [HttpGet("GetChartAccountById/{id}")]
         public async Task<IActionResult> GetChartAccountById(int id)
         {

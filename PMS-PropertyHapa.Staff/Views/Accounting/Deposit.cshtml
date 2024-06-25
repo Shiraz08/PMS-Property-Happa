@@ -392,9 +392,9 @@
 
     function populateUnits(propertyId, $unitDropdown, selectedUnits) {
         $.ajax({
-            url: '/Lease/ByProperty',
+            url: '/Lease/GetUnitsDll',
             method: 'GET',
-            data: { propertyId: propertyId },
+            data: { AssetIds: propertyId },
             success: function (units) {
                 $unitDropdown.empty();
                 units.forEach(function (unit) {

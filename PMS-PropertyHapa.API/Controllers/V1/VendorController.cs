@@ -59,6 +59,34 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             }
         }
 
+        [HttpGet("VendorsDll")]
+        public async Task<ActionResult<Vendor>> GetVendorsDll(Filter filter)
+        {
+            try
+            {
+                var vendors = await _userRepo.GetVendorsDllAsync(filter);
+
+                if (vendors != null)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = vendors;
+                    return Ok(_response);
+                }
+                else
+                {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("No asset found with this id.");
+                    return NotFound(_response);
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
         [HttpGet("GetVendorById/{id}")]
         public async Task<IActionResult> GetVendorById(int id)
         {
@@ -92,7 +120,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
         }
 
         [HttpPost("Vendor")]
-        public async Task<ActionResult<bool>> SaveVendor(VendorDto vendor)
+        public async Task<ActionResult<bool>> SaveVendor([FromForm] VendorDto vendor)
         {
             try
             {
@@ -131,6 +159,34 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             try
             {
                 var vendorCategories = await _userRepo.GetVendorCategoriesAsync();
+
+                if (vendorCategories != null)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = vendorCategories;
+                    return Ok(_response);
+                }
+                else
+                {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("No asset found with this id.");
+                    return NotFound(_response);
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
+        [HttpGet("VendorCategoriesDll")]
+        public async Task<ActionResult<VendorCategory>> GetVendorCategoriesDll(Filter filter)
+        {
+            try
+            {
+                var vendorCategories = await _userRepo.GetVendorCategoriesDllAsync(filter);
 
                 if (vendorCategories != null)
                 {
@@ -248,6 +304,36 @@ namespace PMS_PropertyHapa.API.Controllers.V1
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
+
+
+        [HttpGet("VendorClassificationsDll")]
+        public async Task<ActionResult<VendorClassification>> GetVendorClassificationsDll(Filter filter)
+        {
+            try
+            {
+                var vendorClassifications = await _userRepo.GetVendorClassificationsDllAsync(filter);
+
+                if (vendorClassifications != null)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = vendorClassifications;
+                    return Ok(_response);
+                }
+                else
+                {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("No classification found with this id.");
+                    return NotFound(_response);
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
 
         [HttpGet("GetVendorClassificationById/{id}")]
         public async Task<IActionResult> GetVendorClassificationById(int id)

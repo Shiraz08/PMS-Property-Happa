@@ -39,7 +39,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> SaveTaskHistory([FromBody] TaskRequestHistoryDto taskRequestHistoryDto)
+        public async Task<IActionResult> SaveTaskHistory([FromForm] TaskRequestHistoryDto taskRequestHistoryDto)
         {
             if (taskRequestHistoryDto == null)
             {

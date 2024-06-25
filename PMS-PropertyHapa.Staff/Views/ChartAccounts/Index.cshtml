@@ -244,7 +244,7 @@
             url: '@Url.Action("AccountSubTypeDll", "AccountSubType")',
             type: 'GET',
             dataType: 'json',
-            data: { accountTypeId: accountTypeId },
+            data: { AccountTypeIds: accountTypeId },
             success: function (data) {
                 var accountSubTypeDropdown = document.getElementById('accountSubTypeName');
                 accountSubTypeDropdown.innerHTML = ''; // Clear existing options

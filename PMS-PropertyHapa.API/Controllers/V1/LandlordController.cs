@@ -74,6 +74,34 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             }
         }
 
+        [HttpGet("LandlordDll")]
+        public async Task<ActionResult<OwnerDto>> GetAllLandlordDll(Filter filter)
+        {
+            try
+            {
+                var assets = await _userRepo.GetAllLandlordDllAsync(filter);
+
+                if (assets != null)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = assets;
+                    return Ok(_response);
+                }
+                else
+                {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("No asset found with this id.");
+                    return NotFound(_response);
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
         [HttpGet("GetSingleLandlord/{ownerId}")]
         public async Task<IActionResult> GetSingleLandlord(int ownerId)
         {
@@ -107,7 +135,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
 
 
         [HttpPost("Landlord")]
-        public async Task<ActionResult<bool>> CreateOwner(OwnerDto owner)
+        public async Task<ActionResult<bool>> CreateOwner([FromForm] OwnerDto owner)
         {
             try
             {

@@ -65,13 +65,15 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
         public async Task<IActionResult> ChartAccountDll()
         {
-            IEnumerable<ChartAccountDto> chartAccounts = new List<ChartAccountDto>();
-            chartAccounts = await _authService.GetChartAccountsAsync();
             var currenUserId = Request?.Cookies["userId"]?.ToString();
-            if (currenUserId != null)
-            {
-                chartAccounts = chartAccounts.Where(s => s.AddedBy == currenUserId);
-            }
+            var filter = new Filter();
+            filter.AddedBy = currenUserId;
+            IEnumerable<ChartAccountDto> chartAccounts = new List<ChartAccountDto>();
+            chartAccounts = await _authService.GetChartAccountsDllAsync(filter);
+            //if (currenUserId != null)
+            //{
+            //    chartAccounts = chartAccounts.Where(s => s.AddedBy == currenUserId);
+            //}
             return Ok(chartAccounts);
         }
 

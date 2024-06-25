@@ -198,7 +198,7 @@
                     $('#UserName').val(response.result.UserName);
                     $('#Email').val(response.result.Email);
                     $('#PhoneNumber').val(response.result.PhoneNumber);
-                    $('#userProfilePic').attr('src', 'data:image;base64,' + response.result.NewPictureBase64);
+                    $('#userProfilePic').attr('src', response.result.NewPictureBase64);
                     $('#Address').val(response.result.Address);
                     $('#Address2').val(response.result.Address2);
                     $('#Locality').val(response.result.Locality);

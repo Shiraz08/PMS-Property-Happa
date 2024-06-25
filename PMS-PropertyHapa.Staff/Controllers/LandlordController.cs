@@ -73,10 +73,33 @@ namespace PMS_PropertyHapa.Staff.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetLandlordDll()
+        {
+            try
+            {
+                
+                var currenUserId = Request?.Cookies["userId"]?.ToString();
+                var filter = new Filter();
+                filter.AddedBy = currenUserId;
+                IEnumerable<OwnerDto> owner = new List<OwnerDto>();
+                owner = await _authService.GetAllLandlordDllAsync(filter);
+                //if (currenUserId != null)
+                //{
+                //    owner = owner.Where(s => s.AddedBy == currenUserId);
+                //}
+                return Ok(owner);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while fetching assets: {ex.Message}");
+            }
+        }
+
 
 
         [HttpPost]
-        public async Task<IActionResult> Create(OwnerDto owner)
+        public async Task<IActionResult> Create([FromForm] OwnerDto owner)
         {
             if (Guid.TryParse(owner.AppTid, out Guid appTenantId))
             {
@@ -88,12 +111,12 @@ namespace PMS_PropertyHapa.Staff.Controllers
                 return Json(new { success = false, message = "Invalid AppTid format" });
             }
 
-            if (owner.Picture != null || owner.OrganizationLogo != null || owner.OrganizationIcon != null)
-            {
-                owner.Picture = $"data:image/png;base64,{owner.Picture}";
-                owner.OrganizationLogo = $"data:image/png;base64,{owner.OrganizationLogo}";
-                owner.OrganizationIcon = $"data:image/png;base64,{owner.OrganizationIcon}";
-            }
+            //if (owner.Picture != null || owner.OrganizationLogo != null || owner.OrganizationIcon != null)
+            //{
+            //    owner.Picture = $"data:image/png;base64,{owner.Picture}";
+            //    owner.OrganizationLogo = $"data:image/png;base64,{owner.OrganizationLogo}";
+            //    owner.OrganizationIcon = $"data:image/png;base64,{owner.OrganizationIcon}";
+            //}
             owner.AddedBy = Request?.Cookies["userId"]?.ToString();
             await _authService.CreateLandlordAsync(owner);
             return Json(new { success = true, message = "Owner added successfully" });
@@ -110,12 +133,12 @@ namespace PMS_PropertyHapa.Staff.Controllers
                 owner.Picture = $"data:image/png;base64,{base64String}";
             }
 
-            if (owner.Picture != null || owner.OrganizationLogo != null || owner.OrganizationIcon != null)
-            {
-                owner.Picture = $"data:image/png;base64,{owner.Picture}";
-                owner.OrganizationLogo = $"data:image/png;base64,{owner.OrganizationLogo}";
-                owner.OrganizationIcon = $"data:image/png;base64,{owner.OrganizationIcon}";
-            }
+            //if (owner.Picture != null || owner.OrganizationLogo != null || owner.OrganizationIcon != null)
+            //{
+            //    owner.Picture = $"data:image/png;base64,{owner.Picture}";
+            //    owner.OrganizationLogo = $"data:image/png;base64,{owner.OrganizationLogo}";
+            //    owner.OrganizationIcon = $"data:image/png;base64,{owner.OrganizationIcon}";
+            //}
             owner.AddedBy = Request?.Cookies["userId"]?.ToString();
             await _authService.UpdateLandlordAsync(owner);
             return Json(new { success = true, message = "Owner updated successfully" });

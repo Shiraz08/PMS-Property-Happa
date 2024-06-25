@@ -76,10 +76,38 @@ namespace PMS_PropertyHapa.API.Controllers.V1
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
+        
+        [HttpGet("AssetsDll")]
+        public async Task<ActionResult<AssetDTO>> GetAssetsDll(Filter filter)
+        {
+            try
+            {
+                var assets = await _userRepo.GetAssetsDllAsync(filter);
+
+                if (assets != null)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = assets;
+                    return Ok(_response);
+                }
+                else
+                {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("No asset found with this id.");
+                    return NotFound(_response);
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
 
 
         [HttpPost("Asset")]
-        public async Task<ActionResult<bool>> CreateAssets(AssetDTO asset)
+        public async Task<ActionResult<bool>> CreateAssets([FromForm] AssetDTO asset)
         {
             try
             {
@@ -138,6 +166,34 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             try
             {
                 var units = await _userRepo.GetAllUnitsAsync();
+
+                if (units != null)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = units;
+                    return Ok(_response);
+                }
+                else
+                {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("No unit found with this id.");
+                    return NotFound(_response);
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+        
+        [HttpGet("UnitsDll")]
+        public async Task<ActionResult<AssetUnitDTO>> GetUnitsDll(Filter filter)
+        {
+            try
+            {
+                var units = await _userRepo.GetUnitsDllAsync(filter);
 
                 if (units != null)
                 {

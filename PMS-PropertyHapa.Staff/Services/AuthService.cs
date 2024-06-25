@@ -9,6 +9,7 @@ using APIResponse = PMS_PropertyHapa.Staff.Models.APIResponse;
 using PMS_PropertyHapa.Staff.Services.IServices;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Humanizer.Localisation;
+using System.Web.Mvc;
 
 namespace PMS_PropertyHapa.Staff.Services
 {
@@ -54,6 +55,7 @@ namespace PMS_PropertyHapa.Staff.Services
                 {
                     ApiType = SD.ApiType.POST,
                     Data = model,
+                    ContentType = SD.ContentType.MultipartFormData,
                     Url = $"{villaUrl}/api/v1/UsersAuth/Update"
                 });
 
@@ -218,6 +220,34 @@ namespace PMS_PropertyHapa.Staff.Services
             }
         }
 
+        public async Task<IEnumerable<TenantModelDto>> GetAllTenantsDllAsync(PMS_PropertyHapa.Models.DTO.Filter filter)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.GET,
+                    Data = filter,
+                    Url = $"{villaUrl}/api/v1/Tenantauth/TenantDll"
+                });
+
+                if (response != null && response.IsSuccess)
+                {
+                    var userListJson = Convert.ToString(response.Result);
+                    var tenants = JsonConvert.DeserializeObject<IEnumerable<TenantModelDto>>(userListJson);
+                    return tenants;
+                }
+                else
+                {
+                    throw new Exception("Failed to retrieve tenants data");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when fetching tenants data: {ex.Message}", ex);
+            }
+        }
+
 
 
         public async Task<List<TenantModelDto>> GetTenantsByIdAsync(string tenantId)
@@ -313,6 +343,109 @@ namespace PMS_PropertyHapa.Staff.Services
                 });
 
                 return response.IsSuccess;
+
+                //using (var content = new MultipartFormDataContent())
+                //{
+                //    var properties = tenant.GetType().GetProperties();
+                //    foreach (var prop in properties)
+                //    {
+                //        var value = prop.GetValue(tenant);
+
+                //        if (value != null)
+                //        {
+                //            content.Add(new StringContent(value.ToString()), prop.Name);
+                //        }
+                //    }
+                //    if (tenant.PictureUrl != null)
+                //    {
+                //        content.Add(new StreamContent(tenant.PictureUrl.OpenReadStream()), nameof(tenant.PictureUrl), tenant.PictureUrl.FileName);
+                //    }
+
+                //    if (tenant.DocumentUrl != null)
+                //    {
+                //        content.Add(new StreamContent(tenant.DocumentUrl.OpenReadStream()), nameof(tenant.DocumentUrl), tenant.DocumentUrl.FileName);
+                //    }
+
+                //    // Handling Pets
+                //    if (tenant.Pets != null)
+                //    {
+                //        int petIndex = 0;
+                //        foreach (var pet in tenant.Pets)
+                //        {
+                //            content.Add(new StringContent(pet.Name), $"Pets[{petIndex}].Name");
+                //            content.Add(new StringContent(pet.Breed), $"Pets[{petIndex}].Breed");
+                //            content.Add(new StringContent(pet.Type), $"Pets[{petIndex}].Type");
+                //            content.Add(new StringContent(pet.Quantity.ToString()), $"Pets[{petIndex}].Quantity");
+                //            if (pet.PictureUrl2 != null)
+                //            {
+                //                content.Add(new StreamContent(pet.PictureUrl2.OpenReadStream()), $"Pets[{petIndex}].PictureUrl2", pet.PictureUrl2.FileName);
+                //            }
+                //            petIndex++;
+                //        }
+                //    }
+
+                //    // Handling Vehicles
+                //    if (tenant.Vehicles != null)
+                //    {
+                //        int vehicleIndex = 0;
+                //        foreach (var vehicle in tenant.Vehicles)
+                //        {
+                //            content.Add(new StringContent(vehicle.Manufacturer), $"Vehicles[{vehicleIndex}].Manufacturer");
+                //            content.Add(new StringContent(vehicle.ModelName), $"Vehicles[{vehicleIndex}].ModelName");
+                //            content.Add(new StringContent(vehicle.ModelVariant), $"Vehicles[{vehicleIndex}].ModelVariant");
+                //            content.Add(new StringContent(vehicle.Color), $"Vehicles[{vehicleIndex}].Color");
+                //            content.Add(new StringContent(vehicle.Year), $"Vehicles[{vehicleIndex}].Year");
+                //            vehicleIndex++;
+                //        }
+                //    }
+
+                //    // Handling Tenant Dependents
+                //    if (tenant.Dependent != null)
+                //    {
+                //        int dependentIndex = 0;
+                //        foreach (var dependent in tenant.Dependent)
+                //        {
+                //            content.Add(new StringContent(dependent.FirstName), $"Dependent[{dependentIndex}].FirstName");
+                //            content.Add(new StringContent(dependent.LastName), $"Dependent[{dependentIndex}].LastName");
+                //            content.Add(new StringContent(dependent.EmailAddress), $"Dependent[{dependentIndex}].EmailAddress");
+                //            content.Add(new StringContent(dependent.PhoneNumber), $"Dependent[{dependentIndex}].PhoneNumber");
+                //            content.Add(new StringContent(dependent.DOB), $"Dependent[{dependentIndex}].DOB");
+                //            content.Add(new StringContent(dependent.Relation), $"Dependent[{dependentIndex}].Relation");
+                //            dependentIndex++;
+                //        }
+                //    }
+
+                //    // Handling Co-Tenants
+                //    if (tenant.CoTenant != null)
+                //    {
+                //        int coTenantIndex = 0;
+                //        foreach (var coTenant in tenant.CoTenant)
+                //        {
+                //            content.Add(new StringContent(coTenant.FirstName), $"CoTenant[{coTenantIndex}].FirstName");
+                //            content.Add(new StringContent(coTenant.LastName), $"CoTenant[{coTenantIndex}].LastName");
+                //            content.Add(new StringContent(coTenant.EmailAddress), $"CoTenant[{coTenantIndex}].EmailAddress");
+                //            content.Add(new StringContent(coTenant.PhoneNumber), $"CoTenant[{coTenantIndex}].PhoneNumber");
+                //            content.Add(new StringContent(coTenant.Address), $"CoTenant[{coTenantIndex}].Address");
+                //            content.Add(new StringContent(coTenant.Unit), $"CoTenant[{coTenantIndex}].Unit");
+                //            content.Add(new StringContent(coTenant.District), $"CoTenant[{coTenantIndex}].District");
+                //            content.Add(new StringContent(coTenant.Region), $"CoTenant[{coTenantIndex}].Region");
+                //            content.Add(new StringContent(coTenant.PostalCode), $"CoTenant[{coTenantIndex}].PostalCode");
+                //            content.Add(new StringContent(coTenant.Country), $"CoTenant[{coTenantIndex}].Country");
+                //            coTenantIndex++;
+                //        }
+                //    }
+
+                //    var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                //    {
+                //        ApiType = SD.ApiType.POST,
+                //        Data = content,
+                //        ContentType = SD.ContentType.MultipartFormData,
+                //        Url = $"{villaUrl}/api/v1/Tenantauth/Tenant"
+                //    });
+
+                //    return response.IsSuccess;
+                //}
+
             }
             catch (Exception ex)
             {
@@ -330,6 +463,7 @@ namespace PMS_PropertyHapa.Staff.Services
                 {
                     ApiType = SD.ApiType.POST,
                     Data = asset,
+                    ContentType = SD.ContentType.MultipartFormData,
                     Url = $"{villaUrl}/api/v1/AssetsAuth/Asset"
                 });
 
@@ -389,6 +523,30 @@ namespace PMS_PropertyHapa.Staff.Services
             {
                 ApiType = SD.ApiType.GET,
                 Url = $"{villaUrl}/api/v1/AssetsAuth/Assets"
+            });
+
+            if (response.IsSuccess == true)
+            {
+                var userListJson = Convert.ToString(response.Result);
+                var asset = JsonConvert.DeserializeObject<IEnumerable<AssetDTO>>(userListJson);
+                return asset;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve communication data");
+            }
+
+
+        }
+        
+        public async Task<IEnumerable<AssetDTO>> GetAssetsDllAsync(PMS_PropertyHapa.Models.DTO.Filter filter)
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Data = filter,
+                Url = $"{villaUrl}/api/v1/AssetsAuth/AssetsDll"
             });
 
             if (response.IsSuccess == true)
@@ -500,6 +658,30 @@ namespace PMS_PropertyHapa.Staff.Services
             {
                 ApiType = SD.ApiType.GET,
                 Url = $"{villaUrl}/api/v1/LandlordAuth/Landlord"
+            });
+
+            if (response.IsSuccess == true)
+            {
+                var userListJson = Convert.ToString(response.Result);
+                var asset = JsonConvert.DeserializeObject<IEnumerable<OwnerDto>>(userListJson);
+                return asset;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve asset data");
+            }
+
+
+        }
+
+        public async Task<IEnumerable<OwnerDto>> GetAllLandlordDllAsync(PMS_PropertyHapa.Models.DTO.Filter filter)
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Data = filter,
+                Url = $"{villaUrl}/api/v1/LandlordAuth/LandlordDll"
             });
 
             if (response.IsSuccess == true)
@@ -958,6 +1140,7 @@ namespace PMS_PropertyHapa.Staff.Services
                 {
                     ApiType = SD.ApiType.POST,
                     Data = owner,
+                    ContentType = SD.ContentType.MultipartFormData,
                     Url = $"{villaUrl}/api/v1/LandlordAuth/Landlord"
                 });
 
@@ -1017,6 +1200,7 @@ namespace PMS_PropertyHapa.Staff.Services
                 {
                     ApiType = SD.ApiType.POST,
                     Data = lease,
+                    ContentType = SD.ContentType.MultipartFormData,
                     Url = $"{villaUrl}/api/v1/LeaseAuth/Lease"
                 });
 
@@ -1247,6 +1431,30 @@ namespace PMS_PropertyHapa.Staff.Services
 
 
         }
+        
+        public async Task<IEnumerable<AssetUnitDTO>> GetUnitsDllAsync(PMS_PropertyHapa.Models.DTO.Filter filter)
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Data= filter,
+                Url = $"{villaUrl}/api/v1/AssetsAuth/UnitsDll"
+            });
+
+            if (response.IsSuccess == true)
+            {
+                var unitListJson = Convert.ToString(response.Result);
+                var units = JsonConvert.DeserializeObject<IEnumerable<AssetUnitDTO>>(unitListJson);
+                return units;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve unit data");
+            }
+
+
+        }
 
         public async Task<bool> VerifyEmailAsync(string email)
         {
@@ -1392,6 +1600,7 @@ namespace PMS_PropertyHapa.Staff.Services
                 {
                     ApiType = SD.ApiType.POST,
                     Data = taskRequestDto,
+                    //ContentType = SD.ContentType.MultipartFormData,
                     Url = $"{villaUrl}/api/v1/TaskAuth/Task"
                 });
 
@@ -1427,6 +1636,7 @@ namespace PMS_PropertyHapa.Staff.Services
                 {
                     ApiType = SD.ApiType.POST,
                     Data = taskRequestHistoryDto,
+                    ContentType = SD.ContentType.MultipartFormData,
                     Url = $"{villaUrl}/api/v1/TaskAuth/TaskHistory"
                 });
 
@@ -1527,6 +1737,27 @@ namespace PMS_PropertyHapa.Staff.Services
                 throw new Exception("Failed to retrieve vendor categories data");
             }
         }
+        public async Task<IEnumerable<VendorCategory>> GetVendorCategoriesDllAsync(PMS_PropertyHapa.Models.DTO.Filter filter)
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Data = filter,
+                Url = $"{villaUrl}/api/v1/VendorAuth/VendorCategoriesDll"
+            });
+
+            if (response.IsSuccess == true)
+            {
+                var userListJson = Convert.ToString(response.Result);
+                var asset = JsonConvert.DeserializeObject<IEnumerable<VendorCategory>>(userListJson);
+                return asset;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve vendor categories data");
+            }
+        }
         public async Task<VendorCategory> GetVendorCategoryByIdAsync(int id)
         {
 
@@ -1591,6 +1822,27 @@ namespace PMS_PropertyHapa.Staff.Services
             {
                 ApiType = SD.ApiType.GET,
                 Url = $"{villaUrl}/api/v1/VendorAuth/VendorClassifications"
+            });
+
+            if (response.IsSuccess == true)
+            {
+                var userListJson = Convert.ToString(response.Result);
+                var asset = JsonConvert.DeserializeObject<IEnumerable<VendorClassification>>(userListJson);
+                return asset;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve vendor classifications data");
+            }
+        }
+        public async Task<IEnumerable<VendorClassification>> GetVendorClassificationsDllAsync(PMS_PropertyHapa.Models.DTO.Filter filter)
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Data = filter,
+                Url = $"{villaUrl}/api/v1/VendorAuth/VendorClassificationsDll"
             });
 
             if (response.IsSuccess == true)
@@ -1681,6 +1933,27 @@ namespace PMS_PropertyHapa.Staff.Services
                 throw new Exception("Failed to retrieve vendor data");
             }
         }
+        public async Task<IEnumerable<VendorDto>> GetVendorsDllAsync(PMS_PropertyHapa.Models.DTO.Filter filter)
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Data = filter,
+                Url = $"{villaUrl}/api/v1/VendorAuth/VendorsDll"
+            });
+
+            if (response.IsSuccess == true)
+            {
+                var userListJson = Convert.ToString(response.Result);
+                var asset = JsonConvert.DeserializeObject<IEnumerable<VendorDto>>(userListJson);
+                return asset;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve vendor data");
+            }
+        }
         public async Task<VendorDto> GetVendorByIdAsync(int id)
         {
 
@@ -1706,6 +1979,7 @@ namespace PMS_PropertyHapa.Staff.Services
                 {
                     ApiType = SD.ApiType.POST,
                     Data = vendor,
+                    ContentType = SD.ContentType.MultipartFormData,
                     Url = $"{villaUrl}/api/v1/VendorAuth/Vendor"
                 });
 
@@ -1853,6 +2127,27 @@ namespace PMS_PropertyHapa.Staff.Services
                 throw new Exception("Failed to retrieve account types data");
             }
         }
+        public async Task<IEnumerable<AccountType>> GetAccountTypesDllAsync(PMS_PropertyHapa.Models.DTO.Filter filter)
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Data = filter, 
+                Url = $"{villaUrl}/api/v1/AccountTypeAuth/AccountTypesDll"
+            });
+
+            if (response.IsSuccess == true)
+            {
+                var userListJson = Convert.ToString(response.Result);
+                var asset = JsonConvert.DeserializeObject<IEnumerable<AccountType>>(userListJson);
+                return asset;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve account types data");
+            }
+        }
         public async Task<AccountType> GetAccountTypeByIdAsync(int id)
         {
 
@@ -1917,6 +2212,28 @@ namespace PMS_PropertyHapa.Staff.Services
             {
                 ApiType = SD.ApiType.GET,
                 Url = $"{villaUrl}/api/v1/AccountSubTypeAuth/AccountSubTypes"
+            });
+
+            if (response.IsSuccess == true)
+            {
+                var userListJson = Convert.ToString(response.Result);
+                var asset = JsonConvert.DeserializeObject<IEnumerable<AccountSubTypeDto>>(userListJson);
+                return asset;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve account sub types data");
+            }
+        }
+
+        public async Task<IEnumerable<AccountSubTypeDto>> GetAccountSubTypesDllAsync(PMS_PropertyHapa.Models.DTO.Filter filter)
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Data = filter,
+                Url = $"{villaUrl}/api/v1/AccountSubTypeAuth/AccountSubTypesDll"
             });
 
             if (response.IsSuccess == true)
@@ -2007,6 +2324,29 @@ namespace PMS_PropertyHapa.Staff.Services
                 throw new Exception("Failed to retrieve account sub types data");
             }
         }
+
+        public async Task<IEnumerable<ChartAccountDto>> GetChartAccountsDllAsync(PMS_PropertyHapa.Models.DTO.Filter filter)
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Data = filter,
+                Url = $"{villaUrl}/api/v1/ChartAccountsAuth/ChartAccountsDll"
+            });
+
+            if (response.IsSuccess == true)
+            {
+                var userListJson = Convert.ToString(response.Result);
+                var asset = JsonConvert.DeserializeObject<IEnumerable<ChartAccountDto>>(userListJson);
+                return asset;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve account sub types data");
+            }
+        }
+
         public async Task<ChartAccount> GetChartAccountByIdAsync(int id)
         {
 
@@ -2302,5 +2642,42 @@ namespace PMS_PropertyHapa.Staff.Services
         }
 
         #endregion
+
+
+        //private void AddPropertiesToFormData(MultipartFormDataContent content, object obj, string prefix)
+        //{
+        //    foreach (var property in obj.GetType().GetProperties())
+        //    {
+        //        var value = property.GetValue(obj);
+
+        //        if (value == null)
+        //            continue;
+
+        //        var propName = string.IsNullOrEmpty(prefix) ? property.Name : $"{prefix}.{property.Name}";
+
+        //        if (value is IFormFile file)
+        //        {
+        //            // Handle IFormFile separately
+        //            content.Add(new StreamContent(file.OpenReadStream()), propName, file.FileName);
+        //        }
+        //        else if (value is IEnumerable enumerable && !(value is string))
+        //        {
+        //            // Handle collections (lists, arrays, etc.)
+        //            int index = 0;
+        //            foreach (var item in enumerable)
+        //            {
+        //                AddPropertiesToFormData(content, item, $"{propName}[{index}]");
+        //                index++;
+        //            }
+        //        }
+        //        else
+        //        {
+        //            // Handle regular properties
+        //            content.Add(new StringContent(value.ToString()), propName);
+        //        }
+        //    }
+        //}
+
+
     }
 }

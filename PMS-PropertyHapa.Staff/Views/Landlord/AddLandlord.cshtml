@@ -64,10 +64,10 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
-                                        <input type="hidden" id="DocumentBase64" name="Document">
+                                        @* <input type="hidden" id="DocumentBase64" name="Document">
                                         <input type="hidden" id="PictureBase64" name="Picture">
                                         <input type="hidden" id="OrganizationLogoBase64" name="OrganizationLogo">
-                                        <input type="hidden" id="OrganizationIconBase64" name="OrganizationIcon">
+                                        <input type="hidden" id="OrganizationIconBase64" name="OrganizationIcon"> *@
                                         <input type="hidden" id="OwnerId" name="OwnerId" value="@Model?.OwnerId" />
                                         <!-- First Name -->
                                         <div class="col-sm-6 col-md-3">
@@ -590,24 +590,51 @@
 
 
     async function submitTenantForm(event) {
-        const fileInputs = {
-            'DocumentFile': 'DocumentBase64',
-            'PictureUrl': 'PictureBase64',
-            'OrganizationLogoFile': 'OrganizationLogoBase64',
-            'OrganizationIconFile': 'OrganizationIconBase64'
-        };
+        // const fileInputs = {
+        //     'DocumentFile': 'DocumentBase64',
+        //     'PictureUrl': 'PictureBase64',
+        //     'OrganizationLogoFile': 'OrganizationLogoBase64',
+        //     'OrganizationIconFile': 'OrganizationIconBase64'
+        // };
 
-        for (const [inputId, outputId] of Object.entries(fileInputs)) {
-            const inputFile = document.getElementById(inputId);
-            if (inputFile && inputFile.files.length > 0) {
-                document.getElementById(outputId).value = await convertFileToBase64(inputFile.files[0]);
-            }
-        }
+        // for (const [inputId, outputId] of Object.entries(fileInputs)) {
+        //     const inputFile = document.getElementById(inputId);
+        //     if (inputFile && inputFile.files.length > 0) {
+        //         document.getElementById(outputId).value = await convertFileToBase64(inputFile.files[0]);
+        //     }
+        // }
+
+        
+
 
         const formElement = document.getElementById('tenantForm');
         var ajaxUrl = $('#OwnerId').val() ? '/Landlord/Update' : '/Landlord/Create';
         const formData = new FormData(formElement);
-        Object.keys(fileInputs).forEach(key => formData.delete(key));
+        //Object.keys(fileInputs).forEach(key => formData.delete(key));
+
+
+               const pictureInput = document.getElementById('PictureUrl');
+               if (pictureInput && pictureInput.files.length > 0) {
+                   formData.append('PictureUrl', pictureInput.files[0]);
+               }
+
+
+               const documentInput = document.getElementById('DocumentFile');
+               if (documentInput && documentInput.files.length > 0) {
+                   formData.append('DocumentUrl', documentInput.files[0]);
+               }
+
+
+               const orgnizationIconInput = document.getElementById('OrganizationIconFile');
+               if (orgnizationIconInput && orgnizationIconInput.files.length > 0) {
+                   formData.append('OrganizationIconFile', orgnizationIconInput.files[0]);
+               }
+
+
+               const orgnizationLogoInput = document.getElementById('OrganizationLogoFile');
+               if (orgnizationLogoInput && orgnizationLogoInput.files.length > 0) {
+                   formData.append('OrganizationLogoFile', orgnizationLogoInput.files[0]);
+               }
 
         try {
             var userId = localStorage.getItem('userId');
@@ -636,14 +663,14 @@
         }
     }
 
-    function convertFileToBase64(file) {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result.split(',')[1]);
-            reader.onerror = error => reject(error);
-        });
-    }
+    // function convertFileToBase64(file) {
+    //     return new Promise((resolve, reject) => {
+    //         const reader = new FileReader();
+    //         reader.readAsDataURL(file);
+    //         reader.onload = () => resolve(reader.result.split(',')[1]);
+    //         reader.onerror = error => reject(error);
+    //     });
+    // }
 
     document.addEventListener('DOMContentLoaded', function () {
         const pictureInput = document.getElementById('PictureUrl');

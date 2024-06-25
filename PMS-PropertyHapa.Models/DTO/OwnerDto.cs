@@ -15,10 +15,11 @@ namespace PMS_PropertyHapa.Models.DTO
         public string EmailAddress { get; set; }
 
         public string Document { get; set; }
+        public string DocumentName { get; set; }
         public IFormFile DocumentUrl { get; set; }
 
         public string EmailAddress2 { get; set; }
-        public string Picture { get; set; }
+        
         public string PhoneNumber { get; set; }
 
         public string PhoneNumber2 { get; set; }
@@ -59,17 +60,21 @@ namespace PMS_PropertyHapa.Models.DTO
         public string PostalCode { get; set; }
         public string Country { get; set; }
         public string CountryCode { get; set; }
-
+        public string Picture { get; set; }
+        public string PictureName { get; set; }
         public IFormFile PictureUrl { get; set; }
 
         public string OrganizationName { get; set; }
         public string OrganizationDescription { get; set; }
         public string OrganizationIcon { get; set; }
+        public string OrganizationIconName { get; set; }
         public IFormFile OrganizationIconFile { get; set; }
         public string OrganizationLogo { get; set; }
+        public string OrganizationLogoName { get; set; }
         public IFormFile OrganizationLogoFile { get; set; }
         public string Website { get; set; }
         public string AddedBy { get; set; }
+        public DateTime AddedDate { get; set; } 
 
 
 

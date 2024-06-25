@@ -53,10 +53,12 @@ namespace PMS_PropertyHapa.Models.DTO
 
         public string MiddleName { get; set; }
         public string Picture { get; set; }
+        public string PictureName { get; set; }
         public IFormFile PictureUrl { get; set; }
         public string Document { get; set; }
 
         public IFormFile DocumentUrl { get; set; }
+        public string DocumentName { get; set; }
         public string EmergencyName { get; set; }
         public string EmergencyEmailAddress { get; set; }
         public string EmergencyRelation { get; set; }
@@ -70,8 +72,9 @@ namespace PMS_PropertyHapa.Models.DTO
             public int PetId { get; set; }
             public int TenantId { get; set; }
             public string Picture { get; set; }
-
+            public string PictureName { get; set; }
             public IFormFile PictureUrl2 { get; set; }
+
             public string Name { get; set; }
             public string Breed { get; set; }
             public string Type { get; set; }

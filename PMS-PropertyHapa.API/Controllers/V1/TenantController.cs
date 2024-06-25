@@ -58,6 +58,22 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             }
         }
 
+        [HttpGet("TenantDll")]
+        public async Task<IActionResult> GetAllTenantsDll(Filter filter)
+        {
+            try
+            {
+                var tenants = await _userRepo.GetAllTenantsDllAsync(filter);
+                _response.Result = tenants;
+                return Ok(_response);
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
 
 
         [HttpGet("Tenant/{tenantId}")]

@@ -954,33 +954,38 @@
         var ajaxUrl = $('#TenantId').val() ? '/Tenant/Update' : '/Tenant/Create';
 
 
-        const fileInputs = {
+@*         const fileInputs = {
             'DocumentFile': 'DocumentBase64',
             'PictureUrl': 'PictureBase64'
-        };
+        }; *@
 
-         const pictureInput = document.getElementById('PictureUrl');
-    if (pictureInput.files.length > 0) {
-        formData.append('Picture', pictureInput.files[0]);
-    }
+            const pictureInput = document.getElementById('PictureUrl');
+            if (pictureInput.files.length > 0) {
+                formData.append('PictureUrl', pictureInput.files[0]);
+            }
+            
+            const documentInput = document.getElementById('DocumentFile');
+            if (documentInput.files.length > 0) {
+            formData.append('DocumentUrl', documentInput.files[0]);
+            }
 
-        const petPictureInputs = document.querySelectorAll('[name^="Pets"]');
-        petPictureInputs.forEach(input => {
-            const id = input.id;
-            const fieldName = id.substring(0, id.indexOf('__Picture'));
-            fileInputs[fieldName] = 'PetPictureBase64';
-        });
+            const petPictureInputs = document.querySelectorAll('[name^="Pets"]');
+            petPictureInputs.forEach(input => {
+                const id = input.id;
+                const fieldName = id.substring(0, id.indexOf('__Picture'));
+                //fileInputs[fieldName] = 'PetPictureBase64';
+            });
 
-        for (const [inputId, outputId] of Object.entries(fileInputs)) {
+@*         for (const [inputId, outputId] of Object.entries(fileInputs)) {
             const inputFile = document.getElementById(inputId);
             if (inputFile && inputFile.files.length > 0) {
                 document.getElementById(outputId).value = await convertFileToBase64(inputFile.files[0]);
             }
-        }
+        } *@
 
      
   
-        Object.keys(fileInputs).forEach(key => formData.delete(key));
+        @* Object.keys(fileInputs).forEach(key => formData.delete(key)); *@
 
         try {
             var userId = localStorage.getItem('userId');
@@ -1128,14 +1133,14 @@
 
 
 
-    function convertFileToBase64(file) {
+@*     function convertFileToBase64(file) {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onload = () => resolve(reader.result.split(',')[1]);
             reader.onerror = error => reject(error);
         });
-    }
+    } *@
 
 
     document.addEventListener('DOMContentLoaded', function () {

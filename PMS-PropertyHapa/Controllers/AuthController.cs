@@ -213,6 +213,21 @@ namespace PMS_PropertyHapa.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<ActionResult> GetAllPropertyTypesDll()
+        {
+            try
+            {
+                var filter = new Filter();
+                var propertyTypes = await _authService.GetAllPropertyTypesDllAsync(filter);
+                return Ok(propertyTypes);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while fetching Communications: {ex.Message}");
+            }
+
+        }
 
         [HttpGet]
         public async Task<IActionResult> SendEmailOTP(string email)

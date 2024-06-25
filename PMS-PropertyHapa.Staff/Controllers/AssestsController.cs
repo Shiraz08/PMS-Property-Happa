@@ -22,17 +22,17 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> AddAsset(AssetDTO assetDTO)
+        public async Task<IActionResult> AddAsset([FromForm] AssetDTO assetDTO)
         {
             try
             {
-                if (assetDTO.PictureFile != null && assetDTO.PictureFile.Length > 0)
-                {
-                    var (fileName, base64String) = await ImageUploadUtility.UploadImageAsync(assetDTO.PictureFile, "uploads");
-                    assetDTO.Image = $"data:image/png;base64,{base64String}";
-                }
+                //if (assetDTO.PictureFile != null && assetDTO.PictureFile.Length > 0)
+                //{
+                //    var (fileName, base64String) = await ImageUploadUtility.UploadImageAsync(assetDTO.PictureFile, "uploads");
+                //    assetDTO.Image = $"data:image/png;base64,{base64String}";
+                //}
 
-                assetDTO.PictureFile = null;
+                //assetDTO.PictureFile = null;
                 assetDTO.AddedBy = Request?.Cookies["userId"]?.ToString();
                 await _authService.CreateAssetAsync(assetDTO);
                 return Ok(new { success = true, message = "Asset added successfully" });

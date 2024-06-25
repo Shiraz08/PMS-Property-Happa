@@ -15,7 +15,9 @@ namespace PMS_PropertyHapa.Models.DTO
         public Guid TenantUserId { get; set; }
         public string OrganizationName { get; set; }
         public string OrganizationDescription { get; set; }
+        public string OrganizationIconName { get; set; }
         public string OrganizationIcon { get; set; }
+        public string OrganizationLogoName { get; set; }
         public string OrganizationLogo { get; set; }
         public string OrganizatioPrimaryColor { get; set; }
         public string OrganizationSecondColor { get; set; } 

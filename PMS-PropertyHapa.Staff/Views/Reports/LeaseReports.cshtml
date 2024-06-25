@@ -146,9 +146,9 @@
 
     function populateUnits(propertyIds) {
         $.ajax({
-            url: '/Lease/ByProperties',
+            url: '/Lease/GetUnitsDll',
             method: 'GET',
-            data: { propertyIds: propertyIds },
+            data: { AssetIds: propertyIds },
             dataType: 'json', 
             success: function (response) {
                 var units = response;

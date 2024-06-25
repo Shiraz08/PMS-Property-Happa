@@ -112,20 +112,20 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
         // Action to update profile information
         [HttpPost]
-        public async Task<IActionResult> UpdateProfile(ProfileModel model)
+        public async Task<IActionResult> UpdateProfile([FromForm] ProfileModel model)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
-            if (model.NewPicture != null)
-            {
-                var (fileName, base64String) = await ImageUploadUtility.UploadImageAsync(model.NewPicture, "uploads");
-                model.Picture = fileName;
-                model.NewPictureBase64 = base64String;
-            }
+            //if (model.NewPicture != null)
+            //{
+            //    var (fileName, base64String) = await ImageUploadUtility.UploadImageAsync(model.NewPicture, "uploads");
+            //    model.Picture = fileName;
+            //    model.NewPictureBase64 = base64String;
+            //}
 
-            model.NewPicture = null;
+            //model.NewPicture = null;
             var success = await _authService.UpdateProfileAsync(model);
 
             if (success)

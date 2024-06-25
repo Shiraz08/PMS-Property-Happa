@@ -58,6 +58,34 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             }
         }
 
+        [HttpGet("AccountSubTypesDll")]
+        public async Task<ActionResult<AccountSubTypeDto>> GetAccountSubTypesDll(Filter filter)
+        {
+            try
+            {
+                var accountSubTypes = await _userRepo.GetAccountSubTypesDllAsync(filter);
+
+                if (accountSubTypes != null)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = accountSubTypes;
+                    return Ok(_response);
+                }
+                else
+                {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("No sub account found with this id.");
+                    return NotFound(_response);
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
         [HttpGet("GetAccountSubTypeById/{id}")]
         public async Task<IActionResult> GetAccountSubTypeById(int id)
         {

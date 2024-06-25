@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,7 +21,9 @@ namespace PMS_PropertyHapa.Models.DTO
         public string AccountSwift { get; set; }
         public string AccountBank { get; set; }
         public string AccountCurrency { get; set; }
-        public string DocumentFile { get; set; }
+        public IFormFile DocumentFile { get; set; }
+        public string DocumentFileName { get; set; }
+        public string DocumentFileUrl { get; set; }
         public int? Expense { get; set; }
         public string AddedBy { get; set; }
     }

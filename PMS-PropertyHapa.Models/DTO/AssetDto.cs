@@ -14,11 +14,11 @@ namespace PMS_PropertyHapa.Models.DTO
         public string SelectedPropertyType { get; set; }
         public string SelectedSubtype { get; set; }
 
-        public string Image { get; set; }
+        
 
         public string AppTenantId { get; set; }
 
-
+        public string Image { get; set; }
         public string PictureString { get; set; }
 
         public IFormFile PictureFile { get; set; }
@@ -53,7 +53,7 @@ namespace PMS_PropertyHapa.Models.DTO
         public string OwnerCountry { get; set; }
 
         public string OwnerImage { get; set; }  
-        public string AddedBy { get; set; }  
+        public string AddedBy { get; set; }
 
     }
 

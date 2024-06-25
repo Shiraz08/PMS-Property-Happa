@@ -49,6 +49,7 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
 
         #region Tenant
         Task<IEnumerable<TenantModelDto>> GetAllTenantsAsync();
+        Task<IEnumerable<TenantModelDto>> GetAllTenantsDllAsync(Filter filter);
         Task<List<TenantModelDto>> GetTenantsByIdAsync(string tenantId);
         Task<bool> CreateTenantAsync(TenantModelDto tenantDto);
         Task<bool> UpdateTenantAsync(TenantModelDto tenantDto);
@@ -93,6 +94,7 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
 
         Task<List<PropertySubTypeDto>> GetPropertySubTypeByIdAllAsync(string tenantId);
         Task<List<PropertyTypeDto>> GetAllPropertyTypes();
+        Task<List<PropertyTypeDto>> GetAllPropertyTypesDll(Filter filter);
         Task<List<PropertySubTypeDto>> GetAllPropertySubTypesAsync();
         Task<List<PropertySubTypeDto>> GetPropertySubTypeByIdAsync(int propertytypeId);
         Task<bool> CreatePropertySubTypeAsync(PropertySubTypeDto tenantDto);
@@ -110,9 +112,11 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
 
 
         Task<List<AssetDTO>> GetAllAssetsAsync();
+        Task<List<AssetDTO>> GetAssetsDllAsync(Filter filter);
 
 
         Task<List<OwnerDto>> GetAllLandlordAsync();
+        Task<List<OwnerDto>> GetAllLandlordDllAsync(Filter filter);
 
 
 
@@ -159,6 +163,7 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
 
 
         Task<List<AssetUnitDTO>> GetAllUnitsAsync();
+        Task<List<AssetUnitDTO>> GetUnitsDllAsync(Filter filter);
 
 
 
@@ -195,17 +200,20 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
         Task<object> GetTenantDataById(int id);
         //Vendor Category
         Task<List<VendorCategory>> GetVendorCategoriesAsync();
+        Task<List<VendorCategory>> GetVendorCategoriesDllAsync(Filter filter);
         Task<VendorCategory> GetVendorCategoryByIdAsync(int id);
         Task<bool> SaveVendorCategoryAsync(VendorCategory vendorCategory);
         Task<bool> DeleteVendorCategoryAsync(int id);
 
         //Vendor Classification
         Task<List<VendorClassification>> GetVendorClassificationsAsync();
+        Task<List<VendorClassification>> GetVendorClassificationsDllAsync(Filter filter);
         Task<VendorClassification> GetVendorClassificationByIdAsync(int id);
         Task<bool> SaveVendorClassificationAsync(VendorClassification vendorClassification);
         Task<bool> DeleteVendorClassificationAsync(int id);
         //Vendor
         Task<List<VendorDto>> GetVendorsAsync();
+        Task<List<VendorDto>> GetVendorsDllAsync(Filter filter);
         Task<VendorDto> GetVendorByIdAsync(int id);
         Task<bool> SaveVendorAsync(VendorDto vendor);
         Task<bool> DeleteVendorAsync(int id);
@@ -222,6 +230,7 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
 
         //Account Type
         Task<List<AccountType>> GetAccountTypesAsync();
+        Task<List<AccountType>> GetAccountTypesDllAsync(Filter filter);
         Task<AccountType> GetAccountTypeByIdAsync(int id);
         Task<bool> SaveAccountTypeAsync(AccountType accountType);
         Task<bool> DeleteAccountTypeAsync(int id);
@@ -230,6 +239,7 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
 
         //Account Sub Type
         Task<List<AccountSubTypeDto>> GetAccountSubTypesAsync();
+        Task<List<AccountSubTypeDto>> GetAccountSubTypesDllAsync(Filter filter);
         Task<AccountSubType> GetAccountSubTypeByIdAsync(int id);
         Task<bool> SaveAccountSubTypeAsync(AccountSubType accountSubType);
         Task<bool> DeleteAccountSubTypeAsync(int id);
@@ -237,6 +247,7 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
 
         //Account ChartAccount
         Task<List<ChartAccountDto>> GetChartAccountsAsync();
+        Task<List<ChartAccountDto>> GetChartAccountsDllAsync(Filter filter);
         Task<ChartAccount> GetChartAccountByIdAsync(int id);
         Task<bool> SaveChartAccountAsync(ChartAccount chartAccount);
         Task<bool> DeleteChartAccountAsync(int id);

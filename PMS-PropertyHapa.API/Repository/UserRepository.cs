@@ -720,7 +720,7 @@ namespace MagicVilla_VillaAPI.Repository
                 Address2 = user.Address2,
                 Locality = user.Locality,
                 District = user.District,
-                NewPictureBase64 = user.Picture,
+                NewPictureBase64 = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"AspNetUsers_Picture_" + user.Id + Path.GetExtension(user.Picture)}",
                 Picture = user.Picture,
                 Region = user.Region,
                 PostalCode = user.PostalCode,
@@ -865,6 +865,35 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
+
+        public async Task<List<PropertyTypeDto>> GetAllPropertyTypesDll(Filter filter)
+        {
+            try
+            {
+                var propertyTypeDtos = await (from pt in _db.PropertyType
+                                              where pt.IsDeleted != true
+                                              select new PropertyTypeDto
+                                              {
+                                                  PropertyTypeId = pt.PropertyTypeId,
+                                                  PropertyTypeName = pt.PropertyTypeName,
+                                                  AddedBy = pt.AddedBy
+                                              })
+                                              .AsNoTracking()
+                                              .ToListAsync();
+                if (string.IsNullOrEmpty(filter.AddedBy))
+                {
+                    propertyTypeDtos = propertyTypeDtos.Where(x => x.AddedBy == filter.AddedBy).ToList();
+                }
+
+                return propertyTypeDtos;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping property types: {ex.Message}");
+                throw;
+            }
+        }
+
 
 
         public async Task<List<PropertyTypeDto>> GetAllPropertyTypesAsync()
@@ -1260,12 +1289,41 @@ namespace MagicVilla_VillaAPI.Repository
                 PostalCode = tenant.PostalCode,
                 Country = tenant.Country,
                 CountryCode = tenant.CountryCode,
-                Picture = tenant.Picture,
-                Document = tenant.Document,
+                PictureName = tenant.Picture,
+                Picture = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Tenant_Picture_" + tenant.TenantId + Path.GetExtension(tenant.Picture)}",
+                DocumentName = tenant.Document,
+                Document = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Tenant_Document_" + tenant.TenantId + Path.GetExtension(tenant.Document)}",
                 AddedBy = tenant.AddedBy,
                 AppTid = tenant.AppTenantId.ToString()
             }).ToList();
             return tenantDtos;
+        }
+        public async Task<IEnumerable<TenantModelDto>> GetAllTenantsDllAsync(Filter filter)
+        {
+
+            try
+            {
+                var tenants = await (from tenant in _db.Tenant
+                                     where tenant.IsDeleted != true && tenant.AddedBy == filter.AddedBy
+                                     select new TenantModelDto
+                                     {
+                                         TenantId = tenant.TenantId,
+                                         FirstName = tenant.FirstName,
+                                         LastName = tenant.LastName,
+                                         AddedBy = tenant.AddedBy,
+                                     })
+                     .AsNoTracking()
+                     .ToListAsync();
+
+
+                return tenants;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping Tenants: {ex.Message}");
+                throw;
+            }
+
         }
 
 
@@ -1283,9 +1341,12 @@ namespace MagicVilla_VillaAPI.Repository
             {
                 TenantId = tenant.TenantId,
                 FirstName = tenant.FirstName,
+                MiddleName = tenant.MiddleName,
                 LastName = tenant.LastName,
                 EmailAddress = tenant.EmailAddress,
                 PhoneNumber = tenant.PhoneNumber,
+                Unit = tenant.Unit,
+                District = tenant.District,
                 EmergencyContactInfo = tenant.EmergencyContactInfo,
                 LeaseAgreementId = tenant.LeaseAgreementId,
                 TenantNationality = tenant.TenantNationality,
@@ -1306,8 +1367,10 @@ namespace MagicVilla_VillaAPI.Repository
                 PostalCode = tenant.PostalCode,
                 Country = tenant.Country,
                 CountryCode = tenant.CountryCode,
-                Picture = tenant.Picture,
-                Document = tenant.Document
+                PictureName = tenant.Picture,
+                Picture = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Tenant_Picture_" + tenant.TenantId + Path.GetExtension(tenant.Picture)}",
+                DocumentName = tenant.Document,
+                Document = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Tenant_Document_" + tenant.TenantId + Path.GetExtension(tenant.Document)}"
             }).ToList();
 
             return tenantDtos;
@@ -1330,8 +1393,10 @@ namespace MagicVilla_VillaAPI.Repository
             var tenantDto = new TenantModelDto
             {
                 TenantId = tenant.TenantId,
-                Picture = tenant.Picture,
-                Document = tenant.Document,
+                PictureName = tenant.Picture,
+                Picture = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Tenant_Picture_" + tenant.TenantId + Path.GetExtension(tenant.Picture)}",
+                DocumentName = tenant.Document,
+                Document = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Tenant_Document_" + tenant.TenantId + Path.GetExtension(tenant.Document)}",
                 FirstName = tenant.FirstName,
                 LastName = tenant.LastName,
                 EmailAddress = tenant.EmailAddress,
@@ -1364,7 +1429,9 @@ namespace MagicVilla_VillaAPI.Repository
                     Breed = p.Breed,
                     Type = p.Type,
                     Quantity = p.Quantity,
-                    Picture = p.Picture
+                    PictureName = p.Picture,
+                    Picture = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Pets_Picture_" + p.PetId + Path.GetExtension(p.Picture)}",
+                   
                 }).ToList(),
                 Vehicles = tenant.Vehicle.Select(v => new VehicleDto
                 {
@@ -1445,14 +1512,27 @@ namespace MagicVilla_VillaAPI.Repository
                 Country = tenantDto.Country,
                 CountryCode = tenantDto.CountryCode,
                 AppTenantId = tenantDto.AppTenantId,
-                Picture = tenantDto.Picture,
-                Document = tenantDto.Document,
+                Picture = tenantDto.PictureName,
+                Document = tenantDto.DocumentName,
                 AddedBy = tenantDto.AddedBy,
                 AddedDate = DateTime.Now
             };
 
             _db.Tenant.Add(newTenant);
             await _db.SaveChangesAsync();
+
+
+            if (tenantDto.Picture != null)
+            {
+                var ext = Path.GetExtension(tenantDto.PictureName);
+                var res = await _googleCloudStorageService.UploadImagebyBase64Async(tenantDto.Picture, "Tenant_Picture_" + newTenant.TenantId + ext);
+            }
+            
+            if (tenantDto.Document != null)
+            {
+                var ext = Path.GetExtension(tenantDto.DocumentName);
+                var res = await _googleCloudStorageService.UploadImagebyBase64Async(tenantDto.Document, "Tenant_Document_" + newTenant.TenantId + ext);
+            }
 
 
             if (tenantDto.Pets != null)
@@ -1466,13 +1546,19 @@ namespace MagicVilla_VillaAPI.Repository
                         Breed = petDto.Breed,
                         Type = petDto.Type,
                         Quantity = petDto.Quantity,
-                        Picture = petDto.Picture,
+                        Picture = petDto.PictureName,
                         AppTenantId = tenantDto.AppTenantId
                     };
 
                     _db.Pets.Add(pet);
+
+                    await _db.SaveChangesAsync();
+                    if (petDto.Picture != null)
+                    {
+                        var ext = Path.GetExtension(petDto.PictureName);
+                        var res = await _googleCloudStorageService.UploadImagebyBase64Async(petDto.Picture, "Pets_Picture_" + pet.PetId + ext);
+                    }
                 }
-                await _db.SaveChangesAsync();
             }
 
             if (tenantDto.Vehicles != null)
@@ -1540,7 +1626,7 @@ namespace MagicVilla_VillaAPI.Repository
             }
 
             await _db.SaveChangesAsync();
-
+           
             return true;
         }
 
@@ -1577,6 +1663,8 @@ namespace MagicVilla_VillaAPI.Repository
             tenant.PostalCode = tenantDto.PostalCode;
             tenant.Country = tenantDto.Country;
             tenant.CountryCode = tenantDto.CountryCode;
+            tenant.Document = tenantDto.DocumentName;
+            tenant.Picture = tenantDto.PictureName;
 
             // Update or add pets
             foreach (var petDto in tenantDto.Pets)
@@ -1588,8 +1676,14 @@ namespace MagicVilla_VillaAPI.Repository
                     existingPet.Breed = petDto.Breed;
                     existingPet.Type = petDto.Type;
                     existingPet.Quantity = petDto.Quantity;
-                    existingPet.Picture = petDto.Picture;
+                    existingPet.Picture = petDto.PictureName;
                     existingPet.AppTenantId = petDto.AppTenantId;
+
+                    if (petDto.Picture != null)
+                    {
+                        var ext = Path.GetExtension(petDto.PictureName);
+                        var res = await _googleCloudStorageService.UploadImagebyBase64Async(petDto.Picture, "Pets_Picture_" + existingPet.PetId + ext);
+                    }
                 }
                 else
                 {
@@ -1600,10 +1694,16 @@ namespace MagicVilla_VillaAPI.Repository
                         Breed = petDto.Breed,
                         Type = petDto.Type,
                         Quantity = petDto.Quantity,
-                        Picture = petDto.Picture,
+                        Picture = petDto.PictureName,
                         AppTenantId = tenantDto.AppTenantId
                     };
                     tenant.Pets.Add(newPet);
+                    await _db.SaveChangesAsync();
+                    if (petDto.Picture != null)
+                    {
+                        var ext = Path.GetExtension(petDto.PictureName);
+                        var res = await _googleCloudStorageService.UploadImagebyBase64Async(petDto.Picture, "Pets_Picture_" + newPet.PetId + ext);
+                    }
                 }
             }
 
@@ -1705,6 +1805,19 @@ namespace MagicVilla_VillaAPI.Repository
                 }
             }
             var result = await _db.SaveChangesAsync();
+
+            if (tenantDto.Picture != null)
+            {
+                var ext = Path.GetExtension(tenantDto.PictureName);
+                var res = await _googleCloudStorageService.UploadImagebyBase64Async(tenantDto.Picture, "Tenant_Picture_" + tenant.TenantId + ext);
+            }
+
+            if (tenantDto.Document != null)
+            {
+                var ext = Path.GetExtension(tenantDto.DocumentName);
+                var res = await _googleCloudStorageService.UploadImagebyBase64Async(tenantDto.Document, "Tenant_Document_" + tenant.TenantId + ext);
+            }
+
             return result > 0;
         }
 
@@ -1745,7 +1858,8 @@ namespace MagicVilla_VillaAPI.Repository
                 PhoneNumber2 = tenantDto.PhoneNumber2,
                 Fax = tenantDto.Fax,
                 TaxId = tenantDto.TaxId,
-                Document = tenantDto.Document,
+                DocumentName = tenantDto.Document,
+                Document = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Owner_Document_" + tenantDto.OwnerId + Path.GetExtension(tenantDto.Document)}",
                 EmergencyContactInfo = tenantDto.EmergencyContactInfo,
                 LeaseAgreementId = tenantDto.LeaseAgreementId,
                 OwnerNationality = tenantDto.OwnerNationality,
@@ -1767,7 +1881,8 @@ namespace MagicVilla_VillaAPI.Repository
                 PostalCode = tenantDto.PostalCode,
                 Country = tenantDto.Country,
                 CountryCode = tenantDto.CountryCode,
-                Picture = tenantDto.Picture
+                PictureName = tenantDto.Picture,
+                Picture = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Owner_Picture_" + tenantDto.OwnerId + Path.GetExtension(tenantDto.Picture)}",
             };
 
             var ownerOrganization = await _db.OwnerOrganization.FirstOrDefaultAsync(o => o.OwnerId == ownerId);
@@ -1815,7 +1930,7 @@ namespace MagicVilla_VillaAPI.Repository
                 VAT = tenantDto.VAT,
                 Status = true,
                 LegalName = tenantDto.LegalName,
-                Document = tenantDto.Document,
+                Document = tenantDto.DocumentUrl.FileName,
                 Account_Name = tenantDto.Account_Name,
                 Account_Holder = tenantDto.Account_Holder,
                 Account_IBAN = tenantDto.Account_IBAN,
@@ -1830,7 +1945,7 @@ namespace MagicVilla_VillaAPI.Repository
                 PostalCode = tenantDto.PostalCode,
                 Country = tenantDto.Country,
                 CountryCode = tenantDto.CountryCode,
-                Picture = tenantDto.Picture,
+                Picture = tenantDto.PictureUrl.FileName,
                 AddedBy = tenantDto.AddedBy,
                 AddedDate = DateTime.Now
             };
@@ -1840,21 +1955,49 @@ namespace MagicVilla_VillaAPI.Repository
             await _db.Owner.AddAsync(newTenant);
             await _db.SaveChangesAsync();
 
-
-            var newOwnerOrganization = new OwnerOrganization
+            if (tenantDto.PictureUrl != null)
             {
-                OwnerId = newTenant.OwnerId,
-                OrganizationName = tenantDto.OrganizationName,
-                OrganizationDescription = tenantDto.OrganizationDescription,
-                OrganizationIcon = tenantDto.OrganizationIcon,
-                OrganizationLogo = tenantDto.OrganizationLogo,
-                Website = tenantDto.Website
-            };
-            await _db.OwnerOrganization.AddAsync(newOwnerOrganization);
+                var ext = Path.GetExtension(tenantDto.PictureUrl.FileName);
+                var res = await _googleCloudStorageService.UploadImageAsync(tenantDto.PictureUrl, "Owner_Picture_" + newTenant.OwnerId + ext);
+            }
 
-            var result = await _db.SaveChangesAsync();
+            if (tenantDto.DocumentUrl != null)
+            {
+                var ext = Path.GetExtension(tenantDto.DocumentUrl.FileName);
+                var res = await _googleCloudStorageService.UploadImageAsync(tenantDto.DocumentUrl, "Owner_Document_" + newTenant.OwnerId + ext);
+            }
 
-            return result > 0;
+
+            if (tenantDto.OrganizationName != null)
+            {
+                var newOwnerOrganization = new OwnerOrganization
+                {
+                    OwnerId = newTenant.OwnerId,
+                    OrganizationName = tenantDto.OrganizationName,
+                    OrganizationDescription = tenantDto.OrganizationDescription,
+                    OrganizationIcon = tenantDto.OrganizationIconFile.FileName,
+                    OrganizationLogo = tenantDto.OrganizationLogoFile.FileName,
+                    Website = tenantDto.Website
+                };
+                await _db.OwnerOrganization.AddAsync(newOwnerOrganization);
+
+                await _db.SaveChangesAsync();
+
+                if (tenantDto.OrganizationIconFile != null)
+                {
+                    var ext = Path.GetExtension(tenantDto.OrganizationIconFile.FileName);
+                    var res = await _googleCloudStorageService.UploadImageAsync(tenantDto.OrganizationIconFile, "Owner_OrganizationIcon_" + newTenant.OwnerId + ext);
+                }
+
+                if (tenantDto.OrganizationLogoFile != null)
+                {
+                    var ext = Path.GetExtension(tenantDto.OrganizationLogoFile.FileName);
+                    var res = await _googleCloudStorageService.UploadImageAsync(tenantDto.OrganizationLogoFile, "Owner_OrganizationLogo_" + newTenant.OwnerId + ext);
+                }
+            }
+
+
+            return true;
         }
 
 
@@ -2610,6 +2753,7 @@ namespace MagicVilla_VillaAPI.Repository
                     State = tenant.State,
                     AppTid = tenant.AppTenantId,
                     Image = tenant.Image,
+                    PictureString = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Asset_Image_" + tenant.AssetId + Path.GetExtension(tenant.Image)}",
                     AddedBy = tenant.AddedBy,
                     Units = tenant.Units.Select(unit => new UnitDTO
                     {
@@ -2621,6 +2765,35 @@ namespace MagicVilla_VillaAPI.Repository
 
 
                 return propertyTypeDtos;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping property types: {ex.Message}");
+                throw;
+            }
+        }
+        public async Task<List<AssetDTO>> GetAssetsDllAsync(Filter filter)
+        {
+            try
+            {
+
+                var assetsQuery = _db.Assets
+                .Select(a => new AssetDTO
+                {
+                    AssetId = a.AssetId,
+                    BuildingNo = a.BuildingNo,
+                    BuildingName = a.BuildingName,
+                    AddedBy = a.AddedBy,
+                });
+
+                if (!string.IsNullOrEmpty(filter.AddedBy))
+                {
+                    assetsQuery = assetsQuery.Where(x => x.AddedBy == filter.AddedBy);
+                }
+
+                var assets = await assetsQuery.ToListAsync();
+
+                return assets;
             }
             catch (Exception ex)
             {
@@ -2660,6 +2833,32 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
+        
+        public async Task<List<AssetUnitDTO>> GetUnitsDllAsync(Filter filter)
+        {
+            try
+            {
+                var units = await (from au in _db.AssetsUnits
+                                 select new AssetUnitDTO
+                                 {
+                                     UnitId = au.UnitId,
+                                     UnitName = au.UnitName,
+                                     AssetId = au.AssetId,
+                                 }).AsNoTracking().ToListAsync();
+
+                if (filter.AssetIds.Count() > 0)
+                {
+                    units = units.Where(x => filter.AssetIds.Contains(x.AssetId)).ToList();
+                }
+
+                return units;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping units: {ex.Message}");
+                throw;
+            }
+        }
 
         public async Task<bool> CreateAssetAsync(AssetDTO assetDTO)
         {
@@ -2687,10 +2886,11 @@ namespace MagicVilla_VillaAPI.Repository
             {
 
                 var existingOwner = await _db.Owner.FirstOrDefaultAsync(o => o.EmailAddress == user.Email);
+                bool isValidGuid = Guid.TryParse(user.Id, out Guid userIdGuid);
+                var tenantOrganization = await _db.TenantOrganizationInfo.AsNoTracking().FirstOrDefaultAsync(to => to.TenantUserId == userIdGuid);
+
                 if (existingOwner == null)
                 {
-                    bool isValidGuid = Guid.TryParse(user.Id, out Guid userIdGuid);
-                    var tenantOrganization = await _db.TenantOrganizationInfo.AsNoTracking().FirstOrDefaultAsync(to => to.TenantUserId == userIdGuid);
                     existingOwner = new Owner
                     {
                         FirstName = user.FirstName,
@@ -2707,8 +2907,17 @@ namespace MagicVilla_VillaAPI.Repository
                         AddedBy = assetDTO.AddedBy
 
                     };
+
                     await _db.Owner.AddAsync(existingOwner);
                     await _db.SaveChangesAsync();
+                }
+
+                if (existingOwner.Picture != null)
+                {
+                    var ext = Path.GetExtension(existingOwner.Picture);
+                    var picture = await _googleCloudStorageService.GetGoogleImageAsync("TenantOrganizationInfo_OrganizationLogo_" + tenantOrganization.Id + ext);
+
+                    var res = await _googleCloudStorageService.UploadImageAsync(picture, "Owner_Picture_" + existingOwner.OwnerId + ext);
                 }
 
                 assetDTO.OwnerId = existingOwner.OwnerId;
@@ -2730,7 +2939,7 @@ namespace MagicVilla_VillaAPI.Repository
                 Country = assetDTO.Country,
                 Zipcode = assetDTO.Zipcode,
                 State = assetDTO.State,
-                Image = assetDTO.Image,
+                Image = assetDTO.PictureFile.FileName,
                 AppTenantId = assetDTO.AppTid,
                 AddedBy = assetDTO.AddedBy,
                 AddedDate = DateTime.Now,
@@ -2752,6 +2961,12 @@ namespace MagicVilla_VillaAPI.Repository
             await _db.Assets.AddAsync(newAsset);
             var result = await _db.SaveChangesAsync();
 
+            if (assetDTO.PictureFile != null)
+            {
+                var ext = Path.GetExtension(assetDTO.PictureFile.FileName);
+                var res = await _googleCloudStorageService.UploadImageAsync(assetDTO.PictureFile, "Assets_Image_" + newAsset.OwnerId + ext);
+            }
+
             return result > 0;
         }
 
@@ -2767,27 +2982,38 @@ namespace MagicVilla_VillaAPI.Repository
                 {
                     bool isValidGuid = Guid.TryParse(user.Id, out Guid userIdGuid);
                     var tenantOrganization = await _db.TenantOrganizationInfo.AsNoTracking().FirstOrDefaultAsync(to => to.TenantUserId == userIdGuid);
-                    existingOwner = new Owner
+                    if (existingOwner == null)
                     {
-                        FirstName = user.FirstName,
-                        LastName = user.LastName,
-                        EmailAddress = user.Email,
-                        Address = user.Address,
-                        District = user.District,
-                        Region = user.Region,
-                        Country = user.Country,
-                        PostalCode = user.PostalCode,
-                        AppTenantId = Guid.Parse(assetDTO.AppTid),
-                        Picture = tenantOrganization.OrganizationLogo,
-                        AddedDate = DateTime.Now,
-                        AddedBy = assetDTO.AddedBy
+                        existingOwner = new Owner
+                        {
+                            FirstName = user.FirstName,
+                            LastName = user.LastName,
+                            EmailAddress = user.Email,
+                            Address = user.Address,
+                            District = user.District,
+                            Region = user.Region,
+                            Country = user.Country,
+                            PostalCode = user.PostalCode,
+                            AppTenantId = Guid.Parse(assetDTO.AppTid),
+                            Picture = tenantOrganization.OrganizationLogo,
+                            AddedDate = DateTime.Now,
+                            AddedBy = assetDTO.AddedBy
 
-                    };
-                    await _db.Owner.AddAsync(existingOwner);
-                    await _db.SaveChangesAsync();
+                        };
+                        await _db.Owner.AddAsync(existingOwner);
+                        await _db.SaveChangesAsync();
+                    }
+
+                    if (existingOwner.Picture != null)
+                    {
+                        var ext = Path.GetExtension(existingOwner.Picture);
+                        var picture = await _googleCloudStorageService.GetGoogleImageAsync("TenantOrganizationInfo_OrganizationLogo_" + tenantOrganization.Id + ext);
+
+                        var res = await _googleCloudStorageService.UploadImageAsync(picture, "Owner_Picture_" + existingOwner.OwnerId + ext);
+                    }
                 }
 
-                assetDTO.OwnerId = existingOwner.OwnerId;
+                    assetDTO.OwnerId = existingOwner.OwnerId;
             }
 
 
@@ -2811,7 +3037,11 @@ namespace MagicVilla_VillaAPI.Repository
             existingAsset.Country = assetDTO.Country;
             existingAsset.Zipcode = assetDTO.Zipcode;
             existingAsset.State = assetDTO.State;
-            existingAsset.Image = assetDTO.Image;
+            //existingAsset.Image = assetDTO.Image;
+            if (assetDTO.Image != null)
+            {
+                existingAsset.Image = assetDTO.PictureFile.FileName;
+            }
             existingAsset.AppTenantId = assetDTO.AppTid;
 
 
@@ -2850,6 +3080,12 @@ namespace MagicVilla_VillaAPI.Repository
             }
 
             var result = await _db.SaveChangesAsync();
+
+            if (assetDTO.PictureFile != null)
+            {
+                var ext = Path.GetExtension(assetDTO.PictureFile.FileName);
+                var res = await _googleCloudStorageService.UploadImageAsync(assetDTO.PictureFile, "Assets_Image_" + existingAsset.OwnerId + ext);
+            }
 
             return result > 0;
         }
@@ -3012,14 +3248,16 @@ namespace MagicVilla_VillaAPI.Repository
                                            TaxId = owner.TaxId,
                                            EmailAddress = owner.EmailAddress,
                                            EmailAddress2 = owner.EmailAddress2,
-                                           Picture = owner.Picture,
+                                           PictureName = owner.Picture,
+                                           Picture = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Owner_Picture_" + owner.OwnerId + Path.GetExtension(owner.Picture)}",
                                            PhoneNumber = owner.PhoneNumber,
                                            PhoneNumber2 = owner.PhoneNumber2,
                                            EmergencyContactInfo = owner.EmergencyContactInfo,
                                            LeaseAgreementId = owner.LeaseAgreementId,
                                            OwnerNationality = owner.OwnerNationality,
                                            Gender = owner.Gender,
-                                           Document = owner.Document,
+                                           DocumentName = owner.Document,
+                                           Document = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Owner_Document_" + owner.OwnerId + Path.GetExtension(owner.Document)}",
                                            DOB = owner.DOB,
                                            VAT = owner.VAT,
                                            LegalName = owner.LegalName,
@@ -3047,13 +3285,33 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
+        public async Task<List<OwnerDto>> GetAllLandlordDllAsync(Filter filter)
+        {
+            try
+            {
+                var ownerDtos = await (from owner in _db.Owner
+                                       where owner.IsDeleted != true && owner.AddedBy == filter.AddedBy
+                                       select new OwnerDto
+                                       {
+                                           OwnerId = owner.OwnerId,
+                                           FirstName = owner.FirstName,
+                                           LastName = owner.LastName,
+                                           AddedBy = owner.AddedBy,
+                                       })
+                                       .AsNoTracking()
+                                       .ToListAsync();
+
+                return ownerDtos;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping owners: {ex.Message}");
+                throw;
+            }
+        }
 
 
         #endregion
-
-
-
-
 
         public async Task<List<SubscriptionDto>> GetAllSubscriptionsAsync()
         {
@@ -3143,7 +3401,7 @@ namespace MagicVilla_VillaAPI.Repository
 
 
 
-        #region Taks Request
+        #region TaskRequest
 
         public async Task<List<TaskRequestHistoryDto>> GetTaskRequestHistoryAsync(int id)
         {
@@ -3207,7 +3465,8 @@ namespace MagicVilla_VillaAPI.Repository
                                         Asset = a.BuildingNo + "-" + a.BuildingName,
                                         UnitId = t.UnitId,
                                         Unit = u.UnitName,
-                                        TaskRequestFile = t.TaskRequestFile,
+                                        TaskRequestFileName = t.TaskRequestFile,
+                                        TaskRequestFile = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Task_TaskRequestFile_" + t.TaskRequestId + Path.GetExtension(t.TaskRequestFile)}",
                                         OwnerId = t.OwnerId,
                                         Owner = o.FirstName + " " + o.LastName,
                                         IsNotifyOwner = t.IsNotifyOwner,
@@ -3278,7 +3537,8 @@ namespace MagicVilla_VillaAPI.Repository
                                         Asset = a.BuildingNo + "-" + a.BuildingName,
                                         UnitId = t.UnitId,
                                         Unit = u.UnitName,
-                                        TaskRequestFile = t.TaskRequestFile,
+                                        TaskRequestFileName = t.TaskRequestFile,
+                                        TaskRequestFile = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Task_TaskRequestFile_" + t.TaskRequestId + Path.GetExtension(t.TaskRequestFile)}",
                                         OwnerId = t.OwnerId,
                                         Owner = o.FirstName + " " + o.LastName,
                                         IsNotifyOwner = t.IsNotifyOwner,
@@ -3349,7 +3609,8 @@ namespace MagicVilla_VillaAPI.Repository
                                         Asset = a.BuildingNo + "-" + a.BuildingName,
                                         UnitId = t.UnitId,
                                         Unit = u.UnitName,
-                                        TaskRequestFile = t.TaskRequestFile,
+                                        TaskRequestFileName = t.TaskRequestFile,
+                                        TaskRequestFile = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Task_TaskRequestFile_" + t.TaskRequestId + Path.GetExtension(t.TaskRequestFile)}",
                                         OwnerId = t.OwnerId,
                                         Owner = o.FirstName + " " + o.LastName,
                                         IsNotifyOwner = t.IsNotifyOwner,
@@ -3390,127 +3651,143 @@ namespace MagicVilla_VillaAPI.Repository
         }
         public async Task<bool> SaveTaskAsync(TaskRequestDto taskRequestDto)
         {
-            var taskRequest = _db.TaskRequest.FirstOrDefault(x => x.TaskRequestId == taskRequestDto.TaskRequestId);
-
-            if (taskRequest == null)
-                taskRequest = new TaskRequest();
-
-            taskRequest.TaskRequestId = taskRequestDto.TaskRequestId;
-            taskRequest.Type = taskRequestDto.Type;
-            taskRequest.Subject = taskRequestDto.Subject;
-            taskRequest.Description = taskRequestDto.Description;
-            taskRequest.IsOneTimeTask = taskRequestDto.IsOneTimeTask;
-            taskRequest.IsRecurringTask = taskRequestDto.IsRecurringTask;
-            taskRequest.StartDate = taskRequestDto.StartDate;
-            taskRequest.EndDate = taskRequestDto.EndDate;
-            taskRequest.Frequency = taskRequestDto.Frequency;
-            taskRequest.DueDays = taskRequestDto.DueDays;
-            taskRequest.IsTaskRepeat = taskRequestDto.IsTaskRepeat;
-            taskRequest.DueDate = taskRequestDto.DueDate;
-            taskRequest.Status = taskRequestDto.Status;
-            taskRequest.Priority = taskRequestDto.Priority;
-            taskRequest.Assignees = taskRequestDto.Assignees;
-            taskRequest.IsNotifyAssignee = taskRequestDto.IsNotifyAssignee;
-            taskRequest.AssetId = taskRequestDto.AssetId;
-            taskRequest.UnitId = taskRequestDto.UnitId;
-            if (taskRequestDto.TaskRequestFile != null)
+            try
             {
-                taskRequest.TaskRequestFile = taskRequestDto.TaskRequestFile;
-            }
-            taskRequest.OwnerId = taskRequestDto.OwnerId;
-            taskRequest.IsNotifyOwner = taskRequestDto.IsNotifyOwner;
-            taskRequest.TenantId = taskRequestDto.TenantId;
-            taskRequest.IsNotifyTenant = taskRequestDto.IsNotifyTenant;
-            taskRequest.HasPermissionToEnter = taskRequestDto.HasPermissionToEnter;
-            taskRequest.EntryNotes = taskRequestDto.EntryNotes;
-            taskRequest.VendorId = taskRequestDto.VendorId;
-            taskRequest.ApprovedByOwner = taskRequestDto.ApprovedByOwner;
-            taskRequest.PartsAndLabor = taskRequestDto.PartsAndLabor;
+                var taskRequest = _db.TaskRequest.FirstOrDefault(x => x.TaskRequestId == taskRequestDto.TaskRequestId);
 
-            if (taskRequestDto.TaskRequestId > 0)
-            {
-                taskRequest.ModifiedBy = taskRequestDto.AddedBy;
-                taskRequest.ModifiedDate = DateTime.Now;
-                _db.TaskRequest.Update(taskRequest);
-            }
-            else
-            {
-                taskRequest.AddedBy = taskRequestDto.AddedBy;
-                taskRequest.AddedDate = DateTime.Now;
-                _db.TaskRequest.Add(taskRequest);
-            }
+                if (taskRequest == null)
+                    taskRequest = new TaskRequest();
 
-            await _db.SaveChangesAsync();
-
-            var maxId = 0;
-            if (taskRequestDto.TaskRequestId > 0)
-                maxId = taskRequest.TaskRequestId;
-            else
-                maxId = _db.TaskRequest.Max(x => x.TaskRequestId);
-
-
-            int[] lineItemIds = taskRequestDto.LineItems.Select(x => x.LineItemId).ToArray();
-            var lineItemsToBeDeleted = _db.LineItem
-                .Where(item => item.TaskRequestId == taskRequestDto.TaskRequestId && !lineItemIds.Contains(item.LineItemId))
-                .ToList();
-
-            foreach (var lineItemToBeDeleted in lineItemsToBeDeleted)
-            {
-                lineItemToBeDeleted.IsDeleted = true;
-                lineItemToBeDeleted.ModifiedBy = taskRequestDto.AddedBy;
-                lineItemToBeDeleted.ModifiedDate = DateTime.Now;
-                _db.LineItem.Update(lineItemToBeDeleted);
-            }
-            if (taskRequestDto.LineItems != null && taskRequestDto.LineItems.Any())
-            {
-                var existingLineItems = _db.LineItem.Where(item => item.TaskRequestId == taskRequestDto.TaskRequestId).ToList();
-                foreach (var lineItemDto in taskRequestDto.LineItems)
+                taskRequest.TaskRequestId = taskRequestDto.TaskRequestId;
+                taskRequest.Type = taskRequestDto.Type;
+                taskRequest.Subject = taskRequestDto.Subject;
+                taskRequest.Description = taskRequestDto.Description;
+                taskRequest.IsOneTimeTask = taskRequestDto.IsOneTimeTask;
+                taskRequest.IsRecurringTask = taskRequestDto.IsRecurringTask;
+                taskRequest.StartDate = taskRequestDto.StartDate;
+                taskRequest.EndDate = taskRequestDto.EndDate;
+                taskRequest.Frequency = taskRequestDto.Frequency;
+                taskRequest.DueDays = taskRequestDto.DueDays;
+                taskRequest.IsTaskRepeat = taskRequestDto.IsTaskRepeat;
+                taskRequest.DueDate = taskRequestDto.DueDate;
+                taskRequest.Status = taskRequestDto.Status;
+                taskRequest.Priority = taskRequestDto.Priority;
+                taskRequest.Assignees = taskRequestDto.Assignees;
+                taskRequest.IsNotifyAssignee = taskRequestDto.IsNotifyAssignee;
+                taskRequest.AssetId = taskRequestDto.AssetId;
+                taskRequest.UnitId = taskRequestDto.UnitId;
+                if (taskRequestDto.TaskRequestFileName != null)
                 {
-                    var existingLineItem = existingLineItems.FirstOrDefault(item => item.LineItemId == lineItemDto.LineItemId);
+                    taskRequest.TaskRequestFile = taskRequestDto.TaskRequestFileName;
+                }
+                taskRequest.OwnerId = taskRequestDto.OwnerId;
+                taskRequest.IsNotifyOwner = taskRequestDto.IsNotifyOwner;
+                taskRequest.TenantId = taskRequestDto.TenantId;
+                taskRequest.IsNotifyTenant = taskRequestDto.IsNotifyTenant;
+                taskRequest.HasPermissionToEnter = taskRequestDto.HasPermissionToEnter;
+                taskRequest.EntryNotes = taskRequestDto.EntryNotes;
+                taskRequest.VendorId = taskRequestDto.VendorId;
+                taskRequest.ApprovedByOwner = taskRequestDto.ApprovedByOwner;
+                taskRequest.PartsAndLabor = taskRequestDto.PartsAndLabor;
 
-                    if (existingLineItem != null)
+                if (taskRequestDto.TaskRequestId > 0)
+                {
+                    taskRequest.ModifiedBy = taskRequestDto.AddedBy;
+                    taskRequest.ModifiedDate = DateTime.Now;
+                    _db.TaskRequest.Update(taskRequest);
+                }
+                else
+                {
+                    taskRequest.AddedBy = taskRequestDto.AddedBy;
+                    taskRequest.AddedDate = DateTime.Now;
+                    _db.TaskRequest.Add(taskRequest);
+                }
+
+                await _db.SaveChangesAsync();
+
+                var maxId = 0;
+                if (taskRequestDto.TaskRequestId > 0)
+                    maxId = taskRequest.TaskRequestId;
+                else
+                    maxId = _db.TaskRequest.Max(x => x.TaskRequestId);
+
+
+                int[] lineItemIds = taskRequestDto.LineItems.Select(x => x.LineItemId).ToArray();
+                var lineItemsToBeDeleted = _db.LineItem
+                    .Where(item => item.TaskRequestId == taskRequestDto.TaskRequestId && !lineItemIds.Contains(item.LineItemId))
+                    .ToList();
+
+                foreach (var lineItemToBeDeleted in lineItemsToBeDeleted)
+                {
+                    lineItemToBeDeleted.IsDeleted = true;
+                    lineItemToBeDeleted.ModifiedBy = taskRequestDto.AddedBy;
+                    lineItemToBeDeleted.ModifiedDate = DateTime.Now;
+                    _db.LineItem.Update(lineItemToBeDeleted);
+                }
+                if (taskRequestDto.LineItems != null && taskRequestDto.LineItems.Any())
+                {
+                    var existingLineItems = _db.LineItem.Where(item => item.TaskRequestId == taskRequestDto.TaskRequestId).ToList();
+                    foreach (var lineItemDto in taskRequestDto.LineItems)
                     {
-                        existingLineItem.Quantity = lineItemDto.Quantity;
-                        existingLineItem.Price = lineItemDto.Price;
-                        existingLineItem.ChartAccountId = lineItemDto.ChartAccountId;
-                        existingLineItem.Memo = lineItemDto.Memo;
-                        existingLineItem.ModifiedBy = taskRequestDto.AddedBy;
-                        existingLineItem.ModifiedDate = DateTime.Now;
-                        _db.LineItem.Update(existingLineItem);
-                    }
-                    else
-                    {
-                        var newLineItem = new LineItem
+                        var existingLineItem = existingLineItems.FirstOrDefault(item => item.LineItemId == lineItemDto.LineItemId);
+
+                        if (existingLineItem != null)
                         {
-                            TaskRequestId = maxId,
-                            Quantity = lineItemDto.Quantity,
-                            Price = lineItemDto.Price,
-                            ChartAccountId = lineItemDto.ChartAccountId,
-                            Memo = lineItemDto.Memo,
-                            AddedDate = DateTime.Now,
-                            AddedBy = taskRequestDto.AddedBy
-                        };
-                        _db.LineItem.Add(newLineItem);
+                            existingLineItem.Quantity = lineItemDto.Quantity;
+                            existingLineItem.Price = lineItemDto.Price;
+                            existingLineItem.ChartAccountId = lineItemDto.ChartAccountId;
+                            existingLineItem.Memo = lineItemDto.Memo;
+                            existingLineItem.ModifiedBy = taskRequestDto.AddedBy;
+                            existingLineItem.ModifiedDate = DateTime.Now;
+                            _db.LineItem.Update(existingLineItem);
+                        }
+                        else
+                        {
+                            var newLineItem = new LineItem
+                            {
+                                TaskRequestId = maxId,
+                                Quantity = lineItemDto.Quantity,
+                                Price = lineItemDto.Price,
+                                ChartAccountId = lineItemDto.ChartAccountId,
+                                Memo = lineItemDto.Memo,
+                                AddedDate = DateTime.Now,
+                                AddedBy = taskRequestDto.AddedBy
+                            };
+                            _db.LineItem.Add(newLineItem);
+                        }
                     }
                 }
+
+                await _db.SaveChangesAsync();
+
+
+                var taskRequestHistory = new TaskRequestHistory();
+
+                taskRequestHistory.TaskRequestId = maxId;
+                taskRequestHistory.Date = DateTime.Now;
+                taskRequestHistory.Status = taskRequestDto.Status;
+                taskRequestHistory.Remarks = taskRequestDto.Description;
+                taskRequestHistory.AddedBy = taskRequestDto.AddedBy;
+                taskRequestHistory.AddedDate = DateTime.Now;
+                _db.TaskRequestHistory.Add(taskRequestHistory);
+
+                var result = await _db.SaveChangesAsync();
+
+                if (taskRequestDto.TaskRequestFile != null)
+                {
+
+                    var ext = Path.GetExtension(taskRequestDto.TaskRequestFileName);
+                    var res = await _googleCloudStorageService.UploadImagebyBase64Async(taskRequestDto.TaskRequestFile, "Task_TaskRequestFile_" + taskRequest.TaskRequestId + ext);
+
+                }
+
+                return result > 0;
             }
+            catch (Exception ex)
+            {
 
-            await _db.SaveChangesAsync();
-
-
-            var taskRequestHistory = new TaskRequestHistory();
-
-            taskRequestHistory.TaskRequestId = maxId;
-            taskRequestHistory.Date = DateTime.Now;
-            taskRequestHistory.Status = taskRequestDto.Status;
-            taskRequestHistory.Remarks = taskRequestDto.Description;
-            taskRequestHistory.AddedBy = taskRequestDto.AddedBy;
-            taskRequestHistory.AddedDate = DateTime.Now;
-            _db.TaskRequestHistory.Add(taskRequestHistory);
-
-            var result = await _db.SaveChangesAsync();
-
-            return result > 0;
+                throw;
+            }
 
         }
         public async Task<bool> DeleteTaskAsync(int id)
@@ -3549,7 +3826,11 @@ namespace MagicVilla_VillaAPI.Repository
                     taskRequest.AccountSwift = taskRequestHistoryDto.AccountSwift;
                     taskRequest.AccountBank = taskRequestHistoryDto.AccountBank;
                     taskRequest.AccountCurrency = taskRequestHistoryDto.AccountCurrency;
-                    taskRequest.DocumentFile = taskRequestHistoryDto.DocumentFile;
+                    if (taskRequestHistoryDto.DocumentFile != null)
+                    {
+                        taskRequest.DocumentFile = taskRequestHistoryDto.DocumentFile.FileName;
+                    }
+                    
                 }
 
                 _db.TaskRequest.Update(taskRequest);
@@ -3583,6 +3864,13 @@ namespace MagicVilla_VillaAPI.Repository
             }
 
             var result = await _db.SaveChangesAsync();
+
+            if (taskRequestHistoryDto.DocumentFile != null)
+            {
+                var ext = Path.GetExtension(taskRequestHistoryDto.DocumentFile.FileName);
+                var res = await _googleCloudStorageService.UploadImageAsync(taskRequestHistoryDto.DocumentFile, "TaskHistory_DocumentFile_" + taskRequestHistory.TaskRequestHistoryId + ext);
+            }
+
             return result > 0;
         }
 
@@ -3851,6 +4139,32 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
+
+        public async Task<List<VendorCategory>> GetVendorCategoriesDllAsync(Filter filter)
+        {
+            try
+            {
+                var result = await (from v in _db.VendorCategory
+                                    where v.IsDeleted != true && v.AddedBy == filter.AddedBy
+                                    select new VendorCategory
+                                    {
+                                        VendorCategoryId = v.VendorCategoryId,
+                                        Name = v.Name,
+                                        AddedBy = v.AddedBy,
+                                    })
+                     .AsNoTracking()
+                     .ToListAsync();
+
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping Vendor Categories: {ex.Message}");
+                throw;
+            }
+        }
+
         public async Task<VendorCategory> GetVendorCategoryByIdAsync(int id)
         {
             try
@@ -3927,6 +4241,31 @@ namespace MagicVilla_VillaAPI.Repository
             {
                 var result = await (from v in _db.VendorClassification
                                     where v.IsDeleted != true
+                                    select new VendorClassification
+                                    {
+                                        VendorClassificationId = v.VendorClassificationId,
+                                        Name = v.Name,
+                                        AddedBy = v.AddedBy,
+                                    })
+                     .AsNoTracking()
+                     .ToListAsync();
+
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping Vendor Classifications: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<List<VendorClassification>> GetVendorClassificationsDllAsync(Filter filter)
+        {
+            try
+            {
+                var result = await (from v in _db.VendorClassification
+                                    where v.IsDeleted != true && v.AddedBy == filter.AddedBy
                                     select new VendorClassification
                                     {
                                         VendorClassificationId = v.VendorClassificationId,
@@ -4033,7 +4372,8 @@ namespace MagicVilla_VillaAPI.Repository
                                         Company = v.Company,
                                         JobTitle = v.JobTitle,
                                         Notes = v.Notes,
-                                        Picture = v.Picture,
+                                        PictureName = v.Picture,
+                                        PictureUrl = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Vendor_Picture_" + v.VendorId + Path.GetExtension(v.Picture)}",
                                         Email1 = v.Email1,
                                         Phone1 = v.Phone1,
                                         Email2 = v.Email2,
@@ -4065,13 +4405,41 @@ namespace MagicVilla_VillaAPI.Repository
                                         AccountCurrency = v.AccountCurrency,
                                         OrganizationName = vo.OrganizationName,
                                         OrganizationDescription = vo.OrganizationDescription,
-                                        OrganizationIcon = vo.OrganizationIcon,
-                                        OrganizationLogo = vo.OrganizationLogo,
+                                        OrganizationIconName = vo.OrganizationIcon,
+                                        OrganizationIconUrl = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Vendor_OrganizationIcon_" + v.VendorId + Path.GetExtension(vo.OrganizationIcon)}",
+                                        OrganizationLogoName = vo.OrganizationLogo,
+                                        OrganizationLogoUrl = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Vendor_OrganizationLogoName_" + v.VendorId + Path.GetExtension(vo.OrganizationLogo)}",
                                         Website = vo.Website,
                                         AddedBy = v.AddedBy
                                     })
                      .AsNoTracking()
                      .ToListAsync();
+
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping Vendors: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<List<VendorDto>> GetVendorsDllAsync(Filter filter)
+        {
+            try
+            {
+                var result = await (from v in _db.Vendor
+                                    where v.IsDeleted != true && v.AddedBy == filter.AddedBy
+                                    select new VendorDto
+                                    {
+                                        VendorId = v.VendorId,
+                                        FirstName = v.FirstName,
+                                        LastName = v.LastName,
+                                        AddedBy = v.AddedBy,
+                                    })
+               .AsNoTracking()
+               .ToListAsync();
 
 
                 return result;
@@ -4098,7 +4466,8 @@ namespace MagicVilla_VillaAPI.Repository
                                         Company = v.Company,
                                         JobTitle = v.JobTitle,
                                         Notes = v.Notes,
-                                        Picture = v.Picture,
+                                        PictureName = v.Picture,
+                                        PictureUrl = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Vendor_Picture_" + v.VendorId + Path.GetExtension(v.Picture)}",
                                         Email1 = v.Email1,
                                         Phone1 = v.Phone1,
                                         Email2 = v.Email2,
@@ -4130,8 +4499,10 @@ namespace MagicVilla_VillaAPI.Repository
                                         AccountCurrency = v.AccountCurrency,
                                         OrganizationName = vo.OrganizationName,
                                         OrganizationDescription = vo.OrganizationDescription,
-                                        OrganizationIcon = vo.OrganizationIcon,
-                                        OrganizationLogo = vo.OrganizationLogo,
+                                        OrganizationIconName = vo.OrganizationIcon,
+                                        OrganizationIconUrl = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Vendor_OrganizationIcon_" + v.VendorId + Path.GetExtension(vo.OrganizationIcon)}",
+                                        OrganizationLogoName = vo.OrganizationLogo,
+                                        OrganizationLogoUrl = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Vendor_OrganizationLogo_" + v.VendorId + Path.GetExtension(vo.OrganizationLogo)}",
                                         Website = vo.Website,
                                         AddedBy = v.AddedBy
                                     })
@@ -4163,7 +4534,7 @@ namespace MagicVilla_VillaAPI.Repository
             vendor.Notes = model.Notes;
             if (model.Picture != null)
             {
-                vendor.Picture = model.Picture;
+                vendor.Picture = model.Picture.FileName;
             }
             vendor.Email1 = model.Email1;
             vendor.Phone1 = model.Phone1;
@@ -4221,11 +4592,11 @@ namespace MagicVilla_VillaAPI.Repository
                 vendorOrganization.OrganizationDescription = model.OrganizationDescription;
                 if (model.OrganizationIcon != null)
                 {
-                    vendorOrganization.OrganizationIcon = model.OrganizationIcon;
+                    vendorOrganization.OrganizationIcon = model.OrganizationIcon.FileName;
                 }
                 if (model.OrganizationLogo != null)
                 {
-                    vendorOrganization.OrganizationLogo = model.OrganizationLogo;
+                    vendorOrganization.OrganizationLogo = model.OrganizationLogo.FileName;
                 }
                 vendorOrganization.Website = model.Website;                
                 await _db.VendorOrganization.AddAsync(vendorOrganization);
@@ -4236,17 +4607,35 @@ namespace MagicVilla_VillaAPI.Repository
                 vendorOrganization.OrganizationDescription = model.OrganizationDescription;
                 if (model.OrganizationIcon != null)
                 {
-                    vendorOrganization.OrganizationIcon = model.OrganizationIcon;
+                    vendorOrganization.OrganizationIcon = model.OrganizationIcon.FileName;
                 }
                 if (model.OrganizationLogo != null)
                 {
-                    vendorOrganization.OrganizationLogo = model.OrganizationLogo;
+                    vendorOrganization.OrganizationLogo = model.OrganizationLogo.FileName;
                 }
                 vendorOrganization.Website = model.Website;
                 _db.VendorOrganization.Update(vendorOrganization);
             }
 
             var result2 = await _db.SaveChangesAsync();
+
+            if (model.Picture != null)
+            {
+                var ext = Path.GetExtension(model.Picture.FileName);
+                var res = await _googleCloudStorageService.UploadImageAsync(model.Picture, "Vendor_Picture_" + vendor.VendorId + ext);
+            }
+
+            if (model.OrganizationIcon != null)
+            {
+                var ext1 = Path.GetExtension(model.OrganizationIcon.FileName);
+                var res1 = await _googleCloudStorageService.UploadImageAsync(model.OrganizationIcon, "Vendor_OrganizationIcon_" + vendor.VendorId + ext1);
+            }
+
+            if (model.OrganizationLogo != null)
+            {
+                var ext2 = Path.GetExtension(model.OrganizationLogo.FileName);
+                var res2 = await _googleCloudStorageService.UploadImageAsync(model.OrganizationLogo, "Vendor_OrganizationLogo_" + vendor.VendorId + ext2);
+            }
 
             return result1 > 0 && result2 > 0;
 
@@ -4326,10 +4715,25 @@ namespace MagicVilla_VillaAPI.Repository
                                         IsEvicted = a.IsEvicted,
                                         HasPayRentIssue = a.HasPayRentIssue,
                                         IsCriminal = a.IsCriminal,
-                                        StubPicture = a.StubPicture,
-                                        LicensePicture = a.LicensePicture,
+                                        StubPicture = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Applications_StubPicture_" + a.ApplicationId + Path.GetExtension(a.StubPicture)}",
+                                        StubPictureName = a.StubPicture,
+                                        LicensePicture = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Applications_LicensePicture_" + a.ApplicationId + Path.GetExtension(a.LicensePicture)}",
+                                        LicensePictureName = a.LicensePicture,
                                         IsAgree = a.IsAgree,
-                                        Pets = _db.ApplicationPets.Where(x=>x.ApplicationId == a.ApplicationId && x.IsDeleted != true).ToList(),
+                                        Pets = _db.ApplicationPets
+                                           .Where(x => x.ApplicationId == a.ApplicationId && x.IsDeleted != true)
+                                           .Select(x => new ApplicationPetsDto
+                                           {
+                                               // Map properties from ApplicationPets to ApplicationPetsDto
+                                               PetId = x.PetId,
+                                               ApplicationId = x.ApplicationId,
+                                               Type = x.Type,
+                                               Name = x.Name,
+                                               Breed = x.Breed,
+                                               Quantity = x.Quantity,
+                                               Picture = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"ApplicationPets_Picture_" + x.PetId + Path.GetExtension(x.Picture)}",
+                                               PictureName = x.Picture,
+                                           }).ToList(),
                                         Vehicles = _db.ApplicationVehicles.Where(x=>x.ApplicationId == a.ApplicationId && x.IsDeleted != true).ToList(),
                                         Dependent = _db.ApplicationDependent.Where(x=>x.ApplicationId == a.ApplicationId && x.IsDeleted != true).ToList(),
                                         AddedBy = p.AddedBy,
@@ -4401,10 +4805,25 @@ namespace MagicVilla_VillaAPI.Repository
                                         IsEvicted = a.IsEvicted,
                                         HasPayRentIssue = a.HasPayRentIssue,
                                         IsCriminal = a.IsCriminal,
-                                        StubPicture = a.StubPicture,
-                                        LicensePicture = a.LicensePicture,
+                                        StubPicture = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Applications_StubPicture_" + a.ApplicationId + Path.GetExtension(a.StubPicture)}",
+                                        StubPictureName = a.StubPicture,
+                                        LicensePicture = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Applications_LicensePicture_" + a.ApplicationId + Path.GetExtension(a.LicensePicture)}",
+                                        LicensePictureName = a.LicensePicture,
                                         IsAgree = a.IsAgree,
-                                        Pets = _db.ApplicationPets.Where(x => x.ApplicationId == a.ApplicationId && x.IsDeleted != true).ToList(),
+                                        Pets = _db.ApplicationPets
+                                           .Where(x => x.ApplicationId == a.ApplicationId && x.IsDeleted != true)
+                                           .Select(x => new ApplicationPetsDto
+                                           {
+                                               // Map properties from ApplicationPets to ApplicationPetsDto
+                                               PetId = x.PetId,
+                                               ApplicationId = x.ApplicationId,
+                                               Type = x.Type,
+                                               Name = x.Name,
+                                               Breed = x.Breed,
+                                               Quantity = x.Quantity,
+                                               Picture = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"ApplicationPets_Picture_" + x.PetId + Path.GetExtension(x.Picture)}",
+                                               PictureName = x.Picture,
+                                           }).ToList(),
                                         Vehicles = _db.ApplicationVehicles.Where(x => x.ApplicationId == a.ApplicationId && x.IsDeleted != true).ToList(),
                                         Dependent = _db.ApplicationDependent.Where(x => x.ApplicationId == a.ApplicationId && x.IsDeleted != true).ToList(),
                                         AddedBy = a.AddedBy,
@@ -4475,13 +4894,13 @@ namespace MagicVilla_VillaAPI.Repository
             application.IsEvicted = model.IsEvicted;
             application.HasPayRentIssue = model.HasPayRentIssue;
             application.IsCriminal = model.IsCriminal;
-            if (model.LicensePicture != null)
+            if (model.LicensePictureName != null)
             {
-                application.LicensePicture = model.LicensePicture;
+                application.LicensePicture = model.LicensePictureName;
             }
-            if (model.StubPicture != null)
+            if (model.StubPictureName != null)
             {
-                application.StubPicture = model.StubPicture;
+                application.StubPicture = model.StubPictureName;
             }
             application.IsAgree = model.IsAgree;
 
@@ -4528,9 +4947,18 @@ namespace MagicVilla_VillaAPI.Repository
                        existingPet.Type = petDto.Type;
                        existingPet.Quantity = petDto.Quantity;
                        existingPet.Picture = petDto.Picture != null ? petDto.Picture : existingPet.Picture;
-                       existingPet.ModifiedBy = model.AddedBy;
+                        if (petDto.PictureName != null)
+                        {
+                            existingPet.Picture = petDto.PictureName;
+                        }
+                        existingPet.ModifiedBy = model.AddedBy;
                        existingPet.ModifiedDate = DateTime.Now;
                         _db.ApplicationPets.Update(existingPet);
+                        if (petDto.Picture != null)
+                        {
+                            var ext = Path.GetExtension(petDto.PictureName);
+                            var res = await _googleCloudStorageService.UploadImagebyBase64Async(petDto.Picture, "ApplicationPets_Picture_" + existingPet.PetId + ext);
+                        }
                     }
                     else
                     {
@@ -4545,7 +4973,19 @@ namespace MagicVilla_VillaAPI.Repository
                             AddedBy = model.AddedBy,
                             AddedDate = DateTime.Now,
                         };
+                        if (petDto.PictureName != null)
+                        {
+                            newPet.Picture = petDto.PictureName;
+                        }
+                        
                         _db.ApplicationPets.Add(newPet);
+                        await _db.SaveChangesAsync();
+
+                        if (petDto.Picture != null)
+                        {
+                            var ext = Path.GetExtension(petDto.PictureName);
+                            var res = await _googleCloudStorageService.UploadImagebyBase64Async(petDto.Picture, "ApplicationPets_Picture_" + newPet.PetId + ext);
+                        }
                     }
                 }
             }
@@ -4650,6 +5090,21 @@ namespace MagicVilla_VillaAPI.Repository
                 }
             }
             var result1 = await _db.SaveChangesAsync();
+
+            if (model.LicensePicture != null)
+            {
+            
+                var ext = Path.GetExtension(model.LicensePictureName);
+                var res = await _googleCloudStorageService.UploadImagebyBase64Async(model.LicensePicture, "Applications_LicensePicture_" + application.ApplicationId + ext);
+            
+            }
+            if (model.StubPicture != null)
+            {
+
+                var ext = Path.GetExtension(model.StubPictureName);
+                var res = await _googleCloudStorageService.UploadImagebyBase64Async(model.StubPicture, "Applications_StubPicture_" + application.ApplicationId + ext);
+
+            }
             return result > 0;
 
         }
@@ -4700,6 +5155,31 @@ namespace MagicVilla_VillaAPI.Repository
             {
                 var result = await (from at in _db.AccountType
                                     where at.IsDeleted != true
+                                    select new AccountType
+                                    {
+                                        AccountTypeId = at.AccountTypeId,
+                                        Type = at.Type,
+                                        AddedBy = at.AddedBy,
+                                    })
+                     .AsNoTracking()
+                     .ToListAsync();
+
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping Account Types: {ex.Message}");
+                throw;
+            }
+        }
+        
+        public async Task<List<AccountType>> GetAccountTypesDllAsync(Filter filter)
+        {
+            try
+            {
+                var result = await (from at in _db.AccountType
+                                    where at.IsDeleted != true && at.AddedBy == filter.AddedBy
                                     select new AccountType
                                     {
                                         AccountTypeId = at.AccountTypeId,
@@ -4809,6 +5289,40 @@ namespace MagicVilla_VillaAPI.Repository
 
 
                 return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping Account Sub Types: {ex.Message}");
+                throw;
+            }
+        }
+        
+        public async Task<List<AccountSubTypeDto>> GetAccountSubTypesDllAsync(Filter filter)
+        {
+            try
+            {
+                var subAccounts = await (from ast in _db.AccountSubType
+                                    from at in _db.AccountType.Where(x => x.AccountTypeId == ast.AccountTypeId && x.IsDeleted != true).DefaultIfEmpty()
+                                    where ast.IsDeleted != true
+                                    select new AccountSubTypeDto
+                                    {
+                                        AccountSubTypeId = ast.AccountSubTypeId,
+                                        AccountTypeId = ast.AccountTypeId,
+                                        AccountType = at.Type,
+                                        Type = ast.Type,
+                                        Description = ast.Description,
+                                        AddedBy = ast.AddedBy,
+                                    })
+                     .AsNoTracking()
+                     .ToListAsync();
+
+                if (filter.AccountTypeIds.Count() > 0)
+                {
+                    subAccounts = subAccounts.Where(x => filter.AccountTypeIds.Contains(x.AccountTypeId)).ToList();
+                }
+
+
+                return subAccounts;
             }
             catch (Exception ex)
             {
@@ -4935,6 +5449,35 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
+
+        public async Task<List<ChartAccountDto>> GetChartAccountsDllAsync(Filter filter)
+        {
+            try
+            {
+                var assetsQuery = _db.ChartAccount
+                 .Select(ca => new ChartAccountDto
+                 {
+                     ChartAccountId = ca.ChartAccountId,
+                     Name = ca.Name,
+                     AddedBy = ca.AddedBy,
+                 });
+
+                if (!string.IsNullOrEmpty(filter.AddedBy))
+                {
+                    assetsQuery = assetsQuery.Where(x => x.AddedBy == filter.AddedBy);
+                }
+
+                var assets = await assetsQuery.ToListAsync();
+
+                return assets;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping Account Sub Types: {ex.Message}");
+                throw;
+            }
+        }
+
         public async Task<ChartAccount> GetChartAccountByIdAsync(int id)
         {
             try
@@ -5482,7 +6025,6 @@ namespace MagicVilla_VillaAPI.Repository
                                         Title = d.Title,
                                         Description = d.Description,
                                         DocumentName = d.DocumentUrl,
-                                        DocumentUrl = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Documents_" + d.DocumentsId + Path.GetExtension(d.DocumentUrl)}",
                                         AddedBy = d.AddedBy,
 
                                     })
@@ -5509,7 +6051,10 @@ namespace MagicVilla_VillaAPI.Repository
             document.DocumentsId = model.DocumentsId;
             document.Title = model.Title;
             document.Description = model.Description;
-            document.DocumentUrl = model.Document.FileName;
+            if (model.Document != null)
+            {
+                document.DocumentUrl = model.Document.FileName;
+            }
 
             if (document.DocumentsId > 0)
             {
@@ -5530,7 +6075,7 @@ namespace MagicVilla_VillaAPI.Repository
             if (model.Document != null)
             {
                 var ext = Path.GetExtension(model.Document.FileName);
-                var res = await _googleCloudStorageService.UploadImageAsync(model.Document, "Documents_" + document.DocumentsId+ ext);
+                var res = await _googleCloudStorageService.UploadImageAsync(model.Document, "Documents_DocumentUrl_" + document.DocumentsId+ ext);
             }
 
             return result > 0;

@@ -65,13 +65,15 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
         public async Task<IActionResult> AccountTypeDll()
         {
-            IEnumerable<AccountType> accountTypes = new List<AccountType>();
-            accountTypes = await _authService.GetAccountTypesAsync();
             var currenUserId = Request?.Cookies["userId"]?.ToString();
-            if (currenUserId != null)
-            {
-                accountTypes = accountTypes.Where(s => s.AddedBy == currenUserId);
-            }
+            var filter = new Filter();
+            filter.AddedBy = currenUserId;
+            IEnumerable<AccountType> accountTypes = new List<AccountType>();
+            accountTypes = await _authService.GetAccountTypesDllAsync(filter);
+            //if (currenUserId != null)
+            //{
+            //    accountTypes = accountTypes.Where(s => s.AddedBy == currenUserId);
+            //}
             return Ok(accountTypes);
         }
     }

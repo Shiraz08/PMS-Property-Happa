@@ -77,6 +77,20 @@ namespace PMS_PropertyHapa.Staff.Controllers
             }
             return Ok(vendorCategories);
         }
+        public async Task<IActionResult> GetVendorCategoriesDll()
+        {
+            
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
+            var filter = new Filter();
+            filter.AddedBy = currenUserId;
+            IEnumerable<VendorCategory> vendorCategories = new List<VendorCategory>();
+            vendorCategories = await _authService.GetVendorCategoriesDllAsync(filter);
+            //if (currenUserId != null)
+            //{
+            //    vendorCategories = vendorCategories.Where(s => s.AddedBy == currenUserId);
+            //}
+            return Ok(vendorCategories);
+        }
 
 
         [HttpPost]
@@ -122,8 +136,23 @@ namespace PMS_PropertyHapa.Staff.Controllers
             return Ok(vendorClassifications);
         }
 
+        public async Task<IActionResult> GetVendorClassificationsDll()
+        {
+           
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
+            var filter = new Filter();
+            filter.AddedBy = currenUserId;
+            IEnumerable<VendorClassification> vendorClassifications = new List<VendorClassification>();
+            vendorClassifications = await _authService.GetVendorClassificationsDllAsync(filter);
+            //if (currenUserId != null)
+            //{
+            //    vendorClassifications = vendorClassifications.Where(s => s.AddedBy == currenUserId);
+            //}
+            return Ok(vendorClassifications);
+        }
+
         [HttpPost]
-        public async Task<IActionResult> SaveVendor([FromBody] VendorDto vendor)
+        public async Task<IActionResult> SaveVendor([FromForm] VendorDto vendor)
         {
             if (vendor == null)
             {
@@ -152,7 +181,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
                     return Json(new { success = false, message = "Failed to register tenant as user." });
                 }
                 var emailContent = $"Welcome {vendor.FirstName} {vendor.LastName},\n\nThank you for registering. Here are your details:\nUsername: {vendor.Email1}\nPassword: Test@123\nTenant ID: {registrationRequest.TenantId}\n\nThank you!";
-               await _emailSender.SendEmailAsync(vendor.Email1, "Welcome to Our Service!", emailContent);
+                await _emailSender.SendEmailAsync(vendor.Email1, "Welcome to Our Service!", emailContent);
             }
 
             await _authService.SaveVendorAsync(vendor);
@@ -189,8 +218,19 @@ namespace PMS_PropertyHapa.Staff.Controllers
             return Ok(vendors);
         }
 
-
-
+        public async Task<IActionResult> GetVendorsDll()
+        {
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
+            var filter = new Filter();
+            filter.AddedBy = currenUserId;
+            IEnumerable<VendorDto> vendors = new List<VendorDto>();
+            vendors = await _authService.GetVendorsDllAsync(filter);
+            //if (currenUserId != null)
+            //{
+            //    vendors = vendors.Where(s => s.AddedBy == currenUserId);
+            //}
+            return Ok(vendors);
+        }
 
     }
 }

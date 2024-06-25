@@ -9,6 +9,8 @@ using System.Security.Claims;
 using PMS_PropertyHapa.Shared.Email;
 using Humanizer.Localisation;
 using PMS_PropertyHapa.MigrationsFiles.Migrations;
+using System.Drawing;
+using System.IO;
 
 namespace PMS_PropertyHapa.Staff.Controllers
 {
@@ -94,9 +96,28 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
             tenant.AppTenantId = appTenantId;
 
-            if (tenant.Picture != null)
+            if (tenant.PictureUrl != null)
             {
-                tenant.Picture = $"data:image/png;base64,{tenant.Picture}";
+                using (var memoryStream = new MemoryStream())
+                {
+                    tenant.PictureName = tenant.PictureUrl.FileName;
+                    await tenant.PictureUrl.CopyToAsync(memoryStream);
+                    var pictureBytes = memoryStream.ToArray();
+                    tenant.Picture = Convert.ToBase64String(pictureBytes);
+                }
+                tenant.PictureUrl = null;
+            }
+            
+            if (tenant.DocumentUrl != null)
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    tenant.DocumentName = tenant.DocumentUrl.FileName;
+                    await tenant.DocumentUrl.CopyToAsync(memoryStream);
+                    var pictureBytes = memoryStream.ToArray();
+                    tenant.Document = Convert.ToBase64String(pictureBytes);
+                }
+                tenant.DocumentUrl = null;
             }
 
             if (tenant.Pets != null)
@@ -107,9 +128,10 @@ namespace PMS_PropertyHapa.Staff.Controllers
                     {
                         using (var memoryStream = new MemoryStream())
                         {
+                            pet.PictureName = pet.PictureUrl2.FileName;
                             await pet.PictureUrl2.CopyToAsync(memoryStream);
                             var pictureBytes = memoryStream.ToArray();
-                            pet.Picture = $"data:image/png;base64,{Convert.ToBase64String(pictureBytes)}";
+                            pet.Picture = Convert.ToBase64String(pictureBytes);
                         }
                         pet.PictureUrl2 = null;
                     }
@@ -164,9 +186,28 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
             tenant.AppTenantId = appTenantId;
 
-            if (tenant.Picture != null)
+            if (tenant.PictureUrl != null)
             {
-                tenant.Picture = $"data:image/png;base64,{tenant.Picture}";
+                using (var memoryStream = new MemoryStream())
+                {
+                    tenant.PictureName = tenant.PictureUrl.FileName;
+                    await tenant.PictureUrl.CopyToAsync(memoryStream);
+                    var pictureBytes = memoryStream.ToArray();
+                    tenant.Picture = Convert.ToBase64String(pictureBytes);
+                }
+                tenant.PictureUrl = null;
+            }
+
+            if (tenant.DocumentUrl != null)
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    tenant.DocumentName = tenant.DocumentUrl.FileName;
+                    await tenant.DocumentUrl.CopyToAsync(memoryStream);
+                    var pictureBytes = memoryStream.ToArray();
+                    tenant.Document = Convert.ToBase64String(pictureBytes);
+                }
+                tenant.DocumentUrl = null;
             }
 
             if (tenant.Pets != null)
@@ -177,9 +218,10 @@ namespace PMS_PropertyHapa.Staff.Controllers
                     {
                         using (var memoryStream = new MemoryStream())
                         {
+                            pet.PictureName = pet.PictureUrl2.FileName;
                             await pet.PictureUrl2.CopyToAsync(memoryStream);
                             var pictureBytes = memoryStream.ToArray();
-                            pet.Picture = $"data:image/png;base64,{Convert.ToBase64String(pictureBytes)}";
+                            pet.Picture = Convert.ToBase64String(pictureBytes);
                         }
                         pet.PictureUrl2 = null;
                     }
@@ -211,9 +253,28 @@ namespace PMS_PropertyHapa.Staff.Controllers
         {
             tenant.AppTenantId = Guid.Parse(tenant.AppTid);
 
-            if (tenant.Picture != null)
+            if (tenant.PictureUrl != null)
             {
-                tenant.Picture = $"data:image/png;base64,{tenant.Picture}";
+                using (var memoryStream = new MemoryStream())
+                {
+                    tenant.PictureName = tenant.PictureUrl.FileName;
+                    await tenant.PictureUrl.CopyToAsync(memoryStream);
+                    var pictureBytes = memoryStream.ToArray();
+                    tenant.Picture = Convert.ToBase64String(pictureBytes);
+                }
+                tenant.PictureUrl = null;
+            }
+
+            if (tenant.DocumentUrl != null)
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    tenant.DocumentName = tenant.DocumentUrl.FileName;
+                    await tenant.DocumentUrl.CopyToAsync(memoryStream);
+                    var pictureBytes = memoryStream.ToArray();
+                    tenant.Document = Convert.ToBase64String(pictureBytes);
+                }
+                tenant.DocumentUrl = null;
             }
 
             if (tenant.Pets != null)
@@ -224,11 +285,11 @@ namespace PMS_PropertyHapa.Staff.Controllers
                     {
                         using (var memoryStream = new MemoryStream())
                         {
+                            pet.PictureName = pet.PictureUrl2.FileName;
                             await pet.PictureUrl2.CopyToAsync(memoryStream);
                             var pictureBytes = memoryStream.ToArray();
-                            pet.Picture = $"data:image/png;base64,{Convert.ToBase64String(pictureBytes)}";
+                            pet.Picture = Convert.ToBase64String(pictureBytes);
                         }
-                        // As mentioned earlier, setting IFormFile to null after conversion might not be necessary
                         pet.PictureUrl2 = null;
                     }
                 }

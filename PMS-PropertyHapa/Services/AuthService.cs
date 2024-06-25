@@ -546,6 +546,33 @@ namespace PMS_PropertyHapa.Services
             }
         }
 
+        public async Task<List<PropertyTypeDto>> GetAllPropertyTypesDllAsync(Filter filter)
+        {
+            try
+            {
+                var apiResponse = await _baseService.SendAsync<APIResponse>(new APIRequest
+                {
+                    ApiType = SD.ApiType.GET,
+                    Data = filter,
+                    Url = $"{villaUrl}/api/v1/PropertySubTypeauth/AllPropertyTypeDll"
+                });
+
+                if (apiResponse != null && apiResponse.IsSuccess)
+                {
+                    var propertyTypes = JsonConvert.DeserializeObject<List<PropertyTypeDto>>(Convert.ToString(apiResponse.Result));
+                    return propertyTypes;
+                }
+                else
+                {
+                    throw new Exception("Failed to retrieve property types data");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when fetching property types data: {ex.Message}", ex);
+            }
+        }
+
 
         public async Task<List<PropertyTypeDto>> GetPropertyTypeByIdAsync(string tenantId)
         {

@@ -57,6 +57,34 @@ namespace PMS_PropertyHapa.API.Controllers.V1
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
+        
+        [HttpGet("AccountTypesDll")]
+        public async Task<ActionResult<AccountType>> GetAccountTypesDll(Filter filter)
+        {
+            try
+            {
+                var accountTypes = await _userRepo.GetAccountTypesDllAsync(filter);
+
+                if (accountTypes != null)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = accountTypes;
+                    return Ok(_response);
+                }
+                else
+                {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("No account found with this id.");
+                    return NotFound(_response);
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
 
         [HttpGet("GetAccountTypeById/{id}")]
         public async Task<IActionResult> GetAccountTypeById(int id)

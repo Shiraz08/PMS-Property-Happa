@@ -60,15 +60,30 @@ namespace PMS_PropertyHapa.Staff.Controllers
             return Ok(accountSubType);
         }
 
-        public async Task<IActionResult> AccountSubTypeDll(int accountTypeId)
+        //public async Task<IActionResult> AccountSubTypeDll(int accountTypeId)
+        //{
+        //    IEnumerable<AccountSubTypeDto> accountSubTypes = new List<AccountSubTypeDto>();
+        //    accountSubTypes = await _authService.GetAccountSubTypesAsync();
+        //    var currenUserId = Request?.Cookies["userId"]?.ToString();
+        //    if (currenUserId != null)
+        //    {
+        //        accountSubTypes = accountSubTypes.Where(s => s.AddedBy == currenUserId && s.AccountTypeId == accountTypeId);
+        //    }
+        //    return Ok(accountSubTypes);
+        //}
+
+        public async Task<IActionResult> AccountSubTypeDll(Filter filter)
         {
-            IEnumerable<AccountSubTypeDto> accountSubTypes = new List<AccountSubTypeDto>();
-            accountSubTypes = await _authService.GetAccountSubTypesAsync();
+            
+            
+
             var currenUserId = Request?.Cookies["userId"]?.ToString();
-            if (currenUserId != null)
-            {
-                accountSubTypes = accountSubTypes.Where(s => s.AddedBy == currenUserId && s.AccountTypeId == accountTypeId);
-            }
+            IEnumerable<AccountSubTypeDto> accountSubTypes = new List<AccountSubTypeDto>();
+            accountSubTypes = await _authService.GetAccountSubTypesDllAsync(filter);
+            //if (currenUserId != null)
+            //{
+            //    accountSubTypes = accountSubTypes.Where(s => s.AddedBy == currenUserId && s.AccountTypeId == accountTypeId);
+            //}
             return Ok(accountSubTypes);
         }
 

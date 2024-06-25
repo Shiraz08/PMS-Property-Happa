@@ -354,7 +354,7 @@
 
     function fillTenantsDll() {
         $.ajax({
-            url: '@Url.Action("GetTenants", "Communication")',
+            url: '@Url.Action("GetTenantsDll", "Communication")',
             type: 'GET',
             dataType: 'json',
             success: function (data) {

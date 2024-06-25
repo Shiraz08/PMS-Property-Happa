@@ -96,55 +96,13 @@ namespace PMS_PropertyHapa.Staff.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ByProperty(int propertyId)
+        public async Task<IActionResult> GetUnitsDll(Filter filter)
         {
             try
             {
-                var units = await _authService.GetAllUnitsAsync();
-
-                var filteredUnits = units
-                    .Where(u => u.AssetId == propertyId) 
-                    .Select(u => new {
-                        UnitId = u.UnitId,
-                        UnitName = u.UnitName
-                    })
-                    .ToList();
-
-                return Json(filteredUnits);
-            }
-            catch (System.Exception ex)
-            {
-                return StatusCode(500, "Internal server error: " + ex.Message); 
-            }
-        }
-        
-        [HttpGet]
-        public async Task<IActionResult> ByProperties(string propertyIds)
-        {
-            try
-            {
-                var stringArray = string.IsNullOrEmpty(propertyIds) ? new int[0] : propertyIds.Split(',').Select(s => int.Parse(s.Trim())).ToArray();
-
-                var units = await _authService.GetAllUnitsAsync();
-
-                if (stringArray.Length > 0)
-                {
-                    var filteredUnits = units
-                                        .Where(u => stringArray.Contains(u.AssetId))
-                                        .Select(u => new {
-                                            UnitId = u.UnitId,
-                                            UnitName = u.UnitName
-                                        })
-                                        .ToList();
-                    return Json(filteredUnits);
-
-                }
-                //var currenUserId = Request?.Cookies["userId"]?.ToString();
-                //if (currenUserId != null)
-                //{
-                //    units = units.Where(s => s.AddedBy == currenUserId);
-                //}
-
+                //var filter = new Filter();
+                //filter.AssetId = propertyId;
+                var units = await _authService.GetUnitsDllAsync(filter);
 
                 return Json(units);
             }
@@ -153,6 +111,42 @@ namespace PMS_PropertyHapa.Staff.Controllers
                 return StatusCode(500, "Internal server error: " + ex.Message); 
             }
         }
+        
+        //[HttpGet]
+        //public async Task<IActionResult> ByProperties(string propertyIds)
+        //{
+        //    try
+        //    {
+        //        var stringArray = string.IsNullOrEmpty(propertyIds) ? new int[0] : propertyIds.Split(',').Select(s => int.Parse(s.Trim())).ToArray();
+
+        //        var units = await _authService.GetAllUnitsAsync();
+
+        //        if (stringArray.Length > 0)
+        //        {
+        //            var filteredUnits = units
+        //                                .Where(u => stringArray.Contains(u.AssetId))
+        //                                .Select(u => new {
+        //                                    UnitId = u.UnitId,
+        //                                    UnitName = u.UnitName
+        //                                })
+        //                                .ToList();
+        //            return Json(filteredUnits);
+
+        //        }
+        //        //var currenUserId = Request?.Cookies["userId"]?.ToString();
+        //        //if (currenUserId != null)
+        //        //{
+        //        //    units = units.Where(s => s.AddedBy == currenUserId);
+        //        //}
+
+
+        //        return Json(units);
+        //    }
+        //    catch (System.Exception ex)
+        //    {
+        //        return StatusCode(500, "Internal server error: " + ex.Message); 
+        //    }
+        //}
 
         [HttpPost]
         public async Task<IActionResult> Create(LeaseDto lease)

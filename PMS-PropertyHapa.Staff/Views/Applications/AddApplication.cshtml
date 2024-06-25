@@ -137,7 +137,8 @@
             debugger;
             
             $('.select2').select2({
-                allowClear: true
+                allowClear: true,
+                placeholder: "please select an option"
             });
             $('.datepickerSingle').datepicker({
                 orientation: "bottom left",
@@ -817,8 +818,8 @@
                                     <h2>Property </h2>
                                     <div class="mb-3">
                                         <label for="applicantProperty" class="form-label ">Property</label>
-                                        <select class="form-control" id="applicantProperty" required>
-                                            <option selected disabled value="">Please Select</option>
+                                        <select class="form-control select2" id="applicantProperty" required>
+                                            <option></option>
                                         </select>
                                     </div>
                                     <div class="mb-3">
@@ -878,7 +879,6 @@
         var url = window.location.href;
         var parts = url.split('/');
         userId = parts[parts.length - 1];
-        console.log("User ID:", userId);
 
         formSections.hide().first().show();
         $('#prevButton').hide();
@@ -1034,13 +1034,6 @@
             if (errors.length === 0) {
                 collectFormData().then(formData => {
                     var url = "/Applications/SaveApplication"; 
-
-                    // Log formData entries
-                    for (var pair of formData.entries()) {
-                        console.log(pair[0] + ', ' + pair[1]);
-                    }
-
-                    // Send formData via AJAX
                     $.ajax({
                         url: url,
                         type: 'POST',
@@ -1078,9 +1071,9 @@
 
     function populateUnits(propertyId, selectedUnits) {
         $.ajax({
-            url: '/Lease/ByProperty',
+            url: '/Lease/GetUnitsDll',
             method: 'GET',
-            data: { propertyId: propertyId },
+            data: { AssetIds: propertyId },
             success: function (units) {
                 var $applicantUnits = $('#applicantUnits');
                 $applicantUnits.empty();
@@ -1104,7 +1097,6 @@
 
 
     function populateDropDown() {
-        console.log("asdas" + userId)
         $.ajax({
             url: '@Url.Action("GetProperties", "Applications")',
             type: 'GET',
@@ -1394,11 +1386,12 @@
         formData.append('PropertyId', $('#applicantProperty').val());
         formData.append('UnitIds', $('#applicantUnits').val().join(','));
 
-        // // Function to read file as base64 and append to formData
-        function readFileAsBase64(file, key) {
+        // Function to read file as base64 and append to formData
+        function readFileAsBase64(file, key, fileName) {
             return new Promise((resolve, reject) => {
                 if (file) {
                     var reader = new FileReader();
+                    formData.append(fileName, file.name);
                     reader.onload = function (e) {
                         formData.append(key, e.target.result);
                         resolve();
@@ -1411,21 +1404,25 @@
             });
         }
 
-        // // Read and append document images
-        promises.push(readFileAsBase64($('#documentLicenceFile')[0].files[0], 'LicensePicture'));
-        promises.push(readFileAsBase64($('#documentStubFile')[0].files[0], 'StubPicture'));
+        promises.push(readFileAsBase64($('#documentLicenceFile')[0].files[0], 'LicensePicture', 'LicensePictureName'));
+        promises.push(readFileAsBase64($('#documentStubFile')[0].files[0], 'StubPicture', 'StubPictureName'));
 
 
         $('#petForm .petCount').each(function (index) {
             var $petContainer = $(this);
 
             var imageFile = $petContainer.find('.petPictureFile')[0].files[0];
+            if (imageFile) {
+                const fileName = imageFile.name;
+                formData.append('Pets[' + index + '].PictureName', fileName);
+            }
+            
             formData.append('Pets[' + index + '].Name', $petContainer.find('.petName').val());
             formData.append('Pets[' + index + '].Breed', $petContainer.find('.petBreed').val());
             formData.append('Pets[' + index + '].Type', $petContainer.find('.petType').val());
             formData.append('Pets[' + index + '].Quantity', $petContainer.find('.petQuantity').val());
 
-            promises.push(readFileAsBase64(imageFile, 'Pets[' + index + '].Picture'));
+            promises.push(readFileAsBase64(imageFile, 'Pets[' + index + '].Picture', 'Pets[' + index + '].PictureName'));
         });
 
         // Append Vehicles

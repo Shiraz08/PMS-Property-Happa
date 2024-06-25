@@ -1,4 +1,5 @@
-﻿using PMS_PropertyHapa.Models.Entities;
+﻿using Microsoft.AspNetCore.Http;
+using PMS_PropertyHapa.Models.Entities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -31,6 +32,7 @@ namespace PMS_PropertyHapa.Models.DTO
         public int? UnitId { get; set; }
         public string Unit { get; set; }
         public string TaskRequestFile { get; set; }
+        public string TaskRequestFileName { get; set; }
         public int? OwnerId { get; set; }
         public string Owner { get; set; }
         public bool IsNotifyOwner { get; set; }

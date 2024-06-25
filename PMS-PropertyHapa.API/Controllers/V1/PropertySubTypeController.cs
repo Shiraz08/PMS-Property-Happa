@@ -89,6 +89,45 @@ namespace PMS_PropertyHapa.API.Controllers.V1
                 });
             }
         }
+        
+        [HttpGet("AllPropertyTypeDll")]
+        public async Task<ActionResult> GetAllPropertyTypesDll(Filter filter)
+        {
+            try
+            {
+                var propertyTypes = await _userRepo.GetAllPropertyTypesDll(filter);
+                if (propertyTypes != null && propertyTypes.Any())
+                {
+                    var response = new APIResponse
+                    {
+                        StatusCode = HttpStatusCode.OK,
+                        IsSuccess = true,
+                        Result = propertyTypes
+                    };
+                    return Ok(response);
+                }
+                else
+                {
+                    // If no property types found, return a NotFound response
+                    return NotFound(new APIResponse
+                    {
+                        StatusCode = HttpStatusCode.NotFound,
+                        IsSuccess = false,
+                        Result = null
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                // Return an error response in case of exceptions
+                return StatusCode(500, new APIResponse
+                {
+                    StatusCode = HttpStatusCode.InternalServerError,
+                    IsSuccess = false,
+                    Result = null
+                });
+            }
+        }
 
         [HttpGet("PropertySubTypeAll/{tenantId}")]
         public async Task<IActionResult> GetPropertyTypeByIdAll(string tenantId)

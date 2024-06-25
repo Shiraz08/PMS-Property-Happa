@@ -187,7 +187,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
 
 
         [HttpPost("TaskHistory")]
-        public async Task<ActionResult<bool>> SaveTaskHistory(TaskRequestHistoryDto taskRequestHistoryDto)
+        public async Task<ActionResult<bool>> SaveTaskHistory([FromForm] TaskRequestHistoryDto taskRequestHistoryDto)
         {
             try
             {

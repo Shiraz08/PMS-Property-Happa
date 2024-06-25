@@ -58,12 +58,14 @@ namespace PMS_PropertyHapa.Models.DTO
         public int PropertyId { get; set; }
         public string UnitIds { get; set; }
         public string LicensePicture { get; set; }
+        public string LicensePictureName { get; set; }
         public string StubPicture { get; set; }
+        public string StubPictureName { get; set; }
         public bool IsAgree { get; set; }
         public string AddedBy { get; set; }
         public DateTime AddedDate { get; set; }
 
-        public List<ApplicationPets> Pets { get; set; }
+        public List<ApplicationPetsDto> Pets { get; set; }
         public List<ApplicationVehicles> Vehicles { get; set; }
         public List<ApplicationDependent> Dependent { get; set; }
     }

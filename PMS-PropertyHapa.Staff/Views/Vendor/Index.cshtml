@@ -303,8 +303,7 @@
                             <!-- Classification Categories -->
                             <div class="mb-3">
                                 <label for="classification" class="form-label">Classification</label>
-                                <select class="form-control select2" multiple="multiple" id="classification">
-                                </select>
+                                <select class="form-control select2" multiple="multiple" id="classification"></select>
                             </div>
                             <!-- Vendor Categories -->
                             <div class="mb-3">
@@ -459,19 +458,6 @@
     const formSections = $(".form-section");
     const totalForms = formSections.length;
     $(document).ready(function () {
-        // $('#searchInput').on('input', function () {
-        //     var searchText = $(this).val().toLowerCase();
-        //     $('tbody tr').each(function () {
-        //         var accountType = $(this).find('td:first').text().toLowerCase();
-
-        //         if (accountType.includes(searchText)) {
-        //             $(this).show();
-        //         } else {
-        //             $(this).hide();
-        //         }
-        //     });
-        // });
-
         $('#vendorTable').DataTable({
                 "ajax": {
                     "url": "/Vendor/GetVendors", 
@@ -481,7 +467,7 @@
 
                 "columns": [
                     {
-                        "data": "Picture",
+                        "data": "PictureUrl",
                         "className": "tableFontSize align-middle",
                         "render": function(data, type, row, meta) {
                             return `
@@ -548,7 +534,7 @@
                         }
                     }
                 ]
-            });
+        });
 
 
         $("#addVendorBtn").click(function () {
@@ -679,102 +665,78 @@
         toggleButtons();
          populateDropDowns();
 
-        $('#saveButton').on('click', function (event) {
+       $('#saveButton').on('click', function (event) {
             event.preventDefault();
-            const jsonFormData = gatherFormData();
-        });
-
-
-        function gatherFormData() {
-            const formData = {
-                VendorId: $('#vendorId').val() || 0,
-                FirstName: $("#firstName").val(),
-                MI: $('#middleName').val(),
-                LastName: $('#lastName').val(),
-                Company: $('#company').val(),
-                JobTitle: $('#jobTitle').val(),
-                TaxId: $('#taxId').val(),
-                Notes: $('#notes').val(),
-                Email1: $('#email1').val(),
-                Phone1: $('#phone1').val(),
-                Email2: $('#email2').val(),
-                Phone2: $('#phone2').val(),
-                Street1: $('#street1').val(),
-                Street2: $('#street2').val(),
-                District: $('#district').val(),
-                City: $('#city').val(),
-                State: $('#state').val(),
-                Country: $('#country').val(),
-                AlterStreet1: $('#altStreet1').val(),
-                AlterStreet2: $('#altStreet2').val(),
-                AlterDistrict: $('#altDistrict').val(),
-                AlterCity: $('#altCity').val(),
-                AlterState: $('#altState').val(),
-                AlterCountry: $('#altCountry').val(),
-                Classification: $('#classification').val().join(','),
-                VendorCategoriesIds: $('#vendorCategories').val().join(','),
-                HasInsurance: $('#hasInsurance').val(),
-                InsuranceCompany: $('#insuranceCompany').val(),
-                PolicyNumber: $('#insurancePolicyNumber').val(),
-                Amount: $('#insuranceAmount').val(),
-                AccountName: $('#accountName').val(),
-                AccountHolder: $('#accountHolder').val(),
-                AccountIBAN: $('#accountIBAN').val(),
-                AccountSwift: $('#accountSwift').val(),
-                AccountBank: $('#accountBank').val(),
-                AccountCurrency: $('#accountCurrency').val(),
-                OrganizationName: $('#vendorOrgName').val(),
-                OrganizationDescription: $('#vendorOrgDescription').val(),
-                Website: $('#vendorOrgWebsite').val(),
-
-            };
+            const formData = gatherFormData();
             handleFileUpload(formData);
+        });
+        
+        function gatherFormData() {
+            const formData = new FormData();
+            formData.append("VendorId", $('#vendorId').val() || 0);
+            formData.append("FirstName", $("#firstName").val());
+            formData.append("MI", $('#middleName').val());
+            formData.append("LastName", $('#lastName').val());
+            formData.append("Company", $('#company').val());
+            formData.append("JobTitle", $('#jobTitle').val());
+            formData.append("TaxId", $('#taxId').val());
+            formData.append("Notes", $('#notes').val());
+            formData.append("Email1", $('#email1').val());
+            formData.append("Phone1", $('#phone1').val());
+            formData.append("Email2", $('#email2').val());
+            formData.append("Phone2", $('#phone2').val());
+            formData.append("Street1", $('#street1').val());
+            formData.append("Street2", $('#street2').val());
+            formData.append("District", $('#district').val());
+            formData.append("City", $('#city').val());
+            formData.append("State", $('#state').val());
+            formData.append("Country", $('#country').val());
+            formData.append("AlterStreet1", $('#altStreet1').val());
+            formData.append("AlterStreet2", $('#altStreet2').val());
+            formData.append("AlterDistrict", $('#altDistrict').val());
+            formData.append("AlterCity", $('#altCity').val());
+            formData.append("AlterState", $('#altState').val());
+            formData.append("AlterCountry", $('#altCountry').val());
+            formData.append("Classification", $('#classification').val().join(','));
+            formData.append("VendorCategoriesIds", $('#vendorCategories').val().join(','));
+            formData.append("HasInsurance", $('#hasInsurance').val());
+            formData.append("InsuranceCompany", $('#insuranceCompany').val());
+            formData.append("PolicyNumber", $('#insurancePolicyNumber').val());
+            formData.append("Amount", $('#insuranceAmount').val());
+            formData.append("AccountName", $('#accountName').val());
+            formData.append("AccountHolder", $('#accountHolder').val());
+            formData.append("AccountIBAN", $('#accountIBAN').val());
+            formData.append("AccountSwift", $('#accountSwift').val());
+            formData.append("AccountBank", $('#accountBank').val());
+            formData.append("AccountCurrency", $('#accountCurrency').val());
+            formData.append("OrganizationName", $('#vendorOrgName').val());
+            formData.append("OrganizationDescription", $('#vendorOrgDescription').val());
+            formData.append("Website", $('#vendorOrgWebsite').val());
+        
+            formData.append("Picture", $('#PictureUrl')[0].files[0]);
+            formData.append("OrganizationIcon", $('#vendorOrgIconFile')[0].files[0]);
+            formData.append("OrganizationLogo", $('#vendorOrgLogoFile')[0].files[0]);
+        
             return formData;
         }
-
+        
         function handleFileUpload(formData) {
-            const fileInputs = [
-                { input: $('#PictureUrl')[0], key: 'Picture' },
-                { input: $('#vendorOrgIconFile')[0], key: 'OrganizationIcon' },
-                { input: $('#vendorOrgLogoFile')[0], key: 'OrganizationLogo' }
-            ];
-
-            const readers = fileInputs.map(({ input, key }) => {
-                return new Promise((resolve, reject) => {
-                    if (input.files.length > 0) {
-                        const reader = new FileReader();
-                        reader.onload = function (e) {
-                            formData[key] = e.target.result;
-                            resolve();
-                        };
-                        reader.onerror = reject;
-                        reader.readAsDataURL(input.files[0]);
-                    } else {
-                        resolve(); 
-                    }
-                });
-            });
-
-            Promise.all(readers).then(() => {
-                submitFormData(formData);
-            }).catch(error => {
-                console.error('Error reading files:', error);
-            });
+            submitFormData(formData);
         }
-
-        function submitFormData(jsonFormData) {
-            console.log(jsonFormData);
+        
+        function submitFormData(formData) {
             $.ajax({
                 url: '@Url.Action("SaveVendor", "Vendor")',
                 type: 'POST',
-                data: JSON.stringify(jsonFormData),
-                contentType: 'application/json',
+                data: formData,
+                contentType: false,
+                processData: false,
                 beforeSend: function () {
                     $('#saveButton').prop('disabled', true).text('Saving...');
                 },
                 success: function (response) {
-                      $("#vendorModal").modal('hide');
-                      location.reload();
+                    $("#vendorModal").modal('hide');
+                    location.reload();
                 },
                 error: function (xhr, status, error) {
                     console.error('Error:', error);
@@ -785,6 +747,7 @@
                 }
             });
         }
+
 
         $('#PictureUrl').on('change', function (event) {
             const fileInput = $('#PictureUrl')[0];
@@ -819,7 +782,7 @@
 
     function populateDropDowns() {
         $.ajax({
-            url: '@Url.Action("GetVendorClassifications", "Vendor")',
+            url: '@Url.Action("GetVendorClassificationsDll", "Vendor")',
             type: 'GET',
             dataType: 'json',
             success: function (data) {
@@ -834,7 +797,7 @@
 
 
         $.ajax({
-            url: '@Url.Action("GetVendorCategories", "Vendor")',
+            url: '@Url.Action("GetVendorCategoriesDll", "Vendor")',
             type: 'GET',
             dataType: 'json',
             success: function (data) {
@@ -985,7 +948,7 @@
                 $('#accountCurrency').val(vendor.AccountCurrency);
 
 
-                var hasOrgInfo = vendor.OrganizationName || vendor.OrganizationDescription || vendor.OrganizationIcon || vendor.OrganizationLogo || vendor.Website;
+                var hasOrgInfo = vendor.OrganizationName || vendor.OrganizationDescription || vendor.OrganizationIconUrl || vendor.OrganizationLogoUrl || vendor.Website;
 
                 if (hasOrgInfo) {
                     $('#vendorToggleOrgInfo').prop('checked', true).trigger("change");
@@ -993,13 +956,13 @@
                     $('#vendorOrgName').val(vendor.OrganizationName || '');
                     $('#vendorOrgDescription').val(vendor.OrganizationDescription || '');
 
-                    if (vendor.OrganizationIcon) {
-                        $("#iconPreview").attr('src', vendor.OrganizationIcon).removeClass('d-none');
+                    if (vendor.OrganizationIconUrl) {
+                        $("#iconPreview").attr('src', vendor.OrganizationIconUrl).removeClass('d-none');
                     } else {
                         $("#iconPreview").addClass('d-none').attr('src', '');
                     }
-                    if (vendor.OrganizationLogo) {
-                        $("#logoPreview").attr('src', vendor.OrganizationLogo).removeClass('d-none');
+                    if (vendor.OrganizationLogoUrl) {
+                        $("#logoPreview").attr('src', vendor.OrganizationLogoUrl).removeClass('d-none');
                     } else {
                         $("#logoPreview").addClass('d-none').attr('src', '');
                     }
@@ -1007,8 +970,8 @@
                     $('#vendorOrgWebsite').val(vendor.Website || '');
                 }
 
-                if (vendor.Picture) {
-                    $('#imagePreview').attr('src', vendor.Picture);
+                if (vendor.PictureUrl) {
+                    $('#imagePreview').attr('src', vendor.PictureUrl);
                 } else {
                     $('#imagePreview').attr('src', "http://bootdey.com/img/Content/avatar/avatar1.png");
                 }

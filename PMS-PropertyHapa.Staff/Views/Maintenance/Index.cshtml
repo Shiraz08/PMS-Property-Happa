@@ -320,20 +320,20 @@
         });
 
         // Function to read file as base64
-        function readFileAsBase64(file) {
-            return new Promise((resolve, reject) => {
-                if (file) {
-                    var reader = new FileReader();
-                    reader.onload = function (e) {
-                        resolve(e.target.result); // Resolve with base64 string
-                    };
-                    reader.onerror = reject;
-                    reader.readAsDataURL(file);
-                } else {
-                    resolve(null); // No file provided
-                }
-            });
-        }
+        // function readFileAsBase64(file) {
+        //     return new Promise((resolve, reject) => {
+        //         if (file) {
+        //             var reader = new FileReader();
+        //             reader.onload = function (e) {
+        //                 resolve(e.target.result); // Resolve with base64 string
+        //             };
+        //             reader.onerror = reject;
+        //             reader.readAsDataURL(file);
+        //         } else {
+        //             resolve(null); // No file provided
+        //         }
+        //     });
+        // }
 
         // $('#saveStatusChangeBtn').click(function () {
         //     var taskRequestId = $('#taskRequestIdInput').val();
@@ -413,41 +413,32 @@
         //     });
         // });
         $('#statusChangeForm').submit(function (event) {
-        event.preventDefault(); // Prevent the default form submission
+            event.preventDefault(); // Prevent the default form submission
 
-        var taskRequestId = $('#taskRequestIdInput').val();
-        var type = $('#taskRequestType').val();
-        var currentStatus = $('#currentStatusInput').val();
-        var accountName = $('#accountName').val();
-        var accountHolder = $('#accountHolder').val();
-        var accountIBAN = $('#accountIBAN').val();
-        var accountSwift = $('#accountSwift').val();
-        var accountBank = $('#accountBank').val();
-        var accountCurrency = $('#accountCurrency').val();
-        var documentFile = $('#documentFile')[0].files[0];
-        var remarks = $('#remarksTextArea').val();
+            var formData = new FormData();
+            formData.append("TaskRequestId", $('#taskRequestIdInput').val());
+            formData.append("Type", $('#taskRequestType').val());
+            formData.append("Status", $('#currentStatusInput').val());
+            formData.append("AccountName", $('#accountName').val());
+            formData.append("AccountHolder", $('#accountHolder').val());
+            formData.append("AccountIBAN", $('#accountIBAN').val());
+            formData.append("AccountSwift", $('#accountSwift').val());
+            formData.append("AccountBank", $('#accountBank').val());
+            formData.append("AccountCurrency", $('#accountCurrency').val());
+            formData.append("Remarks", $('#remarksTextArea').val());
+            formData.append("Date", new Date().toISOString());
 
-         readFileAsBase64(documentFile).then(function (base64Document) {
-            var data = {
-                TaskRequestId: taskRequestId,
-                Type: type,
-                Status: currentStatus,
-                AccountName: accountName,
-                AccountHolder: accountHolder,
-                AccountIBAN: accountIBAN,
-                AccountSwift: accountSwift,
-                AccountBank: accountBank,
-                AccountCurrency: accountCurrency,
-                DocumentFile: base64Document,
-                Remarks: remarks,
-                Date: new Date().toISOString()
-            };
+            var documentFile = $('#documentFile')[0].files[0];
+            if (documentFile) {
+                formData.append("DocumentFile", documentFile);
+            }
 
             $.ajax({
                 url: '@Url.Action("SaveTaskHistory", "Maintenance")',
                 type: 'POST',
-                data: JSON.stringify(data),
-                contentType: 'application/json',
+                data: formData,
+                contentType: false,
+                processData: false,
                 beforeSend: function () {
                     $('#saveStatusChangeBtn').prop('disabled', true).text('Saving...');
                 },
@@ -464,7 +455,7 @@
                 }
             });
         });
-    });
+
 
         $('#statusChangeModal').on('hidden.bs.modal', function () {
             var taskRequestId = $('#taskRequestIdInput').val();

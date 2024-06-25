@@ -46,6 +46,7 @@ namespace PMS_PropertyHapa.Services.IServices
 
 
         Task<List<PropertyTypeDto>> GetAllPropertyTypesAsync();
+        Task<List<PropertyTypeDto>> GetAllPropertyTypesDllAsync(Filter filter);
         Task<List<PropertyTypeDto>> GetPropertyTypeByIdAsync(string tenantId);
         Task<bool> CreatePropertyTypeAsync(PropertyTypeDto propertyType);
         Task<bool> UpdatePropertyTypeAsync(PropertyTypeDto propertyType);

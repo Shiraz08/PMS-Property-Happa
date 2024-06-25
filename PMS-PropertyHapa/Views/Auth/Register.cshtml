@@ -96,7 +96,7 @@
             <div class="row">
                 <div class="form-group col-md-6">
                     <label for="propertyType">Property Type</label>
-                    <select class="form-control" id="propertyType" name="propertyType">
+                    <select class="form-control select2" id="propertyType" name="propertyType">
                     </select>
                 </div>
                 <div class="form-group col-md-6">
@@ -246,12 +246,12 @@
     var isEmailVerified = false;
     $(document).ready(function () {
         $.ajax({
-            url: '@Url.Action("GetAllPropertyTypes", "Auth")',
+            url: '@Url.Action("GetAllPropertyTypesDll", "Auth")',
             type: 'GET',
             dataType: 'json',
             success: function (data) {
                 var propertiesDropdown = document.getElementById('propertyType');
-                propertiesDropdown.innerHTML = '';
+                //propertiesDropdown.innerHTML = '';
                 data.forEach(function (item) {
                     var option = new Option(item.PropertyTypeName, item.PropertyTypeId);
                     propertiesDropdown.appendChild(option);

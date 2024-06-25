@@ -55,101 +55,15 @@
             </div>
         </div>
     </div>
-    @* <div class="container-fluid my-4">
-        <div class="row">
-            <!-- Column 1: Application Table (80% on lg screens) -->
-            <div class="col-xl-12 col-md-12 box-col-12">
-                <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-
-                        <div class="left-side-header">
-                            <div class="input-group">
-                                <span class="input-group-text" id="basic-addon1">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <g>
-                                            <g>
-                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M11.2753 2.71436C16.0029 2.71436 19.8363 6.54674 19.8363 11.2753C19.8363 16.0039 16.0029 19.8363 11.2753 19.8363C6.54674 19.8363 2.71436 16.0039 2.71436 11.2753C2.71436 6.54674 6.54674 2.71436 11.2753 2.71436Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M19.8987 18.4878C20.6778 18.4878 21.3092 19.1202 21.3092 19.8983C21.3092 20.6783 20.6778 21.3097 19.8987 21.3097C19.1197 21.3097 18.4873 20.6783 18.4873 19.8983C18.4873 19.1202 19.1197 18.4878 19.8987 18.4878Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                                            </g>
-                                        </g>
-                                    </svg>
-
-                                </span>
-                                <input class="form-control" type="text" id="searchInput" placeholder="Search Application" aria-label="search" aria-describedby="basic-addon1">
-                            </div>
-                        </div>
-
-                        <div class="right-side-header">
-                            <a href="@Url.Action("AddApplication", "Applications", new { id = userId })" class="btn btn-success">Add Application</a>
-                        </div>
-                    </div>
-
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-hover text-center">
-                                <thead class="table-dark">
-                                    <tr>
-                                        <th scope="col" class="tableHeaderbg">Applicant Name</th>
-                                        <th scope="col" class="tableHeaderbg">Contact Info</th>
-                                        <th scope="col" class="tableHeaderbg">Expected Move In</th>
-                                        <th scope="col" class="tableHeaderbg">Created At</th>
-                                        <th scope="col" class="tableHeaderbg">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var application in Model)
-                                    {
-                                        <tr>
-                                            <td class="tableFontSize align-middle">@application.FirstName  @application.LastName</td>
-
-                                            <td class="tableFontSize align-middle" style="text-align: center;">
-                                                <div style="display: flex; align-items: center; justify-content: center;">
-                                                    <i class="icofont icofont-email"></i>
-                                                    <span style="vertical-align: middle;">@application.Email</span>
-                                                </div>
-                                                <div style="display: flex; align-items: center; justify-content: center;">
-                                                    <i class="icofont icofont-phone"></i>
-                                                    <span style="vertical-align: middle;">@application.PhoneNumber</span>
-                                                </div>
-                                            </td>
-                                            <td class="tableFontSize align-middle">@application.MoveInDate </td>
-                                            <td class="tableFontSize align-middle">@application.AddedDate </td>
-                                            <td class="tableFontSize align-middle">
-                                                <div class="dropdown-basic">
-                                                    <div class="dropdown">
-                                                        <div class="btn-group mb-0">
-                                                            <button class="dropbtn btn-success" type="button">Action <span><i class="icofont icofont-arrow-down"></i></span></button>
-                                                            <div class="dropdown-content">
-                                                                <a class="btn btn-secondary me-1" onclick="editApplications(@application.ApplicationId)">
-                                                                    <i class="fa fa-pencil"></i> Edit
-                                                                </a>
-                                                                <a class="btn btn-secondary" onclick="deleteApplications(@application.ApplicationId)">
-                                                                    <i class="fa fa-trash"></i> Delete
-                                                                </a>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> *@
 </div>
 <script>
     $(document).ready(function () {
         $('#applicationsTable').DataTable({
             "ajax": {
-                "url": "/Applications/GetApplications", // Adjust the URL to your actual endpoint
+                "url": "/Applications/GetApplications", 
                 "type": "GET",
-                "dataSrc": ""
+                "dataSrc": "",
+                //success: function (res) {console.log(res) },
             },
             "columns": [
                 {
@@ -179,14 +93,14 @@
                     "data": "MoveInDate",
                     "className": "text-center tableFontSize align-middle",
                     "render": function (data, type, row, meta) {
-                        return new Date(data).toLocaleDateString(); // Format date as needed
+                        return new Date(data).toLocaleDateString(); 
                     }
                 },
                 {
                     "data": "AddedDate",
                     "className": "text-center tableFontSize align-middle",
                     "render": function (data, type, row, meta) {
-                        return new Date(data).toLocaleDateString(); // Format date as needed
+                        return new Date(data).toLocaleDateString(); 
                     }
                 },
                 {

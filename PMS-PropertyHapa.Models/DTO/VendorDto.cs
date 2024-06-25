@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,7 +16,9 @@ namespace PMS_PropertyHapa.Models.DTO
         public string Company { get; set; }
         public string JobTitle { get; set; }
         public string Notes { get; set; }
-        public string Picture { get; set; }
+        public IFormFile Picture { get; set; }
+        public string PictureName { get; set; }
+        public string PictureUrl { get; set; }
         public string Email1 { get; set; }
         public string Phone1 { get; set; }
         public string Email2 { get; set; }
@@ -49,8 +52,12 @@ namespace PMS_PropertyHapa.Models.DTO
 
         public string OrganizationName { get; set; }
         public string OrganizationDescription { get; set; }
-        public string OrganizationIcon { get; set; }
-        public string OrganizationLogo { get; set; }
+        public IFormFile OrganizationIcon { get; set; }
+        public string OrganizationIconName { get; set; }
+        public string OrganizationIconUrl { get; set; }
+        public IFormFile OrganizationLogo { get; set; }
+        public string OrganizationLogoName { get; set; }
+        public string OrganizationLogoUrl { get; set; }
         public string Website { get; set; }
 
         public string AddedBy { get; set; }

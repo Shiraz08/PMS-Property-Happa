@@ -27,6 +27,7 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
 
 
         Task<IEnumerable<TenantModelDto>> GetAllTenantsAsync();
+        Task<IEnumerable<TenantModelDto>> GetAllTenantsDllAsync(Filter filter);
         Task<List<TenantModelDto>> GetTenantsByIdAsync(string tenantId);
         Task<bool> CreateTenantAsync(TenantModelDto tenant);
         Task<bool> UpdateTenantAsync(TenantModelDto tenant);
@@ -63,6 +64,7 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
         Task<bool> UpdateAssetAsync(AssetDTO asset);
 
         Task<IEnumerable<AssetDTO>> GetAllAssetsAsync();
+        Task<IEnumerable<AssetDTO>> GetAssetsDllAsync(Filter filter);
 
 
         #region Communication Interface Services 
@@ -86,6 +88,7 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
         Task<List<PropertyTypeDto>> GetAllPropertyTypes();
 
         Task<IEnumerable<OwnerDto>> GetAllLandlordAsync();
+        Task<IEnumerable<OwnerDto>> GetAllLandlordDllAsync(Filter filter);
 
         Task<List<PropertySubTypeDto>> GetPropertySubTypeByIdAllAsync(string tenantId);
 
@@ -121,6 +124,7 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
 
 
         Task<IEnumerable<AssetUnitDTO>> GetAllUnitsAsync();
+        Task<IEnumerable<AssetUnitDTO>> GetUnitsDllAsync(Filter filter);
 
 
 
@@ -153,6 +157,7 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
 
         #region Vendor Category
         Task<IEnumerable<VendorCategory>> GetVendorCategoriesAsync();
+        Task<IEnumerable<VendorCategory>> GetVendorCategoriesDllAsync(Filter filter);
         Task<VendorCategory> GetVendorCategoryByIdAsync(int id);
         Task<bool> SaveVendorCategoryAsync(VendorCategory vendorCategory);
         Task<bool> DeleteVendorCategoryAsync(int id);
@@ -161,6 +166,7 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
 
         #region Vendor Classification
         Task<IEnumerable<VendorClassification>> GetVendorClassificationsAsync();
+        Task<IEnumerable<VendorClassification>> GetVendorClassificationsDllAsync(Filter filter);
         Task<VendorClassification> GetVendorClassificationByIdAsync(int id);
         Task<bool> SaveVendorClassificationAsync(VendorClassification vendorClassification);
         Task<bool> DeleteVendorClassificationAsync(int id);
@@ -170,6 +176,7 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
 
         #region Vendor
         Task<IEnumerable<VendorDto>> GetVendorsAsync();
+        Task<IEnumerable<VendorDto>> GetVendorsDllAsync(Filter filter);
         Task<VendorDto> GetVendorByIdAsync(int id);
         Task<bool> SaveVendorAsync(VendorDto vendor);
         Task<bool> DeleteVendorAsync(int id);
@@ -187,6 +194,7 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
         #region AccountType
 
         Task<IEnumerable<AccountType>> GetAccountTypesAsync();
+        Task<IEnumerable<AccountType>> GetAccountTypesDllAsync(Filter filter);
         Task<AccountType> GetAccountTypeByIdAsync(int id);
         Task<bool> SaveAccountTypeAsync(AccountType accountType);
         Task<bool> DeleteAccountTypeAsync(int id);
@@ -196,6 +204,7 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
         #region AccountSubType
 
         Task<IEnumerable<AccountSubTypeDto>> GetAccountSubTypesAsync();
+        Task<IEnumerable<AccountSubTypeDto>> GetAccountSubTypesDllAsync(Filter filter);
         Task<AccountSubType> GetAccountSubTypeByIdAsync(int id);
         Task<bool> SaveAccountSubTypeAsync(AccountSubType accountSubType);
         Task<bool> DeleteAccountSubTypeAsync(int id);
@@ -205,6 +214,7 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
         #region ChartAccount
 
         Task<IEnumerable<ChartAccountDto>> GetChartAccountsAsync();
+        Task<IEnumerable<ChartAccountDto>> GetChartAccountsDllAsync(Filter filter);
         Task<ChartAccount> GetChartAccountByIdAsync(int id);
         Task<bool> SaveChartAccountAsync(ChartAccount chartAccount);
         Task<bool> DeleteChartAccountAsync(int id);
