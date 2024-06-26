@@ -7,6 +7,7 @@ using PMS_PropertyHapa.Models.Roles;
 using PMS_PropertyHapa.Staff.Services.IServices;
 using NuGet.ContentModel;
 using PMS_PropertyHapa.Shared.ImageUpload;
+using PMS_PropertyHapa.Models.Entities;
 
 namespace PMS_PropertyHapa.Staff.Controllers
 {
@@ -26,13 +27,18 @@ namespace PMS_PropertyHapa.Staff.Controllers
         {
             try
             {
-                //if (assetDTO.PictureFile != null && assetDTO.PictureFile.Length > 0)
+                //if (assetDTO.PictureFile != null)
                 //{
-                //    var (fileName, base64String) = await ImageUploadUtility.UploadImageAsync(assetDTO.PictureFile, "uploads");
-                //    assetDTO.Image = $"data:image/png;base64,{base64String}";
+                //    using (var memoryStream = new MemoryStream())
+                //    {
+                //        assetDTO.PictureFileName = assetDTO.PictureFile.FileName;
+                //        await assetDTO.PictureFile.CopyToAsync(memoryStream);
+                //        var pictureBytes = memoryStream.ToArray();
+                //        assetDTO.Image = Convert.ToBase64String(pictureBytes);
+                //    }
+                //    assetDTO.PictureFile = null;
                 //}
 
-                //assetDTO.PictureFile = null;
                 assetDTO.AddedBy = Request?.Cookies["userId"]?.ToString();
                 await _authService.CreateAssetAsync(assetDTO);
                 return Ok(new { success = true, message = "Asset added successfully" });

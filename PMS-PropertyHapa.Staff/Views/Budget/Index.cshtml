@@ -107,7 +107,7 @@
                                             <a class="btn btn-secondary" onclick="deleteBudget(${data})">
                                                 <i class="fa fa-trash"></i> Delete
                                             </a>
-                                            <a class="btn btn-secondary" onclick="duplicateBudget(${data})">
+                                                <a class="btn btn-secondary" onclick="duplicateBudget(${data})">
                                                 <i class="fa fa-copy"></i> Duplicate
                                             </a>
                                         </div>
@@ -124,6 +124,82 @@
             $(this).tab('show');
         });
     });
+
+
+    function deleteBudget(id) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'You will not be able to recover this budget!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '@Url.Action("DeleteBudget", "Budget")',
+                    type: 'POST',
+                    data: { id: id },
+                    success: function (res) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Budget deleted successfully',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        location.reload();
+                    },
+                    error: function (xhr, status, error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Something went wrong!'
+                        });
+                    },
+                });
+            }
+        });
+    }
+
+    function duplicateBudget(id) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'This action will create a copy of the budget.',
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, duplicate it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '@Url.Action("DuplicateBudget", "Budget")',
+                    type: 'POST',
+                    data: { id: id },
+                    success: function (res) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Budget duplicated successfully',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        window.location.href = '/Budget/DuplicateBudget?id=' + id;
+                    },
+                    error: function (xhr, status, error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Something went wrong!'
+                        });
+                    },
+                });
+            }
+        });
+    }
+
+
+
 </script>
 
 

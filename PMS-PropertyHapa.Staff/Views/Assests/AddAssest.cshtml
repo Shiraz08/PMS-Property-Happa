@@ -334,14 +334,14 @@
                                     <div class="col-md-4 mb-2">
                                         <div class="form-group">
                                             <label for="assetPicture">Upload Picture</label>
-                                            <input type="file" class="form-control" id="assetPicture" name="assetPicture">
+                                            <input type="file" class="form-control" id="assetPicture" name="assetPicture" accept="image/*">
                                         </div>
                                     </div>
                                     <div class="col-md-4 mb-2">
                                         <div id="picturePreviewContainer" class="rounded">
                                             @if (Model?.Asset?.Image != null)
                                             {
-                                                <img src="@Model.Asset.Image" id="PictureString" name="PictureString" alt="Asset Picture" class="img-fluid">
+                                                <img src="@Model.Asset.Image" id="image" name="Image" alt="Asset Picture" class="img-fluid">
                                             }
                                             else
                                             {
@@ -586,9 +586,9 @@
                             <input type="hidden" name="OwnerDistrict" id="hiddenOwnerDistrict">
                             <input type="hidden" name="OwnerRegion" id="hiddenOwnerRegion">
                             <input type="hidden" name="OwnerCountryCode" id="hiddenOwnerCountryCode">
-                            <input type="hidden" name="OwnerCountry" id="hiddenOwnerCountry">
-                            <input type="hidden" name="OwnerImage" id="hiddenOwnerImage"> 
-                            <input type="hidden" id="hiddenImage" name="Image">*@
+                            <input type="hidden" name="OwnerCountry" id="hiddenOwnerCountry">*@
+                            <input type="hidden" id="hiddenImageName" id="PictureFileName">
+                            <input type="hidden" id="hiddenImage" name="Image">
 
 
                             <div class="form-navigation" style="text-align: right;">
@@ -1200,7 +1200,7 @@
 
 
 
-    @* function collectFormData() {
+    function collectFormData() {
         var units = collectUnitsData();
 
         var assetDTO = {
@@ -1215,7 +1215,8 @@
             Country: $('#country').val(),
             Zipcode: $('#zipcode').val(),
             Units: units,
-            Image: $('#assetPicture').val(),
+            Image: $('#hiddenImage').val(),
+                PictureFileName: $('#hiddenImageName').val(),
             SelectedBankAccountOption: $('#SelectedBankAccountOption').val(),
             SelectedReserveFundsOption: $('#SelectedReserveFundsOption').val(),
             SelectedOwnershipOption: $('#SelectedOwnershipOption').val(),
@@ -1261,9 +1262,9 @@
 
             console.log('Form validation failed. Please check the inputs.');
         }
-    }); *@
+    });
 
-        function collectFormData() {
+        @* function collectFormData() {
         var units = collectUnitsData();
 
         var formData = new FormData();
@@ -1278,7 +1279,7 @@
         formData.append("Country", $('#country').val());
         formData.append("Zipcode", $('#zipcode').val());
         formData.append("Units", JSON.stringify(units)); // Assuming units is an object or array
-                formData.append("PictureFile", $('#assetPicture')[0].files[0]);
+        formData.append("PictureFile", $('#assetPicture')[0].files[0]);
         formData.append("SelectedBankAccountOption", $('#SelectedBankAccountOption').val());
         formData.append("SelectedReserveFundsOption", $('#SelectedReserveFundsOption').val());
         formData.append("SelectedOwnershipOption", $('#SelectedOwnershipOption').val());
@@ -1302,7 +1303,8 @@
                 var formData = collectFormData();
                 formData.append("AppTId", userId);
                 var submitUrl = isEditMode ? `$/Assests/UpdateAsset/{Model?.Asset?.AssetId}` : '/Assests/AddAsset';
-
+                console.log("asd")
+                console.log(formData)
                 $.ajax({
                     url: submitUrl,
                     type: 'POST',
@@ -1322,7 +1324,7 @@
             console.log('Form validation failed. Please check the inputs.');
         }
     });
-
+ *@
 
     function collectUnitsData() {
         var units = [];
@@ -1599,9 +1601,10 @@
             }
         });
 
-@*         $("#assetPicture").change(function () {
+        $("#assetPicture").change(function () {
             if (this.files && this.files[0]) {
                 var reader = new FileReader();
+                    $('#hiddenImageName').val(this.files[0].name);
 
                 reader.onload = function (e) {
                     // Display the image preview
@@ -1613,7 +1616,7 @@
 
                 reader.readAsDataURL(this.files[0]);
             }
-        }); *@
+        });
 
 
     });

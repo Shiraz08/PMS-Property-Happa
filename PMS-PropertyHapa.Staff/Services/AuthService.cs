@@ -463,7 +463,6 @@ namespace PMS_PropertyHapa.Staff.Services
                 {
                     ApiType = SD.ApiType.POST,
                     Data = asset,
-                    ContentType = SD.ContentType.MultipartFormData,
                     Url = $"{villaUrl}/api/v1/AssetsAuth/Asset"
                 });
 
@@ -1200,7 +1199,6 @@ namespace PMS_PropertyHapa.Staff.Services
                 {
                     ApiType = SD.ApiType.POST,
                     Data = lease,
-                    ContentType = SD.ContentType.MultipartFormData,
                     Url = $"{villaUrl}/api/v1/LeaseAuth/Lease"
                 });
 

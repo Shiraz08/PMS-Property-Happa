@@ -124,8 +124,8 @@ namespace MagicVilla_VillaAPI.Repository
                 OrganizationDescription = tenantOrganization?.OrganizationDescription,
                 PrimaryColor = tenantOrganization?.OrganizatioPrimaryColor,
                 SecondaryColor = tenantOrganization?.OrganizationSecondColor,
-                OrganizationLogo = tenantOrganization?.OrganizationLogo,
-                OrganizationIcon = tenantOrganization?.OrganizationIcon,
+                OrganizationLogo = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"TenantOrganizationInfo_OrganizationLogo_" + tenantOrganization?.Id + Path.GetExtension(tenantOrganization?.OrganizationLogo)}",
+                OrganizationIcon = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"TenantOrganizationInfo_OrganizationIcon_" + tenantOrganization?.Id + Path.GetExtension(tenantOrganization?.OrganizationIcon)}",
                 Tid = tenantOrganization?.Id,
                 TenantId = user.TenantId
             };
@@ -1525,13 +1525,13 @@ namespace MagicVilla_VillaAPI.Repository
             if (tenantDto.Picture != null)
             {
                 var ext = Path.GetExtension(tenantDto.PictureName);
-                var res = await _googleCloudStorageService.UploadImagebyBase64Async(tenantDto.Picture, "Tenant_Picture_" + newTenant.TenantId + ext);
+                await _googleCloudStorageService.UploadImagebyBase64Async(tenantDto.Picture, "Tenant_Picture_" + newTenant.TenantId + ext);
             }
             
             if (tenantDto.Document != null)
             {
                 var ext = Path.GetExtension(tenantDto.DocumentName);
-                var res = await _googleCloudStorageService.UploadImagebyBase64Async(tenantDto.Document, "Tenant_Document_" + newTenant.TenantId + ext);
+                await _googleCloudStorageService.UploadImagebyBase64Async(tenantDto.Document, "Tenant_Document_" + newTenant.TenantId + ext);
             }
 
 
@@ -1556,7 +1556,7 @@ namespace MagicVilla_VillaAPI.Repository
                     if (petDto.Picture != null)
                     {
                         var ext = Path.GetExtension(petDto.PictureName);
-                        var res = await _googleCloudStorageService.UploadImagebyBase64Async(petDto.Picture, "Pets_Picture_" + pet.PetId + ext);
+                        await _googleCloudStorageService.UploadImagebyBase64Async(petDto.Picture, "Pets_Picture_" + pet.PetId + ext);
                     }
                 }
             }
@@ -1682,7 +1682,7 @@ namespace MagicVilla_VillaAPI.Repository
                     if (petDto.Picture != null)
                     {
                         var ext = Path.GetExtension(petDto.PictureName);
-                        var res = await _googleCloudStorageService.UploadImagebyBase64Async(petDto.Picture, "Pets_Picture_" + existingPet.PetId + ext);
+                        await _googleCloudStorageService.UploadImagebyBase64Async(petDto.Picture, "Pets_Picture_" + existingPet.PetId + ext);
                     }
                 }
                 else
@@ -1702,7 +1702,7 @@ namespace MagicVilla_VillaAPI.Repository
                     if (petDto.Picture != null)
                     {
                         var ext = Path.GetExtension(petDto.PictureName);
-                        var res = await _googleCloudStorageService.UploadImagebyBase64Async(petDto.Picture, "Pets_Picture_" + newPet.PetId + ext);
+                        await _googleCloudStorageService.UploadImagebyBase64Async(petDto.Picture, "Pets_Picture_" + newPet.PetId + ext);
                     }
                 }
             }
@@ -1809,13 +1809,13 @@ namespace MagicVilla_VillaAPI.Repository
             if (tenantDto.Picture != null)
             {
                 var ext = Path.GetExtension(tenantDto.PictureName);
-                var res = await _googleCloudStorageService.UploadImagebyBase64Async(tenantDto.Picture, "Tenant_Picture_" + tenant.TenantId + ext);
+                await _googleCloudStorageService.UploadImagebyBase64Async(tenantDto.Picture, "Tenant_Picture_" + tenant.TenantId + ext);
             }
 
             if (tenantDto.Document != null)
             {
                 var ext = Path.GetExtension(tenantDto.DocumentName);
-                var res = await _googleCloudStorageService.UploadImagebyBase64Async(tenantDto.Document, "Tenant_Document_" + tenant.TenantId + ext);
+                await _googleCloudStorageService.UploadImagebyBase64Async(tenantDto.Document, "Tenant_Document_" + tenant.TenantId + ext);
             }
 
             return result > 0;
@@ -1958,13 +1958,13 @@ namespace MagicVilla_VillaAPI.Repository
             if (tenantDto.PictureUrl != null)
             {
                 var ext = Path.GetExtension(tenantDto.PictureUrl.FileName);
-                var res = await _googleCloudStorageService.UploadImageAsync(tenantDto.PictureUrl, "Owner_Picture_" + newTenant.OwnerId + ext);
+                await _googleCloudStorageService.UploadImageAsync(tenantDto.PictureUrl, "Owner_Picture_" + newTenant.OwnerId + ext);
             }
 
             if (tenantDto.DocumentUrl != null)
             {
                 var ext = Path.GetExtension(tenantDto.DocumentUrl.FileName);
-                var res = await _googleCloudStorageService.UploadImageAsync(tenantDto.DocumentUrl, "Owner_Document_" + newTenant.OwnerId + ext);
+                await _googleCloudStorageService.UploadImageAsync(tenantDto.DocumentUrl, "Owner_Document_" + newTenant.OwnerId + ext);
             }
 
 
@@ -1986,13 +1986,13 @@ namespace MagicVilla_VillaAPI.Repository
                 if (tenantDto.OrganizationIconFile != null)
                 {
                     var ext = Path.GetExtension(tenantDto.OrganizationIconFile.FileName);
-                    var res = await _googleCloudStorageService.UploadImageAsync(tenantDto.OrganizationIconFile, "Owner_OrganizationIcon_" + newTenant.OwnerId + ext);
+                    await _googleCloudStorageService.UploadImageAsync(tenantDto.OrganizationIconFile, "Owner_OrganizationIcon_" + newTenant.OwnerId + ext);
                 }
 
                 if (tenantDto.OrganizationLogoFile != null)
                 {
                     var ext = Path.GetExtension(tenantDto.OrganizationLogoFile.FileName);
-                    var res = await _googleCloudStorageService.UploadImageAsync(tenantDto.OrganizationLogoFile, "Owner_OrganizationLogo_" + newTenant.OwnerId + ext);
+                    await _googleCloudStorageService.UploadImageAsync(tenantDto.OrganizationLogoFile, "Owner_OrganizationLogo_" + newTenant.OwnerId + ext);
                 }
             }
 
@@ -2311,8 +2311,8 @@ namespace MagicVilla_VillaAPI.Repository
                 existingLease.EndDate = leaseDto.EndDate;
                 existingLease.IsSigned = leaseDto.IsSigned;
                 existingLease.SelectedProperty = leaseDto.SelectedProperty;
-                existingLease.AssetId = leaseDto.PropertyId;
-                existingLease.UnitId = leaseDto.UnitId;
+                //existingLease.AssetId = leaseDto.PropertyId;
+                //existingLease.UnitId = leaseDto.UnitId;
                 existingLease.SelectedUnit = leaseDto.SelectedUnit;
                 existingLease.SignatureImagePath = leaseDto.SignatureImagePath;
                 existingLease.IsFixedTerm = leaseDto.IsFixedTerm;
@@ -2405,7 +2405,7 @@ namespace MagicVilla_VillaAPI.Repository
                     }
                 }
 
-                var assest = await _db.Assets.FirstOrDefaultAsync(x => x.AssetId == leaseDto.PropertyId);
+                var assest = await _db.Assets.FirstOrDefaultAsync(x => x.AssetId == existingLease.AssetId);
                 var oldInvoices = await _db.Invoices.Where(x => x.LeaseId == leaseDto.LeaseId).ToListAsync();
 
                     oldInvoices.ForEach(x => x.IsDeleted = true);
@@ -2675,8 +2675,10 @@ namespace MagicVilla_VillaAPI.Repository
                 TenantUserId = tenant.TenantUserId,
                 OrganizationName = tenant.OrganizationName,
                 OrganizationDescription = tenant.OrganizationDescription,
-                OrganizationIcon = tenant.OrganizationIcon,
-                OrganizationLogo = tenant.OrganizationLogo,
+                OrganizationIconName = tenant.OrganizationIcon,
+                OrganizationIcon = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"TenantOrganizationInfo_OrganizationIcon_" + tenant.Id + Path.GetExtension(tenant.OrganizationIcon)}",
+                OrganizationLogoName = tenant.OrganizationLogo,
+                OrganizationLogo = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"TenantOrganizationInfo_OrganizationLogo_" + tenant.Id + Path.GetExtension(tenant.OrganizationLogo)}",
                 OrganizatioPrimaryColor = tenant.OrganizatioPrimaryColor,
                 OrganizationSecondColor = tenant.OrganizationSecondColor,
             };
@@ -2698,13 +2700,13 @@ namespace MagicVilla_VillaAPI.Repository
             newTenant.TenantUserId = tenantDto.TenantUserId;
             newTenant.OrganizationName = tenantDto.OrganizationName;
             newTenant.OrganizationDescription = tenantDto.OrganizationDescription;
-            if (tenantDto.OrganizationIcon != null)
+            if (tenantDto.OrganizationIconName != null)
             {
-                newTenant.OrganizationIcon = tenantDto.OrganizationIcon;
+                newTenant.OrganizationIcon = tenantDto.OrganizationIconName;
             }
-            if (tenantDto.OrganizationLogo != null)
+            if (tenantDto.OrganizationLogoName != null)
             {
-                newTenant.OrganizationLogo = tenantDto.OrganizationLogo;
+                newTenant.OrganizationLogo = tenantDto.OrganizationLogoName;
             }
             newTenant.OrganizatioPrimaryColor = tenantDto.OrganizatioPrimaryColor;
             newTenant.OrganizationSecondColor = tenantDto.OrganizationSecondColor;
@@ -2717,6 +2719,18 @@ namespace MagicVilla_VillaAPI.Repository
 
 
             var result = await _db.SaveChangesAsync();
+
+            if (tenantDto.OrganizationIcon != null)
+            {
+                var ext = Path.GetExtension(tenantDto.OrganizationIconName);
+                await _googleCloudStorageService.UploadImagebyBase64Async(tenantDto.OrganizationIcon, "TenantOrganizationInfo_OrganizationIcon_" + newTenant.Id + ext);
+            }
+            
+            if (tenantDto.OrganizationLogo != null)
+            {
+                var ext = Path.GetExtension(tenantDto.OrganizationLogoName);
+                await _googleCloudStorageService.UploadImagebyBase64Async(tenantDto.OrganizationLogo, "TenantOrganizationInfo_OrganizationLogo_" + newTenant.Id + ext);
+            }
             return result > 0;
         }
         #endregion
@@ -2752,8 +2766,8 @@ namespace MagicVilla_VillaAPI.Repository
                     Zipcode = tenant.Zipcode,
                     State = tenant.State,
                     AppTid = tenant.AppTenantId,
-                    Image = tenant.Image,
-                    PictureString = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Asset_Image_" + tenant.AssetId + Path.GetExtension(tenant.Image)}",
+                    PictureFileName = tenant.Image,
+                    Image = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Assets_Image_" + tenant.AssetId + Path.GetExtension(tenant.Image)}",
                     AddedBy = tenant.AddedBy,
                     Units = tenant.Units.Select(unit => new UnitDTO
                     {
@@ -2910,14 +2924,17 @@ namespace MagicVilla_VillaAPI.Repository
 
                     await _db.Owner.AddAsync(existingOwner);
                     await _db.SaveChangesAsync();
-                }
 
-                if (existingOwner.Picture != null)
-                {
-                    var ext = Path.GetExtension(existingOwner.Picture);
-                    var picture = await _googleCloudStorageService.GetGoogleImageAsync("TenantOrganizationInfo_OrganizationLogo_" + tenantOrganization.Id + ext);
+                    if (existingOwner.Picture != null)
+                    {
+                        var ext = Path.GetExtension(existingOwner.Picture);
+                        var picture = await _googleCloudStorageService.GetGoogleImageAsync("TenantOrganizationInfo_OrganizationLogo_" + tenantOrganization.Id + ext);
+                        if (picture != null)
+                        {
+                            await _googleCloudStorageService.UploadImageAsync(picture, "Owner_Picture_" + existingOwner.OwnerId + ext);
+                        }
+                    }
 
-                    var res = await _googleCloudStorageService.UploadImageAsync(picture, "Owner_Picture_" + existingOwner.OwnerId + ext);
                 }
 
                 assetDTO.OwnerId = existingOwner.OwnerId;
@@ -2939,7 +2956,7 @@ namespace MagicVilla_VillaAPI.Repository
                 Country = assetDTO.Country,
                 Zipcode = assetDTO.Zipcode,
                 State = assetDTO.State,
-                Image = assetDTO.PictureFile.FileName,
+                Image = assetDTO.PictureFileName,
                 AppTenantId = assetDTO.AppTid,
                 AddedBy = assetDTO.AddedBy,
                 AddedDate = DateTime.Now,
@@ -2961,10 +2978,10 @@ namespace MagicVilla_VillaAPI.Repository
             await _db.Assets.AddAsync(newAsset);
             var result = await _db.SaveChangesAsync();
 
-            if (assetDTO.PictureFile != null)
+            if (assetDTO.Image != null)
             {
-                var ext = Path.GetExtension(assetDTO.PictureFile.FileName);
-                var res = await _googleCloudStorageService.UploadImageAsync(assetDTO.PictureFile, "Assets_Image_" + newAsset.OwnerId + ext);
+                var ext = Path.GetExtension(assetDTO.PictureFileName);
+                await _googleCloudStorageService.UploadImagebyBase64Async(assetDTO.Image, "Assets_Image_" + newAsset.AssetId + ext);
             }
 
             return result > 0;
@@ -3008,8 +3025,10 @@ namespace MagicVilla_VillaAPI.Repository
                     {
                         var ext = Path.GetExtension(existingOwner.Picture);
                         var picture = await _googleCloudStorageService.GetGoogleImageAsync("TenantOrganizationInfo_OrganizationLogo_" + tenantOrganization.Id + ext);
-
-                        var res = await _googleCloudStorageService.UploadImageAsync(picture, "Owner_Picture_" + existingOwner.OwnerId + ext);
+                        if (picture != null)
+                        {
+                            await _googleCloudStorageService.UploadImageAsync(picture, "Owner_Picture_" + existingOwner.OwnerId + ext);
+                        }
                     }
                 }
 
@@ -3038,9 +3057,9 @@ namespace MagicVilla_VillaAPI.Repository
             existingAsset.Zipcode = assetDTO.Zipcode;
             existingAsset.State = assetDTO.State;
             //existingAsset.Image = assetDTO.Image;
-            if (assetDTO.Image != null)
+            if (assetDTO.PictureFileName != null)
             {
-                existingAsset.Image = assetDTO.PictureFile.FileName;
+                existingAsset.Image = assetDTO.PictureFileName;
             }
             existingAsset.AppTenantId = assetDTO.AppTid;
 
@@ -3081,10 +3100,10 @@ namespace MagicVilla_VillaAPI.Repository
 
             var result = await _db.SaveChangesAsync();
 
-            if (assetDTO.PictureFile != null)
+            if (assetDTO.Image != null)
             {
-                var ext = Path.GetExtension(assetDTO.PictureFile.FileName);
-                var res = await _googleCloudStorageService.UploadImageAsync(assetDTO.PictureFile, "Assets_Image_" + existingAsset.OwnerId + ext);
+                var ext = Path.GetExtension(assetDTO.PictureFileName);
+                await _googleCloudStorageService.UploadImagebyBase64Async(assetDTO.Image, "Assets_Image_" + existingAsset.OwnerId + ext);
             }
 
             return result > 0;
@@ -3777,7 +3796,7 @@ namespace MagicVilla_VillaAPI.Repository
                 {
 
                     var ext = Path.GetExtension(taskRequestDto.TaskRequestFileName);
-                    var res = await _googleCloudStorageService.UploadImagebyBase64Async(taskRequestDto.TaskRequestFile, "Task_TaskRequestFile_" + taskRequest.TaskRequestId + ext);
+                    await _googleCloudStorageService.UploadImagebyBase64Async(taskRequestDto.TaskRequestFile, "Task_TaskRequestFile_" + taskRequest.TaskRequestId + ext);
 
                 }
 
@@ -3868,7 +3887,7 @@ namespace MagicVilla_VillaAPI.Repository
             if (taskRequestHistoryDto.DocumentFile != null)
             {
                 var ext = Path.GetExtension(taskRequestHistoryDto.DocumentFile.FileName);
-                var res = await _googleCloudStorageService.UploadImageAsync(taskRequestHistoryDto.DocumentFile, "TaskHistory_DocumentFile_" + taskRequestHistory.TaskRequestHistoryId + ext);
+                await _googleCloudStorageService.UploadImageAsync(taskRequestHistoryDto.DocumentFile, "TaskHistory_DocumentFile_" + taskRequestHistory.TaskRequestHistoryId + ext);
             }
 
             return result > 0;
@@ -4622,7 +4641,7 @@ namespace MagicVilla_VillaAPI.Repository
             if (model.Picture != null)
             {
                 var ext = Path.GetExtension(model.Picture.FileName);
-                var res = await _googleCloudStorageService.UploadImageAsync(model.Picture, "Vendor_Picture_" + vendor.VendorId + ext);
+                await _googleCloudStorageService.UploadImageAsync(model.Picture, "Vendor_Picture_" + vendor.VendorId + ext);
             }
 
             if (model.OrganizationIcon != null)
@@ -4957,7 +4976,7 @@ namespace MagicVilla_VillaAPI.Repository
                         if (petDto.Picture != null)
                         {
                             var ext = Path.GetExtension(petDto.PictureName);
-                            var res = await _googleCloudStorageService.UploadImagebyBase64Async(petDto.Picture, "ApplicationPets_Picture_" + existingPet.PetId + ext);
+                            await _googleCloudStorageService.UploadImagebyBase64Async(petDto.Picture, "ApplicationPets_Picture_" + existingPet.PetId + ext);
                         }
                     }
                     else
@@ -4984,7 +5003,7 @@ namespace MagicVilla_VillaAPI.Repository
                         if (petDto.Picture != null)
                         {
                             var ext = Path.GetExtension(petDto.PictureName);
-                            var res = await _googleCloudStorageService.UploadImagebyBase64Async(petDto.Picture, "ApplicationPets_Picture_" + newPet.PetId + ext);
+                            await _googleCloudStorageService.UploadImagebyBase64Async(petDto.Picture, "ApplicationPets_Picture_" + newPet.PetId + ext);
                         }
                     }
                 }
@@ -5095,14 +5114,14 @@ namespace MagicVilla_VillaAPI.Repository
             {
             
                 var ext = Path.GetExtension(model.LicensePictureName);
-                var res = await _googleCloudStorageService.UploadImagebyBase64Async(model.LicensePicture, "Applications_LicensePicture_" + application.ApplicationId + ext);
+                await _googleCloudStorageService.UploadImagebyBase64Async(model.LicensePicture, "Applications_LicensePicture_" + application.ApplicationId + ext);
             
             }
             if (model.StubPicture != null)
             {
 
                 var ext = Path.GetExtension(model.StubPictureName);
-                var res = await _googleCloudStorageService.UploadImagebyBase64Async(model.StubPicture, "Applications_StubPicture_" + application.ApplicationId + ext);
+                await _googleCloudStorageService.UploadImagebyBase64Async(model.StubPicture, "Applications_StubPicture_" + application.ApplicationId + ext);
 
             }
             return result > 0;
@@ -5998,7 +6017,7 @@ namespace MagicVilla_VillaAPI.Repository
                                         Title = d.Title,
                                         Description = d.Description,
                                         DocumentName = d.DocumentUrl,
-                                        DocumentUrl = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Documents_" + d.DocumentsId + Path.GetExtension(d.DocumentUrl)}",
+                                        DocumentUrl = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Documents_DocumentUrl_" + d.DocumentsId + Path.GetExtension(d.DocumentUrl)}",
                                         AddedBy = d.AddedBy,
                                     })
                      .AsNoTracking()
@@ -6025,6 +6044,7 @@ namespace MagicVilla_VillaAPI.Repository
                                         Title = d.Title,
                                         Description = d.Description,
                                         DocumentName = d.DocumentUrl,
+                                        DocumentUrl = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Documents_DocumentUrl_" + d.DocumentsId + Path.GetExtension(d.DocumentUrl)}",
                                         AddedBy = d.AddedBy,
 
                                     })
@@ -6075,7 +6095,7 @@ namespace MagicVilla_VillaAPI.Repository
             if (model.Document != null)
             {
                 var ext = Path.GetExtension(model.Document.FileName);
-                var res = await _googleCloudStorageService.UploadImageAsync(model.Document, "Documents_DocumentUrl_" + document.DocumentsId+ ext);
+                await _googleCloudStorageService.UploadImageAsync(model.Document, "Documents_DocumentUrl_" + document.DocumentsId+ ext);
             }
 
             return result > 0;

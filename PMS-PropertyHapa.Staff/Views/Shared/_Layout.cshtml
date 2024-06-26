@@ -546,6 +546,8 @@
 
                     $('#organizatioPrimaryColor').val(data.OrganizatioPrimaryColor);
                     $('#organizationSecondColor').val(data.OrganizationSecondColor);
+                    $('#organizationLogoPreview').attr("src", data.OrganizationLogo);
+                    $('#organizationIconPreview').attr("src", data.OrganizationIcon);
                     
 
                 },
@@ -663,6 +665,12 @@
 
                 var logoFile = $('#organizationLogoUploader').get(0).files[0];
                 var iconFile = $('#organizationIconUploader').get(0).files[0];
+                if (logoFile) {
+                    tenantOrganizationInfoData.OrganizationLogoName = logoFile.name;
+                }
+                if (iconFile) {
+                    tenantOrganizationInfoData.OrganizationIconName = iconFile.name;
+                }
 
                 Promise.all([
                     convertFileToBase64(logoFile),

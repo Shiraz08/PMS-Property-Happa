@@ -19,8 +19,7 @@ namespace PMS_PropertyHapa.Models.DTO
         public string AppTenantId { get; set; }
 
         public string Image { get; set; }
-        public string PictureString { get; set; }
-
+        public string PictureFileName { get; set; }
         public IFormFile PictureFile { get; set; }
 
         public string BuildingNo { get; set; }

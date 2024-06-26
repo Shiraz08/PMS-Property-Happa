@@ -107,7 +107,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
 
 
         [HttpPost("Asset")]
-        public async Task<ActionResult<bool>> CreateAssets([FromForm] AssetDTO asset)
+        public async Task<ActionResult<bool>> CreateAssets(AssetDTO asset)
         {
             try
             {

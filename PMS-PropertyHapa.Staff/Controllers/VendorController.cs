@@ -161,28 +161,28 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
             vendor.AddedBy = Request?.Cookies["userId"]?.ToString();
 
-            if (!await _roleManager.RoleExistsAsync("Vendor"))
-            {
-                await _roleManager.CreateAsync(new IdentityRole("Vendor"));
-            }
-            var registrationRequest = new RegisterationRequestDTO
-            {
-                UserName = vendor.Email1,
-                Name = $"{vendor.FirstName} {vendor.LastName}",
-                Email = vendor.Email1,
-                Password = "Test@123",
-                Role = "Vendor",
-            };
-            if (vendor.VendorId == 0)
-            {
-                APIResponse result = await _authService.RegisterAsync<APIResponse>(registrationRequest);
-                if (!result.IsSuccess)
-                {
-                    return Json(new { success = false, message = "Failed to register tenant as user." });
-                }
-                var emailContent = $"Welcome {vendor.FirstName} {vendor.LastName},\n\nThank you for registering. Here are your details:\nUsername: {vendor.Email1}\nPassword: Test@123\nTenant ID: {registrationRequest.TenantId}\n\nThank you!";
-                await _emailSender.SendEmailAsync(vendor.Email1, "Welcome to Our Service!", emailContent);
-            }
+            //if (!await _roleManager.RoleExistsAsync("Vendor"))
+            //{
+            //    await _roleManager.CreateAsync(new IdentityRole("Vendor"));
+            //}
+            //var registrationRequest = new RegisterationRequestDTO
+            //{
+            //    UserName = vendor.Email1,
+            //    Name = $"{vendor.FirstName} {vendor.LastName}",
+            //    Email = vendor.Email1,
+            //    Password = "Test@123",
+            //    Role = "Vendor",
+            //};
+            //if (vendor.VendorId == 0)
+            //{
+            //    APIResponse result = await _authService.RegisterAsync<APIResponse>(registrationRequest);
+            //    if (!result.IsSuccess)
+            //    {
+            //        return Json(new { success = false, message = "Failed to register tenant as user." });
+            //    }
+            //    var emailContent = $"Welcome {vendor.FirstName} {vendor.LastName},\n\nThank you for registering. Here are your details:\nUsername: {vendor.Email1}\nPassword: Test@123\nTenant ID: {registrationRequest.TenantId}\n\nThank you!";
+            //    await _emailSender.SendEmailAsync(vendor.Email1, "Welcome to Our Service!", emailContent);
+            //}
 
             await _authService.SaveVendorAsync(vendor);
             return Json(new { success = true, message = "Vendor added successfully" });
