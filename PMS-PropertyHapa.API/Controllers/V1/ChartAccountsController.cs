@@ -58,7 +58,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             }
         }
 
-        [HttpGet("ChartAccountsDll")]
+        [HttpPost("ChartAccountsDll")]
         public async Task<ActionResult<ChartAccountDto>> GetChartAccountsDll(Filter filter)
         {
             try

@@ -948,7 +948,7 @@
                 $('#accountCurrency').val(vendor.AccountCurrency);
 
 
-                var hasOrgInfo = vendor.OrganizationName || vendor.OrganizationDescription || vendor.OrganizationIconUrl || vendor.OrganizationLogoUrl || vendor.Website;
+                var hasOrgInfo = vendor.OrganizationName || vendor.OrganizationDescription || vendor.OrganizationIcon || vendor.OrganizationLogo || vendor.Website;
 
                 if (hasOrgInfo) {
                     $('#vendorToggleOrgInfo').prop('checked', true).trigger("change");

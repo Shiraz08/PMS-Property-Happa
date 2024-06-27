@@ -552,7 +552,7 @@ namespace PMS_PropertyHapa.Services
             {
                 var apiResponse = await _baseService.SendAsync<APIResponse>(new APIRequest
                 {
-                    ApiType = SD.ApiType.GET,
+                    ApiType = SD.ApiType.POST,
                     Data = filter,
                     Url = $"{villaUrl}/api/v1/PropertySubTypeauth/AllPropertyTypeDll"
                 });

@@ -242,7 +242,7 @@
     function subTypeDropDown(accountTypeId, selectedId) {
         $.ajax({
             url: '@Url.Action("AccountSubTypeDll", "AccountSubType")',
-            type: 'GET',
+            type: 'POST',
             dataType: 'json',
             data: { AccountTypeIds: accountTypeId },
             success: function (data) {
@@ -264,7 +264,7 @@
     function populateDropDown() {
         $.ajax({
             url: '@Url.Action("AccountTypeDll", "AccountType")',
-            type: 'GET',
+            type: 'POST',
             dataType: 'json',
             success: function (data) {
                 var accountTypeDropdown = document.getElementById('accountTypeName');
@@ -281,7 +281,7 @@
     function chartAccountsDropDown(parentAccountId) {
         $.ajax({
             url: '@Url.Action("ChartAccountDll", "ChartAccounts")',
-            type: 'GET',
+            type: 'POST',
             dataType: 'json',
             success: function (data) {
                 var chartAccountsDropdown = $('#parentAccountName');

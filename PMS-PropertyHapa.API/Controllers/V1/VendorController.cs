@@ -59,7 +59,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             }
         }
 
-        [HttpGet("VendorsDll")]
+        [HttpPost("VendorsDll")]
         public async Task<ActionResult<Vendor>> GetVendorsDll(Filter filter)
         {
             try
@@ -181,7 +181,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             }
         }
 
-        [HttpGet("VendorCategoriesDll")]
+        [HttpPost("VendorCategoriesDll")]
         public async Task<ActionResult<VendorCategory>> GetVendorCategoriesDll(Filter filter)
         {
             try
@@ -306,7 +306,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
         }
 
 
-        [HttpGet("VendorClassificationsDll")]
+        [HttpPost("VendorClassificationsDll")]
         public async Task<ActionResult<VendorClassification>> GetVendorClassificationsDll(Filter filter)
         {
             try

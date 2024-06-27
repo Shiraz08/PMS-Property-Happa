@@ -247,7 +247,7 @@
     $(document).ready(function () {
         $.ajax({
             url: '@Url.Action("GetAllPropertyTypesDll", "Auth")',
-            type: 'GET',
+            type: 'POST',
             dataType: 'json',
             success: function (data) {
                 var propertiesDropdown = document.getElementById('propertyType');

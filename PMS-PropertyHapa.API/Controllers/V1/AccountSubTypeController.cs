@@ -58,7 +58,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             }
         }
 
-        [HttpGet("AccountSubTypesDll")]
+        [HttpPost("AccountSubTypesDll")]
         public async Task<ActionResult<AccountSubTypeDto>> GetAccountSubTypesDll(Filter filter)
         {
             try

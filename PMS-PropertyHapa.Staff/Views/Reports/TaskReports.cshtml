@@ -181,7 +181,7 @@
     function populateUnits(propertyIds) {
         $.ajax({
             url: '/Lease/GetUnitsDll',
-            method: 'GET',
+            method: 'POST',
             data: { AssetIds: propertyIds },
             dataType: 'json', 
             success: function (response) {

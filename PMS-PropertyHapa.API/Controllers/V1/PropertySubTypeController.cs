@@ -90,7 +90,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             }
         }
         
-        [HttpGet("AllPropertyTypeDll")]
+        [HttpPost("AllPropertyTypeDll")]
         public async Task<ActionResult> GetAllPropertyTypesDll(Filter filter)
         {
             try

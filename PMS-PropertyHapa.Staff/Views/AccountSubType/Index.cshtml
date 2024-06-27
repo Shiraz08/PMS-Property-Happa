@@ -186,7 +186,7 @@
     function populateDropDown() {
         $.ajax({
             url: '@Url.Action("AccountTypeDll", "AccountType")',
-            type: 'GET',
+            type: 'POST',
             dataType: 'json',
             success: function (data) {
                 var accountTypeDropdown = document.getElementById('accountTypeName');

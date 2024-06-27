@@ -77,7 +77,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             }
         }
         
-        [HttpGet("AssetsDll")]
+        [HttpPost("AssetsDll")]
         public async Task<ActionResult<AssetDTO>> GetAssetsDll(Filter filter)
         {
             try
@@ -188,7 +188,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             }
         }
         
-        [HttpGet("UnitsDll")]
+        [HttpPost("UnitsDll")]
         public async Task<ActionResult<AssetUnitDTO>> GetUnitsDll(Filter filter)
         {
             try

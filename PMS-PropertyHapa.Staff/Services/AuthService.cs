@@ -226,7 +226,7 @@ namespace PMS_PropertyHapa.Staff.Services
             {
                 var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
                 {
-                    ApiType = SD.ApiType.GET,
+                    ApiType = SD.ApiType.POST,
                     Data = filter,
                     Url = $"{villaUrl}/api/v1/Tenantauth/TenantDll"
                 });
@@ -543,7 +543,7 @@ namespace PMS_PropertyHapa.Staff.Services
 
             var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
             {
-                ApiType = SD.ApiType.GET,
+                ApiType = SD.ApiType.POST,
                 Data = filter,
                 Url = $"{villaUrl}/api/v1/AssetsAuth/AssetsDll"
             });
@@ -678,7 +678,7 @@ namespace PMS_PropertyHapa.Staff.Services
 
             var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
             {
-                ApiType = SD.ApiType.GET,
+                ApiType = SD.ApiType.POST,
                 Data = filter,
                 Url = $"{villaUrl}/api/v1/LandlordAuth/LandlordDll"
             });
@@ -1435,7 +1435,7 @@ namespace PMS_PropertyHapa.Staff.Services
 
             var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
             {
-                ApiType = SD.ApiType.GET,
+                ApiType = SD.ApiType.POST,
                 Data= filter,
                 Url = $"{villaUrl}/api/v1/AssetsAuth/UnitsDll"
             });
@@ -1740,7 +1740,7 @@ namespace PMS_PropertyHapa.Staff.Services
 
             var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
             {
-                ApiType = SD.ApiType.GET,
+                ApiType = SD.ApiType.POST,
                 Data = filter,
                 Url = $"{villaUrl}/api/v1/VendorAuth/VendorCategoriesDll"
             });
@@ -1838,7 +1838,7 @@ namespace PMS_PropertyHapa.Staff.Services
 
             var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
             {
-                ApiType = SD.ApiType.GET,
+                ApiType = SD.ApiType.POST,
                 Data = filter,
                 Url = $"{villaUrl}/api/v1/VendorAuth/VendorClassificationsDll"
             });
@@ -1936,7 +1936,7 @@ namespace PMS_PropertyHapa.Staff.Services
 
             var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
             {
-                ApiType = SD.ApiType.GET,
+                ApiType = SD.ApiType.POST,
                 Data = filter,
                 Url = $"{villaUrl}/api/v1/VendorAuth/VendorsDll"
             });
@@ -2130,7 +2130,7 @@ namespace PMS_PropertyHapa.Staff.Services
 
             var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
             {
-                ApiType = SD.ApiType.GET,
+                ApiType = SD.ApiType.POST,
                 Data = filter, 
                 Url = $"{villaUrl}/api/v1/AccountTypeAuth/AccountTypesDll"
             });
@@ -2229,7 +2229,7 @@ namespace PMS_PropertyHapa.Staff.Services
 
             var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
             {
-                ApiType = SD.ApiType.GET,
+                ApiType = SD.ApiType.POST,
                 Data = filter,
                 Url = $"{villaUrl}/api/v1/AccountSubTypeAuth/AccountSubTypesDll"
             });
@@ -2328,7 +2328,7 @@ namespace PMS_PropertyHapa.Staff.Services
 
             var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
             {
-                ApiType = SD.ApiType.GET,
+                ApiType = SD.ApiType.POST,
                 Data = filter,
                 Url = $"{villaUrl}/api/v1/ChartAccountsAuth/ChartAccountsDll"
             });

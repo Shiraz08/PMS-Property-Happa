@@ -1072,7 +1072,7 @@
     function populateUnits(propertyId, selectedUnits) {
         $.ajax({
             url: '/Lease/GetUnitsDll',
-            method: 'GET',
+            method: 'POST',
             data: { AssetIds: propertyId },
             success: function (units) {
                 var $applicantUnits = $('#applicantUnits');

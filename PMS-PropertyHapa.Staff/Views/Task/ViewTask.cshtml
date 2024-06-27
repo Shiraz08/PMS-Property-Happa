@@ -746,7 +746,7 @@
     function populateUnits(propertyId, selectedUnit) {
         $.ajax({
             url: '/Lease/GetUnitsDll',
-            method: 'GET',
+            method: 'POST',
             dataType: 'json',
             data: { AssetIds: propertyId },
             success: function (units) {
@@ -770,7 +770,7 @@
     function chartAccountsDropDown(selectedId, itemId) {
         $.ajax({
             url: '@Url.Action("ChartAccountDll", "ChartAccounts")',
-            type: 'GET',
+            type: 'POST',
             dataType: 'json',
             success: function (data) {
                 var chartAccountsDropdowns;

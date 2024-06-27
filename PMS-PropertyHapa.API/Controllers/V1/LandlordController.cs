@@ -74,7 +74,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             }
         }
 
-        [HttpGet("LandlordDll")]
+        [HttpPost("LandlordDll")]
         public async Task<ActionResult<OwnerDto>> GetAllLandlordDll(Filter filter)
         {
             try

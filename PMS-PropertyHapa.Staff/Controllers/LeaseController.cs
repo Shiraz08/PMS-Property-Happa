@@ -95,7 +95,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpPost]
         public async Task<IActionResult> GetUnitsDll(Filter filter)
         {
             try
