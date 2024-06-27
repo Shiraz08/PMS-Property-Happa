@@ -37,6 +37,7 @@
                                     <tr>
                                         <th scope="col" class="text-center tableHeaderbg">Document Title</th>
                                         <th scope="col" class="text-center tableHeaderbg">Document Description</th>
+                                        <th scope="col" class="text-center tableHeaderbg">Document Name</th>
                                         <th scope="col" class="text-center tableHeaderbg">Action</th>
                                     </tr>
                                 </thead>
@@ -71,7 +72,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="documentFile" class="form-label">Document Upload *</label>
-                        <input type="file" class="form-control" id="documentFile" name="DocumentFile" accept=".pdf,.xls,.xlsx,.doc,.docx">
+                        <input type="file" class="form-control" id="documentFile" name="DocumentFile" accept=".pdf,.xls,.xlsx,.doc,.docx,.png,.jpg,.jpeg,.gif">
                         <img id="documentUpload" src="" alt="Document Upload" style="max-width: 100%;" class="d-none">
                     </div>
                     <div class="modal-footer">
@@ -100,6 +101,41 @@
                 {
                     "data": "Description",
                     "className": "text-center"
+                },
+                {
+                    "data": "DocumentName",
+                    "className": "text-center",
+                    "render": function (data, type, row, meta) {
+                        const extension = data.split('.').pop().toLowerCase();
+                        let documentType;
+                        switch (extension) {
+                            case 'png':
+                            case 'jpg':
+                            case 'jpeg':
+                            case 'gif':
+                                documentType = 'Image';
+                                break;
+                            case 'pdf':
+                                documentType = 'PDF';
+                                break;
+                            case 'xls':
+                            case 'xlsx':
+                                documentType = 'Excel';
+                                break;
+                            case 'doc':
+                            case 'docx':
+                                documentType = 'Word';
+                                break;
+                            case 'ppt':
+                            case 'pptx':
+                                documentType = 'PowerPoint';
+                                break;
+                            default:
+                                documentType = 'Unknown';
+                                break;
+                        }
+                        return documentType;
+                    }
                 },
                 {
                     "className": "text-center",
