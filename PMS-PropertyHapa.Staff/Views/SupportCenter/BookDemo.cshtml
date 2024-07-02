@@ -1,0 +1,179 @@
+﻿@{
+    ViewData["Title"] = "Book a Free Demo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-sm-6">
+                    <h3>Book a Free Demo</h3>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/SupportCenter/Index"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item">Demo </li>
+                        <li class="breadcrumb-item active">List</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-5">
+        <div class="card">
+            <div class="card-header">
+                <h3>
+                    Discover what Property Happa can do for you with a software demo
+                </h3>
+                <p class="fs-5">Our product experts are ready to give you a comprehensive, customized walkthrough of Property Happa. 
+                    <br />
+                    When you’re ready, book a free demo and see why AppFolio is the last online property management software you’ll ever need.</p>
+            </div>
+            <div class="card-body">
+                <form id="bookDemoForm">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="firstName">First Name</label>
+                                <input type="text" class="form-control" id="firstName" placeholder="Enter your first name">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="lastName">Last Name</label>
+                                <input type="text" class="form-control" id="lastName" placeholder="Enter your last name">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" class="form-control" id="email" placeholder="Enter your email">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="phoneNumber">Phone Number</label>
+                                <input type="text" class="form-control" id="phoneNumber" placeholder="Enter your phone number">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="companyName">Company Name</label>
+                                <input type="text" class="form-control" id="companyName" placeholder="Enter your company name">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="totalUnits">Total Units Managed in Portfolio</label>
+                                <input type="number" class="form-control" id="totalUnits">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <!-- Left empty to balance the form layout -->
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group text-md-end">
+                                <button type="submit" class="btn btn-primary" id="saveButton">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var currentFormIndex = 0;
+    $(document).ready(function () {
+        var url = window.location.href;
+        const validationrules = {
+            0: [
+                { field: '#firstName', message: 'Please enter First Name.' },
+                { field: '#lastName', message: 'Please enter Last Name.' },
+                { field: '#email', message: 'please enter Email.' },
+                { field: '#email', message: 'please enter a valid Email.', validate: isValidEmail },
+                { field: '#phoneNumber', message: 'Please enter Phone Number.' },
+                { field: '#companyName', message: 'Please enter Company Name.' },
+                { field: '#totalUnits', message: 'Please enter Total Units.' }
+            ]
+        };
+
+        function validateSection(index) {
+            const errors = [];
+            const rules = validationrules[index];
+
+            if (rules) {
+                rules.forEach(rule => {
+                    const value = $(rule.field).val();
+                    if (!value || (rule.validate && !rule.validate(value))) {
+                        errors.push(rule.message);
+                    }
+                });
+            }
+
+            return errors;
+        }
+
+        function isValidEmail(email) {
+            const emailPattern = /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/;
+            return emailPattern.test(email);
+        }
+
+        $('#saveButton').click(function (e) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            const errors = validateSection(currentFormIndex);
+            if (errors.length === 0) {
+                collectFormData().then(formData => {
+                    var url = "/SupportCenter/SaveBookDemo";
+                    $.ajax({
+                        url: url,
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function () {
+                            $('#bookDemoForm').modal('hide');
+                            toastr.success("Message submitted successfully");
+                            location.reload();
+                        },
+                        error: function (xhr, textStatus, errorThrown) {
+                            alert('Error', 'Internal Server Error: ' + xhr.responseText);
+                        }
+                    });
+                }).catch(error => {
+                    console.error('Error processing images:', error);
+                });
+            } else {
+                errors.forEach(error => toastr.error(error));
+                return;
+            }
+        });
+    });
+
+    function collectFormData() {
+        var formData = new FormData();
+        var promises = [];
+
+        formData.append('FirstName', $('#firstName').val());
+        formData.append('LastName', $('#lastName').val());
+        formData.append('Email', $('#email').val());
+        formData.append('PhoneNumber', $('#phoneNumber').val());
+        formData.append('CompanyName', $('#companyName').val());
+        formData.append('TotalUnits', $('#totalUnits').val());
+        // Return a promise that resolves with the formData
+        return Promise.all(promises).then(() => formData);
+    }
+</script>

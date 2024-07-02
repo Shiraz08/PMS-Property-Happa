@@ -1,0 +1,59 @@
+﻿@model IEnumerable<PMS_PropertyHapa.Models.Entities.VideoTutorial>
+@{
+    ViewData["Title"] = "VideoTutorial";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-sm-6">
+                    <h3>Video Tutorials</h3>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/SupportCenter/Index"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item">Tutorials</li>
+                        <li class="breadcrumb-item active">List</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-12 mb-4">
+                <h2>Show Me How</h2>
+                <p class="fs-5">Our Video Tutorials, which are available from the Help Menu, cover many topics, including:</p>
+            </div>
+        </div>
+        <div class="row">
+            @foreach (var tutorial in Model)
+            {
+                <div class="col-lg-6 col-md-6 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="card-title mb-4">@tutorial.Title</h3>
+                            <div class="embed-responsive embed-responsive-16by9">
+                                <iframe class="embed-responsive-item" src="@ConvertYouTubeUrlToEmbedUrl(tutorial.VideoLink)" allowfullscreen></iframe>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+@functions {
+    public string ConvertYouTubeUrlToEmbedUrl(string youtubeUrl)
+    {
+        // Extract video ID from YouTube URL
+        var uri = new Uri(youtubeUrl);
+        var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
+        var videoId = query["v"];
+
+        // Construct embeddable YouTube URL
+        return $"https://www.youtube.com/embed/{videoId}";
+    }
+}

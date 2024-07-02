@@ -94,7 +94,7 @@
                                         <div class="col-sm-6 col-md-3">
                                             <div class="mb-3">
                                                 <label for="Gender" class="form-label">Gender</label>
-                                                <select class="form-control" id="Gender" name="Gender" required>
+                                                <select class="form-control select2" id="Gender" name="Gender" required>
                                                     <option value="">Select Gender</option>
                                                     <option value="Male">Male</option>
                                                     <option value="Female">Female</option>
@@ -277,7 +277,7 @@
                                         <div class="col-sm-6 col-md-3">
                                             <div class="mb-3">
                                                 <label for="Country">Country</label>
-                                                <select class="form-control" id="Country" name="Country">
+                                                <select class="form-control select2" id="Country" name="Country">
                                                     <option value="">Select Country</option>
                                                     <option value="Germany">Germany</option>
                                                     <option value="Canada">Canada</option>
@@ -480,6 +480,32 @@
         //         checkValidationsAndSubmit();
         //     });
         // }
+
+
+        const organizationName = '@Model?.OrganizationName';
+        const organizationDescription = '@Model?.OrganizationDescription';
+        const organizationIcon = '@Model?.OrganizationIcon';
+        const organizationLogo = '@Model?.OrganizationLogo';
+        const toggleOrgInfo = document.getElementById('toggleOrgInfo');
+        const organizationFields = document.querySelectorAll('.organization-field');
+
+        // Check if any of the organization fields have a value
+        const hasOrganizationInfo = organizationName || organizationDescription || organizationIcon || organizationLogo;
+
+        // Set the initial state of the toggle button and organization fields
+        if (hasOrganizationInfo) {
+            toggleOrgInfo.checked = true;
+            organizationFields.forEach(field => field.style.display = 'block');
+        }
+
+        // Add event listener to toggle button
+        toggleOrgInfo.addEventListener('change', function () {
+            if (toggleOrgInfo.checked) {
+                organizationFields.forEach(field => field.style.display = 'block');
+            } else {
+                organizationFields.forEach(field => field.style.display = 'none');
+            }
+        });
 
     });
 

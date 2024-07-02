@@ -1,0 +1,162 @@
+﻿@{
+    ViewData["Title"] = "Contact Us";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-sm-6">
+                    <h3>Contact Us</h3>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/SupportCenter/Index"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item">Contact </li>
+                        <li class="breadcrumb-item active">List</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-5">
+        <div class="row">
+            <!-- Form Card -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Drop us a Message</h2>
+                    </div>
+                    <div class="card-body">
+                        <form id="contactUsForm">
+                            <div class="form-group">
+                                <label for="name">Name</label>
+                                <input type="text" class="form-control" id="name" placeholder="Enter your name">
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" class="form-control" id="email" placeholder="Enter your email">
+                            </div>
+                            <div class="form-group">
+                                <label for="phoneNumber">Phone Number</label>
+                                <input type="text" class="form-control" id="phoneNumber" placeholder="Enter your phone number">
+                            </div>
+                            <div class="form-group">
+                                <label for="message">Message</label>
+                                <textarea class="form-control" id="message" rows="3" placeholder="Enter your message"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary" id="saveButton">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Information Card -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Contact Information</h2>
+                    </div>
+                    <div class="card-body">
+                        <h3>How may we assist you?</h3>
+                        <p class="fs-5">
+                            It's easy to contact us with your questions, comments, and suggestions. We will do our best to answer your questions, and if you have an idea on how to improve our product, we will be happy to submit your idea to our development team for their consideration.
+                            <br>
+                            Email support is available 24/7 and all requests are answered as soon as possible.
+                        </p>
+
+                        <ul class="list-unstyled fs-5 mt-4">
+                            <li><strong>Phone:</strong> +123456789</li>
+                            <li><strong>Fax:</strong> +123456789</li>
+                            <li><strong>Email:</strong> <a href="mailto:info@example.com">info@example.com</a></li>
+                            <li><strong>Business Hours:</strong> M-F 8:00 AM - 6:00 PM EST</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var currentFormIndex = 0;
+    $(document).ready(function () {
+        var url = window.location.href;
+        const validationrules = {
+            0: [
+                { field: '#name', message: 'Please enter Name.' },
+                { field: '#email', message: 'please enter Email.' },
+                { field: '#email', message: 'please enter a valid Email.', validate: isValidEmail },
+                { field: '#message', message: 'Please enter Message.' }
+            ]
+        };
+
+        function validateSection(index) {
+            const errors = [];
+            const rules = validationrules[index];
+
+            if (rules) {
+                rules.forEach(rule => {
+                    const value = $(rule.field).val();
+                    if (!value || (rule.validate && !rule.validate(value))) {
+                        errors.push(rule.message);
+                    }
+                });
+            }
+
+            return errors;
+        }
+
+        function isValidEmail(email) {
+            const emailPattern = /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/;
+            return emailPattern.test(email);
+        }
+
+        $('#saveButton').click(function (e) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            const errors = validateSection(currentFormIndex);
+            if (errors.length === 0) {
+                collectFormData().then(formData => {
+                    var url = "/SupportCenter/SaveContactUs";
+                    $.ajax({
+                        url: url,
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function () {
+                            $('#contactUsForm').modal('hide');
+                            toastr.success("Message submitted successfully");
+                            location.reload();
+                        },
+                        error: function (xhr, textStatus, errorThrown) {
+                            alert('Error', 'Internal Server Error: ' + xhr.responseText);
+                        }
+                    });
+                }).catch(error => {
+                    console.error('Error processing images:', error);
+                });
+            } else {
+                errors.forEach(error => toastr.error(error));
+                return;
+            }
+        });
+    });
+
+    function collectFormData() {
+        var formData = new FormData();
+        var promises = [];
+
+        formData.append('Name', $('#name').val());
+        formData.append('Email', $('#email').val());
+        formData.append('PhoneNumber', $('#phoneNumber').val());
+        formData.append('Message', $('#message').val());
+        // Return a promise that resolves with the formData
+        return Promise.all(promises).then(() => formData);
+    }
+
+</script>

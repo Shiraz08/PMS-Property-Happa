@@ -13,7 +13,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
         {
             _authService = authService;
         }
-        public async Task<IActionResult> SearchDocuments()
+        public async Task<IActionResult> Documents()
         {
             return View();
         }

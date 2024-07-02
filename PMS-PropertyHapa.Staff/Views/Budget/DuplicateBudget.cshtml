@@ -89,20 +89,20 @@
                                             <br />
                                             <div class="col-md-4" style="padding-left: 5px; padding-right: 5px;">
                                                 <label class=" mb-1" for="inputFirstName">BudgetType</label>
-                                                <select id="type" asp-for="BudgetType" class="form-control dropdownheight" required>
+                                                <select id="type" asp-for="BudgetType" class="form-control select2 dropdownheight" required>
                                                     <option value="1">Profit & Loss</option>
                                                     <option value="2">Balance Sheet</option>
                                                 </select>
                                             </div>
                                             <div class="col-md-4" style="padding-left: 5px; padding-right: 5px;">
                                                 <label class=" mb-1">Type</label>
-                                                <select id="BudgetBy" name="BudgetBy" asp-for="BudgetBy" class="form-control dropdownheight" required onchange="budgetBy()">
+                                                <select id="BudgetBy" name="BudgetBy" asp-for="BudgetBy" class="form-control select2 dropdownheight" required onchange="budgetBy()">
                                                     <option value="1">Property</option>
                                                 </select>
                                             </div>
                                             <div class="col-md-4" style="padding-left: 5px; padding-right: 5px;">
                                                 <label class="mb-1">Property</label>
-                                                <select id="property" name="PropertyId" class="form-control dropdownheight" required>
+                                                <select id="property" name="PropertyId" class="form-control select2 dropdownheight" required>
                                                 </select>
                                             </div>
                                         </div>
@@ -113,7 +113,7 @@
                                             <br />
                                             <div class="col-md-6" style="padding-left: 5px; padding-right: 5px;">
                                                 <label class="mb-1" for="StartingMonth">Starting Month</label>
-                                                <select id="StartingMonth" name="StartingMonth" asp-for="StartingMonth" class="form-control dropdownheight" required onchange="Month()">
+                                                <select id="StartingMonth" name="StartingMonth" asp-for="StartingMonth" class="form-control select2 dropdownheight" required onchange="Month()">
                                                     <option value="">Select Month</option>
                                                     <option value="1">January</option>
                                                     <option value="2">February</option>
@@ -184,7 +184,7 @@
                                 </div>
                                 <div class="row gx-3 mb-3 mr-1 justify-content-end">
                                     <div class="col-auto d-flex justify-content-end" style="padding-top:25px!important">
-                                        <input type="button" value="Discard" id="discardButton" class="btn btn-default" />
+                                        <input type="button" value="Discard" id="discardButton" class="btn btn-danger" />
                                         <input onclick="getTableData()" type="submit" value="Submit" class="btn btn-success" />
 
                                     </div>
@@ -192,7 +192,6 @@
                             </div>
                         </div>
                     </div>
-
                 </form>
             </div>
         </div>

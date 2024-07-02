@@ -158,8 +158,8 @@
                             </div>
                             <div class="col-md-4">
                                 <label for="recurringTaskFrequency" class="form-label">Frequency</label>
-                                <select class="form-select" id="recurringTaskFrequency" required>
-                                    <option value="">Select Frequency</option>
+                                <select class="form-select select2" id="recurringTaskFrequency" required>
+                                    @* <option value="">Select Frequency</option> *@
                                     <option>Daily</option>
                                     <option>Weekly</option>
                                     <option>Monthly</option>
@@ -192,8 +192,8 @@
                         </div>
                         <div class="col-md-6">
                             <label for="taskPriority" class="form-label">Priority</label>
-                            <select class="form-select" id="taskPriority" required>
-                                <option value="">Select Priority</option>
+                            <select class="form-select select2" id="taskPriority" required>
+                                @* <option value="">Select Priority</option> *@
                                 <option>Low</option>
                                 <option>Medium</option>
                                 <option>High</option>
@@ -952,7 +952,7 @@
 
                 $('#taskStatus').prop('disabled', false);
                 $('#taskStatus').val(task.Status);
-                $('#taskPriority').val(task.Priority);
+                $('#taskPriority').val(task.Priority).trigger("change");
                 $('#taskProperty').val(task.AssetId).trigger("change");
                 populateUnits(task.AssetId, task.UnitId);
                 $('#taskUnit').val(task.UnitId);
@@ -964,7 +964,7 @@
                     var endDate = task.EndDate ? task.EndDate.split('T')[0] : '';
                     $('#recurringTaskStartDate').val(startDate);
                     $('#recurringTaskEndDate').val(endDate);
-                    $('#recurringTaskFrequency').val(task.Frequency);
+                    $('#recurringTaskFrequency').val(task.Frequency).trigger("change");
                     $('#recurringTaskDueDays').val(task.DueDays);
                     $("#recurringTaskHasRepeat").prop('checked', task.IsTaskRepeat);
                 }
@@ -1014,7 +1014,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <label>Account</label>
-                                        <select class="form-control select2 line-item-account" data-item-id="${lineItem.LineItemId}" required>
+                                        <select class="form-control line-item-account" data-item-id="${lineItem.LineItemId}" required>
                                         </select>
                                 </div>
                                 <div class="col-md-6">
@@ -1042,7 +1042,12 @@
                     </div>`;
         $('#lineItemsContainer').append(lineItemHtml);
 
+        // $('.line-item-account[data-item-id="' + lineItem.LineItemId + '"]').val(lineItem.ChartAccountId).trigger("change");
+
         chartAccountsDropDown(lineItem.ChartAccountId, lineItem.LineItemId);
+        
+
+        
     }
 
 </script>

@@ -1,0 +1,280 @@
+﻿@{
+    ViewData["Title"] = "AddFAQ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-sm-6">
+                    <h3>FAQ</h3>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="Index"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item">FAQ</li>
+                        <li class="breadcrumb-item active">List</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <div class="right-side-header">
+                            <button class="btn btn-success" id="newFAQBtn">New FAQ</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table display" id="faqTable">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" class="text-center tableHeaderbg">Question</th>
+                                        <th scope="col" class="text-center tableHeaderbg">Answer</th>
+                                        <th scope="col" class="text-center tableHeaderbg">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="newFAQModal" tabindex="-1" aria-labelledby="faqModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="faqModalLabel">New FAQ</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="faqForm">
+                <input type="hidden" value="" id="faqId" />
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="question" class="form-label">Question *</label>
+                        <div id="question" style="height: 215px;"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="answer" class="form-label">Answer *</label>
+                        <div id="answer" style="height: 215px;"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-success" id="saveBtn">Save</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+
+<script>
+
+    $(document).ready(function () {
+        var quillQuestion = new Quill('#question', {
+            theme: 'snow'
+        });
+        var quillAnswer = new Quill('#answer', {
+            theme: 'snow'
+        });
+
+        $('#faqTable').DataTable({
+            "ajax": {
+                "url": "/Setting/GetFAQs",
+                "type": "GET",
+                "dataSrc": ""
+            },
+            "columns": [
+                {
+                    "data": "Question",
+                    "className": "text-center"
+                },
+                {
+                    "data": "Answer",
+                    "className": "text-center",
+                    "render": function (data, type, row, meta) {
+                        return `<div style="width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${data}</div>`;
+                    }
+                },
+                {
+                    "className": "text-center",
+                    "data": "FAQId",
+                    "render": function (data, type, row, meta) {
+                        return `
+                            <div class="dropdown-basic">
+                                <div class="dropdown">
+                                    <div class="btn-group mb-0">
+                                        <button class="dropbtn btn btn-success" type="button">Action <span><i class="icofont icofont-arrow-down"></i></span></button>
+                                        <div class="dropdown-content">
+                                            <a class="btn btn-secondary" onclick="editFAQ(${data})">
+                                                <i class="fa fa-edit"></i> Edit
+                                            </a>
+                                            <a class="btn btn-secondary" onclick="deleteFAQ(${data})">
+                                                <i class="fa fa-trash"></i> Delete
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
+            ]
+        });
+
+        
+
+        const validationRules = {
+            0: [
+                {
+                    field: '#question',
+                    message: 'Please enter a Question.',
+                    validate: () => quillQuestion.getText().trim().length > 0
+                },
+                {
+                    field: '#answer',
+                    message: 'Please enter an Answer.',
+                    validate: () => quillAnswer.getText().trim().length > 0
+                }
+            ]
+        };
+
+        function validateSection(index) {
+            const errors = [];
+            const rules = validationRules[index];
+
+            if (rules) {
+                rules.forEach(rule => {
+                    const value = $(rule.field).val();
+                    if (!rule.validate()) {
+                        errors.push(rule.message);
+                    }
+                });
+            }
+
+            return errors;
+        }
+        $("#newFAQBtn").on("click", function () {
+            resetModal();
+            $("#faqModalLabel").html("New FAQ");
+            $("#newFAQModal").modal('show');
+        });
+
+        function resetModal() {
+            quillQuestion.setText('');
+            quillAnswer.setText('');
+        }
+
+        $('#faqForm').on('submit', function (event) {
+            event.preventDefault();
+
+            const sectionIndex = 0;
+            const errors = validateSection(sectionIndex);
+
+            if (errors.length > 0) {
+                errors.forEach(error => toastr.error(error));
+                return;
+            }
+
+            var questionText = quillQuestion.root.innerHTML;
+            var answerText = quillAnswer.root.innerHTML;
+
+            var formData = {
+                FAQId: Number($('#faqId').val()),
+                Question: questionText,
+                Answer: answerText,
+            };
+
+            $.ajax({
+                url: '@Url.Action("SaveFAQ", "Setting")',
+                type: 'POST',
+                data: JSON.stringify(formData),
+                contentType: 'application/json',
+                beforeSend: function () {
+                    $('#saveBtn').prop('disabled', true).text('Saving...');
+                },
+                success: function (response) {
+                    $("#newFAQModal").modal('hide');
+                    location.reload();
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error:', error);
+                    alert('Failed to save data');
+                },
+                complete: function () {
+                    $('#saveBtn').prop('disabled', false).text('Save');
+                }
+            });
+        });
+
+        window.editFAQ = function (id) {
+            $.ajax({
+                url: `/Setting/GetFAQById?id=${id}`,
+                type: 'GET',
+                success: function (res) {
+                    $("#faqModalLabel").html("Edit FAQ");
+                    $("#faqId").val(res.FAQId);
+
+                    quillQuestion.root.innerHTML = res.Question;
+                    quillAnswer.root.innerHTML = res.Answer;
+
+                    $("#newFAQModal").modal('show');
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error:', error);
+                    toastr.error('Failed to retrieve FAQ data');
+                },
+            });
+        };
+    });
+
+
+     function deleteFAQ(id) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'You will not be able to recover this FAQ!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '@Url.Action("DeleteFAQ", "Setting")',
+                    type: 'POST',
+                    data: { id: id },
+                    success: function (res) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'FAQ deleted successfully',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        location.reload()
+                    },
+                    error: function (xhr, status, error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Something went wrong!'
+                        });
+                    },
+                });
+            }
+        });
+    }
+</script>

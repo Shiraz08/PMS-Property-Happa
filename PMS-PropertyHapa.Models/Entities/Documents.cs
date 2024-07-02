@@ -15,6 +15,7 @@ namespace PMS_PropertyHapa.Models.Entities
         public int DocumentsId { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
+        public string Type { get; set; }
         [NotMapped]
         public IFormFile Document { get; set; }
         public string DocumentUrl { get; set; }

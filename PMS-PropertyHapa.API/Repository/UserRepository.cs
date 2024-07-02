@@ -2498,7 +2498,10 @@ namespace MagicVilla_VillaAPI.Repository
             tenant.PhoneNumber2 = tenantDto.PhoneNumber2;
             tenant.Fax = tenantDto.Fax;
             tenant.TaxId = tenantDto.TaxId;
-            tenant.Document = tenantDto.Document;
+            if(tenant.Document != null)
+            {
+                tenant.Document = tenantDto.DocumentUrl.FileName;
+            }
             tenant.EmergencyContactInfo = tenantDto.EmergencyContactInfo;
             tenant.LeaseAgreementId = tenantDto.LeaseAgreementId;
             tenant.OwnerNationality = tenantDto.OwnerNationality;
@@ -2521,7 +2524,11 @@ namespace MagicVilla_VillaAPI.Repository
             tenant.PostalCode = tenantDto.PostalCode;
             tenant.Country = tenantDto.Country;
             tenant.CountryCode = tenantDto.CountryCode;
-            tenant.Picture = tenantDto.Picture;
+            if(tenant.Picture != null)
+            {
+                tenant.Picture = tenantDto.PictureUrl.FileName;
+            }
+            
 
             if (ownerOrganization != null)
             {
@@ -2550,6 +2557,20 @@ namespace MagicVilla_VillaAPI.Repository
             _db.Owner.Update(tenant);
 
             var result = await _db.SaveChangesAsync();
+
+            if (tenantDto.PictureUrl != null)
+            {
+                var ext = Path.GetExtension(tenantDto.PictureUrl.FileName);
+                await _googleCloudStorageService.UploadImageAsync(tenantDto.PictureUrl, "Owner_Picture_" + tenant.OwnerId + ext);
+            }
+
+            if (tenantDto.DocumentUrl != null)
+            {
+                var ext = Path.GetExtension(tenantDto.DocumentUrl.FileName);
+                await _googleCloudStorageService.UploadImageAsync(tenantDto.DocumentUrl, "Owner_Document_" + tenant.OwnerId + ext);
+            }
+
+
             return result > 0;
         }
 
@@ -6016,9 +6037,12 @@ namespace MagicVilla_VillaAPI.Repository
                                         DocumentsId = d.DocumentsId,
                                         Title = d.Title,
                                         Description = d.Description,
+                                        Type = d.Type,
                                         DocumentName = d.DocumentUrl,
                                         DocumentUrl = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Documents_DocumentUrl_" + d.DocumentsId + Path.GetExtension(d.DocumentUrl)}",
                                         AddedBy = d.AddedBy,
+                                        CreatedDate = d.AddedDate,
+                                        ModifiedDate = d.ModifiedDate
                                     })
                      .AsNoTracking()
                      .ToListAsync();
@@ -6043,6 +6067,7 @@ namespace MagicVilla_VillaAPI.Repository
                                         DocumentsId = d.DocumentsId,
                                         Title = d.Title,
                                         Description = d.Description,
+                                        Type = d.Type,
                                         DocumentName = d.DocumentUrl,
                                         DocumentUrl = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Documents_DocumentUrl_" + d.DocumentsId + Path.GetExtension(d.DocumentUrl)}",
                                         AddedBy = d.AddedBy,
@@ -6071,6 +6096,7 @@ namespace MagicVilla_VillaAPI.Repository
             document.DocumentsId = model.DocumentsId;
             document.Title = model.Title;
             document.Description = model.Description;
+            document.Type = model.Type;
             if (model.Document != null)
             {
                 document.DocumentUrl = model.Document.FileName;
@@ -6113,7 +6139,64 @@ namespace MagicVilla_VillaAPI.Repository
 
             return saveResult > 0;
         }
-    
+
+        #endregion
+
+
+        #region Documents
+
+        public async Task<List<FAQ>> GetFAQsAsync()
+        {
+            try
+            {
+                var result = await (from faq in _db.FAQs
+                                    where faq.IsDeleted != true
+                                    select new FAQ
+                                    {
+                                        FAQId = faq.FAQId,
+                                        Question = faq.Question,
+                                        Answer = faq.Answer,
+                                        AddedBy = faq.AddedBy,
+                                    })
+                     .AsNoTracking()
+                     .ToListAsync();
+
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping FAQ: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<List<VideoTutorial>> GetVideoTutorialsAsync()
+        {
+            try
+            {
+                var result = await (from vt in _db.VideoTutorial
+                                    where vt.IsDeleted != true
+                                    select new VideoTutorial
+                                    {
+                                        TutorialId = vt.TutorialId,
+                                        Title = vt.Title,
+                                        VideoLink = vt.VideoLink,
+                                        AddedBy = vt.AddedBy,
+                                    })
+                     .AsNoTracking()
+                     .ToListAsync();
+
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping Video Tutorial: {ex.Message}");
+                throw;
+            }
+        }
+
         #endregion
 
     }

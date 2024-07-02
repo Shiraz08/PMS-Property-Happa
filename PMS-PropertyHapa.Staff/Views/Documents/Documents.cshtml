@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "SearchDocuments";
+    ViewData["Title"] = "Documents";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -37,7 +37,10 @@
                                     <tr>
                                         <th scope="col" class="text-center tableHeaderbg">Document Title</th>
                                         <th scope="col" class="text-center tableHeaderbg">Document Description</th>
+                                        <th scope="col" class="text-center tableHeaderbg">Type</th>
                                         <th scope="col" class="text-center tableHeaderbg">Document Name</th>
+                                        <th scope="col" class="text-center tableHeaderbg">Created Date</th>
+                                        <th scope="col" class="text-center tableHeaderbg">Modified Date</th>
                                         <th scope="col" class="text-center tableHeaderbg">Action</th>
                                     </tr>
                                 </thead>
@@ -69,6 +72,16 @@
                     <div class="mb-3">
                         <label for="documentDescription" class="form-label">Description *</label>
                         <textarea class="form-control" placeholder="Description" id="documentDescription"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="documentType" class="form-label">Type *</label>
+                        <select class="form-control select2" id="documentType" name="Type">
+                            <option value="" selected disabled hidden>Select Documnet Type</option>
+                            <option value="Lease">Lease</option>
+                            <option value="Personal">Personal</option>
+                            <option value="Agreement">Agreement Form</option>
+                            <option value="Task">Task Document</option>
+                        </select>
                     </div>
                     <div class="mb-3">
                         <label for="documentFile" class="form-label">Document Upload *</label>
@@ -103,6 +116,10 @@
                     "className": "text-center"
                 },
                 {
+                    "data": "Type",
+                    "className": "text-center" 
+                },
+                {
                     "data": "DocumentName",
                     "className": "text-center",
                     "render": function (data, type, row, meta) {
@@ -135,6 +152,34 @@
                                 break;
                         }
                         return documentType;
+                    }
+                },
+                {
+                    "data": "CreatedDate",
+                    "className": "text-center",
+                    "render": function (data, type, row, meta) {
+                        if (data) {
+                            const date = new Date(data);
+                            const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-based
+                            const day = date.getDate().toString().padStart(2, '0');
+                            const year = date.getFullYear();
+                            return `${month}/${day}/${year}`;
+                        }
+                        return '';
+                    }
+                },
+                {
+                    "data": "ModifiedDate",
+                    "className": "text-center",
+                    "render": function (data, type, row, meta) {
+                        if (data) {
+                            const date = new Date(data);
+                            const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-based
+                            const day = date.getDate().toString().padStart(2, '0');
+                            const year = date.getFullYear();
+                            return `${month}/${day}/${year}`;
+                        }
+                        return '';
                     }
                 },
                 {
@@ -177,6 +222,7 @@
             0: [
                 { field: '#documentTitle', message: 'Please enter Title.' },
                 { field: '#documentDescription', message: 'Please enter Description.' },
+                { field: '#documentType', message: 'Please enter Document Type.' },
                 { field: '#documentFile', message: 'Please select a Document File.', validate: (value) => value.trim() !== '' }
             ]
         };
@@ -214,6 +260,7 @@
             formData.append("DocumentsId", Number($('#documentId').val()));
             formData.append("Title", $('#documentTitle').val());
             formData.append("Description", $('#documentDescription').val());
+            formData.append("Type", $('#documentType').val());
             formData.append("Document", $('#documentFile')[0].files[0]);
 
             $.ajax({
@@ -290,6 +337,7 @@
                 $("#documentId").val(res.DocumentsId);
                 $("#documentTitle").val(res.Title);
                 $("#documentDescription").val(res.Description);
+                $("#documentType").val(res.Type).trigger("change");
                 $("#Document").val(res.Document);
                 $("#newDocumentModal").modal('show');
             },

@@ -1,0 +1,57 @@
+﻿@model IEnumerable<PMS_PropertyHapa.Models.Entities.FAQ>
+@{
+    ViewData["Title"] = "FAQ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-sm-6">
+                    <h3>FAQ's</h3>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/SupportCenter/Index"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item">FAQ</li>
+                        <li class="breadcrumb-item active">List</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-12">
+                <h2 class="text-center">Frequently Asked Questions</h2>
+                <p class="text-center">You have questions... we have answers</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="accordion" id="faqAccordion">
+                    @foreach (var faq in Model)
+                    {
+                        var faqId = "collapse" + faq.FAQId;
+                        var headingId = "heading" + faq.FAQId;
+                        <div class="card">
+                            <div class="card-header" id="@headingId">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link fs-5" type="button" data-toggle="collapse" data-target="#@faqId" aria-expanded="true" aria-controls="@faqId">
+                                        @Html.Raw(faq.Question)
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="@faqId" class="collapse" aria-labelledby="@headingId" data-parent="#faqAccordion">
+                                <div class="card-body">
+                                    <p class="fs-5"><strong>Answer:</strong> @Html.Raw(faq.Answer)</p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

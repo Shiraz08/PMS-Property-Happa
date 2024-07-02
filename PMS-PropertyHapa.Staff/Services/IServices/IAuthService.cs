@@ -245,5 +245,12 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
         Task<bool> DeleteDocumentAsync(int id);
 
         #endregion
+
+        #region SupportCenter
+
+        Task<IEnumerable<FAQ>> GetFAQsAsync();
+        Task<IEnumerable<VideoTutorial>> GetVideoTutorialsAsync();
+
+        #endregion
     }
 }

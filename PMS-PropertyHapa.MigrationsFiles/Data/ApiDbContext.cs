@@ -41,6 +41,8 @@ namespace PMS_PropertyHapa.MigrationsFiles.Data
         public DbSet<Lease> Lease { get; set; }
         public DbSet<Communication> Communication { get; set; }
         public DbSet<Subscription> Subscriptions { get; set; }
+        public DbSet<FAQ> FAQs { get; set; }
+        public DbSet<VideoTutorial> VideoTutorial { get; set; }
         public DbSet<RentCharge> RentCharge { get; set; }
         public DbSet<FeeCharge> FeeCharge { get; set; }
         public DbSet<SecurityDeposit> SecurityDeposit { get; set; }

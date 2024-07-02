@@ -269,5 +269,9 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
         Task<DocumentsDto> GetDocumentByIdAsync(int id);
         Task<bool> SaveDocumentAsync(DocumentsDto document);
         Task<bool> DeleteDocumentAsync(int id);
+
+        //SupportCenter
+        Task<List<FAQ>> GetFAQsAsync();
+        Task<List<VideoTutorial>> GetVideoTutorialsAsync();
     }
 }

@@ -135,7 +135,7 @@
                                         <div class="col">
                                             <div class="mb-3">
                                                 <label for="appGender" class="form-label">Gender</label>
-                                                <select class="form-select" id="appGender" name="Gender">
+                                                <select class="form-control select2" id="appGender" name="Gender">
                                                     <option selected disabled value="">Please Select</option>
                                                     @{
                                                         if (Model.Gender == "male")
@@ -167,7 +167,7 @@
                                         <div class="col">
                                             <div class="mb-3">
                                                 <label for="appMaritalStatus" class="form-label">Marital Status</label>
-                                                <select class="form-select" id="appMaritalStatus">
+                                                <select class="form-control select2" id="appMaritalStatus">
                                                     <option selected disabled value="">Please Select</option>
                                                     @{
                                                         if (Model.MaritalStatus == "single")
@@ -298,7 +298,7 @@
                                         <div class="col">
                                             <div class="mb-3">
                                                 <label for="empWorkStatus" class="form-label">Do you currently work here?</label>
-                                                <select class="form-select" id="empWorkStatus">
+                                                <select class="form-control select2" id="empWorkStatus">
                                                     <option selected disabled value="">Please Select</option>
                                                     @{
                                                         if (Model.WorkStatus == true)
@@ -812,7 +812,7 @@
                                         <div class="col">
                                             <div class="mb-3">
                                                 <label for="questionSmoke" class="form-label">Do you smoke?</label>
-                                                <select class="form-select" id="questionSmoke">
+                                                <select class="form-control select2" id="questionSmoke">
                                                     <option selected disabled value="">Please Select</option>
                                                     @{
                                                         if (Model.IsSmoker == true)
@@ -839,7 +839,7 @@
                                         <div class="col">
                                             <div class="mb-3">
                                                 <label for="questionBank" class="form-label">Have you filed for bankruptcy in the past?</label>
-                                                <select class="form-select" id="questionBank">
+                                                <select class="form-control select2" id="questionBank">
                                                     <option selected disabled value="">Please Select</option>
                                                     @{
                                                         if (Model.IsBankruptcy == true)
@@ -868,7 +868,7 @@
                                         <div class="col">
                                             <div class="mb-3">
                                                 <label for="questionEvict" class="form-label">Have you ever been evicted from a residential property?</label>
-                                                <select class="form-select" id="questionEvict">
+                                                <select class="form-control select2" id="questionEvict">
                                                     <option selected disabled value="">Please Select</option>
                                                     @{
                                                         if (Model.IsEvicted == true)
@@ -895,7 +895,7 @@
                                         <div class="col">
                                             <div class="mb-3">
                                                 <label for="questionRent" class="form-label">Have you ever refused to pay rent?</label>
-                                                <select class="form-select" id="questionRent">
+                                                <select class="form-control select2" id="questionRent">
                                                     <option selected disabled value="">Please Select</option>
                                                     @{
                                                         if (Model.HasPayRentIssue == true)
@@ -924,7 +924,7 @@
                                         <div class="col">
                                             <div class="mb-3">
                                                 <label for="questionCrime" class="form-label">Have you ever been convicted of a crime?</label>
-                                                <select class="form-select" id="questionCrime">
+                                                <select class="form-control select2" id="questionCrime">
                                                     <option selected disabled value="">Please Select</option>
                                                     @{
                                                         if (Model.IsCriminal == true)

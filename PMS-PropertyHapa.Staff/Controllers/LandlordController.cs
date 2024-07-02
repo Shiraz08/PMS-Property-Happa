@@ -123,7 +123,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Update(OwnerDto owner)
+        public async Task<IActionResult> Update([FromForm] OwnerDto owner)
         {
             owner.AppTenantId = Guid.Parse(owner.AppTid);
 

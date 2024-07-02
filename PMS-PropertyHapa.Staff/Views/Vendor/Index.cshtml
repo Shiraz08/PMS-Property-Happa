@@ -319,7 +319,7 @@
                             <h2>Insurance</h2>
                             <div class="mb-3">
                                 <label for="hasInsurance" class="form-label">Do you have valid insurance?</label>
-                                <select class="form-control" id="hasInsurance" name="Insurance" required>
+                                <select class="form-control select2" id="hasInsurance" name="Insurance" required>
                                     <option selected disabled value="">Please Select</option>
                                     <option value="true">Yes</option>
                                     <option value="false">No</option>
@@ -388,7 +388,14 @@
                                 <div class="col">
                                     <div class="mb-3">
                                         <label for="accountCurrency">Account Currency</label>
-                                        <input type="text" class="form-control" placeholder="Currency" id="accountCurrency">
+                                         <select class="form-control select2" id="accountCurrency" name="Currency">
+                                            <option value="" selected disabled hidden>Select Currency</option>
+                                            <option value="USD">USD - United States Dollar ($)</option>
+                                            <option value="EUR">EUR - Euro (€)</option>
+                                            <option value="GBP">GBP - British Pound (£)</option>
+                                            <option value="JPY">JPY - Japanese Yen (¥)</option>
+                                            <option value="INR">INR - Indian Rupee (₹)</option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -945,7 +952,7 @@
                 $('#accountIBAN').val(vendor.AccountIBAN);
                 $('#accountSwift').val(vendor.AccountSwift);
                 $('#accountBank').val(vendor.AccountBank);
-                $('#accountCurrency').val(vendor.AccountCurrency);
+                $('#accountCurrency').val(vendor.AccountCurrency).trigger("change");
 
 
                 var hasOrgInfo = vendor.OrganizationName || vendor.OrganizationDescription || vendor.OrganizationIcon || vendor.OrganizationLogo || vendor.Website;
@@ -970,7 +977,7 @@
                     $('#vendorOrgWebsite').val(vendor.Website || '');
                 }
 
-                if (vendor.PictureUrl) {
+                if (vendor.Picture) {
                     $('#imagePreview').attr('src', vendor.PictureUrl);
                 } else {
                     $('#imagePreview').attr('src', "http://bootdey.com/img/Content/avatar/avatar1.png");

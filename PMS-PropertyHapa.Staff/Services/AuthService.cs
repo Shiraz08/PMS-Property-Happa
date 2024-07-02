@@ -1158,8 +1158,9 @@ namespace PMS_PropertyHapa.Staff.Services
             {
                 var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
                 {
-                    ApiType = SD.ApiType.PUT,
+                    ApiType = SD.ApiType.POST,
                     Data = owner,
+                    ContentType = SD.ContentType.MultipartFormData,
                     Url = $"{villaUrl}/api/v1/LandlordAuth/Landlord/{owner.OwnerId}"
                 });
 
@@ -2641,6 +2642,51 @@ namespace PMS_PropertyHapa.Staff.Services
 
         #endregion
 
+        #region SupportCenter
+
+        public async Task<IEnumerable<FAQ>> GetFAQsAsync()
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = $"{villaUrl}/api/v1/SupportAuth/FAQs"
+            });
+
+            if (response.IsSuccess == true)
+            {
+                var userListJson = Convert.ToString(response.Result);
+                var asset = JsonConvert.DeserializeObject<IEnumerable<FAQ>>(userListJson);
+                return asset;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve FAQs data");
+            }
+        }
+
+        public async Task<IEnumerable<VideoTutorial>> GetVideoTutorialsAsync()
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = $"{villaUrl}/api/v1/SupportAuth/VideoTutorials"
+            });
+
+            if (response.IsSuccess == true)
+            {
+                var userListJson = Convert.ToString(response.Result);
+                var asset = JsonConvert.DeserializeObject<IEnumerable<VideoTutorial>>(userListJson);
+                return asset;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve FAQs data");
+            }
+        }
+
+        #endregion
 
         //private void AddPropertiesToFormData(MultipartFormDataContent content, object obj, string prefix)
         //{

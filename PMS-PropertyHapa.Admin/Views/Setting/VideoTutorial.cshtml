@@ -1,0 +1,254 @@
+﻿@{
+    ViewData["Title"] = "VideoTutorial";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-sm-6">
+                    <h3>Video Tutorial</h3>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="Index"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item">Tutorial</li>
+                        <li class="breadcrumb-item active">List</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <div class="right-side-header">
+                            <button class="btn btn-success" id="newTutorialBtn">New Tutorial</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table display" id="tutorialTable">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" class="text-center tableHeaderbg">Video Title</th>
+                                        <th scope="col" class="text-center tableHeaderbg">Video Link</th>
+                                        <th scope="col" class="text-center tableHeaderbg">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="newTutorialModal" tabindex="-1" aria-labelledby="tutorialModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="tutorialModalLabel">New Video Tutorial</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="tutorialForm">
+                <input type="hidden" value="" id="tutorialId" />
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="videoTitle" class="form-label">Video Title *</label>
+                        <input type="text" class="form-control" name="videoTitle" id="videoTitle" placeholder="Enter Video Title">
+                    </div>
+                    <div class="mb-3">
+                        <label for="videoLink" class="form-label">Video Link *</label>
+                        <textarea class="form-control" placeholder="Enter Video Link" id="videoLink" required></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-success" id="saveBtn">Save</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script>
+    
+    $(document).ready(function () {
+        $('#tutorialTable').DataTable({
+        "ajax": {
+            "url": "/Setting/GetVideoTutorials",
+            "type": "GET",
+            "dataSrc": ""
+            },
+            "columns": [
+                {
+                    "data": "Title",
+                    "className": "text-center"
+                },
+                {
+                    "data": "VideoLink",
+                    "className": "text-center"
+                },
+                {
+                    "className": "text-center",
+                    "data": "TutorialId",
+                    "render": function (data, type, row, meta) {
+                        return `
+                            <div class="dropdown-basic">
+                                <div class="dropdown">
+                                    <div class="btn-group mb-0">
+                                        <button class="dropbtn btn btn-success" type="button">Action <span><i class="icofont icofont-arrow-down"></i></span></button>
+                                        <div class="dropdown-content">
+                                            <a class="btn btn-secondary" onclick="editTutorial(${data})">
+                                                <i class="fa fa-edit"></i> Edit
+                                            </a>
+                                            <a class="btn btn-secondary" onclick="deleteTutorial(${data})">
+                                                <i class="fa fa-trash"></i> Delete
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
+            ]
+        });
+
+         $("#newTutorialBtn").on("click", function () {
+            resetModal();
+            $("#tutorialModalLabel").html("New Video Tutoria");
+            $("#newTutorialModal").modal('show');
+        });
+
+         const validationRules = {
+            0: [
+                { field: '#videoTitle', message: 'Please enter Video Title.' },
+                { field: '#videoLink', message: 'Please enter Video Link.' }
+            ]
+        };
+
+        function validateSection(index) {
+            const errors = [];
+            const rules = validationRules[index];
+
+            if (rules) {
+                rules.forEach(rule => {
+                    const value = $(rule.field).val();
+                    if (!value || (rule.validate && !rule.validate(value))) {
+                        errors.push(rule.message);
+                    }
+                });
+            }
+
+            return errors;
+        }
+
+        $('#tutorialForm').on('submit', function (event) {
+            event.preventDefault();
+
+            const sectionIndex = 0;
+            const errors = validateSection(sectionIndex);
+
+            if (errors.length > 0) {
+                errors.forEach(error => toastr.error(error));
+                return;
+            }
+
+            var formData = {
+                TutorialId: Number($('#tutorialId').val()),
+                Title: $('#videoTitle').val(),
+                VideoLink: $('#videoLink').val(),
+            };
+
+            $.ajax({
+                url: '@Url.Action("SaveVideoTutorial", "Setting")',
+                type: 'POST',
+                data: JSON.stringify(formData),
+                contentType: 'application/json',
+                beforeSend: function () {
+                    $('#saveBtn').prop('disabled', true).text('Saving...');
+                },
+                success: function (response) {
+                    $("#newTutorialModal").modal('hide');
+                    location.reload();
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error:', error);
+                    alert('Failed to save data');
+                },
+                complete: function () {
+                    $('#saveBtn').prop('disabled', false).text('Save');
+                }
+            });
+        });
+    });
+
+    function resetModal() {
+        $("#newTutorialModal form")[0].reset();
+    }
+
+    function deleteTutorial(id) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'You will not be able to recover this Tutorial!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '@Url.Action("DeleteVideoTutorial", "Setting")',
+                    type: 'POST',
+                    data: { id: id },
+                    success: function (res) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Tutorial deleted successfully',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        location.reload()
+                    },
+                    error: function (xhr, status, error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Something went wrong!'
+                        });
+                    },
+                });
+            }
+        });
+    }
+
+    function editTutorial(id) {
+        $.ajax({
+            url: '@Url.Action("GetVideoTutorialById", "Setting")',
+            type: 'GET',
+            data: { id: id },
+            success: function (res) {
+                $("#tutorialModalLabel").html("Edit Video Tutorial");
+                $("#tutorialId").val(res.TutorialId);
+                $("#videoTitle").val(res.Title);
+                $("#videoLink").val(res.VideoLink);
+                $("#newTutorialModal").modal('show');
+            },
+            error: function (xhr, status, error) {
+                console.error('Error:', error);
+                alert('Failed to retrieve data');
+            },
+        });
+    }
+
+</script>
+

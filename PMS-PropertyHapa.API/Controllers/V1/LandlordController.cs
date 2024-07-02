@@ -154,8 +154,8 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             }
         }
 
-        [HttpPut("Landlord/{OwnerId}")]
-        public async Task<ActionResult<bool>> UpdateOwner(int OwnerId, OwnerDto owner)
+        [HttpPost("Landlord/{OwnerId}")]
+        public async Task<ActionResult<bool>> UpdateOwner(int OwnerId, [FromForm] OwnerDto owner)
         {
             try
             {
