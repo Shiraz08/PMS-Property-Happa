@@ -53,6 +53,8 @@ namespace PMS_PropertyHapa.Models.DTO
 
         public string OwnerImage { get; set; }  
         public string AddedBy { get; set; }
+        public DateTime? AddedDate { get; set; }
+        public DateTime? ModifiedDate { get; set; }
 
     }
 

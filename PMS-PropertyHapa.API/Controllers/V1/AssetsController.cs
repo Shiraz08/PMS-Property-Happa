@@ -215,5 +215,33 @@ namespace PMS_PropertyHapa.API.Controllers.V1
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
+        
+        [HttpPost("UnitsByUser")]
+        public async Task<ActionResult<AssetUnitDTO>> GetUnitsByUser(Filter filter)
+        {
+            try
+            {
+                var units = await _userRepo.GetUnitsByUserAsync(filter);
+
+                if (units != null)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = units;
+                    return Ok(_response);
+                }
+                else
+                {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("No unit found with this id.");
+                    return NotFound(_response);
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
     }
 }

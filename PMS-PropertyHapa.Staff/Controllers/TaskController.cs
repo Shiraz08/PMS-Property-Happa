@@ -209,5 +209,18 @@ namespace PMS_PropertyHapa.Staff.Controllers
             }
             return Ok(task);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GeAlltLineItems()
+        {
+            IEnumerable<LineItemDto> lineItems = new List<LineItemDto>();
+            lineItems = await _authService.GetAllLineItemsAsync();
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
+            if (currenUserId != null)
+            {
+                lineItems = lineItems.Where(s => s.AddedBy == currenUserId);
+            }
+            return Ok(lineItems);
+        }
     }
 }

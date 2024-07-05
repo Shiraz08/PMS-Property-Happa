@@ -27,6 +27,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
+using System.Security.Cryptography.Xml;
 using System.Text;
 using System.Xml.Linq;
 using Twilio.Types;
@@ -1294,6 +1295,8 @@ namespace MagicVilla_VillaAPI.Repository
                 DocumentName = tenant.Document,
                 Document = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Tenant_Document_" + tenant.TenantId + Path.GetExtension(tenant.Document)}",
                 AddedBy = tenant.AddedBy,
+                AddedDate = tenant.AddedDate,
+                ModifiedDate = tenant.ModifiedDate,
                 AppTid = tenant.AppTenantId.ToString()
             }).ToList();
             return tenantDtos;
@@ -2599,8 +2602,43 @@ namespace MagicVilla_VillaAPI.Repository
                                   }).ToListAsync();
 
             return invoices;
-        }  
-        
+        }
+
+
+        public async Task<List<InvoiceDto>> GetAllInvoicesAsync()
+        {
+            try
+            {
+                var invoices = await (from i in _db.Invoices
+                                      from t in _db.Tenant.Where(x => x.TenantId == i.TenantId).DefaultIfEmpty()
+                                      from o in _db.Owner.Where(x => x.OwnerId == i.OwnerId).DefaultIfEmpty()
+                                      where i.IsDeleted != true // Remove leaseId filter
+                                      select new InvoiceDto
+                                      {
+                                          InvoiceId = i.InvoiceId,
+                                          OwnerId = i.OwnerId,
+                                          OwnerName = o.FirstName + " " + o.LastName,
+                                          TenantId = i.TenantId,
+                                          TenantName = t.FirstName + " " + t.LastName,
+                                          InvoiceCreatedDate = i.InvoiceCreatedDate,
+                                          InvoicePaid = i.InvoicePaid,
+                                          RentAmount = i.RentAmount,
+                                          LeaseId = i.LeaseId,
+                                          InvoiceDate = i.InvoiceDate,
+                                          InvoicePaidToOwner = i.InvoicePaidToOwner,
+                                          AddedBy = i.AddedBy,
+                                      }).ToListAsync();
+
+                return invoices;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Failed to retrieve invoices", ex);
+            }
+        }
+
+
+
         public async Task<InvoiceDto> GetInvoiceByIdAsync(int invoiceId)
         {
             var invoice = await (from i in _db.Invoices
@@ -2790,6 +2828,8 @@ namespace MagicVilla_VillaAPI.Repository
                     PictureFileName = tenant.Image,
                     Image = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Assets_Image_" + tenant.AssetId + Path.GetExtension(tenant.Image)}",
                     AddedBy = tenant.AddedBy,
+                    AddedDate = tenant.AddedDate,
+                    ModifiedDate = tenant.ModifiedDate,
                     Units = tenant.Units.Select(unit => new UnitDTO
                     {
                         UnitId = unit.UnitId,
@@ -2894,6 +2934,56 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
+
+        public async Task<List<AssetUnitDTO>> GetUnitsByUserAsync(Filter filter)
+        {
+            try
+            {
+                var units = await (from a in _db.Assets
+                                   join au in _db.AssetsUnits on a.AssetId equals au.AssetId
+                                   where a.AddedBy == filter.AddedBy
+                                   select new AssetUnitDTO
+                                   {
+                                       UnitId = au.UnitId,
+                                       UnitName = au.UnitName,
+                                       AssetId = au.AssetId,
+                                   }).AsNoTracking().ToListAsync();
+
+                return units;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping units: {ex.Message}");
+                throw;
+            }
+        }
+
+
+
+        //public async Task<List<AssetUnitDTO>> GetUnitsByUserAsync(Filter filter)
+        //{
+        //    try
+        //    {
+        //        var units = await (from a in _db.Assets
+        //                           from au in _db.AssetsUnits.Where(x=>x.AssetId == a.AssetId).DefaultIfEmpty()
+        //                           where a.AddedBy == filter.AddedBy
+        //                           select new AssetUnitDTO
+        //                           {
+        //                               UnitId = au.UnitId,
+        //                               UnitName = au.UnitName,
+        //                               AssetId = au.AssetId,
+        //                           }).AsNoTracking().ToListAsync();
+
+
+
+        //        return units;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine($"An error occurred while mapping units: {ex.Message}");
+        //        throw;
+        //    }
+        //}
 
         public async Task<bool> CreateAssetAsync(AssetDTO assetDTO)
         {
@@ -3313,6 +3403,9 @@ namespace MagicVilla_VillaAPI.Repository
                                            OrganizationLogo = org.OrganizationLogo,
                                            Website = org.Website,
                                            AddedBy = owner.AddedBy,
+                                           AddedDate = owner.AddedDate,
+                                           ModifiedDate = owner.ModifiedDate
+
                                        })
                                        .AsNoTracking()
                                        .ToListAsync();
@@ -3544,6 +3637,112 @@ namespace MagicVilla_VillaAPI.Repository
             }
         }
         
+        public async Task<List<TaskRequestDto>> GetAllTaskRequestsAsync()
+        {
+            try
+            {
+                var result = await (from t in _db.TaskRequest
+                                    from a in _db.Assets.Where(x => x.AssetId == t.AssetId).DefaultIfEmpty()
+                                    from u in _db.AssetsUnits.Where(x => x.UnitId == t.UnitId).DefaultIfEmpty()
+                                    from o in _db.Owner.Where(x => x.OwnerId == t.OwnerId).DefaultIfEmpty()
+                                    from tnt in _db.Tenant.Where(x => x.TenantId == t.TenantId).DefaultIfEmpty()
+                                    where t.IsDeleted != true
+                                    select new TaskRequestDto
+                                    {
+                                        TaskRequestId = t.TaskRequestId,
+                                        Type = t.Type,
+                                        Subject = t.Subject,
+                                        Description = t.Description,
+                                        IsOneTimeTask = t.IsOneTimeTask,
+                                        IsRecurringTask = t.IsRecurringTask,
+                                        StartDate = t.StartDate,
+                                        EndDate = t.EndDate,
+                                        Frequency = t.Frequency,
+                                        DueDays = t.DueDays,
+                                        IsTaskRepeat = t.IsTaskRepeat,
+                                        DueDate = t.DueDate,
+                                        Status = t.Status,
+                                        Priority = t.Priority,
+                                        Assignees = t.Assignees,
+                                        IsNotifyAssignee = t.IsNotifyAssignee,
+                                        AssetId = t.AssetId,
+                                        Asset = a.BuildingNo + "-" + a.BuildingName,
+                                        UnitId = t.UnitId,
+                                        Unit = u.UnitName,
+                                        TaskRequestFileName = t.TaskRequestFile,
+                                        TaskRequestFile = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Task_TaskRequestFile_" + t.TaskRequestId + Path.GetExtension(t.TaskRequestFile)}",
+                                        OwnerId = t.OwnerId,
+                                        Owner = o.FirstName + " " + o.LastName,
+                                        IsNotifyOwner = t.IsNotifyOwner,
+                                        TenantId = t.TenantId,
+                                        Tenant = tnt.FirstName + " " + tnt.LastName,
+                                        IsNotifyTenant = t.IsNotifyTenant,
+                                        HasPermissionToEnter = t.HasPermissionToEnter,
+                                        EntryNotes = t.EntryNotes,
+                                        VendorId = t.VendorId,
+                                        ApprovedByOwner = t.ApprovedByOwner,
+                                        PartsAndLabor = t.PartsAndLabor,
+                                        AddedBy = t.AddedBy,
+                                        AddedDate = t.AddedDate,
+                                        ModifiedDate = t.ModifiedDate,
+                                        LineItems = (from item in _db.LineItem
+                                                     from ca in _db.ChartAccount.Where(x => x.ChartAccountId == item.ChartAccountId).DefaultIfEmpty()
+                                                     where item.TaskRequestId == t.TaskRequestId && item.IsDeleted != true
+                                                     select new LineItemDto
+                                                     {
+                                                         LineItemId = item.LineItemId,
+                                                         TaskRequestId = item.TaskRequestId,
+                                                         Quantity = item.Quantity,
+                                                         Price = item.Price,
+                                                         ChartAccountId = item.ChartAccountId,
+                                                         AccountName = ca.Name,
+                                                         Memo = item.Memo
+                                                     }).ToList()
+                                    })
+                     .AsNoTracking()
+                     .ToListAsync();
+
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping owners and organizations: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<List<LineItemDto>> GetAllLineItemsAsync()
+        {
+            try
+            {
+                var result = await (from item in _db.LineItem
+                                   from ca in _db.ChartAccount.Where(x => x.ChartAccountId == item.ChartAccountId).DefaultIfEmpty()
+                                   where item.IsDeleted != true
+                                   select new LineItemDto
+                                   {
+                                       LineItemId = item.LineItemId,
+                                       TaskRequestId = item.TaskRequestId,
+                                       Quantity = item.Quantity,
+                                       Price = item.Price,
+                                       ChartAccountId = item.ChartAccountId,
+                                       AccountName = ca.Name,
+                                       Memo = item.Memo,
+                                       AddedDate = item.AddedDate,
+                                       AddedBy = item.AddedBy
+                                   })
+                     .AsNoTracking()
+                     .ToListAsync();
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping line items {ex.Message}");
+                throw;
+            }
+        }
+
         public async Task<List<TaskRequestDto>> GetTaskRequestsAsync()
         {
             try

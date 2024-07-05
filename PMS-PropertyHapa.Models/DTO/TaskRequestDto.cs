@@ -45,6 +45,8 @@ namespace PMS_PropertyHapa.Models.DTO
         public bool ApprovedByOwner { get; set; }
         public bool PartsAndLabor { get; set; }
         public string AddedBy { get; set; }
+        public DateTime? AddedDate { get; set; }
+        public DateTime? ModifiedDate { get; set; }
         public List<LineItemDto> LineItems { get; set; } = new List<LineItemDto>(); 
     }
 
@@ -56,5 +58,7 @@ namespace PMS_PropertyHapa.Models.DTO
         public int ChartAccountId { get; set; }
         public string AccountName { get; set; }
         public string Memo { get; set; }
+        public DateTime? AddedDate { get; set; }
+        public string AddedBy { get; set; }
     }
 }

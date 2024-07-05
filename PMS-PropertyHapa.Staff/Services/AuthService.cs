@@ -1297,6 +1297,28 @@ namespace PMS_PropertyHapa.Staff.Services
             }
         }
 
+        public async Task<IEnumerable<InvoiceDto>> GetAllInvoicesAsync()
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.GET,
+                    Url = $"{villaUrl}/api/v1/LeaseAuth/Invoices"
+                });
+
+                if (response.IsSuccess && response.Result != null)
+                {
+                    return JsonConvert.DeserializeObject<IEnumerable<InvoiceDto>>(Convert.ToString(response.Result));
+                }
+                return new List<InvoiceDto>();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when fetching all invoices: {ex.Message}", ex);
+            }
+        }
+
         public async Task<bool> AllInvoicePaidAsync(int leaseId)
         {
             try
@@ -1454,6 +1476,30 @@ namespace PMS_PropertyHapa.Staff.Services
 
 
         }
+        
+        public async Task<IEnumerable<AssetUnitDTO>> GetUnitsByUserAsync(PMS_PropertyHapa.Models.DTO.Filter filter)
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.POST,
+                Data= filter,
+                Url = $"{villaUrl}/api/v1/AssetsAuth/UnitsByUser"
+            });
+
+            if (response.IsSuccess == true)
+            {
+                var unitListJson = Convert.ToString(response.Result);
+                var units = JsonConvert.DeserializeObject<IEnumerable<AssetUnitDTO>>(unitListJson);
+                return units;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve unit data");
+            }
+
+
+        }
 
         public async Task<bool> VerifyEmailAsync(string email)
         {
@@ -1547,6 +1593,46 @@ namespace PMS_PropertyHapa.Staff.Services
             {
                 var userListJson = Convert.ToString(response.Result);
                 var asset = JsonConvert.DeserializeObject<IEnumerable<TaskRequestDto>>(userListJson);
+                return asset;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve task data");
+            }
+        }
+        public async Task<IEnumerable<TaskRequestDto>> GetAllTaskRequestsAsync()
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = $"{villaUrl}/api/v1/TaskAuth/AllTasks"
+            });
+
+            if (response.IsSuccess == true)
+            {
+                var userListJson = Convert.ToString(response.Result);
+                var asset = JsonConvert.DeserializeObject<IEnumerable<TaskRequestDto>>(userListJson);
+                return asset;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve task data");
+            }
+        }
+        public async Task<IEnumerable<LineItemDto>> GetAllLineItemsAsync()
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = $"{villaUrl}/api/v1/TaskAuth/TasksItems"
+            });
+
+            if (response.IsSuccess == true)
+            {
+                var userListJson = Convert.ToString(response.Result);
+                var asset = JsonConvert.DeserializeObject<IEnumerable<LineItemDto>>(userListJson);
                 return asset;
             }
             else

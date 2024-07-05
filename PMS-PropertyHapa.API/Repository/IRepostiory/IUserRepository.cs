@@ -83,6 +83,7 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
 
         //Invoices 
         Task<List<InvoiceDto>> GetInvoicesAsync(int leaseId);
+        Task<List<InvoiceDto>> GetAllInvoicesAsync();
         Task<bool> AllInvoicePaidAsync(int leaseId);
         Task<bool> AllInvoiceOwnerPaidAsync(int leaseId);
         Task<bool> InvoicePaidAsync(int invoiceId);
@@ -164,6 +165,7 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
 
         Task<List<AssetUnitDTO>> GetAllUnitsAsync();
         Task<List<AssetUnitDTO>> GetUnitsDllAsync(Filter filter);
+        Task<List<AssetUnitDTO>> GetUnitsByUserAsync(Filter filter);
 
 
 
@@ -183,6 +185,8 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
         //Tasks Requests
         Task<List<TaskRequestHistoryDto>> GetTaskRequestHistoryAsync(int id);
         Task<List<TaskRequestDto>> GetMaintenanceTasksAsync();
+        Task<List<TaskRequestDto>> GetAllTaskRequestsAsync();
+        Task<List<LineItemDto>> GetAllLineItemsAsync();
         Task<List<TaskRequestDto>> GetTaskRequestsAsync();
         Task<TaskRequestDto> GetTaskByIdAsync(int id);
         Task<bool> SaveTaskAsync(TaskRequestDto taskRequestDto);

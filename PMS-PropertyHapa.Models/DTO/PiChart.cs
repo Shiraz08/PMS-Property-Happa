@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 namespace PMS_PropertyHapa.Models.DTO
 {
     [DataContract]
-    public class DataPointDto
+    public class PieChart
     {
-        public DataPointDto(string label, double y)
+        public PieChart(string label, double y)
         {
             this.Label = label;
             this.Y = y;
@@ -24,4 +24,5 @@ namespace PMS_PropertyHapa.Models.DTO
         [DataMember(Name = "y")]
         public Nullable<double> Y = null;
     }
+
 }

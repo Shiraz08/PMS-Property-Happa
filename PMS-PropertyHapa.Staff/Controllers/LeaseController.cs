@@ -235,6 +235,16 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
             return View(invoices);
         }
+        public async Task<IActionResult> GetAllInvoices()
+        {
+            var invoices = await _authService.GetAllInvoicesAsync();
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
+            if (currenUserId != null)
+            {
+                invoices = invoices.Where(s => s.AddedBy == currenUserId);
+            }
+            return Json(new { success = true, data = invoices });
+        }
 
         public async Task<IActionResult> AllInvoicePaid(int leaseId)
         {

@@ -90,6 +90,62 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             }
         }
 
+        [HttpGet("AllTasks")]
+        public async Task<ActionResult<TaskRequestDto>> GetAllTasks()
+        {
+            try
+            {
+                var assets = await _userRepo.GetAllTaskRequestsAsync();
+
+                if (assets != null)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = assets;
+                    return Ok(_response);
+                }
+                else
+                {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("No asset found with this id.");
+                    return NotFound(_response);
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+        
+        [HttpGet("TasksItems")]
+        public async Task<ActionResult<LineItemDto>> GetAllLineItems()
+        {
+            try
+            {
+                var assets = await _userRepo.GetAllLineItemsAsync();
+
+                if (assets != null)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = assets;
+                    return Ok(_response);
+                }
+                else
+                {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("No asset found with this id.");
+                    return NotFound(_response);
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+        
         [HttpGet("Tasks")]
         public async Task<ActionResult<TaskRequestDto>> GetTasks()
         {

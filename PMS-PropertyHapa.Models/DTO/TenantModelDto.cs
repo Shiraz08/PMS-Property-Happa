@@ -64,6 +64,8 @@ namespace PMS_PropertyHapa.Models.DTO
         public string EmergencyRelation { get; set; }
         public string EmergencyDetails { get; set; }
         public string AddedBy { get; set; }
+        public DateTime? AddedDate { get; set; }
+        public DateTime? ModifiedDate { get; set; }
 
         public List<PetDto> Pets { get; set; } = new List<PetDto>();
 

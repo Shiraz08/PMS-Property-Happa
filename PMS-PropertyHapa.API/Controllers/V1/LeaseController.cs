@@ -116,7 +116,24 @@ namespace PMS_PropertyHapa.API.Controllers.V1
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
-    
+
+        [HttpGet("Invoices")]
+        public async Task<ActionResult<IEnumerable<InvoiceDto>>> GetAllInvoices()
+        {
+            try
+            {
+                var leases = await _userRepo.GetAllInvoicesAsync();
+                _response.StatusCode = HttpStatusCode.OK;
+                _response.IsSuccess = true;
+                _response.Result = leases;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
         [HttpGet("Invoice/{invoiceId}")]
         public async Task<ActionResult<Invoice>> GetInvoiceById(int invoiceId)
         {
