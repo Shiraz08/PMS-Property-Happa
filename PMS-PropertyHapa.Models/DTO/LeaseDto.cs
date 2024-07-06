@@ -16,34 +16,25 @@ namespace PMS_PropertyHapa.Models.DTO
         public DateTime EndDate { get; set; }
         public bool IsSigned { get; set; }
         public string SignatureImagePath { get; set; }
-
         public int? PropertyId { get; set; }
         public string SelectedProperty { get; set; }
-
         public IEnumerable<AssetDTO> Assets { get; set; } 
         public IEnumerable<UnitDTO> SelectedUnits { get; set; }   
-
         public int? UnitId { get; set; }
         public string SelectedUnit { get; set; }
-
         public bool IsFixedTerm { get; set; }
         public bool IsMonthToMonth { get; set; }
         public bool HasSecurityDeposit { get; set; }
         public string LateFeesPolicy { get; set; }
-
         public string AppTenantId { get; set; }
-
         // Assuming TenantId is enough to link tenants for simplicity
         public int TenantId { get; set; }
-
         public string TenantIdValue { get; set; }
         public string AddedBy { get; set; }
-
         public TenantModelDto Tenant { get; set; }
         // Collections for Rent Charges and Security Deposits
         public List<RentChargeDto> RentCharges { get; set; }
         public List<SecurityDepositDto> SecurityDeposits { get; set; }
-
         public List<FeeChargeDto> FeeCharges { get; set; }
     }
 

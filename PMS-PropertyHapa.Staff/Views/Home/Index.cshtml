@@ -63,13 +63,12 @@
                         <div class="card border">
                             <a href="@Url.Action("Index","Landlord")">
                                 <h2 class="ml-5 mt-4 fs-3 fw-bold">@ViewBag.totalLandlords</h2>
-                                @* <span class="d-flex flex-row-reverse mr-5 fa-stack fa-4x">
-                                    <i class="fa fa-circle fa-stack-2x icon-background"></i>
-                                    <i class="fa fa-user fa-stack-1x"></i>
-                                </span> *@
-                                <span class="d-flex flex-row-reverse mr-5" style="font-size: 3em; color: lightgreen;">
-                                    <i class="fa fa-user fx-5"></i>
-                                </span>
+                                <div class="d-flex flex-row-reverse mr-5 ">
+                                    <span class="fa-stack fa-2x" style="font-size: 2.5em; color: lightgreen;">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-user fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </div>
                                 <p class="ml-5 mb-4 text-secondary fs-3">Total Landlord</p>
                             </a>
                         </div>
@@ -79,9 +78,12 @@
                             <a href="@Url.Action("Index","Tenant")">
                                 <div class="card-block-small">
                                     <h2 class="ml-5 mt-4 fs-3 fw-bold">@ViewBag.totalTenants</h2>
-                                    <span class="d-flex flex-row-reverse mr-5" style="font-size: 3em; color: orange;">
-                                        <i class="fa fa-home fx-5"></i>
-                                    </span>
+                                    <div class="d-flex flex-row-reverse mr-5 ">
+                                        <span class="fa-stack fa-2x" style="font-size: 2.5em; color: orange;">
+                                            <i class="fa fa-circle fa-stack-2x"></i>
+                                            <i class="fa fa-group fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </div>
                                     <p class="ml-5 mb-4 text-secondary fs-3">Total Tenant</p>
                                 </div>
                             </a>
@@ -92,9 +94,12 @@
                             <a href="@Url.Action("Index","Assests")">
                                 <div class="card-block-small">
                                     <h2 class="ml-5 mt-4 fs-3 fw-bold">@ViewBag.totalAssets</h2>
-                                    <span class="d-flex flex-row-reverse mr-5" style="font-size: 3em; color: darkblue;">
-                                        <i class="fa fa-building-o fx-5"></i>
-                                    </span>
+                                    <div class="d-flex flex-row-reverse mr-5 ">
+                                        <span class="fa-stack fa-2x" style="font-size: 2.5em; color: darkblue;">
+                                            <i class="fa fa-circle fa-stack-2x"></i>
+                                            <i class="fa fa-building-o fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </div>
                                     <p class="ml-5 mb-4 text-secondary fs-3">Total Assets</p>
                                 </div>
                             </a>
@@ -105,9 +110,15 @@
                             <a href="@Url.Action("Index","Lease")">
                                 <div class="card-block-small">
                                     <h2 class="ml-5 mt-4 fs-3 fw-bold">@ViewBag.totalInvoices</h2>
-                                    <span class="d-flex flex-row-reverse mr-5" style="font-size: 3em; color: lightblue;">
+                                    <div class="d-flex flex-row-reverse mr-5 ">
+                                        <span class="fa-stack fa-2x" style="font-size: 2.5em; color: lightblue;">
+                                            <i class="fa fa-circle fa-stack-2x"></i>
+                                            <i class="fa fa-print fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </div>
+                                    @* <span class="d-flex flex-row-reverse mr-5" style="font-size: 3em; color: lightblue;">
                                         <i class="icofont icofont-files fx-5"></i>
-                                    </span>
+                                    </span> *@
                                     <p class="ml-5 mb-4 text-secondary fs-3">Total Invoices</p>
                                 </div>
                             </a>
@@ -180,7 +191,7 @@
             </div>
         </div>
         <div class="col-xl-6 col-md-6 dash-xl-50">
-            <div class="card revenue-category">
+            <div class="card">
                 <div class="card-header card-no-border"></div> 
                 <div class="card-body">
                     <div id="chartContainer" style="height: 300px; width: 100%;"></div>
@@ -189,7 +200,7 @@
         </div> *@
         
         @* <div class="col-xl-6 col-md-6 dash-xl-50">
-            <div class="card revenue-category">
+            <div class="card">
                 <div class="card-header card-no-border"></div>
                 <div class="card-body">
                     <div id="chartInvoiceContainer" style="height: 300px; width: 100%;"></div>
@@ -198,40 +209,40 @@
         </div> *@
         <div class="row">
             <div class="col-xl-4 col-md-4 dash-xl-50">
-                <div class="card">
+                <div class="card d-flex align-items-stretch h-80">
                     <div class="card-header pb-0">
                         <h5 class="text-center">Cash Flow </h5>
                     </div>
                     <div class="card-body">
-                        <div id="cashFlowContainer" style="height: 300px; width: 100%;"></div>
+                        <div id="cashFlowContainer"></div>
                     </div>
                 </div>
             </div>
             <div class="col-xl-4 col-md-4 dash-xl-50">
-                <div class="card revenue-category">
+                <div class="card d-flex align-items-stretch h-80">
                     <div class="card-header card-no-border">
                         <h5 class="text-center">Revenue Vs. Expense</h5>
                     </div>
                     <div class="card-body">
-                        <div id="revenueExpenseContainer" style="height: 300px; width: 100%;"></div>
+                        <div id="revenueExpenseContainer"></div>
                     </div>
                 </div>
             </div>
             <div class="col-xl-4 col-md-4 dash-xl-50">
-                <div class="card revenue-category">
+                <div class="card d-flex align-items-stretch h-80">
                     <div class="card-header card-no-border">
                         <h5 class="text-center">Occupancy/Vacancy Rates</h5>
                     </div>
                     <div class="card-body">
-                        <div id="occupancyRateContainer" style="height: 300px; width: 100%;"></div>
+                        <div id="occupancyRateContainer"></div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="row">
             
-            <div class="col-xl-6 col-md-6 dash-xl-50">
-                <div class="card news-update h-80">
+            <div class="col-xl-4 col-md-4 dash-xl-50">
+                <div class="card news-update d-flex align-items-stretch h-80">
                     <div class="card-header card-no-border">
                         <div class="header-top">
                             <h5 class="m-0">News &amp; Update</h5>
@@ -247,7 +258,7 @@
                             </div> *@
                         </div>
                     </div>
-                    <div class="card-body pt-0 overflow-auto" data-simplebar style="max-height: 335px;">
+                    <div class="card-body pt-0 overflow-auto" data-simplebar style="max-height: 425px;">
                         <div class="table-responsive custom-scrollbar">
                             <table class="table table-bordernone">
                                 <tbody>
@@ -280,98 +291,14 @@
                                             </tr>
                                         }
                                     }
-                                    @* <!-- Landlord Requests -->
-                                    @if (ViewBag.landlords != null)
-                                    {
-                                    @foreach (var landlord in ViewBag.landlords)
-                                    {
-                                    <tr>
-                                    <td>
-                                    <div class="media">
-                                    @if (!string.IsNullOrEmpty(landlord.Picture))
-                                    {
-                                    <img class="img-50 img-fluid m-r-20 rounded-circle update_img_0" src="@landlord.Picture" alt="">
-                                    }
-                                    else
-                                    {
-                                    <img class="img-fluid me-3 b-r-5" src="~/Dashboard/assets/images/dashboard/rectangle-26.jpg" alt="">
-                                    }
-                                    <div class="media-body">
-                                    <a href="#">
-                                    <h5>@landlord.FirstName  @landlord.LastName</h5>
-                                    </a>
-                                    <p>@landlord.EmailAddress</p>
-                                    </div>
-                                    </div>
-                                    </td>
-                                    <td><span class="badge badge-light-theme-light font-theme-light">@landlord.AddedDate?.ToString("yyyy-MM-dd")</span></td>
-                                    </tr>
-                                    }
-                                    }
-                                    <!-- Tenant Requests -->
-                                    @if (ViewBag.tenants != null)
-                                    {
-                                    @foreach (var tenant in ViewBag.tenants)
-                                    {
-                                    <tr>
-                                    <td>
-                                    <div class="media">
-                                    @if (!string.IsNullOrEmpty(tenant.Picture))
-                                    {
-                                    <img class="img-50 img-fluid m-r-20 rounded-circle update_img_0" src="@tenant.Picture" alt="">
-                                    }
-                                    else
-                                    {
-                                    <img class="img-fluid me-3 b-r-5" src="~/Dashboard/assets/images/dashboard/rectangle-26.jpg" alt="">
-                                    }
-                                    <div class="media-body">
-                                    <a href="#">
-                                    <h5>@tenant.FirstName  @tenant.LastName</h5>
-                                    </a>
-                                    <p>@tenant.EmailAddress</p>
-                                    </div>
-                                    </div>
-                                    </td>
-                                    <td><span class="badge badge-light-theme-light font-theme-light">@tenant.AddedDate?.ToString("yyyy-MM-dd")</span></td>
-                                    </tr>
-                                    }
-                                    }
-                                    <!-- Asset Requests -->
-                                    @if (ViewBag.assets != null)
-                                    {
-                                    @foreach (var asset in ViewBag.assets)
-                                    {
-                                    <tr>
-                                    <td>
-                                    <div class="media">
-                                    @if (!string.IsNullOrEmpty(asset.Image))
-                                    {
-                                    <img class="img-50 img-fluid m-r-20 rounded-circle update_img_0" src="@asset.Image" alt="">
-                                    }
-                                    else
-                                    {
-                                    <img class="img-fluid me-3 b-r-5" src="~/Dashboard/assets/images/dashboard/rectangle-26.jpg" alt="">
-                                    }
-                                    <div class="media-body">
-                                    <a href="#">
-                                    <h5>@asset.BuildingName</h5>
-                                    </a>
-                                    <p>@asset.OwnerFirstName  @asset.OwnerLastName</p>
-                                    </div>
-                                    </div>
-                                    </td>
-                                    <td><span class="badge badge-light-theme-light font-theme-light">@asset.AddedDate?.ToString("yyyy-MM-dd")</span></td>
-                                    </tr>
-                                    }
-                                    } *@
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-xl-6 col-md-6 dash-xl-50">
-                <div class="card weekly-column">
+            <div class="col-xl-4 col-md-4 dash-xl-50">
+                <div class="card weekly-column d-flex align-items-stretch h-80">
                     <div class="card-header card-no-border">
                         <h5 class="text-center">Rent Collection Status</h5>
                     </div>
@@ -380,9 +307,30 @@
                     </div>
                 </div>
             </div>
+            <div class="col-xl-4 col-md-4 dash-xl-50">
+                <div class="card" style="height: 510px;">
+                    <div class="card-header pb-0">
+                        <h5>Outstanding Payments </h5>
+                    </div>
+                    <div class="card-body apex-chart">
+                        <div id="piechart"></div>
+                    </div>
+                </div>
+            </div>
         </div>
         
-       
+        <div class="row">
+            <div class="col-12 box-col-12">
+                <div class="card">
+                    <div class="card-header pb-0">
+                        <h5>Preventive Maintenance Schedule </h5>
+                    </div>
+                    <div class="card-body chart-block">
+                        <div class="chart-overflow" id="gantt_chart"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
         
         <div class="col-12 colorfull-kanban">
             <div class="card">
@@ -548,7 +496,7 @@
         // RevenuExpense Start
         var RevenueExpenseOptions = {
             chart: {
-                height: 350,
+                height: 320,
                 type: 'bar',
                 toolbar: {
                     show: false
@@ -602,11 +550,7 @@
             url: '/Home/GetRevenueExpense',
             dataType: 'json',
             success: function (data) {
-                console.log("data")
-                console.log(data)
                 var seriesData = data.Series.map(function (series) {
-                    console.log("series")
-                    console.log(series)
                     return { name: series.Name, data: series.Data };
                 });
                 RevenueExpenseChart.updateOptions({
@@ -622,11 +566,11 @@
         });
         // RevenuExpense ENd
 
-        //Occupancy Chart start
+
         //Occupancy Chart start
         var occupancyRateOptions = {
             chart: {
-                height: 350,
+                height: 355,
                 type: 'radialBar',
             },
             plotOptions: {
@@ -975,6 +919,97 @@
         if (organizationName) {
             $("#TittlName").text(organizationName);
         }
+
+        // Gantt Chart Start
+        // Gantt chart
+        google.charts.load('current', { 'packages': ['gantt'] });
+        google.charts.setOnLoadCallback(drawChart);
+
+        function daysToMilliseconds(days) {
+            return days * 24 * 60 * 60 * 1000;
+        }
+
+        function drawChart() {
+
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'Task ID');
+            data.addColumn('string', 'Task Name');
+            data.addColumn('string', 'Resource');
+            data.addColumn('date', 'Start Date');
+            data.addColumn('date', 'End Date');
+            data.addColumn('number', 'Duration');
+            data.addColumn('number', 'Percent Complete');
+            data.addColumn('string', 'Dependencies');
+
+            data.addRows([
+                ['Research', 'Find sources', null,
+                    new Date(2015, 0, 1), new Date(2015, 0, 5), null, 100, null],
+                ['Write', 'Write paper', 'write',
+                    null, new Date(2015, 0, 9), daysToMilliseconds(3), 25, 'Research,Outline'],
+                ['Cite', 'Create bibliography', 'write',
+                    null, new Date(2015, 0, 7), daysToMilliseconds(1), 20, 'Research'],
+                ['Complete', 'Hand in paper', 'complete',
+                    null, new Date(2015, 0, 10), daysToMilliseconds(1), 0, 'Cite,Write'],
+                ['Outline', 'Outline paper', 'write',
+                    null, new Date(2015, 0, 6), daysToMilliseconds(1), 100, 'Research']
+            ]);
+
+            var options = {
+                height: 275,
+                gantt: {
+                    criticalPathEnabled: false, // Critical path arrows will be the same as other arrows.
+                    arrow: {
+                        angle: 100,
+                        width: 5,
+                        color: '#51bb25',
+                        radius: 0
+                    },
+
+                    palette: [
+                        {
+                            "color": zetaAdminConfig.primary,
+                            "dark": zetaAdminConfig.secondary,
+                            "light": "#047afb"
+                        }
+                    ]
+
+                }
+            };
+            var chart = new google.visualization.Gantt(document.getElementById('gantt_chart'));
+
+            chart.draw(data, options);
+        }
+        // Gantt Chart End
+
+        // pie chart
+        var options8 = {
+            chart: {
+                width: 380,
+                type: 'pie',
+            },
+            labels: ['Team A', 'Team B', 'Team C', 'Team D', 'Team E'],
+            series: [44, 55, 13, 43, 22],
+            responsive: [{
+                breakpoint: 480,
+                options: {
+                    chart: {
+                        
+                        width: 200
+                    },
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }],
+            colors: [zetaAdminConfig.primary, zetaAdminConfig.secondary, '#51bb25', '#a927f9', '#f8d62b']
+        }
+
+        var chart8 = new ApexCharts(
+            document.querySelector("#piechart"),
+            options8
+        );
+
+        chart8.render();
     });
 </script>
 

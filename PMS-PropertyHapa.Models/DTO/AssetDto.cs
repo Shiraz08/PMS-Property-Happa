@@ -13,15 +13,10 @@ namespace PMS_PropertyHapa.Models.DTO
         public int AssetId { get; set; }
         public string SelectedPropertyType { get; set; }
         public string SelectedSubtype { get; set; }
-
-        
-
         public string AppTenantId { get; set; }
-
         public string Image { get; set; }
         public string PictureFileName { get; set; }
         public IFormFile PictureFile { get; set; }
-
         public string BuildingNo { get; set; }
         public string BuildingName { get; set; }
         public string Street1 { get; set; }
@@ -30,16 +25,12 @@ namespace PMS_PropertyHapa.Models.DTO
         public string State { get; set; }
         public string Country { get; set; }
         public string Zipcode { get; set; }
-
         public string AppTid { get; set; }
-
         public List<UnitDTO> Units { get; set; } = new List<UnitDTO>();
         public OwnerDto OwnerData { get; set; }
-
         public string SelectedBankAccountOption { get; set; }
         public string SelectedReserveFundsOption { get; set; }
         public string SelectedOwnershipOption { get; set; }
-
         public int OwnerId { get; set; }
         public string OwnerFirstName { get; set; }
         public string OwnerLastName { get; set; }
@@ -50,17 +41,16 @@ namespace PMS_PropertyHapa.Models.DTO
         public string OwnerRegion { get; set; }
         public string OwnerCountryCode { get; set; }
         public string OwnerCountry { get; set; }
-
         public string OwnerImage { get; set; }  
         public string AddedBy { get; set; }
         public DateTime? AddedDate { get; set; }
         public DateTime? ModifiedDate { get; set; }
-
     }
 
     public class UnitDTO
     {
         public int UnitId { get; set; }
+        public int AssetId { get; set; }
         public string UnitName { get; set; }
         public int Beds { get; set; }
         public int Bath { get; set; }

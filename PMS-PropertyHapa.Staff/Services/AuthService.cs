@@ -1131,6 +1131,7 @@ namespace PMS_PropertyHapa.Staff.Services
         #region Landlord
 
 
+
         public async Task<bool> CreateLandlordAsync(OwnerDto owner)
         {
             try

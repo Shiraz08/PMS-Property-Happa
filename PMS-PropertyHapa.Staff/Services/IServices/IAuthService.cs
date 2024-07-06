@@ -37,12 +37,8 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
 
 
         Task<bool> CreateLandlordAsync(OwnerDto owner);
-
-
         Task<bool> UpdateLandlordAsync(OwnerDto owner);
-
         Task<bool> DeleteLandlordAsync(string ownerId);
-
         Task<TenantModelDto> GetSingleTenantAsync(int tenantId);
 
 

@@ -65,9 +65,6 @@ namespace PMS_PropertyHapa.Staff.Auth.Controllers
             {
                 landlords = landlords.Where(s => s.AddedBy == currentUserId);
                 ViewBag.totalLandlords = landlords.Count();
-                //landlords = landlords.Where(s => s.AddedBy == currentUserId
-                //                                      && ((s.AddedDate.HasValue && s.AddedDate.Value.ToString("yyyy-MM-dd") == currentDate)
-                //                                      || (s.ModifiedDate.HasValue && s.ModifiedDate.Value.ToString("yyyy-MM-dd") == currentDate)));
             }
             
             var tenants = await _authService.GetAllTenantsAsync();
@@ -76,9 +73,6 @@ namespace PMS_PropertyHapa.Staff.Auth.Controllers
             {
                 tenants = tenants.Where(s => s.AddedBy == currentUserId);
                 ViewBag.totalTenants = tenants.Count();
-                //tenants = tenants.Where(s => s.AddedBy == currentUserId
-                //                                      && ((s.AddedDate.HasValue && s.AddedDate.Value.ToString("yyyy-MM-dd") == currentDate)
-                //                                      || (s.ModifiedDate.HasValue && s.ModifiedDate.Value.ToString("yyyy-MM-dd") == currentDate)));
             }
             
 
@@ -88,9 +82,6 @@ namespace PMS_PropertyHapa.Staff.Auth.Controllers
             {
                 assets = assets.Where(s => s.AddedBy == currentUserId);
                 ViewBag.totalAssets = assets.Count();
-                //assets = assets.Where(s => s.AddedBy == currentUserId
-                //                                      && ((s.AddedDate.HasValue && s.AddedDate.Value.ToString("yyyy-MM-dd") == currentDate)
-                //                                      || (s.ModifiedDate.HasValue && s.ModifiedDate.Value.ToString("yyyy-MM-dd") == currentDate)));
             }
             
             var invoiceHistory = await _authService.GetAllInvoicesAsync();
@@ -424,7 +415,7 @@ namespace PMS_PropertyHapa.Staff.Auth.Controllers
                                         classs = "bg-info", 
                                         dragTo = new string[] { "_working", "_hold" },
                                         item = tasks.Where(t => t.Status == TaskStatusTypes.NotStarted.ToString())
-                                                    .Select(t => new {
+                                                    .Select(t => new { 
                                                         title = GenerateTaskHtml(t)
                                                     }).ToList()
                                     },
@@ -470,7 +461,7 @@ namespace PMS_PropertyHapa.Staff.Auth.Controllers
         {
             return $@"
                         <a class='kanban-box' href='#'>
-                            <span class='date'>{task.StartDate?.ToString("dd/MM/yy")}</span>
+                            <span class='date'>{task.DueDate?.ToString("dd/MM/yy")}</span>
                             <span class='badge badge-{GetPriorityBadgeClass(task.Priority)} f-right'>{task.Priority}</span>
                             <h6>{task.Subject}</h6>
                             <div class='media'>

@@ -1,9 +1,13 @@
 ﻿using Microsoft.AspNetCore.Http;
-using System.ComponentModel.DataAnnotations;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace PMS_PropertyHapa.Models.DTO
 {
-    public class OwnerDto
+    public class LandlordDataDto
     {
         public int? OwnerId { get; set; }
         public string FirstName { get; set; }
@@ -15,7 +19,7 @@ namespace PMS_PropertyHapa.Models.DTO
         public string Document { get; set; }
         public string DocumentName { get; set; }
         public IFormFile DocumentUrl { get; set; }
-        public string EmailAddress2 { get; set; }        
+        public string EmailAddress2 { get; set; }
         public string PhoneNumber { get; set; }
         public string PhoneNumber2 { get; set; }
         public string EmergencyContactInfo { get; set; }
@@ -61,5 +65,9 @@ namespace PMS_PropertyHapa.Models.DTO
         public string Password { get; set; }
         public string Email { get; set; }
         public string Role { get; set; }
+        public List<AssetDTO> Assets { get; set; } = new List<AssetDTO>();
+        public List<LeaseDto> Leases { get; set; } = new List<LeaseDto>();
+        public List<InvoiceDto> Invoices { get; set; } = new List<InvoiceDto>();
+        public List<TaskRequestDto> TaskRequest { get; set; } = new List<TaskRequestDto>();
     }
 }
