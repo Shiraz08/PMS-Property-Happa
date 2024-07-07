@@ -4180,6 +4180,8 @@ namespace MagicVilla_VillaAPI.Repository
                     OrganizationIcon = ownerData.OwnerOrganization?.OrganizationIcon,
                     OrganizationLogo = ownerData.OwnerOrganization?.OrganizationLogo,
                     Website = ownerData.OwnerOrganization?.Website,
+                    AddedBy = ownerData.Owner?.AddedBy,
+                    AddedDate = ownerData.Owner?.AddedDate,
                 };
 
                 var assetsTask = await GetAssetsByOwnerId(ownerId);
@@ -4449,256 +4451,270 @@ namespace MagicVilla_VillaAPI.Repository
 
         public async Task<TenantDataDto> GetTenantDataById(int tenantId)
         {
-            var result = await (from tenant in _db.Tenant
-                                where tenant.TenantId == tenantId
-                                select new TenantDataDto
-                                {
-                                    TenantId = tenant.TenantId,
-                                    PictureName = tenant.Picture,
-                                    Picture = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Tenant_Picture_" + tenant.TenantId + Path.GetExtension(tenant.Picture)}",
-                                    DocumentName = tenant.Document,
-                                    Document = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Tenant_Document_" + tenant.TenantId + Path.GetExtension(tenant.Document)}",
-                                    FirstName = tenant.FirstName,
-                                    LastName = tenant.LastName,
-                                    EmailAddress = tenant.EmailAddress,
-                                    PhoneNumber = tenant.PhoneNumber,
-                                    EmergencyContactInfo = tenant.EmergencyContactInfo,
-                                    LeaseAgreementId = tenant.LeaseAgreementId,
-                                    TenantNationality = tenant.TenantNationality,
-                                    Gender = tenant.Gender,
-                                    DOB = tenant.DOB,
-                                    VAT = tenant.VAT,
-                                    LegalName = tenant.LegalName,
-                                    Account_Name = tenant.Account_Name,
-                                    Account_Holder = tenant.Account_Holder,
-                                    Account_IBAN = tenant.Account_IBAN,
-                                    Account_Swift = tenant.Account_Swift,
-                                    Account_Bank = tenant.Account_Bank,
-                                    Account_Currency = tenant.Account_Currency,
-                                    Address = tenant.Address,
-                                    Address2 = tenant.Address2,
-                                    Locality = tenant.Locality,
-                                    Region = tenant.Region,
-                                    PostalCode = tenant.PostalCode,
-                                    Country = tenant.Country,
-                                    CountryCode = tenant.CountryCode,
-                                    Unit = tenant.Unit,
-                                    Pets = tenant.Pets.Select(p => new PetDto
-                                    {
-                                        PetId = p.PetId,
-                                        Name = p.Name,
-                                        Breed = p.Breed,
-                                        Type = p.Type,
-                                        Quantity = p.Quantity,
-                                        PictureName = p.Picture,
-                                        Picture = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Pets_Picture_" + p.PetId + Path.GetExtension(p.Picture)}",
+            try
+            {
+                var tenant = await _db.Tenant
+                    .Where(t => t.TenantId == tenantId)
+                    .Select(t => new TenantDataDto
+                    {
+                        TenantId = t.TenantId,
+                        PictureName = t.Picture,
+                        Picture = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Tenant_Picture_" + t.TenantId + Path.GetExtension(t.Picture)}",
+                        DocumentName = t.Document,
+                        Document = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Tenant_Document_" + t.TenantId + Path.GetExtension(t.Document)}",
+                        FirstName = t.FirstName,
+                        LastName = t.LastName,
+                        EmailAddress = t.EmailAddress,
+                        PhoneNumber = t.PhoneNumber,
+                        EmergencyContactInfo = t.EmergencyContactInfo,
+                        LeaseAgreementId = t.LeaseAgreementId,
+                        TenantNationality = t.TenantNationality,
+                        Gender = t.Gender,
+                        DOB = t.DOB,
+                        VAT = t.VAT,
+                        LegalName = t.LegalName,
+                        Account_Name = t.Account_Name,
+                        Account_Holder = t.Account_Holder,
+                        Account_IBAN = t.Account_IBAN,
+                        Account_Swift = t.Account_Swift,
+                        Account_Bank = t.Account_Bank,
+                        Account_Currency = t.Account_Currency,
+                        Address = t.Address,
+                        Address2 = t.Address2,
+                        Locality = t.Locality,
+                        Region = t.Region,
+                        PostalCode = t.PostalCode,
+                        Country = t.Country,
+                        CountryCode = t.CountryCode,
+                        Unit = t.Unit,
+                        AddedBy = t.AddedBy,
+                        AddedDate = t.AddedDate
+                    })
+                    .FirstOrDefaultAsync();
 
-                                    }).ToList(),
-                                    Vehicles = tenant.Vehicle.Select(v => new VehicleDto
-                                    {
-                                        VehicleId = v.VehicleId,
-                                        Manufacturer = v.Manufacturer,
-                                        ModelName = v.ModelName,
-                                        ModelVariant = v.ModelVariant,
-                                        Year = v.Year
-                                    }).ToList(),
-                                    Dependent = tenant.TenantDependent.Select(d => new TenantDependentDto
-                                    {
-                                        TenantDependentId = d.TenantDependentId,
-                                        TenantId = d.TenantId,
-                                        FirstName = d.FirstName,
-                                        LastName = d.LastName,
-                                        EmailAddress = d.EmailAddress,
-                                        PhoneNumber = d.PhoneNumber,
-                                        DOB = d.DOB,
-                                        Relation = d.Relation
-                                    }).ToList(),
-                                    CoTenant = tenant.CoTenant.Select(c => new CoTenantDto
-                                    {
-                                        CoTenantId = c.CoTenantId,
-                                        TenantId = c.TenantId,
-                                        FirstName = c.FirstName,
-                                        LastName = c.LastName,
-                                        EmailAddress = c.EmailAddress,
-                                        PhoneNumber = c.PhoneNumber,
-                                        Address = c.Address,
-                                        Unit = c.Unit,
-                                        District = c.District,
-                                        Region = c.Region,
-                                        PostalCode = c.PostalCode,
-                                        Country = c.Country
-                                    }).ToList(),
-                                    Leases = (from lease in _db.Lease
-                                              where lease.TenantsTenantId == tenant.TenantId
-                                              select new LeaseDto
-                                              {
-                                                  LeaseId = lease.LeaseId,
-                                                  StartDate = lease.StartDate,
-                                                  EndDate = lease.EndDate,
-                                                  IsSigned = lease.IsSigned,
-                                                  SelectedProperty = lease.SelectedProperty,
-                                                  SelectedUnit = lease.SelectedUnit,
-                                                  SignatureImagePath = lease.SignatureImagePath,
-                                                  IsFixedTerm = lease.IsFixedTerm,
-                                                  IsMonthToMonth = lease.IsMonthToMonth,
-                                                  HasSecurityDeposit = lease.HasSecurityDeposit,
-                                                  LateFeesPolicy = lease.LateFeesPolicy,
-                                                  TenantId = lease.TenantsTenantId,
-                                                  AppTenantId = lease.AppTenantId,
-                                                  RentCharges = lease.RentCharges.Select(rc => new RentChargeDto
-                                                  {
+                if (tenant == null)
+                {
+                    return null;
+                }
 
-                                                      RentChargeId = rc.RentChargeId,
-                                                      Amount = rc.Amount,
-                                                      Description = rc.Description,
-                                                      RentDate = rc.RentDate,
-                                                      RentPeriod = rc.RentPeriod
-                                                  }).ToList(),
-                                                  FeeCharges = lease.FeeCharge.Select(rc => new FeeChargeDto
-                                                  {
-                                                      FeeChargeId = rc.FeeChargeId,
-                                                      Amount = rc.Amount,
-                                                      Description = rc.Description,
-                                                      FeeDate = rc.FeeDate
-                                                  }).ToList()
-                                              }).ToList(),
-                                    Invoices = (from lease in _db.Lease
-                                                from invoice in _db.Invoices.Where(x => x.LeaseId == lease.LeaseId).DefaultIfEmpty()
-                                                from t in _db.Tenant.Where(x => x.TenantId == invoice.TenantId).DefaultIfEmpty()
-                                                from o in _db.Owner.Where(x => x.OwnerId == invoice.OwnerId).DefaultIfEmpty()
-                                                where lease.TenantsTenantId == tenant.TenantId
-                                                select new InvoiceDto
-                                                {
-                                                    InvoiceId = invoice.InvoiceId,
-                                                    OwnerId = invoice.OwnerId,
-                                                    OwnerName = o.FirstName + " " + o.LastName,
-                                                    TenantId = invoice.TenantId,
-                                                    TenantName = t.FirstName + " " + t.LastName,
-                                                    InvoiceCreatedDate = invoice.InvoiceCreatedDate,
-                                                    InvoicePaid = invoice.InvoicePaid,
-                                                    RentAmount = invoice.RentAmount,
-                                                    LeaseId = invoice.LeaseId,
-                                                    InvoiceDate = invoice.InvoiceDate,
-                                                    InvoicePaidToOwner = invoice.InvoicePaidToOwner,
-                                                    AddedBy = invoice.AddedBy,
-                                                }).ToList(),
+                tenant.Pets = await _db.Pets
+                    .Where(p => p.TenantId == tenantId)
+                    .Select(p => new PetDto
+                    {
+                        PetId = p.PetId,
+                        Name = p.Name,
+                        Breed = p.Breed,
+                        Type = p.Type,
+                        Quantity = p.Quantity,
+                        PictureName = p.Picture,
+                        Picture = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Pets_Picture_" + p.PetId + Path.GetExtension(p.Picture)}"
+                    })
+                    .ToListAsync();
 
-                                    Assets = (from lease in _db.Lease
-                                              from asset in _db.Assets.Where(x => x.AssetId == lease.AssetId).DefaultIfEmpty()
-                                              where lease.TenantsTenantId == tenant.TenantId
-                                              select new AssetDTO
-                                              {
-                                                  AssetId = asset.AssetId,
-                                                  SelectedPropertyType = asset.SelectedPropertyType,
-                                                  SelectedBankAccountOption = asset.SelectedBankAccountOption,
-                                                  SelectedReserveFundsOption = asset.SelectedReserveFundsOption,
-                                                  SelectedSubtype = asset.SelectedSubtype,
-                                                  SelectedOwnershipOption = asset.SelectedOwnershipOption,
-                                                  BuildingNo = asset.BuildingNo,
-                                                  BuildingName = asset.BuildingName,
-                                                  Street1 = asset.Street1,
-                                                  Street2 = asset.Street2,
-                                                  City = asset.City,
-                                                  Country = asset.Country,
-                                                  Zipcode = asset.Zipcode,
-                                                  State = asset.State,
-                                                  AppTid = asset.AppTenantId,
-                                                  PictureFileName = asset.Image,
-                                                  Image = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Assets_Image_" + asset.AssetId + Path.GetExtension(asset.Image)}",
-                                                  AddedBy = asset.AddedBy,
-                                                  AddedDate = asset.AddedDate,
-                                                  ModifiedDate = asset.ModifiedDate,
-                                                  Units = asset.Units.Select(unit => new UnitDTO
-                                                  {
-                                                      UnitId = unit.UnitId,
-                                                      AssetId = unit.AssetId,
-                                                      UnitName = unit.UnitName,
-                                                      Bath = unit.Bath,
-                                                      Beds = unit.Beds,
-                                                      Rent = unit.Rent,
-                                                      Size = unit.Size,
-                                                  }).ToList()
-                                              }).ToList(),
-                                    TaskRequest = (from task in _db.TaskRequest
-                                                   from asset in _db.Assets.Where(x => x.AssetId == task.AssetId).DefaultIfEmpty()
-                                                   from unit in _db.AssetsUnits.Where(x => x.UnitId == task.UnitId).DefaultIfEmpty()
-                                                   from owner in _db.Owner.Where(x => x.OwnerId == task.OwnerId).DefaultIfEmpty()
-                                                   where task.TenantId == tenant.TenantId
-                                                   select new TaskRequestDto
-                                                   {
-                                                       TaskRequestId = task.TaskRequestId,
-                                                       Type = task.Type,
-                                                       Subject = task.Subject,
-                                                       Description = task.Description,
-                                                       IsOneTimeTask = task.IsOneTimeTask,
-                                                       IsRecurringTask = task.IsRecurringTask,
-                                                       StartDate = task.StartDate,
-                                                       EndDate = task.EndDate,
-                                                       Frequency = task.Frequency,
-                                                       DueDays = task.DueDays,
-                                                       IsTaskRepeat = task.IsTaskRepeat,
-                                                       DueDate = task.DueDate,
-                                                       Status = task.Status,
-                                                       Priority = task.Priority,
-                                                       Assignees = task.Assignees,
-                                                       IsNotifyAssignee = task.IsNotifyAssignee,
-                                                       AssetId = task.AssetId,
-                                                       Asset = asset.BuildingNo + "-" + asset.BuildingName,
-                                                       UnitId = task.UnitId,
-                                                       Unit = unit.UnitName,
-                                                       TaskRequestFileName = task.TaskRequestFile,
-                                                       TaskRequestFile = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Task_TaskRequestFile_" + task.TaskRequestId + Path.GetExtension(task.TaskRequestFile)}",
-                                                       OwnerId = task.OwnerId,
-                                                       Owner = owner.FirstName + " " + owner.LastName,
-                                                       IsNotifyOwner = task.IsNotifyOwner,
-                                                       TenantId = task.TenantId,
-                                                       Tenant = tenant.FirstName + " " + tenant.LastName,
-                                                       IsNotifyTenant = task.IsNotifyTenant,
-                                                       HasPermissionToEnter = task.HasPermissionToEnter,
-                                                       EntryNotes = task.EntryNotes,
-                                                       VendorId = task.VendorId,
-                                                       ApprovedByOwner = task.ApprovedByOwner,
-                                                       PartsAndLabor = task.PartsAndLabor,
-                                                       AddedBy = task.AddedBy,
-                                                       LineItems = (from item in _db.LineItem
-                                                                    from ca in _db.ChartAccount.Where(x => x.ChartAccountId == item.ChartAccountId).DefaultIfEmpty()
-                                                                    where item.TaskRequestId == task.TaskRequestId && item.IsDeleted != true
-                                                                    select new LineItemDto
-                                                                    {
-                                                                        LineItemId = item.LineItemId,
-                                                                        TaskRequestId = item.TaskRequestId,
-                                                                        Quantity = item.Quantity,
-                                                                        Price = item.Price,
-                                                                        ChartAccountId = item.ChartAccountId,
-                                                                        AccountName = ca.Name,
-                                                                        Memo = item.Memo
-                                                                    }).ToList()
-                                                   }).ToList(),
-                                    //Communication = (from communication in _db.Communication
-                                    //                 where communication.TenantIds == tenant.TenantId
-                                    //                 select new CommunicationDto
-                                    //                 {
-                                    //                     Communication_Id = communication.Communication_Id,
-                                    //                     Communication_File = communication.Communication_File,
-                                    //                     Subject = communication.Subject,
-                                    //                     Message = communication.Message,
-                                    //                     PropertyIds = communication.PropertyIds,
-                                    //                     TenantIds = communication.TenantIds,
-                                    //                     IsByEmail = communication.IsByEmail,
-                                    //                     IsByText = communication.IsByText,
-                                    //                     IsShowCommunicationInTenantPortal = communication.IsShowCommunicationInTenantPortal,
-                                    //                     IsPostOnTenantScreen = communication.IsPostOnTenantScreen,
-                                    //                     RemoveFeedDate = communication.RemoveFeedDate,
-                                    //                     AddedBy = communication.AddedBy,
-                                    //                     AddedAt = communication.AddedDate,
-                                    //                     UserID = communication.AppTenantId.ToString(),
-                                    //                 }).ToList(),
+                tenant.Vehicles = await _db.Vehicle
+                    .Where(v => v.TenantId == tenantId)
+                    .Select(v => new VehicleDto
+                    {
+                        VehicleId = v.VehicleId,
+                        Manufacturer = v.Manufacturer,
+                        ModelName = v.ModelName,
+                        ModelVariant = v.ModelVariant,
+                        Year = v.Year
+                    })
+                    .ToListAsync();
 
+                tenant.Dependent = await _db.TenantDependent
+                    .Where(d => d.TenantId == tenantId)
+                    .Select(d => new TenantDependentDto
+                    {
+                        TenantDependentId = d.TenantDependentId,
+                        TenantId = d.TenantId,
+                        FirstName = d.FirstName,
+                        LastName = d.LastName,
+                        EmailAddress = d.EmailAddress,
+                        PhoneNumber = d.PhoneNumber,
+                        DOB = d.DOB,
+                        Relation = d.Relation
+                    })
+                    .ToListAsync();
 
-                                }).FirstOrDefaultAsync();
+                tenant.CoTenant = await _db.CoTenant
+                    .Where(c => c.TenantId == tenantId)
+                    .Select(c => new CoTenantDto
+                    {
+                        CoTenantId = c.CoTenantId,
+                        TenantId = c.TenantId,
+                        FirstName = c.FirstName,
+                        LastName = c.LastName,
+                        EmailAddress = c.EmailAddress,
+                        PhoneNumber = c.PhoneNumber,
+                        Address = c.Address,
+                        Unit = c.Unit,
+                        District = c.District,
+                        Region = c.Region,
+                        PostalCode = c.PostalCode,
+                        Country = c.Country
+                    })
+                    .ToListAsync();
 
-            return result;
+                tenant.Leases = await _db.Lease
+                    .Where(l => l.TenantsTenantId == tenantId)
+                    .Select(l => new LeaseDto
+                    {
+                        LeaseId = l.LeaseId,
+                        StartDate = l.StartDate,
+                        EndDate = l.EndDate,
+                        IsSigned = l.IsSigned,
+                        SelectedProperty = l.SelectedProperty,
+                        SelectedUnit = l.SelectedUnit,
+                        SignatureImagePath = l.SignatureImagePath,
+                        IsFixedTerm = l.IsFixedTerm,
+                        IsMonthToMonth = l.IsMonthToMonth,
+                        HasSecurityDeposit = l.HasSecurityDeposit,
+                        LateFeesPolicy = l.LateFeesPolicy,
+                        TenantId = l.TenantsTenantId,
+                        AppTenantId = l.AppTenantId,
+                        RentCharges = l.RentCharges.Select(rc => new RentChargeDto
+                        {
+                            RentChargeId = rc.RentChargeId,
+                            Amount = rc.Amount,
+                            Description = rc.Description,
+                            RentDate = rc.RentDate,
+                            RentPeriod = rc.RentPeriod
+                        }).ToList(),
+                        FeeCharges = l.FeeCharge.Select(fc => new FeeChargeDto
+                        {
+                            FeeChargeId = fc.FeeChargeId,
+                            Amount = fc.Amount,
+                            Description = fc.Description,
+                            FeeDate = fc.FeeDate
+                        }).ToList()
+                    })
+                    .ToListAsync();
+
+                tenant.Invoices = await (from lease in _db.Lease
+                                         from invoice in _db.Invoices.Where(x => x.LeaseId == lease.LeaseId).DefaultIfEmpty()
+                                         from t in _db.Tenant.Where(x => x.TenantId == invoice.TenantId).DefaultIfEmpty()
+                                         from o in _db.Owner.Where(x => x.OwnerId == invoice.OwnerId).DefaultIfEmpty()
+                                         where lease.TenantsTenantId == tenantId
+                                         select new InvoiceDto
+                                         {
+                                             InvoiceId = invoice.InvoiceId,
+                                             OwnerId = invoice.OwnerId,
+                                             OwnerName = o.FirstName + " " + o.LastName,
+                                             TenantId = invoice.TenantId,
+                                             TenantName = t.FirstName + " " + t.LastName,
+                                             InvoiceCreatedDate = invoice.InvoiceCreatedDate,
+                                             InvoicePaid = invoice.InvoicePaid,
+                                             RentAmount = invoice.RentAmount,
+                                             LeaseId = invoice.LeaseId,
+                                             InvoiceDate = invoice.InvoiceDate,
+                                             InvoicePaidToOwner = invoice.InvoicePaidToOwner,
+                                             AddedBy = invoice.AddedBy
+                                         }).ToListAsync();
+
+                tenant.Assets = await (from lease in _db.Lease
+                                       from asset in _db.Assets.Where(x => x.AssetId == lease.AssetId).DefaultIfEmpty()
+                                       where lease.TenantsTenantId == tenantId
+                                       select new AssetDTO
+                                       {
+                                           AssetId = asset.AssetId,
+                                           SelectedPropertyType = asset.SelectedPropertyType,
+                                           SelectedBankAccountOption = asset.SelectedBankAccountOption,
+                                           SelectedReserveFundsOption = asset.SelectedReserveFundsOption,
+                                           SelectedSubtype = asset.SelectedSubtype,
+                                           SelectedOwnershipOption = asset.SelectedOwnershipOption,
+                                           BuildingNo = asset.BuildingNo,
+                                           BuildingName = asset.BuildingName,
+                                           Street1 = asset.Street1,
+                                           Street2 = asset.Street2,
+                                           City = asset.City,
+                                           Country = asset.Country,
+                                           Zipcode = asset.Zipcode,
+                                           State = asset.State,
+                                           AppTid = asset.AppTenantId,
+                                           PictureFileName = asset.Image,
+                                           Image = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Assets_Image_" + asset.AssetId + Path.GetExtension(asset.Image)}",
+                                           AddedBy = asset.AddedBy,
+                                           AddedDate = asset.AddedDate,
+                                           ModifiedDate = asset.ModifiedDate,
+                                           Units = asset.Units.Select(unit => new UnitDTO
+                                           {
+                                               UnitId = unit.UnitId,
+                                               AssetId = unit.AssetId,
+                                               UnitName = unit.UnitName,
+                                               Bath = unit.Bath,
+                                               Beds = unit.Beds,
+                                               Rent = unit.Rent,
+                                               Size = unit.Size
+                                           }).ToList()
+                                       }).ToListAsync();
+
+                tenant.TaskRequest = await (from task in _db.TaskRequest
+                                            from asset in _db.Assets.Where(x => x.AssetId == task.AssetId).DefaultIfEmpty()
+                                            from unit in _db.AssetsUnits.Where(x => x.UnitId == task.UnitId).DefaultIfEmpty()
+                                            from owner in _db.Owner.Where(x => x.OwnerId == task.OwnerId).DefaultIfEmpty()
+                                            where task.TenantId == tenantId
+                                            select new TaskRequestDto
+                                            {
+                                                TaskRequestId = task.TaskRequestId,
+                                                Type = task.Type,
+                                                Subject = task.Subject,
+                                                Description = task.Description,
+                                                IsOneTimeTask = task.IsOneTimeTask,
+                                                IsRecurringTask = task.IsRecurringTask,
+                                                StartDate = task.StartDate,
+                                                EndDate = task.EndDate,
+                                                Frequency = task.Frequency,
+                                                DueDays = task.DueDays,
+                                                IsTaskRepeat = task.IsTaskRepeat,
+                                                DueDate = task.DueDate,
+                                                Status = task.Status,
+                                                Priority = task.Priority,
+                                                Assignees = task.Assignees,
+                                                IsNotifyAssignee = task.IsNotifyAssignee,
+                                                AssetId = task.AssetId,
+                                                Asset = asset.BuildingNo + "-" + asset.BuildingName,
+                                                UnitId = task.UnitId,
+                                                Unit = unit.UnitName,
+                                                TaskRequestFileName = task.TaskRequestFile,
+                                                TaskRequestFile = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Task_TaskRequestFile_" + task.TaskRequestId + Path.GetExtension(task.TaskRequestFile)}",
+                                                OwnerId = task.OwnerId,
+                                                Owner = owner.FirstName + " " + owner.LastName,
+                                                IsNotifyOwner = task.IsNotifyOwner,
+                                                TenantId = task.TenantId,
+                                                Tenant = tenant.FirstName + " " + tenant.LastName,
+                                                IsNotifyTenant = task.IsNotifyTenant,
+                                                HasPermissionToEnter = task.HasPermissionToEnter,
+                                                EntryNotes = task.EntryNotes,
+                                                VendorId = task.VendorId,
+                                                ApprovedByOwner = task.ApprovedByOwner,
+                                                PartsAndLabor = task.PartsAndLabor,
+                                                AddedBy = task.AddedBy,
+                                                LineItems = (from item in _db.LineItem
+                                                             from ca in _db.ChartAccount.Where(x => x.ChartAccountId == item.ChartAccountId).DefaultIfEmpty()
+                                                             where item.TaskRequestId == task.TaskRequestId && item.IsDeleted != true
+                                                             select new LineItemDto
+                                                             {
+                                                                 LineItemId = item.LineItemId,
+                                                                 TaskRequestId = item.TaskRequestId,
+                                                                 Quantity = item.Quantity,
+                                                                 Price = item.Price,
+                                                                 ChartAccountId = item.ChartAccountId,
+                                                                 AccountName = ca.Name,
+                                                                 Memo = item.Memo
+                                                             }).ToList()
+                                            }).ToListAsync();
+
+                return tenant;
+            }
+            catch (Exception ex)
+            {
+                // Handle exception (log it, etc.)
+                throw;
+            }
         }
+
 
 
         #region Calendar
@@ -6769,6 +6785,10 @@ namespace MagicVilla_VillaAPI.Repository
             try
             {
                 var result = await (from d in _db.Documents
+                                    from a in _db.Assets.Where(x => x.AssetId == d.AssetId).DefaultIfEmpty()
+                                    from u in _db.AssetsUnits.Where(x => x.UnitId == d.UnitId).DefaultIfEmpty()
+                                    from o in _db.Owner.Where(x => x.OwnerId == d.OwnerId).DefaultIfEmpty()
+                                    from tnt in _db.Tenant.Where(x => x.TenantId == d.TenantId).DefaultIfEmpty()
                                     where d.IsDeleted != true
                                     select new DocumentsDto
                                     {
@@ -6776,6 +6796,14 @@ namespace MagicVilla_VillaAPI.Repository
                                         Title = d.Title,
                                         Description = d.Description,
                                         Type = d.Type,
+                                        AssetId = d.AssetId,
+                                        AssetName = a.BuildingNo + "-" + a.BuildingName,
+                                        UnitId = d.UnitId,
+                                        UnitName = u.UnitName,
+                                        OwnerId = d.OwnerId,
+                                        OwnerName = o.FirstName + " " + o.LastName,
+                                        TenantId = d.TenantId,
+                                        TenantName = tnt.FirstName + " " + tnt.LastName,
                                         DocumentName = d.DocumentUrl,
                                         DocumentUrl = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Documents_DocumentUrl_" + d.DocumentsId + Path.GetExtension(d.DocumentUrl)}",
                                         AddedBy = d.AddedBy,
@@ -6799,6 +6827,10 @@ namespace MagicVilla_VillaAPI.Repository
             try
             {
                 var result = await (from d in _db.Documents
+                                    from a in _db.Assets.Where(x => x.AssetId == d.AssetId).DefaultIfEmpty()
+                                    from u in _db.AssetsUnits.Where(x => x.UnitId == d.UnitId).DefaultIfEmpty()
+                                    from o in _db.Owner.Where(x => x.OwnerId == d.OwnerId).DefaultIfEmpty()
+                                    from tnt in _db.Tenant.Where(x => x.TenantId == d.TenantId).DefaultIfEmpty()
                                     where d.DocumentsId == id
                                     select new DocumentsDto
                                     {
@@ -6806,6 +6838,14 @@ namespace MagicVilla_VillaAPI.Repository
                                         Title = d.Title,
                                         Description = d.Description,
                                         Type = d.Type,
+                                        AssetId = d.AssetId,
+                                        AssetName = a.BuildingNo + "-" + a.BuildingName,
+                                        UnitId = d.UnitId,
+                                        UnitName = u.UnitName,
+                                        OwnerId = d.OwnerId,
+                                        OwnerName = o.FirstName + " " + o.LastName,
+                                        TenantId = d.TenantId,
+                                        TenantName = tnt.FirstName + " " + tnt.LastName,
                                         DocumentName = d.DocumentUrl,
                                         DocumentUrl = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Documents_DocumentUrl_" + d.DocumentsId + Path.GetExtension(d.DocumentUrl)}",
                                         AddedBy = d.AddedBy,
@@ -6835,6 +6875,10 @@ namespace MagicVilla_VillaAPI.Repository
             document.Title = model.Title;
             document.Description = model.Description;
             document.Type = model.Type;
+            document.AssetId = model.AssetId;
+            document.UnitId = model.UnitId;
+            document.OwnerId = model.OwnerId;
+            document.TenantId = model.TenantId;
             if (model.Document != null)
             {
                 document.DocumentUrl = model.Document.FileName;

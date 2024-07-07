@@ -38,6 +38,12 @@ namespace PMS_PropertyHapa.Staff.Controllers
             return View(owner);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetTenantDataById(int id)
+        {
+            TenantDataDto tenant = await _authService.GetTenantDataById(id);
+            return Ok(tenant);
+        }
 
         public async Task<IActionResult> GetAllTenants()
         {

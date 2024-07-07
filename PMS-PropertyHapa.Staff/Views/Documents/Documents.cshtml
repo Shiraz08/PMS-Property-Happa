@@ -77,11 +77,38 @@
                         <label for="documentType" class="form-label">Type *</label>
                         <select class="form-control select2" id="documentType" name="Type">
                             <option value="" selected disabled hidden>Select Documnet Type</option>
-                            <option value="Lease">Lease</option>
+                            <option value="Owner">Owner</option>
+                            <option value="Tenant">Tenant</option>
+                            <option value="Asset">Asset</option>
                             <option value="Personal">Personal</option>
-                            <option value="Agreement">Agreement Form</option>
-                            <option value="Task">Task Document</option>
                         </select>
+                    </div>
+                    <div class="mb-3  d-none" id="newOwnerDiv">
+                        <label for="newOwner">Owner</label>
+                        <select class="form-control select2" id="newOwner">
+                            <option value="">Select Unit</option>
+                        </select>
+                    </div>
+                    <div class="mb-3  d-none" id="newTenantDiv">
+                        <label for="newTenant">Tenant</label>
+                        <select class="form-control select2" id="newTenant">
+                            <option value="">Select Unit</option>
+                        </select>
+                    </div>
+                    <div class="row mb-3 d-none" id="newAssetDiv">
+                        <div class="col-md-6">
+                            <label for="newProperty" class="form-label ">Property</label>
+                            <select class="form-control select2" id="newProperty">
+                                <option value="">Select Unit</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="newUnit" class="form-label ">Units</label>
+                            <select class="form-control select2 mt-2" id="newUnit">
+                                <option value="">Select Unit</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="mb-3">
                         <label for="documentFile" class="form-label">Document Upload *</label>
@@ -219,22 +246,40 @@
         });
 
         const validationRules = {
-            0: [
-                { field: '#documentTitle', message: 'Please enter Title.' },
-                { field: '#documentDescription', message: 'Please enter Description.' },
-                { field: '#documentType', message: 'Please enter Document Type.' },
-                { field: '#documentFile', message: 'Please select a Document File.', validate: (value) => value.trim() !== '' }
-            ]
+            'Owner': [
+                { field: '#newOwner', message: 'Please select an Owner.' }
+            ],
+            'Tenant': [
+                { field: '#newTenant', message: 'Please select a Tenant.' }
+            ],
+            'Asset': [
+                { field: '#newProperty', message: 'Please select a Property.' },
+                { field: '#newUnit', message: 'Please select a Unit.' }
+            ],
+            'Personal': [] 
         };
 
-        function validateSection(index) {
+        function validateSection(documentType) {
             const errors = [];
-            const rules = validationRules[index];
+            const rules = validationRules[documentType];
+
+            if (!($('#documentTitle').val().trim())) {
+                errors.push('Please enter Title.');
+            }
+            if (!($('#documentDescription').val().trim())) {
+                errors.push('Please enter Description.');
+            }
+            if (!($('#documentType').val())) {
+                errors.push('Please select Document Type.');
+            }
+            if (!($('#documentFile')[0].files[0])) {
+                errors.push('Please select a Document File.');
+            }
 
             if (rules) {
                 rules.forEach(rule => {
                     const value = $(rule.field).val();
-                    if (!value || (rule.validate && !rule.validate(value))) {
+                    if (!value) {
                         errors.push(rule.message);
                     }
                 });
@@ -243,13 +288,76 @@
             return errors;
         }
 
+        $('#documentType').change(function () {
+            var selectedType = $(this).val();
+            $('#newOwnerDiv, #newTenantDiv, #newAssetDiv').addClass('d-none');
+            $('#newOwner, #newTenant, #newProperty').val(null).trigger("change")
+            if (selectedType === 'Owner') {
+                $('#newOwnerDiv').removeClass('d-none');
+            } 
+            else if (selectedType === 'Tenant') {
+                $('#newTenantDiv').removeClass('d-none');
+            } 
+            else if (selectedType === 'Asset') {
+                $('#newAssetDiv').removeClass('d-none');
+            }
+        });
 
+        $.ajax({
+            url: '@Url.Action("GetTenantsDll", "Communication")',
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                var tenantsDropdown = document.getElementById('newTenant');
+                // tenantsDropdown.innerHTML = ''; // Clear existing options
+                data.forEach(function (item) {
+                    var option = new Option(item.FirstName + ' ' + item.LastName, item.TenantId);
+                    tenantsDropdown.appendChild(option);
+                });
+            }
+        });
+
+        $.ajax({
+            url: '@Url.Action("GetLandlordDll", "Landlord")',
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                var ownerDropdown = document.getElementById('newOwner');
+                // ownerDropdown.innerHTML = ''; // Clear existing options
+                data.forEach(function (item) {
+                    var option = new Option(item.FirstName + ' ' + item.LastName, item.OwnerId);
+                    ownerDropdown.appendChild(option);
+                });
+            }
+        });
+
+        $.ajax({
+            url: '@Url.Action("GetProperties", "Communication")',
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                var newPropertyDropdown = document.getElementById('newProperty');
+                // newPropertyDropdown.innerHTML = ''; // Clear existing options
+                data.forEach(function (item) {
+                    var option = new Option(item.BuildingNo + " - " + item.BuildingName, item.AssetId);
+                    newPropertyDropdown.appendChild(option);
+                });
+            }
+        });
+
+        $('#newProperty').on('change', function () {
+            if ($("#newProperty").val() != null) {
+                populateUnits($("#newProperty").val());
+            } else {
+                $("#newUnit").empty();
+            }
+        });
 
         $('#documentForm').on('submit', function (event) {
             event.preventDefault();
 
-            const sectionIndex = 0;
-            const errors = validateSection(sectionIndex);
+            const documentType = $('#documentType').val();
+            const errors = validateSection(documentType);
 
             if (errors.length > 0) {
                 errors.forEach(error => toastr.error(error));
@@ -261,6 +369,15 @@
             formData.append("Title", $('#documentTitle').val());
             formData.append("Description", $('#documentDescription').val());
             formData.append("Type", $('#documentType').val());
+            if ($('#documentType').val() === 'Asset') {
+                formData.append("AssetId", $('#newAsset').val() || null);
+                formData.append("UnitId", $('#newUnit').val() || null);
+            } else if ($('#documentType').val() === 'Owner') {
+                formData.append("OwnerId", $('#newOwner').val() || null);
+            } else if ($('#documentType').val() === 'Tenant') {
+                formData.append("TenantId", $('#newTenant').val() || null);
+            }
+
             formData.append("Document", $('#documentFile')[0].files[0]);
 
             $.ajax({
@@ -287,8 +404,34 @@
         });
 
     });
+
     function resetModal() {
         $("#newDocumentModal form")[0].reset();
+        $('.select2').val(null).trigger('change');
+    }
+
+    function populateUnits(propertyId, selectedUnit) {
+        $.ajax({
+            url: '/Lease/GetUnitsDll',
+            method: 'POST',
+            dataType: 'json',
+            data: { AssetIds: propertyId },
+            success: function (units) {
+                var newUnitDropdown = document.getElementById('newUnit');
+                $("#newUnit").empty();
+                units.forEach(function (unit) {
+                    var option = new Option(unit.UnitName, unit.UnitId);
+                    newUnitDropdown.appendChild(option);
+                });
+
+                if (selectedUnit) {
+                    $("#newUnit").val(selectedUnit).trigger("change")
+                }
+            },
+            error: function (error) {
+                console.error('Error fetching units:', error.responseText || 'Unknown error');
+            }
+        });
     }
 
     function deleteDocument(id) {
@@ -338,6 +481,11 @@
                 $("#documentTitle").val(res.Title);
                 $("#documentDescription").val(res.Description);
                 $("#documentType").val(res.Type).trigger("change");
+                $('#newProperty').val(res.AssetId).trigger("change");
+                populateUnits(res.AssetId, res.UnitId);
+                $('#newUnit').val(res.UnitId);
+                $('#newOwner').val(res.OwnerId).trigger("change");
+                $('#newTenant').val(res.TenantId).trigger("change");
                 $("#Document").val(res.Document);
                 $("#newDocumentModal").modal('show');
             },

@@ -16,6 +16,10 @@ namespace PMS_PropertyHapa.Models.Entities
         public string Title { get; set; }
         public string Description { get; set; }
         public string Type { get; set; }
+        public int? AssetId { get; set; }
+        public int? UnitId { get; set; }
+        public int? OwnerId { get; set; }
+        public int? TenantId { get; set; }
         [NotMapped]
         public IFormFile Document { get; set; }
         public string DocumentUrl { get; set; }

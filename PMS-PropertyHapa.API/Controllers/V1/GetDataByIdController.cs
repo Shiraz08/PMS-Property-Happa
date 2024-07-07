@@ -32,7 +32,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
 
 
         [HttpGet("GetLandlordDataById/{id}")]
-        public async Task<ActionResult> GetLandlordDataById(int id)
+        public async Task<ActionResult<LandlordDataDto>> GetLandlordDataById(int id)
         {
             try
             {
@@ -40,12 +40,19 @@ namespace PMS_PropertyHapa.API.Controllers.V1
 
                 if (landlordData != null)
                 {
-                    return Ok(landlordData);
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = landlordData;
+                    return Ok(_response);
                 }
                 else
                 {
-                    return NotFound("No user found with this id.");
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("No landlord found with this id.");
+                    return NotFound(_response);
                 }
+
             }
             catch (Exception ex)
             {
@@ -58,16 +65,23 @@ namespace PMS_PropertyHapa.API.Controllers.V1
         {
             try
             {
-                var TenantData = await _userRepo.GetTenantDataById(id);
+                var tenantData = await _userRepo.GetTenantDataById(id);
 
-                if (TenantData != null)
+                if (tenantData != null)
                 {
-                    return Ok(TenantData);
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = tenantData;
+                    return Ok(_response);
                 }
                 else
                 {
-                    return NotFound("No user found with this id.");
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("No tenant found with this id.");
+                    return NotFound(_response);
                 }
+
             }
             catch (Exception ex)
             {

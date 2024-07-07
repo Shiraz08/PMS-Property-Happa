@@ -252,5 +252,10 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
         Task<IEnumerable<VideoTutorial>> GetVideoTutorialsAsync();
 
         #endregion
+
+        #region GetDataById
+        Task<LandlordDataDto> GetLandlordDataById(int id);
+        Task<TenantDataDto> GetTenantDataById(int id);
+        #endregion
     }
 }

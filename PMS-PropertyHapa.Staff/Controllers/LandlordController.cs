@@ -73,16 +73,12 @@ namespace PMS_PropertyHapa.Staff.Controllers
             }
         }
 
-        //[HttpGet]
-        //public async Task<IActionResult> GetLandlordDataById(int ownerId)
-        //{
-        //    List<LandlordDataDto> owners = await _authService.GetLandlordDataByIdAsync(ownerId);
-        //    if (owners == null || owners.Count == 0)
-        //    {
-        //        return StatusCode(404, "Owner not found");
-        //    }
-        //    return Ok(owners);
-        //}
+        [HttpGet]
+        public async Task<IActionResult> GetLandlordDataById(int id)
+        {
+            LandlordDataDto owner = await _authService.GetLandlordDataById(id);
+            return Ok(owner);
+        }
 
         [HttpGet]
         public async Task<IActionResult> GetLandlordDll()

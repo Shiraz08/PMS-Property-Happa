@@ -537,7 +537,7 @@ namespace PMS_PropertyHapa.Staff.Services
 
 
         }
-        
+
         public async Task<IEnumerable<AssetDTO>> GetAssetsDllAsync(PMS_PropertyHapa.Models.DTO.Filter filter)
         {
 
@@ -1355,7 +1355,7 @@ namespace PMS_PropertyHapa.Staff.Services
                 throw new Exception($"An error occurred when all owner paid invoices: {ex.Message}", ex);
             }
         }
-        
+
         public async Task<bool> InvoicePaidAsync(int invoiceId)
         {
             try
@@ -1453,14 +1453,14 @@ namespace PMS_PropertyHapa.Staff.Services
 
 
         }
-        
+
         public async Task<IEnumerable<AssetUnitDTO>> GetUnitsDllAsync(PMS_PropertyHapa.Models.DTO.Filter filter)
         {
 
             var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
             {
                 ApiType = SD.ApiType.POST,
-                Data= filter,
+                Data = filter,
                 Url = $"{villaUrl}/api/v1/AssetsAuth/UnitsDll"
             });
 
@@ -1477,14 +1477,14 @@ namespace PMS_PropertyHapa.Staff.Services
 
 
         }
-        
+
         public async Task<IEnumerable<AssetUnitDTO>> GetUnitsByUserAsync(PMS_PropertyHapa.Models.DTO.Filter filter)
         {
 
             var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
             {
                 ApiType = SD.ApiType.POST,
-                Data= filter,
+                Data = filter,
                 Url = $"{villaUrl}/api/v1/AssetsAuth/UnitsByUser"
             });
 
@@ -2096,7 +2096,7 @@ namespace PMS_PropertyHapa.Staff.Services
 
         #endregion
 
-        
+
         #region Applications 
 
         public async Task<IEnumerable<ApplicationsDto>> GetApplicationsAsync()
@@ -2219,7 +2219,7 @@ namespace PMS_PropertyHapa.Staff.Services
             var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
             {
                 ApiType = SD.ApiType.POST,
-                Data = filter, 
+                Data = filter,
                 Url = $"{villaUrl}/api/v1/AccountTypeAuth/AccountTypesDll"
             });
 
@@ -2584,7 +2584,7 @@ namespace PMS_PropertyHapa.Staff.Services
 
         #region Report
 
-        
+
 
         public async Task<IEnumerable<LeaseReportDto>> GetLeaseReports(ReportFilter reportFilter)
         {
@@ -2809,6 +2809,40 @@ namespace PMS_PropertyHapa.Staff.Services
         //    }
         //}
 
+        #region GetDataById
+        public async Task<LandlordDataDto> GetLandlordDataById(int id)
+        {
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = $"{villaUrl}/api/v1/GetDataByIdAuth/GetLandlordDataById/{id}"
+            });
+            if (response.IsSuccess && response.Result != null)
+            {
+                return JsonConvert.DeserializeObject<LandlordDataDto>(Convert.ToString(response.Result));
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve owner data");
+            }
+        }
 
+        public async Task<TenantDataDto> GetTenantDataById(int id)
+        {
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = $"{villaUrl}/api/v1/GetDataByIdAuth/GetTenantDataById/{id}"
+            });
+            if (response.IsSuccess && response.Result != null)
+            {
+                return JsonConvert.DeserializeObject<TenantDataDto>(Convert.ToString(response.Result));
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve tenant data");
+            }
+        }
+        #endregion
     }
 }

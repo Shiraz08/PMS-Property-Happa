@@ -16,6 +16,14 @@ namespace PMS_PropertyHapa.Models.DTO
         public IFormFile Document { get; set; }
         public string DocumentName { get; set; }
         public string DocumentUrl { get; set; }
+        public int? AssetId { get; set; }
+        public string AssetName { get; set; }
+        public int? UnitId { get; set; }
+        public string UnitName { get; set; }
+        public int? OwnerId { get; set; }
+        public string OwnerName { get; set; }
+        public int? TenantId { get; set; }
+        public string TenantName { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime? ModifiedDate { get; set; }
         public string AddedBy { get; set; }
