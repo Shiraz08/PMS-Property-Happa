@@ -2801,43 +2801,150 @@ namespace MagicVilla_VillaAPI.Repository
         {
             try
             {
-                var propertyTypes = await _db.Assets
-                                             .Include(asset => asset.Units)
-                                             .AsNoTracking()
-                                             .ToListAsync();
+               // //var propertyTypes = await _db.Assets
+               // //                             .Include(asset => asset.Units)
+               // //                             .AsNoTracking()
+               // //                             .ToListAsync();
 
 
 
-                var propertyTypeDtos = propertyTypes.Select(tenant => new AssetDTO
-                {
-                    AssetId = tenant.AssetId,
-                    SelectedPropertyType = tenant.SelectedPropertyType,
-                    SelectedBankAccountOption = tenant.SelectedBankAccountOption,
-                    SelectedReserveFundsOption = tenant.SelectedReserveFundsOption,
-                    SelectedSubtype = tenant.SelectedSubtype,
-                    SelectedOwnershipOption = tenant.SelectedOwnershipOption,
-                    BuildingNo = tenant.BuildingNo,
-                    BuildingName = tenant.BuildingName,
-                    Street1 = tenant.Street1,
-                    Street2 = tenant.Street2,
-                    City = tenant.City,
-                    Country = tenant.Country,
-                    Zipcode = tenant.Zipcode,
-                    State = tenant.State,
-                    AppTid = tenant.AppTenantId,
-                    PictureFileName = tenant.Image,
-                    Image = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Assets_Image_" + tenant.AssetId + Path.GetExtension(tenant.Image)}",
-                    AddedBy = tenant.AddedBy,
-                    AddedDate = tenant.AddedDate,
-                    ModifiedDate = tenant.ModifiedDate,
-                    Units = tenant.Units.Select(unit => new UnitDTO
-                    {
-                        UnitId = unit.UnitId,
-                        UnitName = unit.UnitName,
-                    }).ToList()
+               // //var propertyTypeDtos = propertyTypes.Select(asset => new AssetDTO
+               // //{
+               // //    AssetId = asset.AssetId,
+               // //    SelectedPropertyType = asset.SelectedPropertyType,
+               // //    SelectedBankAccountOption = asset.SelectedBankAccountOption,
+               // //    SelectedReserveFundsOption = asset.SelectedReserveFundsOption,
+               // //    SelectedSubtype = asset.SelectedSubtype,
+               // //    SelectedOwnershipOption = asset.SelectedOwnershipOption,
+               // //    BuildingNo = asset.BuildingNo,
+               // //    BuildingName = asset.BuildingName,
+               // //    Street1 = asset.Street1,
+               // //    Street2 = asset.Street2,
+               // //    City = asset.City,
+               // //    Country = asset.Country,
+               // //    Zipcode = asset.Zipcode,
+               // //    State = asset.State,
+               // //    AppTid = asset.AppTenantId,
+               // //    PictureFileName = asset.Image,
+               // //    Image = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Assets_Image_" + asset.AssetId + Path.GetExtension(asset.Image)}",
+               // //    AddedBy = asset.AddedBy,
+               // //    AddedDate = asset.AddedDate,
+               // //    ModifiedDate = asset.ModifiedDate,
+               // //    Units = asset.Units.Select(unit => new UnitDTO
+               // //    {
+               // //        UnitId = unit.UnitId,
+               // //        UnitName = unit.UnitName,
+               // //    }).ToList()
 
-                }).ToList();
+               // //}).ToList();
 
+               // await _db.Assets
+               //.Where(a => a.OwnerId == ownerId)
+               //.Select(a => new AssetDTO
+               //{
+               //    AssetId = a.AssetId,
+               //    SelectedPropertyType = a.SelectedPropertyType,
+               //    SelectedBankAccountOption = a.SelectedBankAccountOption,
+               //    SelectedReserveFundsOption = a.SelectedReserveFundsOption,
+               //    SelectedSubtype = a.SelectedSubtype,
+               //    SelectedOwnershipOption = a.SelectedOwnershipOption,
+               //    BuildingNo = a.BuildingNo,
+               //    BuildingName = a.BuildingName,
+               //    Street1 = a.Street1,
+               //    Street2 = a.Street2,
+               //    City = a.City,
+               //    Country = a.Country,
+               //    Zipcode = a.Zipcode,
+               //    State = a.State,
+               //    AppTid = a.AppTenantId,
+               //    PictureFileName = a.Image,
+               //    Image = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Assets_Image_" + a.AssetId + Path.GetExtension(a.Image)}",
+               //    AddedBy = a.AddedBy,
+               //    AddedDate = a.AddedDate,
+               //    ModifiedDate = a.ModifiedDate,
+               //    Units = a.Units.Select(u => new UnitDTO
+               //    {
+               //        UnitId = u.UnitId,
+               //        AssetId = u.AssetId,
+               //        UnitName = u.UnitName,
+               //        Bath = u.Bath,
+               //        Beds = u.Beds,
+               //        Rent = u.Rent,
+               //        Size = u.Size,
+               //    }).ToList()
+               //})
+               //.ToListAsync();
+
+                var propertyTypeDtos = await (from asset in _db.Assets
+                                       from assetUnit in _db.AssetsUnits.Where(x=>x.AssetId == asset.AssetId).DefaultIfEmpty()
+                                       from owner in _db.Owner.Where(x=>x.OwnerId == asset.OwnerId && x.IsDeleted != true).DefaultIfEmpty()
+                                       where asset.IsDeleted != true
+                                       select new AssetDTO
+                                       {
+                                           AssetId = asset.AssetId,
+                                           SelectedPropertyType = asset.SelectedPropertyType,
+                                           SelectedBankAccountOption = asset.SelectedBankAccountOption,
+                                           SelectedReserveFundsOption = asset.SelectedReserveFundsOption,
+                                           SelectedSubtype = asset.SelectedSubtype,
+                                           SelectedOwnershipOption = asset.SelectedOwnershipOption,
+                                           BuildingNo = asset.BuildingNo,
+                                           BuildingName = asset.BuildingName,
+                                           Street1 = asset.Street1,
+                                           Street2 = asset.Street2,
+                                           City = asset.City,
+                                           Country = asset.Country,
+                                           Zipcode = asset.Zipcode,
+                                           State = asset.State,
+                                           AppTid = asset.AppTenantId,
+                                           PictureFileName = asset.Image,
+                                           Image = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Assets_Image_" + asset.AssetId + Path.GetExtension(asset.Image)}",
+                                           AddedBy = asset.AddedBy,
+                                           AddedDate = asset.AddedDate,
+                                           ModifiedDate = asset.ModifiedDate,
+                                           Units = asset.Units.Select(u => new UnitDTO
+                                           {
+                                               UnitId = u.UnitId,
+                                               AssetId = u.AssetId,
+                                               UnitName = u.UnitName,
+                                               Bath = u.Bath,
+                                               Beds = u.Beds,
+                                               Rent = u.Rent,
+                                               Size = u.Size,
+                                           }).ToList(),
+                                           OwnerData = new OwnerDto{
+                                               OwnerId = owner.OwnerId,
+                                               FirstName = owner.FirstName,
+                                               MiddleName = owner.MiddleName,
+                                               LastName = owner.LastName,
+                                               Fax = owner.Fax,
+                                               TaxId = owner.TaxId,
+                                               EmailAddress = owner.EmailAddress,
+                                               EmailAddress2 = owner.EmailAddress2,
+                                               PictureName = owner.Picture,
+                                               Picture = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Owner_Picture_" + owner.OwnerId + Path.GetExtension(owner.Picture)}",
+                                               PhoneNumber = owner.PhoneNumber,
+                                               PhoneNumber2 = owner.PhoneNumber2,
+                                               EmergencyContactInfo = owner.EmergencyContactInfo,
+                                               LeaseAgreementId = owner.LeaseAgreementId,
+                                               OwnerNationality = owner.OwnerNationality,
+                                               Gender = owner.Gender,
+                                               DocumentName = owner.Document,
+                                               Document = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Owner_Document_" + owner.OwnerId + Path.GetExtension(owner.Document)}",
+                                               DOB = owner.DOB,
+                                               VAT = owner.VAT,
+                                               LegalName = owner.LegalName,
+                                               Account_Name = owner.Account_Name,
+                                               Account_Holder = owner.Account_Holder,
+                                               Account_IBAN = owner.Account_IBAN,
+                                               Account_Swift = owner.Account_Swift,
+                                               Account_Bank = owner.Account_Bank,
+                                               Account_Currency = owner.Account_Currency,
+                                               AddedBy = owner.AddedBy,
+                                               AddedDate = owner.AddedDate,
+                                               ModifiedDate = owner.ModifiedDate
+                                           }
+                                       }).AsNoTracking()
+                                        .ToListAsync();
 
                 return propertyTypeDtos;
             }
@@ -3228,8 +3335,8 @@ namespace MagicVilla_VillaAPI.Repository
             {
                 return false;
             }
-
-            _db.Assets.Remove(asset);
+            asset.IsDeleted = true;
+            _db.Assets.Update(asset);
 
             var result = await _db.SaveChangesAsync();
 
@@ -6879,9 +6986,10 @@ namespace MagicVilla_VillaAPI.Repository
             document.UnitId = model.UnitId;
             document.OwnerId = model.OwnerId;
             document.TenantId = model.TenantId;
-            if (model.Document != null)
+
+            if (model.DocumentUrl != null)
             {
-                document.DocumentUrl = model.Document.FileName;
+                document.DocumentUrl = model.DocumentName;
             }
 
             if (document.DocumentsId > 0)
@@ -6899,16 +7007,15 @@ namespace MagicVilla_VillaAPI.Repository
 
             var result = await _db.SaveChangesAsync();
 
-
-            if (model.Document != null)
+            if (model.DocumentUrl != null)
             {
-                var ext = Path.GetExtension(model.Document.FileName);
-                await _googleCloudStorageService.UploadImageAsync(model.Document, "Documents_DocumentUrl_" + document.DocumentsId+ ext);
+                var ext = Path.GetExtension(model.DocumentName);
+                await _googleCloudStorageService.UploadImagebyBase64Async(model.DocumentUrl, "Documents_DocumentUrl_" + document.DocumentsId + ext);
             }
 
             return result > 0;
-
         }
+
 
         public async Task<bool> DeleteDocumentAsync(int id)
         {

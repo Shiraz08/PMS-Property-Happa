@@ -502,7 +502,7 @@ namespace PMS_PropertyHapa.Staff.Services
             {
                 var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
                 {
-                    ApiType = SD.ApiType.DELETE,
+                    ApiType = SD.ApiType.POST,
                     Url = $"{villaUrl}/api/v1/AssetsAuth/Asset/{assetId}"
                 });
 
@@ -2698,7 +2698,6 @@ namespace PMS_PropertyHapa.Staff.Services
                 {
                     ApiType = SD.ApiType.POST,
                     Data = document,
-                    ContentType = SD.ContentType.MultipartFormData,
                     Url = $"{villaUrl}/api/v1/DocumentsAuth/Document"
                 });
 

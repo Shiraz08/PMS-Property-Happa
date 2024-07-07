@@ -143,7 +143,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             }
         }
 
-        [HttpDelete("Asset/{assetId}")]
+        [HttpPost("Asset/{assetId}")]
         public async Task<ActionResult<bool>> DeleteAssets(int assetId)
         {
             try

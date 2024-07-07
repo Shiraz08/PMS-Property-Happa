@@ -73,11 +73,11 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
 
 
-        [HttpDelete]
+        [HttpPost]
         public async Task<IActionResult> DeleteAsset(int assetId)
         {
             await _authService.DeleteAssetAsync(assetId);
-            return Json(new { success = true, message = "Tenant deleted successfully" });
+            return Json(new { success = true, message = "Asset deleted successfully" });
         }
 
 

@@ -4,16 +4,60 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<style>
+    .card-title {
+        font-size: 1.25rem;
+        font-weight: bold;
+    }
+
+    .card-subtitle {
+        font-size: 1rem;
+    }
+
+    .card-text {
+        font-size: 1rem;
+    }
+
+    .badge {
+        font-size: 0.85rem;
+        padding: 0.5em 0.75em;
+    }
+
+    .property-img {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+    }
+
+    .card-actions {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+    }
+
+        .card-actions button {
+            margin-left: 5px;
+        }
+</style>
+
 <!-- Page Sidebar Ends-->
 <div class="page-body">
     <div class="container-fluid">
         <div class="page-title">
-            <div class="row">
-                <div class="col-12 col-sm-6">
-                    <h3>Assets</h3>
+            <div class="row mb-3">
+                <div class="col-12 col-sm-8 d-flex align-items-center">
+                    <h3 class="mb-0">Assets</h3>
                 </div>
-                <div class="col-12 col-sm-6">
-                    <ol class="breadcrumb">
+                <div class="col-12 col-sm-2 mb-3 mb-sm-0">
+                    <a class="btn btn-info w-100 d-flex align-items-center justify-content-center" href="@Url.Action("AddAssest","Assests")">
+                        <div class="plusCircle me-2">
+                            +
+                        </div>
+                        New Property
+                    </a>
+                </div>
+                <div class="col-12 col-sm-2">
+                    <ol class="breadcrumb bg-transparent p-0">
                         <li class="breadcrumb-item"><a href="/Home/Index"><i data-feather="home"></i></a></li>
                         <li class="breadcrumb-item">Assets</li>
                         <li class="breadcrumb-item active">List</li>
@@ -22,175 +66,71 @@
             </div>
         </div>
     </div>
-    <!-- Container-fluid starts-->
-    <div class="container-fluid my-4">
+    <div class="container">
         <div class="row">
-            <!-- Column 1: Properties Table (80% on lg screens) -->
-            <div class="col-12 col-lg-10 mb-4">
-                <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-
-                        <div class="left-side-header">
-                            <div class="input-group">
-                                <span class="input-group-text" id="basic-addon1">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <g>
-                                            <g>
-                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M11.2753 2.71436C16.0029 2.71436 19.8363 6.54674 19.8363 11.2753C19.8363 16.0039 16.0029 19.8363 11.2753 19.8363C6.54674 19.8363 2.71436 16.0039 2.71436 11.2753C2.71436 6.54674 6.54674 2.71436 11.2753 2.71436Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M19.8987 18.4878C20.6778 18.4878 21.3092 19.1202 21.3092 19.8983C21.3092 20.6783 20.6778 21.3097 19.8987 21.3097C19.1197 21.3097 18.4873 20.6783 18.4873 19.8983C18.4873 19.1202 19.1197 18.4878 19.8987 18.4878Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                                            </g>
-                                        </g>
-                                    </svg>
-                                </span>
-                                <input class="form-control" type="text" placeholder="Search Assets" id="searchInput" aria-label="search" aria-describedby="basic-addon1">
-                            </div>
-                        </div>
-
-                        <div class="right-side-header">
-                            <button class="btn btn-success" type="button">Export to CSV</button>
-                        </div>
-                    </div>
-                    <!-- <div class="card-header">
-                      PROPERTIES
-                    </div> -->
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th scope="col" class="tableHeaderbg">Properties</th>
-                                        <th scope="col" class="tableHeaderbg">Address</th>
-                                        <th scope="col" class="tableHeaderbg">Total Monthly Rent</th>
-                                        <th scope="col" class="tableHeaderbg">Tenants</th>
-                                        <th scope="col" class="tableHeaderbg">Open Maintenance</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                  @foreach (var item in Model)
+            @foreach (var item in Model)
+            {
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                @{
+                                    if (!string.IsNullOrEmpty(item.Image))
                                     {
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex border-0 gap-2  align-items-center ">
-                                                    @{
-                                                        if (!string.IsNullOrEmpty(item.Image))
-                                                        {
-                                                            <img class="img-fluid rounded-1 update_img_0" src="@item.Image" alt="" style="max-width: 50px; height: auto;">
-                                                        }
-                                                        else
-                                                        {
-                                                            <img class="img-fluid rounded-1 update_img_0" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRG_TUukNvS-0E486weXLkJDpTubsAcdHdmKw&usqp=CAU" alt="" style="max-width: 50px; height: auto;">
-                                                        }
-                                                    }
-                                                    <div class="d-flex flex-column  border-0 ">
-                                                        <div class="d-flex border-0 flex-column align-items-baseline ">
-                                                            <span class="fw-bold  tableFontSize">@item.SelectedPropertyType</span>
-                                                            <span class="fw-bold tableFontSize">@item.SelectedSubtype</span>
-                                                        </div>
-                                                        <div class="d-flex border-0 flex-column align-items-baseline ">
-                                                            <span class="tableFontSize">Unit: @item.Units.ToList().Count()</span>
-                                                            <span class="tableFontSize">Availabilty: 1</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td class="tableFontSize">@item.Street1, @item.State, @item.City, @item.Country</td>
-                                            <td class="tableFontSize">$0.00</td>
-                                            <td class="tableFontSize">4</td>
-                                            <td class="tableFontSize">0</td>
-                                        </tr>
+                                        <img class="img-fluid rounded-1 property-img" src="@item.Image" alt="Property Image">
                                     }
-                                </tbody>
-                            </table>
+                                    else
+                                    {
+                                        <img class="img-fluid rounded-1 property-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRG_TUukNvS-0E486weXLkJDpTubsAcdHdmKw&usqp=CAU" alt="Default Image">
+                                    }
+                                }
+                                <div class="ms-3">
+                                    <h5 class="card-title">@item.BuildingNo- @item.BuildingName</h5>
+                                    <p class="card-text mb-0">@item.SelectedPropertyType</p>
+                                    <p class="card-text">@item.SelectedSubtype</p>
+                                </div>
+                            </div>
+                            
+                            <p class="card-text"><strong>Units:</strong> @item.Units.ToList().Count()</p>
+                            @if (item.Units.Any())
+                            {
+                                <p class="card-text"><strong>Unit Names:</strong> @string.Join(", ", item.Units.Select(u => u.UnitName))</p>
+                            }
+
+                            <p class="card-text"><strong>Address:</strong> @item.Street1, @item.State, @item.City, @item.Country</p>
+                            @if (item?.OwnerData != null)
+                            {
+                                <p class="card-text"><strong>Owner Name:</strong> @(string.IsNullOrEmpty(item.OwnerData.FirstName) && string.IsNullOrEmpty(item.OwnerData.LastName) ? "N/A" : $"{item.OwnerData.FirstName} {item.OwnerData.LastName}")</p>
+                                <p class="card-text"><strong>Email:</strong> @(string.IsNullOrEmpty(item.OwnerData.EmailAddress) ? "N/A" : item.OwnerData.EmailAddress)</p>
+                            }
+                        </div>
+                        <div class="card-actions pb-2">
+                            <button type="button" class="btn btn-primary" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#detailModal">
+                                <i class="fa fa-info-circle fa-lg"></i> Unit Detail
+                            </button>
+                            <button type="button" class="btn btn-danger mr-3" style="cursor: pointer;" onclick="deleteAsset(@item.AssetId)">
+                                <i class="fa fa-trash fa-lg"></i> Delete
+                            </button>
                         </div>
                     </div>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detailModalLabel">Unit Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Coming Soon...</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
-
-
-            <div class="col-12 col-lg-2">
-
-                <div class="mb-2">
-                    <a class="btn btn-info w-100 d-flex border-0 align-items-center " href="@Url.Action("AddAssest","Assests")">
-                        <div class="plusCircle">
-                            +
-                        </div>
-                        New Property
-                    </a>
-                </div>
-                <!-- Statistics Panels -->
-
-                <div class="">
-                    <div class="card bg-primary text-white" style="margin-bottom: 10px !important;">
-                        <div class="card-body cardBody">
-                            <div class="card-title d-flex flex-column border-bottom ">
-                                <span>18</span>
-                                <span>UNITS</span>
-
-                            </div>
-                            <div class="d-flex border-0 ">
-                                <p class="card-text">Total <br /> Occupancy</p>
-                                <!-- Circle progress -->
-                                <div class="circular-progress-container">
-                                    <div class="circular-progress-bar" style="--progress: 75;">
-                                        <div class="value-container">75%</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="d-flex border-0 ">
-                                <div class="d-flex border-0 flex-column ">
-                                    <span class="card-text">Behind In</span>
-                                    <p class="card-text">Rent <br /> Payments</p>
-                                </div>
-                                <!-- Circle progress -->
-                                <div class="circular-progress-container">
-                                    <div class="circular-progress-bar" style="--progress: 45; --circle-progress-color:#ef5b5b ">
-                                        <div class="value-container">45%</div>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-                <div class="">
-                    <div class="card CardGreen text-white">
-                        <div class="card-body cardBody">
-                            <div class="card-title d-flex flex-column">
-                                <span>6</span>
-                                <span>UNITS With VACANCY</span>
-                            </div>
-
-                        </div>
-
-                    </div>
-                </div>
-                <div class="">
-                    <div class="card CardRed text-white">
-                        <div class="card-body cardBody">
-                            <div class="card-title d-flex flex-column">
-                                <span>14</span>
-                                <span>UNITS With OVERDUE BALANCE</span>
-                            </div>
-
-                        </div>
-
-                    </div>
-                </div>
-                <div class="">
-                    <div class="card cardInfo text-white">
-                        <div class="card-body cardBody">
-                            <div class="card-title d-flex flex-column">
-                                <span>3</span>
-                                <span>UNITS With OPEN MANTAINCEN REQUEST</span>
-                            </div>
-
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-            <!-- Repeat for other statistics -->
         </div>
     </div>
 </div>
@@ -207,5 +147,40 @@
             });
         });
     });
+    function deleteAsset(id) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'You will not be able to recover this Asset!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '@Url.Action("DeleteAsset", "Assests")',
+                    type: 'POST',
+                    data: { assetId: id },
+                    success: function (task) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Asset deleted successfully',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        location.reload()
+                    },
+                    error: function (xhr, status, error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Something went wrong!'
+                        });
+                    },
+                });
+            }
+        });
+    }
 </script>
 

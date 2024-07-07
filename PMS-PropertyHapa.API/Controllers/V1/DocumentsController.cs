@@ -92,7 +92,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
 
 
         [HttpPost("Document")]
-        public async Task<ActionResult<bool>> SaveDocument([FromForm] DocumentsDto document)
+        public async Task<ActionResult<bool>> SaveDocument(DocumentsDto document)
         {
             try
             {

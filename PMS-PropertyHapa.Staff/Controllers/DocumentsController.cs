@@ -32,7 +32,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
       
         [HttpPost]
-        public async Task<IActionResult> SaveDocument([FromForm] DocumentsDto document)
+        public async Task<IActionResult> SaveDocument(DocumentsDto document)
         {
             if (document == null)
             {

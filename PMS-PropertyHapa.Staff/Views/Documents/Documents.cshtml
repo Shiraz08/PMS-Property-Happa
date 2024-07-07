@@ -39,6 +39,7 @@
                                         <th scope="col" class="text-center tableHeaderbg">Document Description</th>
                                         <th scope="col" class="text-center tableHeaderbg">Type</th>
                                         <th scope="col" class="text-center tableHeaderbg">Document Name</th>
+                                        <th scope="col" class="text-center tableHeaderbg">Related To</th>
                                         <th scope="col" class="text-center tableHeaderbg">Created Date</th>
                                         <th scope="col" class="text-center tableHeaderbg">Modified Date</th>
                                         <th scope="col" class="text-center tableHeaderbg">Action</th>
@@ -113,7 +114,7 @@
                     <div class="mb-3">
                         <label for="documentFile" class="form-label">Document Upload *</label>
                         <input type="file" class="form-control" id="documentFile" name="DocumentFile" accept=".pdf,.xls,.xlsx,.doc,.docx,.png,.jpg,.jpeg,.gif">
-                        <img id="documentUpload" src="" alt="Document Upload" style="max-width: 100%;" class="d-none">
+                        <a id="currentDocumentLink" href="" target="_blank" class="d-none">View Current Document</a>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
@@ -182,6 +183,22 @@
                     }
                 },
                 {
+                    "data": "DocumentId",
+                    "className": "text-center",
+                    "render": function (data, type, row, meta) {
+                        console.log(row)
+                            if (row.AssetId) {
+                                return row.AssetName + ', ' + row.UnitName;
+                            } else if (row.OwnerId) {
+                                return row.OwnerName;
+                            } else if (row.TenantId) {
+                                return row.TenantName;
+                            } else {
+                                return '';
+                            }
+                    }
+                },
+                {
                     "data": "CreatedDate",
                     "className": "text-center",
                     "render": function (data, type, row, meta) {
@@ -240,6 +257,7 @@
 
 
         $("#adddocumentBtn").on("click", function () {
+            $("#currentDocumentLink").addClass("d-none").attr("href", "").text("");
             resetModal();
             $("#documentModalLabel").html("New Document");
             $("#newDocumentModal").modal('show');
@@ -272,10 +290,9 @@
             if (!($('#documentType').val())) {
                 errors.push('Please select Document Type.');
             }
-            if (!($('#documentFile')[0].files[0])) {
+            if (!($('#documentFile')[0].files[0]) && $("#documentId").val() == "") {
                 errors.push('Please select a Document File.');
             }
-
             if (rules) {
                 rules.forEach(rule => {
                     const value = $(rule.field).val();
@@ -353,7 +370,8 @@
             }
         });
 
-        $('#documentForm').on('submit', function (event) {
+        
+        $('#documentForm').on('submit', async function (event) {
             event.preventDefault();
 
             const documentType = $('#documentType').val();
@@ -370,7 +388,7 @@
             formData.append("Description", $('#documentDescription').val());
             formData.append("Type", $('#documentType').val());
             if ($('#documentType').val() === 'Asset') {
-                formData.append("AssetId", $('#newAsset').val() || null);
+                formData.append("AssetId", $('#newProperty').val() || null);
                 formData.append("UnitId", $('#newUnit').val() || null);
             } else if ($('#documentType').val() === 'Owner') {
                 formData.append("OwnerId", $('#newOwner').val() || null);
@@ -378,7 +396,10 @@
                 formData.append("TenantId", $('#newTenant').val() || null);
             }
 
-            formData.append("Document", $('#documentFile')[0].files[0]);
+            var documentFile = $('#documentFile')[0].files[0];
+            if (documentFile) {
+                await readFileAsBase64(documentFile, formData, "DocumentUrl", "DocumentName");
+            }
 
             $.ajax({
                 url: '@Url.Action("SaveDocument", "Documents")',
@@ -404,6 +425,24 @@
         });
 
     });
+
+    function readFileAsBase64(file, formData, key, fileName) {
+        return new Promise((resolve, reject) => {
+            if (file) {
+                var reader = new FileReader();
+                formData.append(fileName, file.name);
+                reader.onload = function (e) {
+                    formData.append(key, e.target.result);
+                    resolve();
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            } else {
+                resolve();
+            }
+        });
+    }
+
 
     function resetModal() {
         $("#newDocumentModal form")[0].reset();
@@ -481,12 +520,32 @@
                 $("#documentTitle").val(res.Title);
                 $("#documentDescription").val(res.Description);
                 $("#documentType").val(res.Type).trigger("change");
-                $('#newProperty').val(res.AssetId).trigger("change");
-                populateUnits(res.AssetId, res.UnitId);
-                $('#newUnit').val(res.UnitId);
-                $('#newOwner').val(res.OwnerId).trigger("change");
-                $('#newTenant').val(res.TenantId).trigger("change");
-                $("#Document").val(res.Document);
+                if (res.AssetId) {
+                    $('#newProperty').val(res.AssetId).trigger("change");
+                    populateUnits(res.AssetId, res.UnitId);
+                }
+                if (res.UnitId) {
+                    $('#newUnit').val(res.UnitId);
+                }
+                if (res.OwnerId) {
+                    $('#newOwner').val(res.OwnerId).trigger("change");
+                }
+                if (res.TenantId) {
+                    $('#newTenant').val(res.TenantId).trigger("change");
+                }
+                console.log(res.DocumentUrl)
+                if (res.DocumentUrl) {
+                    $("#currentDocumentLink")
+                        .removeClass("d-none")
+                        .attr("href", res.DocumentUrl)
+                        .text(res.DocumentName);
+                } else {
+                    $("#currentDocumentLink")
+                        .addClass("d-none")
+                        .attr("href", "")
+                        .text("");
+                }
+
                 $("#newDocumentModal").modal('show');
             },
             error: function (xhr, status, error) {
@@ -518,11 +577,6 @@
             }
         });
     }
-
-   
-
-
-
 
 </script>
 
