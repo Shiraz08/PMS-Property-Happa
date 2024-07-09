@@ -60,7 +60,9 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
         Task<bool> UpdateAssetAsync(AssetDTO asset);
 
         Task<IEnumerable<AssetDTO>> GetAllAssetsAsync();
+        Task<AssetDTO> GetAssetByIdAsync(int assetId);
         Task<IEnumerable<AssetDTO>> GetAssetsDllAsync(Filter filter);
+        Task<IEnumerable<UnitDTO>> GetUnitsDetailAsync(int assetId);
 
 
         #region Communication Interface Services 

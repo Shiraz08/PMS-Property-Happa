@@ -2801,82 +2801,8 @@ namespace MagicVilla_VillaAPI.Repository
         {
             try
             {
-               // //var propertyTypes = await _db.Assets
-               // //                             .Include(asset => asset.Units)
-               // //                             .AsNoTracking()
-               // //                             .ToListAsync();
 
-
-
-               // //var propertyTypeDtos = propertyTypes.Select(asset => new AssetDTO
-               // //{
-               // //    AssetId = asset.AssetId,
-               // //    SelectedPropertyType = asset.SelectedPropertyType,
-               // //    SelectedBankAccountOption = asset.SelectedBankAccountOption,
-               // //    SelectedReserveFundsOption = asset.SelectedReserveFundsOption,
-               // //    SelectedSubtype = asset.SelectedSubtype,
-               // //    SelectedOwnershipOption = asset.SelectedOwnershipOption,
-               // //    BuildingNo = asset.BuildingNo,
-               // //    BuildingName = asset.BuildingName,
-               // //    Street1 = asset.Street1,
-               // //    Street2 = asset.Street2,
-               // //    City = asset.City,
-               // //    Country = asset.Country,
-               // //    Zipcode = asset.Zipcode,
-               // //    State = asset.State,
-               // //    AppTid = asset.AppTenantId,
-               // //    PictureFileName = asset.Image,
-               // //    Image = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Assets_Image_" + asset.AssetId + Path.GetExtension(asset.Image)}",
-               // //    AddedBy = asset.AddedBy,
-               // //    AddedDate = asset.AddedDate,
-               // //    ModifiedDate = asset.ModifiedDate,
-               // //    Units = asset.Units.Select(unit => new UnitDTO
-               // //    {
-               // //        UnitId = unit.UnitId,
-               // //        UnitName = unit.UnitName,
-               // //    }).ToList()
-
-               // //}).ToList();
-
-               // await _db.Assets
-               //.Where(a => a.OwnerId == ownerId)
-               //.Select(a => new AssetDTO
-               //{
-               //    AssetId = a.AssetId,
-               //    SelectedPropertyType = a.SelectedPropertyType,
-               //    SelectedBankAccountOption = a.SelectedBankAccountOption,
-               //    SelectedReserveFundsOption = a.SelectedReserveFundsOption,
-               //    SelectedSubtype = a.SelectedSubtype,
-               //    SelectedOwnershipOption = a.SelectedOwnershipOption,
-               //    BuildingNo = a.BuildingNo,
-               //    BuildingName = a.BuildingName,
-               //    Street1 = a.Street1,
-               //    Street2 = a.Street2,
-               //    City = a.City,
-               //    Country = a.Country,
-               //    Zipcode = a.Zipcode,
-               //    State = a.State,
-               //    AppTid = a.AppTenantId,
-               //    PictureFileName = a.Image,
-               //    Image = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Assets_Image_" + a.AssetId + Path.GetExtension(a.Image)}",
-               //    AddedBy = a.AddedBy,
-               //    AddedDate = a.AddedDate,
-               //    ModifiedDate = a.ModifiedDate,
-               //    Units = a.Units.Select(u => new UnitDTO
-               //    {
-               //        UnitId = u.UnitId,
-               //        AssetId = u.AssetId,
-               //        UnitName = u.UnitName,
-               //        Bath = u.Bath,
-               //        Beds = u.Beds,
-               //        Rent = u.Rent,
-               //        Size = u.Size,
-               //    }).ToList()
-               //})
-               //.ToListAsync();
-
-                var propertyTypeDtos = await (from asset in _db.Assets
-                                       from assetUnit in _db.AssetsUnits.Where(x=>x.AssetId == asset.AssetId).DefaultIfEmpty()
+                var assets = await (from asset in _db.Assets
                                        from owner in _db.Owner.Where(x=>x.OwnerId == asset.OwnerId && x.IsDeleted != true).DefaultIfEmpty()
                                        where asset.IsDeleted != true
                                        select new AssetDTO
@@ -2946,7 +2872,92 @@ namespace MagicVilla_VillaAPI.Repository
                                        }).AsNoTracking()
                                         .ToListAsync();
 
-                return propertyTypeDtos;
+                return assets;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping property types: {ex.Message}");
+                throw;
+            }
+        }
+        
+        public async Task<AssetDTO> GetAssetByIdAsync(int assetId)
+        {
+            try
+            {
+
+                var asset = await (from a in _db.Assets
+                                       from o in _db.Owner.Where(x=>x.OwnerId == a.OwnerId && x.IsDeleted != true).DefaultIfEmpty()
+                                       where a.AssetId == assetId && a.IsDeleted != true
+                                       select new AssetDTO
+                                       {
+                                           AssetId = a.AssetId,
+                                           OwnerId = a.OwnerId,
+                                           SelectedPropertyType = a.SelectedPropertyType,
+                                           SelectedBankAccountOption = a.SelectedBankAccountOption,
+                                           SelectedReserveFundsOption = a.SelectedReserveFundsOption,
+                                           SelectedSubtype = a.SelectedSubtype,
+                                           SelectedOwnershipOption = a.SelectedOwnershipOption,
+                                           BuildingNo = a.BuildingNo,
+                                           BuildingName = a.BuildingName,
+                                           Street1 = a.Street1,
+                                           Street2 = a.Street2,
+                                           City = a.City,
+                                           Country = a.Country,
+                                           Zipcode = a.Zipcode,
+                                           State = a.State,
+                                           AppTid = a.AppTenantId,
+                                           PictureFileName = a.Image,
+                                           Image = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Assets_Image_" + a.AssetId + Path.GetExtension(a.Image)}",
+                                           AddedBy = a.AddedBy,
+                                           AddedDate = a.AddedDate,
+                                           ModifiedDate = a.ModifiedDate,
+                                           Units = a.Units.Select(u => new UnitDTO
+                                           {
+                                               UnitId = u.UnitId,
+                                               AssetId = u.AssetId,
+                                               UnitName = u.UnitName,
+                                               Bath = u.Bath,
+                                               Beds = u.Beds,
+                                               Rent = u.Rent,
+                                               Size = u.Size,
+                                           }).ToList(),
+                                           OwnerData = new OwnerDto{
+                                               OwnerId = o.OwnerId,
+                                               FirstName = o.FirstName,
+                                               MiddleName = o.MiddleName,
+                                               LastName = o.LastName,
+                                               Fax = o.Fax,
+                                               TaxId = o.TaxId,
+                                               EmailAddress = o.EmailAddress,
+                                               EmailAddress2 = o.EmailAddress2,
+                                               PictureName = o.Picture,
+                                               Picture = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Owner_Picture_" + o.OwnerId + Path.GetExtension(o.Picture)}",
+                                               PhoneNumber = o.PhoneNumber,
+                                               PhoneNumber2 = o.PhoneNumber2,
+                                               EmergencyContactInfo = o.EmergencyContactInfo,
+                                               LeaseAgreementId = o.LeaseAgreementId,
+                                               OwnerNationality = o.OwnerNationality,
+                                               Gender = o.Gender,
+                                               DocumentName = o.Document,
+                                               Document = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Owner_Document_" + o.OwnerId + Path.GetExtension(o.Document)}",
+                                               DOB = o.DOB,
+                                               VAT = o.VAT,
+                                               LegalName = o.LegalName,
+                                               Account_Name = o.Account_Name,
+                                               Account_Holder = o.Account_Holder,
+                                               Account_IBAN = o.Account_IBAN,
+                                               Account_Swift = o.Account_Swift,
+                                               Account_Bank = o.Account_Bank,
+                                               Account_Currency = o.Account_Currency,
+                                               AddedBy = o.AddedBy,
+                                               AddedDate = o.AddedDate,
+                                               ModifiedDate = o.ModifiedDate
+                                           }
+                                       }).AsNoTracking()
+                                        .FirstOrDefaultAsync();
+
+                return asset;
             }
             catch (Exception ex)
             {
@@ -3092,6 +3103,37 @@ namespace MagicVilla_VillaAPI.Repository
         //    }
         //}
 
+        public async Task<List<UnitDTO>> GetUnitsDetailAsync(int assetId)
+        {
+            try
+            {
+                var result = await (from au in _db.AssetsUnits
+                                    where au.AssetId == assetId
+                                    select new UnitDTO
+                                    {
+                                        UnitId = au.UnitId,
+                                        AssetId = au.AssetId,
+                                        UnitName = au.UnitName,
+                                        Beds = au.Beds,
+                                        Bath = au.Bath,
+                                        Size = au.Size,
+                                        Rent = au.Rent,
+
+
+                                    })
+                     .AsNoTracking()
+                     .ToListAsync();
+
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping owners and organizations: {ex.Message}");
+                throw;
+            }
+        }
+
         public async Task<bool> CreateAssetAsync(AssetDTO assetDTO)
         {
             var user = await _db.ApplicationUsers.FirstOrDefaultAsync(x => x.Id == assetDTO.AddedBy);
@@ -3206,6 +3248,9 @@ namespace MagicVilla_VillaAPI.Repository
         }
 
 
+
+
+
         public async Task<bool> UpdateAssetAsync(AssetDTO assetDTO)
         {
 
@@ -3250,7 +3295,7 @@ namespace MagicVilla_VillaAPI.Repository
                     }
                 }
 
-                    assetDTO.OwnerId = existingOwner.OwnerId;
+                assetDTO.OwnerId = existingOwner.OwnerId;
             }
 
 
@@ -3274,24 +3319,30 @@ namespace MagicVilla_VillaAPI.Repository
             existingAsset.Country = assetDTO.Country;
             existingAsset.Zipcode = assetDTO.Zipcode;
             existingAsset.State = assetDTO.State;
-            //existingAsset.Image = assetDTO.Image;
+            existingAsset.ModifiedBy = assetDTO.AddedBy;
+            existingAsset.ModifiedDate = DateTime.Now;
             if (assetDTO.PictureFileName != null)
             {
                 existingAsset.Image = assetDTO.PictureFileName;
             }
             existingAsset.AppTenantId = assetDTO.AppTid;
 
+            var existingUnits = _db.AssetsUnits.Where(u => u.AssetId == assetDTO.AssetId).ToList();
+            var incomingUnitIds = assetDTO.Units.Select(u => u.UnitId).ToHashSet();
 
+            // Update existing units and add new units
             foreach (var unitDTO in assetDTO.Units)
             {
-                var existingUnit = existingAsset.Units.FirstOrDefault(u => u.UnitId == unitDTO.UnitId);
+                var existingUnit = existingUnits.FirstOrDefault(u => u.UnitId == unitDTO.UnitId);
                 if (existingUnit != null)
                 {
+                    existingUnit.AssetId = assetDTO.AssetId;
                     existingUnit.UnitName = unitDTO.UnitName;
                     existingUnit.Beds = unitDTO.Beds;
                     existingUnit.Bath = unitDTO.Bath;
                     existingUnit.Size = unitDTO.Size;
                     existingUnit.Rent = unitDTO.Rent;
+                    _db.AssetsUnits.Update(existingUnit);
                 }
                 else
                 {
@@ -3304,24 +3355,22 @@ namespace MagicVilla_VillaAPI.Repository
                         Size = unitDTO.Size,
                         Rent = unitDTO.Rent
                     };
-                    existingAsset.Units.Add(newUnit);
+                    _db.AssetsUnits.Add(newUnit);
                 }
             }
 
-            foreach (var existingUnit in existingAsset.Units.ToList())
+            // Remove units that are no longer in the DTO
+            var unitsToRemove = existingUnits.Where(u => !incomingUnitIds.Contains(u.UnitId)).ToList();
+            if (unitsToRemove.Any())
             {
-                if (!assetDTO.Units.Any(u => u.UnitId == existingUnit.UnitId))
-                {
-                    _db.AssetsUnits.Remove(existingUnit);
-                }
+                _db.AssetsUnits.RemoveRange(unitsToRemove);
             }
-
             var result = await _db.SaveChangesAsync();
 
             if (assetDTO.Image != null)
             {
                 var ext = Path.GetExtension(assetDTO.PictureFileName);
-                await _googleCloudStorageService.UploadImagebyBase64Async(assetDTO.Image, "Assets_Image_" + existingAsset.OwnerId + ext);
+                await _googleCloudStorageService.UploadImagebyBase64Async(assetDTO.Image, "Assets_Image_" + existingAsset.AssetId + ext);
             }
 
             return result > 0;
@@ -5657,7 +5706,7 @@ namespace MagicVilla_VillaAPI.Repository
             try
             {
                 var result = await (from a in _db.Applications
-                                    where a.ApplicationId == id
+                                    where a.ApplicationId == id 
                                     select new ApplicationsDto
                                     {
                                         ApplicationId = a.ApplicationId,
@@ -5957,7 +6006,7 @@ namespace MagicVilla_VillaAPI.Repository
                 var existingDependents = _db.ApplicationDependent.Where(item => item.ApplicationId == model.ApplicationId && item.IsDeleted != true).ToList();
                 foreach (var dependentDto in model.Dependent)
                 {
-                    var existingDependent = existingDependents.FirstOrDefault(item => item.DependentId == dependentDto.DependentId);
+                    var existingDependent = existingDependents.FirstOrDefault(item => item.DependentId == dependentDto.DependentId && item.IsDeleted != true);
 
                     if (existingDependent != null)
                     {
@@ -6035,8 +6084,7 @@ namespace MagicVilla_VillaAPI.Repository
             saveResult = await _db.SaveChangesAsync();
 
             return saveResult > 0;
-        }
-        
+        }        
         public async Task<string> GetTermsbyId(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
@@ -6073,8 +6121,7 @@ namespace MagicVilla_VillaAPI.Repository
                 Console.WriteLine($"An error occurred while mapping Account Types: {ex.Message}");
                 throw;
             }
-        }
-        
+        }       
         public async Task<List<AccountType>> GetAccountTypesDllAsync(Filter filter)
         {
             try
@@ -6098,13 +6145,13 @@ namespace MagicVilla_VillaAPI.Repository
                 Console.WriteLine($"An error occurred while mapping Account Types: {ex.Message}");
                 throw;
             }
-        }
+        }       
         public async Task<AccountType> GetAccountTypeByIdAsync(int id)
         {
             try
             {
                 var result = await (from at in _db.AccountType
-                                    where at.AccountTypeId == id
+                                    where at.AccountTypeId == id && at.IsDeleted != true
                                     select new AccountType
                                     {
                                         AccountTypeId = at.AccountTypeId,
@@ -6120,13 +6167,13 @@ namespace MagicVilla_VillaAPI.Repository
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"An error occurred while mapping  Account Type: {ex.Message}");
+                Console.WriteLine($"An error occurred while mapping Account Type: {ex.Message}");
                 throw;
             }
-        }
+        }      
         public async Task<bool> SaveAccountTypeAsync(AccountType model)
         {
-            var accountType = _db.AccountType.FirstOrDefault(x => x.AccountTypeId == model.AccountTypeId);
+            var accountType = _db.AccountType.FirstOrDefault(x => x.AccountTypeId == model.AccountTypeId && x.IsDeleted != true);
 
             if (accountType == null)
                 accountType = new AccountType();
@@ -6152,7 +6199,7 @@ namespace MagicVilla_VillaAPI.Repository
 
             return result > 0;
 
-        }
+        }      
         public async Task<bool> DeleteAccountTypeAsync(int id)
         {
             var accountType = await _db.AccountType.FindAsync(id);
@@ -6196,8 +6243,7 @@ namespace MagicVilla_VillaAPI.Repository
                 Console.WriteLine($"An error occurred while mapping Account Sub Types: {ex.Message}");
                 throw;
             }
-        }
-        
+        }       
         public async Task<List<AccountSubTypeDto>> GetAccountSubTypesDllAsync(Filter filter)
         {
             try
@@ -6230,13 +6276,13 @@ namespace MagicVilla_VillaAPI.Repository
                 Console.WriteLine($"An error occurred while mapping Account Sub Types: {ex.Message}");
                 throw;
             }
-        }
+        }      
         public async Task<AccountSubType> GetAccountSubTypeByIdAsync(int id)
         {
             try
             {
                 var result = await (from ast in _db.AccountSubType
-                                    where ast.AccountSubTypeId == id
+                                    where ast.AccountSubTypeId == id && ast.IsDeleted != true
                                     select new AccountSubType
                                     {
                                         AccountSubTypeId = ast.AccountSubTypeId,
@@ -6254,13 +6300,13 @@ namespace MagicVilla_VillaAPI.Repository
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"An error occurred while mapping  Account Sub Type: {ex.Message}");
+                Console.WriteLine($"An error occurred while mapping Account Sub Type: {ex.Message}");
                 throw;
             }
-        }
+        }      
         public async Task<bool> SaveAccountSubTypeAsync(AccountSubType model)
         {
-            var accountSubType = _db.AccountSubType.FirstOrDefault(x => x.AccountSubTypeId == model.AccountSubTypeId);
+            var accountSubType = _db.AccountSubType.FirstOrDefault(x => x.AccountSubTypeId == model.AccountSubTypeId && x.IsDeleted != true);
 
             if (accountSubType == null)
                 accountSubType = new AccountSubType();
@@ -6288,7 +6334,7 @@ namespace MagicVilla_VillaAPI.Repository
 
             return result > 0;
 
-        }
+        }       
         public async Task<bool> DeleteAccountSubTypeAsync(int id)
         {
             var accountSubType = await _db.AccountSubType.FindAsync(id);
@@ -6346,16 +6392,15 @@ namespace MagicVilla_VillaAPI.Repository
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"An error occurred while mapping Account Sub Types: {ex.Message}");
+                Console.WriteLine($"An error occurred while mapping Chart Account: {ex.Message}");
                 throw;
             }
         }
-
         public async Task<List<ChartAccountDto>> GetChartAccountsDllAsync(Filter filter)
         {
             try
             {
-                var assetsQuery = _db.ChartAccount
+                var chartAccount = _db.ChartAccount.Where(x => x.IsDeleted != true)
                  .Select(ca => new ChartAccountDto
                  {
                      ChartAccountId = ca.ChartAccountId,
@@ -6365,20 +6410,19 @@ namespace MagicVilla_VillaAPI.Repository
 
                 if (!string.IsNullOrEmpty(filter.AddedBy))
                 {
-                    assetsQuery = assetsQuery.Where(x => x.AddedBy == filter.AddedBy);
+                    chartAccount = chartAccount.Where(x => x.AddedBy == filter.AddedBy);
                 }
 
-                var assets = await assetsQuery.ToListAsync();
+                var chartAccounts = await chartAccount.ToListAsync();
 
-                return assets;
+                return chartAccounts;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"An error occurred while mapping Account Sub Types: {ex.Message}");
+                Console.WriteLine($"An error occurred while mapping Chart Account: {ex.Message}");
                 throw;
             }
         }
-
         public async Task<ChartAccount> GetChartAccountByIdAsync(int id)
         {
             try
@@ -6386,7 +6430,7 @@ namespace MagicVilla_VillaAPI.Repository
                 var result = await (from ca in _db.ChartAccount
                                     from ast in _db.AccountSubType.Where(x => x.AccountSubTypeId == ca.AccountSubTypeId && x.IsDeleted != true).DefaultIfEmpty()
                                     from at in _db.AccountType.Where(x => x.AccountTypeId == ca.AccountTypeId && x.IsDeleted != true).DefaultIfEmpty()
-                                    where ca.ChartAccountId == id
+                                    where ca.ChartAccountId == id && ca.IsDeleted != true
                                     select new ChartAccount
                                     {
                                         ChartAccountId = ca.ChartAccountId,
@@ -6407,13 +6451,13 @@ namespace MagicVilla_VillaAPI.Repository
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"An error occurred while mapping  Account Sub Type: {ex.Message}");
+                Console.WriteLine($"An error occurred while mapping Chart Account: {ex.Message}");
                 throw;
             }
-        }
+        }       
         public async Task<bool> SaveChartAccountAsync(ChartAccount model)
         {
-            var chartAccount = _db.ChartAccount.FirstOrDefault(x => x.ChartAccountId == model.ChartAccountId);
+            var chartAccount = _db.ChartAccount.FirstOrDefault(x => x.ChartAccountId == model.ChartAccountId && x.IsDeleted != true);
 
             if (chartAccount == null)
                 chartAccount = new ChartAccount();
@@ -6444,7 +6488,7 @@ namespace MagicVilla_VillaAPI.Repository
 
             return result > 0;
 
-        }
+        }       
         public async Task<bool> DeleteChartAccountAsync(int id)
         {
             var chartAccount = await _db.ChartAccount.FindAsync(id);
@@ -6459,7 +6503,7 @@ namespace MagicVilla_VillaAPI.Repository
 
         #endregion
 
-        #region Buget
+        #region Budget
 
         public async Task<List<BudgetDto>> GetBudgetsAsync()
         {
@@ -6493,8 +6537,7 @@ namespace MagicVilla_VillaAPI.Repository
                 Console.WriteLine($"An error occurred while mapping Budget: {ex.Message}");
                 throw;
             }
-        }
-        
+        }        
         public async Task<Budget> GetBudgetByIdAsync(int id)
         {
             try
@@ -6508,8 +6551,7 @@ namespace MagicVilla_VillaAPI.Repository
                 Console.WriteLine($"An error occurred while mapping Budget: {ex.Message}");
                 throw;
             }
-        }
-        
+        }        
         public async Task<bool> SaveBudgetAsync(BudgetDto model)
         {
             var budget = new Budget();
@@ -6572,7 +6614,6 @@ namespace MagicVilla_VillaAPI.Repository
             return result > 0;
 
         }
-
         public async Task<bool> SaveDuplicateBudgetAsync(BudgetDto model)
         {
             var budget = new Budget();
@@ -6643,7 +6684,6 @@ namespace MagicVilla_VillaAPI.Repository
             }
 
         }
-
         public async Task<bool> DeleteBudgetAsync(int id)
         {
             var budget = await _db.Budgets.FindAsync(id);
@@ -6657,8 +6697,6 @@ namespace MagicVilla_VillaAPI.Repository
         }
 
         #endregion
-
-
 
         #region Reports
 
@@ -6745,13 +6783,12 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
-
         public async Task<List<InvoiceReportDto>> GetInvoiceReportAsync(ReportFilter reportFilter)
         {
             try
             {
                 var invoiceReportDtoList = await (from i in _db.Invoices
-                                                  from l in _db.Lease.Where(x => x.LeaseId == i.LeaseId).DefaultIfEmpty()
+                                                  from l in _db.Lease.Where(x => x.LeaseId == i.LeaseId && x.IsDeleted != true).DefaultIfEmpty()
                                                   join p in _db.Assets on l.AssetId equals p.AssetId into properties
                                                   from p in properties.DefaultIfEmpty()
                                                   where i.IsDeleted != true && (p == null || p.IsDeleted != true)
@@ -6822,7 +6859,6 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
-
         public async Task<List<TaskRequestReportDto>> GetTaskRequestReportAsync(ReportFilter reportFilter)
         {
             try
@@ -6892,10 +6928,10 @@ namespace MagicVilla_VillaAPI.Repository
             try
             {
                 var result = await (from d in _db.Documents
-                                    from a in _db.Assets.Where(x => x.AssetId == d.AssetId).DefaultIfEmpty()
+                                    from a in _db.Assets.Where(x => x.AssetId == d.AssetId && x.IsDeleted != true).DefaultIfEmpty()
                                     from u in _db.AssetsUnits.Where(x => x.UnitId == d.UnitId).DefaultIfEmpty()
-                                    from o in _db.Owner.Where(x => x.OwnerId == d.OwnerId).DefaultIfEmpty()
-                                    from tnt in _db.Tenant.Where(x => x.TenantId == d.TenantId).DefaultIfEmpty()
+                                    from o in _db.Owner.Where(x => x.OwnerId == d.OwnerId && x.IsDeleted != true).DefaultIfEmpty()
+                                    from tnt in _db.Tenant.Where(x => x.TenantId == d.TenantId && x.IsDeleted != true).DefaultIfEmpty()
                                     where d.IsDeleted != true
                                     select new DocumentsDto
                                     {
@@ -6928,17 +6964,17 @@ namespace MagicVilla_VillaAPI.Repository
                 Console.WriteLine($"An error occurred while mapping Document: {ex.Message}");
                 throw;
             }
-        }
+        }       
         public async Task<DocumentsDto> GetDocumentByIdAsync(int id)
         {
             try
             {
                 var result = await (from d in _db.Documents
-                                    from a in _db.Assets.Where(x => x.AssetId == d.AssetId).DefaultIfEmpty()
+                                    from a in _db.Assets.Where(x => x.AssetId == d.AssetId && x.IsDeleted != true).DefaultIfEmpty()
                                     from u in _db.AssetsUnits.Where(x => x.UnitId == d.UnitId).DefaultIfEmpty()
-                                    from o in _db.Owner.Where(x => x.OwnerId == d.OwnerId).DefaultIfEmpty()
-                                    from tnt in _db.Tenant.Where(x => x.TenantId == d.TenantId).DefaultIfEmpty()
-                                    where d.DocumentsId == id
+                                    from o in _db.Owner.Where(x => x.OwnerId == d.OwnerId && x.IsDeleted != true).DefaultIfEmpty()
+                                    from tnt in _db.Tenant.Where(x => x.TenantId == d.TenantId && x.IsDeleted != true).DefaultIfEmpty()
+                                    where d.DocumentsId == id && d.IsDeleted != true
                                     select new DocumentsDto
                                     {
                                         DocumentsId = d.DocumentsId,
@@ -6966,14 +7002,13 @@ namespace MagicVilla_VillaAPI.Repository
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"An error occurred while mapping  Document: {ex.Message}");
+                Console.WriteLine($"An error occurred while mapping Document: {ex.Message}");
                 throw;
             }
-        }
-
+        }       
         public async Task<bool> SaveDocumentAsync(DocumentsDto model)
         {
-            var document = _db.Documents.FirstOrDefault(x => x.DocumentsId == model.DocumentsId);
+            var document = _db.Documents.FirstOrDefault(x => x.DocumentsId == model.DocumentsId && x.IsDeleted != true);
 
             if (document == null)
                 document = new Documents();
@@ -7014,9 +7049,7 @@ namespace MagicVilla_VillaAPI.Repository
             }
 
             return result > 0;
-        }
-
-
+        }        
         public async Task<bool> DeleteDocumentAsync(int id)
         {
             var document = await _db.Documents.FindAsync(id);
@@ -7031,8 +7064,7 @@ namespace MagicVilla_VillaAPI.Repository
 
         #endregion
 
-
-        #region Documents
+        #region Settings
 
         public async Task<List<FAQ>> GetFAQsAsync()
         {
@@ -7059,7 +7091,6 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
-
         public async Task<List<VideoTutorial>> GetVideoTutorialsAsync()
         {
             try

@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using PMS_PropertyHapa.MigrationsFiles.Data;
 using PMS_PropertyHapa.Models.DTO;
 using PMS_PropertyHapa.Models.Entities;
@@ -113,7 +114,9 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
 
 
         Task<List<AssetDTO>> GetAllAssetsAsync();
+        Task<AssetDTO> GetAssetByIdAsync(int assetId);
         Task<List<AssetDTO>> GetAssetsDllAsync(Filter filter);
+        Task<List<UnitDTO>> GetUnitsDetailAsync(int assetId);
 
 
         Task<List<OwnerDto>> GetAllLandlordAsync();

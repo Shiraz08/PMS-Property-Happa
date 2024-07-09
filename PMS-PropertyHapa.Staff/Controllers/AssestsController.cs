@@ -52,7 +52,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> UpdateAsset(int assetId, AssetDTO assetDTO)
+        public async Task<IActionResult> UpdateAsset([FromForm] AssetDTO assetDTO)
         {
             if (!ModelState.IsValid)
             {
@@ -61,7 +61,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
             try
             {
-                assetDTO.AssetId = assetId;
+                assetDTO.AddedBy = Request?.Cookies["userId"]?.ToString();
                 await _authService.UpdateAssetAsync(assetDTO);
                 return Ok(new { success = true, message = "Asset added successfully" });
             }
@@ -117,10 +117,15 @@ namespace PMS_PropertyHapa.Staff.Controllers
         public async Task<IActionResult> AddAssest()
         {
             //Changes by Raas
-            var landlords = await _authService.GetAllLandlordAsync();
+            var owners = await _authService.GetAllLandlordAsync();
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
+            if (currenUserId != null)
+            {
+                owners = owners.Where(s => s.AddedBy == currenUserId);
+            }
             var viewModel = new AssetAndOwnersViewModel
             {
-                Owners = landlords
+                Owners = owners
             };
 
             return View(viewModel);
@@ -129,18 +134,13 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
         public async Task<IActionResult> EditAsset(int assetId)
         {
-            AssetDTO asset;
+            var asset = new AssetDTO();
             IEnumerable<OwnerDto> owners;
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
 
             if (assetId > 0)
             {
-                var assets = await _authService.GetAllAssetsAsync();
-                asset = assets.FirstOrDefault(s => s.AssetId == assetId);
-                var currenUserId = Request?.Cookies["userId"]?.ToString();
-                if (currenUserId != null)
-                {
-                    assets = assets.Where(s => s.AddedBy == currenUserId);
-                }
+                 asset = await _authService.GetAssetByIdAsync(assetId);
 
                 if (asset == null)
                 {
@@ -168,6 +168,13 @@ namespace PMS_PropertyHapa.Staff.Controllers
             return View("AddAssest", viewModel); 
         }
 
+        public async Task<IActionResult> GetUnitsDetail(int assetId)
+        {
 
+            IEnumerable<UnitDTO> unitDetails = new List<UnitDTO>();
+            unitDetails = await _authService.GetUnitsDetailAsync(assetId);
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
+            return Ok(unitDetails);
+        }
     }
 }

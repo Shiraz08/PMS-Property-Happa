@@ -192,16 +192,12 @@
     <div class="container-fluid">
         <div class="page-title">
             <div class="row align-items-center justify-content-between">
-                <!-- Adjusted for alignment and distribution -->
                 <div class="col-auto">
-                    <!-- col-auto adjusts the width to its content -->
                     <h3>@formTitle Property</h3>
                 </div>
                 <div class="col-auto">
-                    <!-- col-auto adjusts the width to its content -->
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb mb-0">
-                            <!-- mb-0 removes the bottom margin -->
                             <li class="breadcrumb-item">
                                 <a href="@Url.Action("Index","Assests")">
                                     <i data-feather="home"></i>
@@ -360,10 +356,32 @@
                                 <div id="unitFieldsContainer">
                                     @if (Model?.Asset?.Units != null && Model?.Asset?.Units.Count > 0)
                                     {
-                                        foreach (var unit in Model.Asset.Units)
+                                        for (int unitIndex = 0; unitIndex < Model.Asset.Units.Count; unitIndex++)
                                         {
-                                            <div class="unit-fields mb-3" id="unitFields@unit.UnitId">
-                                                <!-- Unit fields populated with data from the model -->
+                                            var unit = Model.Asset.Units[unitIndex];
+                                            <div class="unit-fields mb-3" id="unitFields@(unitIndex + 1)">
+                                                <hr>
+                                                <div class="form-row">
+                                                    <input type="hidden" name="unitId" value="@unit.UnitId" id="hiddenUnitId">
+                                                    <div class="col">
+                                                        <input type="text" class="form-control" value="@unit.UnitName" placeholder="Unit Name" name="unitName">
+                                                    </div>
+                                                    <div class="col">
+                                                        <input type="number" class="form-control" value="@unit.Beds" placeholder="Beds" name="beds">
+                                                    </div>
+                                                    <div class="col">
+                                                        <input type="number" class="form-control" value="@unit.Bath" placeholder="Bath" name="bath">
+                                                    </div>
+                                                    <div class="col">
+                                                        <input type="number" class="form-control" value="@unit.Size" placeholder="Size" name="size">
+                                                    </div>
+                                                    <div class="col">
+                                                        <input type="number" class="form-control" value="@unit.Rent" placeholder="Rent" name="rent">
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-4">
+                                                    <h5>Unit @(unitIndex + 1) <a class="float-right remove-unit" data-unit="@(unitIndex + 1)"><i class="fa fa-times"></i></a></h5>
+                                                </div>
                                             </div>
                                         }
                                     }
@@ -372,6 +390,7 @@
                                     <a href="javascript:void(0);" class="btn btn-success" id="addAnotherUnit" style="display: inline-block;"><i class="fa fa-plus"></i> Add Unit</a>
                                 </div>
                             </fieldset>
+
 
                             <fieldset id="step4" class="step-section">
                                 <h3>Bank Accounts</h3>
@@ -457,33 +476,6 @@
                                             </div>
                                         </div>
                                     </div>
-@*                                     <div class="modal-body">
-                                        <h3 class="modal-title">Previous Landlords<span class="f-14 pull-right mt-0">Total @Model?.Owners.Count()</span></h3>
-                                        <br />
-                                        <div class="card-body p-0">
-                                            <div class="row list-persons" id="addcon">
-                                                <div class="nav flex-column nav-pills" id="v-pills-tab">
-                                                    @foreach (var item in Model.Owners.OrderBy(a => a.FirstName))
-                                                    {
-                                                        <a class="contact-tab-@item.OwnerId nav-link"
-                                                           href="javascript:void(0);"
-                                                           onclick="selectOwner('@item.OwnerId', '@item.FirstName', '@item.LastName', '@item.EmailAddress', '@item.Picture', '@item.PostalCode', '@item.Address', '@item.District', '@item.Region', '@item.CountryCode', '@item.Country')"
-                                                           role="tab"
-                                                           aria-selected="true">
-                                                            <div class="media">
-                                                                <img class="img-50 img-fluid m-r-20 rounded-circle update_img_0" src="@item.Picture" alt="">
-                                                                <div class="media-body">
-                                                                    <h6>@item.FirstName @item.LastName</h6>
-                                                                    <p>@item.EmailAddress</p>
-                                                                </div>
-                                                            </div>
-                                                        </a>
-                                                    }
-
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div> *@
                                     <div class="container my-4">
                                         <table class="table table-striped" id="ownerList" style="display: none;">
                                             <thead>
@@ -492,11 +484,6 @@
                                                     <th>Last Name</th>
                                                     <th>Email</th>
                                                     <th>Picture</th>
-                                                   @*  <th>Company Name</th>
-                                                    <th>Address</th>
-                                                    <th>District</th>
-                                                    <th>Region</th>
-                                                    <th>CountryCode</th>*@
                                                     <th>Country</th> 
                                                     <th>Select</th>
                                                 </tr>
@@ -504,18 +491,13 @@
                                             <tbody>
                                                 @foreach (var item in Model.Owners.OrderBy(a => a.FirstName))
                                                 {
-                                                    <tr class="owner-row " data-id="@item.OwnerId">
+                                                    <tr class="owner-row" data-id="@item.OwnerId">
                                                         <td>@item.FirstName</td>
                                                         <td>@item.LastName</td>
                                                         <td>@item.EmailAddress</td>
                                                         <td><img src="@item.Picture" class="img-50 img-fluid m-r-20 rounded-circle" alt="Owner Picture"></td>
-@*                                                         <td>@item.PostalCode</td>
-                                                        <td>@item.Address</td>
-                                                        <td>@item.District</td>
-                                                        <td>@item.Region</td>
-                                                        <td>@item.CountryCode</td> *@
                                                         <td>@item.Country</td>
-                                                        <td><input type="checkbox" class="select-owner-checkbox"></td>
+                                                        <td><input type="checkbox" @(item.OwnerId == Model?.Asset?.OwnerId ? "checked" : "") class="select-owner-checkbox"></td>
                                                     </tr>
                                                 }
                                             </tbody>
@@ -528,65 +510,24 @@
                                                     <th>Last Name</th>
                                                     <th>Email</th>
                                                     <th>Picture</th>
-                                                   @*  <th>PostalCode</th>
-                                                    <th>Address</th>
-                                                    <th>District</th>
-                                                    <th>Region</th>
-                                                    <th>CountryCode</th> *@
                                                     <th>Country</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <!-- Selected owner will be shown here -->
                                             </tbody>
                                         </table>
                                     </div>
                                 </div>
-@*                                 <div class="selected-owner-details" style="display: none;">
-                                    <table id="selectedOwnerTable" class="table">
-                                        <thead>
-                                            <tr>
-                                                <th>Selected Owner</th>
-                                                <th>First Name</th>
-                                                <th>Last Name</th>
-                                                <th>Email</th>
-                                                <th>Phone Number</th>
-                                                <th>PostalCode</th>
-                                                <th>Address</th>
-                                                <th>District</th>
-                                                <th>Region</th>
-                                                <th>CountryCode</th>
-                                                <th>Country</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <!-- Filled dynamically -->
-                                        </tbody>
-                                    </table>
-                                </div> *@
-
-
-
                             </fieldset>
 
-
                             <!-- Hidden inputs for AssetDTO -->
-                            <input type="hidden" name="SelectedPropertyType" id="SelectedPropertyType">
-                            <input type="hidden" name="SelectedSubtype" id="SelectedSubtype">
-                            <input type="hidden" name="SelectedBankAccountOption" id="SelectedBankAccountOption">
-                            <input type="hidden" name="SelectedReserveFundsOption" id="SelectedReserveFundsOption">
-                            <input type="hidden" name="SelectedOwnershipOption" id="SelectedOwnershipOption">
+                            <input type="hidden" value="@Model?.Asset?.AssetId" id="hiddenAssetId">
+                            <input type="hidden" value="@Model?.Asset?.SelectedPropertyType" name="SelectedPropertyType" id="SelectedPropertyType">
+                            <input type="hidden" value="@Model?.Asset?.SelectedSubtype" name="SelectedSubtype" id="SelectedSubtype">
+                            <input type="hidden" value="@Model?.Asset?.SelectedBankAccountOption" name="SelectedBankAccountOption" id="SelectedBankAccountOption">
+                            <input type="hidden" value="@Model?.Asset?.SelectedReserveFundsOption" name="SelectedReserveFundsOption" id="SelectedReserveFundsOption">
+                            <input type="hidden" value="@Model?.Asset?.SelectedOwnershipOption" name="SelectedOwnershipOption" id="SelectedOwnershipOption">
                             <input type="hidden" name="selectedOwnerId" id="selectedOwnerId">
-                            <!-- Hidden inputs for owner details -->
-@*                             <input type="hidden" name="OwnerFirstName" id="hiddenOwnerFirstName">
-                            <input type="hidden" name="OwnerLastName" id="hiddenOwnerLastName">
-                            <input type="hidden" name="OwnerEmail" id="hiddenOwnerEmail">
-                            <input type="hidden" name="OwnerPostalCode" id="hiddenOwnerPostalCode">
-                            <input type="hidden" name="OwnerAddress" id="hiddenOwnerAddress">
-                            <input type="hidden" name="OwnerDistrict" id="hiddenOwnerDistrict">
-                            <input type="hidden" name="OwnerRegion" id="hiddenOwnerRegion">
-                            <input type="hidden" name="OwnerCountryCode" id="hiddenOwnerCountryCode">
-                            <input type="hidden" name="OwnerCountry" id="hiddenOwnerCountry">*@
                             <input type="hidden" id="hiddenImageName" id="PictureFileName">
                             <input type="hidden" id="hiddenImage" name="Image">
 
@@ -668,8 +609,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger closebutton" data-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-success" id="saveOwner">Save</button>
-@*                 <button type="button" class="btn btn-success" id="addNewOwner">Add</button>
- *@            </div>
+            </div>
         </div>
     </div>
 </div>
@@ -691,46 +631,16 @@
                 $("#selectedOwnerId").val(selectedRow.attr('data-id'))
             $('#selectedOwnerTable').show();
 
-@*             console.log(selectedRow.find('td:eq(0)').text());
-            console.log(selectedRow.find('td:eq(1)').text());
-            console.log(selectedRow.find('td:eq(2)').text());
-            console.log(selectedRow.find('td:eq(3) img').attr('src'));
-            console.log(selectedRow.find('td:eq(4)').text());
-            console.log(selectedRow.find('td:eq(5)').text());
-            console.log(selectedRow.find('td:eq(6)').text());
-            console.log(selectedRow.find('td:eq(7)').text());
-            console.log(selectedRow.find('td:eq(8)').text());
-            console.log(selectedRow.find('td:eq(9)').text());
- *@
             var rowHtml = `<tr>
                            <td>Selected</td>
                            <td>${selectedRow.find('td:eq(0)').text()}</td>
                            <td>${selectedRow.find('td:eq(1)').text()}</td>
                            <td>${selectedRow.find('td:eq(2)').text()}</td>
                            <td> <img src="${selectedRow.find('td:eq(3) img').attr('src')}" class="img-50 img-fluid m-r-20 rounded-circle" alt="Owner Picture"></td>
-                           @* <td>${selectedRow.find('td:eq(4)').text()}</td>
-                           <td>${selectedRow.find('td:eq(5)').text()}</td>
-                           <td>${selectedRow.find('td:eq(6)').text()}</td>
-                           <td>${selectedRow.find('td:eq(7)').text()}</td>
-                           <td>${selectedRow.find('td:eq(8)').text()}</td> *@
                            <td>${selectedRow.find('td:eq(9)').text()}</td>
                            </tr>`;
             selectedTbody.append(rowHtml);
 
-            // Update hidden inputs with the selected owner's information
-@*             $('#hiddenOwnerFirstName').val(selectedRow.find('td:eq(0)').text());
-            $('#hiddenOwnerLastName').val(selectedRow.find('td:eq(1)').text());
-            $('#hiddenOwnerEmail').val(selectedRow.find('td:eq(2)').text());
-            $('#hiddenOwnerPostalCode').val(selectedRow.find('td:eq(4)').text());
-            $('#hiddenOwnerAddress').val(selectedRow.find('td:eq(5)').text());
-            $('#hiddenOwnerDistrict').val(selectedRow.find('td:eq(6)').text());
-            $('#hiddenOwnerRegion').val(selectedRow.find('td:eq(7)').text());
-            $('#hiddenOwnerCountryCode').val(selectedRow.find('td:eq(8)').text());
-            $('#hiddenOwnerCountry').val(selectedRow.find('td:eq(9)').text()); *@
-
-            // Optionally, if you store and want to pass the base64 image data, add an input for it and set its value
-            // Assuming you have an input with id="hiddenOwnerImage"
-            // For this, you'd need to ensure the 'picture' variable contains the base64 image string
             $('#hiddenOwnerImage').val(selectedRow.find('td:eq(3) img').attr('src'));
 
         }else{
@@ -777,7 +687,6 @@
             case 3:
                 var unitsValid = true;
                 $('#unitFieldsContainer .unit-fields').each(function () {
-                    // Check if all required fields within a unit have values
                     var unitNameValid = $(this).find('[name="unitName"]').val() !== '';
                     var bedsValid = $(this).find('[name="beds"]').val() !== '';
                     var bathValid = $(this).find('[name="bath"]').val() !== '';
@@ -873,221 +782,13 @@
 
     $(document).ready(function () {
 
-    @*
-            debugger;
-            $('.btn-next').off('click').on('click', function () {
-            if (validateCurrentStep()) {
-            if (currentStep < totalSteps) {
-            navigateToStep(currentStep + 1);
-            } else {
-
-            $('#multiStepForm').submit();
+        $('.btn-previous').click(function () {
+            if (currentStep > 1) {
+                navigateToStep(currentStep - 1);
             }
-            }
-            }); *@
-
-
-
-
-            $('.btn-previous').click(function () {
-                if (currentStep > 1) {
-                    navigateToStep(currentStep - 1);
-                }
-            });
+        });
 
         navigateToStep(1);
-
-        function displaySubtypes(type) {
-            var subtypesHtml = '';
-            if (type === 'residential') {
-                // Residential Subtypes
-                subtypesHtml = `
-                                                                                    <div class="row">
-                                                                                        <div class="small-square-card-container">
-                                                                                            <div class="card property-subtype-card small-square-card" data-subtype="single-family">
-                                                                                                <div class="card-body text-center">
-                                                                                                    <i class="fa fa-home fa-2x"></i>
-                                                                                                    <h5 class="card-title mt-2">Single Family</h5>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                        <div class="small-square-card-container">
-                                                                                            <div class="card property-subtype-card small-square-card" data-subtype="multi-family">
-                                                                                                <div class="card-body text-center">
-                                                                                                    <i class="fa fa-building fa-2x"></i>
-                                                                                                    <h5 class="card-title mt-2">Multi Family</h5>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                        <div class="small-square-card-container">
-                                                                                            <div class="card property-subtype-card small-square-card" data-subtype="condo">
-                                                                                                <div class="card-body text-center">
-                                                                                                        <i class="fa fa-warehouse fa-2x"></i>
-                                                                                                    <h5 class="card-title mt-2">Condo</h5>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                        <div class="small-square-card-container">
-                                                                                            <div class="card property-subtype-card small-square-card" data-subtype="townhome">
-                                                                                                <div class="card-body text-center">
-                                                                                                    <i class="fa fa-home fa-2x"></i>
-                                                                                                    <h5 class="card-title mt-2">Townhome</h5>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                        <div class="small-square-card-container">
-                                                                                            <div class="card property-subtype-card small-square-card" data-subtype="other">
-                                                                                                <div class="card-body text-center">
-                                                                                                    <i class="fa fa-building fa-2x"></i>
-                                                                                                    <h5 class="card-title mt-2">Other</h5>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                `;
-            } else if (type === 'commercial') {
-                // Commercial Subtypes
-                subtypesHtml = `
-                                                                                    <div class="row">
-                                                                                        <div class="small-square-card-container">
-                                                                                            <div class="card property-subtype-card small-square-card" data-subtype="industrial">
-                                                                                                <div class="card-body text-center">
-                                                                                                    <i class="fa fa-industry fa-2x"></i>
-                                                                                                    <h5 class="card-title">Industrial</h5>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                        <div class="small-square-card-container">
-                                                                                            <div class="card property-subtype-card small-square-card" data-subtype="office">
-                                                                                                <div class="card-body text-center">
-                                                                                                    <i class="fa fa-building fa-2x"></i>
-                                                                                                    <h5 class="card-title">Office</h5>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                        <div class="small-square-card-container">
-                                                                                            <div class="card property-subtype-card small-square-card" data-subtype="retail">
-                                                                                                <div class="card-body text-center">
-                                                                                                    <i class="fa fa-shopping-bag fa-2x"></i>
-                                                                                                    <h5 class="card-title">Retail</h5>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                        <div class="small-square-card-container">
-                                                                                            <div class="card property-subtype-card small-square-card" data-subtype="shopping-center">
-                                                                                                <div class="card-body text-center">
-                                                                                                    <i class="fa fa-shopping-cart fa-2x"></i>
-                                                                                                    <h5 class="card-title">Shopping Center</h5>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                        <div class="small-square-card-container">
-                                                                                            <div class="card property-subtype-card small-square-card" data-subtype="storage">
-                                                                                                <div class="card-body text-center">
-                                                                                                    <i class="fa fa-warehouse fa-2x"></i>
-                                                                                                    <h5 class="card-title">Storage</h5>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                        <div class="small-square-card-container">
-                                                                                            <div class="card property-subtype-card small-square-card" data-subtype="other">
-                                                                                                <div class="card-body text-center">
-                                                                                                    <i class="fa fa-building fa-2x"></i>
-                                                                                                    <h5 class="card-title">Other</h5>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                `;
-            }
-            $('#subtypeSelection').html(subtypesHtml).show();
-
-            $('.property-subtype-card').off('click').on('click', function () {
-                $('.property-subtype-card').removeClass('selected');
-                $(this).addClass('selected');
-            });
-
-            var unitFieldsHtml = '';
-            if (type === 'residential') {
-
-                unitFieldsHtml = `
-                                                                                           <div class="row">
-                                                                                    <div class="col-md-4">
-                                                                                        <div class="mb-2">
-                                                                                            <label class="sr-only" for="unitName">Unit Name</label>
-                                                                                            <input class="form-control" id="unitName" type="text" name="unitName" placeholder="Unit Name" required="">
-                                                                                        </div>
-                                                                                    </div>
-                                                                                    <div class="col-md-2">
-                                                                                        <div class="mb-2">
-                                                                                            <label class="sr-only" for="beds">Beds</label>
-                                                                                            <input class="form-control" id="beds" type="number" name="beds" placeholder="Beds" required="">
-                                                                                        </div>
-                                                                                    </div>
-                                                                                    <div class="col-md-2">
-                                                                                        <div class="mb-2">
-                                                                                            <label class="sr-only" for="bath">Bath</label>
-                                                                                            <input class="form-control" id="bath" type="number" name="bath" placeholder="Bath" required="">
-                                                                                        </div>
-                                                                                    </div>
-                                                                                    <div class="col-md-2">
-                                                                                        <div class="mb-2">
-                                                                                            <label class="sr-only" for="size">Size</label>
-                                                                                            <input class="form-control" id="size" type="number" name="size" placeholder="Size" required="">
-                                                                                        </div>
-                                                                                    </div>
-                                                                                    <div class="col-md-2">
-                                                                                        <div class="mb-2">
-                                                                                            <label class="sr-only" for="rent">Rent</label>
-                                                                                            <input class="form-control" id="rent" type="number" name="rent" placeholder="Rent" required="">
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-
-                                                                                    `;
-            } else if (type === 'commercial') {
-                // Commercial unit fields
-                unitFieldsHtml = `
-                                                                                                    <div class="row">
-                                                                                        <div class="col-md-4">
-                                                                                            <div class="mb-2">
-                                                                                                <label class="sr-only" for="unitName">Unit Name</label>
-                                                                                                <input class="form-control" id="unitName" type="text" name="unitName" placeholder="Unit Name" required="">
-                                                                                            </div>
-                                                                                        </div>
-                                                                                        <div class="col-md-2">
-                                                                                            <div class="mb-2">
-                                                                                                <label class="sr-only" for="beds">Beds</label>
-                                                                                                <input class="form-control" id="beds" type="number" name="beds" placeholder="Beds" required="">
-                                                                                            </div>
-                                                                                        </div>
-                                                                                        <div class="col-md-2">
-                                                                                            <div class="mb-2">
-                                                                                                <label class="sr-only" for="bath">Bath</label>
-                                                                                                <input class="form-control" id="bath" type="number" name="bath" placeholder="Bath" required="">
-                                                                                            </div>
-                                                                                        </div>
-                                                                                        <div class="col-md-2">
-                                                                                            <div class="mb-2">
-                                                                                                <label class="sr-only" for="size">Size</label>
-                                                                                                <input class="form-control" id="size" type="number" name="size" placeholder="Size" required="">
-                                                                                            </div>
-                                                                                        </div>
-                                                                                        <div class="col-md-2">
-                                                                                            <div class="mb-2">
-                                                                                                <label class="sr-only" for="rent">Rent</label>
-                                                                                                <input class="form-control" id="rent" type="number" name="rent" placeholder="Rent" required="">
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                    `;
-            }
-
-            $('#unitFields').html(unitFieldsHtml);
-
-        }
-
-
 
         $('.property-type-card').click(function () {
             var type = $(this).data('type');
@@ -1108,7 +809,6 @@
         $('.property-type-card').click(function () {
             var type = $(this).data('type');
             $('#SelectedPropertyType').val(type);
-            // Rest of the code to display subtypes
         });
 
         $(document).on('click', '.property-subtype-card', function () {
@@ -1204,6 +904,7 @@
         var units = collectUnitsData();
 
         var assetDTO = {
+            AssetId: $('#hiddenAssetId').val(),
             SelectedPropertyType: $('#SelectedPropertyType').val(),
             SelectedSubtype: $('#SelectedSubtype').val(),
             buildingNo: $('#buildingNo').val(),
@@ -1216,7 +917,7 @@
             Zipcode: $('#zipcode').val(),
             Units: units,
             Image: $('#hiddenImage').val(),
-                PictureFileName: $('#hiddenImageName').val(),
+            PictureFileName: $('#hiddenImageName').val(),
             SelectedBankAccountOption: $('#SelectedBankAccountOption').val(),
             SelectedReserveFundsOption: $('#SelectedReserveFundsOption').val(),
             SelectedOwnershipOption: $('#SelectedOwnershipOption').val(),
@@ -1242,7 +943,7 @@
                 var userId = localStorage.getItem('userId');
                 var formData = collectFormData();
                 formData.AppTId = userId;
-                var submitUrl = isEditMode ? `$/Assests/UpdateAsset/{Model?.Asset?.AssetId}` : '/Assests/AddAsset';
+                var submitUrl = isEditMode ? `/Assests/UpdateAsset` : '/Assests/AddAsset';
 
                 $.ajax({
                     url: submitUrl,
@@ -1264,72 +965,11 @@
         }
     });
 
-        @* function collectFormData() {
-        var units = collectUnitsData();
-
-        var formData = new FormData();
-        formData.append("SelectedPropertyType", $('#SelectedPropertyType').val());
-        formData.append("SelectedSubtype", $('#SelectedSubtype').val());
-        formData.append("buildingNo", $('#buildingNo').val());
-        formData.append("buildingName", $('#buildingName').val());
-        formData.append("Street1", $('#street1').val());
-        formData.append("Street2", $('#street2').val());
-        formData.append("City", $('#city').val());
-        formData.append("State", $('#state').val());
-        formData.append("Country", $('#country').val());
-        formData.append("Zipcode", $('#zipcode').val());
-        formData.append("Units", JSON.stringify(units)); // Assuming units is an object or array
-        formData.append("PictureFile", $('#assetPicture')[0].files[0]);
-        formData.append("SelectedBankAccountOption", $('#SelectedBankAccountOption').val());
-        formData.append("SelectedReserveFundsOption", $('#SelectedReserveFundsOption').val());
-        formData.append("SelectedOwnershipOption", $('#SelectedOwnershipOption').val());
-        formData.append("OwnerId", $('#selectedOwnerId').val());
-
-        return formData;
-    }
-
-    var isEditMode = '@Model?.Asset?.AssetId' !== '';
-
-    $('#submitForm').click(function (event) {
-        event.preventDefault();
-
-        debugger;
-        var isValid = validateCurrentStep();
-        if (isValid) {
-            if (currentStep < totalSteps) {
-                navigateToStep(currentStep + 1);
-            } else {
-                var userId = localStorage.getItem('userId');
-                var formData = collectFormData();
-                formData.append("AppTId", userId);
-                var submitUrl = isEditMode ? `$/Assests/UpdateAsset/{Model?.Asset?.AssetId}` : '/Assests/AddAsset';
-                console.log("asd")
-                console.log(formData)
-                $.ajax({
-                    url: submitUrl,
-                    type: 'POST',
-                    data: formData,
-                    contentType: false,
-                    processData: false,
-                    success: function (response) {
-                        console.log("Success:", response);
-                        window.location.href = '/Assests/Index';
-                    },
-                    error: function (xhr, status, error) {
-                        console.error("Error:", error);
-                    }
-                });
-            }
-        } else {
-            console.log('Form validation failed. Please check the inputs.');
-        }
-    });
- *@
-
     function collectUnitsData() {
         var units = [];
         $('#unitFieldsContainer .unit-fields').each(function () {
             var unit = {
+                UnitId: $(this).find('input[name="unitId"]').val(),
                 UnitName: $(this).find('input[name="unitName"]').val(),
                 Beds: parseInt($(this).find('input[name="beds"]').val(), 10),
                 Bath: parseInt($(this).find('input[name="bath"]').val(), 10),
@@ -1345,38 +985,6 @@
 
 
     $(document).ready(function () {
-
-        function addUnitFields() {
-            var unitIndex = $('#unitFieldsContainer .unit-fields').length + 1;
-            var unitFieldsHtml = `
-                                                                <div class="unit-fields mb-3" id="unitFields${unitIndex}">
-                                                                    <hr>
-
-                                                                    <div class="form-row">
-                                                                        <div class="col">
-                                                                            <input type="text" class="form-control" placeholder="Unit Name" name="unitName">
-                                                                        </div>
-                                                                        <div class="col">
-                                                                            <input type="number" class="form-control" placeholder="Beds" name="beds">
-                                                                        </div>
-                                                                        <div class="col">
-                                                                            <input type="number" class="form-control" placeholder="Bath" name="bath">
-                                                                        </div>
-                                                                        <div class="col">
-                                                                            <input type="number" class="form-control" placeholder="Size" name="size">
-                                                                        </div>
-                                                                        <div class="col">
-                                                                            <input type="number" class="form-control" placeholder="Rent" name="rent">
-                                                                        </div>
-                                                                    </div>
-
-                                                                    <div class="row mb-4">
-                                                                               <h5>Unit ${unitIndex} <a class="float-right remove-unit" data-unit="${unitIndex}"><i class="fa fa-times"></i></a></h5>
-                                                                        </div>
-                                                                </div>`;
-            $('#unitFieldsContainer').append(unitFieldsHtml);
-        }
-
         addUnitFields();
 
         $('#addAnotherUnit').click(function () {
@@ -1388,6 +996,34 @@
             $('#unitFields' + unitId).remove();
         });
     });
+
+    function addUnitFields() {
+        var unitIndex = $('#unitFieldsContainer .unit-fields').length + 1;
+        var unitFieldsHtml = `<div class="unit-fields mb-3" id="unitFields${unitIndex}">
+                                <hr>
+                                <div class="form-row">
+                                    <div class="col">
+                                        <input type="text" class="form-control" placeholder="Unit Name" name="unitName">
+                                    </div>
+                                    <div class="col">
+                                        <input type="number" class="form-control" placeholder="Beds" name="beds">
+                                    </div>
+                                    <div class="col">
+                                        <input type="number" class="form-control" placeholder="Bath" name="bath">
+                                    </div>
+                                    <div class="col">
+                                        <input type="number" class="form-control" placeholder="Size" name="size">
+                                    </div>
+                                    <div class="col">
+                                        <input type="number" class="form-control" placeholder="Rent" name="rent">
+                                    </div>
+                                </div>
+                                <div class="row mb-4">
+                                            <h5>Unit ${unitIndex} <a class="float-right remove-unit" data-unit="${unitIndex}"><i class="fa fa-times"></i></a></h5>
+                                    </div>
+                            </div>`;
+        $('#unitFieldsContainer').append(unitFieldsHtml);
+    }
 
 
 
@@ -1403,154 +1039,47 @@
         var ownerCountryCode = $('#OwnerCountryCode').val();
         var ownerCountry = $('#OwnerCountry').val();
 
-        // Update hidden inputs
-@*         $('#hiddenOwnerFirstName').val(ownerFirstName);
-        $('#hiddenOwnerLastName').val(ownerLastName);
-        $('#hiddenOwnerEmail').val(ownerEmail);
-        $('#hiddenOwnerPostalCode').val(ownerPostalCode);
-        $('#hiddenOwnerAddress').val(ownerAddress);
-        $('#hiddenOwnerDistrict').val(ownerDistrict);
-        $('#hiddenOwnerRegion').val(ownerRegion);
-        $('#hiddenOwnerCountryCode').val(ownerCountryCode);
-        $('#hiddenOwnerCountry').val(ownerCountry); *@
-
-        // Handle the owner's picture if uploaded
         var fileInput = document.getElementById('PictureUrl');
         if (fileInput.files && fileInput.files[0]) {
             var reader = new FileReader();
 
             reader.onload = function (e) {
-                // Update the hidden input for the base64 image string
                 $('#hiddenOwnerImage').val(e.target.result);
-
-                // Clear existing row data from the table
                 $('#selectedOwnerTable tbody').empty();
 
-                // Append the new row with owner data including the image
-                @* var newRowHtml = `<tr>
-                    <td><img src="${e.target.result}" class="img-50 img-fluid m-r-20 rounded-circle" alt="Owner Picture"></td>
-                    <td>${ownerFirstName} ${ownerLastName}</td>
-                    <td>${ownerEmail}</td>
-                    <td>${ownerPostalCode}</td>
-                    <td>${ownerAddress}</td>
-                    <td>${ownerDistrict}</td>
-                    <td>${ownerRegion}</td>
-                    <td>${ownerCountryCode}</td>
-                    <td>${ownerCountry}</td>
-                </tr>`; *@
                     var newRowHtml = `<tr>
                                      <td>Selected</td>
                                      <td>${ownerFirstName}</td>
                                      <td>${ownerLastName}</td>
                                      <td>${ownerEmail}</td>
                                      <td> <img src="${e.target.result}" class="img-50 img-fluid m-r-20 rounded-circle" alt="Owner Picture"></td>
-                                    @*  <td>${ownerPostalCode}</td>
-                                     <td>${ownerAddress}</td>
-                                     <td>${ownerDistrict}</td>
-                                     <td>${ownerRegion}</td>
-                                     <td>${ownerCountryCode}</td> *@
                                      <td>${ownerCountry}</td>
                                      </tr>`;
                 $('#selectedOwnerTable tbody').append(newRowHtml);
 
-                // Make sure the table is visible
                 $('#selectedOwnerTable').show();
 
             };
 
             reader.readAsDataURL(fileInput.files[0]);
         } else {
-            // If no picture is uploaded, still update the table without the image
-            // Clear existing row data from the table
             $('#selectedOwnerTable tbody').empty();
 
-            // Append the new row with owner data without the image
-@*             var newRowHtml = `<tr>
-                <td>N/A</td>
-                <td>${ownerFirstName} ${ownerLastName}</td>
-                <td>${ownerEmail}</td>
-                <td>${ownerPostalCode}</td>
-                <td>${ownerAddress}</td>
-                <td>${ownerDistrict}</td>
-                <td>${ownerRegion}</td>
-                <td>${ownerCountryCode}</td>
-                <td>${ownerCountry}</td>
-            </tr>`; *@
                 var newRowHtml = `<tr>
-                                         <td>Selected</td>
-                                         <td>${ownerFirstName}</td>
-                                         <td>${ownerLastName}</td>
-                                         <td>${ownerEmail}</td>
-                                         <td>N/A</td>
-                                         @* <td>${ownerPostalCode}</td>
-                                         <td>${ownerAddress}</td>
-                                         <td>${ownerDistrict}</td>
-                                         <td>${ownerRegion}</td>
-                                         <td>${ownerCountryCode}</td> *@
-                                         <td>${ownerCountry}</td>
-                                         </tr>`;
+                                    <td>Selected</td>
+                                    <td>${ownerFirstName}</td>
+                                    <td>${ownerLastName}</td>
+                                    <td>${ownerEmail}</td>
+                                    <td>N/A</td>
+                                    <td>${ownerCountry}</td>
+                                  </tr>`;
             
             $('#selectedOwnerTable tbody').append(newRowHtml);
-
-            // Make sure the table is visible
             $('#selectedOwnerTable').show();
         }
-
-        // Close modal and optionally clear form fields
         $('#addOwnerModal').modal('hide');
-        // Optional: Reset the form to clear fields
         $('#ownerForm')[0].reset();
     });
-
-
-
-@*     $('#addNewOwner').click(function () {
-
-        $('#ownerForm')[0].reset();
-
-        $('#firstName').focus();
-    }); *@
-
-@*     function selectOwner(ownerId, firstName, lastName, email, picture, postalCode, address, district, region, countryCode, country) {
-        // Clear existing data from the table
-        $('#selectedOwnerTable tbody').empty();
-
-        // Update the table with the selected owner's details
-        var tableHtml = `
-                <tr>
-                    <td><img src="${picture}" alt="${firstName} ${lastName}" class="img-50 img-fluid m-r-20 rounded-circle"></td>
-                    <td>${firstName} ${lastName}</td>
-                    <td>${email}</td>
-                    <td>${postalCode}</td>
-                    <td>${address}</td>
-                    <td>${district}</td>
-                    <td>${region}</td>
-                    <td>${countryCode}</td>
-                    <td>${country}</td>
-                </tr>
-            `;
-        $('#selectedOwnerTable tbody').html(tableHtml);
-
-        // Update hidden inputs with the selected owner's information
-        $('#hiddenOwnerFirstName').val(firstName);
-        $('#hiddenOwnerLastName').val(lastName);
-        $('#hiddenOwnerEmail').val(email);
-        $('#hiddenOwnerPostalCode').val(postalCode);
-        $('#hiddenOwnerAddress').val(address);
-        $('#hiddenOwnerDistrict').val(district);
-        $('#hiddenOwnerRegion').val(region);
-        $('#hiddenOwnerCountryCode').val(countryCode);
-        $('#hiddenOwnerCountry').val(country);
-
-        // Optionally, if you store and want to pass the base64 image data, add an input for it and set its value
-        // Assuming you have an input with id="hiddenOwnerImage"
-        // For this, you'd need to ensure the 'picture' variable contains the base64 image string
-        $('#hiddenOwnerImage').val(picture);
-
-        // Show the table container
-        $('.selected-owner-details').show();
-    } *@
-
 
 </script>
 
@@ -1562,6 +1091,8 @@
         $('.property-type-card').each(function () {
             if ($(this).data('type') === selectedPropertyType) {
                 $(this).addClass('selected');
+                console.log("asds")
+                console.log(selectedPropertyType)
                 displaySubtypes(selectedPropertyType);
             }
         });
@@ -1595,9 +1126,15 @@
         $('.ownership-card').each(function () {
             if ($(this).data('option') === selectedOwnershipOption) {
                 $(this).addClass('selected');
-                if ($(this).data('option') === 'owned-by-someone-else') {
-                    $('#addOwnerSection').show();
-                }
+              if ($(this).data('option') === 'owned-by-someone-else') {
+                $('#addOwnerSection').show();
+                $('#ownerList').show();
+                updateSelectedOwnerDetails();
+              } else {
+                  $('#addOwnerSection').hide();
+                  $('#ownerList').hide();
+                  $('#selectedOwnerTable').hide();
+              }
             }
         });
 
@@ -1617,7 +1154,195 @@
                 reader.readAsDataURL(this.files[0]);
             }
         });
-
-
     });
+
+
+  function displaySubtypes(type) {
+    console.log(type)
+    var subtypesHtml = '';
+    if (type === 'residential') {
+    // Residential Subtypes
+    subtypesHtml = `<div class="row">
+                        <div class="small-square-card-container">
+                            <div class="card property-subtype-card small-square-card" data-subtype="single-family">
+                                <div class="card-body text-center">
+                                    <i class="fa fa-home fa-2x"></i>
+                                    <h5 class="card-title mt-2">Single Family</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="small-square-card-container">
+                            <div class="card property-subtype-card small-square-card" data-subtype="multi-family">
+                                <div class="card-body text-center">
+                                    <i class="fa fa-building fa-2x"></i>
+                                    <h5 class="card-title mt-2">Multi Family</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="small-square-card-container">
+                            <div class="card property-subtype-card small-square-card" data-subtype="condo">
+                                <div class="card-body text-center">
+                                        <i class="fa fa-warehouse fa-2x"></i>
+                                    <h5 class="card-title mt-2">Condo</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="small-square-card-container">
+                            <div class="card property-subtype-card small-square-card" data-subtype="townhome">
+                                <div class="card-body text-center">
+                                    <i class="fa fa-home fa-2x"></i>
+                                    <h5 class="card-title mt-2">Townhome</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="small-square-card-container">
+                            <div class="card property-subtype-card small-square-card" data-subtype="other">
+                                <div class="card-body text-center">
+                                    <i class="fa fa-building fa-2x"></i>
+                                    <h5 class="card-title mt-2">Other</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
+
+                } else if (type === 'commercial') {
+                    // Commercial Subtypes
+                    subtypesHtml = `<div class="row">
+                                        <div class="small-square-card-container">
+                                            <div class="card property-subtype-card small-square-card" data-subtype="industrial">
+                                                <div class="card-body text-center">
+                                                    <i class="fa fa-industry fa-2x"></i>
+                                                    <h5 class="card-title">Industrial</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="small-square-card-container">
+                                            <div class="card property-subtype-card small-square-card" data-subtype="office">
+                                                <div class="card-body text-center">
+                                                    <i class="fa fa-building fa-2x"></i>
+                                                    <h5 class="card-title">Office</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="small-square-card-container">
+                                            <div class="card property-subtype-card small-square-card" data-subtype="retail">
+                                                <div class="card-body text-center">
+                                                    <i class="fa fa-shopping-bag fa-2x"></i>
+                                                    <h5 class="card-title">Retail</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="small-square-card-container">
+                                            <div class="card property-subtype-card small-square-card" data-subtype="shopping-center">
+                                                <div class="card-body text-center">
+                                                    <i class="fa fa-shopping-cart fa-2x"></i>
+                                                    <h5 class="card-title">Shopping Center</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="small-square-card-container">
+                                            <div class="card property-subtype-card small-square-card" data-subtype="storage">
+                                                <div class="card-body text-center">
+                                                    <i class="fa fa-warehouse fa-2x"></i>
+                                                    <h5 class="card-title">Storage</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="small-square-card-container">
+                                            <div class="card property-subtype-card small-square-card" data-subtype="other">
+                                                <div class="card-body text-center">
+                                                    <i class="fa fa-building fa-2x"></i>
+                                                    <h5 class="card-title">Other</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                    }
+                $('#subtypeSelection').html(subtypesHtml).show();
+
+                $('.property-subtype-card').off('click').on('click', function () {
+                    $('.property-subtype-card').removeClass('selected');
+                    $(this).addClass('selected');
+                });
+
+                var unitFieldsHtml = '';
+                if (type === 'residential') {
+
+                    unitFieldsHtml = `<div class="row">
+                                    <div class="col-md-4">
+                                        <div class="mb-2">
+                                            <label class="sr-only" for="unitName">Unit Name</label>
+                                            <input class="form-control" id="unitName" type="text" name="unitName" placeholder="Unit Name" required="">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="mb-2">
+                                            <label class="sr-only" for="beds">Beds</label>
+                                            <input class="form-control" id="beds" type="number" name="beds" placeholder="Beds" required="">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="mb-2">
+                                            <label class="sr-only" for="bath">Bath</label>
+                                            <input class="form-control" id="bath" type="number" name="bath" placeholder="Bath" required="">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="mb-2">
+                                            <label class="sr-only" for="size">Size</label>
+                                            <input class="form-control" id="size" type="number" name="size" placeholder="Size" required="">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="mb-2">
+                                            <label class="sr-only" for="rent">Rent</label>
+                                            <input class="form-control" id="rent" type="number" name="rent" placeholder="Rent" required="">
+                                        </div>
+                                    </div>
+                                </div>`;
+
+                } else if (type === 'commercial') {
+                    // Commercial unit fields
+                unitFieldsHtml = `<div class="row">
+                                    <div class="col-md-4">
+                                        <div class="mb-2">
+                                            <label class="sr-only" for="unitName">Unit Name</label>
+                                            <input class="form-control" id="unitName" type="text" name="unitName" placeholder="Unit Name" required="">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="mb-2">
+                                            <label class="sr-only" for="beds">Beds</label>
+                                            <input class="form-control" id="beds" type="number" name="beds" placeholder="Beds" required="">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="mb-2">
+                                            <label class="sr-only" for="bath">Bath</label>
+                                            <input class="form-control" id="bath" type="number" name="bath" placeholder="Bath" required="">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="mb-2">
+                                            <label class="sr-only" for="size">Size</label>
+                                            <input class="form-control" id="size" type="number" name="size" placeholder="Size" required="">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="mb-2">
+                                            <label class="sr-only" for="rent">Rent</label>
+                                            <input class="form-control" id="rent" type="number" name="rent" placeholder="Rent" required="">
+                                        </div>
+                                    </div>
+                                </div>`;
+
+                }
+
+                $('#unitFields').html(unitFieldsHtml);
+
+  }
+
+
+
 </script>

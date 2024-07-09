@@ -49,7 +49,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
 
 
 
-        [HttpGet("Assets")]
+        [HttpGet("AllAssets")]
         public async Task<ActionResult<AssetDTO>> GetAllAssets()
         {
             try
@@ -61,6 +61,34 @@ namespace PMS_PropertyHapa.API.Controllers.V1
                     _response.StatusCode = HttpStatusCode.OK;
                     _response.IsSuccess = true;
                     _response.Result = assets;
+                    return Ok(_response);
+                }
+                else
+                {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("No asset found with this id.");
+                    return NotFound(_response);
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
+        [HttpGet("GetAssetById/{assetId}")]
+        public async Task<ActionResult<AssetDTO>> GetAssetById(int assetId)
+        {
+            try
+            {
+                var asset = await _userRepo.GetAssetByIdAsync(assetId);
+
+                if (asset != null)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = asset;
                     return Ok(_response);
                 }
                 else
@@ -128,12 +156,11 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             }
         }
 
-        [HttpPut("Asset/{assetId}")]
-        public async Task<ActionResult<bool>> UpdateAssets(int assetId, AssetDTO asset)
+        [HttpPost("UpdateAsset")]
+        public async Task<ActionResult<bool>> UpdateAssets(AssetDTO asset)
         {
             try
             {
-                asset.AssetId = assetId; 
                 var isSuccess = await _userRepo.UpdateAssetAsync(asset);
                 return Ok(isSuccess);
             }
@@ -143,7 +170,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             }
         }
 
-        [HttpPost("Asset/{assetId}")]
+        [HttpPost("DeleteAsset/{assetId}")]
         public async Task<ActionResult<bool>> DeleteAssets(int assetId)
         {
             try
@@ -241,6 +268,38 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             catch (Exception ex)
             {
                 return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
+        [HttpGet("GetUnitsDetail/{assetId}")]
+        public async Task<ActionResult<UnitDTO>> GetUnitsDetail(int assetId)
+        {
+
+            try
+            {
+                var unitDto = await _userRepo.GetUnitsDetailAsync(assetId);
+
+                if (unitDto != null)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = unitDto;
+                    return Ok(_response);
+                }
+                else
+                {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("No user found with this id.");
+                    return NotFound(_response);
+                }
+            }
+            catch (Exception ex)
+            {
+                _response.StatusCode = HttpStatusCode.NotFound;
+                _response.IsSuccess = false;
+                _response.ErrorMessages.Add("Error Occured");
+                return NotFound(_response);
             }
         }
     }

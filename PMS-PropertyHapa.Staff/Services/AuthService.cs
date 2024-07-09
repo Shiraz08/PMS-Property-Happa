@@ -470,7 +470,7 @@ namespace PMS_PropertyHapa.Staff.Services
             }
             catch (Exception ex)
             {
-                throw new Exception($"An error occurred when creating tenant: {ex.Message}", ex);
+                throw new Exception($"An error occurred when creating asset: {ex.Message}", ex);
             }
         }
 
@@ -484,14 +484,14 @@ namespace PMS_PropertyHapa.Staff.Services
                 {
                     ApiType = SD.ApiType.POST,
                     Data = asset,
-                    Url = $"{villaUrl}/api/v1/AssetsAuth/Asset/{assetId}"
+                    Url = $"{villaUrl}/api/v1/AssetsAuth/UpdateAsset"
                 });
 
                 return response.IsSuccess;
             }
             catch (Exception ex)
             {
-                throw new Exception($"An error occurred when creating tenant: {ex.Message}", ex);
+                throw new Exception($"An error occurred when creating assets: {ex.Message}", ex);
             }
         }
 
@@ -503,7 +503,7 @@ namespace PMS_PropertyHapa.Staff.Services
                 var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
                 {
                     ApiType = SD.ApiType.POST,
-                    Url = $"{villaUrl}/api/v1/AssetsAuth/Asset/{assetId}"
+                    Url = $"{villaUrl}/api/v1/AssetsAuth/DeleteAsset/{{assetId}}"
                 });
 
                 return response.IsSuccess;
@@ -521,7 +521,7 @@ namespace PMS_PropertyHapa.Staff.Services
             var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
             {
                 ApiType = SD.ApiType.GET,
-                Url = $"{villaUrl}/api/v1/AssetsAuth/Assets"
+                Url = $"{villaUrl}/api/v1/AssetsAuth/AllAssets"
             });
 
             if (response.IsSuccess == true)
@@ -532,10 +532,55 @@ namespace PMS_PropertyHapa.Staff.Services
             }
             else
             {
-                throw new Exception("Failed to retrieve communication data");
+                throw new Exception("Failed to retrieve all asset data");
             }
 
 
+        }
+        
+        public async Task<AssetDTO> GetAssetByIdAsync(int assetId)
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = $"{villaUrl}/api/v1/AssetsAuth/GetAssetById/{assetId}"
+            });
+
+            if (response.IsSuccess == true)
+            {
+                var userListJson = Convert.ToString(response.Result);
+                var asset = JsonConvert.DeserializeObject<AssetDTO>(userListJson);
+                return asset;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve asset data");
+            }
+
+
+        }
+
+
+        public async Task<IEnumerable<UnitDTO>> GetUnitsDetailAsync(int assetId)
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = $"{villaUrl}/api/v1/AssetsAuth/GetUnitsDetail/{assetId}"
+            });
+
+            if (response.IsSuccess == true)
+            {
+                var userListJson = Convert.ToString(response.Result);
+                var asset = JsonConvert.DeserializeObject<IEnumerable<UnitDTO>>(userListJson);
+                return asset;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve unit data");
+            }
         }
 
         public async Task<IEnumerable<AssetDTO>> GetAssetsDllAsync(PMS_PropertyHapa.Models.DTO.Filter filter)
@@ -561,6 +606,7 @@ namespace PMS_PropertyHapa.Staff.Services
 
 
         }
+
 
 
         #region Communication Services Method

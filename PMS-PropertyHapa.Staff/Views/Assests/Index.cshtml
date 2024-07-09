@@ -49,7 +49,7 @@
                     <h3 class="mb-0">Assets</h3>
                 </div>
                 <div class="col-12 col-sm-2 mb-3 mb-sm-0">
-                    <a class="btn btn-info w-100 d-flex align-items-center justify-content-center" href="@Url.Action("AddAssest","Assests")">
+                    <a class="btn btn-success w-100 d-flex align-items-center justify-content-center" href="@Url.Action("AddAssest","Assests")">
                         <div class="plusCircle me-2">
                             +
                         </div>
@@ -105,8 +105,11 @@
                             }
                         </div>
                         <div class="card-actions pb-2">
-                            <button type="button" class="btn btn-primary" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#detailModal">
+                            <button type="button" class="btn btn-success" style="cursor: pointer;" onclick="openUnitsModal(@item.AssetId)">
                                 <i class="fa fa-info-circle fa-lg"></i> Unit Detail
+                            </button>
+                            <button type="button" class="btn btn-success" style="cursor: pointer;" onclick="editAsset(@item.AssetId)">
+                                <i class="fa fa-pencil fa-lg"></i> Edit
                             </button>
                             <button type="button" class="btn btn-danger mr-3" style="cursor: pointer;" onclick="deleteAsset(@item.AssetId)">
                                 <i class="fa fa-trash fa-lg"></i> Delete
@@ -117,27 +120,41 @@
             }
         </div>
     </div>
-    <div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="detailModalLabel">Unit Details</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+
+<div class="modal fade" id="unitDetailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="detailModalLabel">Unit Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table display" id="unitsTable">
+                        <thead>
+                            <tr>
+                                <th>Unit Name</th>
+                                <th>Bath</th>
+                                <th>Beds</th>
+                                <th>Rent</th>
+                                <th>Size</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
                 </div>
-                <div class="modal-body">
-                    <p>Coming Soon...</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
 </div>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-<script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
-<link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
 <script>
     $(document).ready(function () {
         $("#searchInput").on("keyup", function () {
@@ -147,6 +164,44 @@
             });
         });
     });
+
+    function openUnitsModal(assetId) {
+        $.ajax({
+            url: '@Url.Action("GetUnitsDetail", "Assests")',
+            type: 'POST',
+            data: { assetId: assetId },
+            success: function (res) {
+                if ($.fn.DataTable.isDataTable('#unitsTable')) {
+                    $('#unitsTable').DataTable().destroy();
+                }
+                console.log(res)
+                $('#unitsTable tbody').empty();
+                res.forEach(function (item) {
+                    $('#unitsTable tbody').append(`
+                        <tr>
+                                <td>${item.UnitName}</td>
+                                <td>${item.Bath}</td>
+                                <td>${item.Beds}</td>
+                                <td>${item.Rent}</td>
+                                <td>${item.Size}</td>
+                        </tr>
+                    `);
+                });
+
+                $('#unitsTable').DataTable();
+                $('#unitDetailModal').modal('show');
+            },
+            error: function (xhr, status, error) {
+                console.error('Error:', error);
+                alert('Failed to retrieve data');
+            },
+        });
+    }
+
+    function editAsset(assetId) {
+        window.location.href = `/Assests/EditAsset?assetId=${assetId}`;
+    }
+    
     function deleteAsset(id) {
         Swal.fire({
             title: 'Are you sure?',
