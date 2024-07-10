@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace PMS_PropertyHapa.Models.Entities
 {
-    public class BudgetItemMonth
+    public class BudgetItemMonth : BaseEntities
     {
         [Key]
         public int BudgetItemMonthID { get; set; }

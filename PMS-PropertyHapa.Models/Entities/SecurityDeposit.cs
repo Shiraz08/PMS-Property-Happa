@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PMS_PropertyHapa.Models.Entities
 {
-    public class SecurityDeposit 
+    public class SecurityDeposit : BaseEntities
     {
         public int SecurityDepositId { get; set; }
         public decimal Amount { get; set; }

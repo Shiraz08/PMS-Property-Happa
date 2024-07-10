@@ -169,7 +169,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             }
         }
 
-        [HttpDelete("Tenant/{tenantId}")]
+        [HttpPost("Tenant/{tenantId}")]
         public async Task<ActionResult<bool>> DeleteTenant(string tenantId)
         {
             try

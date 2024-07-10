@@ -1280,6 +1280,24 @@ namespace PMS_PropertyHapa.Staff.Services
             }
         }
 
+        public async Task<bool> DeleteLeaseAsync(int leaseId)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Url = $"{villaUrl}/api/v1/LeaseAuth/DeleteLease/{leaseId}"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when deleting lease: {ex.Message}", ex);
+            }
+        }
+
         public async Task<IEnumerable<LeaseDto>> GetAllLeasesAsync()
         {
             try

@@ -1,39 +1,24 @@
 ﻿using AutoMapper;
-using Hangfire.Common;
-using Humanizer.Localisation;
 using MagicVilla_VillaAPI.Repository.IRepostiory;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.DotNet.Scaffolding.Shared.ProjectModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
-using NuGet.ContentModel;
 using PMS_PropertyHapa.API.Services;
 using PMS_PropertyHapa.API.ViewModels;
 using PMS_PropertyHapa.MigrationsFiles.Data;
-using PMS_PropertyHapa.MigrationsFiles.Migrations;
 using PMS_PropertyHapa.Models;
 using PMS_PropertyHapa.Models.DTO;
 using PMS_PropertyHapa.Models.Entities;
 using PMS_PropertyHapa.Models.Roles;
-using System.Diagnostics.Metrics;
-using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
-using System.Security.Cryptography.Xml;
 using System.Text;
-using System.Xml.Linq;
-using Twilio.Types;
 using static PMS_PropertyHapa.Models.DTO.TenantModelDto;
 using static PMS_PropertyHapa.Shared.Enum.SD;
-using static System.Net.WebRequestMethods;
 
 namespace MagicVilla_VillaAPI.Repository
 {
@@ -74,8 +59,6 @@ namespace MagicVilla_VillaAPI.Repository
             }
             return false;
         }
-
-
 
         public async Task<TokenDTO> Login(LoginRequestDTO loginRequestDTO)
         {
@@ -302,7 +285,6 @@ namespace MagicVilla_VillaAPI.Repository
             }
         }
 
-
         private async Task MarkAllTokenInChainAsInvalid(string userId, string tokenId)
         {
             var refreshToken = await _db.RefreshTokens
@@ -322,9 +304,6 @@ namespace MagicVilla_VillaAPI.Repository
             refreshToken.IsValid = false;
             return _db.SaveChangesAsync();
         }
-
-
-
 
         #region Registeration Section
         public async Task<UserDTO> RegisterTenant(RegisterationRequestDTO registrationRequestDTO)
@@ -374,7 +353,6 @@ namespace MagicVilla_VillaAPI.Repository
             return true;
         }
 
-
         public async Task<UserDTO> RegisterAdmin(RegisterationRequestDTO registrationRequestDTO)
         {
             ApplicationUser user = new ApplicationUser
@@ -400,12 +378,11 @@ namespace MagicVilla_VillaAPI.Repository
             return new UserDTO();
         }
 
-
         public async Task<IEnumerable<UserDTO>> GetAllUsersAsync()
         {
             try
             {
-                var userDTOs = await _userManager.Users
+                var userDTOs = await _userManager.Users.Where(x=>x.IsDeleted != true)
                     .Select(u => new UserDTO
                     {
                         userName = u.UserName,
@@ -426,7 +403,6 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
-
 
         public async Task<UserDTO> RegisterUser(RegisterationRequestDTO registrationRequestDTO)
         {
@@ -451,7 +427,6 @@ namespace MagicVilla_VillaAPI.Repository
             }
             return new UserDTO();
         }
-
 
         public async Task<bool> RegisterUserData(UserRegisterationDto registrationRequestDTO)
         {
@@ -492,9 +467,6 @@ namespace MagicVilla_VillaAPI.Repository
 
         }
 
-
-
-
         public async Task<bool> ValidateCurrentPassword(string userId, string currentPassword)
         {
             var user = await _userManager.FindByIdAsync(userId.ToString());
@@ -521,11 +493,6 @@ namespace MagicVilla_VillaAPI.Repository
             return false;
         }
 
-
-
-
-
-
         public async Task<ApplicationUser> FindByEmailAsync(string email)
         {
 
@@ -540,22 +507,9 @@ namespace MagicVilla_VillaAPI.Repository
                 return false;
             }
 
-            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.PhoneNumber == phoneNumber);
+            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.PhoneNumber == phoneNumber && u.IsDeleted != true);
             if (user != null)
             {
-                //var otpCode = GenerateOTP();
-
-                //var otpRecord = new OTP
-                //{
-                //    PhoneNumber = phoneNumber,
-                //    Type = "PhoneNumber",
-                //    Code = otpCode,
-                //    Expiry = DateTime.UtcNow.AddMinutes(5)
-                //};
-
-                //_db.OTP.Add(otpRecord);
-                //await _db.SaveChangesAsync();
-
                 return true;
             }
 
@@ -564,7 +518,6 @@ namespace MagicVilla_VillaAPI.Repository
 
         public async Task<bool> SavePhoneOTP(OTPDto oTPEmailDto)
         {
-            //var otpCode = GenerateOTP();
             var otpRecord = new OTP
             {
                 PhoneNumber = oTPEmailDto.PhoneNumber,
@@ -598,7 +551,6 @@ namespace MagicVilla_VillaAPI.Repository
 
         public async Task<bool> SaveEamilOTP(OTPDto oTPEmailDto)
         {
-            //var otpCode = GenerateOTP();
             var otpRecord = new OTP
             {
                 Email = oTPEmailDto.Email,
@@ -630,37 +582,6 @@ namespace MagicVilla_VillaAPI.Repository
             return true;
         }
 
-        //public async Task<bool> FindByEmailAddressAsync(string email)
-        //{
-        //    if (string.IsNullOrWhiteSpace(email))
-        //    {
-        //        return false;
-        //    }
-
-        //    var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Email == email);
-        //    if (user == null)
-        //    {
-        //        var otpCode = GenerateOTP();
-
-        //        var otpRecord = new OTP
-        //        {
-        //            //AppTenantId = user.Id,
-        //            PhoneNumber = false,
-        //            Email = true,
-        //            Type = "Email",
-        //            Code = otpCode,
-        //            Expiry = DateTime.UtcNow.AddMinutes(5)
-        //        };
-
-        //        _db.OTP.Add(otpRecord);
-        //        await _db.SaveChangesAsync();
-
-        //        return true;
-        //    }
-
-        //    return false;
-        //}
-
         public string GenerateOTP()
         {
             const string validChars = "0123456789";
@@ -684,7 +605,6 @@ namespace MagicVilla_VillaAPI.Repository
             await _db.SaveChangesAsync();
         }
 
-
         public async Task<ApplicationUser> FindByUserId(string userId)
         {
             if (userId == null)
@@ -693,9 +613,8 @@ namespace MagicVilla_VillaAPI.Repository
             }
 
             return await _userManager.Users
-                                 .FirstOrDefaultAsync(u => u.Id == userId);
+                                 .FirstOrDefaultAsync(u => u.Id == userId && u.IsDeleted != true);
         }
-
 
         public async Task<ProfileModel> GetProfileModelAsync(string userId)
         {
@@ -704,7 +623,7 @@ namespace MagicVilla_VillaAPI.Repository
                 return null;
             }
 
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == userId && u.IsDeleted != true);
 
             if (user == null)
             {
@@ -734,7 +653,6 @@ namespace MagicVilla_VillaAPI.Repository
             return profile;
         }
 
-
         public async Task<string> GeneratePasswordResetTokenAsync(ApplicationUser user)
         {
             if (user == null)
@@ -744,7 +662,6 @@ namespace MagicVilla_VillaAPI.Repository
 
             return await _userManager.GeneratePasswordResetTokenAsync(user);
         }
-
 
         public async Task SendResetPasswordEmailAsync(ApplicationUser user, string callbackUrl)
         {
@@ -758,8 +675,6 @@ namespace MagicVilla_VillaAPI.Repository
             string Subject = "Reset Password Request";
             await _emailSender.SendEmailAsync(user.Email, Subject, emailContent);
         }
-
-
 
         public async Task<IdentityResult> ResetPasswordAsync(ResetPasswordDto model)
         {
@@ -778,7 +693,6 @@ namespace MagicVilla_VillaAPI.Repository
         }
 
         #endregion
-
 
         #region Email Encryption for Password Reset
 
@@ -826,46 +740,11 @@ namespace MagicVilla_VillaAPI.Repository
             }
             return encryptedEmail;
         }
+        
         #endregion
 
 
-
-
         #region PropertyType
-
-
-        public async Task<List<PropertyTypeDto>> GetAllPropertyTypes()
-        {
-            try
-            {
-                var propertyTypes = await _db.PropertyType
-                                             .AsNoTracking()
-                                             .ToListAsync();
-
-                var propertyTypeDtos = propertyTypes.Select(tenant => new PropertyTypeDto
-                {
-                    PropertyTypeId = tenant.PropertyTypeId,
-                    PropertyTypeName = tenant.PropertyTypeName,
-                    Icon_String = tenant.Icon_String,
-                    Icon_SVG = tenant.Icon_SVG,
-                    AppTenantId = tenant.AppTenantId,
-                    Status = tenant.Status,
-                    IsDeleted = tenant.IsDeleted,
-                    AddedDate = tenant.AddedDate,
-                    AddedBy = tenant.AddedBy,
-                    ModifiedDate = tenant.ModifiedDate,
-                    ModifiedBy = tenant.ModifiedBy
-                }).ToList();
-
-
-                return propertyTypeDtos;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"An error occurred while mapping property types: {ex.Message}");
-                throw;
-            }
-        }
 
         public async Task<List<PropertyTypeDto>> GetAllPropertyTypesDll(Filter filter)
         {
@@ -895,13 +774,11 @@ namespace MagicVilla_VillaAPI.Repository
             }
         }
 
-
-
         public async Task<List<PropertyTypeDto>> GetAllPropertyTypesAsync()
         {
             try
             {
-                var propertyTypes = await _db.PropertyType
+                var propertyTypes = await _db.PropertyType.Where(x=>x.IsDeleted != true)
                                              .AsNoTracking()
                                              .ToListAsync();
 
@@ -930,13 +807,11 @@ namespace MagicVilla_VillaAPI.Repository
             }
         }
 
-
-
         public async Task<List<PropertyTypeDto>> GetPropertyTypeByIdAsync(string tenantId)
         {
             var tenants = await _db.PropertyType
                                    .AsNoTracking()
-                                   .Where(t => t.AppTenantId == Guid.Parse(tenantId))
+                                   .Where(t => t.AppTenantId == Guid.Parse(tenantId) && t.IsDeleted != true)
                                    .ToListAsync();
 
             if (tenants == null || !tenants.Any()) return new List<PropertyTypeDto>();
@@ -959,35 +834,30 @@ namespace MagicVilla_VillaAPI.Repository
             return tenantDtos;
         }
 
-
-
         public async Task<PropertyTypeDto> GetSinglePropertyTypeByIdAsync(int propertytypeId)
         {
-            var tenant = await _db.PropertyType.FirstOrDefaultAsync(t => t.PropertyTypeId == propertytypeId);
+            var propertyType = await _db.PropertyType.FirstOrDefaultAsync(t => t.PropertyTypeId == propertytypeId && t.IsDeleted != true);
 
-            if (tenant == null)
+            if (propertyType == null)
                 return new PropertyTypeDto();
 
-            var tenantDto = new PropertyTypeDto
+            var propertyTypeDto = new PropertyTypeDto
             {
-                PropertyTypeId = tenant.PropertyTypeId,
-                PropertyTypeName = tenant.PropertyTypeName,
-                Icon_String = tenant.Icon_String,
-                Icon_SVG = tenant.Icon_SVG,
-                AppTenantId = tenant.AppTenantId,
-                Status = tenant.Status,
-                IsDeleted = tenant.IsDeleted,
-                AddedDate = tenant.AddedDate,
-                AddedBy = tenant.AddedBy,
-                ModifiedDate = tenant.ModifiedDate,
-                ModifiedBy = tenant.ModifiedBy
+                PropertyTypeId = propertyType.PropertyTypeId,
+                PropertyTypeName = propertyType.PropertyTypeName,
+                Icon_String = propertyType.Icon_String,
+                Icon_SVG = propertyType.Icon_SVG,
+                AppTenantId = propertyType.AppTenantId,
+                Status = propertyType.Status,
+                IsDeleted = propertyType.IsDeleted,
+                AddedDate = propertyType.AddedDate,
+                AddedBy = propertyType.AddedBy,
+                ModifiedDate = propertyType.ModifiedDate,
+                ModifiedBy = propertyType.ModifiedBy
             };
 
-            return tenantDto;
+            return propertyTypeDto;
         }
-
-
-
 
         public async Task<bool> CreatePropertyTypeAsync(PropertyTypeDto tenant)
         {
@@ -1013,10 +883,9 @@ namespace MagicVilla_VillaAPI.Repository
             return result > 0;
         }
 
-
         public async Task<bool> UpdatePropertyTypeAsync(PropertyTypeDto tenant)
         {
-            var propertyType = await _db.PropertyType.FirstOrDefaultAsync(t => t.PropertyTypeId == tenant.PropertyTypeId);
+            var propertyType = await _db.PropertyType.FirstOrDefaultAsync(t => t.PropertyTypeId == tenant.PropertyTypeId && t.IsDeleted != true);
 
             if (propertyType == null)
             {
@@ -1039,18 +908,15 @@ namespace MagicVilla_VillaAPI.Repository
             return result > 0;
         }
 
-
         public async Task<bool> DeletePropertyTypeAsync(int tenantId)
         {
-            var tenant = await _db.PropertyType.FirstOrDefaultAsync(t => t.PropertyTypeId == tenantId);
+            var tenant = await _db.PropertyType.FirstOrDefaultAsync(t => t.PropertyTypeId == tenantId && t.IsDeleted != true);
             if (tenant == null) return false;
 
             _db.PropertyType.Remove(tenant);
             var result = await _db.SaveChangesAsync();
             return result > 0;
         }
-
-
 
         #endregion
 
@@ -1064,7 +930,7 @@ namespace MagicVilla_VillaAPI.Repository
             {
                 var propertyTypes = await _db.PropertySubType
                                              .AsNoTracking()
-                                                .Where(t => t.AppTenantId == Guid.Parse(tenantId))
+                                             .Where(t => t.AppTenantId == Guid.Parse(tenantId) && t.IsDeleted != true)
                                              .ToListAsync();
 
                 var propertyTypeDtos = propertyTypes.Select(tenant => new PropertySubTypeDto
@@ -1092,8 +958,7 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
-
-
+        
         public async Task<List<PropertySubTypeDto>> GetAllPropertySubTypesAsync()
         {
             try
@@ -1102,7 +967,7 @@ namespace MagicVilla_VillaAPI.Repository
                                              .AsNoTracking()
                                              .ToListAsync();
 
-                var propertyTypeDtos = propertyTypes.Select(tenant => new PropertySubTypeDto
+                var propertyTypeDtos = propertyTypes.Where(x => x.IsDeleted != true).Select(tenant => new PropertySubTypeDto
                 {
                     PropertySubTypeId = tenant.PropertySubTypeId,
                     PropertyTypeId = tenant.PropertyTypeId,
@@ -1127,14 +992,12 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
-
-
-
+        
         public async Task<List<PropertySubTypeDto>> GetPropertySubTypeByIdAsync(int propertytypeId)
         {
             var tenants = await _db.PropertySubType
                                    .AsNoTracking()
-                                   .Where(t => t.PropertyTypeId == propertytypeId)
+                                   .Where(t => t.PropertyTypeId == propertytypeId && t.IsDeleted != true)
                                    .ToListAsync();
 
             if (tenants == null || !tenants.Any()) return new List<PropertySubTypeDto>();
@@ -1157,12 +1020,10 @@ namespace MagicVilla_VillaAPI.Repository
 
             return tenantDtos;
         }
-
-
-
+       
         public async Task<PropertySubTypeDto> GetSinglePropertySubTypeByIdAsync(int propertysubtypeId)
         {
-            var tenant = await _db.PropertySubType.FirstOrDefaultAsync(t => t.PropertySubTypeId == propertysubtypeId);
+            var tenant = await _db.PropertySubType.FirstOrDefaultAsync(t => t.PropertySubTypeId == propertysubtypeId && t.IsDeleted != true);
 
             if (tenant == null)
                 return new PropertySubTypeDto();
@@ -1185,10 +1046,7 @@ namespace MagicVilla_VillaAPI.Repository
 
             return tenantDto;
         }
-
-
-
-
+       
         public async Task<bool> CreatePropertySubTypeAsync(PropertySubTypeDto tenant)
         {
             var newTenant = new PropertySubType
@@ -1213,11 +1071,10 @@ namespace MagicVilla_VillaAPI.Repository
 
             return result > 0;
         }
-
-
+       
         public async Task<bool> UpdatePropertySubTypeAsync(PropertySubTypeDto tenant)
         {
-            var propertyType = await _db.PropertyType.FirstOrDefaultAsync(t => t.PropertyTypeId == tenant.PropertyTypeId);
+            var propertyType = await _db.PropertyType.FirstOrDefaultAsync(t => t.PropertyTypeId == tenant.PropertyTypeId && t.IsDeleted != true);
             if (tenant == null) return false;
 
             var newTenant = new PropertySubType
@@ -1240,10 +1097,10 @@ namespace MagicVilla_VillaAPI.Repository
             var result = await _db.SaveChangesAsync();
             return result > 0;
         }
-
+        
         public async Task<bool> DeletePropertySubTypeAsync(int propertysubtypeId)
         {
-            var tenant = await _db.PropertySubType.FirstOrDefaultAsync(t => t.PropertySubTypeId == propertysubtypeId);
+            var tenant = await _db.PropertySubType.FirstOrDefaultAsync(t => t.PropertySubTypeId == propertysubtypeId && t.IsDeleted != true);
             if (tenant == null) return false;
 
             _db.PropertySubType.Remove(tenant);
@@ -1257,9 +1114,10 @@ namespace MagicVilla_VillaAPI.Repository
 
 
         #region Tenant
+        
         public async Task<IEnumerable<TenantModelDto>> GetAllTenantsAsync()
         {
-            var tenants = await _db.Tenant
+            var tenants = await _db.Tenant.Where(x => x.IsDeleted != true)
                                    .AsNoTracking()
                                    .ToListAsync();
 
@@ -1301,6 +1159,7 @@ namespace MagicVilla_VillaAPI.Repository
             }).ToList();
             return tenantDtos;
         }
+       
         public async Task<IEnumerable<TenantModelDto>> GetAllTenantsDllAsync(Filter filter)
         {
 
@@ -1328,13 +1187,12 @@ namespace MagicVilla_VillaAPI.Repository
             }
 
         }
-
-
+       
         public async Task<List<TenantModelDto>> GetTenantsByIdAsync(string tenantId)
         {
             var tenants = await _db.Tenant
                                    .AsNoTracking()
-                                   .Where(t => t.AppTenantId == Guid.Parse(tenantId))
+                                   .Where(t => t.AppTenantId == Guid.Parse(tenantId) && t.IsDeleted != true)
                                    .ToListAsync();
 
             if (tenants == null || !tenants.Any()) return new List<TenantModelDto>();
@@ -1378,9 +1236,7 @@ namespace MagicVilla_VillaAPI.Repository
 
             return tenantDtos;
         }
-
-
-
+       
         public async Task<TenantModelDto> GetSingleTenantByIdAsync(int tenantId)
         {
             var tenant = await _db.Tenant
@@ -1388,7 +1244,7 @@ namespace MagicVilla_VillaAPI.Repository
                   .Include(t => t.Vehicle)
                   .Include(t => t.TenantDependent)
                   .Include(t => t.CoTenant)
-                  .FirstOrDefaultAsync(t => t.TenantId == tenantId);
+                  .FirstOrDefaultAsync(t => t.TenantId == tenantId && t.IsDeleted != true);
 
             if (tenant == null)
                 return new TenantModelDto();
@@ -1425,7 +1281,7 @@ namespace MagicVilla_VillaAPI.Repository
                 Country = tenant.Country,
                 CountryCode = tenant.CountryCode,
                 Unit = tenant.Unit,
-                Pets = tenant.Pets.Select(p => new PetDto
+                Pets = tenant.Pets.Where(x => x.IsDeleted != true).Select(p => new PetDto
                 {
                     PetId = p.PetId,
                     Name = p.Name,
@@ -1436,7 +1292,7 @@ namespace MagicVilla_VillaAPI.Repository
                     Picture = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Pets_Picture_" + p.PetId + Path.GetExtension(p.Picture)}",
                    
                 }).ToList(),
-                Vehicles = tenant.Vehicle.Select(v => new VehicleDto
+                Vehicles = tenant.Vehicle.Where(x=>x.IsDeleted != true).Select(v => new VehicleDto
                 {
                     VehicleId = v.VehicleId,
                     Manufacturer = v.Manufacturer,
@@ -1444,7 +1300,7 @@ namespace MagicVilla_VillaAPI.Repository
                     ModelVariant = v.ModelVariant,
                     Year = v.Year
                 }).ToList(),
-                Dependent = tenant.TenantDependent.Select(d => new TenantDependentDto
+                Dependent = tenant.TenantDependent.Where(x => x.IsDeleted != true).Select(d => new TenantDependentDto
                 {
                     TenantDependentId = d.TenantDependentId,
                     TenantId = d.TenantId,
@@ -1455,7 +1311,7 @@ namespace MagicVilla_VillaAPI.Repository
                     DOB = d.DOB,
                     Relation = d.Relation
                 }).ToList(),
-                CoTenant = tenant.CoTenant.Select(c => new CoTenantDto
+                CoTenant = tenant.CoTenant.Where(x => x.IsDeleted != true).Select(c => new CoTenantDto
                 {
                     CoTenantId = c.CoTenantId,
                     TenantId = c.TenantId,
@@ -1474,10 +1330,7 @@ namespace MagicVilla_VillaAPI.Repository
 
             return tenantDto;
         }
-
-
-
-
+       
         public async Task<bool> CreateTenantAsync(TenantModelDto tenantDto)
         {
 
@@ -1574,7 +1427,9 @@ namespace MagicVilla_VillaAPI.Repository
                         Manufacturer = vehicleDto.Manufacturer,
                         ModelName = vehicleDto.ModelName,
                         ModelVariant = vehicleDto.ModelVariant,
-                        Year = vehicleDto.Year
+                        Year = vehicleDto.Year,
+                        AddedBy = tenantDto.AddedBy,
+                        AddedDate = DateTime.Now
                     };
 
                     _db.Vehicle.Add(vehicle);
@@ -1632,11 +1487,14 @@ namespace MagicVilla_VillaAPI.Repository
            
             return true;
         }
-
-
+       
         public async Task<bool> UpdateTenantAsync(TenantModelDto tenantDto)
         {
-            var tenant = await _db.Tenant.Include(t => t.Pets).Include(t => t.Vehicle).Include(t => t.TenantDependent).Include(t => t.CoTenant).FirstOrDefaultAsync(t => t.TenantId == tenantDto.TenantId);
+            var tenant = await _db.Tenant
+                .Include(t => t.Pets)
+                .Include(t => t.Vehicle)
+                .Include(t => t.TenantDependent)
+                .Include(t => t.CoTenant).FirstOrDefaultAsync(t => t.TenantId == tenantDto.TenantId && t.IsDeleted != true);
             if (tenant == null)
                 return false;
 
@@ -1668,11 +1526,12 @@ namespace MagicVilla_VillaAPI.Repository
             tenant.CountryCode = tenantDto.CountryCode;
             tenant.Document = tenantDto.DocumentName;
             tenant.Picture = tenantDto.PictureName;
+            tenant.ModifiedBy = tenantDto.AddedBy;
+            tenant.ModifiedDate = DateTime.Now;
 
-            // Update or add pets
             foreach (var petDto in tenantDto.Pets)
             {
-                var existingPet = tenant.Pets.FirstOrDefault(p => p.PetId == petDto.PetId);
+                var existingPet = tenant.Pets.FirstOrDefault(p => p.PetId == petDto.PetId && p.IsDeleted != true);
                 if (existingPet != null)
                 {
                     existingPet.Name = petDto.Name;
@@ -1713,13 +1572,15 @@ namespace MagicVilla_VillaAPI.Repository
             // Update or add vehicles
             foreach (var vehicleDto in tenantDto.Vehicles)
             {
-                var existingVehicle = tenant.Vehicle.FirstOrDefault(v => v.VehicleId == vehicleDto.VehicleId);
+                var existingVehicle = tenant.Vehicle.FirstOrDefault(v => v.VehicleId == vehicleDto.VehicleId && v.IsDeleted != true);
                 if (existingVehicle != null)
                 {
                     existingVehicle.Manufacturer = vehicleDto.Manufacturer;
                     existingVehicle.ModelName = vehicleDto.ModelName;
                     existingVehicle.ModelVariant = vehicleDto.ModelVariant;
                     existingVehicle.Year = vehicleDto.Year;
+                    existingVehicle.ModifiedBy = tenantDto.AddedBy;
+                    existingVehicle.ModifiedDate = DateTime.Now;
                 }
                 else
                 {
@@ -1728,7 +1589,9 @@ namespace MagicVilla_VillaAPI.Repository
                         TenantId = tenant.TenantId,
                         Manufacturer = vehicleDto.Manufacturer,
                         ModelName = vehicleDto.ModelName,
-                        Year = vehicleDto.Year
+                        Year = vehicleDto.Year,
+                        AddedBy = tenantDto.AddedBy,
+                        AddedDate = DateTime.Now
                     };
                     tenant.Vehicle.Add(newVehicle);
                 }
@@ -1736,7 +1599,7 @@ namespace MagicVilla_VillaAPI.Repository
 
             foreach (var dependentDto in tenantDto.Dependent)
             {
-                var existingDependent = tenant.TenantDependent.FirstOrDefault(d => d.TenantDependentId == dependentDto.TenantDependentId);
+                var existingDependent = tenant.TenantDependent.FirstOrDefault(d => d.TenantDependentId == dependentDto.TenantDependentId && d.IsDeleted != true);
                 if (existingDependent != null)
                 {
                     existingDependent.FirstName = dependentDto.FirstName;
@@ -1766,7 +1629,7 @@ namespace MagicVilla_VillaAPI.Repository
 
             foreach (var coTenantDto in tenantDto.CoTenant)
             {
-                var existingCoTenant = tenant.CoTenant.FirstOrDefault(ct => ct.CoTenantId == coTenantDto.CoTenantId);
+                var existingCoTenant = tenant.CoTenant.FirstOrDefault(ct => ct.CoTenantId == coTenantDto.CoTenantId && ct.IsDeleted != true);
                 if (existingCoTenant != null)
                 {
 
@@ -1823,19 +1686,37 @@ namespace MagicVilla_VillaAPI.Repository
 
             return result > 0;
         }
-
-
+       
         public async Task<bool> DeleteTenantAsync(string tenantId)
         {
-            var tenant = await _db.Tenant.FirstOrDefaultAsync(t => t.TenantId == Convert.ToInt32(tenantId));
+            var tenant = await _db.Tenant.FirstOrDefaultAsync(t => t.TenantId == Convert.ToInt32(tenantId) && t.IsDeleted != true);
             if (tenant == null) return false;
 
-            _db.Tenant.Remove(tenant);
+            tenant.IsDeleted = true;
+            _db.Tenant.Update(tenant);
             var result = await _db.SaveChangesAsync();
+
+            if (result <= 0) return false;
+
+            var pets = await _db.Pets.Where(x => x.TenantId == Convert.ToInt32(tenantId) && x.IsDeleted != true).ToListAsync();
+            pets.ForEach(x => x.IsDeleted = true);
+            _db.Pets.UpdateRange(pets);
+
+            var vehicles = await _db.Vehicle.Where(x => x.TenantId == Convert.ToInt32(tenantId) && x.IsDeleted != true).ToListAsync();
+            vehicles.ForEach(x => x.IsDeleted = true);
+            _db.Vehicle.UpdateRange(vehicles);
+
+            var dependents = await _db.TenantDependent.Where(x => x.TenantId == Convert.ToInt32(tenantId) && x.IsDeleted != true).ToListAsync();
+            dependents.ForEach(x => x.IsDeleted = true);
+            _db.TenantDependent.UpdateRange(dependents);
+
+            var coTenant = await _db.CoTenant.Where(x => x.TenantId == Convert.ToInt32(tenantId) && x.IsDeleted != true).ToListAsync();
+            coTenant.ForEach(x => x.IsDeleted = true);
+            _db.CoTenant.UpdateRange(coTenant);
+
+            result = await _db.SaveChangesAsync();
             return result > 0;
         }
-
-
 
         #endregion
 
@@ -1845,7 +1726,7 @@ namespace MagicVilla_VillaAPI.Repository
 
         public async Task<OwnerDto> GetSingleLandlordByIdAsync(int ownerId)
         {
-            var tenantDto = await _db.Owner.FirstOrDefaultAsync(t => t.OwnerId == ownerId);
+            var tenantDto = await _db.Owner.FirstOrDefaultAsync(t => t.OwnerId == ownerId && t.IsDeleted != true);
 
             if (tenantDto == null)
                 return new OwnerDto();
@@ -1888,7 +1769,7 @@ namespace MagicVilla_VillaAPI.Repository
                 Picture = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Owner_Picture_" + tenantDto.OwnerId + Path.GetExtension(tenantDto.Picture)}",
             };
 
-            var ownerOrganization = await _db.OwnerOrganization.FirstOrDefaultAsync(o => o.OwnerId == ownerId);
+            var ownerOrganization = await _db.OwnerOrganization.FirstOrDefaultAsync(o => o.OwnerId == ownerId && o.IsDeleted != true);
             if (ownerOrganization != null)
             {
                 tenant.OrganizationName = ownerOrganization.OrganizationName;
@@ -1909,9 +1790,7 @@ namespace MagicVilla_VillaAPI.Repository
 
             return tenant;
         }
-
-
-
+        
         public async Task<bool> CreateOwnerAsync(OwnerDto tenantDto)
         {
             var newTenant = new Owner
@@ -1980,7 +1859,9 @@ namespace MagicVilla_VillaAPI.Repository
                     OrganizationDescription = tenantDto.OrganizationDescription,
                     OrganizationIcon = tenantDto.OrganizationIconFile.FileName,
                     OrganizationLogo = tenantDto.OrganizationLogoFile.FileName,
-                    Website = tenantDto.Website
+                    Website = tenantDto.Website,
+                    AddedBy = tenantDto.AddedBy,
+                    AddedDate = DateTime.Now
                 };
                 await _db.OwnerOrganization.AddAsync(newOwnerOrganization);
 
@@ -2002,8 +1883,7 @@ namespace MagicVilla_VillaAPI.Repository
 
             return true;
         }
-
-
+       
         public async Task<bool> CreateLeaseAsync(LeaseDto leaseDto)
         {
             using var transaction = await _db.Database.BeginTransactionAsync();
@@ -2044,7 +1924,9 @@ namespace MagicVilla_VillaAPI.Repository
                             Amount = rentChargeDto.Amount,
                             Description = rentChargeDto.Description,
                             RentDate = rentChargeDto.RentDate,
-                            RentPeriod = rentChargeDto.RentPeriod
+                            RentPeriod = rentChargeDto.RentPeriod,
+                            AddedBy = leaseDto.AddedBy,
+                            AddedDate = DateTime.Now
                         };
 
                         await _db.RentCharge.AddAsync(rentCharge);
@@ -2061,6 +1943,8 @@ namespace MagicVilla_VillaAPI.Repository
                             LeaseId = newLease.LeaseId,
                             Amount = securityDepositDto.Amount,
                             Description = securityDepositDto.Description,
+                            AddedBy = leaseDto.AddedBy,
+                            AddedDate = DateTime.Now
                         };
 
                         await _db.SecurityDeposit.AddAsync(securityDeposit);
@@ -2078,6 +1962,8 @@ namespace MagicVilla_VillaAPI.Repository
                             Amount = feeDto.Amount,
                             Description = feeDto.Description,
                             FeeDate = feeDto.FeeDate,
+                            AddedBy = leaseDto.AddedBy,
+                            AddedDate = DateTime.Now
                         };
 
                         await _db.FeeCharge.AddAsync(securityDeposit);
@@ -2103,7 +1989,7 @@ namespace MagicVilla_VillaAPI.Repository
                     totalRentAmount += leaseDto.FeeCharges.Sum(fc => fc.Amount);
                 }
 
-                var assest = await _db.Assets.FirstOrDefaultAsync(x => x.AssetId == leaseDto.PropertyId);
+                var assest = await _db.Assets.FirstOrDefaultAsync(x => x.AssetId == leaseDto.PropertyId && x.IsDeleted != true);
 
                 if (leaseDto.IsMonthToMonth)
                 {
@@ -2153,12 +2039,11 @@ namespace MagicVilla_VillaAPI.Repository
                 return false;
             }
         }
-
-
+        
         public async Task<LeaseDto> GetLeaseByIdAsync(int leaseId)
         {
             var lease = await _db.Lease
-                .Where(l => l.LeaseId == leaseId)
+                .Where(l => l.LeaseId == leaseId && l.IsDeleted != true)
                 .Include(l => l.RentCharges)
                 .Include(l => l.SecurityDeposit)
                 .Include(l => l.FeeCharge)
@@ -2182,7 +2067,7 @@ namespace MagicVilla_VillaAPI.Repository
                 LateFeesPolicy = lease.LateFeesPolicy,
                 TenantId = lease.TenantsTenantId,
                 AppTenantId = lease.AppTenantId,
-                RentCharges = lease.RentCharges.Select(rc => new RentChargeDto
+                RentCharges = lease.RentCharges.Where(x => x.IsDeleted != true).Select(rc => new RentChargeDto
                 {
 
                     RentChargeId = rc.RentChargeId,
@@ -2191,7 +2076,7 @@ namespace MagicVilla_VillaAPI.Repository
                     RentDate = rc.RentDate,
                     RentPeriod = rc.RentPeriod
                 }).ToList(),
-                FeeCharges = lease.FeeCharge.Select(rc => new FeeChargeDto
+                FeeCharges = lease.FeeCharge.Where(x => x.IsDeleted != true).Select(rc => new FeeChargeDto
                 {
                     FeeChargeId = rc.FeeChargeId,
                     Amount = rc.Amount,
@@ -2199,7 +2084,7 @@ namespace MagicVilla_VillaAPI.Repository
                     FeeDate = rc.FeeDate
                 }).ToList(),
 
-                SecurityDeposits = lease.SecurityDeposit.Select(sd => new SecurityDepositDto
+                SecurityDeposits = lease.SecurityDeposit.Where(x => x.IsDeleted != true).Select(sd => new SecurityDepositDto
                 {
 
                     SecurityDepositId = sd.SecurityDepositId,
@@ -2213,14 +2098,12 @@ namespace MagicVilla_VillaAPI.Repository
                     LastName = lease.Tenants.LastName,
                     EmailAddress = lease.Tenants.EmailAddress,
                     PhoneNumber = lease.Tenants.PhoneNumber,
-                    // Map other properties as needed
                 } : null
             };
 
             return leaseDto;
         }
-
-
+        
         public async Task<List<LeaseDto>> GetAllLeasesAsync()
         {
             try
@@ -2230,6 +2113,7 @@ namespace MagicVilla_VillaAPI.Repository
                           .Include(l => l.SecurityDeposit)
                           .Include(l => l.FeeCharge)
                           .Include(l => l.Tenants)
+                          .Where(l => l.IsDeleted != true)
                           .AsNoTracking()
                           .ToListAsync();
 
@@ -2249,7 +2133,7 @@ namespace MagicVilla_VillaAPI.Repository
                     TenantId = lease.TenantsTenantId,
                     AppTenantId = lease.AppTenantId,
                     AddedBy = lease.AddedBy,
-                    RentCharges = lease.RentCharges.Select(rc => new RentChargeDto
+                    RentCharges = lease.RentCharges.Where(x => x.IsDeleted != true).Select(rc => new RentChargeDto
                     {
 
                         RentChargeId = rc.RentChargeId,
@@ -2258,7 +2142,7 @@ namespace MagicVilla_VillaAPI.Repository
                         RentDate = rc.RentDate,
                         RentPeriod = rc.RentPeriod
                     }).ToList() ?? new List<RentChargeDto>(),
-                    FeeCharges = lease.FeeCharge.Select(rc => new FeeChargeDto
+                    FeeCharges = lease.FeeCharge.Where(x => x.IsDeleted != true).Select(rc => new FeeChargeDto
                     {
                         FeeChargeId = rc.FeeChargeId,
                         Amount = rc.Amount,
@@ -2266,7 +2150,7 @@ namespace MagicVilla_VillaAPI.Repository
                         FeeDate = rc.FeeDate
                     }).ToList() ?? new List<FeeChargeDto>(),
 
-                    SecurityDeposits = lease.SecurityDeposit.Select(sd => new SecurityDepositDto
+                    SecurityDeposits = lease.SecurityDeposit.Where(x => x.IsDeleted != true).Select(sd => new SecurityDepositDto
                     {
 
                         SecurityDepositId = sd.SecurityDepositId,
@@ -2282,7 +2166,6 @@ namespace MagicVilla_VillaAPI.Repository
                         LastName = lease.Tenants.LastName,
                         EmailAddress = lease.Tenants.EmailAddress,
                         PhoneNumber = lease.Tenants.PhoneNumber,
-                        // Map other properties as needed
                     } : null
                 }).ToList();
 
@@ -2293,8 +2176,7 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
-
-
+       
         public async Task<bool> UpdateLeaseAsync(LeaseDto leaseDto)
         {
             using var transaction = await _db.Database.BeginTransactionAsync();
@@ -2303,7 +2185,7 @@ namespace MagicVilla_VillaAPI.Repository
                 var existingLease = await _db.Lease
                     .Include(l => l.RentCharges)
                     .Include(l => l.SecurityDeposit)
-                    .FirstOrDefaultAsync(l => l.LeaseId == leaseDto.LeaseId);
+                    .FirstOrDefaultAsync(l => l.LeaseId == leaseDto.LeaseId && l.IsDeleted != true);
 
                 if (existingLease == null)
                 {
@@ -2324,20 +2206,23 @@ namespace MagicVilla_VillaAPI.Repository
                 existingLease.LateFeesPolicy = leaseDto.LateFeesPolicy;
                 existingLease.TenantsTenantId = leaseDto.TenantId;
                 existingLease.AppTenantId = leaseDto.AppTenantId;
+                existingLease.ModifiedBy = leaseDto.AddedBy;
+                existingLease.ModifiedDate = DateTime.Now;
 
 
                 if (leaseDto.RentCharges != null)
                 {
                     foreach (var rcDto in leaseDto.RentCharges)
                     {
-                        var existingRc = existingLease.RentCharges.FirstOrDefault(rc => rc.RentChargeId == rcDto.RentChargeId);
+                        var existingRc = existingLease.RentCharges.FirstOrDefault(rc => rc.RentChargeId == rcDto.RentChargeId && rc.IsDeleted != true);
                         if (existingRc != null)
                         {
-                            // Update existing RentCharge
                             existingRc.Amount = rcDto.Amount;
                             existingRc.Description = rcDto.Description;
                             existingRc.RentDate = rcDto.RentDate;
                             existingRc.RentPeriod = rcDto.RentPeriod;
+                            existingRc.ModifiedBy = leaseDto.AddedBy;
+                            existingRc.ModifiedDate = DateTime.Now;
                         }
                         else
                         {
@@ -2348,7 +2233,9 @@ namespace MagicVilla_VillaAPI.Repository
                                 Description = rcDto.Description,
                                 LeaseId = existingLease.LeaseId,
                                 RentDate = rcDto.RentDate,
-                                RentPeriod = rcDto.RentPeriod
+                                RentPeriod = rcDto.RentPeriod,
+                                AddedBy = leaseDto.AddedBy,
+                                AddedDate = DateTime.Now
                             });
                         }
                     }
@@ -2359,13 +2246,14 @@ namespace MagicVilla_VillaAPI.Repository
                 {
                     foreach (var rcDto in leaseDto.FeeCharges)
                     {
-                        var existingRc = existingLease.FeeCharge.FirstOrDefault(rc => rc.FeeChargeId == rcDto.FeeChargeId);
+                        var existingRc = existingLease.FeeCharge.FirstOrDefault(rc => rc.FeeChargeId == rcDto.FeeChargeId && rc.IsDeleted != true);
                         if (existingRc != null)
                         {
-                            // Update existing RentCharge
                             existingRc.Amount = rcDto.Amount;
                             existingRc.Description = rcDto.Description;
                             existingRc.FeeDate = rcDto.FeeDate;
+                            existingRc.ModifiedBy = leaseDto.AddedBy;
+                            existingRc.ModifiedDate = DateTime.Now;
                         }
                         else
                         {
@@ -2376,24 +2264,26 @@ namespace MagicVilla_VillaAPI.Repository
                                 Description = rcDto.Description,
                                 LeaseId = existingLease.LeaseId,
                                 FeeDate = rcDto.FeeDate,
+                                AddedBy = leaseDto.AddedBy,
+                                AddedDate = DateTime.Now
                             });
                         }
                     }
                 }
 
-
-
                 if (leaseDto.SecurityDeposits != null)
                 {
                     foreach (var sdDto in leaseDto.SecurityDeposits)
                     {
-                        var existingSd = existingLease.SecurityDeposit.FirstOrDefault(sd => sd.SecurityDepositId == sdDto.SecurityDepositId);
+                        var existingSd = existingLease.SecurityDeposit.FirstOrDefault(sd => sd.SecurityDepositId == sdDto.SecurityDepositId && sd.IsDeleted != true);
                         if (existingSd != null)
                         {
 
                             existingSd.Amount = sdDto.Amount;
                             existingSd.Description = sdDto.Description;
                             existingLease.LeaseId = sdDto.LeaseId;
+                            existingSd.ModifiedBy = leaseDto.AddedBy;
+                            existingSd.ModifiedDate = DateTime.Now;
                         }
                         else
                         {
@@ -2402,14 +2292,16 @@ namespace MagicVilla_VillaAPI.Repository
                             {
                                 Amount = sdDto.Amount,
                                 Description = sdDto.Description,
-                                LeaseId = existingLease.LeaseId
+                                LeaseId = existingLease.LeaseId,
+                                AddedBy = leaseDto.AddedBy,
+                                AddedDate = DateTime.Now
                             });
                         }
                     }
                 }
 
-                var assest = await _db.Assets.FirstOrDefaultAsync(x => x.AssetId == existingLease.AssetId);
-                var oldInvoices = await _db.Invoices.Where(x => x.LeaseId == leaseDto.LeaseId).ToListAsync();
+                var assest = await _db.Assets.FirstOrDefaultAsync(x => x.AssetId == existingLease.AssetId && x.IsDeleted != true);
+                var oldInvoices = await _db.Invoices.Where(x => x.LeaseId == leaseDto.LeaseId && x.IsDeleted != true).ToListAsync();
 
                     oldInvoices.ForEach(x => x.IsDeleted = true);
                     _db.UpdateRange(oldInvoices);
@@ -2482,14 +2374,40 @@ namespace MagicVilla_VillaAPI.Repository
             }
         }
 
+        public async Task<bool> DeleteLeaseAsync(int leaseId)
+        {
+            var lease = await _db.Lease.FirstOrDefaultAsync(x => x.LeaseId == leaseId && x.IsDeleted != true);
+            if (lease == null) return false;
 
+            lease.IsDeleted = true;
+            _db.Lease.Update(lease);
+            var saveResult = await _db.SaveChangesAsync();
+
+            if (saveResult <= 0) return false;
+
+            var rentCharge = await _db.RentCharge.Where(x => x.LeaseId == leaseId && x.IsDeleted != true).ToListAsync();
+            rentCharge.ForEach(x => x.IsDeleted = true);
+                _db.RentCharge.UpdateRange(rentCharge);
+
+            var feeCharge = await _db.FeeCharge.Where(x => x.LeaseId == leaseId && x.IsDeleted != true).ToListAsync();
+            feeCharge.ForEach(x => x.IsDeleted = true);
+            _db.FeeCharge.UpdateRange(feeCharge);
+
+            var securityDeposit = await _db.SecurityDeposit.Where(x => x.LeaseId == leaseId && x.IsDeleted != true).ToListAsync();
+            securityDeposit.ForEach(x => x.IsDeleted = true);
+            _db.SecurityDeposit.UpdateRange(securityDeposit);
+
+            saveResult = await _db.SaveChangesAsync();
+
+            return saveResult > 0;
+        }
 
         public async Task<bool> UpdateOwnerAsync(OwnerDto tenantDto)
         {
-            var tenant = await _db.Owner.FirstOrDefaultAsync(t => t.OwnerId == tenantDto.OwnerId);
+            var tenant = await _db.Owner.FirstOrDefaultAsync(t => t.OwnerId == tenantDto.OwnerId && t.IsDeleted != true);
             if (tenant == null) return false;
 
-            var ownerOrganization = await _db.OwnerOrganization.FirstOrDefaultAsync(o => o.OwnerId == tenantDto.OwnerId);
+            var ownerOrganization = await _db.OwnerOrganization.FirstOrDefaultAsync(o => o.OwnerId == tenantDto.OwnerId && o.IsDeleted != true);
 
 
             tenant.FirstName = tenantDto.FirstName;
@@ -2527,6 +2445,8 @@ namespace MagicVilla_VillaAPI.Repository
             tenant.PostalCode = tenantDto.PostalCode;
             tenant.Country = tenantDto.Country;
             tenant.CountryCode = tenantDto.CountryCode;
+            tenant.ModifiedBy = tenantDto.AddedBy;
+            tenant.ModifiedDate = DateTime.Now;
             if(tenant.Picture != null)
             {
                 tenant.Picture = tenantDto.PictureUrl.FileName;
@@ -2540,6 +2460,8 @@ namespace MagicVilla_VillaAPI.Repository
                 ownerOrganization.OrganizationIcon = tenantDto.OrganizationIcon;
                 ownerOrganization.OrganizationLogo = tenantDto.OrganizationLogo;
                 ownerOrganization.Website = tenantDto.Website;
+                ownerOrganization.ModifiedBy = tenantDto.AddedBy;
+                ownerOrganization.ModifiedDate = DateTime.Now;
 
                 _db.OwnerOrganization.Update(ownerOrganization);
             }
@@ -2552,7 +2474,9 @@ namespace MagicVilla_VillaAPI.Repository
                     OrganizationDescription = tenantDto.OrganizationDescription,
                     OrganizationIcon = tenantDto.OrganizationIcon,
                     OrganizationLogo = tenantDto.OrganizationLogo,
-                    Website = tenantDto.Website
+                    Website = tenantDto.Website,
+                    AddedBy = tenantDto.AddedBy,
+                    AddedDate = DateTime.Now
                 };
                 _db.OwnerOrganization.Add(ownerOrganization);
             }
@@ -2577,13 +2501,13 @@ namespace MagicVilla_VillaAPI.Repository
             return result > 0;
         }
 
-
         //Inovices
+        
         public async Task<List<InvoiceDto>> GetInvoicesAsync(int leaseId)
         {
             var invoices = await (from i in _db.Invoices
-                                  from t in _db.Tenant.Where(x => x.TenantId == i.TenantId).DefaultIfEmpty()
-                                  from o in _db.Owner.Where(x => x.OwnerId == i.OwnerId).DefaultIfEmpty()
+                                  from t in _db.Tenant.Where(x => x.TenantId == i.TenantId && x.IsDeleted != true).DefaultIfEmpty()
+                                  from o in _db.Owner.Where(x => x.OwnerId == i.OwnerId && x.IsDeleted != true).DefaultIfEmpty()
                                   where i.LeaseId == leaseId && i.IsDeleted != true
                                   select new InvoiceDto
                                   {
@@ -2603,15 +2527,14 @@ namespace MagicVilla_VillaAPI.Repository
 
             return invoices;
         }
-
-
+       
         public async Task<List<InvoiceDto>> GetAllInvoicesAsync()
         {
             try
             {
                 var invoices = await (from i in _db.Invoices
-                                      from t in _db.Tenant.Where(x => x.TenantId == i.TenantId).DefaultIfEmpty()
-                                      from o in _db.Owner.Where(x => x.OwnerId == i.OwnerId).DefaultIfEmpty()
+                                      from t in _db.Tenant.Where(x => x.TenantId == i.TenantId && x.IsDeleted != true).DefaultIfEmpty()
+                                      from o in _db.Owner.Where(x => x.OwnerId == i.OwnerId && x.IsDeleted != true).DefaultIfEmpty()
                                       where i.IsDeleted != true // Remove leaseId filter
                                       select new InvoiceDto
                                       {
@@ -2636,14 +2559,12 @@ namespace MagicVilla_VillaAPI.Repository
                 throw new Exception("Failed to retrieve invoices", ex);
             }
         }
-
-
-
+        
         public async Task<InvoiceDto> GetInvoiceByIdAsync(int invoiceId)
         {
             var invoice = await (from i in _db.Invoices
-                                  from t in _db.Tenant.Where(x => x.TenantId == i.TenantId).DefaultIfEmpty()
-                                  from o in _db.Owner.Where(x => x.OwnerId == i.OwnerId).DefaultIfEmpty()
+                                  from t in _db.Tenant.Where(x => x.TenantId == i.TenantId && x.IsDeleted != true).DefaultIfEmpty()
+                                  from o in _db.Owner.Where(x => x.OwnerId == i.OwnerId && x.IsDeleted != true).DefaultIfEmpty()
                                   where i.InvoiceId == invoiceId && i.IsDeleted != true
                                   select new InvoiceDto
                                   {
@@ -2662,7 +2583,7 @@ namespace MagicVilla_VillaAPI.Repository
                                   }).FirstOrDefaultAsync();
             return invoice;
         }
-
+       
         public async Task<bool> AllInvoicePaidAsync(int leaseId)
         {
             var invoices = await _db.Invoices.Where(t => t.LeaseId == leaseId && t.InvoicePaid != true &&  t.IsDeleted != true).ToListAsync();
@@ -2671,9 +2592,8 @@ namespace MagicVilla_VillaAPI.Repository
             _db.Invoices.UpdateRange(invoices);
             var result = await _db.SaveChangesAsync();
             return result > 0;
-        }
-        
-        
+        }   
+       
         public async Task<bool> AllInvoiceOwnerPaidAsync(int leaseId)
         {
             var invoices = await _db.Invoices.Where(t => t.LeaseId == leaseId && t.InvoicePaidToOwner != true &&  t.IsDeleted != true).ToListAsync();
@@ -2682,49 +2602,55 @@ namespace MagicVilla_VillaAPI.Repository
             _db.Invoices.UpdateRange(invoices);
             var result = await _db.SaveChangesAsync();
             return result > 0;
-        }
+        }       
         
         public async Task<bool> InvoicePaidAsync(int invoiceId)
         {
-            var invoice = await _db.Invoices.FirstOrDefaultAsync(t => t.InvoiceId == invoiceId);
+            var invoice = await _db.Invoices.FirstOrDefaultAsync(t => t.InvoiceId == invoiceId && t.IsDeleted != true);
 
             invoice.InvoicePaid = true;
              _db.Invoices.Update(invoice);
             var result = await _db.SaveChangesAsync();
             return result > 0;
-        }
+        }       
         
         public async Task<bool> InvoiceOwnerPaidAsync(int invoiceId)
         {
-            var invoice = await _db.Invoices.FirstOrDefaultAsync(t => t.InvoiceId == invoiceId);
+            var invoice = await _db.Invoices.FirstOrDefaultAsync(t => t.InvoiceId == invoiceId && t.IsDeleted != true);
 
             invoice.InvoicePaidToOwner = true;
             _db.Invoices.Update(invoice);
             var result = await _db.SaveChangesAsync();
             return result > 0;
         }
-
+        
         public async Task<bool> DeleteOwnerAsync(string ownerId)
         {
-            var tenant = await _db.Owner.FirstOrDefaultAsync(t => t.OwnerId == Convert.ToInt32(ownerId));
+            var tenant = await _db.Owner.FirstOrDefaultAsync(t => t.OwnerId == Convert.ToInt32(ownerId) && t.IsDeleted != true);
             if (tenant == null) return false;
 
-            var owner = await _db.OwnerOrganization.FirstOrDefaultAsync(t => t.OwnerId == Convert.ToInt32(ownerId));
-            if (owner == null) return false;
+            tenant.IsDeleted = true;
+            _db.Owner.Update(tenant);
 
-            _db.OwnerOrganization.Remove(owner);
-            _db.Owner.Remove(tenant);
+            var owner = await _db.OwnerOrganization.FirstOrDefaultAsync(t => t.OwnerId == Convert.ToInt32(ownerId) && t.IsDeleted != true);
+            if (owner != null)
+            {
+                owner.IsDeleted = true;
+                _db.OwnerOrganization.Update(owner);
+            }
+
+            
             var result = await _db.SaveChangesAsync();
             return result > 0;
         }
+        
         #endregion
 
-
-
         #region TenantOrg
+
         public async Task<TenantOrganizationInfoDto> GetTenantOrgByIdAsync(int tenantId)
         {
-            var tenant = await _db.TenantOrganizationInfo.FirstOrDefaultAsync(t => t.Id == tenantId);
+            var tenant = await _db.TenantOrganizationInfo.FirstOrDefaultAsync(t => t.Id == tenantId && t.IsDeleted != true);
 
             if (tenant == null)
                 return new TenantOrganizationInfoDto();
@@ -2744,13 +2670,12 @@ namespace MagicVilla_VillaAPI.Repository
 
             return tenantDto;
         }
-
-
+        
         public async Task<bool> UpdateTenantOrgAsync(TenantOrganizationInfoDto tenantDto)
         {
             if (tenantDto.Id < 0) return false;
 
-            var newTenant = _db.TenantOrganizationInfo.FirstOrDefault(x => x.TenantUserId == tenantDto.TenantUserId);
+            var newTenant = _db.TenantOrganizationInfo.FirstOrDefault(x => x.TenantUserId == tenantDto.TenantUserId && x.IsDeleted != true);
             if (newTenant == null)
                 newTenant = new TenantOrganizationInfo();
 
@@ -2792,11 +2717,11 @@ namespace MagicVilla_VillaAPI.Repository
             }
             return result > 0;
         }
+        
         #endregion
 
-
-
         #region Assets
+       
         public async Task<List<AssetDTO>> GetAllAssetsAsync()
         {
             try
@@ -2827,7 +2752,7 @@ namespace MagicVilla_VillaAPI.Repository
                                            AddedBy = asset.AddedBy,
                                            AddedDate = asset.AddedDate,
                                            ModifiedDate = asset.ModifiedDate,
-                                           Units = asset.Units.Select(u => new UnitDTO
+                                           Units = asset.Units.Where(x => x.IsDeleted != true).Select(u => new UnitDTO
                                            {
                                                UnitId = u.UnitId,
                                                AssetId = u.AssetId,
@@ -2879,7 +2804,7 @@ namespace MagicVilla_VillaAPI.Repository
                 Console.WriteLine($"An error occurred while mapping property types: {ex.Message}");
                 throw;
             }
-        }
+        }       
         
         public async Task<AssetDTO> GetAssetByIdAsync(int assetId)
         {
@@ -2912,7 +2837,7 @@ namespace MagicVilla_VillaAPI.Repository
                                            AddedBy = a.AddedBy,
                                            AddedDate = a.AddedDate,
                                            ModifiedDate = a.ModifiedDate,
-                                           Units = a.Units.Select(u => new UnitDTO
+                                           Units = a.Units.Where(x => x.IsDeleted != true).Select(u => new UnitDTO
                                            {
                                                UnitId = u.UnitId,
                                                AssetId = u.AssetId,
@@ -2965,12 +2890,14 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
+        
         public async Task<List<AssetDTO>> GetAssetsDllAsync(Filter filter)
         {
             try
             {
 
                 var assetsQuery = _db.Assets
+                .Where(x => x.IsDeleted != true)
                 .Select(a => new AssetDTO
                 {
                     AssetId = a.AssetId,
@@ -2994,13 +2921,13 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
-
-
+       
         public async Task<List<AssetUnitDTO>> GetAllUnitsAsync()
         {
             try
             {
                 var units = await _db.AssetsUnits
+                                             .Where(x => x.IsDeleted != true)
                                              .AsNoTracking()
                                              .ToListAsync();
 
@@ -3025,14 +2952,15 @@ namespace MagicVilla_VillaAPI.Repository
                 Console.WriteLine($"An error occurred while mapping units: {ex.Message}");
                 throw;
             }
-        }
+        }       
         
         public async Task<List<AssetUnitDTO>> GetUnitsDllAsync(Filter filter)
         {
             try
             {
                 var units = await (from au in _db.AssetsUnits
-                                 select new AssetUnitDTO
+                                   where au.IsDeleted != true
+                                   select new AssetUnitDTO
                                  {
                                      UnitId = au.UnitId,
                                      UnitName = au.UnitName,
@@ -3052,14 +2980,14 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
-
+       
         public async Task<List<AssetUnitDTO>> GetUnitsByUserAsync(Filter filter)
         {
             try
             {
                 var units = await (from a in _db.Assets
-                                   join au in _db.AssetsUnits on a.AssetId equals au.AssetId
-                                   where a.AddedBy == filter.AddedBy
+                                   from au in _db.AssetsUnits.Where(x => x.AssetId == a.AssetId && x.IsDeleted != true).DefaultIfEmpty()
+                                   where a.AddedBy == filter.AddedBy && a.IsDeleted != true
                                    select new AssetUnitDTO
                                    {
                                        UnitId = au.UnitId,
@@ -3075,40 +3003,13 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
-
-
-
-        //public async Task<List<AssetUnitDTO>> GetUnitsByUserAsync(Filter filter)
-        //{
-        //    try
-        //    {
-        //        var units = await (from a in _db.Assets
-        //                           from au in _db.AssetsUnits.Where(x=>x.AssetId == a.AssetId).DefaultIfEmpty()
-        //                           where a.AddedBy == filter.AddedBy
-        //                           select new AssetUnitDTO
-        //                           {
-        //                               UnitId = au.UnitId,
-        //                               UnitName = au.UnitName,
-        //                               AssetId = au.AssetId,
-        //                           }).AsNoTracking().ToListAsync();
-
-
-
-        //        return units;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine($"An error occurred while mapping units: {ex.Message}");
-        //        throw;
-        //    }
-        //}
-
+       
         public async Task<List<UnitDTO>> GetUnitsDetailAsync(int assetId)
         {
             try
             {
                 var result = await (from au in _db.AssetsUnits
-                                    where au.AssetId == assetId
+                                    where au.AssetId == assetId && au.IsDeleted != true
                                     select new UnitDTO
                                     {
                                         UnitId = au.UnitId,
@@ -3129,22 +3030,22 @@ namespace MagicVilla_VillaAPI.Repository
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"An error occurred while mapping owners and organizations: {ex.Message}");
+                Console.WriteLine($"An error occurred while mapping unit details: {ex.Message}");
                 throw;
             }
         }
-
+        
         public async Task<bool> CreateAssetAsync(AssetDTO assetDTO)
         {
-            var user = await _db.ApplicationUsers.FirstOrDefaultAsync(x => x.Id == assetDTO.AddedBy);
+            var user = await _db.ApplicationUsers.FirstOrDefaultAsync(x => x.Id == assetDTO.AddedBy && x.IsDeleted != true);
             if (user != null)
             {
-                var subscription = await _db.Subscriptions.FirstOrDefaultAsync(x => x.Id == user.SubscriptionId);
+                var subscription = await _db.Subscriptions.FirstOrDefaultAsync(x => x.Id == user.SubscriptionId && x.IsDeleted != true);
 
                 if (subscription != null && subscription.SubscriptionName == SubscriptionTypes.Free.ToString())
                 {
                     var leaseCount = await _db.Assets
-                        .Where(x => x.AddedBy == assetDTO.AddedBy)
+                        .Where(x => x.AddedBy == assetDTO.AddedBy && x.IsDeleted != true)
                         .AsNoTracking()
                         .CountAsync();
 
@@ -3159,9 +3060,9 @@ namespace MagicVilla_VillaAPI.Repository
             if (assetDTO.SelectedOwnershipOption == "owned-by-me")
             {
 
-                var existingOwner = await _db.Owner.FirstOrDefaultAsync(o => o.EmailAddress == user.Email);
+                var existingOwner = await _db.Owner.FirstOrDefaultAsync(o => o.EmailAddress == user.Email && o.IsDeleted != true);
                 bool isValidGuid = Guid.TryParse(user.Id, out Guid userIdGuid);
-                var tenantOrganization = await _db.TenantOrganizationInfo.AsNoTracking().FirstOrDefaultAsync(to => to.TenantUserId == userIdGuid);
+                var tenantOrganization = await _db.TenantOrganizationInfo.AsNoTracking().FirstOrDefaultAsync(to => to.TenantUserId == userIdGuid && to.IsDeleted != true);
 
                 if (existingOwner == null)
                 {
@@ -3231,7 +3132,9 @@ namespace MagicVilla_VillaAPI.Repository
                     Beds = u.Beds,
                     Bath = u.Bath,
                     Size = u.Size,
-                    Rent = u.Rent
+                    Rent = u.Rent,
+                    AddedBy = assetDTO.AddedBy,
+                    AddedDate = DateTime.Now
                 };
                 newAsset.Units.Add(unit);
             }
@@ -3246,18 +3149,14 @@ namespace MagicVilla_VillaAPI.Repository
 
             return result > 0;
         }
-
-
-
-
-
+        
         public async Task<bool> UpdateAssetAsync(AssetDTO assetDTO)
         {
 
             if (assetDTO.SelectedOwnershipOption == "owned-by-me")
             {
-                var user = await _db.ApplicationUsers.FirstOrDefaultAsync(x => x.Id == assetDTO.AddedBy);
-                var existingOwner = await _db.Owner.FirstOrDefaultAsync(o => o.EmailAddress == user.Email);
+                var user = await _db.ApplicationUsers.FirstOrDefaultAsync(x => x.Id == assetDTO.AddedBy && x.IsDeleted != true);
+                var existingOwner = await _db.Owner.FirstOrDefaultAsync(o => o.EmailAddress == user.Email && o.IsDeleted != true);
                 if (existingOwner == null)
                 {
                     bool isValidGuid = Guid.TryParse(user.Id, out Guid userIdGuid);
@@ -3327,13 +3226,13 @@ namespace MagicVilla_VillaAPI.Repository
             }
             existingAsset.AppTenantId = assetDTO.AppTid;
 
-            var existingUnits = _db.AssetsUnits.Where(u => u.AssetId == assetDTO.AssetId).ToList();
+            var existingUnits = _db.AssetsUnits.Where(u => u.AssetId == assetDTO.AssetId && u.IsDeleted != true).ToList();
             var incomingUnitIds = assetDTO.Units.Select(u => u.UnitId).ToHashSet();
 
             // Update existing units and add new units
             foreach (var unitDTO in assetDTO.Units)
             {
-                var existingUnit = existingUnits.FirstOrDefault(u => u.UnitId == unitDTO.UnitId);
+                var existingUnit = existingUnits.FirstOrDefault(u => u.UnitId == unitDTO.UnitId && u.IsDeleted != true);
                 if (existingUnit != null)
                 {
                     existingUnit.AssetId = assetDTO.AssetId;
@@ -3342,6 +3241,9 @@ namespace MagicVilla_VillaAPI.Repository
                     existingUnit.Bath = unitDTO.Bath;
                     existingUnit.Size = unitDTO.Size;
                     existingUnit.Rent = unitDTO.Rent;
+                    existingUnit.ModifiedBy = assetDTO.AddedBy;
+                    existingUnit.ModifiedDate = DateTime.Now;
+
                     _db.AssetsUnits.Update(existingUnit);
                 }
                 else
@@ -3353,17 +3255,20 @@ namespace MagicVilla_VillaAPI.Repository
                         Beds = unitDTO.Beds,
                         Bath = unitDTO.Bath,
                         Size = unitDTO.Size,
-                        Rent = unitDTO.Rent
+                        Rent = unitDTO.Rent,
+                        AddedBy = assetDTO.AddedBy,
+                        AddedDate = DateTime.Now
                     };
                     _db.AssetsUnits.Add(newUnit);
                 }
             }
 
             // Remove units that are no longer in the DTO
-            var unitsToRemove = existingUnits.Where(u => !incomingUnitIds.Contains(u.UnitId)).ToList();
+            var unitsToRemove = existingUnits.Where(u => !incomingUnitIds.Contains(u.UnitId) && u.IsDeleted != true).ToList();
+            
             if (unitsToRemove.Any())
             {
-                _db.AssetsUnits.RemoveRange(unitsToRemove);
+                unitsToRemove.ForEach(x => x.IsDeleted = true);
             }
             var result = await _db.SaveChangesAsync();
 
@@ -3375,8 +3280,7 @@ namespace MagicVilla_VillaAPI.Repository
 
             return result > 0;
         }
-
-
+       
         public async Task<bool> DeleteAssetAsync(int assetId)
         {
             var asset = await _db.Assets.FindAsync(assetId);
@@ -3392,17 +3296,16 @@ namespace MagicVilla_VillaAPI.Repository
             return result > 0;
         }
 
-
         #endregion
 
-
-
         #region Communication
+       
         public async Task<List<CommunicationDto>> GetAllCommunicationAsync()
         {
             try
             {
                 var communicationTypes = await _db.Communication
+                                             .Where(x => x.IsDeleted != true)
                                              .AsNoTracking()
                                              .ToListAsync();
 
@@ -3431,11 +3334,11 @@ namespace MagicVilla_VillaAPI.Repository
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"An error occurred while mapping property types: {ex.Message}");
+                Console.WriteLine($"An error occurred while mapping communication: {ex.Message}");
                 throw;
             }
         }
-
+       
         public async Task<bool> CreateCommunicationAsync(CommunicationDto communication)
         {
             var CommunicationData = new Communication
@@ -3463,8 +3366,7 @@ namespace MagicVilla_VillaAPI.Repository
 
             return result > 0;
         }
-
-
+        
         public async Task<bool> UpdateCommunicationAsync(CommunicationDto communication)
         {
 
@@ -3494,8 +3396,7 @@ namespace MagicVilla_VillaAPI.Repository
 
             return result > 0;
         }
-
-
+       
         public async Task<bool> DeleteCommunicationAsync(int communicationId)
         {
             var communication = await _db.Communication.FindAsync(communicationId);
@@ -3510,7 +3411,6 @@ namespace MagicVilla_VillaAPI.Repository
 
             return result > 0;
         }
-
 
         #endregion
 
@@ -3574,6 +3474,7 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
+       
         public async Task<List<OwnerDto>> GetAllLandlordDllAsync(Filter filter)
         {
             try
@@ -3599,12 +3500,13 @@ namespace MagicVilla_VillaAPI.Repository
             }
         }
 
-
         #endregion
+
+        #region Subscritions
 
         public async Task<List<SubscriptionDto>> GetAllSubscriptionsAsync()
         {
-            return await _db.Subscriptions.Select(subscription => new SubscriptionDto
+            return await _db.Subscriptions.Where(x => x.IsDeleted != true).Select(subscription => new SubscriptionDto
             {
                 Id = subscription.Id,
                 SubscriptionName = subscription.SubscriptionName,
@@ -3618,6 +3520,7 @@ namespace MagicVilla_VillaAPI.Repository
                 TenantId = subscription.TenantId
             }).ToListAsync();
         }
+        
         public async Task<SubscriptionDto> GetSubscriptionByIdAsync(int Id)
         {
             var subscription = await _db.Subscriptions.FindAsync(Id);
@@ -3636,7 +3539,7 @@ namespace MagicVilla_VillaAPI.Repository
                 TenantId = subscription.TenantId
             };
         }
-
+        
         public async Task<bool> CreateSubscriptionAsync(SubscriptionDto subscriptionDto)
         {
             var subscription = new Subscription
@@ -3656,7 +3559,7 @@ namespace MagicVilla_VillaAPI.Repository
             var result = await _db.SaveChangesAsync();
             return result > 0;
         }
-
+        
         public async Task<bool> UpdateSubscriptionAsync(SubscriptionDto subscriptionDto)
         {
             var subscription = await _db.Subscriptions.FindAsync(subscriptionDto.Id);
@@ -3677,7 +3580,7 @@ namespace MagicVilla_VillaAPI.Repository
             var result = await _db.SaveChangesAsync();
             return result > 0;
         }
-
+        
         public async Task<bool> DeleteSubscriptionAsync(int Id)
         {
             var subscription = await _db.Subscriptions.FindAsync(Id);
@@ -3688,7 +3591,7 @@ namespace MagicVilla_VillaAPI.Repository
             return result > 0;
         }
 
-
+        #endregion
 
         #region TaskRequest
 
@@ -3716,20 +3619,20 @@ namespace MagicVilla_VillaAPI.Repository
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"An error occurred while mapping owners and organizations: {ex.Message}");
+                Console.WriteLine($"An error occurred while mapping task history: {ex.Message}");
                 throw;
             }
-        }
+        }      
         
         public async Task<List<TaskRequestDto>> GetMaintenanceTasksAsync()
         {
             try
             {
                 var result = await (from t in _db.TaskRequest
-                                    from a in _db.Assets.Where(x => x.AssetId == t.AssetId).DefaultIfEmpty()
-                                    from u in _db.AssetsUnits.Where(x => x.UnitId == t.UnitId).DefaultIfEmpty()
-                                    from o in _db.Owner.Where(x => x.OwnerId == t.OwnerId).DefaultIfEmpty()
-                                    from tnt in _db.Tenant.Where(x => x.TenantId == t.TenantId).DefaultIfEmpty()
+                                    from a in _db.Assets.Where(x => x.AssetId == t.AssetId && x.IsDeleted != true).DefaultIfEmpty()
+                                    from u in _db.AssetsUnits.Where(x => x.UnitId == t.UnitId && x.IsDeleted != true).DefaultIfEmpty()
+                                    from o in _db.Owner.Where(x => x.OwnerId == t.OwnerId && x.IsDeleted != true).DefaultIfEmpty()
+                                    from tnt in _db.Tenant.Where(x => x.TenantId == t.TenantId && x.IsDeleted != true).DefaultIfEmpty()
                                         //from l in _db.LineItem.Where(x=>x.TaskRequestId == t.TaskRequestId).DefaultIfEmpty()
                                     where t.Status != TaskStatusTypes.NotStarted.ToString() && t.IsDeleted != true 
                                     select new TaskRequestDto
@@ -3788,7 +3691,7 @@ namespace MagicVilla_VillaAPI.Repository
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"An error occurred while mapping owners and organizations: {ex.Message}");
+                Console.WriteLine($"An error occurred while mapping maintainance task: {ex.Message}");
                 throw;
             }
         }
@@ -3798,10 +3701,10 @@ namespace MagicVilla_VillaAPI.Repository
             try
             {
                 var result = await (from t in _db.TaskRequest
-                                    from a in _db.Assets.Where(x => x.AssetId == t.AssetId).DefaultIfEmpty()
-                                    from u in _db.AssetsUnits.Where(x => x.UnitId == t.UnitId).DefaultIfEmpty()
-                                    from o in _db.Owner.Where(x => x.OwnerId == t.OwnerId).DefaultIfEmpty()
-                                    from tnt in _db.Tenant.Where(x => x.TenantId == t.TenantId).DefaultIfEmpty()
+                                    from a in _db.Assets.Where(x => x.AssetId == t.AssetId && x.IsDeleted != true).DefaultIfEmpty()
+                                    from u in _db.AssetsUnits.Where(x => x.UnitId == t.UnitId && x.IsDeleted != true).DefaultIfEmpty()
+                                    from o in _db.Owner.Where(x => x.OwnerId == t.OwnerId && x.IsDeleted != true).DefaultIfEmpty()
+                                    from tnt in _db.Tenant.Where(x => x.TenantId == t.TenantId && x.IsDeleted != true).DefaultIfEmpty()
                                     where t.IsDeleted != true
                                     select new TaskRequestDto
                                     {
@@ -3842,7 +3745,7 @@ namespace MagicVilla_VillaAPI.Repository
                                         AddedDate = t.AddedDate,
                                         ModifiedDate = t.ModifiedDate,
                                         LineItems = (from item in _db.LineItem
-                                                     from ca in _db.ChartAccount.Where(x => x.ChartAccountId == item.ChartAccountId).DefaultIfEmpty()
+                                                     from ca in _db.ChartAccount.Where(x => x.ChartAccountId == item.ChartAccountId && x.IsDeleted != true).DefaultIfEmpty()
                                                      where item.TaskRequestId == t.TaskRequestId && item.IsDeleted != true
                                                      select new LineItemDto
                                                      {
@@ -3863,17 +3766,17 @@ namespace MagicVilla_VillaAPI.Repository
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"An error occurred while mapping owners and organizations: {ex.Message}");
+                Console.WriteLine($"An error occurred while mapping task requests: {ex.Message}");
                 throw;
             }
         }
-
+        
         public async Task<List<LineItemDto>> GetAllLineItemsAsync()
         {
             try
             {
                 var result = await (from item in _db.LineItem
-                                   from ca in _db.ChartAccount.Where(x => x.ChartAccountId == item.ChartAccountId).DefaultIfEmpty()
+                                   from ca in _db.ChartAccount.Where(x => x.ChartAccountId == item.ChartAccountId && x.IsDeleted != true).DefaultIfEmpty()
                                    where item.IsDeleted != true
                                    select new LineItemDto
                                    {
@@ -3898,16 +3801,16 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
-
+        
         public async Task<List<TaskRequestDto>> GetTaskRequestsAsync()
         {
             try
             {
                 var result = await (from t in _db.TaskRequest
-                                    from a in _db.Assets.Where(x => x.AssetId == t.AssetId).DefaultIfEmpty()
-                                    from u in _db.AssetsUnits.Where(x => x.UnitId == t.UnitId).DefaultIfEmpty()
-                                    from o in _db.Owner.Where(x => x.OwnerId == t.OwnerId).DefaultIfEmpty()
-                                    from tnt in _db.Tenant.Where(x => x.TenantId == t.TenantId).DefaultIfEmpty()
+                                    from a in _db.Assets.Where(x => x.AssetId == t.AssetId && x.IsDeleted != true).DefaultIfEmpty()
+                                    from u in _db.AssetsUnits.Where(x => x.UnitId == t.UnitId && x.IsDeleted != true).DefaultIfEmpty()
+                                    from o in _db.Owner.Where(x => x.OwnerId == t.OwnerId && x.IsDeleted != true).DefaultIfEmpty()
+                                    from tnt in _db.Tenant.Where(x => x.TenantId == t.TenantId && x.IsDeleted != true).DefaultIfEmpty()
                                         //from l in _db.LineItem.Where(x=>x.TaskRequestId == t.TaskRequestId).DefaultIfEmpty()
                                     where t.Status == TaskStatusTypes.NotStarted.ToString() && t.IsDeleted != true
                                     select new TaskRequestDto
@@ -3947,7 +3850,7 @@ namespace MagicVilla_VillaAPI.Repository
                                         PartsAndLabor = t.PartsAndLabor,
                                         AddedBy = t.AddedBy,
                                         LineItems = (from item in _db.LineItem
-                                                     from ca in _db.ChartAccount.Where(x => x.ChartAccountId == item.ChartAccountId).DefaultIfEmpty()
+                                                     from ca in _db.ChartAccount.Where(x => x.ChartAccountId == item.ChartAccountId && x.IsDeleted != true).DefaultIfEmpty()
                                                      where item.TaskRequestId == t.TaskRequestId && item.IsDeleted != true
                                                      select new LineItemDto
                                                      {
@@ -3968,20 +3871,21 @@ namespace MagicVilla_VillaAPI.Repository
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"An error occurred while mapping owners and organizations: {ex.Message}");
+                Console.WriteLine($"An error occurred while mapping task requests: {ex.Message}");
                 throw;
             }
         }
+        
         public async Task<TaskRequestDto> GetTaskByIdAsync(int id)
         {
             try
             {
                 var result = await (from t in _db.TaskRequest
-                                    from a in _db.Assets.Where(x => x.AssetId == t.AssetId).DefaultIfEmpty()
-                                    from u in _db.AssetsUnits.Where(x => x.UnitId == t.UnitId).DefaultIfEmpty()
-                                    from o in _db.Owner.Where(x => x.OwnerId == t.OwnerId).DefaultIfEmpty()
-                                    from tnt in _db.Tenant.Where(x => x.TenantId == t.TenantId).DefaultIfEmpty()
-                                    where t.TaskRequestId == id
+                                    from a in _db.Assets.Where(x => x.AssetId == t.AssetId && x.IsDeleted != true).DefaultIfEmpty()
+                                    from u in _db.AssetsUnits.Where(x => x.UnitId == t.UnitId && x.IsDeleted != true).DefaultIfEmpty()
+                                    from o in _db.Owner.Where(x => x.OwnerId == t.OwnerId && x.IsDeleted != true).DefaultIfEmpty()
+                                    from tnt in _db.Tenant.Where(x => x.TenantId == t.TenantId && x.IsDeleted != true).DefaultIfEmpty()
+                                    where t.TaskRequestId == id && t.IsDeleted != true
                                     select new TaskRequestDto
                                     {
                                         TaskRequestId = t.TaskRequestId,
@@ -4019,7 +3923,7 @@ namespace MagicVilla_VillaAPI.Repository
                                         PartsAndLabor = t.PartsAndLabor,
                                         AddedBy = t.AddedBy,
                                         LineItems = (from item in _db.LineItem
-                                                     from ca in _db.ChartAccount.Where(x => x.ChartAccountId == item.ChartAccountId).DefaultIfEmpty()
+                                                     from ca in _db.ChartAccount.Where(x => x.ChartAccountId == item.ChartAccountId && x.IsDeleted != true).DefaultIfEmpty()
                                                      where item.TaskRequestId == t.TaskRequestId && item.IsDeleted != true
                                                      select new LineItemDto
                                                      {
@@ -4040,15 +3944,16 @@ namespace MagicVilla_VillaAPI.Repository
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"An error occurred while mapping owners and organizations: {ex.Message}");
+                Console.WriteLine($"An error occurred while mapping task request: {ex.Message}");
                 throw;
             }
         }
+       
         public async Task<bool> SaveTaskAsync(TaskRequestDto taskRequestDto)
         {
             try
             {
-                var taskRequest = _db.TaskRequest.FirstOrDefault(x => x.TaskRequestId == taskRequestDto.TaskRequestId);
+                var taskRequest = _db.TaskRequest.FirstOrDefault(x => x.TaskRequestId == taskRequestDto.TaskRequestId && x.IsDeleted != true);
 
                 if (taskRequest == null)
                     taskRequest = new TaskRequest();
@@ -4109,7 +4014,7 @@ namespace MagicVilla_VillaAPI.Repository
 
                 int[] lineItemIds = taskRequestDto.LineItems.Select(x => x.LineItemId).ToArray();
                 var lineItemsToBeDeleted = _db.LineItem
-                    .Where(item => item.TaskRequestId == taskRequestDto.TaskRequestId && !lineItemIds.Contains(item.LineItemId))
+                    .Where(item => item.TaskRequestId == taskRequestDto.TaskRequestId && !lineItemIds.Contains(item.LineItemId) && item.IsDeleted != true)
                     .ToList();
 
                 foreach (var lineItemToBeDeleted in lineItemsToBeDeleted)
@@ -4121,10 +4026,10 @@ namespace MagicVilla_VillaAPI.Repository
                 }
                 if (taskRequestDto.LineItems != null && taskRequestDto.LineItems.Any())
                 {
-                    var existingLineItems = _db.LineItem.Where(item => item.TaskRequestId == taskRequestDto.TaskRequestId).ToList();
+                    var existingLineItems = _db.LineItem.Where(item => item.TaskRequestId == taskRequestDto.TaskRequestId && item.IsDeleted != true).ToList();
                     foreach (var lineItemDto in taskRequestDto.LineItems)
                     {
-                        var existingLineItem = existingLineItems.FirstOrDefault(item => item.LineItemId == lineItemDto.LineItemId);
+                        var existingLineItem = existingLineItems.FirstOrDefault(item => item.LineItemId == lineItemDto.LineItemId && item.IsDeleted != true);
 
                         if (existingLineItem != null)
                         {
@@ -4185,6 +4090,7 @@ namespace MagicVilla_VillaAPI.Repository
             }
 
         }
+       
         public async Task<bool> DeleteTaskAsync(int id)
         {
             var task = await _db.TaskRequest.FindAsync(id);
@@ -4194,7 +4100,7 @@ namespace MagicVilla_VillaAPI.Repository
             _db.TaskRequest.Update(task);
             var saveResult = await _db.SaveChangesAsync();
 
-            var lineItems = await _db.LineItem.Where(x => x.TaskRequestId == id).ToListAsync();
+            var lineItems = await _db.LineItem.Where(x => x.TaskRequestId == id && x.IsDeleted != true).ToListAsync();
 
             lineItems.ForEach(x => x.IsDeleted = true);
             _db.LineItem.UpdateRange(lineItems);
@@ -4202,10 +4108,10 @@ namespace MagicVilla_VillaAPI.Repository
 
             return saveResult > 0 || lineItemSaveResult > 0;
         }
-
+       
         public async Task<bool> SaveTaskHistoryAsync(TaskRequestHistoryDto taskRequestHistoryDto)
         {
-            var taskRequest = await _db.TaskRequest.FirstOrDefaultAsync(x => x.TaskRequestId == taskRequestHistoryDto.TaskRequestId);
+            var taskRequest = await _db.TaskRequest.FirstOrDefaultAsync(x => x.TaskRequestId == taskRequestHistoryDto.TaskRequestId && x.IsDeleted != true);
 
             if (taskRequest != null)
             {
@@ -4233,7 +4139,7 @@ namespace MagicVilla_VillaAPI.Repository
                 await _db.SaveChangesAsync();
             }
 
-            var taskRequestHistory = await _db.TaskRequestHistory.FirstOrDefaultAsync(x => x.TaskRequestHistoryId == taskRequestHistoryDto.TaskRequestHistoryId);
+            var taskRequestHistory = await _db.TaskRequestHistory.FirstOrDefaultAsync(x => x.TaskRequestHistoryId == taskRequestHistoryDto.TaskRequestHistoryId && x.IsDeleted != true);
 
             if (taskRequestHistory == null)
                 taskRequestHistory = new TaskRequestHistory();
@@ -4269,22 +4175,21 @@ namespace MagicVilla_VillaAPI.Repository
             return result > 0;
         }
 
-
-
         #endregion
 
         #region LandloadGetData
+       
         public async Task<LandlordDataDto> GetLandlordDataById(int ownerId)
         {
             try
             {
                 var ownerData = await _db.Owner
-                    .Where(o => o.OwnerId == ownerId)
+                    .Where(o => o.OwnerId == ownerId && o.IsDeleted != true)
                     .Select(o => new
                     {
                         Owner = o,
                         OwnerOrganization = _db.OwnerOrganization
-                            .Where(oo => oo.OwnerId == o.OwnerId)
+                            .Where(oo => oo.OwnerId == o.OwnerId && oo.IsDeleted != true)
                             .FirstOrDefault()
                     })
                     .FirstOrDefaultAsync();
@@ -4345,7 +4250,6 @@ namespace MagicVilla_VillaAPI.Repository
                 var invoicesTask = await GetInvoicesByOwnerId(ownerId);
                 var taskRequestsTask = await GetTaskRequestsByOwnerId(ownerId);
 
-                //await Task.WhenAll(assetsTask, leasesTask, invoicesTask, taskRequestsTask);
 
                 landlordData.Assets = assetsTask;
                 landlordData.Leases = leasesTask;
@@ -4356,14 +4260,14 @@ namespace MagicVilla_VillaAPI.Repository
             }
             catch (Exception ex)
             {
-                // Handle exception (log it, etc.)
                 throw;
             }
         }
+       
         private async Task<List<AssetDTO>> GetAssetsByOwnerId(int ownerId)
         {
             return await _db.Assets
-                .Where(a => a.OwnerId == ownerId)
+                .Where(a => a.OwnerId == ownerId && a.IsDeleted != true)
                 .Select(a => new AssetDTO
                 {
                     AssetId = a.AssetId,
@@ -4386,7 +4290,7 @@ namespace MagicVilla_VillaAPI.Repository
                     AddedBy = a.AddedBy,
                     AddedDate = a.AddedDate,
                     ModifiedDate = a.ModifiedDate,
-                    Units = a.Units.Select(u => new UnitDTO
+                    Units = a.Units.Where(x => x.IsDeleted != true).Select(u => new UnitDTO
                     {
                         UnitId = u.UnitId,
                         AssetId = u.AssetId,
@@ -4399,11 +4303,12 @@ namespace MagicVilla_VillaAPI.Repository
                 })
                 .ToListAsync();
         }
+        
         private async Task<List<LeaseDto>> GetLeasesByOwnerId(int ownerId)
         {
             return await (from asset in _db.Assets
-                          from lease in _db.Lease.Where(l => l.AssetId == asset.AssetId).DefaultIfEmpty()
-                          where asset.OwnerId == ownerId
+                          from lease in _db.Lease.Where(l => l.AssetId == asset.AssetId && l.IsDeleted != true).DefaultIfEmpty()
+                          where asset.OwnerId == ownerId && asset.IsDeleted != true
                           select new LeaseDto
                           {
                               LeaseId = lease != null ? lease.LeaseId : 0,
@@ -4419,7 +4324,7 @@ namespace MagicVilla_VillaAPI.Repository
                               LateFeesPolicy = lease != null ? lease.LateFeesPolicy : string.Empty,
                               TenantId = lease != null ? lease.TenantsTenantId : 0,
                               AppTenantId = lease != null ? lease.AppTenantId : string.Empty,
-                              RentCharges = lease != null ? lease.RentCharges.Select(rc => new RentChargeDto
+                              RentCharges = lease != null ? lease.RentCharges.Where(x => x.IsDeleted != true).Select(rc => new RentChargeDto
                               {
                                   RentChargeId = rc.RentChargeId,
                                   Amount = rc.Amount,
@@ -4427,14 +4332,14 @@ namespace MagicVilla_VillaAPI.Repository
                                   RentDate = rc.RentDate,
                                   RentPeriod = rc.RentPeriod
                               }).ToList() : new List<RentChargeDto>(),
-                              FeeCharges = lease != null ? lease.FeeCharge.Select(fc => new FeeChargeDto
+                              FeeCharges = lease != null ? lease.FeeCharge.Where(x => x.IsDeleted != true).Select(fc => new FeeChargeDto
                               {
                                   FeeChargeId = fc.FeeChargeId,
                                   Amount = fc.Amount,
                                   Description = fc.Description,
                                   FeeDate = fc.FeeDate
                               }).ToList() : new List<FeeChargeDto>(),
-                              SecurityDeposits = lease != null ? lease.SecurityDeposit.Select(sd => new SecurityDepositDto
+                              SecurityDeposits = lease != null ? lease.SecurityDeposit.Where(x => x.IsDeleted != true).Select(sd => new SecurityDepositDto
                               {
                                   SecurityDepositId = sd.SecurityDepositId,
                                   Amount = sd.Amount,
@@ -4472,7 +4377,7 @@ namespace MagicVilla_VillaAPI.Repository
                                   Country = lease.Tenants.Country,
                                   CountryCode = lease.Tenants.CountryCode,
                                   Unit = lease.Tenants.Unit,
-                                  Pets = lease.Tenants.Pets.Select(p => new PetDto
+                                  Pets = lease.Tenants.Pets.Where(x => x.IsDeleted != true).Select(p => new PetDto
                                   {
                                       PetId = p.PetId,
                                       Name = p.Name,
@@ -4482,7 +4387,7 @@ namespace MagicVilla_VillaAPI.Repository
                                       PictureName = p.Picture,
                                       Picture = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Pets_Picture_" + p.PetId + Path.GetExtension(p.Picture)}"
                                   }).ToList(),
-                                  Vehicles = lease.Tenants.Vehicle.Select(v => new VehicleDto
+                                  Vehicles = lease.Tenants.Vehicle.Where(x=>x.IsDeleted != true).Select(v => new VehicleDto
                                   {
                                       VehicleId = v.VehicleId,
                                       Manufacturer = v.Manufacturer,
@@ -4490,7 +4395,7 @@ namespace MagicVilla_VillaAPI.Repository
                                       ModelVariant = v.ModelVariant,
                                       Year = v.Year
                                   }).ToList(),
-                                  Dependent = lease.Tenants.TenantDependent.Select(d => new TenantDependentDto
+                                  Dependent = lease.Tenants.TenantDependent.Where(x => x.IsDeleted != true).Select(d => new TenantDependentDto
                                   {
                                       TenantDependentId = d.TenantDependentId,
                                       TenantId = d.TenantId,
@@ -4501,7 +4406,7 @@ namespace MagicVilla_VillaAPI.Repository
                                       DOB = d.DOB,
                                       Relation = d.Relation
                                   }).ToList(),
-                                  CoTenant = lease.Tenants.CoTenant.Select(c => new CoTenantDto
+                                  CoTenant = lease.Tenants.CoTenant.Where(x => x.IsDeleted != true).Select(c => new CoTenantDto
                                   {
                                       CoTenantId = c.CoTenantId,
                                       TenantId = c.TenantId,
@@ -4519,14 +4424,15 @@ namespace MagicVilla_VillaAPI.Repository
                               } : null
                           }).ToListAsync();
         }
+       
         private async Task<List<InvoiceDto>> GetInvoicesByOwnerId(int ownerId)
         {
             return await (from asset in _db.Assets
-                          from lease in _db.Lease.Where(x => x.AssetId == asset.AssetId).DefaultIfEmpty()
-                          from invoice in _db.Invoices.Where(x => x.LeaseId == lease.LeaseId).DefaultIfEmpty()
-                          from t in _db.Tenant.Where(x => x.TenantId == invoice.TenantId).DefaultIfEmpty()
-                          from o in _db.Owner.Where(x => x.OwnerId == invoice.OwnerId).DefaultIfEmpty()
-                          where asset.OwnerId == ownerId
+                          from lease in _db.Lease.Where(x => x.AssetId == asset.AssetId && x.IsDeleted != true).DefaultIfEmpty()
+                          from invoice in _db.Invoices.Where(x => x.LeaseId == lease.LeaseId && x.IsDeleted != true).DefaultIfEmpty()
+                          from t in _db.Tenant.Where(x => x.TenantId == invoice.TenantId && x.IsDeleted != true).DefaultIfEmpty()
+                          from o in _db.Owner.Where(x => x.OwnerId == invoice.OwnerId && x.IsDeleted != true).DefaultIfEmpty()
+                          where asset.OwnerId == ownerId && asset.IsDeleted != true
                           select new InvoiceDto
                           {
                               InvoiceId = invoice != null ? invoice.InvoiceId : 0,
@@ -4543,14 +4449,15 @@ namespace MagicVilla_VillaAPI.Repository
                               AddedBy = invoice != null ? invoice.AddedBy : string.Empty
                           }).ToListAsync();
         }
+        
         private async Task<List<TaskRequestDto>> GetTaskRequestsByOwnerId(int ownerId)
         {
             return await (from asset in _db.Assets
-                          from task in _db.TaskRequest.Where(t => t.AssetId == asset.AssetId).DefaultIfEmpty()
-                          from unit in _db.AssetsUnits.Where(u => u.UnitId == task.UnitId).DefaultIfEmpty()
-                          from tenant in _db.Tenant.Where(tn => tn.TenantId == task.TenantId).DefaultIfEmpty()
-                          from owner in _db.Owner.Where(o => o.OwnerId == ownerId).DefaultIfEmpty()
-                          where asset.OwnerId == ownerId
+                          from task in _db.TaskRequest.Where(t => t.AssetId == asset.AssetId && t.IsDeleted != true).DefaultIfEmpty()
+                          from unit in _db.AssetsUnits.Where(u => u.UnitId == task.UnitId && u.IsDeleted != true).DefaultIfEmpty()
+                          from tenant in _db.Tenant.Where(tn => tn.TenantId == task.TenantId && tn.IsDeleted != true).DefaultIfEmpty()
+                          from owner in _db.Owner.Where(o => o.OwnerId == ownerId && o.IsDeleted != true).DefaultIfEmpty()
+                          where asset.OwnerId == ownerId && asset.IsDeleted != true
                           select new TaskRequestDto
                           {
                               TaskRequestId = task != null ? task.TaskRequestId : 0,
@@ -4588,7 +4495,7 @@ namespace MagicVilla_VillaAPI.Repository
                               PartsAndLabor = task != null ? task.PartsAndLabor : false,
                               AddedBy = task != null ? task.AddedBy : string.Empty,
                               LineItems = task != null ? (from item in _db.LineItem
-                                                          from ca in _db.ChartAccount.Where(c => c.ChartAccountId == item.ChartAccountId).DefaultIfEmpty()
+                                                          from ca in _db.ChartAccount.Where(c => c.ChartAccountId == item.ChartAccountId && c.IsDeleted != true).DefaultIfEmpty()
                                                           where item.TaskRequestId == task.TaskRequestId && item.IsDeleted != true
                                                           select new LineItemDto
                                                           {
@@ -4610,7 +4517,7 @@ namespace MagicVilla_VillaAPI.Repository
             try
             {
                 var tenant = await _db.Tenant
-                    .Where(t => t.TenantId == tenantId)
+                    .Where(t => t.TenantId == tenantId && t.IsDeleted != true)
                     .Select(t => new TenantDataDto
                     {
                         TenantId = t.TenantId,
@@ -4654,7 +4561,7 @@ namespace MagicVilla_VillaAPI.Repository
                 }
 
                 tenant.Pets = await _db.Pets
-                    .Where(p => p.TenantId == tenantId)
+                    .Where(p => p.TenantId == tenantId && p.IsDeleted != true)
                     .Select(p => new PetDto
                     {
                         PetId = p.PetId,
@@ -4668,7 +4575,7 @@ namespace MagicVilla_VillaAPI.Repository
                     .ToListAsync();
 
                 tenant.Vehicles = await _db.Vehicle
-                    .Where(v => v.TenantId == tenantId)
+                    .Where(v => v.TenantId == tenantId && v.IsDeleted != true)
                     .Select(v => new VehicleDto
                     {
                         VehicleId = v.VehicleId,
@@ -4680,7 +4587,7 @@ namespace MagicVilla_VillaAPI.Repository
                     .ToListAsync();
 
                 tenant.Dependent = await _db.TenantDependent
-                    .Where(d => d.TenantId == tenantId)
+                    .Where(d => d.TenantId == tenantId && d.IsDeleted != true)
                     .Select(d => new TenantDependentDto
                     {
                         TenantDependentId = d.TenantDependentId,
@@ -4695,7 +4602,7 @@ namespace MagicVilla_VillaAPI.Repository
                     .ToListAsync();
 
                 tenant.CoTenant = await _db.CoTenant
-                    .Where(c => c.TenantId == tenantId)
+                    .Where(c => c.TenantId == tenantId && c.IsDeleted != true)
                     .Select(c => new CoTenantDto
                     {
                         CoTenantId = c.CoTenantId,
@@ -4714,7 +4621,7 @@ namespace MagicVilla_VillaAPI.Repository
                     .ToListAsync();
 
                 tenant.Leases = await _db.Lease
-                    .Where(l => l.TenantsTenantId == tenantId)
+                    .Where(l => l.TenantsTenantId == tenantId && l.IsDeleted != true)
                     .Select(l => new LeaseDto
                     {
                         LeaseId = l.LeaseId,
@@ -4730,7 +4637,7 @@ namespace MagicVilla_VillaAPI.Repository
                         LateFeesPolicy = l.LateFeesPolicy,
                         TenantId = l.TenantsTenantId,
                         AppTenantId = l.AppTenantId,
-                        RentCharges = l.RentCharges.Select(rc => new RentChargeDto
+                        RentCharges = l.RentCharges.Where(x => x.IsDeleted != true).Select(rc => new RentChargeDto
                         {
                             RentChargeId = rc.RentChargeId,
                             Amount = rc.Amount,
@@ -4738,7 +4645,7 @@ namespace MagicVilla_VillaAPI.Repository
                             RentDate = rc.RentDate,
                             RentPeriod = rc.RentPeriod
                         }).ToList(),
-                        FeeCharges = l.FeeCharge.Select(fc => new FeeChargeDto
+                        FeeCharges = l.FeeCharge.Where(x => x.IsDeleted != true).Select(fc => new FeeChargeDto
                         {
                             FeeChargeId = fc.FeeChargeId,
                             Amount = fc.Amount,
@@ -4749,10 +4656,10 @@ namespace MagicVilla_VillaAPI.Repository
                     .ToListAsync();
 
                 tenant.Invoices = await (from lease in _db.Lease
-                                         from invoice in _db.Invoices.Where(x => x.LeaseId == lease.LeaseId).DefaultIfEmpty()
-                                         from t in _db.Tenant.Where(x => x.TenantId == invoice.TenantId).DefaultIfEmpty()
-                                         from o in _db.Owner.Where(x => x.OwnerId == invoice.OwnerId).DefaultIfEmpty()
-                                         where lease.TenantsTenantId == tenantId
+                                         from invoice in _db.Invoices.Where(x => x.LeaseId == lease.LeaseId && x.IsDeleted != true).DefaultIfEmpty()
+                                         from t in _db.Tenant.Where(x => x.TenantId == invoice.TenantId && x.IsDeleted != true).DefaultIfEmpty()
+                                         from o in _db.Owner.Where(x => x.OwnerId == invoice.OwnerId && x.IsDeleted != true).DefaultIfEmpty()
+                                         where lease.TenantsTenantId == tenantId && lease.IsDeleted != true
                                          select new InvoiceDto
                                          {
                                              InvoiceId = invoice.InvoiceId,
@@ -4770,8 +4677,8 @@ namespace MagicVilla_VillaAPI.Repository
                                          }).ToListAsync();
 
                 tenant.Assets = await (from lease in _db.Lease
-                                       from asset in _db.Assets.Where(x => x.AssetId == lease.AssetId).DefaultIfEmpty()
-                                       where lease.TenantsTenantId == tenantId
+                                       from asset in _db.Assets.Where(x => x.AssetId == lease.AssetId && x.IsDeleted != true).DefaultIfEmpty()
+                                       where lease.TenantsTenantId == tenantId && lease.IsDeleted != true
                                        select new AssetDTO
                                        {
                                            AssetId = asset.AssetId,
@@ -4794,7 +4701,7 @@ namespace MagicVilla_VillaAPI.Repository
                                            AddedBy = asset.AddedBy,
                                            AddedDate = asset.AddedDate,
                                            ModifiedDate = asset.ModifiedDate,
-                                           Units = asset.Units.Select(unit => new UnitDTO
+                                           Units = asset.Units.Where(x => x.IsDeleted != true).Select(unit => new UnitDTO
                                            {
                                                UnitId = unit.UnitId,
                                                AssetId = unit.AssetId,
@@ -4807,10 +4714,10 @@ namespace MagicVilla_VillaAPI.Repository
                                        }).ToListAsync();
 
                 tenant.TaskRequest = await (from task in _db.TaskRequest
-                                            from asset in _db.Assets.Where(x => x.AssetId == task.AssetId).DefaultIfEmpty()
-                                            from unit in _db.AssetsUnits.Where(x => x.UnitId == task.UnitId).DefaultIfEmpty()
-                                            from owner in _db.Owner.Where(x => x.OwnerId == task.OwnerId).DefaultIfEmpty()
-                                            where task.TenantId == tenantId
+                                            from asset in _db.Assets.Where(x => x.AssetId == task.AssetId && x.IsDeleted != true).DefaultIfEmpty()
+                                            from unit in _db.AssetsUnits.Where(x => x.UnitId == task.UnitId && x.IsDeleted != true).DefaultIfEmpty()
+                                            from owner in _db.Owner.Where(x => x.OwnerId == task.OwnerId && x.IsDeleted != true).DefaultIfEmpty()
+                                            where task.TenantId == tenantId && task.IsDeleted != true
                                             select new TaskRequestDto
                                             {
                                                 TaskRequestId = task.TaskRequestId,
@@ -4848,7 +4755,7 @@ namespace MagicVilla_VillaAPI.Repository
                                                 PartsAndLabor = task.PartsAndLabor,
                                                 AddedBy = task.AddedBy,
                                                 LineItems = (from item in _db.LineItem
-                                                             from ca in _db.ChartAccount.Where(x => x.ChartAccountId == item.ChartAccountId).DefaultIfEmpty()
+                                                             from ca in _db.ChartAccount.Where(x => x.ChartAccountId == item.ChartAccountId && x.IsDeleted != true).DefaultIfEmpty()
                                                              where item.TaskRequestId == task.TaskRequestId && item.IsDeleted != true
                                                              select new LineItemDto
                                                              {
@@ -4870,8 +4777,6 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
-
-
 
         #region Calendar
 
@@ -4990,7 +4895,7 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
-
+       
         public async Task<List<OccupancyOverviewEvents>> GetOccupancyOverviewEventsAsync(CalendarFilterModel filter)
         {
             try
@@ -5032,8 +4937,8 @@ namespace MagicVilla_VillaAPI.Repository
                 Console.WriteLine($"An error occurred while mapping occupancy calendar: {ex.Message}");
                 throw;
             }
-        }
-        
+        }       
+       
         public async Task<LeaseDataDto> GetLeaseDataByIdAsync(int id)
         {
             try
@@ -5089,7 +4994,7 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
-
+       
         public async Task<List<VendorCategory>> GetVendorCategoriesDllAsync(Filter filter)
         {
             try
@@ -5114,13 +5019,13 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
-
+        
         public async Task<VendorCategory> GetVendorCategoryByIdAsync(int id)
         {
             try
             {
                 var result = await (from v in _db.VendorCategory
-                                    where v.VendorCategoryId == id
+                                    where v.VendorCategoryId == id && v.IsDeleted != true
                                     select new VendorCategory
                                     {
                                         VendorCategoryId = v.VendorCategoryId,
@@ -5136,13 +5041,14 @@ namespace MagicVilla_VillaAPI.Repository
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"An error occurred while mapping  Vendor Category: {ex.Message}");
+                Console.WriteLine($"An error occurred while mapping Vendor Category: {ex.Message}");
                 throw;
             }
         }
+        
         public async Task<bool> SaveVendorCategoryAsync(VendorCategory model)
         {
-            var vendorCategory = _db.VendorCategory.FirstOrDefault(x => x.VendorCategoryId == model.VendorCategoryId);
+            var vendorCategory = _db.VendorCategory.FirstOrDefault(x => x.VendorCategoryId == model.VendorCategoryId && x.IsDeleted != true);
 
             if (vendorCategory == null)
                 vendorCategory = new VendorCategory();
@@ -5169,6 +5075,7 @@ namespace MagicVilla_VillaAPI.Repository
             return result > 0;
 
         }
+       
         public async Task<bool> DeleteVendorCategoryAsync(int id)
         {
             var vendorCategory = await _db.VendorCategory.FindAsync(id);
@@ -5209,7 +5116,7 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
-
+       
         public async Task<List<VendorClassification>> GetVendorClassificationsDllAsync(Filter filter)
         {
             try
@@ -5234,12 +5141,13 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
+       
         public async Task<VendorClassification> GetVendorClassificationByIdAsync(int id)
         {
             try
             {
                 var result = await (from v in _db.VendorClassification
-                                    where v.VendorClassificationId == id
+                                    where v.VendorClassificationId == id && v.IsDeleted != true
                                     select new VendorClassification
                                     {
                                         VendorClassificationId = v.VendorClassificationId,
@@ -5255,13 +5163,14 @@ namespace MagicVilla_VillaAPI.Repository
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"An error occurred while mapping  Vendor Classification: {ex.Message}");
+                Console.WriteLine($"An error occurred while mapping Vendor Classification: {ex.Message}");
                 throw;
             }
         }
+       
         public async Task<bool> SaveVendorClassificationAsync(VendorClassification model)
         {
-            var vendorClassification = _db.VendorClassification.FirstOrDefault(x => x.VendorClassificationId == model.VendorClassificationId);
+            var vendorClassification = _db.VendorClassification.FirstOrDefault(x => x.VendorClassificationId == model.VendorClassificationId && x.IsDeleted != true);
 
             if (vendorClassification == null)
                 vendorClassification = new VendorClassification();
@@ -5288,6 +5197,7 @@ namespace MagicVilla_VillaAPI.Repository
             return result > 0;
 
         }
+       
         public async Task<bool> DeleteVendorClassificationAsync(int id)
         {
             var vendorClassification = await _db.VendorClassification.FindAsync(id);
@@ -5302,16 +5212,14 @@ namespace MagicVilla_VillaAPI.Repository
 
         #endregion
 
-
         #region Vendor 
-
 
         public async Task<List<VendorDto>> GetVendorsAsync()
         {
             try
             {
                 var result = await (from v in _db.Vendor
-                                    from vo in _db.VendorOrganization.Where(x=>x.VendorId == v.VendorId).DefaultIfEmpty()
+                                    from vo in _db.VendorOrganization.Where(x=>x.VendorId == v.VendorId && x.IsDeleted != true).DefaultIfEmpty()
                                     where v.IsDeleted != true
                                     select new VendorDto
                                     {
@@ -5374,7 +5282,7 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
-
+        
         public async Task<List<VendorDto>> GetVendorsDllAsync(Filter filter)
         {
             try
@@ -5400,13 +5308,14 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
+       
         public async Task<VendorDto> GetVendorByIdAsync(int id)
         {
             try
             {
                 var result = await (from v in _db.Vendor
-                                    from vo in _db.VendorOrganization.Where(x => x.VendorId == v.VendorId).DefaultIfEmpty()
-                                    where v.VendorId == id
+                                    from vo in _db.VendorOrganization.Where(x => x.VendorId == v.VendorId && x.IsDeleted != true).DefaultIfEmpty()
+                                    where v.VendorId == id && v.IsDeleted != true
                                     select new VendorDto
                                     {
                                         VendorId = v.VendorId,
@@ -5464,13 +5373,14 @@ namespace MagicVilla_VillaAPI.Repository
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"An error occurred while mapping  Vendor : {ex.Message}");
+                Console.WriteLine($"An error occurred while mapping Vendor : {ex.Message}");
                 throw;
             }
         }
+        
         public async Task<bool> SaveVendorAsync(VendorDto model)
         {
-            var vendor = _db.Vendor.FirstOrDefault(x => x.VendorId == model.VendorId);
+            var vendor = _db.Vendor.FirstOrDefault(x => x.VendorId == model.VendorId && x.IsDeleted != true);
 
             if (vendor == null)
                 vendor = new Vendor();
@@ -5531,7 +5441,7 @@ namespace MagicVilla_VillaAPI.Repository
 
             var result1 = await _db.SaveChangesAsync();
 
-            var vendorOrganization = _db.VendorOrganization.FirstOrDefault(x => x.VendorId == vendor.VendorId);
+            var vendorOrganization = _db.VendorOrganization.FirstOrDefault(x => x.VendorId == vendor.VendorId && x.IsDeleted != true);
 
             if (vendorOrganization == null)
             {
@@ -5540,6 +5450,8 @@ namespace MagicVilla_VillaAPI.Repository
                 vendorOrganization.VendorId = vendor.VendorId;
                 vendorOrganization.OrganizationName = model.OrganizationName;
                 vendorOrganization.OrganizationDescription = model.OrganizationDescription;
+                vendorOrganization.AddedBy = model.AddedBy;
+                vendorOrganization.AddedDate = DateTime.Now;
                 if (model.OrganizationIcon != null)
                 {
                     vendorOrganization.OrganizationIcon = model.OrganizationIcon.FileName;
@@ -5555,6 +5467,7 @@ namespace MagicVilla_VillaAPI.Repository
             {
                 vendorOrganization.OrganizationName = model.OrganizationName;
                 vendorOrganization.OrganizationDescription = model.OrganizationDescription;
+                
                 if (model.OrganizationIcon != null)
                 {
                     vendorOrganization.OrganizationIcon = model.OrganizationIcon.FileName;
@@ -5564,6 +5477,8 @@ namespace MagicVilla_VillaAPI.Repository
                     vendorOrganization.OrganizationLogo = model.OrganizationLogo.FileName;
                 }
                 vendorOrganization.Website = model.Website;
+                vendorOrganization.ModifiedBy = model.AddedBy;
+                vendorOrganization.ModifiedDate = DateTime.Now;
                 _db.VendorOrganization.Update(vendorOrganization);
             }
 
@@ -5590,32 +5505,36 @@ namespace MagicVilla_VillaAPI.Repository
             return result1 > 0 && result2 > 0;
 
         }
+       
         public async Task<bool> DeleteVendorAsync(int id)
         {
-            var vendor = await _db.Vendor.FindAsync(id);
+            var vendor = await _db.Vendor.FirstOrDefaultAsync(x=>x.VendorId == id && x.IsDeleted != true);
             if (vendor == null) return false;
 
             vendor.IsDeleted = true;
             _db.Vendor.Update(vendor);
+
+            var vendorOrginization = await _db.VendorOrganization.FirstOrDefaultAsync(x => x.VendorId == id && x.IsDeleted != true);
+            if (vendorOrginization != null)
+            {
+                vendorOrginization.IsDeleted = true;
+                _db.VendorOrganization.Update(vendorOrginization);
+            }
             var saveResult = await _db.SaveChangesAsync();
 
             return saveResult > 0;
         }
 
-
         #endregion
 
-
-
         #region Applications 
-
 
         public async Task<List<ApplicationsDto>> GetApplicationsAsync()
         {
             try
             {
                 var result = await (from a in _db.Applications
-                                    from p in _db.Assets.Where(x=>x.AssetId == a.PropertyId).DefaultIfEmpty()
+                                    from p in _db.Assets.Where(x=>x.AssetId == a.PropertyId && x.IsDeleted != true).DefaultIfEmpty()
                                     where a.IsDeleted != true
                                     select new ApplicationsDto
                                     {
@@ -5701,12 +5620,13 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
+       
         public async Task<ApplicationsDto> GetApplicationByIdAsync(int id)
         {
             try
             {
                 var result = await (from a in _db.Applications
-                                    where a.ApplicationId == id 
+                                    where a.ApplicationId == id && a.IsDeleted != true
                                     select new ApplicationsDto
                                     {
                                         ApplicationId = a.ApplicationId,
@@ -5791,9 +5711,10 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
+       
         public async Task<bool> SaveApplicationAsync(ApplicationsDto model)
         {
-            var application = _db.Applications.FirstOrDefault(x => x.ApplicationId == model.ApplicationId);
+            var application = _db.Applications.FirstOrDefault(x => x.ApplicationId == model.ApplicationId && x.IsDeleted != true);
 
             if (application == null)
                 application = new Applications();
@@ -5887,7 +5808,7 @@ namespace MagicVilla_VillaAPI.Repository
                 var existingPets = _db.ApplicationPets.Where(item => item.ApplicationId == model.ApplicationId && item.IsDeleted != true).ToList();
                 foreach (var petDto in model.Pets)
                 {
-                    var existingPet = existingPets.FirstOrDefault(item => item.PetId == petDto.PetId);
+                    var existingPet = existingPets.FirstOrDefault(item => item.PetId == petDto.PetId && item.IsDeleted != true);
 
                     if (existingPet != null)
                     {
@@ -5957,7 +5878,7 @@ namespace MagicVilla_VillaAPI.Repository
                 var existingVehicles = _db.ApplicationVehicles.Where(item => item.ApplicationId == model.ApplicationId && item.IsDeleted != true).ToList();
                 foreach (var vehicleDto in model.Vehicles)
                 {
-                    var existingVehicle = existingVehicles.FirstOrDefault(item => item.VehicleId == vehicleDto.VehicleId);
+                    var existingVehicle = existingVehicles.FirstOrDefault(item => item.VehicleId == vehicleDto.VehicleId && item.IsDeleted != true);
 
                     if (existingVehicle != null)
                     {
@@ -6058,6 +5979,7 @@ namespace MagicVilla_VillaAPI.Repository
             return result > 0;
 
         }
+        
         public async Task<bool> DeleteApplicationAsync(int id)
         {
             var application = await _db.Applications.FindAsync(id);
@@ -6085,6 +6007,7 @@ namespace MagicVilla_VillaAPI.Repository
 
             return saveResult > 0;
         }        
+        
         public async Task<string> GetTermsbyId(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
@@ -6094,7 +6017,6 @@ namespace MagicVilla_VillaAPI.Repository
         }
 
         #endregion
-
 
         #region AccountType
 
@@ -6122,6 +6044,7 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }       
+        
         public async Task<List<AccountType>> GetAccountTypesDllAsync(Filter filter)
         {
             try
@@ -6171,6 +6094,7 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }      
+       
         public async Task<bool> SaveAccountTypeAsync(AccountType model)
         {
             var accountType = _db.AccountType.FirstOrDefault(x => x.AccountTypeId == model.AccountTypeId && x.IsDeleted != true);
@@ -6200,6 +6124,7 @@ namespace MagicVilla_VillaAPI.Repository
             return result > 0;
 
         }      
+       
         public async Task<bool> DeleteAccountTypeAsync(int id)
         {
             var accountType = await _db.AccountType.FindAsync(id);
@@ -6244,6 +6169,7 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }       
+        
         public async Task<List<AccountSubTypeDto>> GetAccountSubTypesDllAsync(Filter filter)
         {
             try
@@ -6277,6 +6203,7 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }      
+        
         public async Task<AccountSubType> GetAccountSubTypeByIdAsync(int id)
         {
             try
@@ -6304,6 +6231,7 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }      
+       
         public async Task<bool> SaveAccountSubTypeAsync(AccountSubType model)
         {
             var accountSubType = _db.AccountSubType.FirstOrDefault(x => x.AccountSubTypeId == model.AccountSubTypeId && x.IsDeleted != true);
@@ -6335,6 +6263,7 @@ namespace MagicVilla_VillaAPI.Repository
             return result > 0;
 
         }       
+        
         public async Task<bool> DeleteAccountSubTypeAsync(int id)
         {
             var accountSubType = await _db.AccountSubType.FindAsync(id);
@@ -6396,6 +6325,7 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
+        
         public async Task<List<ChartAccountDto>> GetChartAccountsDllAsync(Filter filter)
         {
             try
@@ -6423,6 +6353,7 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
+        
         public async Task<ChartAccount> GetChartAccountByIdAsync(int id)
         {
             try
@@ -6455,6 +6386,7 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }       
+        
         public async Task<bool> SaveChartAccountAsync(ChartAccount model)
         {
             var chartAccount = _db.ChartAccount.FirstOrDefault(x => x.ChartAccountId == model.ChartAccountId && x.IsDeleted != true);
@@ -6489,6 +6421,7 @@ namespace MagicVilla_VillaAPI.Repository
             return result > 0;
 
         }       
+        
         public async Task<bool> DeleteChartAccountAsync(int id)
         {
             var chartAccount = await _db.ChartAccount.FindAsync(id);
@@ -6538,6 +6471,7 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }        
+        
         public async Task<Budget> GetBudgetByIdAsync(int id)
         {
             try
@@ -6552,6 +6486,7 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }        
+        
         public async Task<bool> SaveBudgetAsync(BudgetDto model)
         {
             var budget = new Budget();
@@ -6587,16 +6522,19 @@ namespace MagicVilla_VillaAPI.Repository
                             quat5 = x.BudgetItemMonth.quat5 != null ? decimal.Parse(x.BudgetItemMonth.quat5.Replace(".",",")) : 0,
                             YearStart = x.BudgetItemMonth.YearStart != null ? decimal.Parse(x.BudgetItemMonth.YearStart.Replace(".",",")) : 0,
                             YearEnd = x.BudgetItemMonth.YearEnd != null ? decimal.Parse(x.BudgetItemMonth.YearEnd.Replace(".",",")) : 0,
-                        }
+                            AddedBy = model.AddedBy,
+                            AddedDate = DateTime.Now
 
-                    };
+
+                }
+
+            };
                     li.Add(item);
                 }
             }
 
             budget.Items = li;
             budget.AddedDate = DateTime.Now;
-            budget.IsDeleted = false;
             budget.AddedBy = model.AddedBy;
             budget.BudgetType = model.BudgetType;
             budget.BudgetBy = model.BudgetBy;
@@ -6614,6 +6552,7 @@ namespace MagicVilla_VillaAPI.Repository
             return result > 0;
 
         }
+        
         public async Task<bool> SaveDuplicateBudgetAsync(BudgetDto model)
         {
             var budget = new Budget();
@@ -6651,6 +6590,8 @@ namespace MagicVilla_VillaAPI.Repository
                                 quat5 = x.BudgetItemMonth.quat5 != null ? decimal.Parse(x.BudgetItemMonth.quat5.Replace(".", ",")) : 0,
                                 YearStart = x.BudgetItemMonth.YearStart != null ? decimal.Parse(x.BudgetItemMonth.YearStart.Replace(".", ",")) : 0,
                                 YearEnd = x.BudgetItemMonth.YearEnd != null ? decimal.Parse(x.BudgetItemMonth.YearEnd.Replace(".", ",")) : 0,
+                                AddedBy = model.AddedBy,
+                                AddedDate = DateTime.Now
                             }
 
                         };
@@ -6684,6 +6625,7 @@ namespace MagicVilla_VillaAPI.Repository
             }
 
         }
+        
         public async Task<bool> DeleteBudgetAsync(int id)
         {
             var budget = await _db.Budgets.FindAsync(id);
@@ -6783,6 +6725,7 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
+        
         public async Task<List<InvoiceReportDto>> GetInvoiceReportAsync(ReportFilter reportFilter)
         {
             try
@@ -6859,6 +6802,7 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
+       
         public async Task<List<TaskRequestReportDto>> GetTaskRequestReportAsync(ReportFilter reportFilter)
         {
             try
@@ -6929,7 +6873,7 @@ namespace MagicVilla_VillaAPI.Repository
             {
                 var result = await (from d in _db.Documents
                                     from a in _db.Assets.Where(x => x.AssetId == d.AssetId && x.IsDeleted != true).DefaultIfEmpty()
-                                    from u in _db.AssetsUnits.Where(x => x.UnitId == d.UnitId).DefaultIfEmpty()
+                                    from u in _db.AssetsUnits.Where(x => x.UnitId == d.UnitId && x.IsDeleted != true).DefaultIfEmpty()
                                     from o in _db.Owner.Where(x => x.OwnerId == d.OwnerId && x.IsDeleted != true).DefaultIfEmpty()
                                     from tnt in _db.Tenant.Where(x => x.TenantId == d.TenantId && x.IsDeleted != true).DefaultIfEmpty()
                                     where d.IsDeleted != true
@@ -6965,6 +6909,7 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }       
+       
         public async Task<DocumentsDto> GetDocumentByIdAsync(int id)
         {
             try
@@ -7006,6 +6951,7 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }       
+        
         public async Task<bool> SaveDocumentAsync(DocumentsDto model)
         {
             var document = _db.Documents.FirstOrDefault(x => x.DocumentsId == model.DocumentsId && x.IsDeleted != true);
@@ -7050,6 +6996,7 @@ namespace MagicVilla_VillaAPI.Repository
 
             return result > 0;
         }        
+       
         public async Task<bool> DeleteDocumentAsync(int id)
         {
             var document = await _db.Documents.FindAsync(id);
@@ -7091,6 +7038,7 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
+        
         public async Task<List<VideoTutorial>> GetVideoTutorialsAsync()
         {
             try

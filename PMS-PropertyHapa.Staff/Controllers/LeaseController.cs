@@ -197,6 +197,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
             }
             else
             {
+                lease.AddedBy = Request?.Cookies["userId"]?.ToString();
                 var result = await _authService.UpdateLeaseAsync(lease);
                 return Json(new { success = result, message = result ? "Lease updated successfully." : "Error updating lease." });
             }
@@ -223,7 +224,14 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
             return View("AddLease", lease);
         }
-        
+
+        [HttpPost]
+        public async Task<IActionResult> DeletLease(int leaseId)
+        {
+            await _authService.DeleteLeaseAsync(leaseId);
+            return Json(new { success = true, message = "Lease deleted successfully" });
+        }
+
         public async Task<IActionResult> InvoiceDetails(int leaseId)
         {
             List<InvoiceDto> invoices = await _authService.GetInvoicesAsync(leaseId);

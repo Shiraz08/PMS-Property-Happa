@@ -93,6 +93,7 @@
                                                             <button class="dropbtn btn-success" type="button">Action <span><i class="icofont icofont-arrow-down"></i></span></button>
                                                             <div class="dropdown-content">
                                                                 <a class="dropdown-item btn-secondary rounded" href="@Url.Action("EditLease", "Lease", new { leaseId = lease.LeaseId })">Edit</a>
+                                                                <a class="dropdown-item btn-secondary rounded" onclick="deleteLease('@lease.LeaseId')">Delete</a>
                                                                 <a class="dropdown-item btn-secondary rounded" href="@Url.Action("InvoiceDetails", "Lease", new { leaseId = lease.LeaseId })">Invoice</a>
                                                             </div>
                                                         </div>
@@ -210,4 +211,39 @@
             });
         });
     });
+    function deleteLease(id) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'You will not be able to recover this Lease!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '@Url.Action("DeletLease", "Lease")',
+                    type: 'POST',
+                    data: { leaseId: id },
+                    success: function (task) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Lease deleted successfully',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        location.reload()
+                    },
+                    error: function (xhr, status, error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Something went wrong!'
+                        });
+                    },
+                });
+            }
+        });
+    }
 </script>

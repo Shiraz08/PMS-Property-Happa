@@ -152,7 +152,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
         }
 
 
-        [HttpDelete]
+        [HttpPost]
         public async Task<IActionResult> Delete(string ownerId)
         {
             await _authService.DeleteLandlordAsync(ownerId);

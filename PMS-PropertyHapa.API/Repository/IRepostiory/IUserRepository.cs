@@ -77,6 +77,7 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
 
         Task<LeaseDto> GetLeaseByIdAsync(int leaseId);
 
+        Task<bool> DeleteLeaseAsync(int leaseId);
         Task<List<LeaseDto>> GetAllLeasesAsync();
 
         Task<bool> UpdateLeaseAsync(LeaseDto leaseDto);
@@ -95,7 +96,6 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
         #region PropertySubType
 
         Task<List<PropertySubTypeDto>> GetPropertySubTypeByIdAllAsync(string tenantId);
-        Task<List<PropertyTypeDto>> GetAllPropertyTypes();
         Task<List<PropertyTypeDto>> GetAllPropertyTypesDll(Filter filter);
         Task<List<PropertySubTypeDto>> GetAllPropertySubTypesAsync();
         Task<List<PropertySubTypeDto>> GetPropertySubTypeByIdAsync(int propertytypeId);

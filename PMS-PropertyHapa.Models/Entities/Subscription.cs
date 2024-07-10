@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace PMS_PropertyHapa.Models.Entities
 {
 
-    public class Subscription
+    public class Subscription : BaseEntities
     {
         [Key]
         public int? Id { get; set; }

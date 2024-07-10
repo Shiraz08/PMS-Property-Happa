@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PMS_PropertyHapa.MigrationsFiles.Data;
 
@@ -11,9 +12,10 @@ using PMS_PropertyHapa.MigrationsFiles.Data;
 namespace PMS_PropertyHapa.MigrationsFiles.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    partial class ApiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240709184745_Added_AssetsUnits_ColumnAdded_up")]
+    partial class Added_AssetsUnits_ColumnAdded_up
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -865,15 +867,6 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BudgetItemMonthID"), 1L, 1);
 
-                    b.Property<string>("AddedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("AddedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("AppTenantId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<decimal?>("April")
                         .HasColumnType("decimal(18,2)");
 
@@ -888,9 +881,6 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
 
                     b.Property<decimal?>("Feb")
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
 
                     b.Property<decimal?>("Jan")
                         .HasColumnType("decimal(18,2)");
@@ -907,12 +897,6 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
                     b.Property<decimal?>("May")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("ModifiedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<decimal?>("Nov")
                         .HasColumnType("decimal(18,2)");
 
@@ -921,9 +905,6 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
 
                     b.Property<decimal?>("Sep")
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<bool>("Status")
-                        .HasColumnType("bit");
 
                     b.Property<decimal?>("YearEnd")
                         .HasColumnType("decimal(18,2)");
@@ -1245,17 +1226,8 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FeeChargeId"), 1L, 1);
 
-                    b.Property<string>("AddedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("AddedDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<Guid>("AppTenantId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -1263,20 +1235,8 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
                     b.Property<DateTime>("FeeDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
                     b.Property<int>("LeaseId")
                         .HasColumnType("int");
-
-                    b.Property<string>("ModifiedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("Status")
-                        .HasColumnType("bit");
 
                     b.HasKey("FeeChargeId");
 
@@ -1644,24 +1604,6 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("AddedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("AddedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("AppTenantId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("ModifiedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("OrganizationDescription")
                         .HasColumnType("nvarchar(max)");
 
@@ -1676,9 +1618,6 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
 
                     b.Property<int>("OwnerId")
                         .HasColumnType("int");
-
-                    b.Property<bool>("Status")
-                        .HasColumnType("bit");
 
                     b.Property<string>("Website")
                         .HasColumnType("nvarchar(max)");
@@ -1839,41 +1778,20 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RentChargeId"), 1L, 1);
 
-                    b.Property<string>("AddedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("AddedDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,4)");
-
-                    b.Property<Guid>("AppTenantId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
                     b.Property<int>("LeaseId")
                         .HasColumnType("int");
-
-                    b.Property<string>("ModifiedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("RentDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("RentPeriod")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Status")
-                        .HasColumnType("bit");
 
                     b.HasKey("RentChargeId");
 
@@ -1890,35 +1808,14 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SecurityDepositId"), 1L, 1);
 
-                    b.Property<string>("AddedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("AddedDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,4)");
-
-                    b.Property<Guid>("AppTenantId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
                     b.Property<int>("LeaseId")
                         .HasColumnType("int");
-
-                    b.Property<string>("ModifiedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("Status")
-                        .HasColumnType("bit");
 
                     b.HasKey("SecurityDepositId");
 
@@ -1935,26 +1832,11 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("Id"), 1L, 1);
 
-                    b.Property<string>("AddedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("AddedDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("AppTenantId")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Currency")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("ModifiedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<int>("NoOfUnits")
                         .HasColumnType("int");
@@ -1964,9 +1846,6 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
 
                     b.Property<string>("SmallDescription")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Status")
-                        .HasColumnType("bit");
 
                     b.Property<string>("SubscriptionName")
                         .HasColumnType("nvarchar(max)");
@@ -2465,24 +2344,6 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("AddedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("AddedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("AppTenantId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("ModifiedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("OrganizatioPrimaryColor")
                         .HasColumnType("nvarchar(max)");
 
@@ -2500,9 +2361,6 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
 
                     b.Property<string>("OrganizationSecondColor")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Status")
-                        .HasColumnType("bit");
 
                     b.Property<Guid>("TenantUserId")
                         .HasColumnType("uniqueidentifier");
@@ -2523,18 +2381,6 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VehicleId"), 1L, 1);
 
-                    b.Property<string>("AddedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("AddedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("AppTenantId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Manufacturer")
                         .HasColumnType("nvarchar(max)");
 
@@ -2543,15 +2389,6 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
 
                     b.Property<string>("ModelVariant")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ModifiedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("Status")
-                        .HasColumnType("bit");
 
                     b.Property<int>("TenantId")
                         .HasColumnType("int");
@@ -2793,24 +2630,6 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("AddedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("AddedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("AppTenantId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("ModifiedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("OrganizationDescription")
                         .HasColumnType("nvarchar(max)");
 
@@ -2822,9 +2641,6 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
 
                     b.Property<string>("OrganizationName")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Status")
-                        .HasColumnType("bit");
 
                     b.Property<int>("VendorId")
                         .HasColumnType("int");

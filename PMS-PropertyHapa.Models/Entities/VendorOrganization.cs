@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace PMS_PropertyHapa.Models.Entities
 {
-    public class VendorOrganization
+    public class VendorOrganization : BaseEntities
     {
         [Key]
         public int Id { get; set; }

@@ -183,8 +183,11 @@
                                     </div>
                                 </div>
                                 <div class="right-side-header" style="padding-top:18px!important;padding-right: 27px!important;">
-                                            <button class="btn btn-success" style="background-color: #c9c9c9;color: white;" type="button" type="button" onclick="editLandlord(${landlord.OwnerId})">
+                                    <button class="btn btn-success" style="background-color: #c9c9c9;color: white;" type="button" type="button" onclick="editLandlord(${landlord.OwnerId})">
                                         Edit LandLord
+                                    </button>
+                                    <button class="btn btn-danger" style="background-color: #c9c9c9;color: white;" type="button" type="button" onclick="deleteOwner(${landlord.OwnerId})">
+                                        Delete LandLord
                                     </button>
                                </div>
                             </div>
@@ -340,7 +343,7 @@
             if (result.isConfirmed) {
                 $.ajax({
                     url: `/Landlord/Delete/?ownerId=${encodeURIComponent(ownerId)}`,
-                    type: 'DELETE',
+                    type: 'POST',
                     success: function (data) {
                         if (data.success) {
                             window.location.reload();

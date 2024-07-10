@@ -92,7 +92,21 @@ namespace PMS_PropertyHapa.API.Controllers.V1
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
-        
+
+        [HttpPost("DeleteLease/{leaseId}")]
+        public async Task<ActionResult<bool>> DeleteLeaseRequest(int leaseId)
+        {
+            try
+            {
+                var isSuccess = await _userRepo.DeleteLeaseAsync(leaseId);
+                return Ok(isSuccess);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
         [HttpGet("Invoices/{leaseId}")]
         public async Task<ActionResult<List<Invoice>>> GetInvoices(int leaseId)
         {

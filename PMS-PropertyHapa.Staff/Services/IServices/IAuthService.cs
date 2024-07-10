@@ -104,6 +104,8 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
 
         Task<LeaseDto> GetLeaseByIdAsync(int leaseId);
 
+        Task<bool> DeleteLeaseAsync(int leaseId);
+
         Task<IEnumerable<LeaseDto>> GetAllLeasesAsync();
 
         Task<bool> UpdateLeaseAsync(LeaseDto lease);

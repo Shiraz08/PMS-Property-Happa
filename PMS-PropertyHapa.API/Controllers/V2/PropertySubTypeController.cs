@@ -44,7 +44,7 @@ namespace PMS_PropertyHapa.API.Controllers.V2
         {
             try
             {
-                var propertyTypes = await _userRepo.GetAllPropertyTypes();
+                var propertyTypes = await _userRepo.GetAllPropertyTypesAsync();
 
                 if (propertyTypes != null && propertyTypes.Any())
                 {

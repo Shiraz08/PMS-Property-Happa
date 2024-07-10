@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace PMS_PropertyHapa.Models.Entities
 {
-    public class Vehicle
+    public class Vehicle : BaseEntities
     {
         [Key]
         public int VehicleId { get; set; }
