@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using PMS_PropertyHapa.MigrationsFiles.Data;
+using PMS_PropertyHapa.Models;
 using PMS_PropertyHapa.Models.DTO;
 using PMS_PropertyHapa.Models.Entities;
 using PMS_PropertyHapa.Models.Roles;
@@ -54,7 +55,7 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
         Task<List<TenantModelDto>> GetTenantsByIdAsync(string tenantId);
         Task<bool> CreateTenantAsync(TenantModelDto tenantDto);
         Task<bool> UpdateTenantAsync(TenantModelDto tenantDto);
-        Task<bool> DeleteTenantAsync(string tenantId);
+        Task<APIResponse> DeleteTenantAsync(int tenantId);
 
         Task<TenantModelDto> GetSingleTenantByIdAsync(int tenantId);
         #endregion
@@ -74,12 +75,9 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
 
 
         Task<bool> CreateLeaseAsync(LeaseDto leaseDto);
-
         Task<LeaseDto> GetLeaseByIdAsync(int leaseId);
-
-        Task<bool> DeleteLeaseAsync(int leaseId);
+        Task<APIResponse> DeleteLeaseAsync(int leaseId);
         Task<List<LeaseDto>> GetAllLeasesAsync();
-
         Task<bool> UpdateLeaseAsync(LeaseDto leaseDto);
 
 
@@ -128,7 +126,7 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
 
         Task<bool> CreateOwnerAsync(OwnerDto tenantDto);
 
-        Task<bool> DeleteOwnerAsync(string ownerId);
+        Task<APIResponse> DeleteOwnerAsync(int ownerId);
 
         Task<OwnerDto> GetSingleLandlordByIdAsync(int ownerId);
 
@@ -139,7 +137,7 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
 
         Task<bool> UpdateAssetAsync(AssetDTO assetDTO);
 
-        Task<bool> DeleteAssetAsync(int assetId);
+        Task<APIResponse> DeleteAssetAsync(int assetId);
 
 
 
@@ -223,7 +221,7 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
         Task<List<VendorDto>> GetVendorsDllAsync(Filter filter);
         Task<VendorDto> GetVendorByIdAsync(int id);
         Task<bool> SaveVendorAsync(VendorDto vendor);
-        Task<bool> DeleteVendorAsync(int id);
+        Task<APIResponse> DeleteVendorAsync(int id);
 
 
         //Applications
@@ -240,7 +238,7 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
         Task<List<AccountType>> GetAccountTypesDllAsync(Filter filter);
         Task<AccountType> GetAccountTypeByIdAsync(int id);
         Task<bool> SaveAccountTypeAsync(AccountType accountType);
-        Task<bool> DeleteAccountTypeAsync(int id);
+        Task<APIResponse> DeleteAccountTypeAsync(int id);
 
 
 
@@ -249,7 +247,7 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
         Task<List<AccountSubTypeDto>> GetAccountSubTypesDllAsync(Filter filter);
         Task<AccountSubType> GetAccountSubTypeByIdAsync(int id);
         Task<bool> SaveAccountSubTypeAsync(AccountSubType accountSubType);
-        Task<bool> DeleteAccountSubTypeAsync(int id);
+        Task<APIResponse> DeleteAccountSubTypeAsync(int id);
 
 
         //Account ChartAccount
@@ -257,7 +255,7 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
         Task<List<ChartAccountDto>> GetChartAccountsDllAsync(Filter filter);
         Task<ChartAccount> GetChartAccountByIdAsync(int id);
         Task<bool> SaveChartAccountAsync(ChartAccount chartAccount);
-        Task<bool> DeleteChartAccountAsync(int id);
+        Task<APIResponse> DeleteChartAccountAsync(int id);
 
         //Budget
         Task<List<BudgetDto>> GetBudgetsAsync();
@@ -280,5 +278,12 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
         //SupportCenter
         Task<List<FAQ>> GetFAQsAsync();
         Task<List<VideoTutorial>> GetVideoTutorialsAsync();
+
+        //LateFee
+
+        Task<LateFeeDto> GetLateFeeAsync(Filter filter);
+        Task<LateFeeAssetDto> GetLateFeeByAssetAsync(int assetId);
+        Task<bool> SaveLateFeeAsync(LateFeeDto lateFee);
+        Task<bool> SaveLateFeeAssetAsync(LateFeeAssetDto lateFeeAsset);
     }
 }

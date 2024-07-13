@@ -509,35 +509,12 @@ namespace PMS_PropertyHapa.API.Controllers.V2
         }
 
         [HttpDelete("Tenant/{tenantId}")]
-        public async Task<ActionResult<bool>> DeleteTenant(string tenantId)
+        public async Task<ActionResult<APIResponse>> DeleteTenant(int tenantId)
         {
             try
             {
-                var isSuccess = await _userRepo.DeleteTenantAsync(tenantId);
-                if (isSuccess)
-                {
-                    return Ok(isSuccess);
-                }
-                else
-                {
-                    var response = new ApiResponseUser
-                    {
-                        HasErrors = true,
-                        IsValid = false,
-                        TextInfo = "Failed to delete tenant.",
-                        Result = null,
-                        Messages = new[]
-                        {
-                    new Messages
-                    {
-                        TypeDescription = MessageType.Error,
-                        Message = "Failed to delete tenant",
-                        Title = "Error"
-                    }
-                }
-                    };
-                    return StatusCode(500, response);
-                }
+                var response = await _userRepo.DeleteTenantAsync(tenantId);
+                return response;
             }
             catch (Exception ex)
             {

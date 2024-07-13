@@ -153,10 +153,15 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Delete(string ownerId)
+        public async Task<IActionResult> Delete(int ownerId)
         {
-            await _authService.DeleteLandlordAsync(ownerId);
-            return Json(new { success = true, message = "Owner deleted successfully" });
+            var response = await _authService.DeleteLandlordAsync(ownerId);
+            if (!response.IsSuccess)
+            {
+                return Ok(new { success = false, message = string.Join(", ", response.ErrorMessages) });
+
+            }
+            return Ok(new { success = true, message = "Owner deleted successfully" });
         }
 
 

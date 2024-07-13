@@ -35,7 +35,7 @@ namespace PMS_PropertyHapa.Models.DTO
         // Collections for Rent Charges and Security Deposits
         public List<RentChargeDto> RentCharges { get; set; }
         public List<SecurityDepositDto> SecurityDeposits { get; set; }
-        public List<FeeChargeDto> FeeCharges { get; set; }
+        public FeeChargeDto FeeCharge { get; set; }
     }
 
     public class RentChargeDto
@@ -62,8 +62,23 @@ namespace PMS_PropertyHapa.Models.DTO
     {
         public int LeaseId { get; set; }
         public int FeeChargeId { get; set; }
+        public bool ChargeLatefeeActive { get; set; } = false;
+        public bool UsePropertyDefaultStructure { get; set; } = false;
+        public bool SpecifyLateFeeStructure { get; set; } = false;
+        public int DueDays { get; set; }
+        public string Frequency { get; set; }
+        public string CalculateFee { get; set; }
         public decimal Amount { get; set; }
+        public int ChartAccountId { get; set; }
         public string Description { get; set; }
+        public bool IsSendARemainder { get; set; } = false;
+        public bool IsNotifyTenants { get; set; } = false;
+        public bool IsEnableSms { get; set; } = false;
+        public bool IsChargeLateFee { get; set; } = false;
+        public bool IsMonthlyLimit { get; set; } = false;
+        public bool IsDailyLimit { get; set; } = false;
+        public bool IsMinimumBalance { get; set; } = false;
+        public bool IsChargeLateFeeonSpecific { get; set; } = false;
         public DateTime FeeDate { get; set; }
     }
 

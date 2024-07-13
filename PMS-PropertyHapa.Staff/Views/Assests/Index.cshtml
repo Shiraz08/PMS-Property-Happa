@@ -42,7 +42,7 @@
 
 <!-- Page Sidebar Ends-->
 <div class="page-body">
-    <div class="container-fluid">
+    <div class="container-fluid my-4">
         <div class="page-title">
             <div class="row mb-3">
                 <div class="col-12 col-sm-8 d-flex align-items-center">
@@ -53,7 +53,7 @@
                         <div class="plusCircle me-2">
                             +
                         </div>
-                        New Property
+                        New Asset
                     </a>
                 </div>
                 <div class="col-12 col-sm-2">
@@ -65,8 +65,6 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="container">
         <div class="row">
             @foreach (var item in Model)
             {
@@ -77,11 +75,11 @@
                                 @{
                                     if (!string.IsNullOrEmpty(item.Image))
                                     {
-                                        <img class="img-fluid rounded-1 property-img" src="@item.Image" alt="Property Image">
+                                            <img class="img-fluid rounded-1 property-img" src="@item.Image" alt="Property Image">
                                     }
                                     else
                                     {
-                                        <img class="img-fluid rounded-1 property-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRG_TUukNvS-0E486weXLkJDpTubsAcdHdmKw&usqp=CAU" alt="Default Image">
+                                            <img class="img-fluid rounded-1 property-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRG_TUukNvS-0E486weXLkJDpTubsAcdHdmKw&usqp=CAU" alt="Default Image">
                                     }
                                 }
                                 <div class="ms-3">
@@ -105,15 +103,19 @@
                             }
                         </div>
                         <div class="card-actions pb-2">
-                            <button type="button" class="btn btn-success" style="cursor: pointer;" onclick="openUnitsModal(@item.AssetId)">
+                            <button type="button" class="btn btn-success btn-xs" style="cursor: pointer;" onclick="openUnitsModal(@item?.AssetId)">
                                 <i class="fa fa-info-circle fa-lg"></i> Unit Detail
                             </button>
-                            <button type="button" class="btn btn-success" style="cursor: pointer;" onclick="editAsset(@item.AssetId)">
+                            <button type="button" class="btn btn-success btn-xs" style="cursor: pointer;" onclick="assetLateFee(@item.AssetId)">
+                                <i class="fa fa-pencil fa-lg"></i> Late Fee
+                            </button>
+                            <button type="button" class="btn btn-success btn-xs" style="cursor: pointer;" onclick="editAsset(@item.AssetId)">
                                 <i class="fa fa-pencil fa-lg"></i> Edit
                             </button>
-                            <button type="button" class="btn btn-danger mr-3" style="cursor: pointer;" onclick="deleteAsset(@item.AssetId)">
+                            <button type="button" class="btn btn-danger btn-xs mr-4" style="cursor: pointer;" onclick="deleteAsset(@item.AssetId)">
                                 <i class="fa fa-trash fa-lg"></i> Delete
                             </button>
+                            
                         </div>
                     </div>
                 </div>
@@ -202,6 +204,10 @@
         window.location.href = `/Assests/EditAsset?assetId=${assetId}`;
     }
     
+    function assetLateFee(assetId) {
+        window.location.href = `/LateFee/AddLateFeeAsset?assetId=${assetId}`;
+    }
+    
     function deleteAsset(id) {
         Swal.fire({
             title: 'Are you sure?',
@@ -217,14 +223,23 @@
                     url: '@Url.Action("DeleteAsset", "Assests")',
                     type: 'POST',
                     data: { assetId: id },
-                    success: function (task) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Asset deleted successfully',
-                            showConfirmButton: false,
-                            timer: 1500
-                        });
-                        location.reload()
+                    success: function (res) {
+                        if (res.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Asset deleted successfully',
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                            location.reload()
+                        }else{
+                            Swal.fire({
+                                icon: 'error',
+                                title: res.message,
+                                text: 'Something went wrong!'
+                            });
+                        }
+            
                     },
                     error: function (xhr, status, error) {
                         Swal.fire({

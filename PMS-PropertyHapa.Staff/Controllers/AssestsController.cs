@@ -20,6 +20,16 @@ namespace PMS_PropertyHapa.Staff.Controllers
         {
             _authService = authService;
         }
+        public async Task<IActionResult> Index()
+        {
+            var assets = await _authService.GetAllAssetsAsync();
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
+            if (currenUserId != null)
+            {
+                assets = assets.Where(s => s.AddedBy == currenUserId);
+            }
+            return View(assets);
+        }
 
 
         [HttpPost]
@@ -76,8 +86,14 @@ namespace PMS_PropertyHapa.Staff.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteAsset(int assetId)
         {
-            await _authService.DeleteAssetAsync(assetId);
-            return Json(new { success = true, message = "Asset deleted successfully" });
+            var response = await _authService.DeleteAssetAsync(assetId);
+            if (!response.IsSuccess)
+            {
+                return Ok(new { success = false, message = string.Join(", ", response.ErrorMessages) });
+
+            }
+            return Ok(new { success = true, message = "Asset deleted successfully" });
+
         }
 
 
@@ -103,16 +119,6 @@ namespace PMS_PropertyHapa.Staff.Controllers
         }
 
 
-        public async Task<IActionResult> Index()
-        {
-            var assets = await _authService.GetAllAssetsAsync();
-            var currenUserId = Request?.Cookies["userId"]?.ToString();
-            if (currenUserId != null)
-            {
-                assets = assets.Where(s => s.AddedBy == currenUserId);
-            }
-            return View(assets);
-        }
 
         public async Task<IActionResult> AddAssest()
         {

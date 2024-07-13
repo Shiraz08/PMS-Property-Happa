@@ -6,6 +6,7 @@ using PMS_PropertyHapa.Models.DTO;
 using PMS_PropertyHapa.Models.Roles;
 using System.Net;
 using PMS_PropertyHapa.API.ViewModels;
+using PMS_PropertyHapa.Models;
 
 namespace PMS_PropertyHapa.API.Controllers.V2
 {
@@ -157,37 +158,13 @@ namespace PMS_PropertyHapa.API.Controllers.V2
             }
         }
 
-        [HttpDelete("Asset/{assetId}")]
-        public async Task<ActionResult<bool>> DeleteAssets(int assetId)
+        [HttpPost("Asset/{assetId}")]
+        public async Task<ActionResult<APIResponse>> DeleteAssets(int assetId)
         {
             try
             {
-                var isSuccess = await _userRepo.DeleteAssetAsync(assetId);
-
-                if (isSuccess)
-                {
-                    return Ok(isSuccess);
-                }
-                else
-                {
-                    var response = new ApiResponseUser
-                    {
-                        HasErrors = true,
-                        IsValid = false,
-                        TextInfo = "Asset not found.",
-                        Result = null,
-                        Messages = new[]
-                        {
-                    new Messages
-                    {
-                        TypeDescription = MessageType.Error,
-                        Message = "Asset not found",
-                        Title = "Not Found"
-                    }
-                }
-                    };
-                    return NotFound(response);
-                }
+                var response = await _userRepo.DeleteAssetAsync(assetId);
+                return response;
             }
             catch (Exception ex)
             {

@@ -34,7 +34,7 @@ namespace PMS_PropertyHapa.Models.Entities
         public string AlterCity { get; set; }
         public string AlterState { get; set; }
         public string AlterCountry { get; set; }
-        public string Classification { get; set; }
+        public string VendorClassificationIds { get; set; }
         public string VendorCategoriesIds { get; set; }
         public bool? HasInsurance { get; set; }
         public string TaxId { get; set; }

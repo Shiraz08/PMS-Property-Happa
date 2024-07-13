@@ -191,8 +191,14 @@ namespace PMS_PropertyHapa.Staff.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteVendor(int id)
         {
-            await _authService.DeleteVendorAsync(id);
-            return Json(new { success = true, message = "Vendor deleted successfully" });
+            var response = await _authService.DeleteVendorAsync(id);
+            if (!response.IsSuccess)
+            {
+                return Ok(new { success = false, message = string.Join(", ", response.ErrorMessages) });
+
+            }
+            return Ok(new { success = true, message = "Owner deleted successfully" });
+
         }
 
         public async Task<IActionResult> GetVendorById(int id)

@@ -1,0 +1,499 @@
+﻿@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@* <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> *@
+<style>
+    .img-account-profile2 {
+        height: 10rem;
+    }
+
+    .rounded-circle {
+        border-radius: 50% !important;
+    }
+
+    .card {
+        box-shadow: 0 0.15rem 1.75rem 0 rgb(33 40 50 / 15%);
+    }
+
+        .card .card-header {
+            font-weight: 500;
+        }
+
+    .card-header:first-child {
+        border-radius: 0.35rem 0.35rem 0 0;
+    }
+
+    .card-header {
+        padding: 1rem 1.35rem;
+        margin-bottom: 0;
+        background-color: rgba(33, 40, 50, 0.03);
+        border-bottom: 1px solid rgba(33, 40, 50, 0.125);
+    }
+
+    .form-control, .dataTable-input {
+        display: block;
+        width: 100%;
+        padding: 0.875rem 1.125rem;
+        font-size: 0.875rem;
+        font-weight: 400;
+        line-height: 1;
+        color: #69707a;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #c5ccd6;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        border-radius: 0.35rem;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+
+    .nav-borders .nav-link.active {
+        color: #0061f2;
+        border-bottom-color: #0061f2;
+    }
+
+    .nav-borders .nav-link {
+        color: #69707a;
+        border-bottom-width: 0.125rem;
+        border-bottom-style: solid;
+        border-bottom-color: transparent;
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+        padding-left: 0;
+        padding-right: 0;
+        margin-left: 1rem;
+        margin-right: 1rem;
+    }
+
+    .dropdownheight {
+        height: 47px !important
+    }
+    /* // advance */
+    .advanced-options-toggle {
+        /* margin-top: 20px; */
+    }
+
+        .advanced-options-toggle a {
+            text-decoration: none;
+            color: #007bff;
+            cursor: pointer;
+        }
+
+            .advanced-options-toggle a:hover {
+                text-decoration: underline;
+            }
+
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+    }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+    input:checked + .slider {
+        background-color: #2196F3;
+    }
+
+    input:focus + .slider {
+        box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked + .slider:before {
+        -webkit-transform: translateX(26px);
+        -ms-transform: translateX(26px);
+        transform: translateX(26px);
+    }
+</style>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<div class="page-body">
+    <div class="container-fluid my-4">
+        <hr class="mt-0 mb-4">
+        <div class="row"><div class="col-xl-12"> <center><h3>@Html.ValidationSummary(true, "", new { @class = "text-danger" })</h3></center></div></div>
+        <div class="row">
+            <div class="col-lg-12">
+                <form id="msform" asp-action="CreateLateFee" asp-controller="LateFee" enctype="multipart/form-data" method="post">
+                    <div class="col-xl-12">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="form-horizontal">
+                                    <h4>LATE FEES</h4>
+                                    <p>Auntomate the late fees that should be incurred on your leases.</p>
+                                    <hr />
+                                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                    <div class="row gx-3 mb-3 mt-3">
+                                        <div class="mb-3 ml-4">
+                                            <input style="width: 15px;" type="checkbox" class="form-check-input" id="IsChargeLateFee" name="ChargeLateFee">
+                                            <label class=" form-check-label" for="ChargeLateFee">Charge late fees</label>
+                                        </div>
+                                    </div>
+                                    <div class="row gx-3 mb-3 mt-3">
+                                        <div class="col-md-6">
+                                            <label class=" mb-2">When should we charge this late fee</label>
+                                            <input id="dueDays" class="form-control" aria-required="true" required placeholder="Days after rent is due" />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class=" mb-2">How often should we charge this fee?</label>
+                                            <select id="frequency" class="form-control select2 dropdownheight" required aria-required="true">
+                                                <option value="">Please select frequency</option>
+                                                <option value="Once">Once</option>
+                                                <option value="Daily">Daily</option>
+                                                <option value="Weekly">Weekly</option>
+                                                <option value="Monthly">Monthly</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <br />
+                                    <div class="row gx-3 mb-3">
+                                        <div class="col-md-6">
+                                            <label class=" mb-1">How should we Calculate this fee?</label>
+                                            <select id="calculateFee" class="form-control select2 dropdownheight" required aria-required="true">
+                                                <option value="">Please select AmountType</option>
+                                                <option value="Fixed Amount">Fixed Amount</option>
+                                                <option value="Percentage">Percentage</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class=" mb-1">How much should we charge?</label>
+                                            <input id="amount" class="form-control" aria-required="true" required placeholder="Amount" />
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    <div class="row gx-3 mb-3">
+                                        <div class="advanced-options-toggle text-center" style="margin: auto;">
+                                            <a href="#" id="advanceOpt" onclick="advanceOption()">Show advanced options</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 d-none" id="advanceOption">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="form-horizontal">
+                                    <hr />
+                                    <div class="row gx-3 mb-3">
+                                        <div class="col-md-6">
+                                            <label>Which income account should the late fees go into?</label>
+                                            <select id="chartAccount" name="ChartAccount_Id" class="form-control select2 dropdownheight">
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label>Description:</label>
+                                            <input id="description" class="form-control" />
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    <div class="row gx-3 mb-3">
+                                        <div class="advanced-options-toggle text-center" style="margin: auto;">
+                                            <a href="#" id="advanceOpt1" onclick="advanceOption1()">Add Another Late Fee</a>
+                                        </div>
+                                    </div>
+                                    <div class="row gx-3 mb-3">
+                                        <div class="advanced-options-toggle text-center" style="margin: auto;">
+                                            <a href="#" id="HideOptions" onclick="HideOptions()">Hide advanced options</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12  d-none" id="advanceOption1">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="form-horizontal">
+                                    <h4>Advanced options</h4>
+                                    <hr />
+                                    <div class="row gx-3 mb-3">
+                                        <div class="col-md-1" style="margin-top: auto;">
+                                            <label class="switch">
+                                                <input id="sendARemainder" type="checkbox">
+                                                <span class="slider round"></span>
+                                            </label>
+                                        </div>
+                                        <div class="col-md-11">
+                                            <p><b>Send a remainder one day before late fees will be charged</b></p>
+                                            <span>Send a notification remainder to the tenant via email or push notification before late fees are charged</span>
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    <div class="row gx-3 mb-3">
+                                        <div class="col-md-1" style="margin-top: auto;">
+                                            <label class="switch">
+                                                <input id="notifyTenants" type="checkbox">
+                                                <span class="slider round"></span>
+                                            </label>
+                                        </div>
+                                        <div class="col-md-11">
+                                            <p><b>Notify tenants of late fees once charged</b></p>
+                                            <span>Lat your tenants know each time a late fee is charged via email or push notification</span>
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    <div class="row gx-3 mb-3">
+                                        <div class="col-md-1" style="margin-top: auto;">
+                                            <label class="switch">
+                                                <input id="enableSms" type="checkbox">
+                                                <span class="slider round"></span>
+                                            </label>
+                                        </div>
+                                        <div class="col-md-11">
+                                            <p><b>Enable SMS for late fees</b></p>
+                                            <span>Provide reminders by test before charging late fees, as well as notifications once fees have been charged (each message will use one communication credit)</span>
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    <div class="row gx-3 mb-3">
+                                        <div class="col-md-1" style="margin-top: auto;">
+                                            <label class="switch">
+                                                <input id="chargeLateFee" type="checkbox">
+                                                <span class="slider round"></span>
+                                            </label>
+                                        </div>
+                                        <div class="col-md-11">
+                                            <p><b>Charge late fees only on the most recent outstanging charge</b></p>
+                                            <span>A late fee is created for each outstanding charge. If rent hasn't been paid in several months multiple late fees will be created unless this is turned on.</span>
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    <div class="row gx-3 mb-3">
+                                        <div class="col-md-1" style="margin-top: auto;">
+                                            <label class="switch">
+                                                <input id="monthlyLimit" type="checkbox">
+                                                <span class="slider round"></span>
+                                            </label>
+                                        </div>
+                                        <div class="col-md-11">
+                                            <p><b>Set monthly late fee limit</b></p>
+                                            <span>Set a limit of how much you can charge for late fees per month</span>
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    <div class="row gx-3 mb-3">
+                                        <div class="col-md-1" style="margin-top: auto;">
+                                            <label class="switch">
+                                                <input id="dailyLimit" type="checkbox">
+                                                <span class="slider round"></span>
+                                            </label>
+                                        </div>
+                                        <div class="col-md-11">
+                                            <p><b>Set daily late fees limit</b></p>
+                                            <span>Set a limit of how much you can charge for late fees per day</span>
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    <div class="row gx-3 mb-3">
+                                        <div class="col-md-1" style="margin-top: auto;">
+                                            <label class="switch">
+                                                <input id="minimumBalance" type="checkbox">
+                                                <span class="slider round"></span>
+                                            </label>
+                                        </div>
+                                        <div class="col-md-11">
+                                            <p><b>Set minimum balance to charge late fee</b></p>
+                                            <span>Set a minimum balance required to charge a late fee</span>
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    <div class="row gx-3 mb-3">
+                                        <div class="col-md-1" style="margin-top: auto;">
+                                            <label class="switch">
+                                                <input id="chargeLateFeeonSpecific" type="checkbox">
+                                                <span class="slider round"></span>
+                                            </label>
+                                        </div>
+                                        <div class="col-md-11">
+                                            <p><b>Charge late fees only on specific outstanding charges</b></p>
+                                            <span>Specify which accounts to consider when charging late fees</span>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row gx-3 mb-3">
+                        <div class="col-md-6" style="padding-top:25px!important">
+                            <div class="col-md-offset-2 col-md-10">
+                                <input id="lateFeeId" class="form-control" hidden />
+                                <input type="submit" class="btn btn-success" value="Submit" id="saveButton" class="btn btn-default" />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function advanceOption(){
+       $("#advanceOption").removeClass('d-none');
+    }
+    function advanceOption1(){
+       $("#advanceOption1").removeClass('d-none');
+    }  
+    function HideOptions() {
+        $("#advanceOption1").addClass('d-none');
+        $("#advanceOption").addClass('d-none');
+    }
+
+    $(document).ready(function () {
+        chartAccountsDropDown();
+
+        $('#saveButton').on('click', function (event) {
+            event.preventDefault();
+            const formData = gatherFormData();
+            handleFileUpload(formData);
+        });
+
+        function gatherFormData() {
+            const formData = new FormData();
+            formData.append("LateFeeId", $('#lateFeeId').val() || 0);
+            formData.append("DueDays", $("#dueDays").val());
+            formData.append("Frequency", $('#frequency').val());
+            formData.append("CalculateFee", $('#calculateFee').val());
+            formData.append("Amount", $('#amount').val());
+            if ($('#advanceOption').is(':visible')) {
+                formData.append("ChartAccountId", $('#chartAccount').val());
+                formData.append("Description", $('#description').val());
+            }
+            if ($("#advanceOption1").is(':visible')) {
+                formData.append("IsSendARemainder", $('#sendARemainder').is(':checked'));
+                formData.append("IsNotifyTenants", $('#notifyTenants').is(':checked'));
+                formData.append("IsEnableSms", $('#enableSms').is(':checked'));
+                formData.append("IsChargeLateFee", $('#chargeLateFee').is(':checked'));
+                formData.append("IsMonthlyLimit", $('#monthlyLimit').is(':checked'));
+                formData.append("IsDailyLimit", $('#dailyLimit').is(':checked'));
+                formData.append("IsMinimumBalance", $('#minimumBalance').val());
+                formData.append("IsChargeLateFeeonSpecific", $('#chargeLateFeeonSpecific').is(':checked'));
+
+            }
+           
+            return formData;
+        }
+
+        function handleFileUpload(formData) {
+            submitFormData(formData);
+        }
+        function submitFormData(formData) {
+            $.ajax({
+                url: '@Url.Action("SaveLateFee", "LateFee")',
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                beforeSend: function () {
+                    $('#saveButton').prop('disabled', true).text('Saving...');
+                },
+                success: function (response) {
+                    location.reload();
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error:', error);
+                    alert('Failed to save data');
+                },
+                complete: function () {
+                    $('#saveButton').prop('disabled', false).text('Save');
+                }
+            });
+        }
+
+        getLateFee();
+    });
+
+    function getLateFee(){
+        $.ajax({
+            url: '/LateFee/GetLateFee',
+            type: 'POST',
+            success: function (res) {
+                if(res){
+                    console.log(res);
+                    $('#lateFeeId').val(res.LateFeeId);
+                    $('#dueDays').val(res.DueDays);
+                    $('#frequency').val(res.Frequency).trigger("change");
+                    $('#calculateFee').val(res.CalculateFee).trigger("change");
+                    $('#amount').val(res.Amount);
+                    var hasAdvanceOpt = res.ChartAccountId || res.Description;
+                    if (hasAdvanceOpt) 
+                    {
+                        $('#advanceOpt').trigger("click");
+
+                        $('#chartAccount').val(res.ChartAccountId).trigger("change");
+                        $('#description').val(res.Description);
+                    }
+                    var hasAdvanceOptions = res.IsSendARemainder || res.IsNotifyTenants || res.IsEnableSms || res.IsChargeLateFee || res.IsMonthlyLimit || res.IsDailyLimit || res.MinimumBalance || res.IsChargeLateFeeonSpecific;
+                    if (hasAdvanceOptions) 
+                    {
+                        $('#advanceOpt1').trigger("click");
+
+                        $('#sendARemainder').prop('checked', res.IsSendARemainder);
+                        $('#notifyTenants').prop('checked', res.IsNotifyTenants);
+                        $('#enableSms').prop('checked', res.IsEnableSms);
+                        $('#chargeLateFee').prop('checked', res.IsChargeLateFee);
+                        $('#monthlyLimit').prop('checked', res.IsMonthlyLimit);
+                        $('#dailyLimit').prop('checked', res.IsDailyLimit);
+                        $('#minimumBalance').val(res.MinimumBalance);
+                        $('#chargeLateFeeonSpecific').prop('checked', res.IsChargeLateFeeonSpecific);
+                    }
+                }
+            }
+        });
+    }
+
+    function chartAccountsDropDown() {
+        $.ajax({
+            url: '@Url.Action("ChartAccountDll", "ChartAccounts")',
+            type: 'POST',
+            dataType: 'json',
+            success: function (data) {
+                var chartAccountsDropdown = $('#chartAccount');
+                chartAccountsDropdown.empty();
+                var placeholderOption = new Option("Please select an option", "", true, true);
+                chartAccountsDropdown.append(placeholderOption);
+                data.forEach(function (item) {
+                    var option = new Option(item.Name, item.ChartAccountId);
+                    chartAccountsDropdown.append(option);
+                });
+            }
+        });
+    }
+
+    
+</script>

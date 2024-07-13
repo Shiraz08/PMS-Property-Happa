@@ -6,14 +6,17 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using NuGet.ContentModel;
 using PMS_PropertyHapa.API.Services;
 using PMS_PropertyHapa.API.ViewModels;
 using PMS_PropertyHapa.MigrationsFiles.Data;
+using PMS_PropertyHapa.MigrationsFiles.Migrations;
 using PMS_PropertyHapa.Models;
 using PMS_PropertyHapa.Models.DTO;
 using PMS_PropertyHapa.Models.Entities;
 using PMS_PropertyHapa.Models.Roles;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -382,7 +385,7 @@ namespace MagicVilla_VillaAPI.Repository
         {
             try
             {
-                var userDTOs = await _userManager.Users.Where(x=>x.IsDeleted != true)
+                var userDTOs = await _userManager.Users.Where(x => x.IsDeleted != true)
                     .Select(u => new UserDTO
                     {
                         userName = u.UserName,
@@ -740,7 +743,7 @@ namespace MagicVilla_VillaAPI.Repository
             }
             return encryptedEmail;
         }
-        
+
         #endregion
 
 
@@ -778,7 +781,7 @@ namespace MagicVilla_VillaAPI.Repository
         {
             try
             {
-                var propertyTypes = await _db.PropertyType.Where(x=>x.IsDeleted != true)
+                var propertyTypes = await _db.PropertyType.Where(x => x.IsDeleted != true)
                                              .AsNoTracking()
                                              .ToListAsync();
 
@@ -958,7 +961,7 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
-        
+
         public async Task<List<PropertySubTypeDto>> GetAllPropertySubTypesAsync()
         {
             try
@@ -992,7 +995,7 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
-        
+
         public async Task<List<PropertySubTypeDto>> GetPropertySubTypeByIdAsync(int propertytypeId)
         {
             var tenants = await _db.PropertySubType
@@ -1020,7 +1023,7 @@ namespace MagicVilla_VillaAPI.Repository
 
             return tenantDtos;
         }
-       
+
         public async Task<PropertySubTypeDto> GetSinglePropertySubTypeByIdAsync(int propertysubtypeId)
         {
             var tenant = await _db.PropertySubType.FirstOrDefaultAsync(t => t.PropertySubTypeId == propertysubtypeId && t.IsDeleted != true);
@@ -1046,7 +1049,7 @@ namespace MagicVilla_VillaAPI.Repository
 
             return tenantDto;
         }
-       
+
         public async Task<bool> CreatePropertySubTypeAsync(PropertySubTypeDto tenant)
         {
             var newTenant = new PropertySubType
@@ -1071,7 +1074,7 @@ namespace MagicVilla_VillaAPI.Repository
 
             return result > 0;
         }
-       
+
         public async Task<bool> UpdatePropertySubTypeAsync(PropertySubTypeDto tenant)
         {
             var propertyType = await _db.PropertyType.FirstOrDefaultAsync(t => t.PropertyTypeId == tenant.PropertyTypeId && t.IsDeleted != true);
@@ -1097,7 +1100,7 @@ namespace MagicVilla_VillaAPI.Repository
             var result = await _db.SaveChangesAsync();
             return result > 0;
         }
-        
+
         public async Task<bool> DeletePropertySubTypeAsync(int propertysubtypeId)
         {
             var tenant = await _db.PropertySubType.FirstOrDefaultAsync(t => t.PropertySubTypeId == propertysubtypeId && t.IsDeleted != true);
@@ -1114,7 +1117,7 @@ namespace MagicVilla_VillaAPI.Repository
 
 
         #region Tenant
-        
+
         public async Task<IEnumerable<TenantModelDto>> GetAllTenantsAsync()
         {
             var tenants = await _db.Tenant.Where(x => x.IsDeleted != true)
@@ -1159,7 +1162,7 @@ namespace MagicVilla_VillaAPI.Repository
             }).ToList();
             return tenantDtos;
         }
-       
+
         public async Task<IEnumerable<TenantModelDto>> GetAllTenantsDllAsync(Filter filter)
         {
 
@@ -1187,7 +1190,7 @@ namespace MagicVilla_VillaAPI.Repository
             }
 
         }
-       
+
         public async Task<List<TenantModelDto>> GetTenantsByIdAsync(string tenantId)
         {
             var tenants = await _db.Tenant
@@ -1236,7 +1239,7 @@ namespace MagicVilla_VillaAPI.Repository
 
             return tenantDtos;
         }
-       
+
         public async Task<TenantModelDto> GetSingleTenantByIdAsync(int tenantId)
         {
             var tenant = await _db.Tenant
@@ -1290,9 +1293,9 @@ namespace MagicVilla_VillaAPI.Repository
                     Quantity = p.Quantity,
                     PictureName = p.Picture,
                     Picture = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Pets_Picture_" + p.PetId + Path.GetExtension(p.Picture)}",
-                   
+
                 }).ToList(),
-                Vehicles = tenant.Vehicle.Where(x=>x.IsDeleted != true).Select(v => new VehicleDto
+                Vehicles = tenant.Vehicle.Where(x => x.IsDeleted != true).Select(v => new VehicleDto
                 {
                     VehicleId = v.VehicleId,
                     Manufacturer = v.Manufacturer,
@@ -1330,7 +1333,7 @@ namespace MagicVilla_VillaAPI.Repository
 
             return tenantDto;
         }
-       
+
         public async Task<bool> CreateTenantAsync(TenantModelDto tenantDto)
         {
 
@@ -1383,7 +1386,7 @@ namespace MagicVilla_VillaAPI.Repository
                 var ext = Path.GetExtension(tenantDto.PictureName);
                 await _googleCloudStorageService.UploadImagebyBase64Async(tenantDto.Picture, "Tenant_Picture_" + newTenant.TenantId + ext);
             }
-            
+
             if (tenantDto.Document != null)
             {
                 var ext = Path.GetExtension(tenantDto.DocumentName);
@@ -1484,10 +1487,10 @@ namespace MagicVilla_VillaAPI.Repository
             }
 
             await _db.SaveChangesAsync();
-           
+
             return true;
         }
-       
+
         public async Task<bool> UpdateTenantAsync(TenantModelDto tenantDto)
         {
             var tenant = await _db.Tenant
@@ -1686,37 +1689,144 @@ namespace MagicVilla_VillaAPI.Repository
 
             return result > 0;
         }
-       
-        public async Task<bool> DeleteTenantAsync(string tenantId)
+
+        public async Task<APIResponse> DeleteTenantAsync(int tenantId)
         {
-            var tenant = await _db.Tenant.FirstOrDefaultAsync(t => t.TenantId == Convert.ToInt32(tenantId) && t.IsDeleted != true);
-            if (tenant == null) return false;
+            var response = new APIResponse();
 
-            tenant.IsDeleted = true;
-            _db.Tenant.Update(tenant);
-            var result = await _db.SaveChangesAsync();
+            try
+            {
+                var isLeaseRefrence = await _db.Lease.AnyAsync(x => x.TenantsTenantId == tenantId && x.IsDeleted != true);
+                if (isLeaseRefrence)
+                {
+                    response.StatusCode = HttpStatusCode.InternalServerError;
+                    response.IsSuccess = false;
+                    response.ErrorMessages.Add("This tenant has refrence in lease.");
+                    return response;
+                }
 
-            if (result <= 0) return false;
+                var isTaskRefrence = await _db.TaskRequest.AnyAsync(x => x.TenantId == tenantId && x.IsDeleted != true);
+                if (isTaskRefrence)
+                {
+                    response.StatusCode = HttpStatusCode.InternalServerError;
+                    response.IsSuccess = false;
+                    response.ErrorMessages.Add("This tenant has refrence in task.");
+                    return response;
+                }
 
-            var pets = await _db.Pets.Where(x => x.TenantId == Convert.ToInt32(tenantId) && x.IsDeleted != true).ToListAsync();
-            pets.ForEach(x => x.IsDeleted = true);
-            _db.Pets.UpdateRange(pets);
+                var isDocumentsRefrence = await _db.Documents.AnyAsync(x => x.TenantId == tenantId && x.IsDeleted != true);
+                if (isDocumentsRefrence)
+                {
+                    response.StatusCode = HttpStatusCode.InternalServerError;
+                    response.IsSuccess = false;
+                    response.ErrorMessages.Add("This tenant has refrence in Documents.");
+                    return response;
+                }
 
-            var vehicles = await _db.Vehicle.Where(x => x.TenantId == Convert.ToInt32(tenantId) && x.IsDeleted != true).ToListAsync();
-            vehicles.ForEach(x => x.IsDeleted = true);
-            _db.Vehicle.UpdateRange(vehicles);
+                //var isCommunicationRefrence = await _db.Communication.AnyAsync(x => x.TenantIds == tenantId && x.IsDeleted != true);
+                //if (isCommunicationRefrence)
+                //{
+                //    response.StatusCode = HttpStatusCode.InternalServerError;
+                //    response.IsSuccess = false;
+                //    response.ErrorMessages.Add("This owner has refrence in task.");
+                //    return response;
+                //}
 
-            var dependents = await _db.TenantDependent.Where(x => x.TenantId == Convert.ToInt32(tenantId) && x.IsDeleted != true).ToListAsync();
-            dependents.ForEach(x => x.IsDeleted = true);
-            _db.TenantDependent.UpdateRange(dependents);
 
-            var coTenant = await _db.CoTenant.Where(x => x.TenantId == Convert.ToInt32(tenantId) && x.IsDeleted != true).ToListAsync();
-            coTenant.ForEach(x => x.IsDeleted = true);
-            _db.CoTenant.UpdateRange(coTenant);
+                var tenant = await _db.Tenant.FirstOrDefaultAsync(t => t.TenantId == tenantId && t.IsDeleted != true);
+                if (tenant == null)
+                {
+                    response.StatusCode = HttpStatusCode.NotFound;
+                    response.IsSuccess = false;
+                    response.ErrorMessages.Add("Tenant not found.");
+                    return response;
+                }
 
-            result = await _db.SaveChangesAsync();
-            return result > 0;
+                tenant.IsDeleted = true;
+                _db.Tenant.Update(tenant);
+               
+                await _db.SaveChangesAsync();
+
+                var pets = await _db.Pets.Where(x => x.TenantId == tenantId && x.IsDeleted != true).ToListAsync();
+                pets.ForEach(x => x.IsDeleted = true);
+                _db.Pets.UpdateRange(pets);
+
+                var vehicles = await _db.Vehicle.Where(x => x.TenantId == tenantId && x.IsDeleted != true).ToListAsync();
+                vehicles.ForEach(x => x.IsDeleted = true);
+                _db.Vehicle.UpdateRange(vehicles);
+
+                var dependents = await _db.TenantDependent.Where(x => x.TenantId == tenantId && x.IsDeleted != true).ToListAsync();
+                dependents.ForEach(x => x.IsDeleted = true);
+                _db.TenantDependent.UpdateRange(dependents);
+
+                var coTenant = await _db.CoTenant.Where(x => x.TenantId == tenantId && x.IsDeleted != true).ToListAsync();
+                coTenant.ForEach(x => x.IsDeleted = true);
+                _db.CoTenant.UpdateRange(coTenant);
+
+                await _db.SaveChangesAsync();
+                response.StatusCode = HttpStatusCode.OK;
+                response.Result = "Tenant and related entities deleted successfully.";
+      
+            }
+            catch (Exception ex)
+            {
+                response.StatusCode = HttpStatusCode.InternalServerError;
+                response.IsSuccess = false;
+                response.ErrorMessages.Add(ex.Message);
+                throw new Exception(string.Join(", ", response.ErrorMessages));
+            }
+
+            return response;
         }
+
+
+        //var response = new APIResponse();
+
+        //   try
+        //   {
+        //       var isRefrence = await _db.Assets.AnyAsync(x => x.OwnerId == ownerId && x.IsDeleted != true);
+        //       if (isRefrence)
+        //       {
+        //           response.StatusCode = HttpStatusCode.InternalServerError;
+        //           response.IsSuccess = false;
+        //           response.ErrorMessages.Add("This owner has refrence in asset.");
+        //           return response;
+        //       }
+
+        //       var owner = await _db.Owner.FirstOrDefaultAsync(t => t.OwnerId == ownerId && t.IsDeleted != true);
+        //       if (owner == null)
+        //       {
+        //           response.StatusCode = HttpStatusCode.NotFound;
+        //           response.IsSuccess = false;
+        //           response.ErrorMessages.Add("Owner not found.");
+        //           return response;
+        //       }
+
+        //       owner.IsDeleted = true;
+        //       _db.Owner.Update(owner);
+
+        //       var ownerOrganization = await _db.OwnerOrganization.FirstOrDefaultAsync(t => t.OwnerId == ownerId && t.IsDeleted != true);
+        //       if (ownerOrganization != null)
+        //       {
+        //           ownerOrganization.IsDeleted = true;
+        //           _db.OwnerOrganization.Update(ownerOrganization);
+        //       }
+
+        //       await _db.SaveChangesAsync();
+
+        //       response.StatusCode = HttpStatusCode.OK;
+        //       response.IsSuccess = true;
+        //       response.Result = "Owner deleted successfully.";
+
+        //   }
+        //   catch (Exception ex)
+        //   {
+        //       response.StatusCode = HttpStatusCode.InternalServerError;
+        //       response.IsSuccess = false;
+        //       response.ErrorMessages.Add(ex.Message);
+        //   }
+
+        //   return response;
 
         #endregion
 
@@ -1790,7 +1900,7 @@ namespace MagicVilla_VillaAPI.Repository
 
             return tenant;
         }
-        
+
         public async Task<bool> CreateOwnerAsync(OwnerDto tenantDto)
         {
             var newTenant = new Owner
@@ -1883,7 +1993,178 @@ namespace MagicVilla_VillaAPI.Repository
 
             return true;
         }
-       
+
+        public async Task<bool> UpdateOwnerAsync(OwnerDto tenantDto)
+        {
+            var tenant = await _db.Owner.FirstOrDefaultAsync(t => t.OwnerId == tenantDto.OwnerId && t.IsDeleted != true);
+            if (tenant == null) return false;
+
+            var ownerOrganization = await _db.OwnerOrganization.FirstOrDefaultAsync(o => o.OwnerId == tenantDto.OwnerId && o.IsDeleted != true);
+
+
+            tenant.FirstName = tenantDto.FirstName;
+            tenant.MiddleName = tenantDto.MiddleName;
+            tenant.LastName = tenantDto.LastName;
+            tenant.EmailAddress = tenantDto.EmailAddress;
+            tenant.EmailAddress2 = tenantDto.EmailAddress2;
+            tenant.PhoneNumber = tenantDto.PhoneNumber;
+            tenant.PhoneNumber2 = tenantDto.PhoneNumber2;
+            tenant.Fax = tenantDto.Fax;
+            tenant.TaxId = tenantDto.TaxId;
+            if (tenant.Document != null)
+            {
+                tenant.Document = tenantDto.DocumentUrl.FileName;
+            }
+            tenant.EmergencyContactInfo = tenantDto.EmergencyContactInfo;
+            tenant.LeaseAgreementId = tenantDto.LeaseAgreementId;
+            tenant.OwnerNationality = tenantDto.OwnerNationality;
+            tenant.Gender = tenantDto.Gender;
+            tenant.DOB = tenantDto.DOB;
+            tenant.VAT = tenantDto.VAT;
+            tenant.Status = true;
+            tenant.LegalName = tenantDto.LegalName;
+            tenant.Account_Name = tenantDto.Account_Name;
+            tenant.Account_Holder = tenantDto.Account_Holder;
+            tenant.Account_IBAN = tenantDto.Account_IBAN;
+            tenant.Account_Swift = tenantDto.Account_Swift;
+            tenant.Account_Bank = tenantDto.Account_Bank;
+            tenant.Account_Currency = tenantDto.Account_Currency;
+            tenant.AppTenantId = tenantDto.AppTenantId;
+            tenant.Address = tenantDto.Address;
+            tenant.Address2 = tenantDto.Address2;
+            tenant.Locality = tenantDto.Locality;
+            tenant.Region = tenantDto.Region;
+            tenant.PostalCode = tenantDto.PostalCode;
+            tenant.Country = tenantDto.Country;
+            tenant.CountryCode = tenantDto.CountryCode;
+            tenant.ModifiedBy = tenantDto.AddedBy;
+            tenant.ModifiedDate = DateTime.Now;
+            if (tenant.Picture != null)
+            {
+                tenant.Picture = tenantDto.PictureUrl.FileName;
+            }
+
+
+            if (ownerOrganization != null)
+            {
+                ownerOrganization.OrganizationName = tenantDto.OrganizationName;
+                ownerOrganization.OrganizationDescription = tenantDto.OrganizationDescription;
+                ownerOrganization.OrganizationIcon = tenantDto.OrganizationIcon;
+                ownerOrganization.OrganizationLogo = tenantDto.OrganizationLogo;
+                ownerOrganization.Website = tenantDto.Website;
+                ownerOrganization.ModifiedBy = tenantDto.AddedBy;
+                ownerOrganization.ModifiedDate = DateTime.Now;
+
+                _db.OwnerOrganization.Update(ownerOrganization);
+            }
+            else
+            {
+                ownerOrganization = new OwnerOrganization
+                {
+                    OwnerId = (int)tenantDto.OwnerId,
+                    OrganizationName = tenantDto.OrganizationName,
+                    OrganizationDescription = tenantDto.OrganizationDescription,
+                    OrganizationIcon = tenantDto.OrganizationIcon,
+                    OrganizationLogo = tenantDto.OrganizationLogo,
+                    Website = tenantDto.Website,
+                    AddedBy = tenantDto.AddedBy,
+                    AddedDate = DateTime.Now
+                };
+                _db.OwnerOrganization.Add(ownerOrganization);
+            }
+
+            _db.Owner.Update(tenant);
+
+            var result = await _db.SaveChangesAsync();
+
+            if (tenantDto.PictureUrl != null)
+            {
+                var ext = Path.GetExtension(tenantDto.PictureUrl.FileName);
+                await _googleCloudStorageService.UploadImageAsync(tenantDto.PictureUrl, "Owner_Picture_" + tenant.OwnerId + ext);
+            }
+
+            if (tenantDto.DocumentUrl != null)
+            {
+                var ext = Path.GetExtension(tenantDto.DocumentUrl.FileName);
+                await _googleCloudStorageService.UploadImageAsync(tenantDto.DocumentUrl, "Owner_Document_" + tenant.OwnerId + ext);
+            }
+
+
+            return result > 0;
+        }
+
+        public async Task<APIResponse> DeleteOwnerAsync(int ownerId)
+        {
+            var response = new APIResponse();
+
+            try
+            {
+                var isRefrence = await _db.Assets.AnyAsync(x => x.OwnerId == ownerId && x.IsDeleted != true);
+                if (isRefrence)
+                {
+                    response.StatusCode = HttpStatusCode.InternalServerError;
+                    response.IsSuccess = false;
+                    response.ErrorMessages.Add("This owner has refrence in asset.");
+                    return response;
+                }
+
+                var isTaskRefrence = await _db.TaskRequest.AnyAsync(x => x.OwnerId == ownerId && x.IsDeleted != true);
+                if (isTaskRefrence)
+                {
+                    response.StatusCode = HttpStatusCode.InternalServerError;
+                    response.IsSuccess = false;
+                    response.ErrorMessages.Add("This owner has refrence in asset.");
+                    return response;
+                }
+
+                var isDocumentsRefrence = await _db.Documents.AnyAsync(x => x.OwnerId == ownerId && x.IsDeleted != true);
+                if (isDocumentsRefrence)
+                {
+                    response.StatusCode = HttpStatusCode.InternalServerError;
+                    response.IsSuccess = false;
+                    response.ErrorMessages.Add("This owner has refrence in Documents.");
+                    return response;
+                }
+
+                var owner = await _db.Owner.FirstOrDefaultAsync(t => t.OwnerId == ownerId && t.IsDeleted != true);
+                if (owner == null)
+                {
+                    response.StatusCode = HttpStatusCode.NotFound;
+                    response.IsSuccess = false;
+                    response.ErrorMessages.Add("Owner not found.");
+                    return response;
+                }
+
+                owner.IsDeleted = true;
+                _db.Owner.Update(owner);
+
+                var ownerOrganization = await _db.OwnerOrganization.FirstOrDefaultAsync(t => t.OwnerId == ownerId && t.IsDeleted != true);
+                if (ownerOrganization != null)
+                {
+                    ownerOrganization.IsDeleted = true;
+                    _db.OwnerOrganization.Update(ownerOrganization);
+                }
+
+                await _db.SaveChangesAsync();
+
+                response.StatusCode = HttpStatusCode.OK;
+                response.IsSuccess = true;
+                response.Result = "Owner deleted successfully.";
+
+            }
+            catch (Exception ex)
+            {
+                response.StatusCode = HttpStatusCode.InternalServerError;
+                response.IsSuccess = false;
+                response.ErrorMessages.Add(ex.Message);
+            }
+
+            return response;
+        }
+
+        #endregion
+
+        #region Lease
         public async Task<bool> CreateLeaseAsync(LeaseDto leaseDto)
         {
             using var transaction = await _db.Database.BeginTransactionAsync();
@@ -1952,24 +2233,38 @@ namespace MagicVilla_VillaAPI.Repository
                     }
                 }
 
-                if (leaseDto.FeeCharges != null)
+                if (leaseDto.FeeCharge != null)
                 {
-                    foreach (var feeDto in leaseDto.FeeCharges)
+                    var feeDto = leaseDto.FeeCharge; 
+                    var feeCharge = new PMS_PropertyHapa.Models.Entities.FeeCharge
                     {
-                        var securityDeposit = new PMS_PropertyHapa.Models.Entities.FeeCharge
-                        {
-                            LeaseId = newLease.LeaseId,
-                            Amount = feeDto.Amount,
-                            Description = feeDto.Description,
-                            FeeDate = feeDto.FeeDate,
-                            AddedBy = leaseDto.AddedBy,
-                            AddedDate = DateTime.Now
-                        };
+                        LeaseId = newLease.LeaseId,
+                        ChargeLatefeeActive = feeDto.ChargeLatefeeActive,
+                        UsePropertyDefaultStructure = feeDto.UsePropertyDefaultStructure,
+                        SpecifyLateFeeStructure = feeDto.SpecifyLateFeeStructure,
+                        DueDays = feeDto.DueDays,
+                        Frequency = feeDto.Frequency,
+                        CalculateFee = feeDto.CalculateFee,
+                        Amount = feeDto.Amount,
+                        ChartAccountId = feeDto.ChartAccountId,
+                        Description = feeDto.Description,
+                        IsSendARemainder = feeDto.IsSendARemainder,
+                        IsNotifyTenants = feeDto.IsNotifyTenants,
+                        IsEnableSms = feeDto.IsEnableSms,
+                        IsChargeLateFee = feeDto.IsChargeLateFee,
+                        IsMonthlyLimit = feeDto.IsMonthlyLimit,
+                        IsDailyLimit = feeDto.IsDailyLimit,
+                        IsMinimumBalance = feeDto.IsMinimumBalance,
+                        IsChargeLateFeeonSpecific = feeDto.IsChargeLateFeeonSpecific,
+                        FeeDate = feeDto.FeeDate,
+                        AddedBy = leaseDto.AddedBy,
+                        AddedDate = DateTime.Now
+                    };
 
-                        await _db.FeeCharge.AddAsync(securityDeposit);
-                        await _db.SaveChangesAsync();
-                    }
+                    await _db.FeeCharge.AddAsync(feeCharge);
+                    await _db.SaveChangesAsync();
                 }
+
 
                 var maxLeaseId = await _db.Lease.MaxAsync(x => x.LeaseId);
                 decimal totalRentAmount = 0;
@@ -1984,10 +2279,11 @@ namespace MagicVilla_VillaAPI.Repository
                     totalRentAmount += leaseDto.SecurityDeposits.Sum(sd => sd.Amount);
                 }
 
-                if (leaseDto.FeeCharges != null)
+                if (leaseDto.FeeCharge != null)
                 {
-                    totalRentAmount += leaseDto.FeeCharges.Sum(fc => fc.Amount);
+                    totalRentAmount += leaseDto.FeeCharge.Amount;
                 }
+
 
                 var assest = await _db.Assets.FirstOrDefaultAsync(x => x.AssetId == leaseDto.PropertyId && x.IsDeleted != true);
 
@@ -2039,7 +2335,7 @@ namespace MagicVilla_VillaAPI.Repository
                 return false;
             }
         }
-        
+
         public async Task<LeaseDto> GetLeaseByIdAsync(int leaseId)
         {
             var lease = await _db.Lease
@@ -2076,13 +2372,28 @@ namespace MagicVilla_VillaAPI.Repository
                     RentDate = rc.RentDate,
                     RentPeriod = rc.RentPeriod
                 }).ToList(),
-                FeeCharges = lease.FeeCharge.Where(x => x.IsDeleted != true).Select(rc => new FeeChargeDto
+                FeeCharge = lease.FeeCharge.Where(x => x.IsDeleted != true).Select(rc => new FeeChargeDto
                 {
                     FeeChargeId = rc.FeeChargeId,
+                    ChargeLatefeeActive = rc.ChargeLatefeeActive,
+                    UsePropertyDefaultStructure = rc.UsePropertyDefaultStructure,
+                    SpecifyLateFeeStructure = rc.SpecifyLateFeeStructure,
+                    DueDays = rc.DueDays,
+                    Frequency = rc.Frequency,
+                    CalculateFee = rc.CalculateFee,
                     Amount = rc.Amount,
+                    ChartAccountId = rc.ChartAccountId,
                     Description = rc.Description,
-                    FeeDate = rc.FeeDate
-                }).ToList(),
+                    IsSendARemainder = rc.IsSendARemainder,
+                    IsNotifyTenants = rc.IsNotifyTenants,
+                    IsEnableSms = rc.IsEnableSms,
+                    IsChargeLateFee = rc.IsChargeLateFee,
+                    IsMonthlyLimit = rc.IsMonthlyLimit,
+                    IsDailyLimit = rc.IsDailyLimit,
+                    IsMinimumBalance = rc.IsMinimumBalance,
+                    IsChargeLateFeeonSpecific = rc.IsChargeLateFeeonSpecific,
+                    FeeDate = rc.FeeDate,
+                }).FirstOrDefault(),
 
                 SecurityDeposits = lease.SecurityDeposit.Where(x => x.IsDeleted != true).Select(sd => new SecurityDepositDto
                 {
@@ -2103,7 +2414,7 @@ namespace MagicVilla_VillaAPI.Repository
 
             return leaseDto;
         }
-        
+
         public async Task<List<LeaseDto>> GetAllLeasesAsync()
         {
             try
@@ -2142,13 +2453,30 @@ namespace MagicVilla_VillaAPI.Repository
                         RentDate = rc.RentDate,
                         RentPeriod = rc.RentPeriod
                     }).ToList() ?? new List<RentChargeDto>(),
-                    FeeCharges = lease.FeeCharge.Where(x => x.IsDeleted != true).Select(rc => new FeeChargeDto
-                    {
-                        FeeChargeId = rc.FeeChargeId,
-                        Amount = rc.Amount,
-                        Description = rc.Description,
-                        FeeDate = rc.FeeDate
-                    }).ToList() ?? new List<FeeChargeDto>(),
+
+                    FeeCharge = lease.FeeCharge.Where(x => x.IsDeleted != true)
+                    .Select(rc => new FeeChargeDto
+                     {
+                         FeeChargeId = rc.FeeChargeId,
+                         ChargeLatefeeActive = rc.ChargeLatefeeActive,
+                         UsePropertyDefaultStructure = rc.UsePropertyDefaultStructure,
+                         SpecifyLateFeeStructure = rc.SpecifyLateFeeStructure,
+                         DueDays = rc.DueDays,
+                         Frequency = rc.Frequency,
+                         CalculateFee = rc.CalculateFee,
+                         Amount = rc.Amount,
+                         ChartAccountId = rc.ChartAccountId,
+                         Description = rc.Description,
+                         IsSendARemainder = rc.IsSendARemainder,
+                         IsNotifyTenants = rc.IsNotifyTenants,
+                         IsEnableSms = rc.IsEnableSms,
+                         IsChargeLateFee = rc.IsChargeLateFee,
+                         IsMonthlyLimit = rc.IsMonthlyLimit,
+                         IsDailyLimit = rc.IsDailyLimit,
+                         IsMinimumBalance = rc.IsMinimumBalance,
+                         IsChargeLateFeeonSpecific = rc.IsChargeLateFeeonSpecific,
+                         FeeDate = rc.FeeDate,
+                     }).FirstOrDefault() ?? new FeeChargeDto(),
 
                     SecurityDeposits = lease.SecurityDeposit.Where(x => x.IsDeleted != true).Select(sd => new SecurityDepositDto
                     {
@@ -2176,7 +2504,7 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
-       
+
         public async Task<bool> UpdateLeaseAsync(LeaseDto leaseDto)
         {
             using var transaction = await _db.Database.BeginTransactionAsync();
@@ -2242,34 +2570,63 @@ namespace MagicVilla_VillaAPI.Repository
                 }
 
 
-                if (leaseDto.FeeCharges != null)
+                if (leaseDto.FeeCharge != null)
                 {
-                    foreach (var rcDto in leaseDto.FeeCharges)
-                    {
-                        var existingRc = existingLease.FeeCharge.FirstOrDefault(rc => rc.FeeChargeId == rcDto.FeeChargeId && rc.IsDeleted != true);
-                        if (existingRc != null)
-                        {
-                            existingRc.Amount = rcDto.Amount;
-                            existingRc.Description = rcDto.Description;
-                            existingRc.FeeDate = rcDto.FeeDate;
-                            existingRc.ModifiedBy = leaseDto.AddedBy;
-                            existingRc.ModifiedDate = DateTime.Now;
-                        }
-                        else
-                        {
+                    var rcDto = leaseDto.FeeCharge; 
+                    var existingRc = existingLease.FeeCharge.FirstOrDefault(rc => rc.FeeChargeId == rcDto.FeeChargeId && rc.IsDeleted != true);
 
-                            existingLease.FeeCharge.Add(new PMS_PropertyHapa.Models.Entities.FeeCharge
-                            {
-                                Amount = rcDto.Amount,
-                                Description = rcDto.Description,
-                                LeaseId = existingLease.LeaseId,
-                                FeeDate = rcDto.FeeDate,
-                                AddedBy = leaseDto.AddedBy,
-                                AddedDate = DateTime.Now
-                            });
-                        }
+                    if (existingRc != null)
+                    {
+                        existingRc.ChargeLatefeeActive = rcDto.ChargeLatefeeActive;
+                        existingRc.UsePropertyDefaultStructure = rcDto.UsePropertyDefaultStructure;
+                        existingRc.SpecifyLateFeeStructure = rcDto.SpecifyLateFeeStructure;
+                        existingRc.DueDays = rcDto.DueDays;
+                        existingRc.Frequency = rcDto.Frequency;
+                        existingRc.CalculateFee = rcDto.CalculateFee;
+                        existingRc.Amount = rcDto.Amount;
+                        existingRc.ChartAccountId = rcDto.ChartAccountId;
+                        existingRc.Description = rcDto.Description;
+                        existingRc.IsSendARemainder = rcDto.IsSendARemainder;
+                        existingRc.IsNotifyTenants = rcDto.IsNotifyTenants;
+                        existingRc.IsEnableSms = rcDto.IsEnableSms;
+                        existingRc.IsChargeLateFee = rcDto.IsChargeLateFee;
+                        existingRc.IsMonthlyLimit = rcDto.IsMonthlyLimit;
+                        existingRc.IsDailyLimit = rcDto.IsDailyLimit;
+                        existingRc.IsMinimumBalance = rcDto.IsMinimumBalance;
+                        existingRc.IsChargeLateFeeonSpecific = rcDto.IsChargeLateFeeonSpecific;
+                        existingRc.FeeDate = rcDto.FeeDate;
+                        existingRc.ModifiedBy = leaseDto.AddedBy;
+                        existingRc.ModifiedDate = DateTime.Now;
+                    }
+                    else
+                    {
+                        existingLease.FeeCharge.Add(new PMS_PropertyHapa.Models.Entities.FeeCharge
+                        {
+                            LeaseId = existingLease.LeaseId,
+                            ChargeLatefeeActive = rcDto.ChargeLatefeeActive,
+                            UsePropertyDefaultStructure = rcDto.UsePropertyDefaultStructure,
+                            SpecifyLateFeeStructure = rcDto.SpecifyLateFeeStructure,
+                            DueDays = rcDto.DueDays,
+                            Frequency = rcDto.Frequency,
+                            CalculateFee = rcDto.CalculateFee,
+                            Amount = rcDto.Amount,
+                            ChartAccountId = rcDto.ChartAccountId,
+                            Description = rcDto.Description,
+                            IsSendARemainder = rcDto.IsSendARemainder,
+                            IsNotifyTenants = rcDto.IsNotifyTenants,
+                            IsEnableSms = rcDto.IsEnableSms,
+                            IsChargeLateFee = rcDto.IsChargeLateFee,
+                            IsMonthlyLimit = rcDto.IsMonthlyLimit,
+                            IsDailyLimit = rcDto.IsDailyLimit,
+                            IsMinimumBalance = rcDto.IsMinimumBalance,
+                            IsChargeLateFeeonSpecific = rcDto.IsChargeLateFeeonSpecific,
+                            FeeDate = rcDto.FeeDate,
+                            AddedBy = leaseDto.AddedBy,
+                            AddedDate = DateTime.Now
+                        });
                     }
                 }
+
 
                 if (leaseDto.SecurityDeposits != null)
                 {
@@ -2303,8 +2660,8 @@ namespace MagicVilla_VillaAPI.Repository
                 var assest = await _db.Assets.FirstOrDefaultAsync(x => x.AssetId == existingLease.AssetId && x.IsDeleted != true);
                 var oldInvoices = await _db.Invoices.Where(x => x.LeaseId == leaseDto.LeaseId && x.IsDeleted != true).ToListAsync();
 
-                    oldInvoices.ForEach(x => x.IsDeleted = true);
-                    _db.UpdateRange(oldInvoices);
+                oldInvoices.ForEach(x => x.IsDeleted = true);
+                _db.UpdateRange(oldInvoices);
 
                 decimal totalRentAmount = 0;
 
@@ -2318,9 +2675,9 @@ namespace MagicVilla_VillaAPI.Repository
                     totalRentAmount += leaseDto.SecurityDeposits.Sum(sd => sd.Amount);
                 }
 
-                if (leaseDto.FeeCharges != null)
+                if (leaseDto.FeeCharge != null)
                 {
-                    totalRentAmount += leaseDto.FeeCharges.Sum(fc => fc.Amount);
+                    totalRentAmount += leaseDto.FeeCharge.Amount;
                 }
 
                 if (leaseDto.IsMonthToMonth)
@@ -2374,135 +2731,58 @@ namespace MagicVilla_VillaAPI.Repository
             }
         }
 
-        public async Task<bool> DeleteLeaseAsync(int leaseId)
+        public async Task<APIResponse> DeleteLeaseAsync(int leaseId)
         {
-            var lease = await _db.Lease.FirstOrDefaultAsync(x => x.LeaseId == leaseId && x.IsDeleted != true);
-            if (lease == null) return false;
-
-            lease.IsDeleted = true;
-            _db.Lease.Update(lease);
-            var saveResult = await _db.SaveChangesAsync();
-
-            if (saveResult <= 0) return false;
-
-            var rentCharge = await _db.RentCharge.Where(x => x.LeaseId == leaseId && x.IsDeleted != true).ToListAsync();
-            rentCharge.ForEach(x => x.IsDeleted = true);
-                _db.RentCharge.UpdateRange(rentCharge);
-
-            var feeCharge = await _db.FeeCharge.Where(x => x.LeaseId == leaseId && x.IsDeleted != true).ToListAsync();
-            feeCharge.ForEach(x => x.IsDeleted = true);
-            _db.FeeCharge.UpdateRange(feeCharge);
-
-            var securityDeposit = await _db.SecurityDeposit.Where(x => x.LeaseId == leaseId && x.IsDeleted != true).ToListAsync();
-            securityDeposit.ForEach(x => x.IsDeleted = true);
-            _db.SecurityDeposit.UpdateRange(securityDeposit);
-
-            saveResult = await _db.SaveChangesAsync();
-
-            return saveResult > 0;
-        }
-
-        public async Task<bool> UpdateOwnerAsync(OwnerDto tenantDto)
-        {
-            var tenant = await _db.Owner.FirstOrDefaultAsync(t => t.OwnerId == tenantDto.OwnerId && t.IsDeleted != true);
-            if (tenant == null) return false;
-
-            var ownerOrganization = await _db.OwnerOrganization.FirstOrDefaultAsync(o => o.OwnerId == tenantDto.OwnerId && o.IsDeleted != true);
-
-
-            tenant.FirstName = tenantDto.FirstName;
-            tenant.MiddleName = tenantDto.MiddleName;
-            tenant.LastName = tenantDto.LastName;
-            tenant.EmailAddress = tenantDto.EmailAddress;
-            tenant.EmailAddress2 = tenantDto.EmailAddress2;
-            tenant.PhoneNumber = tenantDto.PhoneNumber;
-            tenant.PhoneNumber2 = tenantDto.PhoneNumber2;
-            tenant.Fax = tenantDto.Fax;
-            tenant.TaxId = tenantDto.TaxId;
-            if(tenant.Document != null)
+            var response = new APIResponse();
+            try
             {
-                tenant.Document = tenantDto.DocumentUrl.FileName;
-            }
-            tenant.EmergencyContactInfo = tenantDto.EmergencyContactInfo;
-            tenant.LeaseAgreementId = tenantDto.LeaseAgreementId;
-            tenant.OwnerNationality = tenantDto.OwnerNationality;
-            tenant.Gender = tenantDto.Gender;
-            tenant.DOB = tenantDto.DOB;
-            tenant.VAT = tenantDto.VAT;
-            tenant.Status = true;
-            tenant.LegalName = tenantDto.LegalName;
-            tenant.Account_Name = tenantDto.Account_Name;
-            tenant.Account_Holder = tenantDto.Account_Holder;
-            tenant.Account_IBAN = tenantDto.Account_IBAN;
-            tenant.Account_Swift = tenantDto.Account_Swift;
-            tenant.Account_Bank = tenantDto.Account_Bank;
-            tenant.Account_Currency = tenantDto.Account_Currency;
-            tenant.AppTenantId = tenantDto.AppTenantId;
-            tenant.Address = tenantDto.Address;
-            tenant.Address2 = tenantDto.Address2;
-            tenant.Locality = tenantDto.Locality;
-            tenant.Region = tenantDto.Region;
-            tenant.PostalCode = tenantDto.PostalCode;
-            tenant.Country = tenantDto.Country;
-            tenant.CountryCode = tenantDto.CountryCode;
-            tenant.ModifiedBy = tenantDto.AddedBy;
-            tenant.ModifiedDate = DateTime.Now;
-            if(tenant.Picture != null)
-            {
-                tenant.Picture = tenantDto.PictureUrl.FileName;
-            }
-            
-
-            if (ownerOrganization != null)
-            {
-                ownerOrganization.OrganizationName = tenantDto.OrganizationName;
-                ownerOrganization.OrganizationDescription = tenantDto.OrganizationDescription;
-                ownerOrganization.OrganizationIcon = tenantDto.OrganizationIcon;
-                ownerOrganization.OrganizationLogo = tenantDto.OrganizationLogo;
-                ownerOrganization.Website = tenantDto.Website;
-                ownerOrganization.ModifiedBy = tenantDto.AddedBy;
-                ownerOrganization.ModifiedDate = DateTime.Now;
-
-                _db.OwnerOrganization.Update(ownerOrganization);
-            }
-            else
-            {
-                ownerOrganization = new OwnerOrganization
+                var lease = await _db.Lease.FirstOrDefaultAsync(x => x.LeaseId == leaseId && x.IsDeleted != true);
+                if (lease == null)
                 {
-                    OwnerId = (int)tenantDto.OwnerId,
-                    OrganizationName = tenantDto.OrganizationName,
-                    OrganizationDescription = tenantDto.OrganizationDescription,
-                    OrganizationIcon = tenantDto.OrganizationIcon,
-                    OrganizationLogo = tenantDto.OrganizationLogo,
-                    Website = tenantDto.Website,
-                    AddedBy = tenantDto.AddedBy,
-                    AddedDate = DateTime.Now
-                };
-                _db.OwnerOrganization.Add(ownerOrganization);
+                    response.StatusCode = HttpStatusCode.NotFound;
+                    response.IsSuccess = false;
+                    response.ErrorMessages.Add("Lease not found.");
+                    return response;
+                }
+
+                lease.IsDeleted = true;
+                _db.Lease.Update(lease);
+
+                await _db.SaveChangesAsync();
+
+                var rentCharges = await _db.RentCharge.Where(x => x.LeaseId == leaseId && x.IsDeleted != true).ToListAsync();
+                rentCharges.ForEach(x => x.IsDeleted = true);
+                _db.RentCharge.UpdateRange(rentCharges);
+
+                var feeCharges = await _db.FeeCharge.Where(x => x.LeaseId == leaseId && x.IsDeleted != true).ToListAsync();
+                feeCharges.ForEach(x => x.IsDeleted = true);
+                _db.FeeCharge.UpdateRange(feeCharges);
+
+                var securityDeposits = await _db.SecurityDeposit.Where(x => x.LeaseId == leaseId && x.IsDeleted != true).ToListAsync();
+                securityDeposits.ForEach(x => x.IsDeleted = true);
+                _db.SecurityDeposit.UpdateRange(securityDeposits);
+
+                await _db.SaveChangesAsync();
+
+                response.StatusCode = HttpStatusCode.OK;
+                response.IsSuccess = true;
+                response.Result = "Lease and associated charges deleted successfully.";
+
             }
-
-            _db.Owner.Update(tenant);
-
-            var result = await _db.SaveChangesAsync();
-
-            if (tenantDto.PictureUrl != null)
+            catch (Exception ex)
             {
-                var ext = Path.GetExtension(tenantDto.PictureUrl.FileName);
-                await _googleCloudStorageService.UploadImageAsync(tenantDto.PictureUrl, "Owner_Picture_" + tenant.OwnerId + ext);
+                response.StatusCode = HttpStatusCode.InternalServerError;
+                response.IsSuccess = false;
+                response.ErrorMessages.Add(ex.Message);
             }
 
-            if (tenantDto.DocumentUrl != null)
-            {
-                var ext = Path.GetExtension(tenantDto.DocumentUrl.FileName);
-                await _googleCloudStorageService.UploadImageAsync(tenantDto.DocumentUrl, "Owner_Document_" + tenant.OwnerId + ext);
-            }
-
-
-            return result > 0;
+            return response;
         }
+
+
 
         //Inovices
-        
+
         public async Task<List<InvoiceDto>> GetInvoicesAsync(int leaseId)
         {
             var invoices = await (from i in _db.Invoices
@@ -2527,7 +2807,7 @@ namespace MagicVilla_VillaAPI.Repository
 
             return invoices;
         }
-       
+
         public async Task<List<InvoiceDto>> GetAllInvoicesAsync()
         {
             try
@@ -2559,61 +2839,61 @@ namespace MagicVilla_VillaAPI.Repository
                 throw new Exception("Failed to retrieve invoices", ex);
             }
         }
-        
+
         public async Task<InvoiceDto> GetInvoiceByIdAsync(int invoiceId)
         {
             var invoice = await (from i in _db.Invoices
-                                  from t in _db.Tenant.Where(x => x.TenantId == i.TenantId && x.IsDeleted != true).DefaultIfEmpty()
-                                  from o in _db.Owner.Where(x => x.OwnerId == i.OwnerId && x.IsDeleted != true).DefaultIfEmpty()
-                                  where i.InvoiceId == invoiceId && i.IsDeleted != true
-                                  select new InvoiceDto
-                                  {
-                                      InvoiceId = i.InvoiceId,
-                                      OwnerId = i.OwnerId,
-                                      OwnerName = o.FirstName + " " + o.LastName,
-                                      TenantId = i.TenantId,
-                                      TenantName = t.FirstName + " " + t.LastName,
-                                      InvoiceCreatedDate = i.InvoiceCreatedDate,
-                                      InvoicePaid = i.InvoicePaid,
-                                      RentAmount = i.RentAmount,
-                                      LeaseId = i.LeaseId,
-                                      InvoiceDate = i.InvoiceDate,
-                                      InvoicePaidToOwner = i.InvoicePaidToOwner,
-                                      AddedBy = i.AddedBy,
-                                  }).FirstOrDefaultAsync();
+                                 from t in _db.Tenant.Where(x => x.TenantId == i.TenantId && x.IsDeleted != true).DefaultIfEmpty()
+                                 from o in _db.Owner.Where(x => x.OwnerId == i.OwnerId && x.IsDeleted != true).DefaultIfEmpty()
+                                 where i.InvoiceId == invoiceId && i.IsDeleted != true
+                                 select new InvoiceDto
+                                 {
+                                     InvoiceId = i.InvoiceId,
+                                     OwnerId = i.OwnerId,
+                                     OwnerName = o.FirstName + " " + o.LastName,
+                                     TenantId = i.TenantId,
+                                     TenantName = t.FirstName + " " + t.LastName,
+                                     InvoiceCreatedDate = i.InvoiceCreatedDate,
+                                     InvoicePaid = i.InvoicePaid,
+                                     RentAmount = i.RentAmount,
+                                     LeaseId = i.LeaseId,
+                                     InvoiceDate = i.InvoiceDate,
+                                     InvoicePaidToOwner = i.InvoicePaidToOwner,
+                                     AddedBy = i.AddedBy,
+                                 }).FirstOrDefaultAsync();
             return invoice;
         }
-       
+
         public async Task<bool> AllInvoicePaidAsync(int leaseId)
         {
-            var invoices = await _db.Invoices.Where(t => t.LeaseId == leaseId && t.InvoicePaid != true &&  t.IsDeleted != true).ToListAsync();
+            var invoices = await _db.Invoices.Where(t => t.LeaseId == leaseId && t.InvoicePaid != true && t.IsDeleted != true).ToListAsync();
 
             invoices.ForEach(x => x.InvoicePaid = true);
             _db.Invoices.UpdateRange(invoices);
             var result = await _db.SaveChangesAsync();
             return result > 0;
-        }   
-       
+        }
+
         public async Task<bool> AllInvoiceOwnerPaidAsync(int leaseId)
         {
-            var invoices = await _db.Invoices.Where(t => t.LeaseId == leaseId && t.InvoicePaidToOwner != true &&  t.IsDeleted != true).ToListAsync();
+            var invoices = await _db.Invoices.Where(t => t.LeaseId == leaseId && t.InvoicePaidToOwner != true && t.IsDeleted != true).ToListAsync();
 
             invoices.ForEach(x => x.InvoicePaidToOwner = true);
             _db.Invoices.UpdateRange(invoices);
             var result = await _db.SaveChangesAsync();
             return result > 0;
-        }       
-        
+        }
+
         public async Task<bool> InvoicePaidAsync(int invoiceId)
         {
             var invoice = await _db.Invoices.FirstOrDefaultAsync(t => t.InvoiceId == invoiceId && t.IsDeleted != true);
 
             invoice.InvoicePaid = true;
-             _db.Invoices.Update(invoice);
+            _db.Invoices.Update(invoice);
             var result = await _db.SaveChangesAsync();
             return result > 0;
-        }       
-        
+        }
+
         public async Task<bool> InvoiceOwnerPaidAsync(int invoiceId)
         {
             var invoice = await _db.Invoices.FirstOrDefaultAsync(t => t.InvoiceId == invoiceId && t.IsDeleted != true);
@@ -2623,27 +2903,10 @@ namespace MagicVilla_VillaAPI.Repository
             var result = await _db.SaveChangesAsync();
             return result > 0;
         }
+
         
-        public async Task<bool> DeleteOwnerAsync(string ownerId)
-        {
-            var tenant = await _db.Owner.FirstOrDefaultAsync(t => t.OwnerId == Convert.ToInt32(ownerId) && t.IsDeleted != true);
-            if (tenant == null) return false;
 
-            tenant.IsDeleted = true;
-            _db.Owner.Update(tenant);
 
-            var owner = await _db.OwnerOrganization.FirstOrDefaultAsync(t => t.OwnerId == Convert.ToInt32(ownerId) && t.IsDeleted != true);
-            if (owner != null)
-            {
-                owner.IsDeleted = true;
-                _db.OwnerOrganization.Update(owner);
-            }
-
-            
-            var result = await _db.SaveChangesAsync();
-            return result > 0;
-        }
-        
         #endregion
 
         #region TenantOrg
@@ -2670,7 +2933,7 @@ namespace MagicVilla_VillaAPI.Repository
 
             return tenantDto;
         }
-        
+
         public async Task<bool> UpdateTenantOrgAsync(TenantOrganizationInfoDto tenantDto)
         {
             if (tenantDto.Id < 0) return false;
@@ -2709,7 +2972,7 @@ namespace MagicVilla_VillaAPI.Repository
                 var ext = Path.GetExtension(tenantDto.OrganizationIconName);
                 await _googleCloudStorageService.UploadImagebyBase64Async(tenantDto.OrganizationIcon, "TenantOrganizationInfo_OrganizationIcon_" + newTenant.Id + ext);
             }
-            
+
             if (tenantDto.OrganizationLogo != null)
             {
                 var ext = Path.GetExtension(tenantDto.OrganizationLogoName);
@@ -2717,84 +2980,85 @@ namespace MagicVilla_VillaAPI.Repository
             }
             return result > 0;
         }
-        
+
         #endregion
 
         #region Assets
-       
+
         public async Task<List<AssetDTO>> GetAllAssetsAsync()
         {
             try
             {
 
                 var assets = await (from asset in _db.Assets
-                                       from owner in _db.Owner.Where(x=>x.OwnerId == asset.OwnerId && x.IsDeleted != true).DefaultIfEmpty()
-                                       where asset.IsDeleted != true
-                                       select new AssetDTO
-                                       {
-                                           AssetId = asset.AssetId,
-                                           SelectedPropertyType = asset.SelectedPropertyType,
-                                           SelectedBankAccountOption = asset.SelectedBankAccountOption,
-                                           SelectedReserveFundsOption = asset.SelectedReserveFundsOption,
-                                           SelectedSubtype = asset.SelectedSubtype,
-                                           SelectedOwnershipOption = asset.SelectedOwnershipOption,
-                                           BuildingNo = asset.BuildingNo,
-                                           BuildingName = asset.BuildingName,
-                                           Street1 = asset.Street1,
-                                           Street2 = asset.Street2,
-                                           City = asset.City,
-                                           Country = asset.Country,
-                                           Zipcode = asset.Zipcode,
-                                           State = asset.State,
-                                           AppTid = asset.AppTenantId,
-                                           PictureFileName = asset.Image,
-                                           Image = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Assets_Image_" + asset.AssetId + Path.GetExtension(asset.Image)}",
-                                           AddedBy = asset.AddedBy,
-                                           AddedDate = asset.AddedDate,
-                                           ModifiedDate = asset.ModifiedDate,
-                                           Units = asset.Units.Where(x => x.IsDeleted != true).Select(u => new UnitDTO
-                                           {
-                                               UnitId = u.UnitId,
-                                               AssetId = u.AssetId,
-                                               UnitName = u.UnitName,
-                                               Bath = u.Bath,
-                                               Beds = u.Beds,
-                                               Rent = u.Rent,
-                                               Size = u.Size,
-                                           }).ToList(),
-                                           OwnerData = new OwnerDto{
-                                               OwnerId = owner.OwnerId,
-                                               FirstName = owner.FirstName,
-                                               MiddleName = owner.MiddleName,
-                                               LastName = owner.LastName,
-                                               Fax = owner.Fax,
-                                               TaxId = owner.TaxId,
-                                               EmailAddress = owner.EmailAddress,
-                                               EmailAddress2 = owner.EmailAddress2,
-                                               PictureName = owner.Picture,
-                                               Picture = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Owner_Picture_" + owner.OwnerId + Path.GetExtension(owner.Picture)}",
-                                               PhoneNumber = owner.PhoneNumber,
-                                               PhoneNumber2 = owner.PhoneNumber2,
-                                               EmergencyContactInfo = owner.EmergencyContactInfo,
-                                               LeaseAgreementId = owner.LeaseAgreementId,
-                                               OwnerNationality = owner.OwnerNationality,
-                                               Gender = owner.Gender,
-                                               DocumentName = owner.Document,
-                                               Document = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Owner_Document_" + owner.OwnerId + Path.GetExtension(owner.Document)}",
-                                               DOB = owner.DOB,
-                                               VAT = owner.VAT,
-                                               LegalName = owner.LegalName,
-                                               Account_Name = owner.Account_Name,
-                                               Account_Holder = owner.Account_Holder,
-                                               Account_IBAN = owner.Account_IBAN,
-                                               Account_Swift = owner.Account_Swift,
-                                               Account_Bank = owner.Account_Bank,
-                                               Account_Currency = owner.Account_Currency,
-                                               AddedBy = owner.AddedBy,
-                                               AddedDate = owner.AddedDate,
-                                               ModifiedDate = owner.ModifiedDate
-                                           }
-                                       }).AsNoTracking()
+                                    from owner in _db.Owner.Where(x => x.OwnerId == asset.OwnerId && x.IsDeleted != true).DefaultIfEmpty()
+                                    where asset.IsDeleted != true
+                                    select new AssetDTO
+                                    {
+                                        AssetId = asset.AssetId,
+                                        SelectedPropertyType = asset.SelectedPropertyType,
+                                        SelectedBankAccountOption = asset.SelectedBankAccountOption,
+                                        SelectedReserveFundsOption = asset.SelectedReserveFundsOption,
+                                        SelectedSubtype = asset.SelectedSubtype,
+                                        SelectedOwnershipOption = asset.SelectedOwnershipOption,
+                                        BuildingNo = asset.BuildingNo,
+                                        BuildingName = asset.BuildingName,
+                                        Street1 = asset.Street1,
+                                        Street2 = asset.Street2,
+                                        City = asset.City,
+                                        Country = asset.Country,
+                                        Zipcode = asset.Zipcode,
+                                        State = asset.State,
+                                        AppTid = asset.AppTenantId,
+                                        PictureFileName = asset.Image,
+                                        Image = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Assets_Image_" + asset.AssetId + Path.GetExtension(asset.Image)}",
+                                        AddedBy = asset.AddedBy,
+                                        AddedDate = asset.AddedDate,
+                                        ModifiedDate = asset.ModifiedDate,
+                                        Units = asset.Units.Where(x => x.IsDeleted != true).Select(u => new UnitDTO
+                                        {
+                                            UnitId = u.UnitId,
+                                            AssetId = u.AssetId,
+                                            UnitName = u.UnitName,
+                                            Bath = u.Bath,
+                                            Beds = u.Beds,
+                                            Rent = u.Rent,
+                                            Size = u.Size,
+                                        }).ToList(),
+                                        OwnerData = new OwnerDto
+                                        {
+                                            OwnerId = owner.OwnerId,
+                                            FirstName = owner.FirstName,
+                                            MiddleName = owner.MiddleName,
+                                            LastName = owner.LastName,
+                                            Fax = owner.Fax,
+                                            TaxId = owner.TaxId,
+                                            EmailAddress = owner.EmailAddress,
+                                            EmailAddress2 = owner.EmailAddress2,
+                                            PictureName = owner.Picture,
+                                            Picture = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Owner_Picture_" + owner.OwnerId + Path.GetExtension(owner.Picture)}",
+                                            PhoneNumber = owner.PhoneNumber,
+                                            PhoneNumber2 = owner.PhoneNumber2,
+                                            EmergencyContactInfo = owner.EmergencyContactInfo,
+                                            LeaseAgreementId = owner.LeaseAgreementId,
+                                            OwnerNationality = owner.OwnerNationality,
+                                            Gender = owner.Gender,
+                                            DocumentName = owner.Document,
+                                            Document = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Owner_Document_" + owner.OwnerId + Path.GetExtension(owner.Document)}",
+                                            DOB = owner.DOB,
+                                            VAT = owner.VAT,
+                                            LegalName = owner.LegalName,
+                                            Account_Name = owner.Account_Name,
+                                            Account_Holder = owner.Account_Holder,
+                                            Account_IBAN = owner.Account_IBAN,
+                                            Account_Swift = owner.Account_Swift,
+                                            Account_Bank = owner.Account_Bank,
+                                            Account_Currency = owner.Account_Currency,
+                                            AddedBy = owner.AddedBy,
+                                            AddedDate = owner.AddedDate,
+                                            ModifiedDate = owner.ModifiedDate
+                                        }
+                                    }).AsNoTracking()
                                         .ToListAsync();
 
                 return assets;
@@ -2804,82 +3068,83 @@ namespace MagicVilla_VillaAPI.Repository
                 Console.WriteLine($"An error occurred while mapping property types: {ex.Message}");
                 throw;
             }
-        }       
-        
+        }
+
         public async Task<AssetDTO> GetAssetByIdAsync(int assetId)
         {
             try
             {
 
                 var asset = await (from a in _db.Assets
-                                       from o in _db.Owner.Where(x=>x.OwnerId == a.OwnerId && x.IsDeleted != true).DefaultIfEmpty()
-                                       where a.AssetId == assetId && a.IsDeleted != true
-                                       select new AssetDTO
+                                   from o in _db.Owner.Where(x => x.OwnerId == a.OwnerId && x.IsDeleted != true).DefaultIfEmpty()
+                                   where a.AssetId == assetId && a.IsDeleted != true
+                                   select new AssetDTO
+                                   {
+                                       AssetId = a.AssetId,
+                                       OwnerId = a.OwnerId,
+                                       SelectedPropertyType = a.SelectedPropertyType,
+                                       SelectedBankAccountOption = a.SelectedBankAccountOption,
+                                       SelectedReserveFundsOption = a.SelectedReserveFundsOption,
+                                       SelectedSubtype = a.SelectedSubtype,
+                                       SelectedOwnershipOption = a.SelectedOwnershipOption,
+                                       BuildingNo = a.BuildingNo,
+                                       BuildingName = a.BuildingName,
+                                       Street1 = a.Street1,
+                                       Street2 = a.Street2,
+                                       City = a.City,
+                                       Country = a.Country,
+                                       Zipcode = a.Zipcode,
+                                       State = a.State,
+                                       AppTid = a.AppTenantId,
+                                       PictureFileName = a.Image,
+                                       Image = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Assets_Image_" + a.AssetId + Path.GetExtension(a.Image)}",
+                                       AddedBy = a.AddedBy,
+                                       AddedDate = a.AddedDate,
+                                       ModifiedDate = a.ModifiedDate,
+                                       Units = a.Units.Where(x => x.IsDeleted != true).Select(u => new UnitDTO
                                        {
-                                           AssetId = a.AssetId,
-                                           OwnerId = a.OwnerId,
-                                           SelectedPropertyType = a.SelectedPropertyType,
-                                           SelectedBankAccountOption = a.SelectedBankAccountOption,
-                                           SelectedReserveFundsOption = a.SelectedReserveFundsOption,
-                                           SelectedSubtype = a.SelectedSubtype,
-                                           SelectedOwnershipOption = a.SelectedOwnershipOption,
-                                           BuildingNo = a.BuildingNo,
-                                           BuildingName = a.BuildingName,
-                                           Street1 = a.Street1,
-                                           Street2 = a.Street2,
-                                           City = a.City,
-                                           Country = a.Country,
-                                           Zipcode = a.Zipcode,
-                                           State = a.State,
-                                           AppTid = a.AppTenantId,
-                                           PictureFileName = a.Image,
-                                           Image = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Assets_Image_" + a.AssetId + Path.GetExtension(a.Image)}",
-                                           AddedBy = a.AddedBy,
-                                           AddedDate = a.AddedDate,
-                                           ModifiedDate = a.ModifiedDate,
-                                           Units = a.Units.Where(x => x.IsDeleted != true).Select(u => new UnitDTO
-                                           {
-                                               UnitId = u.UnitId,
-                                               AssetId = u.AssetId,
-                                               UnitName = u.UnitName,
-                                               Bath = u.Bath,
-                                               Beds = u.Beds,
-                                               Rent = u.Rent,
-                                               Size = u.Size,
-                                           }).ToList(),
-                                           OwnerData = new OwnerDto{
-                                               OwnerId = o.OwnerId,
-                                               FirstName = o.FirstName,
-                                               MiddleName = o.MiddleName,
-                                               LastName = o.LastName,
-                                               Fax = o.Fax,
-                                               TaxId = o.TaxId,
-                                               EmailAddress = o.EmailAddress,
-                                               EmailAddress2 = o.EmailAddress2,
-                                               PictureName = o.Picture,
-                                               Picture = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Owner_Picture_" + o.OwnerId + Path.GetExtension(o.Picture)}",
-                                               PhoneNumber = o.PhoneNumber,
-                                               PhoneNumber2 = o.PhoneNumber2,
-                                               EmergencyContactInfo = o.EmergencyContactInfo,
-                                               LeaseAgreementId = o.LeaseAgreementId,
-                                               OwnerNationality = o.OwnerNationality,
-                                               Gender = o.Gender,
-                                               DocumentName = o.Document,
-                                               Document = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Owner_Document_" + o.OwnerId + Path.GetExtension(o.Document)}",
-                                               DOB = o.DOB,
-                                               VAT = o.VAT,
-                                               LegalName = o.LegalName,
-                                               Account_Name = o.Account_Name,
-                                               Account_Holder = o.Account_Holder,
-                                               Account_IBAN = o.Account_IBAN,
-                                               Account_Swift = o.Account_Swift,
-                                               Account_Bank = o.Account_Bank,
-                                               Account_Currency = o.Account_Currency,
-                                               AddedBy = o.AddedBy,
-                                               AddedDate = o.AddedDate,
-                                               ModifiedDate = o.ModifiedDate
-                                           }
-                                       }).AsNoTracking()
+                                           UnitId = u.UnitId,
+                                           AssetId = u.AssetId,
+                                           UnitName = u.UnitName,
+                                           Bath = u.Bath,
+                                           Beds = u.Beds,
+                                           Rent = u.Rent,
+                                           Size = u.Size,
+                                       }).ToList(),
+                                       OwnerData = new OwnerDto
+                                       {
+                                           OwnerId = o.OwnerId,
+                                           FirstName = o.FirstName,
+                                           MiddleName = o.MiddleName,
+                                           LastName = o.LastName,
+                                           Fax = o.Fax,
+                                           TaxId = o.TaxId,
+                                           EmailAddress = o.EmailAddress,
+                                           EmailAddress2 = o.EmailAddress2,
+                                           PictureName = o.Picture,
+                                           Picture = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Owner_Picture_" + o.OwnerId + Path.GetExtension(o.Picture)}",
+                                           PhoneNumber = o.PhoneNumber,
+                                           PhoneNumber2 = o.PhoneNumber2,
+                                           EmergencyContactInfo = o.EmergencyContactInfo,
+                                           LeaseAgreementId = o.LeaseAgreementId,
+                                           OwnerNationality = o.OwnerNationality,
+                                           Gender = o.Gender,
+                                           DocumentName = o.Document,
+                                           Document = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Owner_Document_" + o.OwnerId + Path.GetExtension(o.Document)}",
+                                           DOB = o.DOB,
+                                           VAT = o.VAT,
+                                           LegalName = o.LegalName,
+                                           Account_Name = o.Account_Name,
+                                           Account_Holder = o.Account_Holder,
+                                           Account_IBAN = o.Account_IBAN,
+                                           Account_Swift = o.Account_Swift,
+                                           Account_Bank = o.Account_Bank,
+                                           Account_Currency = o.Account_Currency,
+                                           AddedBy = o.AddedBy,
+                                           AddedDate = o.AddedDate,
+                                           ModifiedDate = o.ModifiedDate
+                                       }
+                                   }).AsNoTracking()
                                         .FirstOrDefaultAsync();
 
                 return asset;
@@ -2890,7 +3155,7 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
-        
+
         public async Task<List<AssetDTO>> GetAssetsDllAsync(Filter filter)
         {
             try
@@ -2921,7 +3186,7 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
-       
+
         public async Task<List<AssetUnitDTO>> GetAllUnitsAsync()
         {
             try
@@ -2952,8 +3217,8 @@ namespace MagicVilla_VillaAPI.Repository
                 Console.WriteLine($"An error occurred while mapping units: {ex.Message}");
                 throw;
             }
-        }       
-        
+        }
+
         public async Task<List<AssetUnitDTO>> GetUnitsDllAsync(Filter filter)
         {
             try
@@ -2961,11 +3226,11 @@ namespace MagicVilla_VillaAPI.Repository
                 var units = await (from au in _db.AssetsUnits
                                    where au.IsDeleted != true
                                    select new AssetUnitDTO
-                                 {
-                                     UnitId = au.UnitId,
-                                     UnitName = au.UnitName,
-                                     AssetId = au.AssetId,
-                                 }).AsNoTracking().ToListAsync();
+                                   {
+                                       UnitId = au.UnitId,
+                                       UnitName = au.UnitName,
+                                       AssetId = au.AssetId,
+                                   }).AsNoTracking().ToListAsync();
 
                 if (filter.AssetIds.Count() > 0)
                 {
@@ -2980,7 +3245,7 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
-       
+
         public async Task<List<AssetUnitDTO>> GetUnitsByUserAsync(Filter filter)
         {
             try
@@ -3003,7 +3268,7 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
-       
+
         public async Task<List<UnitDTO>> GetUnitsDetailAsync(int assetId)
         {
             try
@@ -3034,7 +3299,7 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
-        
+
         public async Task<bool> CreateAssetAsync(AssetDTO assetDTO)
         {
             var user = await _db.ApplicationUsers.FirstOrDefaultAsync(x => x.Id == assetDTO.AddedBy && x.IsDeleted != true);
@@ -3075,10 +3340,10 @@ namespace MagicVilla_VillaAPI.Repository
                         District = user.District,
                         Region = user.Region,
                         Country = user.Country,
-                        PostalCode= user.PostalCode,
+                        PostalCode = user.PostalCode,
                         AppTenantId = Guid.Parse(assetDTO.AppTid),
                         Picture = tenantOrganization.OrganizationLogo,
-                        AddedDate= DateTime.Now,
+                        AddedDate = DateTime.Now,
                         AddedBy = assetDTO.AddedBy
 
                     };
@@ -3149,7 +3414,7 @@ namespace MagicVilla_VillaAPI.Repository
 
             return result > 0;
         }
-        
+
         public async Task<bool> UpdateAssetAsync(AssetDTO assetDTO)
         {
 
@@ -3265,7 +3530,7 @@ namespace MagicVilla_VillaAPI.Repository
 
             // Remove units that are no longer in the DTO
             var unitsToRemove = existingUnits.Where(u => !incomingUnitIds.Contains(u.UnitId) && u.IsDeleted != true).ToList();
-            
+
             if (unitsToRemove.Any())
             {
                 unitsToRemove.ForEach(x => x.IsDeleted = true);
@@ -3280,26 +3545,92 @@ namespace MagicVilla_VillaAPI.Repository
 
             return result > 0;
         }
-       
-        public async Task<bool> DeleteAssetAsync(int assetId)
+
+        public async Task<APIResponse> DeleteAssetAsync(int assetId)
         {
-            var asset = await _db.Assets.FindAsync(assetId);
-            if (asset == null)
+            var response = new APIResponse();
+
+            try
             {
-                return false;
+                var isTaskRefrence = await _db.TaskRequest.AnyAsync(x => x.AssetId == assetId && x.IsDeleted != true);
+                if (isTaskRefrence)
+                {
+                    response.StatusCode = HttpStatusCode.InternalServerError;
+                    response.IsSuccess = false;
+                    response.ErrorMessages.Add("This Asset has refrence in TaskRequest.");
+                    return response;
+                }
+
+                var isLeaseRefrence = await _db.Lease.AnyAsync(x => x.AssetId == assetId && x.IsDeleted != true);
+                if (isLeaseRefrence)
+                {
+                    response.StatusCode = HttpStatusCode.InternalServerError;
+                    response.IsSuccess = false;
+                    response.ErrorMessages.Add("This Asset has refrence in Lease.");
+                    return response;
+                }
+
+                var isBudgetRefrence = await _db.Budgets.AnyAsync(x => x.PropertyId == assetId && x.IsDeleted != true);
+                if (isBudgetRefrence)
+                {
+                    response.StatusCode = HttpStatusCode.InternalServerError;
+                    response.IsSuccess = false;
+                    response.ErrorMessages.Add("This Asset has refrence in Lease.");
+                    return response;
+                }
+
+                //var isCommunicationRefrence = await _db.Communication.AnyAsync(x => x.PropertyIds == assetId && x.IsDeleted != true);
+                //if (isCommunicationRefrence)
+                //{
+                //    response.StatusCode = HttpStatusCode.InternalServerError;
+                //    response.IsSuccess = false;
+                //    response.ErrorMessages.Add("This Asset has refrence in Lease.");
+                //    return response;
+                //}
+
+                var isDocumentsRefrence = await _db.Documents.AnyAsync(x => x.AssetId == assetId && x.IsDeleted != true);
+                if (isDocumentsRefrence)
+                {
+                    response.StatusCode = HttpStatusCode.InternalServerError;
+                    response.IsSuccess = false;
+                    response.ErrorMessages.Add("This Asset has refrence in Documents.");
+                    return response;
+                }
+
+                var asset = await _db.Assets.FindAsync(assetId);
+                if (asset == null)
+                {
+                    response.StatusCode = HttpStatusCode.NotFound;
+                    response.IsSuccess = false;
+                    response.ErrorMessages.Add("Asset not found.");
+                    return response;
+                }
+
+                asset.IsDeleted = true;
+                _db.Assets.Update(asset);
+
+                await _db.SaveChangesAsync();
+
+                response.StatusCode = HttpStatusCode.OK;
+                response.Result = "Asset deleted successfully.";
+                
             }
-            asset.IsDeleted = true;
-            _db.Assets.Update(asset);
+            catch (Exception ex)
+            {
+                response.StatusCode = HttpStatusCode.InternalServerError;
+                response.IsSuccess = false;
+                response.ErrorMessages.Add(ex.Message);
+                throw new Exception(string.Join(", ", response.ErrorMessages));
+            }
 
-            var result = await _db.SaveChangesAsync();
-
-            return result > 0;
+            return response;
         }
+
 
         #endregion
 
         #region Communication
-       
+
         public async Task<List<CommunicationDto>> GetAllCommunicationAsync()
         {
             try
@@ -3338,7 +3669,7 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
-       
+
         public async Task<bool> CreateCommunicationAsync(CommunicationDto communication)
         {
             var CommunicationData = new Communication
@@ -3366,7 +3697,7 @@ namespace MagicVilla_VillaAPI.Repository
 
             return result > 0;
         }
-        
+
         public async Task<bool> UpdateCommunicationAsync(CommunicationDto communication)
         {
 
@@ -3396,7 +3727,7 @@ namespace MagicVilla_VillaAPI.Repository
 
             return result > 0;
         }
-       
+
         public async Task<bool> DeleteCommunicationAsync(int communicationId)
         {
             var communication = await _db.Communication.FindAsync(communicationId);
@@ -3474,7 +3805,7 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
-       
+
         public async Task<List<OwnerDto>> GetAllLandlordDllAsync(Filter filter)
         {
             try
@@ -3520,7 +3851,7 @@ namespace MagicVilla_VillaAPI.Repository
                 TenantId = subscription.TenantId
             }).ToListAsync();
         }
-        
+
         public async Task<SubscriptionDto> GetSubscriptionByIdAsync(int Id)
         {
             var subscription = await _db.Subscriptions.FindAsync(Id);
@@ -3539,7 +3870,7 @@ namespace MagicVilla_VillaAPI.Repository
                 TenantId = subscription.TenantId
             };
         }
-        
+
         public async Task<bool> CreateSubscriptionAsync(SubscriptionDto subscriptionDto)
         {
             var subscription = new Subscription
@@ -3559,7 +3890,7 @@ namespace MagicVilla_VillaAPI.Repository
             var result = await _db.SaveChangesAsync();
             return result > 0;
         }
-        
+
         public async Task<bool> UpdateSubscriptionAsync(SubscriptionDto subscriptionDto)
         {
             var subscription = await _db.Subscriptions.FindAsync(subscriptionDto.Id);
@@ -3580,7 +3911,7 @@ namespace MagicVilla_VillaAPI.Repository
             var result = await _db.SaveChangesAsync();
             return result > 0;
         }
-        
+
         public async Task<bool> DeleteSubscriptionAsync(int Id)
         {
             var subscription = await _db.Subscriptions.FindAsync(Id);
@@ -3622,8 +3953,8 @@ namespace MagicVilla_VillaAPI.Repository
                 Console.WriteLine($"An error occurred while mapping task history: {ex.Message}");
                 throw;
             }
-        }      
-        
+        }
+
         public async Task<List<TaskRequestDto>> GetMaintenanceTasksAsync()
         {
             try
@@ -3634,7 +3965,7 @@ namespace MagicVilla_VillaAPI.Repository
                                     from o in _db.Owner.Where(x => x.OwnerId == t.OwnerId && x.IsDeleted != true).DefaultIfEmpty()
                                     from tnt in _db.Tenant.Where(x => x.TenantId == t.TenantId && x.IsDeleted != true).DefaultIfEmpty()
                                         //from l in _db.LineItem.Where(x=>x.TaskRequestId == t.TaskRequestId).DefaultIfEmpty()
-                                    where t.Status != TaskStatusTypes.NotStarted.ToString() && t.IsDeleted != true 
+                                    where t.Status != TaskStatusTypes.NotStarted.ToString() && t.IsDeleted != true
                                     select new TaskRequestDto
                                     {
                                         TaskRequestId = t.TaskRequestId,
@@ -3695,7 +4026,7 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
-        
+
         public async Task<List<TaskRequestDto>> GetAllTaskRequestsAsync()
         {
             try
@@ -3770,26 +4101,26 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
-        
+
         public async Task<List<LineItemDto>> GetAllLineItemsAsync()
         {
             try
             {
                 var result = await (from item in _db.LineItem
-                                   from ca in _db.ChartAccount.Where(x => x.ChartAccountId == item.ChartAccountId && x.IsDeleted != true).DefaultIfEmpty()
-                                   where item.IsDeleted != true
-                                   select new LineItemDto
-                                   {
-                                       LineItemId = item.LineItemId,
-                                       TaskRequestId = item.TaskRequestId,
-                                       Quantity = item.Quantity,
-                                       Price = item.Price,
-                                       ChartAccountId = item.ChartAccountId,
-                                       AccountName = ca.Name,
-                                       Memo = item.Memo,
-                                       AddedDate = item.AddedDate,
-                                       AddedBy = item.AddedBy
-                                   })
+                                    from ca in _db.ChartAccount.Where(x => x.ChartAccountId == item.ChartAccountId && x.IsDeleted != true).DefaultIfEmpty()
+                                    where item.IsDeleted != true
+                                    select new LineItemDto
+                                    {
+                                        LineItemId = item.LineItemId,
+                                        TaskRequestId = item.TaskRequestId,
+                                        Quantity = item.Quantity,
+                                        Price = item.Price,
+                                        ChartAccountId = item.ChartAccountId,
+                                        AccountName = ca.Name,
+                                        Memo = item.Memo,
+                                        AddedDate = item.AddedDate,
+                                        AddedBy = item.AddedBy
+                                    })
                      .AsNoTracking()
                      .ToListAsync();
 
@@ -3801,7 +4132,7 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
-        
+
         public async Task<List<TaskRequestDto>> GetTaskRequestsAsync()
         {
             try
@@ -3875,7 +4206,7 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
-        
+
         public async Task<TaskRequestDto> GetTaskByIdAsync(int id)
         {
             try
@@ -3948,7 +4279,7 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
-       
+
         public async Task<bool> SaveTaskAsync(TaskRequestDto taskRequestDto)
         {
             try
@@ -4090,7 +4421,7 @@ namespace MagicVilla_VillaAPI.Repository
             }
 
         }
-       
+
         public async Task<bool> DeleteTaskAsync(int id)
         {
             var task = await _db.TaskRequest.FindAsync(id);
@@ -4108,7 +4439,7 @@ namespace MagicVilla_VillaAPI.Repository
 
             return saveResult > 0 || lineItemSaveResult > 0;
         }
-       
+
         public async Task<bool> SaveTaskHistoryAsync(TaskRequestHistoryDto taskRequestHistoryDto)
         {
             var taskRequest = await _db.TaskRequest.FirstOrDefaultAsync(x => x.TaskRequestId == taskRequestHistoryDto.TaskRequestId && x.IsDeleted != true);
@@ -4131,7 +4462,7 @@ namespace MagicVilla_VillaAPI.Repository
                     {
                         taskRequest.DocumentFile = taskRequestHistoryDto.DocumentFile.FileName;
                     }
-                    
+
                 }
 
                 _db.TaskRequest.Update(taskRequest);
@@ -4148,7 +4479,7 @@ namespace MagicVilla_VillaAPI.Repository
             taskRequestHistory.TaskRequestId = taskRequestHistoryDto.TaskRequestId;
             taskRequestHistory.Date = DateTime.Now;
             taskRequestHistory.Status = taskRequestHistoryDto.Status;
-            
+
             taskRequestHistory.Remarks = taskRequestHistoryDto.Remarks;
 
             if (taskRequestHistoryDto.TaskRequestHistoryId > 0)
@@ -4178,7 +4509,7 @@ namespace MagicVilla_VillaAPI.Repository
         #endregion
 
         #region LandloadGetData
-       
+
         public async Task<LandlordDataDto> GetLandlordDataById(int ownerId)
         {
             try
@@ -4263,7 +4594,7 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
-       
+
         private async Task<List<AssetDTO>> GetAssetsByOwnerId(int ownerId)
         {
             return await _db.Assets
@@ -4303,7 +4634,7 @@ namespace MagicVilla_VillaAPI.Repository
                 })
                 .ToListAsync();
         }
-        
+
         private async Task<List<LeaseDto>> GetLeasesByOwnerId(int ownerId)
         {
             return await (from asset in _db.Assets
@@ -4332,13 +4663,28 @@ namespace MagicVilla_VillaAPI.Repository
                                   RentDate = rc.RentDate,
                                   RentPeriod = rc.RentPeriod
                               }).ToList() : new List<RentChargeDto>(),
-                              FeeCharges = lease != null ? lease.FeeCharge.Where(x => x.IsDeleted != true).Select(fc => new FeeChargeDto
+                              FeeCharge = lease != null ? lease.FeeCharge.Where(x => x.IsDeleted != true).Select(fc => new FeeChargeDto
                               {
                                   FeeChargeId = fc.FeeChargeId,
+                                  ChargeLatefeeActive = fc.ChargeLatefeeActive,
+                                  UsePropertyDefaultStructure = fc.UsePropertyDefaultStructure,
+                                  SpecifyLateFeeStructure = fc.SpecifyLateFeeStructure,
+                                  DueDays = fc.DueDays,
+                                  Frequency = fc.Frequency,
+                                  CalculateFee = fc.CalculateFee,
                                   Amount = fc.Amount,
+                                  ChartAccountId = fc.ChartAccountId,
                                   Description = fc.Description,
+                                  IsSendARemainder = fc.IsSendARemainder,
+                                  IsNotifyTenants = fc.IsNotifyTenants,
+                                  IsEnableSms = fc.IsEnableSms,
+                                  IsChargeLateFee = fc.IsChargeLateFee,
+                                  IsMonthlyLimit = fc.IsMonthlyLimit,
+                                  IsDailyLimit = fc.IsDailyLimit,
+                                  IsMinimumBalance = fc.IsMinimumBalance,
+                                  IsChargeLateFeeonSpecific = fc.IsChargeLateFeeonSpecific,
                                   FeeDate = fc.FeeDate
-                              }).ToList() : new List<FeeChargeDto>(),
+                              }).FirstOrDefault() : new FeeChargeDto(),
                               SecurityDeposits = lease != null ? lease.SecurityDeposit.Where(x => x.IsDeleted != true).Select(sd => new SecurityDepositDto
                               {
                                   SecurityDepositId = sd.SecurityDepositId,
@@ -4387,7 +4733,7 @@ namespace MagicVilla_VillaAPI.Repository
                                       PictureName = p.Picture,
                                       Picture = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Pets_Picture_" + p.PetId + Path.GetExtension(p.Picture)}"
                                   }).ToList(),
-                                  Vehicles = lease.Tenants.Vehicle.Where(x=>x.IsDeleted != true).Select(v => new VehicleDto
+                                  Vehicles = lease.Tenants.Vehicle.Where(x => x.IsDeleted != true).Select(v => new VehicleDto
                                   {
                                       VehicleId = v.VehicleId,
                                       Manufacturer = v.Manufacturer,
@@ -4424,7 +4770,7 @@ namespace MagicVilla_VillaAPI.Repository
                               } : null
                           }).ToListAsync();
         }
-       
+
         private async Task<List<InvoiceDto>> GetInvoicesByOwnerId(int ownerId)
         {
             return await (from asset in _db.Assets
@@ -4449,7 +4795,7 @@ namespace MagicVilla_VillaAPI.Repository
                               AddedBy = invoice != null ? invoice.AddedBy : string.Empty
                           }).ToListAsync();
         }
-        
+
         private async Task<List<TaskRequestDto>> GetTaskRequestsByOwnerId(int ownerId)
         {
             return await (from asset in _db.Assets
@@ -4645,17 +4991,33 @@ namespace MagicVilla_VillaAPI.Repository
                             RentDate = rc.RentDate,
                             RentPeriod = rc.RentPeriod
                         }).ToList(),
-                        FeeCharges = l.FeeCharge.Where(x => x.IsDeleted != true).Select(fc => new FeeChargeDto
+                        FeeCharge = l.FeeCharge.Where(x => x.IsDeleted != true).Select(fc => new FeeChargeDto
                         {
                             FeeChargeId = fc.FeeChargeId,
+                            ChargeLatefeeActive = fc.ChargeLatefeeActive,
+                            UsePropertyDefaultStructure = fc.UsePropertyDefaultStructure,
+                            SpecifyLateFeeStructure = fc.SpecifyLateFeeStructure,
+                            DueDays = fc.DueDays,
+                            Frequency = fc.Frequency,
+                            CalculateFee = fc.CalculateFee,
                             Amount = fc.Amount,
+                            ChartAccountId = fc.ChartAccountId,
                             Description = fc.Description,
+                            IsSendARemainder = fc.IsSendARemainder,
+                            IsNotifyTenants = fc.IsNotifyTenants,
+                            IsEnableSms = fc.IsEnableSms,
+                            IsChargeLateFee = fc.IsChargeLateFee,
+                            IsMonthlyLimit = fc.IsMonthlyLimit,
+                            IsDailyLimit = fc.IsDailyLimit,
+                            IsMinimumBalance = fc.IsMinimumBalance,
+                            IsChargeLateFeeonSpecific = fc.IsChargeLateFeeonSpecific,
                             FeeDate = fc.FeeDate
-                        }).ToList()
+                        }).FirstOrDefault()
+
                     })
                     .ToListAsync();
 
-                tenant.Invoices = await (from lease in _db.Lease
+                    tenant.Invoices = await (from lease in _db.Lease
                                          from invoice in _db.Invoices.Where(x => x.LeaseId == lease.LeaseId && x.IsDeleted != true).DefaultIfEmpty()
                                          from t in _db.Tenant.Where(x => x.TenantId == invoice.TenantId && x.IsDeleted != true).DefaultIfEmpty()
                                          from o in _db.Owner.Where(x => x.OwnerId == invoice.OwnerId && x.IsDeleted != true).DefaultIfEmpty()
@@ -4864,7 +5226,7 @@ namespace MagicVilla_VillaAPI.Repository
                 {
                     moveOutLeasesQuery = _db.Lease
                         .Where(x => !x.IsDeleted && x.AddedBy == filter.UserId)
-                        .SelectMany(lease => _db.Tenant.Where(t => t.TenantId == lease.TenantsTenantId  && t.AddedBy == filter.UserId && t.IsDeleted != true).DefaultIfEmpty(), (lease, tenant) => new
+                        .SelectMany(lease => _db.Tenant.Where(t => t.TenantId == lease.TenantsTenantId && t.AddedBy == filter.UserId && t.IsDeleted != true).DefaultIfEmpty(), (lease, tenant) => new
                         {
                             Tenant = tenant,
                             Lease = lease
@@ -4895,7 +5257,7 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
-       
+
         public async Task<List<OccupancyOverviewEvents>> GetOccupancyOverviewEventsAsync(CalendarFilterModel filter)
         {
             try
@@ -4904,20 +5266,20 @@ namespace MagicVilla_VillaAPI.Repository
 
                 var query = _db.Lease.AsQueryable();
 
-                if (filter.TenantFilter != null  && filter.TenantFilter.Any())
+                if (filter.TenantFilter != null && filter.TenantFilter.Any())
                 {
                     var tenantIds = filter.TenantFilter.Select(id => int.Parse(id)).ToList();
-                    query = query.Where(x => tenantIds.Contains(x.TenantsTenantId) && x.AddedBy == filter.UserId && x.IsDeleted !=true);
+                    query = query.Where(x => tenantIds.Contains(x.TenantsTenantId) && x.AddedBy == filter.UserId && x.IsDeleted != true);
                 }
 
                 if (filter.StartDateFilter.HasValue)
                 {
-                    query = query.Where(x => x.StartDate >= filter.StartDateFilter.Value && x.AddedBy == filter.UserId && x.IsDeleted != true); 
+                    query = query.Where(x => x.StartDate >= filter.StartDateFilter.Value && x.AddedBy == filter.UserId && x.IsDeleted != true);
                 }
 
                 if (filter.EndDateFilter.HasValue)
                 {
-                    query = query.Where(x => x.EndDate <= filter.EndDateFilter.Value && x.AddedBy == filter.UserId && x.IsDeleted != true); 
+                    query = query.Where(x => x.EndDate <= filter.EndDateFilter.Value && x.AddedBy == filter.UserId && x.IsDeleted != true);
                 }
 
                 var leases = await query.Select(x => new OccupancyOverviewEvents
@@ -4937,24 +5299,24 @@ namespace MagicVilla_VillaAPI.Repository
                 Console.WriteLine($"An error occurred while mapping occupancy calendar: {ex.Message}");
                 throw;
             }
-        }       
-       
+        }
+
         public async Task<LeaseDataDto> GetLeaseDataByIdAsync(int id)
         {
             try
             {
                 var lease = (from l in _db.Lease
-                            from t in _db.Tenant.Where(x => x.TenantId == l.TenantsTenantId && x.IsDeleted != true).DefaultIfEmpty()
-                            where l.LeaseId == id && l.IsDeleted != true
-                            select new LeaseDataDto
-                            {
-                                Id = l.LeaseId,
-                                Asset = l.SelectedProperty,
-                                AssetUnit = l.SelectedUnit,
-                                Tenant = t.FirstName + " " + t.LastName,
-                                StartDate = l.StartDate,
-                                EndDate = l.EndDate
-                            }).FirstOrDefault();
+                             from t in _db.Tenant.Where(x => x.TenantId == l.TenantsTenantId && x.IsDeleted != true).DefaultIfEmpty()
+                             where l.LeaseId == id && l.IsDeleted != true
+                             select new LeaseDataDto
+                             {
+                                 Id = l.LeaseId,
+                                 Asset = l.SelectedProperty,
+                                 AssetUnit = l.SelectedUnit,
+                                 Tenant = t.FirstName + " " + t.LastName,
+                                 StartDate = l.StartDate,
+                                 EndDate = l.EndDate
+                             }).FirstOrDefault();
 
                 return lease;
             }
@@ -4994,7 +5356,7 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
-       
+
         public async Task<List<VendorCategory>> GetVendorCategoriesDllAsync(Filter filter)
         {
             try
@@ -5019,7 +5381,7 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
-        
+
         public async Task<VendorCategory> GetVendorCategoryByIdAsync(int id)
         {
             try
@@ -5045,7 +5407,7 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
-        
+
         public async Task<bool> SaveVendorCategoryAsync(VendorCategory model)
         {
             var vendorCategory = _db.VendorCategory.FirstOrDefault(x => x.VendorCategoryId == model.VendorCategoryId && x.IsDeleted != true);
@@ -5071,11 +5433,11 @@ namespace MagicVilla_VillaAPI.Repository
 
             var result = await _db.SaveChangesAsync();
 
-           
+
             return result > 0;
 
         }
-       
+
         public async Task<bool> DeleteVendorCategoryAsync(int id)
         {
             var vendorCategory = await _db.VendorCategory.FindAsync(id);
@@ -5116,7 +5478,7 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
-       
+
         public async Task<List<VendorClassification>> GetVendorClassificationsDllAsync(Filter filter)
         {
             try
@@ -5141,7 +5503,7 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
-       
+
         public async Task<VendorClassification> GetVendorClassificationByIdAsync(int id)
         {
             try
@@ -5167,7 +5529,7 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
-       
+
         public async Task<bool> SaveVendorClassificationAsync(VendorClassification model)
         {
             var vendorClassification = _db.VendorClassification.FirstOrDefault(x => x.VendorClassificationId == model.VendorClassificationId && x.IsDeleted != true);
@@ -5197,7 +5559,7 @@ namespace MagicVilla_VillaAPI.Repository
             return result > 0;
 
         }
-       
+
         public async Task<bool> DeleteVendorClassificationAsync(int id)
         {
             var vendorClassification = await _db.VendorClassification.FindAsync(id);
@@ -5219,7 +5581,7 @@ namespace MagicVilla_VillaAPI.Repository
             try
             {
                 var result = await (from v in _db.Vendor
-                                    from vo in _db.VendorOrganization.Where(x=>x.VendorId == v.VendorId && x.IsDeleted != true).DefaultIfEmpty()
+                                    from vo in _db.VendorOrganization.Where(x => x.VendorId == v.VendorId && x.IsDeleted != true).DefaultIfEmpty()
                                     where v.IsDeleted != true
                                     select new VendorDto
                                     {
@@ -5248,7 +5610,7 @@ namespace MagicVilla_VillaAPI.Repository
                                         AlterCity = v.AlterCity,
                                         AlterState = v.AlterState,
                                         AlterCountry = v.AlterCountry,
-                                        Classification = v.Classification,
+                                        VendorClassificationIds = v.VendorClassificationIds,
                                         VendorCategoriesIds = v.VendorCategoriesIds,
                                         HasInsurance = v.HasInsurance,
                                         InsuranceCompany = v.InsuranceCompany,
@@ -5282,7 +5644,7 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
-        
+
         public async Task<List<VendorDto>> GetVendorsDllAsync(Filter filter)
         {
             try
@@ -5308,7 +5670,7 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
-       
+
         public async Task<VendorDto> GetVendorByIdAsync(int id)
         {
             try
@@ -5343,7 +5705,7 @@ namespace MagicVilla_VillaAPI.Repository
                                         AlterCity = v.AlterCity,
                                         AlterState = v.AlterState,
                                         AlterCountry = v.AlterCountry,
-                                        Classification = v.Classification,
+                                        VendorClassificationIds = v.VendorClassificationIds,
                                         VendorCategoriesIds = v.VendorCategoriesIds,
                                         HasInsurance = v.HasInsurance,
                                         InsuranceCompany = v.InsuranceCompany,
@@ -5377,7 +5739,7 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
-        
+
         public async Task<bool> SaveVendorAsync(VendorDto model)
         {
             var vendor = _db.Vendor.FirstOrDefault(x => x.VendorId == model.VendorId && x.IsDeleted != true);
@@ -5412,7 +5774,7 @@ namespace MagicVilla_VillaAPI.Repository
             vendor.AlterCity = model.AlterCity;
             vendor.AlterState = model.AlterState;
             vendor.AlterCountry = model.AlterCountry;
-            vendor.Classification = model.Classification;
+            vendor.VendorClassificationIds = model.VendorClassificationIds;
             vendor.VendorCategoriesIds = model.VendorCategoriesIds;
             vendor.HasInsurance = model.HasInsurance;
             vendor.InsuranceCompany = model.HasInsurance == true ? model.InsuranceCompany : "";
@@ -5446,7 +5808,7 @@ namespace MagicVilla_VillaAPI.Repository
             if (vendorOrganization == null)
             {
                 vendorOrganization = new VendorOrganization();
-                
+
                 vendorOrganization.VendorId = vendor.VendorId;
                 vendorOrganization.OrganizationName = model.OrganizationName;
                 vendorOrganization.OrganizationDescription = model.OrganizationDescription;
@@ -5460,14 +5822,14 @@ namespace MagicVilla_VillaAPI.Repository
                 {
                     vendorOrganization.OrganizationLogo = model.OrganizationLogo.FileName;
                 }
-                vendorOrganization.Website = model.Website;                
+                vendorOrganization.Website = model.Website;
                 await _db.VendorOrganization.AddAsync(vendorOrganization);
             }
             else
             {
                 vendorOrganization.OrganizationName = model.OrganizationName;
                 vendorOrganization.OrganizationDescription = model.OrganizationDescription;
-                
+
                 if (model.OrganizationIcon != null)
                 {
                     vendorOrganization.OrganizationIcon = model.OrganizationIcon.FileName;
@@ -5505,25 +5867,58 @@ namespace MagicVilla_VillaAPI.Repository
             return result1 > 0 && result2 > 0;
 
         }
-       
-        public async Task<bool> DeleteVendorAsync(int id)
+
+        public async Task<APIResponse> DeleteVendorAsync(int id)
         {
-            var vendor = await _db.Vendor.FirstOrDefaultAsync(x=>x.VendorId == id && x.IsDeleted != true);
-            if (vendor == null) return false;
+            var response = new APIResponse();
 
-            vendor.IsDeleted = true;
-            _db.Vendor.Update(vendor);
-
-            var vendorOrginization = await _db.VendorOrganization.FirstOrDefaultAsync(x => x.VendorId == id && x.IsDeleted != true);
-            if (vendorOrginization != null)
+            try
             {
-                vendorOrginization.IsDeleted = true;
-                _db.VendorOrganization.Update(vendorOrginization);
-            }
-            var saveResult = await _db.SaveChangesAsync();
+                var isTaskRefrence = await _db.TaskRequest.AnyAsync(x => x.VendorId == id && x.IsDeleted != true);
+                if (isTaskRefrence)
+                {
+                    response.StatusCode = HttpStatusCode.InternalServerError;
+                    response.IsSuccess = false;
+                    response.ErrorMessages.Add("This Vendor has refrence in task request.");
+                    return response;
+                }
 
-            return saveResult > 0;
+                var vendor = await _db.Vendor.FirstOrDefaultAsync(x => x.VendorId == id && x.IsDeleted != true);
+                if (vendor == null)
+                {
+                    response.StatusCode = HttpStatusCode.NotFound;
+                    response.IsSuccess = false;
+                    response.ErrorMessages.Add("Vendor not found.");
+                    return response;
+                }
+
+                vendor.IsDeleted = true;
+                _db.Vendor.Update(vendor);
+
+                var vendorOrganization = await _db.VendorOrganization.FirstOrDefaultAsync(x => x.VendorId == id && x.IsDeleted != true);
+                if (vendorOrganization != null)
+                {
+                    vendorOrganization.IsDeleted = true;
+                    _db.VendorOrganization.Update(vendorOrganization);
+                }
+
+                 await _db.SaveChangesAsync();
+
+                 response.StatusCode = HttpStatusCode.OK;
+                 response.Result = "Vendor deleted successfully.";
+                
+            }
+            catch (Exception ex)
+            {
+                response.StatusCode = HttpStatusCode.InternalServerError;
+                response.IsSuccess = false;
+                response.ErrorMessages.Add(ex.Message);
+                throw new Exception(string.Join(", ", response.ErrorMessages));
+            }
+
+            return response;
         }
+
 
         #endregion
 
@@ -5534,7 +5929,7 @@ namespace MagicVilla_VillaAPI.Repository
             try
             {
                 var result = await (from a in _db.Applications
-                                    from p in _db.Assets.Where(x=>x.AssetId == a.PropertyId && x.IsDeleted != true).DefaultIfEmpty()
+                                    from p in _db.Assets.Where(x => x.AssetId == a.PropertyId && x.IsDeleted != true).DefaultIfEmpty()
                                     where a.IsDeleted != true
                                     select new ApplicationsDto
                                     {
@@ -5603,8 +5998,8 @@ namespace MagicVilla_VillaAPI.Repository
                                                Picture = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"ApplicationPets_Picture_" + x.PetId + Path.GetExtension(x.Picture)}",
                                                PictureName = x.Picture,
                                            }).ToList(),
-                                        Vehicles = _db.ApplicationVehicles.Where(x=>x.ApplicationId == a.ApplicationId && x.IsDeleted != true).ToList(),
-                                        Dependent = _db.ApplicationDependent.Where(x=>x.ApplicationId == a.ApplicationId && x.IsDeleted != true).ToList(),
+                                        Vehicles = _db.ApplicationVehicles.Where(x => x.ApplicationId == a.ApplicationId && x.IsDeleted != true).ToList(),
+                                        Dependent = _db.ApplicationDependent.Where(x => x.ApplicationId == a.ApplicationId && x.IsDeleted != true).ToList(),
                                         AddedBy = p.AddedBy,
                                         AddedDate = a.AddedDate
                                     })
@@ -5620,7 +6015,7 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
-       
+
         public async Task<ApplicationsDto> GetApplicationByIdAsync(int id)
         {
             try
@@ -5711,7 +6106,7 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
-       
+
         public async Task<bool> SaveApplicationAsync(ApplicationsDto model)
         {
             var application = _db.Applications.FirstOrDefault(x => x.ApplicationId == model.ApplicationId && x.IsDeleted != true);
@@ -5812,18 +6207,18 @@ namespace MagicVilla_VillaAPI.Repository
 
                     if (existingPet != null)
                     {
-                       existingPet.ApplicationId = application.ApplicationId;
-                       existingPet.Name = petDto.Name;
-                       existingPet.Breed = petDto.Breed;
-                       existingPet.Type = petDto.Type;
-                       existingPet.Quantity = petDto.Quantity;
-                       existingPet.Picture = petDto.Picture != null ? petDto.Picture : existingPet.Picture;
+                        existingPet.ApplicationId = application.ApplicationId;
+                        existingPet.Name = petDto.Name;
+                        existingPet.Breed = petDto.Breed;
+                        existingPet.Type = petDto.Type;
+                        existingPet.Quantity = petDto.Quantity;
+                        existingPet.Picture = petDto.Picture != null ? petDto.Picture : existingPet.Picture;
                         if (petDto.PictureName != null)
                         {
                             existingPet.Picture = petDto.PictureName;
                         }
                         existingPet.ModifiedBy = model.AddedBy;
-                       existingPet.ModifiedDate = DateTime.Now;
+                        existingPet.ModifiedDate = DateTime.Now;
                         _db.ApplicationPets.Update(existingPet);
                         if (petDto.Picture != null)
                         {
@@ -5848,7 +6243,7 @@ namespace MagicVilla_VillaAPI.Repository
                         {
                             newPet.Picture = petDto.PictureName;
                         }
-                        
+
                         _db.ApplicationPets.Add(newPet);
                         await _db.SaveChangesAsync();
 
@@ -5931,12 +6326,12 @@ namespace MagicVilla_VillaAPI.Repository
 
                     if (existingDependent != null)
                     {
-                       existingDependent.ApplicationId = application.ApplicationId;
-                       existingDependent.FirstName = dependentDto.FirstName;
-                       existingDependent.LastName = dependentDto.LastName;
-                       existingDependent.Email = dependentDto.Email;
-                       existingDependent.PhoneNumber = dependentDto.PhoneNumber;
-                       existingDependent.DOB = dependentDto.DOB;
+                        existingDependent.ApplicationId = application.ApplicationId;
+                        existingDependent.FirstName = dependentDto.FirstName;
+                        existingDependent.LastName = dependentDto.LastName;
+                        existingDependent.Email = dependentDto.Email;
+                        existingDependent.PhoneNumber = dependentDto.PhoneNumber;
+                        existingDependent.DOB = dependentDto.DOB;
                         existingDependent.Relation = dependentDto.Relation;
                         existingDependent.ModifiedBy = model.AddedBy;
                         existingDependent.ModifiedDate = DateTime.Now;
@@ -5964,10 +6359,10 @@ namespace MagicVilla_VillaAPI.Repository
 
             if (model.LicensePicture != null)
             {
-            
+
                 var ext = Path.GetExtension(model.LicensePictureName);
                 await _googleCloudStorageService.UploadImagebyBase64Async(model.LicensePicture, "Applications_LicensePicture_" + application.ApplicationId + ext);
-            
+
             }
             if (model.StubPicture != null)
             {
@@ -5979,7 +6374,7 @@ namespace MagicVilla_VillaAPI.Repository
             return result > 0;
 
         }
-        
+
         public async Task<bool> DeleteApplicationAsync(int id)
         {
             var application = await _db.Applications.FindAsync(id);
@@ -6006,8 +6401,8 @@ namespace MagicVilla_VillaAPI.Repository
             saveResult = await _db.SaveChangesAsync();
 
             return saveResult > 0;
-        }        
-        
+        }
+
         public async Task<string> GetTermsbyId(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
@@ -6043,8 +6438,8 @@ namespace MagicVilla_VillaAPI.Repository
                 Console.WriteLine($"An error occurred while mapping Account Types: {ex.Message}");
                 throw;
             }
-        }       
-        
+        }
+
         public async Task<List<AccountType>> GetAccountTypesDllAsync(Filter filter)
         {
             try
@@ -6068,7 +6463,7 @@ namespace MagicVilla_VillaAPI.Repository
                 Console.WriteLine($"An error occurred while mapping Account Types: {ex.Message}");
                 throw;
             }
-        }       
+        }
         public async Task<AccountType> GetAccountTypeByIdAsync(int id)
         {
             try
@@ -6093,8 +6488,8 @@ namespace MagicVilla_VillaAPI.Repository
                 Console.WriteLine($"An error occurred while mapping Account Type: {ex.Message}");
                 throw;
             }
-        }      
-       
+        }
+
         public async Task<bool> SaveAccountTypeAsync(AccountType model)
         {
             var accountType = _db.AccountType.FirstOrDefault(x => x.AccountTypeId == model.AccountTypeId && x.IsDeleted != true);
@@ -6123,19 +6518,60 @@ namespace MagicVilla_VillaAPI.Repository
 
             return result > 0;
 
-        }      
-       
-        public async Task<bool> DeleteAccountTypeAsync(int id)
-        {
-            var accountType = await _db.AccountType.FindAsync(id);
-            if (accountType == null) return false;
-
-            accountType.IsDeleted = true;
-            _db.AccountType.Update(accountType);
-            var saveResult = await _db.SaveChangesAsync();
-
-            return saveResult > 0;
         }
+
+        public async Task<APIResponse> DeleteAccountTypeAsync(int id)
+        {
+            var response = new APIResponse();
+
+            try
+            {
+                var isAccountSubTypeRefrence = await _db.AccountSubType.AnyAsync(x => x.AccountTypeId == id && x.IsDeleted != true);
+                if (isAccountSubTypeRefrence)
+                {
+                    response.StatusCode = HttpStatusCode.InternalServerError;
+                    response.IsSuccess = false;
+                    response.ErrorMessages.Add("This Account Type has refrence in Account Sub-Type.");
+                    return response;
+                }
+
+                var isChartAccountRefrence = await _db.ChartAccount.AnyAsync(x => x.AccountTypeId == id && x.IsDeleted != true);
+                if (isChartAccountRefrence)
+                {
+                    response.StatusCode = HttpStatusCode.InternalServerError;
+                    response.IsSuccess = false;
+                    response.ErrorMessages.Add("This Account Type has refrence in Chart Account.");
+                    return response;
+                }
+
+                var accountType = await _db.AccountType.FindAsync(id);
+                if (accountType == null)
+                {
+                    response.StatusCode = HttpStatusCode.NotFound;
+                    response.IsSuccess = false;
+                    response.ErrorMessages.Add("Account type not found.");
+                    return response;
+                }
+
+                accountType.IsDeleted = true;
+                _db.AccountType.Update(accountType);
+                await _db.SaveChangesAsync();
+
+                response.StatusCode = HttpStatusCode.OK;
+                response.Result = "Account type deleted successfully.";
+                
+            }
+            catch (Exception ex)
+            {
+                response.StatusCode = HttpStatusCode.InternalServerError;
+                response.IsSuccess = false;
+                response.ErrorMessages.Add(ex.Message);
+                throw new Exception(string.Join(", ", response.ErrorMessages));
+            }
+
+            return response;
+        }
+
 
         #endregion
 
@@ -6168,24 +6604,24 @@ namespace MagicVilla_VillaAPI.Repository
                 Console.WriteLine($"An error occurred while mapping Account Sub Types: {ex.Message}");
                 throw;
             }
-        }       
-        
+        }
+
         public async Task<List<AccountSubTypeDto>> GetAccountSubTypesDllAsync(Filter filter)
         {
             try
             {
                 var subAccounts = await (from ast in _db.AccountSubType
-                                    from at in _db.AccountType.Where(x => x.AccountTypeId == ast.AccountTypeId && x.IsDeleted != true).DefaultIfEmpty()
-                                    where ast.IsDeleted != true
-                                    select new AccountSubTypeDto
-                                    {
-                                        AccountSubTypeId = ast.AccountSubTypeId,
-                                        AccountTypeId = ast.AccountTypeId,
-                                        AccountType = at.Type,
-                                        Type = ast.Type,
-                                        Description = ast.Description,
-                                        AddedBy = ast.AddedBy,
-                                    })
+                                         from at in _db.AccountType.Where(x => x.AccountTypeId == ast.AccountTypeId && x.IsDeleted != true).DefaultIfEmpty()
+                                         where ast.IsDeleted != true
+                                         select new AccountSubTypeDto
+                                         {
+                                             AccountSubTypeId = ast.AccountSubTypeId,
+                                             AccountTypeId = ast.AccountTypeId,
+                                             AccountType = at.Type,
+                                             Type = ast.Type,
+                                             Description = ast.Description,
+                                             AddedBy = ast.AddedBy,
+                                         })
                      .AsNoTracking()
                      .ToListAsync();
 
@@ -6202,8 +6638,8 @@ namespace MagicVilla_VillaAPI.Repository
                 Console.WriteLine($"An error occurred while mapping Account Sub Types: {ex.Message}");
                 throw;
             }
-        }      
-        
+        }
+
         public async Task<AccountSubType> GetAccountSubTypeByIdAsync(int id)
         {
             try
@@ -6230,8 +6666,8 @@ namespace MagicVilla_VillaAPI.Repository
                 Console.WriteLine($"An error occurred while mapping Account Sub Type: {ex.Message}");
                 throw;
             }
-        }      
-       
+        }
+
         public async Task<bool> SaveAccountSubTypeAsync(AccountSubType model)
         {
             var accountSubType = _db.AccountSubType.FirstOrDefault(x => x.AccountSubTypeId == model.AccountSubTypeId && x.IsDeleted != true);
@@ -6262,19 +6698,51 @@ namespace MagicVilla_VillaAPI.Repository
 
             return result > 0;
 
-        }       
-        
-        public async Task<bool> DeleteAccountSubTypeAsync(int id)
-        {
-            var accountSubType = await _db.AccountSubType.FindAsync(id);
-            if (accountSubType == null) return false;
-
-            accountSubType.IsDeleted = true;
-            _db.AccountSubType.Update(accountSubType);
-            var saveResult = await _db.SaveChangesAsync();
-
-            return saveResult > 0;
         }
+
+        public async Task<APIResponse> DeleteAccountSubTypeAsync(int id)
+        {
+            var response = new APIResponse();
+
+            try
+            {
+                var isChartAccountRefrence = await _db.ChartAccount.AnyAsync(x => x.AccountSubTypeId == id && x.IsDeleted != true);
+                if (isChartAccountRefrence)
+                {
+                    response.StatusCode = HttpStatusCode.InternalServerError;
+                    response.IsSuccess = false;
+                    response.ErrorMessages.Add("This Account sub-type has refrence in Chart Account.");
+                    return response;
+                }
+
+                var accountSubType = await _db.AccountSubType.FindAsync(id);
+                if (accountSubType == null)
+                {
+                    response.StatusCode = HttpStatusCode.NotFound;
+                    response.IsSuccess = false;
+                    response.ErrorMessages.Add("Account sub-type not found.");
+                    return response;
+                }
+
+                accountSubType.IsDeleted = true;
+                _db.AccountSubType.Update(accountSubType);
+                await _db.SaveChangesAsync();
+
+                response.StatusCode = HttpStatusCode.OK;
+                response.Result = "Account sub-type deleted successfully.";
+                
+            }
+            catch (Exception ex)
+            {
+                response.StatusCode = HttpStatusCode.InternalServerError;
+                response.IsSuccess = false;
+                response.ErrorMessages.Add(ex.Message);
+                throw new Exception(string.Join(", ", response.ErrorMessages));
+            }
+
+            return response;
+        }
+
 
         #endregion
 
@@ -6304,14 +6772,14 @@ namespace MagicVilla_VillaAPI.Repository
                                         ParentAccount = ca.ParentAccountId != null ? _db.ChartAccount.FirstOrDefault(x => x.ChartAccountId == ca.ParentAccountId && x.IsDeleted != true).Name : "",
                                         AddedBy = ca.AddedBy,
                                         ChildAccountsDto = (from cca in _db.ChartAccount
-                                                           where cca.ParentAccountId == ca.ChartAccountId && cca.IsDeleted != true
-                                                           select new ChildAccountDto
-                                                           {
-                                                               ChartAccountId = cca.ChartAccountId,
-                                                               AccountTypeId = cca.AccountTypeId,
-                                                               Name = cca.Name,
-                                                               ParentAccountId = cca.ParentAccountId,
-                                                           }).ToList()
+                                                            where cca.ParentAccountId == ca.ChartAccountId && cca.IsDeleted != true
+                                                            select new ChildAccountDto
+                                                            {
+                                                                ChartAccountId = cca.ChartAccountId,
+                                                                AccountTypeId = cca.AccountTypeId,
+                                                                Name = cca.Name,
+                                                                ParentAccountId = cca.ParentAccountId,
+                                                            }).ToList()
                                     })
                     .AsNoTracking()
                     .ToListAsync();
@@ -6325,7 +6793,7 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
-        
+
         public async Task<List<ChartAccountDto>> GetChartAccountsDllAsync(Filter filter)
         {
             try
@@ -6353,7 +6821,7 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
-        
+
         public async Task<ChartAccount> GetChartAccountByIdAsync(int id)
         {
             try
@@ -6385,8 +6853,8 @@ namespace MagicVilla_VillaAPI.Repository
                 Console.WriteLine($"An error occurred while mapping Chart Account: {ex.Message}");
                 throw;
             }
-        }       
-        
+        }
+
         public async Task<bool> SaveChartAccountAsync(ChartAccount model)
         {
             var chartAccount = _db.ChartAccount.FirstOrDefault(x => x.ChartAccountId == model.ChartAccountId && x.IsDeleted != true);
@@ -6420,19 +6888,51 @@ namespace MagicVilla_VillaAPI.Repository
 
             return result > 0;
 
-        }       
-        
-        public async Task<bool> DeleteChartAccountAsync(int id)
-        {
-            var chartAccount = await _db.ChartAccount.FindAsync(id);
-            if (chartAccount == null) return false;
-
-            chartAccount.IsDeleted = true;
-            _db.ChartAccount.Update(chartAccount);
-            var saveResult = await _db.SaveChangesAsync();
-
-            return saveResult > 0;
         }
+
+        public async Task<APIResponse> DeleteChartAccountAsync(int id)
+        {
+            var response = new APIResponse();
+
+            try
+            {
+                var isLineItemRefrence = await _db.LineItem.AnyAsync(x => x.ChartAccountId == id && x.IsDeleted != true);
+                if (isLineItemRefrence)
+                {
+                    response.StatusCode = HttpStatusCode.InternalServerError;
+                    response.IsSuccess = false;
+                    response.ErrorMessages.Add("This ChartAccount has refrence in TaskRequest-LineItem.");
+                    return response;
+                }
+
+                var chartAccount = await _db.ChartAccount.FindAsync(id);
+                if (chartAccount == null)
+                {
+                    response.StatusCode = HttpStatusCode.NotFound;
+                    response.IsSuccess = false;
+                    response.ErrorMessages.Add("Chart account not found.");
+                    return response;
+                }
+
+                chartAccount.IsDeleted = true;
+                _db.ChartAccount.Update(chartAccount);
+                await _db.SaveChangesAsync();
+
+                response.StatusCode = HttpStatusCode.OK;
+                response.Result = "Chart account deleted successfully.";
+                
+            }
+            catch (Exception ex)
+            {
+                response.StatusCode = HttpStatusCode.InternalServerError;
+                response.IsSuccess = false;
+                response.ErrorMessages.Add(ex.Message);
+                throw new Exception(string.Join(", ", response.ErrorMessages));
+            }
+
+            return response;
+        }
+
 
         #endregion
 
@@ -6470,13 +6970,13 @@ namespace MagicVilla_VillaAPI.Repository
                 Console.WriteLine($"An error occurred while mapping Budget: {ex.Message}");
                 throw;
             }
-        }        
-        
+        }
+
         public async Task<Budget> GetBudgetByIdAsync(int id)
         {
             try
             {
-                var result = await _db.Budgets.Include(x=>x.Items).Where(x=>x.BudgetId == id && x.IsDeleted != true).FirstOrDefaultAsync();
+                var result = await _db.Budgets.Include(x => x.Items).Where(x => x.BudgetId == id && x.IsDeleted != true).FirstOrDefaultAsync();
 
                 return result;
             }
@@ -6485,17 +6985,17 @@ namespace MagicVilla_VillaAPI.Repository
                 Console.WriteLine($"An error occurred while mapping Budget: {ex.Message}");
                 throw;
             }
-        }        
-        
+        }
+
         public async Task<bool> SaveBudgetAsync(BudgetDto model)
         {
             var budget = new Budget();
 
             List<BudgetItem> li = new List<BudgetItem>();
             var budgetItems = JsonConvert.DeserializeObject<List<BudgetItemDto>>(model.ItemsJson);
-            foreach(var x in budgetItems) 
+            foreach (var x in budgetItems)
             {
-                if(x.Total != "Total" && x.AccountName != "AccountName")
+                if (x.Total != "Total" && x.AccountName != "AccountName")
                 {
                     BudgetItem item = new BudgetItem()
                     {
@@ -6504,31 +7004,31 @@ namespace MagicVilla_VillaAPI.Repository
                         Period = x.Period,
                         BudgetItemMonth = new BudgetItemMonth()
                         {
-                            Jan = x.BudgetItemMonth.Jan != null ? decimal.Parse(x.BudgetItemMonth.Jan.Replace(".",",")) : 0,
-                            Feb = x.BudgetItemMonth.Feb != null ? decimal.Parse(x.BudgetItemMonth.Feb.Replace(".",",")) : 0,
-                            March = x.BudgetItemMonth.March != null ? decimal.Parse(x.BudgetItemMonth.March.Replace(".",",")) : 0,
-                            April = x.BudgetItemMonth.April != null ? decimal.Parse(x.BudgetItemMonth.April.Replace(".",",")) : 0,
-                            May = x.BudgetItemMonth.May != null ? decimal.Parse(x.BudgetItemMonth.May.Replace(".",",")) : 0,
-                            June = x.BudgetItemMonth.June != null ? decimal.Parse(x.BudgetItemMonth.June.Replace(".",",")) : 0,
-                            July = x.BudgetItemMonth.July != null ? decimal.Parse(x.BudgetItemMonth.July.Replace(".",",")) : 0,
-                            Aug = x.BudgetItemMonth.Aug != null ? decimal.Parse(x.BudgetItemMonth.Aug.Replace(".",",")) : 0,
-                            Sep = x.BudgetItemMonth.Sep != null ? decimal.Parse(x.BudgetItemMonth.Sep.Replace(".",",")) : 0,
-                            Oct = x.BudgetItemMonth.Oct != null ? decimal.Parse(x.BudgetItemMonth.Oct.Replace(".",",")) : 0,
-                            Nov = x.BudgetItemMonth.Nov != null ? decimal.Parse(x.BudgetItemMonth.Nov.Replace(".",",")) : 0,
-                            Dec = x.BudgetItemMonth.Dec != null ? decimal.Parse(x.BudgetItemMonth.Dec.Replace(".",",")) : 0,
-                            quat1 = x.BudgetItemMonth.quat1 != null ? decimal.Parse(x.BudgetItemMonth.quat1.Replace(".",",")) : 0,
-                            quat2 = x.BudgetItemMonth.quat2 != null ? decimal.Parse(x.BudgetItemMonth.quat2.Replace(".",",")) : 0,
-                            quat4 = x.BudgetItemMonth.quat4 != null ? decimal.Parse(x.BudgetItemMonth.quat4.Replace(".",",")) : 0,
-                            quat5 = x.BudgetItemMonth.quat5 != null ? decimal.Parse(x.BudgetItemMonth.quat5.Replace(".",",")) : 0,
-                            YearStart = x.BudgetItemMonth.YearStart != null ? decimal.Parse(x.BudgetItemMonth.YearStart.Replace(".",",")) : 0,
-                            YearEnd = x.BudgetItemMonth.YearEnd != null ? decimal.Parse(x.BudgetItemMonth.YearEnd.Replace(".",",")) : 0,
+                            Jan = x.BudgetItemMonth.Jan != null ? decimal.Parse(x.BudgetItemMonth.Jan.Replace(".", ",")) : 0,
+                            Feb = x.BudgetItemMonth.Feb != null ? decimal.Parse(x.BudgetItemMonth.Feb.Replace(".", ",")) : 0,
+                            March = x.BudgetItemMonth.March != null ? decimal.Parse(x.BudgetItemMonth.March.Replace(".", ",")) : 0,
+                            April = x.BudgetItemMonth.April != null ? decimal.Parse(x.BudgetItemMonth.April.Replace(".", ",")) : 0,
+                            May = x.BudgetItemMonth.May != null ? decimal.Parse(x.BudgetItemMonth.May.Replace(".", ",")) : 0,
+                            June = x.BudgetItemMonth.June != null ? decimal.Parse(x.BudgetItemMonth.June.Replace(".", ",")) : 0,
+                            July = x.BudgetItemMonth.July != null ? decimal.Parse(x.BudgetItemMonth.July.Replace(".", ",")) : 0,
+                            Aug = x.BudgetItemMonth.Aug != null ? decimal.Parse(x.BudgetItemMonth.Aug.Replace(".", ",")) : 0,
+                            Sep = x.BudgetItemMonth.Sep != null ? decimal.Parse(x.BudgetItemMonth.Sep.Replace(".", ",")) : 0,
+                            Oct = x.BudgetItemMonth.Oct != null ? decimal.Parse(x.BudgetItemMonth.Oct.Replace(".", ",")) : 0,
+                            Nov = x.BudgetItemMonth.Nov != null ? decimal.Parse(x.BudgetItemMonth.Nov.Replace(".", ",")) : 0,
+                            Dec = x.BudgetItemMonth.Dec != null ? decimal.Parse(x.BudgetItemMonth.Dec.Replace(".", ",")) : 0,
+                            quat1 = x.BudgetItemMonth.quat1 != null ? decimal.Parse(x.BudgetItemMonth.quat1.Replace(".", ",")) : 0,
+                            quat2 = x.BudgetItemMonth.quat2 != null ? decimal.Parse(x.BudgetItemMonth.quat2.Replace(".", ",")) : 0,
+                            quat4 = x.BudgetItemMonth.quat4 != null ? decimal.Parse(x.BudgetItemMonth.quat4.Replace(".", ",")) : 0,
+                            quat5 = x.BudgetItemMonth.quat5 != null ? decimal.Parse(x.BudgetItemMonth.quat5.Replace(".", ",")) : 0,
+                            YearStart = x.BudgetItemMonth.YearStart != null ? decimal.Parse(x.BudgetItemMonth.YearStart.Replace(".", ",")) : 0,
+                            YearEnd = x.BudgetItemMonth.YearEnd != null ? decimal.Parse(x.BudgetItemMonth.YearEnd.Replace(".", ",")) : 0,
                             AddedBy = model.AddedBy,
                             AddedDate = DateTime.Now
 
 
-                }
+                        }
 
-            };
+                    };
                     li.Add(item);
                 }
             }
@@ -6552,7 +7052,7 @@ namespace MagicVilla_VillaAPI.Repository
             return result > 0;
 
         }
-        
+
         public async Task<bool> SaveDuplicateBudgetAsync(BudgetDto model)
         {
             var budget = new Budget();
@@ -6625,7 +7125,7 @@ namespace MagicVilla_VillaAPI.Repository
             }
 
         }
-        
+
         public async Task<bool> DeleteBudgetAsync(int id)
         {
             var budget = await _db.Budgets.FindAsync(id);
@@ -6701,7 +7201,7 @@ namespace MagicVilla_VillaAPI.Repository
                 if (reportFilter.PropertiesIds.Count() > 0 && reportFilter.PropertiesIds.Any())
                 {
                     leaseReportDtoList = leaseReportDtoList.Where(x => reportFilter.PropertiesIds.Contains(x.PropertyId)).ToList();
-                } 
+                }
                 if (reportFilter.UnitsIds.Count() > 0 && reportFilter.UnitsIds.Any())
                 {
                     leaseReportDtoList = leaseReportDtoList.Where(x => reportFilter.UnitsIds.Contains(x.UnitId)).ToList();
@@ -6725,7 +7225,7 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
-        
+
         public async Task<List<InvoiceReportDto>> GetInvoiceReportAsync(ReportFilter reportFilter)
         {
             try
@@ -6757,7 +7257,7 @@ namespace MagicVilla_VillaAPI.Repository
                                                 }).ToListAsync();
 
                 var invoiceReportDtoListWithCharges = (from i in invoiceReportDtoList
-                                                       from rc in invoiceRentCharges.Where(x=>x.LeaseId == i.LeaseId).DefaultIfEmpty()
+                                                       from rc in invoiceRentCharges.Where(x => x.LeaseId == i.LeaseId).DefaultIfEmpty()
                                                        select new InvoiceReportDto
                                                        {
                                                            Invoice = i.InvoiceId.ToString(),
@@ -6802,7 +7302,7 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
-       
+
         public async Task<List<TaskRequestReportDto>> GetTaskRequestReportAsync(ReportFilter reportFilter)
         {
             try
@@ -6821,7 +7321,7 @@ namespace MagicVilla_VillaAPI.Repository
                                                     Property = p != null ? p.BuildingNo + " - " + p.BuildingName : null,
                                                     UnitId = t.UnitId,
                                                     Unit = t.Unit.UnitName,
-                                                    Status = t.Status 
+                                                    Status = t.Status
                                                 }).ToListAsync();
 
                 // Apply filters
@@ -6908,8 +7408,8 @@ namespace MagicVilla_VillaAPI.Repository
                 Console.WriteLine($"An error occurred while mapping Document: {ex.Message}");
                 throw;
             }
-        }       
-       
+        }
+
         public async Task<DocumentsDto> GetDocumentByIdAsync(int id)
         {
             try
@@ -6950,8 +7450,8 @@ namespace MagicVilla_VillaAPI.Repository
                 Console.WriteLine($"An error occurred while mapping Document: {ex.Message}");
                 throw;
             }
-        }       
-        
+        }
+
         public async Task<bool> SaveDocumentAsync(DocumentsDto model)
         {
             var document = _db.Documents.FirstOrDefault(x => x.DocumentsId == model.DocumentsId && x.IsDeleted != true);
@@ -6995,8 +7495,8 @@ namespace MagicVilla_VillaAPI.Repository
             }
 
             return result > 0;
-        }        
-       
+        }
+
         public async Task<bool> DeleteDocumentAsync(int id)
         {
             var document = await _db.Documents.FindAsync(id);
@@ -7011,7 +7511,7 @@ namespace MagicVilla_VillaAPI.Repository
 
         #endregion
 
-        #region Settings
+        #region SupportCenter
 
         public async Task<List<FAQ>> GetFAQsAsync()
         {
@@ -7038,7 +7538,7 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
-        
+
         public async Task<List<VideoTutorial>> GetVideoTutorialsAsync()
         {
             try
@@ -7063,6 +7563,191 @@ namespace MagicVilla_VillaAPI.Repository
                 Console.WriteLine($"An error occurred while mapping Video Tutorial: {ex.Message}");
                 throw;
             }
+        }
+
+        #endregion
+
+        #region LateFee
+
+        //Task<LateFeeDto> GetLateFeeAsync(Filter filter);
+        //Task<LateFeeAssetDto> GetLateFeeByAssetAsync(int assetId);
+
+        public async Task<LateFeeDto> GetLateFeeAsync(Filter filter)
+        {
+            try
+            {
+                var result = await (from lf in _db.LateFees
+                                    where lf.AddedBy == filter.AddedBy && lf.IsDeleted != true
+                                    select new LateFeeDto
+                                    {
+                                        LateFeeId = lf.LateFeeId,
+                                        DueDays = lf.DueDays,
+                                        Frequency = lf.Frequency,
+                                        CalculateFee = lf.CalculateFee,
+                                        Amount = lf.Amount,
+                                        ChartAccountId = lf.ChartAccountId,
+                                        Description = lf.Description,
+                                        IsSendARemainder = lf.IsSendARemainder,
+                                        IsNotifyTenants = lf.IsNotifyTenants,
+                                        IsEnableSms = lf.IsEnableSms,
+                                        IsChargeLateFee = lf.IsChargeLateFee,
+                                        IsMonthlyLimit = lf.IsMonthlyLimit,
+                                        IsDailyLimit = lf.IsDailyLimit,
+                                        IsMinimumBalance = lf.IsMinimumBalance,
+                                        IsChargeLateFeeonSpecific = lf.IsChargeLateFeeonSpecific,
+                                        AddedBy = lf.AddedBy,
+                                    })
+                     .AsNoTracking()
+                     .FirstOrDefaultAsync();
+
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping Chart Account: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<LateFeeAssetDto> GetLateFeeByAssetAsync(int assetId)
+        {
+            try
+            {
+                var result = await (from lfa in _db.LateFeeAsset
+                                    where lfa.AssetId == assetId && lfa.IsDeleted != true
+                                    select new LateFeeAssetDto
+                                    {
+                                        LateFeeAssetId = lfa.LateFeeAssetId,
+                                        AssetId = lfa.AssetId,
+                                        CompanyDefaultStructure = lfa.CompanyDefaultStructure,
+                                        SpecifyLateFeeStructure = lfa.SpecifyLateFeeStructure,
+                                        DueDays = lfa.DueDays,
+                                        Frequency = lfa.Frequency,
+                                        CalculateFee = lfa.CalculateFee,
+                                        Amount = lfa.Amount,
+                                        ChartAccountId = lfa.ChartAccountId,
+                                        Description = lfa.Description,
+                                        IsSendARemainder = lfa.IsSendARemainder,
+                                        IsNotifyTenants = lfa.IsNotifyTenants,
+                                        IsEnableSms = lfa.IsEnableSms,
+                                        IsChargeLateFee = lfa.IsChargeLateFee,
+                                        IsMonthlyLimit = lfa.IsMonthlyLimit,
+                                        IsDailyLimit = lfa.IsDailyLimit,
+                                        IsMinimumBalance = lfa.IsMinimumBalance,
+                                        IsChargeLateFeeonSpecific = lfa.IsChargeLateFeeonSpecific,
+                                        AddedBy = lfa.AddedBy
+                                    })
+                     .AsNoTracking()
+                     .FirstOrDefaultAsync();
+
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping Chart Account: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<bool> SaveLateFeeAsync(LateFeeDto model)
+        {
+            var lateFee = _db.LateFees.FirstOrDefault(x => x.LateFeeId == model.LateFeeId && x.IsDeleted != true);
+
+            if (lateFee == null)
+                lateFee = new LateFee();
+
+            lateFee.LateFeeId = model.LateFeeId;
+            lateFee.DueDays = model.DueDays ;
+            lateFee.Frequency = model.Frequency ;
+            lateFee.CalculateFee = model.CalculateFee ;
+            lateFee.Amount = model.Amount ;
+            lateFee.ChartAccountId = model.ChartAccountId;
+            lateFee.Description = model.Description;
+            lateFee.IsSendARemainder = model.IsSendARemainder ;
+            lateFee.IsNotifyTenants = model.IsNotifyTenants ;
+            lateFee.IsEnableSms = model.IsEnableSms ;
+            lateFee.IsChargeLateFee = model.IsChargeLateFee ;
+            lateFee.IsMonthlyLimit = model.IsMonthlyLimit ;
+            lateFee.IsDailyLimit = model.IsDailyLimit ;
+            lateFee.IsMinimumBalance = model.IsMinimumBalance ;
+            lateFee.IsChargeLateFeeonSpecific = model.IsChargeLateFeeonSpecific ;
+            lateFee.AddedBy = model.AddedBy;
+
+            if (lateFee.LateFeeId > 0)
+            {
+                lateFee.ModifiedBy = model.AddedBy;
+                lateFee.ModifiedDate = DateTime.Now;
+                _db.LateFees.Update(lateFee);
+            }
+            else
+            {
+                lateFee.AddedBy = model.AddedBy;
+                lateFee.AddedDate = DateTime.Now;
+                _db.LateFees.Add(lateFee);
+            }
+
+            var result = await _db.SaveChangesAsync();
+
+
+            return result > 0;
+
+        }
+        
+        public async Task<bool> SaveLateFeeAssetAsync(LateFeeAssetDto model)
+        {
+            
+                var lateFeeAsset = _db.LateFeeAsset.FirstOrDefault(x => x.LateFeeAssetId == model.LateFeeAssetId && x.IsDeleted != true);
+
+                if (lateFeeAsset == null)
+                lateFeeAsset = new LateFeeAsset();
+            if (model.SpecifyLateFeeStructure == true)
+            {
+                lateFeeAsset.LateFeeAssetId = model.LateFeeAssetId;
+                lateFeeAsset.AssetId = model.AssetId;
+                lateFeeAsset.CompanyDefaultStructure = false;
+                lateFeeAsset.SpecifyLateFeeStructure = true;
+                lateFeeAsset.DueDays = model.DueDays;
+                lateFeeAsset.Frequency = model.Frequency;
+                lateFeeAsset.CalculateFee = model.CalculateFee;
+                lateFeeAsset.Amount = model.Amount;
+                lateFeeAsset.ChartAccountId = model.ChartAccountId;
+                lateFeeAsset.Description = model.Description;
+                lateFeeAsset.IsSendARemainder = model.IsSendARemainder;
+                lateFeeAsset.IsNotifyTenants = model.IsNotifyTenants;
+                lateFeeAsset.IsEnableSms = model.IsEnableSms;
+                lateFeeAsset.IsChargeLateFee = model.IsChargeLateFee;
+                lateFeeAsset.IsMonthlyLimit = model.IsMonthlyLimit;
+                lateFeeAsset.IsDailyLimit = model.IsDailyLimit;
+                lateFeeAsset.IsMinimumBalance = model.IsMinimumBalance;
+                lateFeeAsset.IsChargeLateFeeonSpecific = model.IsChargeLateFeeonSpecific;
+                lateFeeAsset.AddedBy = model.AddedBy;
+            }
+            else
+            {
+                model.CompanyDefaultStructure = true;
+                model.SpecifyLateFeeStructure = false;
+            }
+
+            if (lateFeeAsset.LateFeeAssetId > 0)
+            {
+                lateFeeAsset.ModifiedBy = model.AddedBy;
+                lateFeeAsset.ModifiedDate = DateTime.Now;
+                _db.LateFeeAsset.Update(lateFeeAsset);
+            }
+            else
+            {
+                lateFeeAsset.AddedBy = model.AddedBy;
+                lateFeeAsset.AddedDate = DateTime.Now;
+                _db.LateFeeAsset.Add(lateFeeAsset);
+            }
+
+            var result = await _db.SaveChangesAsync();
+
+
+            return result > 0;
+
         }
 
         #endregion

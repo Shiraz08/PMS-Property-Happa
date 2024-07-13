@@ -137,8 +137,6 @@
 
    
     function activeDivforowner(index) {
-        console.log("dfhsd");
-        console.log(index);
         $('#landLordDetailDiv').empty()
         //start loading loader here
         showLoader();
@@ -147,7 +145,6 @@
             type: 'GET',
             data: { id: index },
             success: function (landlord) {
-                console.log(landlord);
                 // Format AddedDate to display only date
                 var addedDate = new Date(landlord.AddedDate);
                 var formattedAddedDate = addedDate.toLocaleDateString('en-US');
@@ -344,23 +341,25 @@
                 $.ajax({
                     url: `/Landlord/Delete/?ownerId=${encodeURIComponent(ownerId)}`,
                     type: 'POST',
-                    success: function (data) {
-                        if (data.success) {
-                            window.location.reload();
-                            Swal.fire(
-                                'Deleted!',
-                                'The owner has been deleted.',
-                                'success'
-                            );
+                    success: function (res) {
+                        if (res.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Landlord deleted successfully',
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                            location.reload()
                         } else {
-                            Swal.fire(
-                                'Error!',
-                                'There was an issue deleting the owner.',
-                                'error'
-                            );
+                            Swal.fire({
+                                icon: 'error',
+                                title: res.message,
+                                text: 'Something went wrong!'
+                            });
                         }
+
                     },
-                    error: function () {
+                    error: function (res) {
                         Swal.fire(
                             'Error!',
                             'There was an issue deleting the owner.',

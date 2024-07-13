@@ -345,21 +345,23 @@
                 $.ajax({
                     url: `/Tenant/Delete/?tenantId=${encodeURIComponent(tenantId)}`,
                     type: 'POST',
-                    success: function (data) {
-                        if (data.success) {
-                            window.location.reload();
-                            Swal.fire(
-                                'Deleted!',
-                                'The tenant has been deleted.',
-                                'success'
-                            );
+                    success: function (res) {
+                        if (res.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Tenant deleted successfully',
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                            location.reload()
                         } else {
-                            Swal.fire(
-                                'Error!',
-                                'There was an issue deleting the tenant.',
-                                'error'
-                            );
+                            Swal.fire({
+                                icon: 'error',
+                                title: res.message,
+                                text: 'Something went wrong!'
+                            });
                         }
+
                     },
                     error: function () {
                         Swal.fire(

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using PMS_PropertyHapa.API.ViewModels;
+using PMS_PropertyHapa.Models;
 using PMS_PropertyHapa.Models.DTO;
 using PMS_PropertyHapa.Models.Roles;
 
@@ -339,37 +340,13 @@ namespace PMS_PropertyHapa.API.Controllers.V2
             }
         }
 
-        [HttpDelete("Landlord/{ownerId}")]
-        public async Task<ActionResult<bool>> DeleteOwner(int ownerId)
+        [HttpPost("Landlord/{ownerId}")]
+        public async Task<ActionResult<APIResponse>> DeleteOwner(int ownerId)
         {
             try
             {
-                var isSuccess = await _userRepo.DeleteOwnerAsync(ownerId.ToString());
-
-                if (isSuccess)
-                {
-                    return Ok(isSuccess);
-                }
-                else
-                {
-                    var response = new ApiResponseUser
-                    {
-                        HasErrors = true,
-                        IsValid = false,
-                        TextInfo = "Failed to delete owner.",
-                        Result = null,
-                        Messages = new[]
-                        {
-                    new Messages
-                    {
-                        TypeDescription = MessageType.Error,
-                        Message = "Failed to delete owner",
-                        Title = "Error"
-                    }
-                }
-                    };
-                    return StatusCode(500, response);
-                }
+                var response = await _userRepo.DeleteOwnerAsync(ownerId);
+                return response;
             }
             catch (Exception ex)
             {

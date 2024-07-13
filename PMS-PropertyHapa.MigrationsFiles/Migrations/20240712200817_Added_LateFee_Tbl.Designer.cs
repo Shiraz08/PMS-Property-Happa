@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PMS_PropertyHapa.MigrationsFiles.Data;
 
@@ -11,9 +12,10 @@ using PMS_PropertyHapa.MigrationsFiles.Data;
 namespace PMS_PropertyHapa.MigrationsFiles.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    partial class ApiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240712200817_Added_LateFee_Tbl")]
+    partial class Added_LateFee_Tbl
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2035,76 +2037,6 @@ namespace PMS_PropertyHapa.MigrationsFiles.Migrations
                     b.HasKey("PropertyTypeId");
 
                     b.ToTable("PropertyType");
-                });
-
-            modelBuilder.Entity("PMS_PropertyHapa.Models.Entities.RecurringJob", b =>
-                {
-                    b.Property<int>("RecurringJobs_Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecurringJobs_Id"), 1L, 1);
-
-                    b.Property<string>("AddedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("AddedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("AgreementFormId")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("AppTenantId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int?>("AssetId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("DueDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("DueDays")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("InvoiceDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("InvoiceId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsRun")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("JobType")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("LateFeeId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("LatefeeChargeAmount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int?>("LatefeePropertyId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ModifiedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("RentAmount")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Status")
-                        .HasColumnType("bit");
-
-                    b.HasKey("RecurringJobs_Id");
-
-                    b.ToTable("RecurringJobs");
                 });
 
             modelBuilder.Entity("PMS_PropertyHapa.Models.Entities.RentCharge", b =>

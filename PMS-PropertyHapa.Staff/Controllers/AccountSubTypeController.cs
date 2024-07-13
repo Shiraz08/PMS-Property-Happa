@@ -46,8 +46,15 @@ namespace PMS_PropertyHapa.Staff.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteAccountSubType(int id)
         {
-            await _authService.DeleteAccountSubTypeAsync(id);
-            return Json(new { success = true, message = "Sub Account deleted successfully" });
+
+            var response = await _authService.DeleteAccountSubTypeAsync(id);
+            if (!response.IsSuccess)
+            {
+                return Ok(new { success = false, message = string.Join(", ", response.ErrorMessages) });
+
+            }
+            return Ok(new { success = true, message = "Sub Account deleted successfully" });
+
         }
 
         public async Task<IActionResult> GetAccountSubTypeById(int id)

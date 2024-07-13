@@ -303,7 +303,7 @@
                             <!-- Classification Categories -->
                             <div class="mb-3">
                                 <label for="classification" class="form-label">Classification</label>
-                                <select class="form-control select2" multiple="multiple" id="classification"></select>
+                                <select class="form-control select2" multiple="multiple" id="vendorClassification"></select>
                             </div>
                             <!-- Vendor Categories -->
                             <div class="mb-3">
@@ -704,7 +704,7 @@
             formData.append("AlterCity", $('#altCity').val());
             formData.append("AlterState", $('#altState').val());
             formData.append("AlterCountry", $('#altCountry').val());
-            formData.append("Classification", $('#classification').val().join(','));
+            formData.append("VendorClassificationIds", $('#vendorClassification').val().join(','));
             formData.append("VendorCategoriesIds", $('#vendorCategories').val().join(','));
             formData.append("HasInsurance", $('#hasInsurance').val());
             formData.append("InsuranceCompany", $('#insuranceCompany').val());
@@ -793,7 +793,7 @@
             type: 'GET',
             dataType: 'json',
             success: function (data) {
-                var vendorDropdown = document.getElementById('classification');
+                var vendorDropdown = document.getElementById('vendorClassification');
                 // vendorDropdown.innerHTML = ''; // Clear existing options
                 data.forEach(function (item) {
                     var option = new Option(item.Name, item.VendorCategoryId);
@@ -868,14 +868,23 @@
                     url: '@Url.Action("DeleteVendor", "Vendor")',
                     type: 'POST',
                     data: { id: id },
-                    success: function (task) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Vendor deleted successfully',
-                            showConfirmButton: false,
-                            timer: 1500
-                        });
-                        location.reload()
+                     success: function (res) {
+                        if (res.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Vendor deleted successfully',
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                            location.reload()
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: res.message,
+                                text: 'Something went wrong!'
+                            });
+                        }
+
                     },
                     error: function (xhr, status, error) {
                         Swal.fire({
@@ -933,11 +942,11 @@
                     $('#insuranceAmount').val('');
                 }
 
-                if (vendor.Classification && vendor.Classification.length > 0) {
-                    var classificationArray = vendor.Classification.split(',');
-                    $('#classification').val(classificationArray).trigger("change");
+                if (vendor.VendorClassificationIds && vendor.VendorClassificationIds.length > 0) {
+                    var classificationArray = vendor.VendorClassificationIds.split(',');
+                    $('#vendorClassification').val(classificationArray).trigger("change");
                 } else {
-                    $('#classification').val([]).trigger("change");
+                    $('#vendorClassification').val([]).trigger("change");
                 }
 
                 if (vendor.VendorCategoriesIds && vendor.VendorCategoriesIds.length > 0) {

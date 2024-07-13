@@ -63,6 +63,9 @@ namespace PMS_PropertyHapa.MigrationsFiles.Data
         public DbSet<Invoice> Invoices { get; set; }
         public DbSet<Budget> Budgets { get; set; }
         public DbSet<Documents> Documents { get; set; }
+        public DbSet<LateFee> LateFees { get; set; }
+        public DbSet<LateFeeAsset> LateFeeAsset { get; set; }
+        public DbSet<RecurringJob> RecurringJobs { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Tenant>()

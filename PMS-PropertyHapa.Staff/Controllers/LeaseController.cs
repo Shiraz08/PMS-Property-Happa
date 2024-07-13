@@ -154,7 +154,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
             lease.TenantId = Convert.ToInt32(lease.TenantIdValue);
             if (lease == null)
             {
-                return Json(new { success = false, message = "lease data is  empty" });
+                return Json(new { success = false, message = "lease data is empty" });
             }
             else
             {
@@ -228,8 +228,14 @@ namespace PMS_PropertyHapa.Staff.Controllers
         [HttpPost]
         public async Task<IActionResult> DeletLease(int leaseId)
         {
-            await _authService.DeleteLeaseAsync(leaseId);
-            return Json(new { success = true, message = "Lease deleted successfully" });
+            var response = await _authService.DeleteLeaseAsync(leaseId);
+            if (!response.IsSuccess)
+            {
+                return Ok(new { success = false, message = string.Join(", ", response.ErrorMessages) });
+
+            }
+            return Ok(new { success = true, message = "Lease deleted successfully" });
+
         }
 
         public async Task<IActionResult> InvoiceDetails(int leaseId)

@@ -35,7 +35,7 @@ namespace PMS_PropertyHapa.Models.DTO
         public string AlterCity { get; set; }
         public string AlterState { get; set; }
         public string AlterCountry { get; set; }
-        public string Classification { get; set; }
+        public string VendorClassificationIds { get; set; }
         public string VendorCategoriesIds { get; set; }
         public bool? HasInsurance { get; set; }
         public string InsuranceCompany { get; set; }

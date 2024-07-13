@@ -94,7 +94,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
         }
 
         [HttpPost("DeleteLease/{leaseId}")]
-        public async Task<ActionResult<bool>> DeleteLeaseRequest(int leaseId)
+        public async Task<ActionResult<APIResponse>> DeleteLeaseRequest(int leaseId)
         {
             try
             {
@@ -103,7 +103,10 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"An error occurred: {ex.Message}");
+                _response.StatusCode = HttpStatusCode.InternalServerError;
+                _response.IsSuccess = false;
+                _response.ErrorMessages.Add(ex.Message);
+                return NotFound(_response);
             }
         }
 

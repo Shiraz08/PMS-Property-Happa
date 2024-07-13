@@ -223,13 +223,22 @@
                     type: 'POST',
                     data: { id: id },
                     success: function (res) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Sub Account Type deleted successfully',
-                            showConfirmButton: false,
-                            timer: 1500
-                        });
-                        location.reload()
+                        if (res.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Account Sub Type deleted successfully',
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                            location.reload()
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: res.message,
+                                text: 'Something went wrong!'
+                            });
+                        }
+
                     },
                     error: function (xhr, status, error) {
                         Swal.fire({

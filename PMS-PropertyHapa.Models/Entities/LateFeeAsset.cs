@@ -7,20 +7,18 @@ using System.Threading.Tasks;
 
 namespace PMS_PropertyHapa.Models.Entities
 {
-    public class FeeCharge : BaseEntities
+    public class LateFeeAsset : BaseEntities
     {
         [Key]
-        public int FeeChargeId { get; set; }
-        public int LeaseId { get; set; }
-
-        public bool ChargeLatefeeActive { get; set; } = false;
-        public bool UsePropertyDefaultStructure { get; set; } = false;
+        public int LateFeeAssetId { get; set; }
+        public int AssetId { get; set; }
+        public bool CompanyDefaultStructure { get; set; } = false;
         public bool SpecifyLateFeeStructure { get; set; } = false;
-        public int DueDays { get; set; }
+        public int? DueDays { get; set; }
         public string Frequency { get; set; }
         public string CalculateFee { get; set; }
-        public decimal Amount { get; set; }
-        public int ChartAccountId { get; set; }
+        public decimal? Amount { get; set; }
+        public int? ChartAccountId { get; set; }
         public string Description { get; set; }
         public bool IsSendARemainder { get; set; } = false;
         public bool IsNotifyTenants { get; set; } = false;
@@ -30,7 +28,6 @@ namespace PMS_PropertyHapa.Models.Entities
         public bool IsDailyLimit { get; set; } = false;
         public bool IsMinimumBalance { get; set; } = false;
         public bool IsChargeLateFeeonSpecific { get; set; } = false;
-        public DateTime FeeDate { get; set; }
     }
-
 }
+

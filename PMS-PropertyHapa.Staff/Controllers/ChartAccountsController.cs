@@ -43,14 +43,19 @@ namespace PMS_PropertyHapa.Staff.Controllers
             }
             chartAccount.AddedBy = Request?.Cookies["userId"]?.ToString();
             await _authService.SaveChartAccountAsync(chartAccount);
-            return Json(new { success = true, message = "Sub Account added successfully" });
+            return Json(new { success = true, message = "Chart Account added successfully" });
         }
 
         [HttpPost]
         public async Task<IActionResult> DeleteChartAccount(int id)
         {
-            await _authService.DeleteChartAccountAsync(id);
-            return Json(new { success = true, message = "Sub Account deleted successfully" });
+            var response = await _authService.DeleteChartAccountAsync(id);
+            if (!response.IsSuccess)
+            {
+                return Ok(new { success = false, message = string.Join(", ", response.ErrorMessages) });
+
+            }
+            return Ok(new { success = true, message = "Chart Account deleted successfully" });
         }
 
         public async Task<IActionResult> GetChartAccountById(int id)
@@ -58,7 +63,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
             ChartAccount chartAccount = await _authService.GetChartAccountByIdAsync(id);
             if (chartAccount == null)
             {
-                return StatusCode(500, "Sub Account request not found");
+                return StatusCode(500, "Chart Account request not found");
             }
             return Ok(chartAccount);
         }

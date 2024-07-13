@@ -9,7 +9,6 @@ using APIResponse = PMS_PropertyHapa.Staff.Models.APIResponse;
 using PMS_PropertyHapa.Staff.Services.IServices;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Humanizer.Localisation;
-using System.Web.Mvc;
 
 namespace PMS_PropertyHapa.Staff.Services
 {
@@ -496,22 +495,23 @@ namespace PMS_PropertyHapa.Staff.Services
         }
 
 
-        public async Task<bool> DeleteAssetAsync(int assetId)
+        public async Task<APIResponse> DeleteAssetAsync(int assetId)
         {
             try
             {
                 var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
                 {
                     ApiType = SD.ApiType.POST,
-                    Url = $"{villaUrl}/api/v1/AssetsAuth/DeleteAsset/{{assetId}}"
+                    Url = $"{villaUrl}/api/v1/AssetsAuth/DeleteAsset/{assetId}"
                 });
 
-                return response.IsSuccess;
+                return response;
             }
             catch (Exception ex)
             {
-                throw new Exception($"An error occurred when deleting tenant: {ex.Message}", ex);
+                throw new Exception($"An error occurred when deleting asset: {ex.Message}", ex);
             }
+
         }
 
 
@@ -537,7 +537,7 @@ namespace PMS_PropertyHapa.Staff.Services
 
 
         }
-        
+
         public async Task<AssetDTO> GetAssetByIdAsync(int assetId)
         {
 
@@ -764,17 +764,17 @@ namespace PMS_PropertyHapa.Staff.Services
             }
         }
 
-        public async Task<bool> DeleteTenantAsync(string tenantId)
+        public async Task<APIResponse> DeleteTenantAsync(int tenantId)
         {
             try
             {
                 var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
                 {
-                    ApiType = SD.ApiType.DELETE,
-                    Url = $"{villaUrl}/api/v1/Tenantauth/Tenant/{tenantId}"
+                    ApiType = SD.ApiType.POST,
+                    Url = $"{villaUrl}/api/v1/Tenantauth/DeleteTenant/{tenantId}"
                 });
 
-                return response.IsSuccess;
+                return response;
             }
             catch (Exception ex)
             {
@@ -1219,17 +1219,16 @@ namespace PMS_PropertyHapa.Staff.Services
             }
         }
 
-        public async Task<bool> DeleteLandlordAsync(string ownerId)
+        public async Task<APIResponse> DeleteLandlordAsync(int ownerId)
         {
             try
             {
                 var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
                 {
-                    ApiType = SD.ApiType.DELETE,
-                    Url = $"{villaUrl}/api/v1/LandlordAuth/Landlord/{ownerId}"
+                    ApiType = SD.ApiType.POST,
+                    Url = $"{villaUrl}/api/v1/LandlordAuth/DeleteLandlord/{ownerId}"
                 });
-
-                return response.IsSuccess;
+                return response;
             }
             catch (Exception ex)
             {
@@ -1280,7 +1279,7 @@ namespace PMS_PropertyHapa.Staff.Services
             }
         }
 
-        public async Task<bool> DeleteLeaseAsync(int leaseId)
+        public async Task<APIResponse> DeleteLeaseAsync(int leaseId)
         {
             try
             {
@@ -1290,7 +1289,7 @@ namespace PMS_PropertyHapa.Staff.Services
                     Url = $"{villaUrl}/api/v1/LeaseAuth/DeleteLease/{leaseId}"
                 });
 
-                return response.IsSuccess;
+                return response;
             }
             catch (Exception ex)
             {
@@ -2140,7 +2139,7 @@ namespace PMS_PropertyHapa.Staff.Services
                 throw new Exception($"An error occurred when updating vendor: {ex.Message}", ex);
             }
         }
-        public async Task<bool> DeleteVendorAsync(int id)
+        public async Task<APIResponse> DeleteVendorAsync(int id)
         {
             try
             {
@@ -2150,12 +2149,13 @@ namespace PMS_PropertyHapa.Staff.Services
                     Url = $"{villaUrl}/api/v1/VendorAuth/Vendor/{id}"
                 });
 
-                return response.IsSuccess;
+                return response;
             }
             catch (Exception ex)
             {
                 throw new Exception($"An error occurred when deleting vendor: {ex.Message}", ex);
             }
+
         }
 
         #endregion
@@ -2333,7 +2333,7 @@ namespace PMS_PropertyHapa.Staff.Services
                 throw new Exception($"An error occurred when updating account type: {ex.Message}", ex);
             }
         }
-        public async Task<bool> DeleteAccountTypeAsync(int id)
+        public async Task<APIResponse> DeleteAccountTypeAsync(int id)
         {
             try
             {
@@ -2343,7 +2343,7 @@ namespace PMS_PropertyHapa.Staff.Services
                     Url = $"{villaUrl}/api/v1/AccountTypeAuth/AccountType/{id}"
                 });
 
-                return response.IsSuccess;
+                return response;
             }
             catch (Exception ex)
             {
@@ -2432,7 +2432,7 @@ namespace PMS_PropertyHapa.Staff.Services
                 throw new Exception($"An error occurred when updating account sub type: {ex.Message}", ex);
             }
         }
-        public async Task<bool> DeleteAccountSubTypeAsync(int id)
+        public async Task<APIResponse> DeleteAccountSubTypeAsync(int id)
         {
             try
             {
@@ -2442,7 +2442,7 @@ namespace PMS_PropertyHapa.Staff.Services
                     Url = $"{villaUrl}/api/v1/AccountSubTypeAuth/AccountSubType/{id}"
                 });
 
-                return response.IsSuccess;
+                return response;
             }
             catch (Exception ex)
             {
@@ -2532,7 +2532,7 @@ namespace PMS_PropertyHapa.Staff.Services
                 throw new Exception($"An error occurred when updating chart account: {ex.Message}", ex);
             }
         }
-        public async Task<bool> DeleteChartAccountAsync(int id)
+        public async Task<APIResponse> DeleteChartAccountAsync(int id)
         {
             try
             {
@@ -2542,7 +2542,7 @@ namespace PMS_PropertyHapa.Staff.Services
                     Url = $"{villaUrl}/api/v1/ChartAccountsAuth/ChartAccount/{id}"
                 });
 
-                return response.IsSuccess;
+                return response;
             }
             catch (Exception ex)
             {
@@ -2906,6 +2906,84 @@ namespace PMS_PropertyHapa.Staff.Services
                 throw new Exception("Failed to retrieve tenant data");
             }
         }
+        #endregion
+
+        #region LateFee
+
+
+        public async Task<LateFeeDto> GetLateFee(Filter filter)
+        {
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.POST,
+                Data = filter,
+                Url = $"{villaUrl}/api/v1/LateFeeAuth/GetLateFee"
+            });
+            if (response.IsSuccess)
+            {
+                return response.Result != null ? JsonConvert.DeserializeObject<LateFeeDto>(Convert.ToString(response.Result)) : null;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve tenant data");
+            }
+        }
+
+        public async Task<LateFeeAssetDto> GetLateFeeByAsset(int assetId)
+        {
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = $"{villaUrl}/api/v1/LateFeeAuth/GetLateFeeByAsset/{assetId}"
+            });
+            if (response.IsSuccess)
+            {
+                return response.Result != null ? JsonConvert.DeserializeObject<LateFeeAssetDto>(Convert.ToString(response.Result)) : null;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve tenant data");
+            }
+        }
+
+        public async Task<bool> SaveLateFeeAsync(LateFeeDto lateFee)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Data = lateFee,
+                    Url = $"{villaUrl}/api/v1/LateFeeAuth/LateFee"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when updating lateFee: {ex.Message}", ex);
+            }
+        }
+        
+        public async Task<bool> SaveLateFeeAssetAsync(LateFeeAssetDto lateFeeAsset)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Data = lateFeeAsset,
+                    Url = $"{villaUrl}/api/v1/LateFeeAuth/LateFeeAsset"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when updating lateFeeAsset: {ex.Message}", ex);
+            }
+        }
+
         #endregion
     }
 }

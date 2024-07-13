@@ -1,0 +1,38 @@
+﻿@{
+    ViewData["Title"] = "Settings";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+    <div class="page-body">
+        <div class="container-fluid">
+            <div class="page-title">
+                <div class="row">
+                    <div class="col-12 col-sm-6">
+                        <h3>Reports</h3>
+                    </div>
+                    <div class="col-12 col-sm-6">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="/Home/Index"><i data-feather="home"></i></a></li>
+                            <li class="breadcrumb-item">Settings</li>
+                            <li class="breadcrumb-item active">List</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body d-flex justify-content-center align-items-center">
+                            <i class="icon-files fa-3x"></i>
+                        </div>
+                        <div class="card-footer">
+                            <h4 class="card-title text-center">
+                                <a href="@Url.Action("Index", "LateFee")">LateFee</a>
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

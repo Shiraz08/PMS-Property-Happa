@@ -31,18 +31,18 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
         Task<List<TenantModelDto>> GetTenantsByIdAsync(string tenantId);
         Task<bool> CreateTenantAsync(TenantModelDto tenant);
         Task<bool> UpdateTenantAsync(TenantModelDto tenant);
-        Task<bool> DeleteTenantAsync(string tenantId);
+        Task<APIResponse> DeleteTenantAsync(int tenantId);
 
 
 
 
         Task<bool> CreateLandlordAsync(OwnerDto owner);
         Task<bool> UpdateLandlordAsync(OwnerDto owner);
-        Task<bool> DeleteLandlordAsync(string ownerId);
+        Task<APIResponse> DeleteLandlordAsync(int ownerId);
         Task<TenantModelDto> GetSingleTenantAsync(int tenantId);
 
 
-        
+
 
 
 
@@ -56,7 +56,7 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
 
         Task<bool> CreateAssetAsync(AssetDTO asset);
 
-        Task<bool> DeleteAssetAsync(int propertyId);
+        Task<APIResponse> DeleteAssetAsync(int propertyId);
         Task<bool> UpdateAssetAsync(AssetDTO asset);
 
         Task<IEnumerable<AssetDTO>> GetAllAssetsAsync();
@@ -91,7 +91,7 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
         Task<List<PropertySubTypeDto>> GetPropertySubTypeByIdAllAsync(string tenantId);
 
 
-        Task<bool>UpdateTenantOrganizationAsync(TenantOrganizationInfoDto tenant);
+        Task<bool> UpdateTenantOrganizationAsync(TenantOrganizationInfoDto tenant);
 
         Task<TenantOrganizationInfoDto> GetTenantOrganizationByIdAsync(int tenantId);
 
@@ -104,7 +104,7 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
 
         Task<LeaseDto> GetLeaseByIdAsync(int leaseId);
 
-        Task<bool> DeleteLeaseAsync(int leaseId);
+        Task<APIResponse> DeleteLeaseAsync(int leaseId);
 
         Task<IEnumerable<LeaseDto>> GetAllLeasesAsync();
 
@@ -183,10 +183,10 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
         Task<IEnumerable<VendorDto>> GetVendorsDllAsync(Filter filter);
         Task<VendorDto> GetVendorByIdAsync(int id);
         Task<bool> SaveVendorAsync(VendorDto vendor);
-        Task<bool> DeleteVendorAsync(int id);
+        Task<APIResponse> DeleteVendorAsync(int id);
 
         #endregion
-        
+
         #region Applications
         Task<IEnumerable<ApplicationsDto>> GetApplicationsAsync();
         Task<ApplicationsDto> GetApplicationByIdAsync(int id);
@@ -201,7 +201,7 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
         Task<IEnumerable<AccountType>> GetAccountTypesDllAsync(Filter filter);
         Task<AccountType> GetAccountTypeByIdAsync(int id);
         Task<bool> SaveAccountTypeAsync(AccountType accountType);
-        Task<bool> DeleteAccountTypeAsync(int id);
+        Task<APIResponse> DeleteAccountTypeAsync(int id);
 
         #endregion
 
@@ -211,7 +211,7 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
         Task<IEnumerable<AccountSubTypeDto>> GetAccountSubTypesDllAsync(Filter filter);
         Task<AccountSubType> GetAccountSubTypeByIdAsync(int id);
         Task<bool> SaveAccountSubTypeAsync(AccountSubType accountSubType);
-        Task<bool> DeleteAccountSubTypeAsync(int id);
+        Task<APIResponse> DeleteAccountSubTypeAsync(int id);
 
         #endregion
 
@@ -221,7 +221,7 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
         Task<IEnumerable<ChartAccountDto>> GetChartAccountsDllAsync(Filter filter);
         Task<ChartAccount> GetChartAccountByIdAsync(int id);
         Task<bool> SaveChartAccountAsync(ChartAccount chartAccount);
-        Task<bool> DeleteChartAccountAsync(int id);
+        Task<APIResponse> DeleteChartAccountAsync(int id);
 
         #endregion
 
@@ -233,7 +233,7 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
         Task<bool> SaveDuplicateBudgetAsync(BudgetDto budget);
         Task<bool> DeleteBudgetAsync(int id);
         #endregion
-        
+
         #region Reports
 
         Task<IEnumerable<LeaseReportDto>> GetLeaseReports(ReportFilter reportFilter);
@@ -260,6 +260,15 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
         #region GetDataById
         Task<LandlordDataDto> GetLandlordDataById(int id);
         Task<TenantDataDto> GetTenantDataById(int id);
+        #endregion
+
+        #region LateFee
+
+        Task<LateFeeDto> GetLateFee(Filter filter);
+        Task<LateFeeAssetDto> GetLateFeeByAsset(int assetId);
+        Task<bool> SaveLateFeeAsync(LateFeeDto lateFee);
+        Task<bool> SaveLateFeeAssetAsync(LateFeeAssetDto lateFeeAsset);
+
         #endregion
     }
 }

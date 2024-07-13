@@ -49,8 +49,14 @@ namespace PMS_PropertyHapa.Staff.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteAccountType(int id)
         {
-            await _authService.DeleteAccountTypeAsync(id);
-            return Json(new { success = true, message = "Account deleted successfully" });
+            var response = await _authService.DeleteAccountTypeAsync(id);
+            if (!response.IsSuccess)
+            {
+                return Ok(new { success = false, message = string.Join(", ", response.ErrorMessages) });
+
+            }
+            return Ok(new { success = true, message = "Account deleted successfully" });
+
         }
 
         public async Task<IActionResult> GetAccountTypeById(int id)

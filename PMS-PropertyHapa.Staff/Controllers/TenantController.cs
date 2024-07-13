@@ -349,11 +349,18 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Delete(string tenantId)
+        public async Task<IActionResult> Delete(int tenantId)
         {
-            await _authService.DeleteTenantAsync(tenantId);
-            return Json(new { success = true, message = "Tenant deleted successfully" });
+            var response = await _authService.DeleteTenantAsync(tenantId);
+            if (!response.IsSuccess)
+            {
+                return Ok(new { success = false, message = string.Join(", ", response.ErrorMessages) });
+
+            }
+            return Ok(new { success = true, message = "Tenant deleted successfully" });
+
         }
+
         public IActionResult AddTenant()
         {
             var model = new TenantModelDto();
@@ -381,8 +388,6 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
             return View("AddTenant", tenant);
         }
-
-
 
     }
 }
