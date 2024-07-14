@@ -2179,7 +2179,7 @@ namespace MagicVilla_VillaAPI.Repository
                     SignatureImagePath = leaseDto.SignatureImagePath,
                     IsFixedTerm = leaseDto.IsFixedTerm,
                     SelectedProperty = leaseDto.SelectedProperty,
-                    AssetId = leaseDto.PropertyId,
+                    AssetId = leaseDto.AssetId,
                     UnitId = leaseDto.UnitId,
                     SelectedUnit = leaseDto.SelectedUnit,
                     IsMonthToMonth = leaseDto.IsMonthToMonth,
@@ -2285,7 +2285,7 @@ namespace MagicVilla_VillaAPI.Repository
                 }
 
 
-                var assest = await _db.Assets.FirstOrDefaultAsync(x => x.AssetId == leaseDto.PropertyId && x.IsDeleted != true);
+                var assest = await _db.Assets.FirstOrDefaultAsync(x => x.AssetId == leaseDto.AssetId && x.IsDeleted != true);
 
                 if (leaseDto.IsMonthToMonth)
                 {
@@ -2513,6 +2513,7 @@ namespace MagicVilla_VillaAPI.Repository
                 var existingLease = await _db.Lease
                     .Include(l => l.RentCharges)
                     .Include(l => l.SecurityDeposit)
+                    .Include(l => l.FeeCharge)
                     .FirstOrDefaultAsync(l => l.LeaseId == leaseDto.LeaseId && l.IsDeleted != true);
 
                 if (existingLease == null)
@@ -2547,6 +2548,7 @@ namespace MagicVilla_VillaAPI.Repository
                         {
                             existingRc.Amount = rcDto.Amount;
                             existingRc.Description = rcDto.Description;
+                            existingRc.LeaseId = existingLease.LeaseId;
                             existingRc.RentDate = rcDto.RentDate;
                             existingRc.RentPeriod = rcDto.RentPeriod;
                             existingRc.ModifiedBy = leaseDto.AddedBy;
@@ -2577,6 +2579,7 @@ namespace MagicVilla_VillaAPI.Repository
 
                     if (existingRc != null)
                     {
+                        existingRc.LeaseId = existingLease.LeaseId;
                         existingRc.ChargeLatefeeActive = rcDto.ChargeLatefeeActive;
                         existingRc.UsePropertyDefaultStructure = rcDto.UsePropertyDefaultStructure;
                         existingRc.SpecifyLateFeeStructure = rcDto.SpecifyLateFeeStructure;
@@ -2638,7 +2641,7 @@ namespace MagicVilla_VillaAPI.Repository
 
                             existingSd.Amount = sdDto.Amount;
                             existingSd.Description = sdDto.Description;
-                            existingLease.LeaseId = sdDto.LeaseId;
+                            existingSd.LeaseId = existingLease.LeaseId;
                             existingSd.ModifiedBy = leaseDto.AddedBy;
                             existingSd.ModifiedDate = DateTime.Now;
                         }
@@ -2661,7 +2664,7 @@ namespace MagicVilla_VillaAPI.Repository
                 var oldInvoices = await _db.Invoices.Where(x => x.LeaseId == leaseDto.LeaseId && x.IsDeleted != true).ToListAsync();
 
                 oldInvoices.ForEach(x => x.IsDeleted = true);
-                _db.UpdateRange(oldInvoices);
+                _db.Invoices.UpdateRange(oldInvoices);
 
                 decimal totalRentAmount = 0;
 
@@ -2920,6 +2923,7 @@ namespace MagicVilla_VillaAPI.Repository
 
             var tenantDto = new TenantOrganizationInfoDto
             {
+                Id = tenant.Id,
                 TenantUserId = tenant.TenantUserId,
                 OrganizationName = tenant.OrganizationName,
                 OrganizationDescription = tenant.OrganizationDescription,
@@ -2958,7 +2962,7 @@ namespace MagicVilla_VillaAPI.Repository
             newTenant.OrganizatioPrimaryColor = tenantDto.OrganizatioPrimaryColor;
             newTenant.OrganizationSecondColor = tenantDto.OrganizationSecondColor;
 
-            if (newTenant.Id > 0)
+            if (tenantDto.Id > 0)
                 _db.TenantOrganizationInfo.Update(newTenant);
 
             else
@@ -7582,6 +7586,7 @@ namespace MagicVilla_VillaAPI.Repository
                                     {
                                         LateFeeId = lf.LateFeeId,
                                         DueDays = lf.DueDays,
+                                        ChargeLateFeeActive = lf.ChargeLateFeeActive,
                                         Frequency = lf.Frequency,
                                         CalculateFee = lf.CalculateFee,
                                         Amount = lf.Amount,
@@ -7659,6 +7664,7 @@ namespace MagicVilla_VillaAPI.Repository
                 lateFee = new LateFee();
 
             lateFee.LateFeeId = model.LateFeeId;
+            lateFee.ChargeLateFeeActive = model.ChargeLateFeeActive;
             lateFee.DueDays = model.DueDays ;
             lateFee.Frequency = model.Frequency ;
             lateFee.CalculateFee = model.CalculateFee ;

@@ -824,9 +824,9 @@ namespace PMS_PropertyHapa.Staff.Services
             {
                 var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
                 {
-                    ApiType = SD.ApiType.PUT,
+                    ApiType = SD.ApiType.POST,
                     Data = tenant,
-                    Url = $"{villaUrl}/api/v1/Tenantauth/TenantOrg/{tenant.Id}"
+                    Url = $"{villaUrl}/api/v1/Tenantauth/UpdateTenantOrg/{tenant.Id}"
                 });
 
                 return response.IsSuccess;

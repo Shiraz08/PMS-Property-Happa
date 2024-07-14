@@ -158,8 +158,8 @@
                                     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                                     <div class="row gx-3 mb-3 mt-3">
                                         <div class="mb-3 ml-4">
-                                            <input style="width: 15px;" type="checkbox" class="form-check-input" id="IsChargeLateFee" name="ChargeLateFee">
-                                            <label class=" form-check-label" for="ChargeLateFee">Charge late fees</label>
+                                            <input style="width: 15px;" type="checkbox" class="form-check-input" id="isChargeLateFeeActive" name="ChargeLateFee">
+                                            <label class=" form-check-label" for="isChargeLateFeeActive">Charge late fees</label>
                                         </div>
                                     </div>
                                     <div class="row gx-3 mb-3 mt-3">
@@ -386,6 +386,7 @@
         function gatherFormData() {
             const formData = new FormData();
             formData.append("LateFeeId", $('#lateFeeId').val() || 0);
+            formData.append("ChargeLateFeeActive", $("#isChargeLateFeeActive").is(':checked'));
             formData.append("DueDays", $("#dueDays").val());
             formData.append("Frequency", $('#frequency').val());
             formData.append("CalculateFee", $('#calculateFee').val());
@@ -446,6 +447,7 @@
                 if(res){
                     console.log(res);
                     $('#lateFeeId').val(res.LateFeeId);
+                    $('#isChargeLateFeeActive').prop('checked', res.ChargeLateFeeActive);
                     $('#dueDays').val(res.DueDays);
                     $('#frequency').val(res.Frequency).trigger("change");
                     $('#calculateFee').val(res.CalculateFee).trigger("change");

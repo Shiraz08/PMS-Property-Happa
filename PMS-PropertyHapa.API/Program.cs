@@ -54,6 +54,7 @@ builder.Services.AddVersionedApiExplorer(options =>
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<WebJobService>();
+builder.Services.AddScoped<LateFeeJob>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: "AllowSpecificOrigin",
@@ -167,6 +168,7 @@ app.UseCors("AllowSpecificOrigin");
 app.MapControllers();
 ApplyMigration();
 SendInvoices();
+LateFeeJobs();
 app.Run();
 
 void ApplyMigration()
@@ -190,19 +192,21 @@ void SendInvoices()
         var hangfireServiceProvider = scope.ServiceProvider;
         var hangfireDataService = hangfireServiceProvider.GetService<WebJobService>();
 
-        RecurringJob.AddOrUpdate(
-            "SendInvoicesJob",
-            () => hangfireDataService.SendInvoices(),
-            "48 5 * * *",
-            TimeZoneInfo.Local
-        );
+        RecurringJob.AddOrUpdate("SendInvoicesJob",() => hangfireDataService.SendInvoices(), "48 5 * * *", TimeZoneInfo.Local);
+        RecurringJob.AddOrUpdate("ReminderInvoicesJob", () => hangfireDataService.ReminderInvoices(), "0 22 * * *", TimeZoneInfo.Local);
+    }
 
-        RecurringJob.AddOrUpdate(
-        "ReminderInvoicesJob",
-        () => hangfireDataService.ReminderInvoices(),
-        "0 22 * * *",  // Cron expression for 6:00 AM every day
-        TimeZoneInfo.Local  // Use local time zone
-    );
+}
+void LateFeeJobs()
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var hangfireServiceProvider = scope.ServiceProvider;
+        var hangfireDataService = hangfireServiceProvider.GetService<LateFeeJob>();
+        //RecurringJob.AddOrUpdate("SendInvoicesJob", () => hangfireDataService.GetLatefeeDataforRecurringJobs(), "27 0 * * *", TimeZoneInfo.Local);
+        RecurringJob.AddOrUpdate("SendInvoicesJob",() => hangfireDataService.GetLatefeeDataforRecurringJobs(),Cron.Monthly);
+        RecurringJob.AddOrUpdate("ReminderInvoicesJob",() => hangfireDataService.LatefeeByDefaultMethod(),Cron.Daily);
+        RecurringJob.AddOrUpdate("ReminderInvoicesJob",() => hangfireDataService.LatefeeByPropertyMethod(),Cron.Daily);
     }
 
 }

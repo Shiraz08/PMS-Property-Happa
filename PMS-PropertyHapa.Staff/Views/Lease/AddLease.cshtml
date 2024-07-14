@@ -1,5 +1,4 @@
 ﻿@using PMS_PropertyHapa.Models.DTO;
-@using System.Linq
 @model LeaseDto
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -315,7 +314,7 @@
 
                                     <div class="d-flex flex-column align-items-center">
                                         <div class="col-md-6 mb-3 @(isEditMode ? "d-none" : "")">
-                                            <label for="propertyDropdown">Choose Property:</label>
+                                            <label for="propertyDropdown" class="form-label">Choose Property:</label>
                                             <select id="propertyDropdown" name="propertyDropdown" class="form-control select2">
                                             </select>
                                         </div>
@@ -352,7 +351,7 @@
                                                     <h5 class="card-title text-center">Month-to-Month</h5>
                                                 </div>
                                             </div>
-                                            <input type="hidden" id="leaseId" value="@Model?.LeaseId" />
+                                            <input type="hidden" id="hiddenLeaseId" value="@Model?.LeaseId" />
                                             <input type="hidden" id="hiddenTenantId" name="TenantId" value="@Model?.TenantId">
 
 
@@ -564,139 +563,140 @@
                                                     <hr />
                                                     <div class="row mb-3">
                                                         <div class="col text-center">
-                                                            <a href="#" id="" onclick="advanceOption()">Show advanced options</a>
+                                                            <a href="#" id="advanceOpt" onclick="advanceOption()">Show advanced options</a>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <br />
-                                                <div class="mb-4 d-none" id="advanceOption">
-                                                    <hr />
-                                                    <div class="row">
-                                                        <div class="col">
-                                                            <div class="mb-3">
-                                                                <label for="chartAccount" class="form-label">Which income account should the late fees go into?</label>
-                                                                <select id="chartAccount" name="ChartAccountId" class="form-control select2"> </select>
-                                                            </div>   
+                                                    <br />
+                                                    <div class="mb-4 d-none" id="advanceOption">
+                                                        <hr />
+                                                        <div class="row">
+                                                            <div class="col">
+                                                                <div class="mb-3">
+                                                                    <label for="chartAccount" class="form-label">Which income account should the late fees go into?</label>
+                                                                    <select id="chartAccount" name="ChartAccountId" class="form-control select2"> </select>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col">
+                                                                <div class="mb-3">
+                                                                    <label for="description" class="form-label">Late Fee Description:</label>
+                                                                    <input id="description" class="form-control" />
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                        <div class="col">
-                                                            <div class="mb-3">
-                                                                <label for="description" class="form-label">Late Fee Description:</label>
-                                                                <input id="description" class="form-control" />
+                                                        <hr />
+                                                        <div class="row">
+                                                            <div class="col text-center mb-3">
+                                                                <a href="#" id="advanceOpt1" onclick="advanceOption1()">Add Another Late Fee</a>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col text-center">
+                                                                <a href="#" id="HideOptions" onclick="HideOptions()">Hide advanced options</a>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <hr />
-                                                    <div class="row">
-                                                        <div class="col text-center mb-3">
-                                                            <a href="#" onclick="advanceOption1()">Add Another Late Fee</a>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col text-center">
-                                                            <a href="#" id="HideOptions" onclick="HideOptions()">Hide advanced options</a>
-                                                        </div>
-                                                    </div>
-                                                </div>
 
-                                                <div class="mb-4 d-none" id="advanceOption1">
-                                                    <hr />
-                                                    <h4>Advanced options</h4>
-                                                    <div class="row align-items-center">
-                                                        <div class="col-auto">
-                                                            <div class="form-check form-switch">
-                                                                <input class="form-check-input" type="checkbox" id="sendARemainder">
+                                                    <div class="mb-4 d-none" id="advanceOption1">
+                                                        <hr />
+                                                        <h4>Advanced options</h4>
+                                                        <div class="row align-items-center">
+                                                            <div class="col-auto">
+                                                                <div class="form-check form-switch">
+                                                                    <input class="form-check-input" type="checkbox" id="sendARemainder">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col">
+                                                                <p><b>Send a remainder one day before late fees will be charged</b></p>
+                                                                <span>send a notification remainder to the tenant via email or push notification before late fees are charged</span>
                                                             </div>
                                                         </div>
-                                                        <div class="col">
-                                                            <p><b>Send a remainder one day before late fees will be charged</b></p>
-                                                            <span>send a notification remainder to the tenant via email or push notification before late fees are charged</span>
-                                                        </div>
-                                                    </div>
-                                                    <hr />
-                                                    <div class="row align-items-center">
-                                                        <div class="col-auto">
-                                                            <div class="form-check form-switch">
-                                                                <input class="form-check-input" type="checkbox" id="notifyTenants">
+                                                        <hr />
+                                                        <div class="row align-items-center">
+                                                            <div class="col-auto">
+                                                                <div class="form-check form-switch">
+                                                                    <input class="form-check-input" type="checkbox" id="notifyTenants">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col">
+                                                                <p><b>Notify tenants of late fees once charged</b></p>
+                                                                <span>Lat your tenants know each time a late fee is charged via email or push notification</span>
                                                             </div>
                                                         </div>
-                                                        <div class="col">
-                                                            <p><b>Notify tenants of late fees once charged</b></p>
-                                                            <span>Lat your tenants know each time a late fee is charged via email or push notification</span>
-                                                        </div>
-                                                    </div>
-                                                    <hr />
-                                                    <div class="row align-items-center">
-                                                        <div class="col-auto">
-                                                            <div class="form-check form-switch">
-                                                                <input class="form-check-input" type="checkbox" id="enableSms">
+                                                        <hr />
+                                                        <div class="row align-items-center">
+                                                            <div class="col-auto">
+                                                                <div class="form-check form-switch">
+                                                                    <input class="form-check-input" type="checkbox" id="enableSms">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col">
+                                                                <p><b>Enable SMS for late fees</b></p>
+                                                                <span>Provide reminders by test before charging late fees, as well as notifications once fees have been charged (each message will use one communication credit)</span>
                                                             </div>
                                                         </div>
-                                                        <div class="col">
-                                                            <p><b>Enable SMS for late fees</b></p>
-                                                            <span>Provide reminders by test before charging late fees, as well as notifications once fees have been charged (each message will use one communication credit)</span>
-                                                        </div>
-                                                    </div>
-                                                    <hr/>
-                                                    <div class="row align-items-center">
-                                                        <div class="col-auto">
-                                                            <div class="form-check form-switch">
-                                                                <input class="form-check-input" type="checkbox" id="chargeLateFee">
+                                                        <hr />
+                                                        <div class="row align-items-center">
+                                                            <div class="col-auto">
+                                                                <div class="form-check form-switch">
+                                                                    <input class="form-check-input" type="checkbox" id="chargeLateFee">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col">
+                                                                <p><b>Charge late fees only on the most recent outstanging charge</b></p>
+                                                                <span>A late fee is created for each outstanding charge. If rent hasn't been paid in several months multiple late fees will be created unless this is turned on.</span>
                                                             </div>
                                                         </div>
-                                                        <div class="col">
-                                                            <p><b>Charge late fees only on the most recent outstanging charge</b></p>
-                                                            <span>A late fee is created for each outstanding charge. If rent hasn't been paid in several months multiple late fees will be created unless this is turned on.</span>
-                                                        </div>
-                                                    </div>
-                                                    <hr />
-                                                    <div class="row align-items-center">
-                                                        <div class="col-auto">
-                                                            <div class="form-check form-switch">
-                                                                <input class="form-check-input" type="checkbox" id="monthlyLimit">
+                                                        <hr />
+                                                        <div class="row align-items-center">
+                                                            <div class="col-auto">
+                                                                <div class="form-check form-switch">
+                                                                    <input class="form-check-input" type="checkbox" id="monthlyLimit">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col">
+                                                                <p><b>Set monthly late fee limit</b></p>
+                                                                <span>Set a limit of how much you can charge for late fees per month</span>
                                                             </div>
                                                         </div>
-                                                        <div class="col">
-                                                            <p><b>Set monthly late fee limit</b></p>
-                                                            <span>Set a limit of how much you can charge for late fees per month</span>
-                                                        </div>
-                                                    </div>
-                                                    <hr />
-                                                    <div class="row align-items-center">
-                                                        <div class="col-auto">
-                                                            <div class="form-check form-switch">
-                                                                <input class="form-check-input" type="checkbox" id="dailyLimit">
+                                                        <hr />
+                                                        <div class="row align-items-center">
+                                                            <div class="col-auto">
+                                                                <div class="form-check form-switch">
+                                                                    <input class="form-check-input" type="checkbox" id="dailyLimit">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col">
+                                                                <p><b>Set daily late fees limit</b></p>
+                                                                <span>Set a limit of how much you can charge for late fees per day</span>
                                                             </div>
                                                         </div>
-                                                        <div class="col">
-                                                            <p><b>Set daily late fees limit</b></p>
-                                                            <span>Set a limit of how much you can charge for late fees per day</span>
-                                                        </div>
-                                                    </div>
-                                                    <hr />
-                                                    <div class="row align-items-center">
-                                                        <div class="col-auto">
-                                                            <div class="form-check form-switch">
-                                                                <input class="form-check-input" type="checkbox" id="minimumBalance">
+                                                        <hr />
+                                                        <div class="row align-items-center">
+                                                            <div class="col-auto">
+                                                                <div class="form-check form-switch">
+                                                                    <input class="form-check-input" type="checkbox" id="minimumBalance">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col">
+                                                                <p class="mb-0"><b>Set minimum balance to charge late fee</b></p>
+                                                                <span>Set a minimum balance required to charge a late fee</span>
                                                             </div>
                                                         </div>
-                                                        <div class="col">
-                                                            <p class="mb-0"><b>Set minimum balance to charge late fee</b></p>
-                                                            <span>Set a minimum balance required to charge a late fee</span>
-                                                        </div>
-                                                    </div>
-                                                    <hr />
-                                                    <div class="row align-items-center">
-                                                        <div class="col-auto">
-                                                            <div class="form-check form-switch">
-                                                                <input class="form-check-input" type="checkbox" id="chargeLateFeeonSpecific">
+                                                        <hr />
+                                                        <div class="row align-items-center">
+                                                            <div class="col-auto">
+                                                                <div class="form-check form-switch">
+                                                                    <input class="form-check-input" type="checkbox" id="chargeLateFeeonSpecific">
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                        <div class="col">
-                                                            <p><b>Charge late fees only on specific outstanding charges</b></p>
-                                                            <span>Specify which accounts to consider when charging late fees</span>
+                                                            <div class="col">
+                                                                <p><b>Charge late fees only on specific outstanding charges</b></p>
+                                                                <span>Specify which accounts to consider when charging late fees</span>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
+                                               
                                             </div>
                                         </div>
                                     </div>
@@ -954,13 +954,16 @@
 
     var rentCharges = @Html.Raw(Json.Serialize(Model?.RentCharges)) || [];
     var securityDeposits = @Html.Raw(Json.Serialize(Model?.SecurityDeposits)) || [];
+    var feeCharge = @Html.Raw(Json.Serialize(Model?.FeeCharge ?? new FeeChargeDto()));
     var globalTenantId = @Html.Raw(Model?.TenantId > 0 ? Model?.TenantId.ToString() : "null");
     var userId = localStorage.getItem('userId');
-    var isEditMode = $('#leaseId').val() && $('#leaseId').val() > 0;
+    var isEditMode = $('#hiddenLeaseId').val() && $('#hiddenLeaseId').val() > 0;
 
     var AddTenantId;
 
     $(document).ready(function () {
+
+        chartAccountsDropDown();
         var propertyData = $('#propertyData');
         var selectedPropertyId = propertyData.data('selected-property');
         var selectedUnitId = propertyData.data('selected-unit');
@@ -986,27 +989,17 @@
         }
 
 
-        // Determine if you are in edit mode based on the existence of security deposits
-        var hasSecurityDeposits = securityDeposits.length > 0;
 
-        // Initial setup based on whether security deposits exist
-        if (hasSecurityDeposits) {
-            $('#yesSecurityFund').addClass('selected');
-            $('#additionalDataSection').show();
-        } else {
-            $('#noSecurityFund').addClass('selected');
-            $('#additionalDataSection').hide();
-        }
 
         // Populate existing security deposits if any
 
         // Event handlers for the Yes/No buttons
-        $('#yesSecurityFund, #noSecurityFund').on('click', function () {
-            $('#yesSecurityFund, #noSecurityFund').removeClass('selected');
-            $(this).addClass('selected');
-            var displaySection = $(this).is('#yesSecurityFund') ? 'slideDown' : 'slideUp';
-            $('#additionalDataSection')[displaySection]();
-        });
+        // $('#yesSecurityFund, #noSecurityFund').on('click', function () {
+        //     $('#yesSecurityFund, #noSecurityFund').removeClass('selected');
+        //     $(this).addClass('selected');
+        //     var displaySection = $(this).is('#yesSecurityFund') ? 'slideDown' : 'slideUp';
+        //     $('#additionalDataSection')[displaySection]();
+        // });
 
         populateSecurityDeposits();
         populateRentCharges();
@@ -1140,12 +1133,7 @@
             $('#progressLine .f1-progress-indicator').css('width', progressPercentage + '%');
         }
 
-        var isFixedTerm = '@Model?.IsFixedTerm' ? '@Model?.IsFixedTerm'.toLowerCase() === 'true' : null;
-        if (isFixedTerm) {
-            $('#fixedTermCard').addClass('selected');
-        } else {
-            $('#monthToMonthCard').addClass('selected');
-        }
+
 
         var tenants = [{
             TenantId: "@Model?.TenantId", // Adjust based on actual data
@@ -1169,34 +1157,7 @@
             updateSelectedTenantDetails(false);
         }
 
-        $('#yesSecurityFund').click(function () {
-            $(this).addClass('selected');
-            $('#noSecurityFund').removeClass('selected');
-            $('#additionalDataSection').show();
-        });
 
-        // Click event handler for the "No" card to hide the security deposits section
-        $('#noSecurityFund').click(function () {
-            $(this).addClass('selected');
-            $('#yesSecurityFund').removeClass('selected');
-            $('#additionalDataSection').hide();
-        });
-
-        // Click event for Fixed Term card
-        $('#fixedTermCard').on('click', function () {
-
-            $(this).toggleClass('selected');
-
-            $('#monthToMonthCard').removeClass('selected');
-        });
-
-
-        $('#monthToMonthCard').on('click', function () {
-
-            $(this).toggleClass('selected');
-
-            $('#fixedTermCard').removeClass('selected');
-        });
 
 
         // Function to initialize the DataTable
@@ -1207,19 +1168,19 @@
         });
 
 
-        $('#yesSecurityFund, #noSecurityFund').on('click', function () {
-            // Remove 'selected' class from both cards
-            $('#yesSecurityFund, #noSecurityFund').removeClass('selected');
-            // Add 'selected' class to clicked card
-            $(this).addClass('selected');
+        // $('#yesSecurityFund, #noSecurityFund').on('click', function () {
+        //     // Remove 'selected' class from both cards
+        //     $('#yesSecurityFund, #noSecurityFund').removeClass('selected');
+        //     // Add 'selected' class to clicked card
+        //     $(this).addClass('selected');
 
-            // Toggle additional data section based on selection
-            if ($(this).attr('id') === 'yesSecurityFund') {
-                $('#additionalDataSection').slideDown();
-            } else {
-                $('#additionalDataSection').slideUp();
-            }
-        });
+        //     // Toggle additional data section based on selection
+        //     if ($(this).attr('id') === 'yesSecurityFund') {
+        //         $('#additionalDataSection').slideDown();
+        //     } else {
+        //         $('#additionalDataSection').slideUp();
+        //     }
+        // });
 
 
         // Optionally, handle removal of deposit details
@@ -1256,7 +1217,18 @@
 
         updateRemoveButtonVisibility();
 
-        chartAccountsDropDown();
+        $('#yesSecurityFund').click(function () {
+            $(this).addClass('selected');
+            $('#noSecurityFund').removeClass('selected');
+            $('#additionalDataSection').show();
+        });
+
+        // Click event handler for the "No" card to hide the security deposits section
+        $('#noSecurityFund').click(function () {
+            $(this).addClass('selected');
+            $('#yesSecurityFund').removeClass('selected');
+            $('#additionalDataSection').hide();
+        });
 
         $('#yesLateFees').on('click', function () {
             $(this).addClass('selected');
@@ -1270,6 +1242,25 @@
             $('#yesLateFees').removeClass('selected');
             $('#lateFeesOptions').hide();
             $('#specifyPolicyFields').hide();
+        });
+
+
+        // Click event for Fixed Term card
+        $('#fixedTermCard').on('click', function () {
+            console.log("cick")
+            if (!$(this).hasClass('selected')) {
+                $('#fixedTermCard').addClass('selected').trigger('change');
+                $('#monthToMonthCard').removeClass('selected').trigger('change');
+            }
+        });
+
+        // Click event for Month to Month card
+        $('#monthToMonthCard').on('click', function () {
+            console.log("cick2")
+            if (!$(this).hasClass('selected')) {
+                $('#monthToMonthCard').addClass('selected').trigger('change');
+                $('#fixedTermCard').removeClass('selected').trigger('change');
+            }
         });
 
         $('input[type="radio"][name="lateFeePolicy"]').on('change', function () {
@@ -1364,8 +1355,8 @@
 
 
         // Call this function when the page loads to handle edit cases
-        //var isEditMode = $('#hiddenTenantId').val() !== ''; // Determine if in edit mode
-        //initializeUIBasedOnMode(isEditMode);
+        var isEditMode = $('#hiddenTenantId').val() !== ''; // Determine if in edit mode
+        // initializeUIBasedOnMode(isEditMode);
 
         $('#yesLateFees, #noLateFees').on('click', function () {
             // Hide the info box initially
@@ -1447,26 +1438,78 @@
         }
 
 
-        // if (isEditHasLease) {
+        if (isEditHasLease) {
+            var isFixedTerm = '@Model?.IsFixedTerm' ? '@Model?.IsFixedTerm'.toLowerCase() === 'true' : null;
+            if (isFixedTerm) {
+                $('#fixedTermCard').click();
+            } else {
+                $('#monthToMonthCard').click();
+            }
 
-        //     var applyLateFees = '@Model?.LateFeesPolicy' === 'true';
-        //     if (applyLateFees) {
-        //         $('#yesLateFees').click();
+            // Determine if you are in edit mode based on the existence of security deposits
+            var hasSecurityDeposits = securityDeposits.length > 0;
 
-        //         // Now decide which policy is used
-        //         var specifyPolicy = '@Model?.LateFeesPolicy' === 'true';
-        //         if (specifyPolicy) {
-        //             $('#specifyPolicy').prop('checked', true);
-        //             $('#specifyPolicyFields').show();
-        //         } else {
-        //             $('#usePropertyPolicy').prop('checked', true);
-        //         }
-        //     } else {
-        //         $('#noLateFees').click();
-        //     }
+            // Initial setup based on whether security deposits exist
+            if (hasSecurityDeposits) {
+                $('#yesSecurityFund').click();
+                //$('#additionalDataSection').show();
+            } else {
+                $('#noSecurityFund').click();
+                //$('#additionalDataSection').hide();
+            }
 
-        //     populateFeeCharges();
-        // }
+            var applyLateFees = '@Model?.LateFeesPolicy' === 'true';
+            if (applyLateFees) {
+                $('#yesLateFees').click();
+
+                // Now decide which policy is used
+                var specifyPolicy = '@Model?.LateFeesPolicy' === 'true';
+                if (specifyPolicy) {
+
+                    console.log("specifyPolicy")
+                    console.log(specifyPolicy)
+
+                    $('#specifyPolicy').prop('checked', true);
+                    $('#specifyPolicyFields').show();
+
+                    $('#feeChargeId').val(feeCharge.FeeChargeId);
+                    $('#dueDays').val(feeCharge.DueDays);
+                    $('#frequency').val(feeCharge.Frequency).trigger("change");
+                    $('#calculateFee').val(feeCharge.CalculateFee).trigger("change");
+                    $('#amount').val(feeCharge.Amount);
+                    var hasAdvanceOpt = feeCharge.ChartAccountId || feeCharge.Description;
+                    if (hasAdvanceOpt) {
+                        $('#advanceOpt').trigger("click");
+
+                        $('#chartAccount').val(feeCharge.ChartAccountId).trigger("change");
+                        $('#description').val(feeCharge.Description);
+                    }
+                    var hasAdvanceOptions = feeCharge.IsSendARemainder || feeCharge.IsNotifyTenants || feeCharge.IsEnableSms || feeCharge.IsChargeLateFee || feeCharge.IsMonthlyLimit || feeCharge.IsDailyLimit || feeCharge.MinimumBalance || feeCharge.IsChargeLateFeeonSpecific;
+                    if (hasAdvanceOptions) {
+                        $('#advanceOpt1').trigger("click");
+
+                        $('#sendARemainder').prop('checked', feeCharge.IsSendARemainder);
+                        $('#notifyTenants').prop('checked', feeCharge.IsNotifyTenants);
+                        $('#enableSms').prop('checked', feeCharge.IsEnableSms);
+                        $('#chargeLateFee').prop('checked', feeCharge.IsChargeLateFee);
+                        $('#monthlyLimit').prop('checked', feeCharge.IsMonthlyLimit);
+                        $('#dailyLimit').prop('checked', feeCharge.IsDailyLimit);
+                        $('#minimumBalance').val(feeCharge.MinimumBalance);
+                        $('#chargeLateFeeonSpecific').prop('checked', feeCharge.IsChargeLateFeeonSpecific);
+                    }
+                } 
+                else {
+                    $('#usePropertyPolicy').prop('checked', true);
+                }
+                
+
+            } else {
+                $('#noLateFees').click();
+            }
+
+
+            //populateFeeCharges();
+        }
     });
 
     function displaySelectedPropertyAndUnit(selectedPropertyId, selectedUnitId) {
@@ -1476,22 +1519,37 @@
     }
 
     function populateProperties(userId, selectedPropertyId) {
-        $.ajax({
-            url: '/Lease/ByUser',
-            method: 'GET',
-            data: { userId: userId },
+                $.ajax({
+            url: '@Url.Action("GetProperties", "Communication")',
+            type: 'GET',
+            dataType: 'json',
             success: function (properties) {
                 var $propertyDropdown = $('#propertyDropdown');
                 $propertyDropdown.empty().append('<option value="">Select Property</option>');
                 properties.forEach(function (property) {
-                    var option = `<option value="${property.AssetId}">${property.SelectedPropertyType}</option>`;
+                    var option = `<option value="${property.AssetId}">${property.BuildingNo} - ${property.BuildingName}</option>`;
                     $propertyDropdown.append(option);
                 });
-            },
-            error: function (error) {
-                console.error('Error fetching properties:', error.responseText || 'Unknown error');
+
             }
         });
+
+        // $.ajax({
+        //     url: '/Lease/ByUser',
+        //     method: 'GET',
+        //     data: { userId: userId },
+        //     success: function (properties) {
+        //         var $propertyDropdown = $('#propertyDropdown');
+        //         $propertyDropdown.empty().append('<option value="">Select Property</option>');
+        //         properties.forEach(function (property) {
+        //             var option = `<option value="${property.AssetId}">${property.SelectedPropertyType}</option>`;
+        //             $propertyDropdown.append(option);
+        //         });
+        //     },
+        //     error: function (error) {
+        //         console.error('Error fetching properties:', error.responseText || 'Unknown error');
+        //     }
+        // });
     }
 
     function populateUnits(propertyId, selectedUnitId) {
@@ -1686,18 +1744,7 @@
     });
 
 
-    $('#yesSecurityFund').click(function () {
-        $(this).addClass('selected');
-        $('#noSecurityFund').removeClass('selected');
-        $('#additionalDataSection').show();
-    });
 
-    // Click event handler for the "No" card to hide the security deposits section
-    $('#noSecurityFund').click(function () {
-        $(this).addClass('selected');
-        $('#yesSecurityFund').removeClass('selected');
-        $('#additionalDataSection').hide();
-    });
 
 
 
@@ -1710,11 +1757,13 @@
         var selectedPropertyText = isEditMode ? $("#selectedPropertyDisplay").val() : $("#propertyDropdown option:selected").text()
         var selectedUnitText = isEditMode ? $("#selectedUnitDisplay").val() : $("#unitDropdown option:selected").text()
 
-        var leaseId = $('#leaseId').val();
+        var leaseId = $('#hiddenLeaseId').val();
+        console.log("LeaseId");
+        console.log(leaseId);
         //var isEditMode = leaseId && leaseId > 0;
         var url = isEditMode ? '/Lease/Update/' : '/Lease/Create';
         var formData = new FormData(document.getElementById('multiStepForm'));
-        formData.append('LeaseId', leaseId);
+        formData.append('LeaseId', $('#hiddenLeaseId').val());
         formData.append('TenantIdValue', tenantId);
         formData.append('AppTenantId', appTenantId);
         formData.append('StartDate', $('#startDate').val());
@@ -1725,27 +1774,26 @@
         formData.append('HasSecurityDeposit', $('#yesSecurityFund').hasClass('selected') ? 'true' : 'false');
         // formData.append('LateFeesPolicy', $('#yesLateFees').hasClass('selected') ? 'true' : 'false');
         formData.append("SelectedProperty", selectedPropertyText);
-        formData.append("PropertyId", $('#propertyDropdown').val());
+        formData.append("AssetId", $('#propertyDropdown').val());
         formData.append("UnitId", $('#unitDropdown').val());
         formData.append("SelectedUnit", selectedUnitText);
-        alert("Hello! I am an alert box3!!");
+        
         if ($('#yesLateFees').hasClass('selected')) {
             formData.append('LateFeesPolicy', 'true');
-            formData.append('LeaseId', leaseId);
+            formData.append('FeeCharge.LeaseId', leaseId);
             formData.append("FeeCharge.FeeChargeId", $('#feeChargeId').val() || 0);
-            formData.append("FeeCharge.SpecifyLateFeeStructure", $('#specifyPolicy').is(':checked'));
+
             formData.append("FeeCharge.UsePropertyDefaultStructure", $('#usePropertyPolicy').is(':checked'));
-            formData.append("FeeCharge.DueDays", $("#dueDays").val());
-            formData.append("FeeCharge.Frequency", $('#frequency').val());
-            formData.append("FeeCharge.CalculateFee", $('#calculateFee').val());
-            formData.append("FeeCharge.Amount", $('#amount').val());
-            if ($('#advanceOption').is(':visible')) {
-                alert("Hello! I am an alert box!!");
+            formData.append("FeeCharge.SpecifyLateFeeStructure", $('#specifyPolicy').is(':checked'));
+            if ($('#specifyPolicy').is(':checked')) {
+                formData.append("FeeCharge.DueDays", $("#dueDays").val());
+                formData.append("FeeCharge.Frequency", $('#frequency').val());
+                formData.append("FeeCharge.CalculateFee", $('#calculateFee').val());
+                formData.append("FeeCharge.Amount", $('#amount').val());
+
                 formData.append("FeeCharge.ChartAccountId", $('#chartAccount').val());
                 formData.append("FeeCharge.Description", $('#description').val());
-            }
-            if ($("#advanceOption1").is(':visible')) {
-                alert("Hello! I am an alert box2!!");
+                
                 formData.append("FeeCharge.IsSendARemainder", $('#sendARemainder').is(':checked'));
                 formData.append("FeeCharge.IsNotifyTenants", $('#notifyTenants').is(':checked'));
                 formData.append("FeeCharge.IsEnableSms", $('#enableSms').is(':checked'));
@@ -1754,61 +1802,56 @@
                 formData.append("FeeCharge.IsDailyLimit", $('#dailyLimit').is(':checked'));
                 formData.append("FeeCharge.IsMinimumBalance", $('#minimumBalance').val());
                 formData.append("FeeCharge.IsChargeLateFeeonSpecific", $('#chargeLateFeeonSpecific').is(':checked'));
+
+                // if ($('#advanceOption').css('display') !== 'none') {
+                //     formData.append("ChartAccountId", $('#chartAccount').val());
+                //     formData.append("Description", $('#description').val());
+                // }
+                // if ($("#advanceOption1").hasClass('d-none')) {
+                //     formData.append("IsSendARemainder", $('#sendARemainder').is(':checked'));
+                //     formData.append("IsNotifyTenants", $('#notifyTenants').is(':checked'));
+                //     formData.append("IsEnableSms", $('#enableSms').is(':checked'));
+                //     formData.append("IsChargeLateFee", $('#chargeLateFee').is(':checked'));
+                //     formData.append("IsMonthlyLimit", $('#monthlyLimit').is(':checked'));
+                //     formData.append("IsDailyLimit", $('#dailyLimit').is(':checked'));
+                //     formData.append("IsMinimumBalance", $('#minimumBalance').val());
+                //     formData.append("IsChargeLateFeeonSpecific", $('#chargeLateFeeonSpecific').is(':checked'));
+                // }
             }
-        } else {
+            // formData.append("FeeCharge.UsePropertyDefaultStructure", $('#usePropertyPolicy').is(':checked'));
+            // formData.append("FeeCharge.SpecifyLateFeeStructure", $('#specifyPolicy').is(':checked'));
+            // formData.append("FeeCharge.DueDays", $("#dueDays").val());
+            // formData.append("FeeCharge.Frequency", $('#frequency').val());
+            // formData.append("FeeCharge.CalculateFee", $('#calculateFee').val());
+            // formData.append("FeeCharge.Amount", $('#amount').val());
+
+            // if ($('#advanceOption').is(':visible')) {
+            //     formData.append("ChartAccountId", $('#chartAccount').val());
+            //     formData.append("Description", $('#description').val());
+            // }
+            // if ($("#advanceOption1").is(':visible')) {
+            //     formData.append("IsSendARemainder", $('#sendARemainder').is(':checked'));
+            //     formData.append("IsNotifyTenants", $('#notifyTenants').is(':checked'));
+            //     formData.append("IsEnableSms", $('#enableSms').is(':checked'));
+            //     formData.append("IsChargeLateFee", $('#chargeLateFee').is(':checked'));
+            //     formData.append("IsMonthlyLimit", $('#monthlyLimit').is(':checked'));
+            //     formData.append("IsDailyLimit", $('#dailyLimit').is(':checked'));
+            //     formData.append("IsMinimumBalance", $('#minimumBalance').val());
+            //     formData.append("IsChargeLateFeeonSpecific", $('#chargeLateFeeonSpecific').is(':checked'));
+            // }
+            
+            
+            
+        } 
+        else {
             formData.append('LateFeesPolicy', 'false'); 
         }
 
-
-        // formData.append('LeaseId', leaseId);
-        // formData.append("FeeChargeId", $('#feeChargeId').val() || 0);
-        // formData.append("SpecifyLateFeeStructure", $('#specifyPolicy').is(':checked'));
-        // formData.append("UsePropertyDefaultStructure", $('#usePropertyPolicy').is(':checked'));
-        // formData.append("DueDays", $("#dueDays").val());
-        // formData.append("Frequency", $('#frequency').val());
-        // formData.append("CalculateFee", $('#calculateFee').val());
-        // formData.append("Amount", $('#amount').val());
-        // if ($('#advanceOption').is(':visible')) {
-        //     formData.append("ChartAccountId", $('#chartAccount').val());
-        //     formData.append("Description", $('#description').val());
-        // }
-        // if ($("#advanceOption1").is(':visible')) {
-        //     formData.append("IsSendARemainder", $('#sendARemainder').is(':checked'));
-        //     formData.append("IsNotifyTenants", $('#notifyTenants').is(':checked'));
-        //     formData.append("IsEnableSms", $('#enableSms').is(':checked'));
-        //     formData.append("IsChargeLateFee", $('#chargeLateFee').is(':checked'));
-        //     formData.append("IsMonthlyLimit", $('#monthlyLimit').is(':checked'));
-        //     formData.append("IsDailyLimit", $('#dailyLimit').is(':checked'));
-        //     formData.append("IsMinimumBalance", $('#minimumBalance').val());
-        //     formData.append("IsChargeLateFeeonSpecific", $('#chargeLateFeeonSpecific').is(':checked'));
-        // }
-        // // if ($('#lateFeesOptions').is(':visible')) {
-        // //     formData.append("SpecifyLateFeeStructure", $('#specifyLateFeeStructure').is(':checked'));
-        // //     formData.append("CompanyDefaultStructure", $('#companyDefaultStructure').is(':checked'));
-        // //     formData.append("DueDays", $("#dueDays").val());
-        // //     formData.append("Frequency", $('#frequency').val());
-        // //     formData.append("CalculateFee", $('#calculateFee').val());
-        // //     formData.append("Amount", $('#amount').val());
-        // //     if ($('#advanceOption').is(':visible')) {
-        // //         formData.append("ChartAccountId", $('#chartAccount').val());
-        // //         formData.append("Description", $('#description').val());
-        // //     }
-        // //     if ($("#advanceOption1").is(':visible')) {
-        // //         formData.append("IsSendARemainder", $('#sendARemainder').is(':checked'));
-        // //         formData.append("IsNotifyTenants", $('#notifyTenants').is(':checked'));
-        // //         formData.append("IsEnableSms", $('#enableSms').is(':checked'));
-        // //         formData.append("IsChargeLateFee", $('#chargeLateFee').is(':checked'));
-        // //         formData.append("IsMonthlyLimit", $('#monthlyLimit').is(':checked'));
-        // //         formData.append("IsDailyLimit", $('#dailyLimit').is(':checked'));
-        // //         formData.append("IsMinimumBalance", $('#minimumBalance').val());
-        // //         formData.append("IsChargeLateFeeonSpecific", $('#chargeLateFeeonSpecific').is(':checked'));
-        // //     }
-        // // }
        
-        if (globalTenantId > 0) {
-            // This is the edit scenario, append TenantId to formData
-            formData.append('TenantId', globalTenantId);
-        }
+        // if (globalTenantId > 0) {
+        //     // This is the edit scenario, append TenantId to formData
+        //     formData.append('TenantId', globalTenantId);
+        // }
 
 
         // Append Rent Charges and Security Deposits

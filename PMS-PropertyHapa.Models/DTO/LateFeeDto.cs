@@ -9,6 +9,7 @@ namespace PMS_PropertyHapa.Models.DTO
     public class LateFeeDto
     {
         public int LateFeeId { get; set; }
+        public bool ChargeLateFeeActive { get; set; }
         public int DueDays { get; set; }
         public string Frequency { get; set; }
         public string CalculateFee { get; set; }

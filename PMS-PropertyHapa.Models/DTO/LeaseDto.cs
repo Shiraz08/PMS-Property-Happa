@@ -16,7 +16,7 @@ namespace PMS_PropertyHapa.Models.DTO
         public DateTime EndDate { get; set; }
         public bool IsSigned { get; set; }
         public string SignatureImagePath { get; set; }
-        public int? PropertyId { get; set; }
+        public int? AssetId { get; set; }
         public string SelectedProperty { get; set; }
         public IEnumerable<AssetDTO> Assets { get; set; } 
         public IEnumerable<UnitDTO> SelectedUnits { get; set; }   

@@ -17,6 +17,7 @@ namespace PMS_PropertyHapa.Models.Entities
         public decimal Amount { get; set; }
         public int? ChartAccountId { get; set; }
         public string Description { get; set; }
+        public bool ChargeLateFeeActive { get; set; } = false;
         public bool IsSendARemainder { get; set; } = false;
         public bool IsNotifyTenants { get; set; } = false;
         public bool IsEnableSms { get; set; } = false;
