@@ -69,7 +69,12 @@ namespace PMS_PropertyHapa.Staff.Controllers
             }
             return Ok(document);
         }
-
         
+        public async Task<IActionResult> GetDocumentByAsset(int assetId)
+        {
+            var invoices = await _authService.GetDocumentByAssetAsync(assetId);
+            return Ok(invoices);
+        }
+
     }
 }

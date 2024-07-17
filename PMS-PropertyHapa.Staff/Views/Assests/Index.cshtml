@@ -126,23 +126,25 @@
                 <div class="col-lg-4 col-md-6">
                     <div class="card shadow-sm h-90">
                         <div class="card-body">
-                            <div class="d-flex align-items-center mb-3">
-                                @{
-                                    if (!string.IsNullOrEmpty(item.Image))
-                                    {
-                                        <img class="img-fluid rounded-1 property-img" src="@item.Image" alt="Property Image">
+                            <a id="propertyDetails" href="/Assests/AssetDetails/@item?.AssetId" class="text-decoration-none text-dark">
+                                <div class="d-flex align-items-center mb-3">
+                                    @{
+                                        if (!string.IsNullOrEmpty(item.Image))
+                                        {
+                                            <img class="img-fluid rounded-1 property-img" src="@item.Image" alt="Property Image">
+                                        }
+                                        else
+                                        {
+                                            <img class="img-fluid rounded-1 property-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRG_TUukNvS-0E486weXLkJDpTubsAcdHdmKw&usqp=CAU" alt="Default Image">
+                                        }
                                     }
-                                    else
-                                    {
-                                        <img class="img-fluid rounded-1 property-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRG_TUukNvS-0E486weXLkJDpTubsAcdHdmKw&usqp=CAU" alt="Default Image">
-                                    }
-                                }
-                                <div class="ms-3">
-                                    <h5 class="card-title">@item.BuildingNo - @item.BuildingName</h5>
-                                    <p class="card-text mb-0">@item.SelectedPropertyType</p>
-                                    <p class="card-text">@item.SelectedSubtype</p>
+                                    <div class="ms-3">
+                                        <h5 class="card-title">@item.BuildingNo - @item.BuildingName</h5>
+                                        <p class="card-text mb-0">@item.SelectedPropertyType</p>
+                                        <p class="card-text">@item.SelectedSubtype</p>
+                                    </div>
                                 </div>
-                            </div>
+                            </a>
 
                             <p class="card-text"><strong>Units:</strong> @item.Units.ToList().Count()</p>
                             @if (item.Units.Any())
@@ -159,23 +161,23 @@
                         </div>
                         <div class="card-footer bg-transparent border-top-0">
                             <div class="d-flex justify-content-between">
-                                <button type="button" class="btn btn-info btn-sm text-nowrap" onclick="openUnitsModal(@item?.AssetId)">
+                                <button type="button" class="btn btn-info btn-xs text-nowrap" onclick="openUnitsModal(@item?.AssetId)">
                                     <i class="fa fa-info-circle"></i> Unit Detail
                                 </button>
-                                <button type="button" class="btn btn-warning btn-sm text-nowrap" onclick="assetLateFee(@item.AssetId)">
+                                <button type="button" class="btn btn-warning btn-xs text-nowrap" onclick="assetLateFee(@item.AssetId)">
                                     <i class="fa fa-pencil"></i> Late Fee
                                 </button>
-                                <button type="button" class="btn btn-success btn-sm text-nowrap" onclick="editAsset(@item.AssetId)">
+                                <button type="button" class="btn btn-success btn-xs text-nowrap" onclick="editAsset(@item.AssetId)">
                                     <i class="fa fa-pencil"></i> Edit
                                 </button>
-                                <button type="button" class="btn btn-danger btn-sm text-nowrap" onclick="deleteAsset(@item.AssetId)">
+                                <button type="button" class="btn btn-danger btn-xs text-nowrap" onclick="deleteAsset(@item.AssetId)">
                                     <i class="fa fa-trash"></i> Delete
                                 </button>
                             </div>
                         </div>
 
                     </div>
-                </div>
+                </div> 
             }
 
         </div>

@@ -222,5 +222,11 @@ namespace PMS_PropertyHapa.Staff.Controllers
             }
             return Ok(lineItems);
         }
+
+        public async Task<IActionResult> GetExpenseByAsset(int assetId)
+        {
+            var invoices = await _authService.GetExpenseByAssetAsync(assetId);
+            return Ok(invoices);
+        }
     }
 }

@@ -145,7 +145,36 @@ namespace PMS_PropertyHapa.API.Controllers.V1
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
-        
+
+
+        [HttpGet("ExpenseByAsset")]
+        public async Task<ActionResult<TaskRequestDto>> GetExpenseByAssetAsync(int assetId)
+        {
+            try
+            {
+                var assets = await _userRepo.GetExpenseByAssetAsync(assetId);
+
+                if (assets != null)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = assets;
+                    return Ok(_response);
+                }
+                else
+                {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("No asset found with this id.");
+                    return NotFound(_response);
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
         [HttpGet("Tasks")]
         public async Task<ActionResult<TaskRequestDto>> GetTasks()
         {

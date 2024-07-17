@@ -182,5 +182,18 @@ namespace PMS_PropertyHapa.Staff.Controllers
             var currenUserId = Request?.Cookies["userId"]?.ToString();
             return Ok(unitDetails);
         }
+
+        public  IActionResult AssetDetails(int id)
+        {
+            ViewBag.assetId = id;
+            return View();
+        }
+        
+        public async Task<IActionResult> GetAssetById(int assetId)
+        {
+            var asset = await _authService.GetAssetByIdAsync(assetId);
+            return Ok(asset);
+        }
+        
     }
 }

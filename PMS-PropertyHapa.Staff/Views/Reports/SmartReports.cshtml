@@ -1,0 +1,213 @@
+﻿
+@{
+    ViewData["Title"] = "SmartReports";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+<div class="page-body">
+    <div class="container-fluid my-4">
+        <div class="page-title">
+            <div class="row mb-3">
+                <div class="col-12 col-sm-8 d-flex align-items-center">
+                    <h3 class="mb-0">Smart Reports</h3>
+                </div>
+                <div class="col-12 col-sm-2">
+                    <ol class="breadcrumb bg-transparent p-0">
+                        <li class="breadcrumb-item"><a href="/Home/Index"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item">Reports</li>
+                        <li class="breadcrumb-item active">List</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-12 project-list">
+            <div class="card">
+                <div class="row">
+                    <div class="col-md-12 p-0">
+                        <ul class="nav nav-tabs border-tab" id="top-tab" role="tablist">
+                            <li class="nav-item"><a class="nav-link active" id="allReports-tab" data-bs-toggle="tab" href="#allReports" role="tab" aria-controls="allReports" aria-selected="true"><i data-feather="target"></i>All</a></li>
+                            <li class="nav-item"><a class="nav-link" id="income-top-tab" data-bs-toggle="tab" href="#incomeReports" role="tab" aria-controls="incomeReports" aria-selected="false"><i data-feather="info"></i>Income</a></li>
+                            <li class="nav-item"><a class="nav-link" id="expense-top-tab" data-bs-toggle="tab" href="#expenseReports" role="tab" aria-controls="expenseReports" aria-selected="false"><i data-feather="check-circle"></i>Expense</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-3">
+                <label for="newProperty" class="form-label ">Property</label>
+                <select class="form-control select2" id="newProperty">
+                    <option value="">Select Property</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="newOwner" class="form-label ">Owner</label>
+                <select class="form-control select2" id="newOwner">
+                    <option value="">Select Owner</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="period" class="form-label">Type *</label>
+                <select class="form-control select2" id="period" name="Period">
+                    <option value="" selected disabled hidden>Select Period</option>
+                    <option value="thisMonth">This Month</option>
+                    <option value="lastMonth">LastMonth</option>
+                    <option value="thisFinancialYear">This Financial Year</option>
+                    <option value="lastFinancialYear">Last Financial Year</option>
+                    <option value="thisCalendarYear">This Calendar Year</option>
+                    <option value="lastCalendarYear">Last Calendar Year</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-sm-12 mt-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="tab-content" id="top-tabContent">
+
+                        <div class="tab-pane fade show active" id="allReports" role="tabpanel" aria-labelledby="allReports-tab">
+                            <div class="row">
+                                <div class="table-responsive">
+                                    <h3 class="card-title">All</h3>
+                                    <table class="table display" id="allReportsTable">
+                                        <thead>
+                                            <tr>
+                                                @* <th>Date Paid</th> *@
+                                                <th>Due Date</th>
+                                                <th>Payee</th>
+                                                <th>Category</th>
+                                                <th>Description</th>
+                                                <th>Property</th>
+                                                <th>Expense</th>
+                                                <th>Income</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="incomeReports" role="tabpanel" aria-labelledby="income-top-tab">
+                            <div class="row">
+                                <div class="table-responsive">
+                                    <h3 class="card-title">Income</h3>
+                                    <table class="table display" id="incomeReportsTable">
+                                        <thead>
+                                            <tr>
+                                                @* <th>Date Paid</th> *@
+                                                <th>Period</th>
+                                                <th>Payee</th>
+                                                <th>Category</th>
+                                                <th>Description</th>
+                                                <th>Property</th>
+                                                <th>Amount</th>
+                                                <th>Attachment</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="expenseReports" role="tabpanel" aria-labelledby="expense-top-tab">
+                            <div class="row">
+                                <div class="table-responsive">
+                                    <h3 class="card-title">Expense</h3>
+                                    <table class="table display" id="expenseReportsTable">
+                                        <thead>
+                                            <tr>
+                                                @* <th>Date Paid</th> *@
+                                                <th>Due Date</th>
+                                                <th>Payee</th>
+                                                <th>Category</th>
+                                                <th>Description</th>
+                                                <th>Property</th>
+                                                <th>Amount</th>
+                                                <th>Status</th>
+                                                <th>Attachment</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $$(document).ready(function () {
+        getAllReports();
+        getIncomeReports();
+        getExpenseReports();
+
+        $.ajax({
+            url: '@Url.Action("GetLandlordDll", "Landlord")',
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                var ownerDropdown = document.getElementById('newOwner');
+                // ownerDropdown.innerHTML = ''; // Clear existing options
+                data.forEach(function (item) {
+                    var option = new Option(item.FirstName + ' ' + item.LastName, item.OwnerId);
+                    ownerDropdown.appendChild(option);
+                });
+            }
+        });
+        $.ajax({
+            url: '@Url.Action("GetProperties", "Communication")',
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                var newPropertyDropdown = document.getElementById('newProperty');
+                // newPropertyDropdown.innerHTML = ''; // Clear existing options
+                data.forEach(function (item) {
+                    var option = new Option(item.BuildingNo + " - " + item.BuildingName, item.AssetId);
+                    newPropertyDropdown.appendChild(option);
+                });
+            }
+        });
+    });
+
+    function getAllReports() {
+        $('#allReportsTable').DataTable();
+    }
+    function getIncomeReports() {
+        $('#incomeReportsTable').DataTable();
+
+    }
+    function getExpenseReports() {
+        $('#expenseReportsTable').DataTable();
+
+    }
+    function populateUnits(propertyId, selectedUnit) {
+        $.ajax({
+            url: '/Lease/GetUnitsDll',
+            method: 'POST',
+            dataType: 'json',
+            data: { AssetIds: propertyId },
+            success: function (units) {
+                var newUnitDropdown = document.getElementById('newUnit');
+                $("#newUnit").empty();
+                units.forEach(function (unit) {
+                    var option = new Option(unit.UnitName, unit.UnitId);
+                    newUnitDropdown.appendChild(option);
+                });
+
+                if (selectedUnit) {
+                    $("#newUnit").val(selectedUnit).trigger("change")
+                }
+            },
+            error: function (error) {
+                console.error('Error fetching units:', error.responseText || 'Unknown error');
+            }
+        });
+    }
+</script>

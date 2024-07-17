@@ -272,6 +272,54 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             }
         }
 
+        [HttpGet("GetInvoicesByAsset/{assetId}")]
+        public async Task<ActionResult<InvoiceDto>> GetInvoicesByAsset(int assetId)
+        {
+            try
+            {
+                var lease = await _userRepo.GetInvoicesByAssetAsync(assetId);
+                if (lease != null)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = lease;
+                    return Ok(_response);
+                }
+                else
+                {
+                    return NotFound($"Lease with ID {assetId} not found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+        
+        [HttpGet("GetTenantHistoryByAsset/{assetId}")]
+        public async Task<ActionResult<LeaseDto>> GetTenantHistoryByAsset(int assetId)
+        {
+            try
+            {
+                var lease = await _userRepo.GetTenantHistoryByAssetAsync(assetId);
+                if (lease != null)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = lease;
+                    return Ok(_response);
+                }
+                else
+                {
+                    return NotFound($"Lease with ID {assetId} not found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
         #endregion
 
 

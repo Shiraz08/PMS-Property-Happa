@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using NuGet.ContentModel;
 using PMS_PropertyHapa.MigrationsFiles.Data;
 using PMS_PropertyHapa.Models;
 using PMS_PropertyHapa.Models.DTO;
@@ -79,6 +80,8 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
         Task<APIResponse> DeleteLeaseAsync(int leaseId);
         Task<List<LeaseDto>> GetAllLeasesAsync();
         Task<bool> UpdateLeaseAsync(LeaseDto leaseDto);
+        Task<List<InvoiceDto>> GetInvoicesByAssetAsync(int assetId);
+        Task<List<LeaseDto>> GetTenantHistoryByAssetAsync(int assetId);
 
 
         //Invoices 
@@ -188,6 +191,7 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
         Task<List<TaskRequestDto>> GetMaintenanceTasksAsync();
         Task<List<TaskRequestDto>> GetAllTaskRequestsAsync();
         Task<List<LineItemDto>> GetAllLineItemsAsync();
+        Task<List<TaskRequestDto>> GetExpenseByAssetAsync(int assetId);
         Task<List<TaskRequestDto>> GetTaskRequestsAsync();
         Task<TaskRequestDto> GetTaskByIdAsync(int id);
         Task<bool> SaveTaskAsync(TaskRequestDto taskRequestDto);
@@ -274,6 +278,7 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
         Task<DocumentsDto> GetDocumentByIdAsync(int id);
         Task<bool> SaveDocumentAsync(DocumentsDto document);
         Task<bool> DeleteDocumentAsync(int id);
+        Task<List<DocumentsDto>> GetDocumentByAssetAsync(int assetId);
 
         //SupportCenter
         Task<List<FAQ>> GetFAQsAsync();

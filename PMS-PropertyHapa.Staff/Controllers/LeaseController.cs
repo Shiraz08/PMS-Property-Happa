@@ -293,7 +293,17 @@ namespace PMS_PropertyHapa.Staff.Controllers
             return View(lease);
         }
 
-
+        public async Task<IActionResult> GetInvoicesByAsset(int assetId)
+        {
+            var invoices = await _authService.GetInvoicesByAsset(assetId);
+            return Ok(invoices);
+        }
+        
+        public async Task<IActionResult> GetTenantHistoryByAsset(int assetId)
+        {
+            var invoices = await _authService.GetTenantHistoryByAsset(assetId);
+            return Ok(invoices);
+        }
 
 
     }

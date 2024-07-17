@@ -1,0 +1,483 @@
+﻿@model IEnumerable<PMS_PropertyHapa.Models.DTO.AssetDTO>
+@{
+    ViewData["Title"] = "PropertyDetails";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var assetId = ViewBag.assetId;
+}
+<div class="page-body">
+    <div class="container-fluid my-4">
+        <div class="page-title">
+            <div class="row mb-3">
+                <div class="col-12 col-sm-8 d-flex align-items-center">
+                    <h3 class="mb-0">Assets</h3>
+                </div>
+                <div class="col-12 col-sm-2">
+                    <ol class="breadcrumb bg-transparent p-0">
+                        <li class="breadcrumb-item"><a href="/Home/Index"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item">Assets</li>
+                        <li class="breadcrumb-item active">List</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 project-list">
+            <div class="card">
+                <div class="row">
+                    <div class="col-md-12 p-0">
+                        <ul class="nav nav-tabs border-tab" id="top-tab" role="tablist">
+                            <li class="nav-item"><a class="nav-link active" id="assetOverview-tab" data-bs-toggle="tab" href="#assetOverview" role="tab" aria-controls="assetOverview" aria-selected="true"><i data-feather="target"></i>Overview</a></li>
+                            <li class="nav-item"><a class="nav-link" id="profile-top-tab" data-bs-toggle="tab" href="#assetRentScheduler" role="tab" aria-controls="assetRentScheduler" aria-selected="false"><i data-feather="info"></i>Rent Scheduler</a></li>
+                            <li class="nav-item"><a class="nav-link" id="profile-top-tab" data-bs-toggle="tab" href="#assetIncome" role="tab" aria-controls="assetIncome" aria-selected="false"><i data-feather="info"></i>Income</a></li>
+                            <li class="nav-item"><a class="nav-link" id="expense-top-tab" data-bs-toggle="tab" href="#assetExpense" role="tab" aria-controls="assetExpense" aria-selected="false"><i data-feather="check-circle"></i>Expense</a></li>
+                            <li class="nav-item"><a class="nav-link" id="tenancy-top-tab" data-bs-toggle="tab" href="#assetTenancy" role="tab" aria-controls="assetTenancy" aria-selected="false"><i data-feather="check-circle"></i>Tenancy History</a></li>
+                            <li class="nav-item"><a class="nav-link" id="reminders-top-tab" data-bs-toggle="tab" href="#assetReminders" role="tab" aria-controls="assetReminders" aria-selected="false"><i data-feather="check-circle"></i>Reminders</a></li>
+                            <li class="nav-item"><a class="nav-link" id="document-top-tab" data-bs-toggle="tab" href="#assetDocument" role="tab" aria-controls="assetDocument" aria-selected="false"><i data-feather="check-circle"></i>Document</a></li>
+@*                             <li class="nav-item"><a class="nav-link" id="notes-top-tab" data-bs-toggle="tab" href="#assetNotes" role="tab" aria-controls="assetNotes" aria-selected="false"><i data-feather="check-circle"></i>Notes</a></li>
+ *@                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-12 mt-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="tab-content" id="top-tabContent">
+                        <div class="tab-pane fade show active" id="assetOverview" role="tabpanel" aria-labelledby="assetOverview-tab">
+                            <div class="container mt-4">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="card mb-3">
+                                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRG_TUukNvS-0E486weXLkJDpTubsAcdHdmKw&usqp=CAU" style="width: 250px; height: 250px;" class="card-img-top" alt="Property Image">
+                                            <div class="card-body">
+                                                <h5 class="card-title" id="buildingName">Building Name</h5>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h3 class="card-title">Details</h3>
+                                                <div class="mb-3">
+                                                    <strong>Address 1:</strong> <span id="address1"></span><br>
+                                                    <strong>Address 2:</strong> <span id="address2"></span><br>
+                                                    <strong>Asset Type:</strong> <span id="assetType"></span><br>
+                                                    <strong>Ownership Option:</strong> <span id="ownershipOption"></span><br>
+                                                    <strong>Reserve Funds Option:</strong> <span id="reserveFundsOption"></span>
+                                                </div>
+                                                <h3 class="card-title">Owner Details</h3>
+                                                <div>
+                                                    <strong>Name:</strong> <span id="ownerName"></span><br>
+                                                    <strong>Phone:</strong> <span id="ownerPhone"></span><br>
+                                                    <strong>Email:</strong> <span id="ownerEmail"></span><br>
+                                                    <strong>Gender:</strong> <span id="ownerGender"></span><br>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="table-responsive">
+                                    <h3 class="card-title">Units</h3>
+                                    <table class="table display" id="unitsTable">
+                                        <thead>
+                                            <tr>
+                                                <th>Unit Name</th>
+                                                <th>Bath</th>
+                                                <th>Beds</th>
+                                                <th>Rent</th>
+                                                <th>Size</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="assetRentScheduler" role="tabpanel" aria-labelledby="profile-top-tab">
+                            <div class="row">
+                                <div class="table-responsive">
+                                    <h3 class="card-title">Rent Scheduler</h3>
+                                    <table class="table display" id="rentSchedulerTable">
+                                        <thead>
+                                            <tr>
+                                                <th>Tenant</th>
+                                                <th>Unit</th>
+                                                <th>Rent</th>
+                                                <th>Status</th>
+                                                <th>Create Date</th>
+                                                <th>Invoice Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="assetIncome" role="tabpanel" aria-labelledby="profile-top-tab">
+                            <div class="row">
+                                <div class="table-responsive">
+                                    <h3 class="card-title">Income</h3>
+                                    <table class="table display" id="incomeTable">
+                                        <thead>
+                                            <tr>
+                                                <th>Tenant</th>
+                                                <th>Unit</th>
+                                                <th>Amount</th>
+                                                <th>Invoice Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="assetExpense" role="tabpanel" aria-labelledby="expense-top-tab">
+                            <div class="row">
+                                <div class="table-responsive">
+                                    <h3 class="card-title">Expense</h3>
+                                    <table class="table display" id="expenseTable">
+                                        <thead>
+                                            <tr>
+                                                <th>Due Date</th>
+                                                <th>Category</th>
+                                                <th>Description</th>
+                                                <th>Amount</th>
+                                                <th>Unit</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="assetTenancy" role="tabpanel" aria-labelledby="tenancy-top-tab">
+                            <div class="table-responsive">
+                                <h3 class="card-title">Tenant History</h3>
+                                <table class="table display" id="tenantHistoryTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Tenant</th>
+                                            <th>Unit</th>
+                                            <th>Rent Amount</th>
+                                            <th>Frequency</th>
+                                            <th>Start Date</th>
+                                            <th>End Date</th>
+                                            <th>Total Period</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="assetReminders" role="tabpanel" aria-labelledby="reminders-top-tab">
+                            @* <div class="table-responsive">
+                                <h3 class="card-title">Reminders</h3>
+                                <table class="table display" id="reminderTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Tenant</th>
+                                            <th>Unit</th>
+                                            <th>Rent Amount</th>
+                                            <th>Frequency</th>
+                                            <th>Start Date</th>
+                                            <th>End Date</th>
+                                            <th>Total Period</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div> *@
+                            <div class="row">
+                                Content for Reminders tab
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="assetDocument" role="tabpanel" aria-labelledby="document-top-tab">
+                            <div class="table-responsive">
+                                <h3 class="card-title">Document</h3>
+                                <table class="table display" id="documentTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Unit</th>
+                                            <th>Date Uploaded</th>
+                                            <th>Title</th>
+                                            <th>Description</th>
+                                            <th>Attachment</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                       @*  <div class="tab-pane fade" id="assetNotes" role="tabpanel" aria-labelledby="notes-top-tab">
+                            <div class="row">
+                                 Content for Notes tab 
+                            </div>
+                        </div> *@
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<script>
+   
+    var assetId = '@ViewBag.assetId'
+    $(document).ready(function () {
+        getAssetDetail(assetId);
+        getAssetRentScheduler(assetId);
+        getAssetExpense(assetId);
+        getAssetTenantHistory(assetId);
+        getAssetDocument(assetId);
+    });
+
+
+    function getAssetDetail(assetId) {
+        $.ajax({
+            url: '@Url.Action("GetAssetById", "Assests")',
+            type: 'POST',
+            data: { assetId: assetId },
+            success: function (res) {
+                if (res.Image != null) {
+                    $("#assetImage").attr("src", res.Image);
+                } else {
+                    $("#assetImage").attr("src", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRG_TUukNvS-0E486weXLkJDpTubsAcdHdmKw&usqp=CAU");
+                }
+                $("#buildingName").html(res.BuildingNo + "-" + res.BuildingName);
+                $("#address1").html(res.State + "," + res.City + "," + res.Country);
+                $("#address2").html(res.Street1 + "," + res.Street2 + "," + res.Zipcode);
+                $("#assetType").html(res.SelectedPropertyType + "," + res.SelectedSubtype);
+                $("#ownershipOption").html(res.SelectedOwnershipOption);
+                $("#reserveFundsOption").html(res.SelectedReserveFundsOption);
+                var owner = res.OwnerData;
+                if (owner){
+                    $("#ownerName").html(owner.FirstName + " " + owner.MiddleName + " " + owner.LastName);
+                    $("#ownerPhone").html(owner.PhoneNumber);
+                    $("#ownerEmail").html(owner.EmailAddress);
+                    $("#ownerGender").html(owner.Gender);
+                }
+
+
+
+                if ($.fn.DataTable.isDataTable('#unitsTable')) {
+                    $('#unitsTable').DataTable().destroy();
+                }
+                $('#unitsTable tbody').empty();
+                res.Units.forEach(function (item) {
+                    $('#unitsTable tbody').append(`
+                            <tr>
+                                <td>${item.UnitName}</td>
+                                <td>${item.Bath}</td>
+                                <td>${item.Beds}</td>
+                                <td>${item.Rent}</td>
+                                <td>${item.Size}</td>
+                            </tr>
+                        `);
+                });
+
+                $('#unitsTable').DataTable();
+            },
+            error: function (xhr, status, error) {
+                console.error('Error:', error);
+                alert('Failed to retrieve data');
+            },
+        });
+    }
+    
+    function getAssetRentScheduler(assetId) {
+        $.ajax({
+            url: '@Url.Action("GetInvoicesByAsset", "Lease")',
+            type: 'POST',
+            data: { assetId: assetId },
+            success: function (res) {
+                if ($.fn.DataTable.isDataTable('#rentSchedulerTable')) {
+                    $('#rentSchedulerTable').DataTable().destroy();
+                }
+                $('#rentSchedulerTable tbody').empty();
+                res.forEach(function (item) {
+                    $('#rentSchedulerTable tbody').append(`
+                            <tr>
+                                <td>${item.TenantName}</td>
+                                <td>${item.Unit}</td>
+                                <td>${item.RentAmount}</td>
+                                <td>
+                                    ${item.InvoicePaid ? '<p class="text-left">PAID</p>' : `<button class="btn btn-primary" onclick="markInvoicePaid(${item.InvoiceId})">Mark as Paid</button > `}
+                                </td>
+                                <td>${moment(item.InvoiceCreatedDate).format('MM/DD/YYYY')}</td>
+                                <td>${moment(item.InvoiceDate).format('MM/DD/YYYY')}</td>
+                            </tr>
+                    `);
+                });
+
+                $('#rentSchedulerTable').DataTable();
+
+                if ($.fn.DataTable.isDataTable('#incomeTable')) {
+                    $('#incomeTable').DataTable().destroy();
+                }
+                $('#incomeTable tbody').empty();
+
+                res.forEach(function (item) {
+                    if (item.InvoicePaid) {
+                        $('#incomeTable tbody').append(`
+                            <tr>
+                                <td>${item.TenantName}</td>
+                                <td>${item.Unit}</td>
+                                <td>${item.RentAmount}</td>
+                                <td>${moment(item.InvoiceDate).format('MM/DD/YYYY')}</td>
+                            </tr>
+                        `);
+                    }
+                });
+
+                $('#incomeTable').DataTable();
+
+            },
+            error: function (xhr, status, error) {
+                console.error('Error:', error);
+                alert('Failed to retrieve data');
+            },
+        });
+    }
+
+    function getAssetExpense(assetId) {
+        $.ajax({
+            url: '@Url.Action("GetExpenseByAsset", "Task")',
+            type: 'POST',
+            data: { assetId: assetId },
+            success: function (res) {
+                console.log(res);
+                if ($.fn.DataTable.isDataTable('#expenseTable')) {
+                    $('#expenseTable').DataTable().destroy();
+                }
+                $('#expenseTable tbody').empty();
+                res.forEach(function (item) {
+                    if (item.LineItems != null && item.LineItems.length > 0) {
+                        const totalRentAmount = item.LineItems.reduce((sum, li) => sum + li.Price, 0);
+                        const formattedDueDate = item.DueDate ? moment(item.DueDate).format('MM/DD/YYYY') : '';
+                        $('#expenseTable tbody').append(`
+                            <tr>
+                                <td>${formattedDueDate}</td>
+                                <td>${item.Subject}</td>
+                                <td>${item.Description}</td>
+                                <td>${totalRentAmount.toFixed(2)}</td>
+                                <td>${item.Unit}</td>
+                            </tr>
+                        `);
+                    }
+                });
+
+                $('#expenseTable').DataTable();
+            },
+            error: function (xhr, status, error) {
+                console.error('Error:', error);
+                alert('Failed to retrieve data');
+            },
+        });
+    }
+
+    function getAssetTenantHistory(assetId) {
+        $.ajax({
+            url: '@Url.Action("GetTenantHistoryByAsset", "Lease")',
+            type: 'POST',
+            data: { assetId: assetId },
+            success: function (res) {
+                console.log(res);
+                if ($.fn.DataTable.isDataTable('#tenantHistoryTable')) {
+                    $('#tenantHistoryTable').DataTable().destroy();
+                }
+                $('#tenantHistoryTable tbody').empty();
+                res.forEach(function (item) {
+                    const totalRentAmount = item.TotalRentAmount;
+                    $('#tenantHistoryTable tbody').append(`
+                        <tr>
+                            <td>${item.Tenant.FirstName} ${item.Tenant.LastName}</td>
+                            <td>${item.SelectedUnit}</td>
+                            <td>${totalRentAmount.toFixed(2)}</td>
+                            <td>${item.Frequency}</td>
+                            <td>${moment(item.StartDate).format('MM/DD/YYYY')}</td>
+                            <td>${moment(item.EndDate).format('MM/DD/YYYY')}</td>
+                            <td>${calculateTotalDays(item.StartDate, item.EndDate)}</td>
+                        </tr>
+                    `);
+                });
+
+                $('#tenantHistoryTable').DataTable();
+            },
+            error: function (xhr, status, error) {
+                console.error('Error:', error);
+                alert('Failed to retrieve data');
+            },
+        });
+    }
+
+    function getAssetDocument(assetId) {
+        $.ajax({
+            url: '@Url.Action("GetDocumentByAsset", "Documents")',
+            type: 'POST',
+            data: { assetId: assetId },
+            success: function (res) {
+                console.log(res);
+                if ($.fn.DataTable.isDataTable('#documentTable')) {
+                    $('#documentTable').DataTable().destroy();
+                }
+                $('#documentTable tbody').empty();
+                res.forEach(function (item) {
+                    $('#documentTable tbody').append(`
+                            <tr>
+                                <td>${item.UnitName}</td>
+                                <td>${moment(item.CreatedDate).format('MM/DD/YYYY')}</td>
+                                <td>${item.Title}</td>
+                                <td>${item.Description}</td>
+                                <td><a href="${item.DocumentUrl}" target="_blank">${item.DocumentName}</a></td>
+                            </tr>
+                    `);
+                });
+
+                $('#documentTable').DataTable();
+            },
+            error: function (xhr, status, error) {
+                console.error('Error:', error);
+                alert('Failed to retrieve data');
+            },
+        });
+    }
+
+  
+
+    function calculateTotalDays(startDate, endDate) {
+        const start = moment(startDate);
+        const end = moment(endDate);
+        return end.diff(start, 'days');
+    }
+
+    function markInvoicePaid(id){
+        $.ajax({
+            url: '@Url.Action("InvoicePaid", "Lease")',
+            type: 'GET',
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            cache: false,
+            data: { invoiceId: id },
+            success: function (response) {
+                getAssetRentScheduler(assetId);
+            },
+            error: function (xhr) {
+                alert("Error..");
+            }
+        });
+    }
+
+
+</script>

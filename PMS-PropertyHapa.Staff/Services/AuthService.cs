@@ -1383,6 +1383,50 @@ namespace PMS_PropertyHapa.Staff.Services
             }
         }
 
+        public async Task<IEnumerable<InvoiceDto>> GetInvoicesByAsset(int assetId)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.GET,
+                    Url = $"{villaUrl}/api/v1/LeaseAuth/GetInvoicesByAsset/{assetId}"
+                });
+
+                if (response.IsSuccess && response.Result != null)
+                {
+                    return JsonConvert.DeserializeObject<IEnumerable<InvoiceDto>>(Convert.ToString(response.Result));
+                }
+                return new List<InvoiceDto>();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when in all paid invoices: {ex.Message}", ex);
+            }
+        }
+        
+        public async Task<IEnumerable<LeaseDto>> GetTenantHistoryByAsset(int assetId)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.GET,
+                    Url = $"{villaUrl}/api/v1/LeaseAuth/GetTenantHistoryByAsset/{assetId}"
+                });
+
+                if (response.IsSuccess && response.Result != null)
+                {
+                    return JsonConvert.DeserializeObject<IEnumerable<LeaseDto>>(Convert.ToString(response.Result));
+                }
+                return new List<LeaseDto>();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when in all paid invoices: {ex.Message}", ex);
+            }
+        }
+        
         public async Task<bool> AllInvoicePaidAsync(int leaseId)
         {
             try
@@ -1697,6 +1741,26 @@ namespace PMS_PropertyHapa.Staff.Services
             {
                 var userListJson = Convert.ToString(response.Result);
                 var asset = JsonConvert.DeserializeObject<IEnumerable<LineItemDto>>(userListJson);
+                return asset;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve task data");
+            }
+        }
+        public async Task<IEnumerable<TaskRequestDto>> GetExpenseByAssetAsync(int assetId)
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = $"{villaUrl}/api/v1/TaskAuth/ExpenseByAsset"
+            });
+
+            if (response.IsSuccess == true)
+            {
+                var userListJson = Convert.ToString(response.Result);
+                var asset = JsonConvert.DeserializeObject<IEnumerable<TaskRequestDto>>(userListJson);
                 return asset;
             }
             else
@@ -2790,6 +2854,25 @@ namespace PMS_PropertyHapa.Staff.Services
             }
         }
 
+        public async Task<IEnumerable<DocumentsDto>> GetDocumentByAssetAsync(int assetId)
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = $"{villaUrl}/api/v1/DocumentsAuth/GetDocumentByAsset/{assetId}"
+            });
+            if (response.IsSuccess == true)
+            {
+                var userListJson = Convert.ToString(response.Result);
+                var asset = JsonConvert.DeserializeObject<IEnumerable<DocumentsDto>>(userListJson);
+                return asset;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve documents data");
+            }
+        }
         #endregion
 
         #region SupportCenter

@@ -28,6 +28,10 @@ namespace PMS_PropertyHapa.Staff.Controllers
         {
             return View();
         }
+        public IActionResult SmartReports()
+        {
+            return View();
+        }
 
 
         [HttpPost]
