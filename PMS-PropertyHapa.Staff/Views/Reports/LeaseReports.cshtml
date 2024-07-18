@@ -1,110 +1,110 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "LeaseReports";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<!-- Page Sidebar Ends-->
 <div class="page-body">
     <div class="container-fluid">
         <div class="page-title">
             <div class="row">
                 <div class="col-12 col-sm-6">
-                    <h3>Lease Report</h3>
+                    <h3>Lease Reports</h3>
                 </div>
                 <div class="col-12 col-sm-6">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="/Reports/Index"><i data-feather="home"></i></a></li>
-                        <li class="breadcrumb-item">Lease</li>
+                        <li class="breadcrumb-item">Reports</li>
                         <li class="breadcrumb-item active">List</li>
                     </ol>
                 </div>
             </div>
         </div>
     </div>
-
-    <div class="container-fluid my-4">
-        <div class="row">
-            <!-- Column 1: Properties Table (80% on lg screens) -->
-            <div class="col-12 col-md-12 mb-4">
-                <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <h4 class="card-title mb-0 flex-grow-1 font-weight-bold">Filters</h4>
-                    </div>
-                    <div class="card-body">
-                        <div class="row mt-1 d-flex">
-                            <div class="col-lg-4 col-md-4">
-                                <div class="row">
-                                    <label class="col-sm-12 mb-0 font-weight-bold">Property</label>
-                                    <div col-sm-12>
-                                        <select id="reportPropertyFilter" multiple name="reportPropertyFilter" class="form-control select2"></select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-4 col-md-4">
-                                <div class="row">
-                                    <label class="col-sm-12 mb-0 font-weight-bold">Unit</label>
-                                    <div col-sm-12>
-                                        <select id="reportUnitFilter" multiple name="reportUnitFilter" class="form-control select2"></select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-4 col-md-4">
-                                <div class="row">
-                                    <label class="col-sm-12 mb-0 font-weight-bold">MoveIn/MoveOut Date</label>
-                                    <div class="col-sm-12">
-                                        <input type="text" class="form-control" id="createdAtRange" />
-                                    </div>
-                                </div>
+    <div class="col-md-12 project-list">
+        <div class="card">
+            <div class="row">
+                <div class="col-md-12 p-0">
+                    <ul class="nav nav-tabs border-tab" id="top-tab" role="tablist">
+                        <li class="nav-item"><a class="nav-link active" id="income-top-tab" data-bs-toggle="tab" href="#leaseReports" role="tab" aria-controls="leaseReports" aria-selected="false"><i data-feather="info"></i>Overview</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-12 mt-4">
+        <div class="tab-content" id="top-tabContent">
+            <div class="tab-pane fade show active" id="leaseReports" role="tabpanel" aria-labelledby="income-top-tab">
+                <div class="row mb-3">
+         @*            <div class="col-md-3 mt-4">
+                        <div class="left-side-header">
+                            <div class="input-group">
+                                <span class="input-group-text" id="basic-addon1">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <g>
+                                            <g>
+                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M11.2753 2.71436C16.0029 2.71436 19.8363 6.54674 19.8363 11.2753C19.8363 16.0039 16.0029 19.8363 11.2753 19.8363C6.54674 19.8363 2.71436 16.0039 2.71436 11.2753C2.71436 6.54674 6.54674 2.71436 11.2753 2.71436Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M19.8987 18.4878C20.6778 18.4878 21.3092 19.1202 21.3092 19.8983C21.3092 20.6783 20.6778 21.3097 19.8987 21.3097C19.1197 21.3097 18.4873 20.6783 18.4873 19.8983C18.4873 19.1202 19.1197 18.4878 19.8987 18.4878Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                            </g>
+                                        </g>
+                                    </svg>
+                                </span>
+                                <input class="form-control" type="text" id="searchInput" placeholder="Search" aria-label="search" aria-describedby="basic-addon1">
                             </div>
                         </div>
-                    </div>
-                    <div class="card-footer text-end d-flex justify-content-end">
-                        <button onclick="clearFilters()" type="button" class="btn btn-danger mr-2 font-weight-bold" style="padding-left: 2.75rem  !important; padding-right: 2.75rem  !important;">Clear</button>
-                        <button onclick="applyFilters()" type="button" class="btn btn-success font-weight-bold" style="padding-left: 2.75rem  !important; padding-right: 2.75rem  !important;">Apply</button>
-                    </div>
-                    <div class="card-body">
-                        <div class="d-flex justify-content-start mb-3">
-                            <button id="copyButton" class="btn btn-success mr-1">Copy</button>
-                            <button id="csvButton" class="btn btn-success mr-1">CSV</button>
-                            <button id="excelButton" class="btn btn-success mr-1">Excel</button>
-                            <button id="pdfButton" class="btn btn-success mr-1">PDF</button>
-                            <button id="printButton" class="btn btn-success mr-1">Print</button>
+                    </div> *@
+                    <div class="col-md-3">
+                        <label class="col-sm-12 mb-0 font-weight-bold">Property</label>
+                        <div col-sm-12>
+                            <select id="reportPropertyFilter" multiple name="reportPropertyFilter" class="form-control select2"></select>
                         </div>
-                        <div class="table-responsive">
-                            <table class="table" id="leaseReportsTbl">
-                                <thead>
-                                    <tr>
-                                        <th scope="col" class="tableHeaderbg">Lease</th>
-                                        <th scope="col" class="tableHeaderbg">Start Date</th>
-                                        <th scope="col" class="tableHeaderbg">End Date</th>
-                                        <th scope="col" class="tableHeaderbg">Status</th>
-                                        <th scope="col" class="tableHeaderbg">Property</th>
-                                        <th scope="col" class="tableHeaderbg">Unit</th>
-                                        <th scope="col" class="tableHeaderbg">Rent Charges</th>
-                                        <th scope="col" class="tableHeaderbg">Security Deposit</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="col-sm-12 mb-0 font-weight-bold">Unit</label>
+                        <div col-sm-12>
+                            <select id="reportUnitFilter" multiple name="reportUnitFilter" class="form-control select2"></select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="col-sm-12 mb-0 font-weight-bold">MoveIn/MoveOut Date</label>
+                        <div class="col-sm-12">
+                            <input type="text" class="form-control" id="createdAtRange" />
                         </div>
                     </div>
                 </div>
-            </div>
 
+                <div class="card mt-3">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="table-responsive">
+                                <h3 class="card-title">Lease Report</h3>
+                                <table class="table display" id="leaseReportsTbl">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col" class="tableHeaderbg">Lease</th>
+                                            <th scope="col" class="tableHeaderbg">Start Date</th>
+                                            <th scope="col" class="tableHeaderbg">End Date</th>
+                                            <th scope="col" class="tableHeaderbg">Status</th>
+                                            <th scope="col" class="tableHeaderbg">Property</th>
+                                            <th scope="col" class="tableHeaderbg">Unit</th>
+                                            <th scope="col" class="tableHeaderbg">Rent Charges</th>
+                                            <th scope="col" class="tableHeaderbg">Security Deposit</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
         </div>
     </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
 
- <script>
+<script>
     var propertiesIdsList = [];
     var unitsIdsList = [];
     var leaseStartDateFilter = null;
@@ -114,12 +114,14 @@
         initDatePickers();
         populateDropDowns();
         loadLeaseDataTable();
+        $('#reportUnitFilter').on('change', applyFilters)
         $('#reportPropertyFilter').on('change', function () {
             if ($("#reportPropertyFilter").val() != null) {
                 populateUnits($("#reportPropertyFilter").val().join(','));
             } else {
                 $("#reportPropertyFilter").empty();
             }
+            applyFilters();
         });
     });
 
@@ -137,10 +139,12 @@
 
         $('#createdAtRange').on('apply.daterangepicker', function (ev, picker) {
             $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+            applyFilters();
         });
 
         $('#createdAtRange').on('cancel.daterangepicker', function (ev, picker) {
             $(this).val('');
+            applyFilters();
         });
     };
 
@@ -149,11 +153,11 @@
             url: '/Lease/GetUnitsDll',
             method: 'POST',
             data: { AssetIds: propertyIds },
-            dataType: 'json', 
+            dataType: 'json',
             success: function (response) {
                 var units = response;
                 var $reportUnitFilter = $('#reportUnitFilter');
-                $reportUnitFilter.empty(); 
+                $reportUnitFilter.empty();
 
                 units.forEach(function (unit) {
                     var option = `<option value="${unit.UnitId}">${unit.UnitName}</option>`;
@@ -161,7 +165,7 @@
                 });
             },
             error: function (xhr, status, error) {
-                console.error('Error fetching units:', error); 
+                console.error('Error fetching units:', error);
             }
         });
     }
@@ -180,20 +184,6 @@
                 });
             }
         });
-    }
-
-
-    function clearFilters() {
-        $("#reportPropertyFilter").empty();
-        populateDropDowns();
-        $("#reportUnitFilter").empty();
-        $("#createdAtRange").val('');
-        propertiesIdsList = [];
-        unitsIdsList = [];
-        leaseStartDateFilter = null;
-        leaseEndDateFilter = null;
-        $("#leaseReportsTbl tbody").empty();
-        loadLeaseDataTable();
     }
 
 
@@ -269,81 +259,4 @@
         });
     }
 
-    function exportToCSV() {
-        var csv = [];
-        var rows = document.querySelectorAll("table tr");
-        for (var i = 0; i < rows.length; i++) {
-            var row = [], cols = rows[i].querySelectorAll("td, th");
-            for (var j = 0; j < cols.length; j++)
-                row.push(cols[j].innerText);
-            csv.push(row.join(","));
-        }
-        downloadCSV(csv.join("\n"), 'LeaseReport.csv');
-    }
-
-    function downloadCSV(csv, filename) {
-        var csvFile;
-        var downloadLink;
-        csvFile = new Blob([csv], { type: "text/csv" });
-        downloadLink = document.createElement("a");
-        downloadLink.download = filename;
-        downloadLink.href = window.URL.createObjectURL(csvFile);
-        downloadLink.style.display = "none";
-        document.body.appendChild(downloadLink);
-        downloadLink.click();
-    }
-
-
-
-    function exportToPDF() {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-
-        doc.autoTable({ html: '#leaseReportsTbl' });
-        doc.save('LeaseReport.pdf');
-    }
-
-    $('#copyButton').on('click', function () {
-        var text = $("#leaseReportsTbl").clone().find('th, td').each(function () {
-            $(this).text($(this).text());
-        }).end().prop('outerHTML');
-
-        var $temp = $("<textarea>");
-        $("body").append($temp);
-        $temp.val(text).select();
-        document.execCommand("copy");
-        $temp.remove();
-
-        Swal.fire({
-            icon: 'success',
-            title: 'Copied to Clipboard',
-            showConfirmButton: false,
-            timer: 1500
-        });
-    });
-
-    function printTable() {
-        window.print();
-    }
-
-
-    $('#csvButton').on('click', function () {
-        exportToCSV();
-    });
-
-    $('#excelButton').on('click', function () {
-        var wb = XLSX.utils.table_to_book(document.getElementById('leaseReportsTbl'), { sheet: "Sheet1" });
-        XLSX.writeFile(wb, "LeaseReport.xlsx");
-    });
-
-    $('#pdfButton').on('click', function () {
-        exportToPDF();
-    });
-
-    $('#printButton').on('click', function () {
-        printTable();
-    });
-
-
-
- </script>
+</script>

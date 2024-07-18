@@ -4,6 +4,7 @@ using PMS_PropertyHapa.Models.DTO;
 using System.Threading.Tasks;
 using PMS_PropertyHapa.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
+using static PMS_PropertyHapa.Models.DTO.TenantModelDto;
 
 namespace PMS_PropertyHapa.Staff.Services.IServices
 {
@@ -32,6 +33,9 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
         Task<bool> CreateTenantAsync(TenantModelDto tenant);
         Task<bool> UpdateTenantAsync(TenantModelDto tenant);
         Task<APIResponse> DeleteTenantAsync(int tenantId);
+        Task<IEnumerable<PetDto>> GetTenantPets(ReportFilter reportFilter);
+        Task<IEnumerable<VehicleDto>> GetTenantVehicles(ReportFilter reportFilter);
+        Task<IEnumerable<TenantDependentDto>> GetTenantDependents(ReportFilter reportFilter);
 
 
 

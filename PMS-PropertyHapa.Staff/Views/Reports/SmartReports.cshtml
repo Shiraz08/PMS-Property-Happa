@@ -34,38 +34,54 @@
                 </div>
             </div>
         </div>
-        <div class="row mb-3">
-            <div class="col-md-3">
-                <label for="newProperty" class="form-label ">Property</label>
-                <select class="form-control select2" id="newProperty">
-                    <option value="">Select Property</option>
-                </select>
-            </div>
-            <div class="col-md-3">
-                <label for="newOwner" class="form-label ">Owner</label>
-                <select class="form-control select2" id="newOwner">
-                    <option value="">Select Owner</option>
-                </select>
-            </div>
-            <div class="col-md-3">
-                <label for="period" class="form-label">Type *</label>
-                <select class="form-control select2" id="period" name="Period">
-                    <option value="" selected disabled hidden>Select Period</option>
-                    <option value="thisMonth">This Month</option>
-                    <option value="lastMonth">LastMonth</option>
-                    <option value="thisFinancialYear">This Financial Year</option>
-                    <option value="lastFinancialYear">Last Financial Year</option>
-                    <option value="thisCalendarYear">This Calendar Year</option>
-                    <option value="lastCalendarYear">Last Calendar Year</option>
-                </select>
-            </div>
-        </div>
         <div class="col-sm-12 mt-4">
-            <div class="card">
-                <div class="card-body">
-                    <div class="tab-content" id="top-tabContent">
-
-                        <div class="tab-pane fade show active" id="allReports" role="tabpanel" aria-labelledby="allReports-tab">
+            <div class="tab-content" id="top-tabContent">
+                <div class="tab-pane fade show active" id="allReports" role="tabpanel" aria-labelledby="allReports-tab">
+                    <div class="row mb-3">
+                        <div class="col-md-3 mt-4">
+                            <div class="left-side-header">
+                                <div class="input-group">
+                                    <span class="input-group-text" id="basic-addon1">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <g>
+                                                <g>
+                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M11.2753 2.71436C16.0029 2.71436 19.8363 6.54674 19.8363 11.2753C19.8363 16.0039 16.0029 19.8363 11.2753 19.8363C6.54674 19.8363 2.71436 16.0039 2.71436 11.2753C2.71436 6.54674 6.54674 2.71436 11.2753 2.71436Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M19.8987 18.4878C20.6778 18.4878 21.3092 19.1202 21.3092 19.8983C21.3092 20.6783 20.6778 21.3097 19.8987 21.3097C19.1197 21.3097 18.4873 20.6783 18.4873 19.8983C18.4873 19.1202 19.1197 18.4878 19.8987 18.4878Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                </g>
+                                            </g>
+                                        </svg>
+                                    </span>
+                                    <input class="form-control" type="text" id="searchInput" placeholder="Search" aria-label="search" aria-describedby="basic-addon1">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="newProperty" class="form-label ">Property</label>
+                            <select class="form-control select2" id="newProperty">
+                                <option value="">Select Property</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="newOwner" class="form-label ">Owner</label>
+                            <select class="form-control select2" id="newOwner">
+                                <option value="">Select Owner</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="period" class="form-label">Period</label>
+                            <select class="form-control select2" id="period" name="Period">
+                                <option value="" selected disabled hidden>Select Period</option>
+                                <option value="thisMonth">This Month</option>
+                                <option value="lastMonth">LastMonth</option>
+                                <option value="thisFinancialYear">This Financial Year</option>
+                                <option value="lastFinancialYear">Last Financial Year</option>
+                                <option value="thisCalendarYear">This Calendar Year</option>
+                                <option value="lastCalendarYear">Last Calendar Year</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
                             <div class="row">
                                 <div class="table-responsive">
                                     <h3 class="card-title">All</h3>
@@ -88,7 +104,40 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="tab-pane fade" id="incomeReports" role="tabpanel" aria-labelledby="income-top-tab">
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="incomeReports" role="tabpanel" aria-labelledby="income-top-tab">
+                    <div class="row mb-3">
+                        <div class="col-md-3 mt-4">
+                            <div class="left-side-header">
+                                <div class="input-group">
+                                    <span class="input-group-text" id="basic-addon1">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <g>
+                                                <g>
+                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M11.2753 2.71436C16.0029 2.71436 19.8363 6.54674 19.8363 11.2753C19.8363 16.0039 16.0029 19.8363 11.2753 19.8363C6.54674 19.8363 2.71436 16.0039 2.71436 11.2753C2.71436 6.54674 6.54674 2.71436 11.2753 2.71436Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M19.8987 18.4878C20.6778 18.4878 21.3092 19.1202 21.3092 19.8983C21.3092 20.6783 20.6778 21.3097 19.8987 21.3097C19.1197 21.3097 18.4873 20.6783 18.4873 19.8983C18.4873 19.1202 19.1197 18.4878 19.8987 18.4878Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                </g>
+                                            </g>
+                                        </svg>
+                                    </span>
+                                    <input class="form-control" type="text" id="searchInput" placeholder="Search" aria-label="search" aria-describedby="basic-addon1">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="right-side-header">
+                                <select class="form-control select2" id="dueRent" name="DueRent">
+                                    <option value="rentReceived">Rent Received This Month</option>
+                                    <option value="rentDue">Rent Due This Month</option>
+                                    <option value="allOverdueRent">All Overdue Rent</option>
+                                </select>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
                             <div class="row">
                                 <div class="table-responsive">
                                     <h3 class="card-title">Income</h3>
@@ -111,28 +160,57 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="tab-pane fade" id="expenseReports" role="tabpanel" aria-labelledby="expense-top-tab">
-                            <div class="row">
-                                <div class="table-responsive">
-                                    <h3 class="card-title">Expense</h3>
-                                    <table class="table display" id="expenseReportsTable">
-                                        <thead>
-                                            <tr>
-                                                @* <th>Date Paid</th> *@
-                                                <th>Due Date</th>
-                                                <th>Payee</th>
-                                                <th>Category</th>
-                                                <th>Description</th>
-                                                <th>Property</th>
-                                                <th>Amount</th>
-                                                <th>Status</th>
-                                                <th>Attachment</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                        </tbody>
-                                    </table>
+                    </div>
+                            
+                </div>
+                <div class="tab-pane fade" id="expenseReports" role="tabpanel" aria-labelledby="expense-top-tab">
+                    <div class="row mb-3">
+                        <div class="col-md-3 mt-4">
+                            <div class="left-side-header">
+                                <div class="input-group">
+                                    <span class="input-group-text" id="basic-addon1">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <g>
+                                                <g>
+                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M11.2753 2.71436C16.0029 2.71436 19.8363 6.54674 19.8363 11.2753C19.8363 16.0039 16.0029 19.8363 11.2753 19.8363C6.54674 19.8363 2.71436 16.0039 2.71436 11.2753C2.71436 6.54674 6.54674 2.71436 11.2753 2.71436Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M19.8987 18.4878C20.6778 18.4878 21.3092 19.1202 21.3092 19.8983C21.3092 20.6783 20.6778 21.3097 19.8987 21.3097C19.1197 21.3097 18.4873 20.6783 18.4873 19.8983C18.4873 19.1202 19.1197 18.4878 19.8987 18.4878Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                </g>
+                                            </g>
+                                        </svg>
+                                    </span>
+                                    <input class="form-control" type="text" id="searchInput" placeholder="Search" aria-label="search" aria-describedby="basic-addon1">
                                 </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <select class="form-control select2" id="dueExpense" name="DueExpense">
+                                <option value="expensePaid">Expense Paid This Month</option>
+                                <option value="expenseDue">Expense Due This Month</option>
+                                <option value="allOverdueExpense">All Overdue Expense</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <h3 class="card-title">Expense</h3>
+                                <table class="table display" id="expenseReportsTable">
+                                    <thead>
+                                        <tr>
+                                            @* <th>Date Paid</th> *@
+                                            <th>Due Date</th>
+                                            <th>Payee</th>
+                                            <th>Category</th>
+                                            <th>Description</th>
+                                            <th>Property</th>
+                                            <th>Amount</th>
+                                            <th>Status</th>
+                                            <th>Attachment</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -144,9 +222,17 @@
 
 <script>
     $$(document).ready(function () {
-        getAllReports();
-        getIncomeReports();
-        getExpenseReports();
+        $('#searchInput').on('input', function () {
+            var searchText = $(this).val().toLowerCase();
+            $('.nav-link').each(function () {
+                var ownerName = $(this).find('.first_name_0').text().toLowerCase() + ' ' + $(this).find('.last_name_0').text().toLowerCase();
+                if (ownerName.includes(searchText)) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        });
 
         $.ajax({
             url: '@Url.Action("GetLandlordDll", "Landlord")',
@@ -174,6 +260,10 @@
                 });
             }
         });
+
+        getAllReports();
+        getIncomeReports();
+        getExpenseReports();
     });
 
     function getAllReports() {

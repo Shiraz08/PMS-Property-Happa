@@ -1190,7 +1190,7 @@ namespace MagicVilla_VillaAPI.Repository
             }
 
         }
-
+        
         public async Task<List<TenantModelDto>> GetTenantsByIdAsync(string tenantId)
         {
             var tenants = await _db.Tenant
@@ -1406,7 +1406,9 @@ namespace MagicVilla_VillaAPI.Repository
                         Type = petDto.Type,
                         Quantity = petDto.Quantity,
                         Picture = petDto.PictureName,
-                        AppTenantId = tenantDto.AppTenantId
+                        AppTenantId = tenantDto.AppTenantId,
+                        AddedBy = tenantDto.AddedBy,
+                        AddedDate = DateTime.Now
                     };
 
                     _db.Pets.Add(pet);
@@ -1453,7 +1455,9 @@ namespace MagicVilla_VillaAPI.Repository
                         PhoneNumber = dependentDto.PhoneNumber,
                         DOB = dependentDto.DOB,
                         Relation = dependentDto.Relation,
-                        AppTenantId = tenantDto.AppTenantId
+                        AppTenantId = tenantDto.AppTenantId,
+                        AddedBy = tenantDto.AddedBy,
+                        AddedDate = DateTime.Now
                     };
 
                     _db.TenantDependent.Add(dependent);
@@ -1478,7 +1482,9 @@ namespace MagicVilla_VillaAPI.Repository
                         Region = coTenantDto.Region,
                         PostalCode = coTenantDto.PostalCode,
                         Country = coTenantDto.Country,
-                        AppTenantId = tenantDto.AppTenantId
+                        AppTenantId = tenantDto.AppTenantId,
+                        AddedBy = tenantDto.AddedBy,
+                        AddedDate = DateTime.Now
                     };
 
                     _db.CoTenant.Add(coTenant);
@@ -1543,6 +1549,8 @@ namespace MagicVilla_VillaAPI.Repository
                     existingPet.Quantity = petDto.Quantity;
                     existingPet.Picture = petDto.PictureName;
                     existingPet.AppTenantId = petDto.AppTenantId;
+                    existingPet.ModifiedBy = tenantDto.AddedBy;
+                    existingPet.ModifiedDate = DateTime.Now;
 
                     if (petDto.Picture != null)
                     {
@@ -1560,7 +1568,9 @@ namespace MagicVilla_VillaAPI.Repository
                         Type = petDto.Type,
                         Quantity = petDto.Quantity,
                         Picture = petDto.PictureName,
-                        AppTenantId = tenantDto.AppTenantId
+                        AppTenantId = tenantDto.AppTenantId,
+                        AddedBy = tenantDto.AddedBy,
+                        AddedDate = DateTime.Now
                     };
                     tenant.Pets.Add(newPet);
                     await _db.SaveChangesAsync();
@@ -1612,6 +1622,8 @@ namespace MagicVilla_VillaAPI.Repository
                     existingDependent.DOB = dependentDto.DOB;
                     existingDependent.Relation = dependentDto.Relation;
                     existingDependent.AppTenantId = tenantDto.AppTenantId;
+                    existingDependent.ModifiedDate = DateTime.Now;
+                    existingDependent.ModifiedBy = tenantDto.AddedBy;
                 }
                 else
                 {
@@ -1624,7 +1636,9 @@ namespace MagicVilla_VillaAPI.Repository
                         PhoneNumber = dependentDto.PhoneNumber,
                         DOB = dependentDto.DOB,
                         Relation = dependentDto.Relation,
-                        AppTenantId = tenantDto.AppTenantId
+                        AppTenantId = tenantDto.AppTenantId,
+                        AddedBy = tenantDto.AddedBy,
+                        AddedDate = DateTime.Now
                     };
                     tenant.TenantDependent.Add(newDependent);
                 }
@@ -1649,6 +1663,8 @@ namespace MagicVilla_VillaAPI.Repository
                     existingCoTenant.IsDeleted = false;
                     existingCoTenant.Status = true;
                     existingCoTenant.AppTenantId = tenantDto.AppTenantId;
+                    existingCoTenant.ModifiedBy = tenantDto.AddedBy;
+                    existingCoTenant.ModifiedDate = DateTime.Now;
                 }
                 else
                 {
@@ -1668,7 +1684,9 @@ namespace MagicVilla_VillaAPI.Repository
                         Country = coTenantDto.Country,
                         IsDeleted = false,
                         Status = true,
-                        AppTenantId = tenantDto.AppTenantId
+                        AppTenantId = tenantDto.AppTenantId,
+                        AddedBy = tenantDto.AddedBy,
+                        AddedDate = DateTime.Now
                     };
                     tenant.CoTenant.Add(newCoTenant);
                 }
@@ -1780,53 +1798,120 @@ namespace MagicVilla_VillaAPI.Repository
         }
 
 
-        //var response = new APIResponse();
+        public async Task<List<PetDto>> GetTenantPetsAsync(ReportFilter reportFilter)
+        {
 
-        //   try
-        //   {
-        //       var isRefrence = await _db.Assets.AnyAsync(x => x.OwnerId == ownerId && x.IsDeleted != true);
-        //       if (isRefrence)
-        //       {
-        //           response.StatusCode = HttpStatusCode.InternalServerError;
-        //           response.IsSuccess = false;
-        //           response.ErrorMessages.Add("This owner has refrence in asset.");
-        //           return response;
-        //       }
+            try
+            {
+                var pets = await (from tpets in _db.Pets
+                                  from t in _db.Tenant.Where(x=>x.TenantId == tpets.TenantId).DefaultIfEmpty()
+                                  where tpets.IsDeleted != true && tpets.AddedBy == reportFilter.AddedBy
+                                  select new PetDto
+                                  {
+                                      TenantId = tpets.TenantId,
+                                      TenantName = t.FirstName + " " + t.LastName,
+                                      Name = tpets.Name,
+                                      Breed = tpets.Breed,
+                                      Type = tpets.Type,
+                                      Quantity = tpets.Quantity,
+                                      Picture = tpets.Picture,
+                                  })
+                     .AsNoTracking()
+                     .ToListAsync();
 
-        //       var owner = await _db.Owner.FirstOrDefaultAsync(t => t.OwnerId == ownerId && t.IsDeleted != true);
-        //       if (owner == null)
-        //       {
-        //           response.StatusCode = HttpStatusCode.NotFound;
-        //           response.IsSuccess = false;
-        //           response.ErrorMessages.Add("Owner not found.");
-        //           return response;
-        //       }
+                if (reportFilter.TenantsIds.Count() > 0 && reportFilter.TenantsIds.Any())
+                {
+                    pets = pets
+                        .Where(x => reportFilter.TenantsIds.Contains(x.TenantId))
+                        .ToList();
+                }
 
-        //       owner.IsDeleted = true;
-        //       _db.Owner.Update(owner);
+                return pets;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping Tenants: {ex.Message}");
+                throw;
+            }
 
-        //       var ownerOrganization = await _db.OwnerOrganization.FirstOrDefaultAsync(t => t.OwnerId == ownerId && t.IsDeleted != true);
-        //       if (ownerOrganization != null)
-        //       {
-        //           ownerOrganization.IsDeleted = true;
-        //           _db.OwnerOrganization.Update(ownerOrganization);
-        //       }
+        }
 
-        //       await _db.SaveChangesAsync();
+        public async Task<List<VehicleDto>> GetTenantVehiclesAsync(ReportFilter reportFilter)
+        {
 
-        //       response.StatusCode = HttpStatusCode.OK;
-        //       response.IsSuccess = true;
-        //       response.Result = "Owner deleted successfully.";
+            try
+            {
+                var vehicles = await (from tvehicle in _db.Vehicle
+                                  from t in _db.Tenant.Where(x => x.TenantId == tvehicle.TenantId).DefaultIfEmpty()
+                                  where tvehicle.IsDeleted != true && tvehicle.AddedBy == reportFilter.AddedBy
+                                  select new VehicleDto
+                                  {
+                                      TenantId = tvehicle.TenantId,
+                                      TenantName = t.FirstName + " " + t.LastName,
+                                      ModelName = tvehicle.ModelName,
+                                      ModelVariant = tvehicle.ModelVariant,
+                                      Year = tvehicle.Year,
+                                      Manufacturer = tvehicle.Manufacturer,
+                                      Color = tvehicle.color,
+                                  })
+                     .AsNoTracking()
+                     .ToListAsync();
 
-        //   }
-        //   catch (Exception ex)
-        //   {
-        //       response.StatusCode = HttpStatusCode.InternalServerError;
-        //       response.IsSuccess = false;
-        //       response.ErrorMessages.Add(ex.Message);
-        //   }
+                if (reportFilter.TenantsIds.Count() > 0 && reportFilter.TenantsIds.Any())
+                {
+                    vehicles = vehicles
+                        .Where(x => reportFilter.TenantsIds.Contains(x.TenantId))
+                        .ToList();
+                }
 
-        //   return response;
+                return vehicles;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping Tenants: {ex.Message}");
+                throw;
+            }
+
+        }
+        
+        public async Task<List<TenantDependentDto>> GetTenantDependentsAsync(ReportFilter reportFilter)
+        {
+
+            try
+            {
+                var dependents = await (from tdependents in _db.TenantDependent
+                                  from t in _db.Tenant.Where(x => x.TenantId == tdependents.TenantId).DefaultIfEmpty()
+                                  where tdependents.IsDeleted != true && tdependents.AddedBy == reportFilter.AddedBy
+                                  select new TenantDependentDto
+                                  {
+                                      TenantId = tdependents.TenantId,
+                                      TenantName = t.FirstName + " " + t.LastName,
+                                      FirstName = tdependents.FirstName,
+                                      LastName = tdependents.LastName,
+                                      EmailAddress = tdependents.EmailAddress,
+                                      PhoneNumber = tdependents.PhoneNumber,
+                                      DOB = tdependents.DOB,
+                                      Relation = tdependents.Relation,
+                                  })
+                     .AsNoTracking()
+                     .ToListAsync();
+
+                if (reportFilter.TenantsIds.Count() > 0 && reportFilter.TenantsIds.Any())
+                {
+                    dependents = dependents
+                        .Where(x => reportFilter.TenantsIds.Contains(x.TenantId))
+                        .ToList();
+                }
+
+                return dependents;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping Tenants: {ex.Message}");
+                throw;
+            }
+
+        }
 
         #endregion
 
@@ -7420,12 +7505,55 @@ namespace MagicVilla_VillaAPI.Repository
         {
             try
             {
+                //var invoiceReportDtoList = await (from i in _db.Invoices
+                //                                  from l in _db.Lease.Where(x => x.LeaseId == i.LeaseId && x.IsDeleted != true).DefaultIfEmpty()
+                //                                  join p in _db.Assets on l.AssetId equals p.AssetId into properties
+                //                                  from p in properties.DefaultIfEmpty()
+                //                                  where i.IsDeleted != true && (p == null || p.IsDeleted != true)
+                //                                  select new
+                //                                  {
+                //                                      i.InvoiceId,
+                //                                      l.LeaseId,
+                //                                      l.StartDate,
+                //                                      l.EndDate,
+                //                                      i.InvoiceDate,
+                //                                      i.Status,
+                //                                      PropertyId = (int?)p.AssetId,
+                //                                      Property = p != null ? p.BuildingNo + " - " + p.BuildingName : null,
+                //                                      l.SelectedUnit
+                //                                  }).ToListAsync();
+
+                //var invoiceRentCharges = await (from rc in _db.RentCharge
+                //                                group rc by rc.LeaseId into g
+                //                                select new
+                //                                {
+                //                                    LeaseId = g.Key,
+                //                                    TotalRentCharges = g.Sum(x => x.Amount)
+                //                                }).ToListAsync();
+
+                //var invoiceReportDtoListWithCharges = (from i in invoiceReportDtoList
+                //                                       from rc in invoiceRentCharges.Where(x => x.LeaseId == i.LeaseId).DefaultIfEmpty()
+                //                                       select new InvoiceReportDto
+                //                                       {
+                //                                           Invoice = i.InvoiceId.ToString(),
+                //                                           StartDate = i.StartDate,
+                //                                           EndDate = i.EndDate,
+                //                                           Status = i.Status,
+                //                                           PropertyId = i.PropertyId,
+                //                                           Property = i.Property,
+                //                                           Unit = i.SelectedUnit,
+                //                                           InvoiceDate = i.InvoiceDate,
+                //                                           RentCharges = rc != null ? rc.TotalRentCharges : 0
+                //                                       }).ToList();
                 var invoiceReportDtoList = await (from i in _db.Invoices
-                                                  from l in _db.Lease.Where(x => x.LeaseId == i.LeaseId && x.IsDeleted != true).DefaultIfEmpty()
+                                                  join l in _db.Lease on i.LeaseId equals l.LeaseId into leaseGroup
+                                                  from l in leaseGroup.Where(x => x.IsDeleted != true).DefaultIfEmpty()
                                                   join p in _db.Assets on l.AssetId equals p.AssetId into properties
-                                                  from p in properties.DefaultIfEmpty()
-                                                  where i.IsDeleted != true && (p == null || p.IsDeleted != true)
-                                                  select new
+                                                  from p in properties.Where(x => x.IsDeleted != true).DefaultIfEmpty()
+                                                  join rc in _db.RentCharge on l.LeaseId equals rc.LeaseId into rentCharges
+                                                  from rc in rentCharges.DefaultIfEmpty()
+                                                  where i.IsDeleted != true
+                                                  group new { i, l, p, rc } by new
                                                   {
                                                       i.InvoiceId,
                                                       l.LeaseId,
@@ -7433,44 +7561,35 @@ namespace MagicVilla_VillaAPI.Repository
                                                       l.EndDate,
                                                       i.InvoiceDate,
                                                       i.Status,
-                                                      PropertyId = (int?)p.AssetId,
-                                                      Property = p != null ? p.BuildingNo + " - " + p.BuildingName : null,
+                                                      p.AssetId,
+                                                      p.BuildingNo,
+                                                      p.BuildingName,
                                                       l.SelectedUnit
+                                                  } into g
+                                                  select new InvoiceReportDto
+                                                  {
+                                                      Invoice = g.Key.InvoiceId.ToString(),
+                                                      StartDate = g.Key.StartDate,
+                                                      EndDate = g.Key.EndDate,
+                                                      Status = g.Key.Status,
+                                                      PropertyId = (int?)g.Key.AssetId,
+                                                      Property = g.Key.BuildingNo + " - " + g.Key.BuildingName,
+                                                      Unit = g.Key.SelectedUnit,
+                                                      InvoiceDate = g.Key.InvoiceDate,
+                                                      RentCharges = g.Sum(x => x.rc.Amount)
                                                   }).ToListAsync();
 
-                var invoiceRentCharges = await (from rc in _db.RentCharge
-                                                group rc by rc.LeaseId into g
-                                                select new
-                                                {
-                                                    LeaseId = g.Key,
-                                                    TotalRentCharges = g.Sum(x => x.Amount)
-                                                }).ToListAsync();
-
-                var invoiceReportDtoListWithCharges = (from i in invoiceReportDtoList
-                                                       from rc in invoiceRentCharges.Where(x => x.LeaseId == i.LeaseId).DefaultIfEmpty()
-                                                       select new InvoiceReportDto
-                                                       {
-                                                           Invoice = i.InvoiceId.ToString(),
-                                                           StartDate = i.StartDate,
-                                                           EndDate = i.EndDate,
-                                                           Status = i.Status,
-                                                           PropertyId = i.PropertyId,
-                                                           Property = i.Property,
-                                                           Unit = i.SelectedUnit,
-                                                           InvoiceDate = i.InvoiceDate,
-                                                           RentCharges = rc != null ? rc.TotalRentCharges : 0
-                                                       }).ToList();
 
                 if (reportFilter.PropertiesIds.Count() > 0 && reportFilter.PropertiesIds.Any())
                 {
-                    invoiceReportDtoListWithCharges = invoiceReportDtoListWithCharges
+                    invoiceReportDtoList = invoiceReportDtoList
                         .Where(x => reportFilter.PropertiesIds.Contains(x.PropertyId))
                         .ToList();
                 }
 
                 if (reportFilter.LeaseStartDateFilter != null && reportFilter.LeaseEndDateFilter != null)
                 {
-                    invoiceReportDtoListWithCharges = invoiceReportDtoListWithCharges
+                    invoiceReportDtoList = invoiceReportDtoList
                         .Where(x => x.StartDate >= reportFilter.LeaseStartDateFilter && x.EndDate <= reportFilter.LeaseEndDateFilter)
                         .ToList();
                 }
@@ -7478,12 +7597,12 @@ namespace MagicVilla_VillaAPI.Repository
 
                 if (reportFilter.InvoiceStartDateFilter != null && reportFilter.InvoiceEndDateFilter != null)
                 {
-                    invoiceReportDtoListWithCharges = invoiceReportDtoListWithCharges
+                    invoiceReportDtoList = invoiceReportDtoList
                         .Where(x => x.InvoiceDate >= reportFilter.InvoiceStartDateFilter && x.InvoiceDate <= reportFilter.InvoiceEndDateFilter)
                         .ToList();
                 }
 
-                return invoiceReportDtoListWithCharges;
+                return invoiceReportDtoList;
 
             }
             catch (Exception ex)

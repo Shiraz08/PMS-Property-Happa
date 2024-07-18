@@ -98,6 +98,7 @@ namespace PMS_PropertyHapa.Models.DTO
         {
             public int VehicleId { get; set; }
             public int TenantId { get; set; }
+            public string TenantName { get; set; }
             public string Manufacturer { get; set; }
             public string ModelName { get; set; }
             public string ModelVariant { get; set; }
@@ -111,6 +112,7 @@ namespace PMS_PropertyHapa.Models.DTO
         {
             public int TenantDependentId { get; set; }
             public int TenantId { get; set; }
+            public string TenantName { get; set; }
             public string FirstName { get; set; }
             public string LastName { get; set; }
             public string EmailAddress { get; set; }

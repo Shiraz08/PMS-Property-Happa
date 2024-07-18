@@ -389,5 +389,30 @@ namespace PMS_PropertyHapa.Staff.Controllers
             return View("AddTenant", tenant);
         }
 
+
+        [HttpPost]
+        public async Task<IActionResult> GetTenantPets([FromBody] ReportFilter reportFilter)
+        {
+            reportFilter.AddedBy = Request?.Cookies["userId"]?.ToString();
+            var res = await _authService.GetTenantPets(reportFilter);
+            return Ok(res);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetTenantVehicles([FromBody] ReportFilter reportFilter)
+        {
+            reportFilter.AddedBy = Request?.Cookies["userId"]?.ToString();
+            var res = await _authService.GetTenantVehicles(reportFilter);
+            return Ok(res);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetTenantDependents([FromBody] ReportFilter reportFilter)
+        {
+            reportFilter.AddedBy = Request?.Cookies["userId"]?.ToString();
+            var res = await _authService.GetTenantDependents(reportFilter);
+            return Ok(res);
+        }
+
     }
 }

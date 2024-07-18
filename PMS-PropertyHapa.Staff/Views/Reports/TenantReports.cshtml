@@ -1,0 +1,320 @@
+﻿@{
+    ViewData["Title"] = "TenantReports";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-sm-6">
+                    <h3>Tenant Reports</h3>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/Reports/Index"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item">Reports</li>
+                        <li class="breadcrumb-item active">List</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12 project-list">
+        <div class="card">
+            <div class="row">
+                <div class="col-md-12 p-0">
+                    <ul class="nav nav-tabs border-tab" id="top-tab" role="tablist">
+                        <li class="nav-item"><a class="nav-link active" id="pets-top-tab" data-bs-toggle="tab" href="#petsReports" role="tab" aria-controls="petsReports" aria-selected="false"><i data-feather="info"></i>Pets Report</a></li>
+                        <li class="nav-item"><a class="nav-link" id="vehicles-top-tab" data-bs-toggle="tab" href="#vehiclesReports" role="tab" aria-controls="vehiclesReports" aria-selected="false"><i data-feather="check-circle"></i>Vehicles Report</a></li>
+                        <li class="nav-item"><a class="nav-link" id="dependents-top-tab" data-bs-toggle="tab" href="#dependentsReports" role="tab" aria-controls="dependentsReports" aria-selected="false"><i data-feather="check-circle"></i>Dependents Report</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-12 mt-4">
+        <div class="tab-content" id="top-tabContent">
+            <div class="tab-pane fade show active" id="petsReports" role="tabpanel" aria-labelledby="pets-top-tab">
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <label for="petTenant" class="form-label ">Tenant</label>
+                        <select class="form-control select2" multiple id="petTenant">
+                        </select>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="table-responsive">
+                                <h3 class="card-title">Pets</h3>
+                                <table class="table display" id="petsReportTable">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>Name</th>
+                                            <th>Breed</th>
+                                            <th>Type</th>
+                                            <th>Quantity</th>
+                                            <th>Tenant Name</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+             <div class="tab-pane fade" id="vehiclesReports" role="tabpanel" aria-labelledby="vehiclesvehicles-top-tab">
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <label for="vehicleTenant" class="form-label ">Tenant</label>
+                        <select class="form-control select2" multiple id="vehicleTenant">
+                        </select>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <h3 class="card-title">Vehicles</h3>
+                            <table class="table display" id="vehiclesReportTable">
+                                <thead>
+                                    <tr>
+                                        <th>Manufacturer</th>
+                                        <th>Model Name</th>
+                                        <th>Model Variant</th>
+                                        <th>Colour</th>
+                                        <th>Year</th>
+                                        <th>Tenant Name</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+             <div class="tab-pane fade" id="dependentsReports" role="tabpanel" aria-labelledby="dependents-top-tab">
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <label for="dependentTenant" class="form-label ">Tenant</label>
+                        <select class="form-control select2" multiple id="dependentTenant">
+                        </select>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <h3 class="card-title">Dependents</h3>
+                            <table class="table display" id="dependentsReportTable">
+                                <thead>
+                                    <tr>
+                                        <th>First Name</th>
+                                        <th>Email Address</th>
+                                        <th>Phone Number</th>
+                                        <th>DOB</th>
+                                        <th>Relation</th>
+                                        <th>Tenant Name</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var petTenantIdsList = [];
+    var vehicleTenantIdsList = [];
+    var dependentTenantIdsList = [];
+
+    $(document).ready(function () {
+        $.ajax({
+            url: '@Url.Action("GetTenantsDll", "Communication")',
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                var petTenantsDropdown = document.getElementById('petTenant');
+                data.forEach(function (item) {
+                    var option = new Option(item.FirstName + ' ' + item.LastName, item.TenantId);
+                    petTenantsDropdown.appendChild(option);
+                });
+
+            }
+        });
+        $.ajax({
+            url: '@Url.Action("GetTenantsDll", "Communication")',
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                var vehicleTenantsDropdown = document.getElementById('vehicleTenant');
+                data.forEach(function (item) {
+                    var option = new Option(item.FirstName + ' ' + item.LastName, item.TenantId);
+                    vehicleTenantsDropdown.appendChild(option);
+                });
+
+            }
+        });
+        $.ajax({
+            url: '@Url.Action("GetTenantsDll", "Communication")',
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                var dependentTenantsDropdown = document.getElementById('dependentTenant');
+                data.forEach(function (item) {
+                    var option = new Option(item.FirstName + ' ' + item.LastName, item.TenantId);
+                    dependentTenantsDropdown.appendChild(option);
+                });
+
+            }
+        });
+        $("#petTenant").on("change", loadPetTenantDataTable);
+        $("#vehicleTenant").on("change", loadVehicleTenantDataTable);
+        $("#dependentTenant").on("change", loadDependentTenantDataTable);
+
+        loadPetTenantDataTable();
+        loadVehicleTenantDataTable();
+        loadDependentTenantDataTable();
+    });
+
+
+    function loadPetTenantDataTable() {
+
+        if ($.fn.dataTable.isDataTable('#petsReportTable')) {
+            $('#petsReportTable').DataTable().clear().destroy();
+        }
+
+        objPetTenantTable = $("#petsReportTable").DataTable({
+            ajax: {
+                url: "/Tenant/GetTenantPets",
+                type: 'POST',
+                contentType: 'application/json',
+                data: function (d) {
+                    return JSON.stringify({
+                        TenantsIds: petTenantIdsList
+                    });
+                },
+                dataSrc: "",
+                error: function (xhr, error, thrown) {
+                    console.error("Error occurred: ", error, thrown);
+                    alert("An error occurred while loading the data table: " + error);
+                }
+            },
+            initComplete: function () {
+
+            },
+            order: [[0, "asc"]],
+            columns: [
+                {
+                    data: "Picture",
+                    render: (data, type, row) => {
+                        if (data) {
+                            return `<img src="${data}" alt="Image" style="width: 50px; height: auto;" />`;
+                        }
+                        return '';
+                    }
+                },
+                { data: "Name" },
+                { data: "Breed" },
+                { data: "Type" },
+                { data: "Quantity" },
+                { data: "TenantName" }
+            ]
+        });
+    }
+    
+    function loadVehicleTenantDataTable() {
+        console.log("loadVehicleTenantDataTable")
+        if ($.fn.dataTable.isDataTable('#vehiclesReportTable')) {
+            $('#vehiclesReportTable').DataTable().clear().destroy();
+        }
+        console.log("loadVehicleTenantDataTable11")
+
+        objVehicleTenantTable = $("#vehiclesReportTable").DataTable({
+            ajax: {
+                url: "/Tenant/GetTenantVehicles",
+                type: 'POST',
+                contentType: 'application/json',
+                data: function (d) {
+                    return JSON.stringify({
+                        TenantsIds: vehicleTenantIdsList
+                    });
+                },
+                dataSrc: "",
+                error: function (xhr, error, thrown) {
+                    console.error("Error occurred: ", error, thrown);
+                    alert("An error occurred while loading the data table: " + error);
+                }
+            },
+            initComplete: function () {
+
+            },
+            order: [[0, "asc"]],
+            columns: [
+                { data: "Manufacturer" },
+                { data: "ModelName" },
+                { data: "ModelVariant" },
+                { data: "Color" },
+                { data: "Year" },
+                { data: "TenantName" }
+            ]
+        });
+        console.log("loadVehicleTenantDataTable1asd1")
+
+    }
+
+    function loadDependentTenantDataTable() {
+        console.log("loadDependentTenantDataTable")
+
+        if ($.fn.dataTable.isDataTable('#dependentsReportTable')) {
+            $('#dependentsReportTable').DataTable().clear().destroy();
+        }
+
+        objDependentTenantTable = $("#dependentsReportTable").DataTable({
+            ajax: {
+                url: "/Tenant/GetTenantDependents",
+                type: 'POST',
+                contentType: 'application/json',
+                data: function (d) {
+                    return JSON.stringify({
+                        TenantsIds: dependentTenantIdsList
+                    });
+                },
+                dataSrc: "",
+                error: function (xhr, error, thrown) {
+                    console.error("Error occurred: ", error, thrown);
+                    alert("An error occurred while loading the data table: " + error);
+                }
+            },
+            initComplete: function () {
+
+            },
+            order: [[0, "asc"]],
+            columns: [
+                {
+                    data: null,
+                    render: (data, type, row) => {
+                        const { FirstName, LastName } = data;
+                        return `${FirstName} ${LastName}`;
+                    }
+                },
+                { data: "EmailAdress" },
+                { data: "PhoneNumber" },
+                { data: "DOB" },
+                { data: "Relation" },
+                { data: "Tenant" }
+            ]
+        });
+    }
+
+</script>

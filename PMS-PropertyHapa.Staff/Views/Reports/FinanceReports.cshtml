@@ -1,0 +1,560 @@
+﻿@{
+    ViewData["Title"] = "InvoiceReports";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@*
+<!-- Page Sidebar Ends-->
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-sm-6">
+                    <h3>Invoice Report</h3>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/Reports/Index"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item">Invoice</li>
+                        <li class="breadcrumb-item active">List</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid my-4">
+        <div class="row">
+            <!-- Column 1: Properties Table (80% on lg screens) -->
+            <div class="col-12 col-md-12 mb-4">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h4 class="card-title mb-0 flex-grow-1 font-weight-bold">Filters</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mt-1 d-flex">
+                            <div class="col-lg-4 col-md-4">
+                                <div class="row">
+                                    <label class="col-sm-12 mb-0 font-weight-bold">Property</label>
+                                    <div col-sm-12>
+                                        <select id="expensePropertyFilter" multiple name="expensePropertyFilter" class="form-control select2"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4">
+                                <div class="row">
+                                    <label class="col-sm-12 mb-0 font-weight-bold">MoveIn/MoveOut Date</label>
+                                    <div class="col-sm-12">
+                                        <input type="text" class="form-control" id="createdAtRange" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4">
+                                <div class="row">
+                                    <label class="col-sm-12 mb-0 font-weight-bold">Invoice Start/End Date</label>
+                                    <div class="col-sm-12">
+                                        <input type="text" class="form-control" id="createdInvoiceRange" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer text-end d-flex justify-content-end">
+                        <button onclick="clearFilters()" type="button" class="btn btn-danger mr-2 font-weight-bold" style="padding-left: 2.75rem  !important; padding-right: 2.75rem  !important;">Clear</button>
+                        <button onclick="applyFilters()" type="button" class="btn btn-success font-weight-bold" style="padding-left: 2.75rem  !important; padding-right: 2.75rem  !important;">Apply</button>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-start mb-3">
+                            <button id="copyButton" class="btn btn-success mr-1">Copy</button>
+                            <button id="csvButton" class="btn btn-success mr-1">CSV</button>
+                            <button id="excelButton" class="btn btn-success mr-1">Excel</button>
+                            <button id="pdfButton" class="btn btn-success mr-1">PDF</button>
+                            <button id="printButton" class="btn btn-success mr-1">Print</button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table" id="invoiceReportsTbl">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" class="tableHeaderbg">Invoice</th>
+                                        <th scope="col" class="tableHeaderbg">Start Date</th>
+                                        <th scope="col" class="tableHeaderbg">End Date</th>
+                                        <th scope="col" class="tableHeaderbg">Status</th>
+                                        <th scope="col" class="tableHeaderbg">Property</th>
+                                        <th scope="col" class="tableHeaderbg">Unit</th>
+                                        <th scope="col" class="tableHeaderbg">Rent Charges</th>
+                                        <th scope="col" class="tableHeaderbg">Invoice Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div> *@
+
+
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-sm-6">
+                    <h3>Finance Reports</h3>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/Reports/Index"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item">Reports</li>
+                        <li class="breadcrumb-item active">List</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12 project-list">
+        <div class="card">
+            <div class="row">
+                <div class="col-md-12 p-0">
+                    <ul class="nav nav-tabs border-tab" id="top-tab" role="tablist">
+                        <li class="nav-item"><a class="nav-link active" id="income-top-tab" data-bs-toggle="tab" href="#incomeFinanceReports" role="tab" aria-controls="incomeFinanceReports" aria-selected="false"><i data-feather="info"></i>Income</a></li>
+                        <li class="nav-item"><a class="nav-link" id="expense-top-tab" data-bs-toggle="tab" href="#expenseFinanceReports" role="tab" aria-controls="expenseFinanceReports" aria-selected="false"><i data-feather="check-circle"></i>Expense</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-12 mt-4">
+        <div class="tab-content" id="top-tabContent">
+            <div class="tab-pane fade show active" id="incomeFinanceReports" role="tabpanel" aria-labelledby="income-top-tab">
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <label class="col-sm-12 mb-0 font-weight-bold">Property</label>
+                        <div col-sm-12>
+                            <select id="incomePropertyFilter" multiple name="incomePropertyFilter" class="form-control select2"></select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="col-sm-12 mb-0 font-weight-bold">MoveIn/MoveOut Date</label>
+                        <div class="col-sm-12">
+                            <input type="text" class="form-control" id="incomeCreatedAtRange" />
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="col-sm-12 mb-0 font-weight-bold">Invoice Start/End Date</label>
+                        <div class="col-sm-12">
+                            <input type="text" class="form-control" id="incomeCreatedInvoiceRange" />
+                        </div>
+                    </div>
+                </div>
+                <div class="card mt-3">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="table-responsive">
+                                <h3 class="card-title">Income</h3>
+                                <table class="table display" id="incomeFinanceReportsTbl">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col" class="tableHeaderbg">Invoice</th>
+                                            <th scope="col" class="tableHeaderbg">Start Date</th>
+                                            <th scope="col" class="tableHeaderbg">End Date</th>
+                                            <th scope="col" class="tableHeaderbg">Status</th>
+                                            <th scope="col" class="tableHeaderbg">Property</th>
+                                            <th scope="col" class="tableHeaderbg">Unit</th>
+                                            <th scope="col" class="tableHeaderbg">Rent Charges</th>
+                                            <th scope="col" class="tableHeaderbg">Invoice Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="tab-pane fade" id="expenseFinanceReports" role="tabpanel" aria-labelledby="expense-top-tab">
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <label class="col-sm-12 mb-0 font-weight-bold">Property</label>
+                        <div col-sm-12>
+                            <select id="expensePropertyFilter" multiple name="expensePropertyFilter" class="form-control select2"></select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="col-sm-12 mb-0 font-weight-bold">Units</label>
+                        <div col-sm-12>
+                            <select id="expenseUnitFilter" multiple name="expenseUnitFilter" class="form-control select2"></select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="col-sm-12 mb-0 font-weight-bold">Task Start/End Date</label>
+                        <div class="col-sm-12">
+                            <input type="text" class="form-control" id="expenseCreatedAtRange" />
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="col-sm-12 mb-0 font-weight-bold">Due Date</label>
+                        <div class="col-sm-12">
+                            <input type="text" class="form-control" id="expenseCreatedDueRange" />
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <h3 class="card-title">Expense</h3>
+                            <table class="table display" id="expenseReportsTable">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" class="tableHeaderbg">Task Type</th>
+                                        <th scope="col" class="tableHeaderbg">Due At</th>
+                                        <th scope="col" class="tableHeaderbg">Start Date</th>
+                                        <th scope="col" class="tableHeaderbg">Expiring Date</th>
+                                        <th scope="col" class="tableHeaderbg">Property</th>
+                                        <th scope="col" class="tableHeaderbg">Unit</th>
+                                        <th scope="col" class="tableHeaderbg">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    var incomePropertiesIdsList = [];
+    var incomeLeaseStartDateFilter = null;
+    var incomeLeaseEndDateFilter = null;
+    var incomeInvoiceStartDateFilter = null;
+    var incomeInvoiceEndDateFilter = null;
+
+    var expensePropertiesIdsList = [];
+    var expenseUnitsIdsList = [];
+    var expenseTaskStartDateFilter = null;
+    var expenseTaskEndDateFilter = null;
+    var expenseTaskDueStartDateFilter = null;
+    var expenseTaskDueEndDateFilter = null;
+
+
+    $(document).ready(function () {
+        initDatePickers();
+        populateDropDowns();
+        loadInvoiceDataTable();
+        loadTaskRequestDataTable();
+        $("#incomePropertyFilter").on("change", applyIncomeFilters);
+        $("#expensePropertyFilter").on("change", applyExpenseFilters);
+        $("#expensePropertyFilter").on("change", function () {
+            if ($("#expensePropertyFilter").val() != null) {
+                populateUnits($("#expensePropertyFilter").val().join(','));
+            } else {
+                $("#expensePropertyFilter").empty();
+            }
+            applyExpenseFilters();
+        });
+    });
+
+    var initDatePickers = function () {
+        $('#incomeCreatedAtRange').daterangepicker({
+            autoUpdateInput: false,
+            locale: {
+                format: 'MM/DD/YYYY',
+                cancelLabel: 'Clear'
+            },
+            timePicker: false,
+            startDate: moment().subtract(30, 'days'),
+            endDate: moment().add(1, 'days')
+        });
+
+        $('#incomeCreatedAtRange').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+            applyIncomeFilters();
+        });
+
+        $('#incomeCreatedAtRange').on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('');
+            applyIncomeFilters();
+        });
+
+        $('#incomeCreatedInvoiceRange').daterangepicker({
+            autoUpdateInput: false,
+            locale: {
+                format: 'MM/DD/YYYY',
+                cancelLabel: 'Clear'
+            },
+            timePicker: false,
+            startDate: moment().subtract(30, 'days'),
+            endDate: moment().add(1, 'days')
+        });
+
+        $('#incomeCreatedInvoiceRange').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+            applyIncomeFilters();
+        });
+
+        $('#incomeCreatedInvoiceRange').on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('');
+            applyIncomeFilters();
+        });
+
+
+        $('#expenseCreatedAtRange').daterangepicker({
+            autoUpdateInput: false,
+            locale: {
+                format: 'MM/DD/YYYY',
+                cancelLabel: 'Clear'
+            },
+            timePicker: false,
+            startDate: moment().subtract(30, 'days'),
+            endDate: moment().add(1, 'days')
+        });
+
+        $('#expenseCreatedAtRange').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+            applyExpenseFilters();
+        });
+
+        $('#expenseCreatedAtRange').on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('');
+            applyExpenseFilters();
+        });
+
+        $('#expenseCreatedDueRange').daterangepicker({
+            autoUpdateInput: false,
+            locale: {
+                format: 'MM/DD/YYYY',
+                cancelLabel: 'Clear'
+            },
+            timePicker: false,
+            startDate: moment().subtract(30, 'days'),
+            endDate: moment().add(1, 'days')
+        });
+
+        $('#expenseCreatedDueRange').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+            applyExpenseFilters();
+        });
+
+        $('#expenseCreatedDueRange').on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('');
+            applyExpenseFilters();
+        });
+
+    };
+
+
+    function populateDropDowns() {
+        $.ajax({
+            url: '@Url.Action("GetProperties", "Communication")',
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                var incomePropertyDropdown = document.getElementById('incomePropertyFilter');
+                data.forEach(function (item) {
+                    var option = new Option(item.BuildingNo + " - " + item.BuildingName, item.AssetId);
+                    incomePropertyDropdown.appendChild(option);
+                });
+
+                var expensePropertyDropdown = document.getElementById('expensePropertyFilter');
+                data.forEach(function (item) {
+                    var option = new Option(item.BuildingNo + " - " + item.BuildingName, item.AssetId);
+                    expensePropertyDropdown.appendChild(option);
+                });
+            }
+        });
+    }
+
+    function applyIncomeFilters() {
+        incomePropertiesIdsList = $("#incomePropertyFilter").val();
+        if ($("#incomeCreatedAtRange").val()) {
+            var dates = $("#incomeCreatedAtRange").val().split('-');
+            incomeLeaseStartDateFilter = dates[0];
+            incomeLeaseEndDateFilter = dates[1];
+        } else {
+            incomeLeaseStartDateFilter = null;
+            incomeLeaseEndDateFilter = null;
+        }
+        if ($("#incomeCreatedInvoiceRange").val()) {
+            var dates = $("#incomeCreatedInvoiceRange").val().split('-');
+            incomeInvoiceStartDateFilter = dates[0];
+            incomeInvoiceEndDateFilter = dates[1];
+        } else {
+            incomeInvoiceStartDateFilter = null;
+            incomeInvoiceEndDateFilter = null;
+        }
+        loadInvoiceDataTable();
+    }
+
+    function loadInvoiceDataTable() {
+        if ($.fn.dataTable.isDataTable('#incomeFinanceReportsTbl')) {
+            $('#incomeFinanceReportsTbl').DataTable().clear().destroy();
+        }
+
+        objLeaseTable = $("#incomeFinanceReportsTbl").DataTable({
+            ajax: {
+                url: "/Reports/GetInvoiceReports",
+                type: 'POST',
+                contentType: 'application/json',
+                data: function (d) {
+                    return JSON.stringify({
+                        PropertiesIds: incomePropertiesIdsList,
+                        LeaseStartDateFilter: incomeLeaseStartDateFilter,
+                        LeaseEndDateFilter: incomeLeaseEndDateFilter,
+                        InvoiceStartDateFilter: incomeInvoiceStartDateFilter,
+                        InvoiceEndDateFilter: incomeInvoiceEndDateFilter,
+                    });
+                },
+                dataSrc: "",
+                error: function (xhr, error, thrown) {
+                    console.error("Error occurred: ", error, thrown);
+                    alert("An error occurred while loading the data table: " + error);
+                }
+            },
+            initComplete: function () {
+            },
+            order: [[0, "asc"]],
+            columns: [
+                { data: "Invoice" },
+                {
+                    data: "StartDate",
+                    render: function (data, type, row) {
+                        return moment(data).format('MM/DD/YYYY');
+                    }
+                },
+                {
+                    data: "EndDate",
+                    render: function (data, type, row) {
+                        return moment(data).format('MM/DD/YYYY');
+                    }
+                },
+                {
+                    data: "Status",
+                    render: function (data, type, row) {
+                        return data ? "Yes" : "No";
+                    }
+                },
+                { data: "Property" },
+                { data: "Unit" },
+                { data: "RentCharges" },
+                {
+                    data: "InvoiceDate",
+                    render: function (data, type, row) {
+                        return moment(data).format('MM/DD/YYYY');
+                    }
+                }
+            ]
+        });
+    }
+
+
+    function applyExpenseFilters() {
+        expensePropertiesIdsList = $("#expensePropertyFilter").val();
+        expenseUnitsIdsList = $("#expenseUnitFilter").val();
+        if ($("#createdAtRange").val()) {
+            var dates = $("#createdAtRange").val().split('-');
+            expenseTaskStartDateFilter = dates[0];
+            expenseTaskEndDateFilter = dates[1];
+        } else {
+            expenseTaskStartDateFilter = null;
+            expenseTaskEndDateFilter = null;
+        }
+        if ($("#expenseCreatedDueRange").val()) {
+            var dates = $("#expenseCreatedDueRange").val().split('-');
+            expenseTaskDueStartDateFilter = dates[0];
+            expenseTaskDueEndDateFilter = dates[1];
+        } else {
+            expenseTaskDueStartDateFilter = null;
+            expenseTaskDueEndDateFilter = null;
+        }
+        loadTaskRequestDataTable();
+    }
+
+    function populateUnits(propertyIds) {
+        $.ajax({
+            url: '/Lease/GetUnitsDll',
+            method: 'POST',
+            data: { AssetIds: propertyIds },
+            dataType: 'json',
+            success: function (response) {
+                var units = response;
+                var $reportUnitFilter = $('#expenseUnitFilter');
+                $reportUnitFilter.empty();
+
+                units.forEach(function (unit) {
+                    var option = `<option value="${unit.UnitId}">${unit.UnitName}</option>`;
+                    $reportUnitFilter.append(option);
+                });
+            },
+            error: function (xhr, status, error) {
+                console.error('Error fetching units:', error);
+            }
+        });
+    }
+
+
+    function loadTaskRequestDataTable() {
+        if ($.fn.dataTable.isDataTable('#expenseReportsTable')) {
+            $('#expenseReportsTable').DataTable().clear().destroy();
+        }
+
+        objLeaseTable = $("#expenseReportsTable").DataTable({
+            ajax: {
+                url: "/Reports/GetTaskRequestReports",
+                type: 'POST',
+                contentType: 'application/json',
+                data: function (d) {
+                    return JSON.stringify({
+                        PropertiesIds: expensePropertiesIdsList,
+                        UnitsIds: expenseUnitsIdsList,
+                        TaskStartDateFilter: expenseTaskStartDateFilter,
+                        TaskEndDateFilter: expenseTaskEndDateFilter,
+                        TaskDueStartDateFilter: expenseTaskDueStartDateFilter,
+                        TaskDueEndDateFilter: expenseTaskDueEndDateFilter,
+                    });
+                },
+                dataSrc: "",
+                error: function (xhr, error, thrown) {
+                    console.error("Error occurred: ", error, thrown);
+                    alert("An error occurred while loading the data table: " + error);
+                }
+            },
+            initComplete: function () {
+            },
+            order: [[0, "asc"]],
+            columns: [
+                { data: "Task" },
+                {
+                    data: "DueDate",
+                    render: function (data, type, row) {
+                        return data ? moment(data).format('MM/DD/YYYY') : '';
+                    }
+                },
+                {
+                    data: "StartDate",
+                    render: function (data, type, row) {
+                        return data ? moment(data).format('MM/DD/YYYY') : '';
+                    }
+                },
+                {
+                    data: "EndDate",
+                    render: function (data, type, row) {
+                        return data ? moment(data).format('MM/DD/YYYY') : '';
+                    }
+                },
+                { data: "Property" },
+                { data: "Unit" },
+                { data: "Status" }
+            ]
+        });
+    }
+
+</script>

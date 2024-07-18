@@ -9,6 +9,7 @@ using APIResponse = PMS_PropertyHapa.Staff.Models.APIResponse;
 using PMS_PropertyHapa.Staff.Services.IServices;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Humanizer.Localisation;
+using static PMS_PropertyHapa.Models.DTO.TenantModelDto;
 
 namespace PMS_PropertyHapa.Staff.Services
 {
@@ -246,7 +247,7 @@ namespace PMS_PropertyHapa.Staff.Services
                 throw new Exception($"An error occurred when fetching tenants data: {ex.Message}", ex);
             }
         }
-
+        
 
 
         public async Task<List<TenantModelDto>> GetTenantsByIdAsync(string tenantId)
@@ -452,7 +453,89 @@ namespace PMS_PropertyHapa.Staff.Services
             }
         }
 
+        public async Task<IEnumerable<PetDto>> GetTenantPets(ReportFilter reportFilter)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Data = reportFilter,
+                    Url = $"{villaUrl}/api/v1/Tenantauth/TenantPets"
+                });
 
+                if (response != null && response.IsSuccess)
+                {
+                    var userListJson = Convert.ToString(response.Result);
+                    var pets = JsonConvert.DeserializeObject<IEnumerable<PetDto>>(userListJson);
+                    return pets;
+                }
+                else
+                {
+                    throw new Exception("Failed to retrieve tenants data");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when fetching tenants data: {ex.Message}", ex);
+            }
+        }   
+        
+        public async Task<IEnumerable<VehicleDto>> GetTenantVehicles(ReportFilter reportFilter)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Data = reportFilter,
+                    Url = $"{villaUrl}/api/v1/Tenantauth/TenantVehicles"
+                });
+
+                if (response != null && response.IsSuccess)
+                {
+                    var userListJson = Convert.ToString(response.Result);
+                    var vehicles = JsonConvert.DeserializeObject<IEnumerable<VehicleDto>>(userListJson);
+                    return vehicles;
+                }
+                else
+                {
+                    throw new Exception("Failed to retrieve tenants data");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when fetching tenants data: {ex.Message}", ex);
+            }
+        }
+        
+        public async Task<IEnumerable<TenantDependentDto>> GetTenantDependents(ReportFilter reportFilter)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Data = reportFilter,
+                    Url = $"{villaUrl}/api/v1/Tenantauth/TenantDependents"
+                });
+
+                if (response != null && response.IsSuccess)
+                {
+                    var userListJson = Convert.ToString(response.Result);
+                    var dependents = JsonConvert.DeserializeObject<IEnumerable<TenantDependentDto>>(userListJson);
+                    return dependents;
+                }
+                else
+                {
+                    throw new Exception("Failed to retrieve tenants data");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when fetching tenants data: {ex.Message}", ex);
+            }
+        }
 
         public async Task<bool> CreateAssetAsync(AssetDTO asset)
         {

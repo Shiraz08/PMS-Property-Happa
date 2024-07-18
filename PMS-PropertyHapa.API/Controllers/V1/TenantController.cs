@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using PMS_PropertyHapa.MigrationsFiles.Data;
 using PMS_PropertyHapa.Models.Roles;
 using NuGet.ContentModel;
+using static PMS_PropertyHapa.Models.DTO.TenantModelDto;
 
 namespace PMS_PropertyHapa.API.Controllers.V1
 {
@@ -73,7 +74,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
-
+        
 
 
         [HttpGet("Tenant/{tenantId}")]
@@ -230,6 +231,93 @@ namespace PMS_PropertyHapa.API.Controllers.V1
                 tenant.Id = tenantId; // Ensure tenantId is set
                 var isSuccess = await _userRepo.UpdateTenantOrgAsync(tenant);
                 return Ok(isSuccess);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
+        [HttpPost("TenantPets")]
+        public async Task<IActionResult> GetTenantPets(ReportFilter reportFilter)
+        {
+            try
+            {
+                var pets = await _userRepo.GetTenantPetsAsync(reportFilter);
+                if (pets != null)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = pets;
+                    return Ok(_response);
+                }
+                else
+                {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("No user found with this id.");
+                    return NotFound(_response);
+                }
+                return Ok(_response);
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+        
+        [HttpPost("TenantVehicles")]
+        public async Task<IActionResult> GetTenantVehicles(ReportFilter reportFilter)
+        {
+            try
+            {
+                var vehicles = await _userRepo.GetTenantVehiclesAsync(reportFilter);
+                if (vehicles != null)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = vehicles;
+                    return Ok(_response);
+                }
+                else
+                {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("No user found with this id.");
+                    return NotFound(_response);
+                }
+                return Ok(_response);
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+        
+        [HttpPost("TenantDependents")]
+        public async Task<IActionResult> GetTenantDependents(ReportFilter reportFilter)
+        {
+            try
+            {
+                var dependents = await _userRepo.GetTenantDependentsAsync(reportFilter);
+                if (dependents != null)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = dependents;
+                    return Ok(_response);
+                }
+                else
+                {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("No user found with this id.");
+                    return NotFound(_response);
+                }
+                return Ok(_response);
+
             }
             catch (Exception ex)
             {

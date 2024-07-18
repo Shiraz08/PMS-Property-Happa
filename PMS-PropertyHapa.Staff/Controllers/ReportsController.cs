@@ -24,7 +24,19 @@ namespace PMS_PropertyHapa.Staff.Controllers
         {
             return View();
         }
-        public IActionResult InvoiceReports()
+        public IActionResult AssetReports()
+        {
+            return View();
+        }
+        public IActionResult LandlordReports()
+        {
+            return View();
+        }
+        public IActionResult TenantReports()
+        {
+            return View();
+        }
+        public IActionResult FinanceReports()
         {
             return View();
         }
