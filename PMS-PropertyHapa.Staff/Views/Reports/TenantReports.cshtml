@@ -114,7 +114,7 @@
                             <table class="table display" id="dependentsReportTable">
                                 <thead>
                                     <tr>
-                                        <th>First Name</th>
+                                        <th>Name</th>
                                         <th>Email Address</th>
                                         <th>Phone Number</th>
                                         <th>DOB</th>
@@ -193,7 +193,7 @@
         if ($.fn.dataTable.isDataTable('#petsReportTable')) {
             $('#petsReportTable').DataTable().clear().destroy();
         }
-
+        petTenantIdsList = $("#petTenant").val();
         objPetTenantTable = $("#petsReportTable").DataTable({
             ajax: {
                 url: "/Tenant/GetTenantPets",
@@ -234,12 +234,10 @@
     }
     
     function loadVehicleTenantDataTable() {
-        console.log("loadVehicleTenantDataTable")
         if ($.fn.dataTable.isDataTable('#vehiclesReportTable')) {
             $('#vehiclesReportTable').DataTable().clear().destroy();
         }
-        console.log("loadVehicleTenantDataTable11")
-
+        vehicleTenantIdsList = $("#vehicleTenant").val()
         objVehicleTenantTable = $("#vehiclesReportTable").DataTable({
             ajax: {
                 url: "/Tenant/GetTenantVehicles",
@@ -269,13 +267,11 @@
                 { data: "TenantName" }
             ]
         });
-        console.log("loadVehicleTenantDataTable1asd1")
 
     }
 
     function loadDependentTenantDataTable() {
-        console.log("loadDependentTenantDataTable")
-
+        dependentTenantIdsList = $("#dependentTenant").val();
         if ($.fn.dataTable.isDataTable('#dependentsReportTable')) {
             $('#dependentsReportTable').DataTable().clear().destroy();
         }
@@ -308,11 +304,11 @@
                         return `${FirstName} ${LastName}`;
                     }
                 },
-                { data: "EmailAdress" },
+                { data: "EmailAddress" },
                 { data: "PhoneNumber" },
                 { data: "DOB" },
                 { data: "Relation" },
-                { data: "Tenant" }
+                { data: "TenantName" }
             ]
         });
     }

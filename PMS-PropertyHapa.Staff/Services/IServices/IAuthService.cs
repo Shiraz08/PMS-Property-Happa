@@ -44,7 +44,8 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
         Task<bool> UpdateLandlordAsync(OwnerDto owner);
         Task<APIResponse> DeleteLandlordAsync(int ownerId);
         Task<TenantModelDto> GetSingleTenantAsync(int tenantId);
-
+        Task<IEnumerable<OwnerDto>> GetLandlordOrganization(ReportFilter reportFilter);
+        Task<IEnumerable<AssetDTO>> GetLandlordAsset(ReportFilter reportFilter);
 
 
 
@@ -246,6 +247,8 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
         Task<IEnumerable<LeaseReportDto>> GetLeaseReports(ReportFilter reportFilter);
         Task<IEnumerable<InvoiceReportDto>> GetInvoiceReports(ReportFilter reportFilter);
         Task<IEnumerable<TaskRequestReportDto>> GetTaskRequestReports(ReportFilter reportFilter);
+        Task<IEnumerable<FinanceReportDto>> GetFinanceReports(ReportFilter reportFilter);
+        Task<IEnumerable<UnitDTO>> GetUnitsByAsset(ReportFilter reportFilter);
         #endregion
 
         #region Documents

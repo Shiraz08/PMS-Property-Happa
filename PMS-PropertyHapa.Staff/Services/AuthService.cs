@@ -1318,6 +1318,64 @@ namespace PMS_PropertyHapa.Staff.Services
                 throw new Exception($"An error occurred when deleting owner: {ex.Message}", ex);
             }
         }
+
+        public async Task<IEnumerable<OwnerDto>> GetLandlordOrganization(ReportFilter reportFilter)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Data = reportFilter,
+                    Url = $"{villaUrl}/api/v1/LandlordAuth/LandlordOrganization"
+                });
+
+                if (response != null && response.IsSuccess)
+                {
+                    var userListJson = Convert.ToString(response.Result);
+                    var organizations = JsonConvert.DeserializeObject<IEnumerable<OwnerDto>>(userListJson);
+                    return organizations;
+                }
+                else
+                {
+                    throw new Exception("Failed to retrieve landlord data");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when fetching landlord data: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<IEnumerable<AssetDTO>> GetLandlordAsset(ReportFilter reportFilter)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Data = reportFilter,
+                    Url = $"{villaUrl}/api/v1/LandlordAuth/LandlordAsset"
+                });
+
+                if (response != null && response.IsSuccess)
+                {
+                    var userListJson = Convert.ToString(response.Result);
+                    var assets = JsonConvert.DeserializeObject<IEnumerable<AssetDTO>>(userListJson);
+                    return assets;
+                }
+                else
+                {
+                    throw new Exception("Failed to retrieve landlord data");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when fetching landlord data: {ex.Message}", ex);
+            }
+        }
+
+
         #endregion
 
         #region Lease
@@ -2860,6 +2918,51 @@ namespace PMS_PropertyHapa.Staff.Services
                 throw new Exception("Failed to retrieve Task Request data");
             }
         }
+
+        public async Task<IEnumerable<FinanceReportDto>> GetFinanceReports(ReportFilter reportFilter)
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.POST,
+                Data = reportFilter,
+                Url = $"{villaUrl}/api/v1/ReportsAuth/FinanceReport"
+            });
+
+            if (response.IsSuccess == true)
+            {
+                var userListJson = Convert.ToString(response.Result);
+                var asset = JsonConvert.DeserializeObject<IEnumerable<FinanceReportDto>>(userListJson);
+                return asset;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve Finance data");
+            }
+        }
+
+        public async Task<IEnumerable<UnitDTO>> GetUnitsByAsset(ReportFilter reportFilter)
+        {
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.POST,
+                Data = reportFilter,
+                Url = $"{villaUrl}/api/v1/ReportsAuth/UnitsByAsset"
+            });
+
+            if (response.IsSuccess == true)
+            {
+                var userListJson = Convert.ToString(response.Result);
+                var asset = JsonConvert.DeserializeObject<IEnumerable<UnitDTO>>(userListJson);
+                return asset;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve Task Request data");
+            }
+        }
+
+
         #endregion
 
         #region Documents

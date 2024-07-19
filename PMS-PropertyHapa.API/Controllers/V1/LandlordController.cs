@@ -185,6 +185,65 @@ namespace PMS_PropertyHapa.API.Controllers.V1
                 return NotFound(_response);
             }
         }
+
+
+        [HttpPost("LandlordOrganization")]
+        public async Task<IActionResult> GetLandlordOrganization(ReportFilter reportFilter)
+        {
+            try
+            {
+                var organizations = await _userRepo.GetLandlordOrganizationAsync(reportFilter);
+                if (organizations != null)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = organizations;
+                    return Ok(_response);
+                }
+                else
+                {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("No user found with this id.");
+                    return NotFound(_response);
+                }
+                return Ok(_response);
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
+        [HttpPost("LandlordAsset")]
+        public async Task<IActionResult> GetLandlordAsset(ReportFilter reportFilter)
+        {
+            try
+            {
+                var assets = await _userRepo.GetLandlordAssetAsync(reportFilter);
+                if (assets != null)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = assets;
+                    return Ok(_response);
+                }
+                else
+                {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("No user found with this id.");
+                    return NotFound(_response);
+                }
+                return Ok(_response);
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
         #endregion
 
     }

@@ -51,6 +51,7 @@ namespace PMS_PropertyHapa.Models.DTO
     {
         public int UnitId { get; set; }
         public int AssetId { get; set; }
+        public string Asset { get; set; }
         public string UnitName { get; set; }
         public int Beds { get; set; }
         public int Bath { get; set; }

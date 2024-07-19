@@ -117,5 +117,61 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             }
         }
 
+        [HttpPost("FinanceReport")]
+        public async Task<ActionResult<FinanceReportDto>> GetFinanceReports(ReportFilter reportFilter)
+        {
+            try
+            {
+                var finance = await _userRepo.GetFinanceReportsAsync(reportFilter);
+
+                if (finance != null)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = finance;
+                    return Ok(_response);
+                }
+                else
+                {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("No finance found with this id.");
+                    return NotFound(_response);
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        [HttpPost("UnitsByAsset")]
+        public async Task<ActionResult<UnitDTO>> GetUnitsByAsset(ReportFilter reportFilter)
+        {
+            try
+            {
+                var taskReport = await _userRepo.GetUnitsByAssetAsync(reportFilter);
+
+                if (taskReport != null)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = taskReport;
+                    return Ok(_response);
+                }
+                else
+                {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("No task request found with this id.");
+                    return NotFound(_response);
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
     }
 }

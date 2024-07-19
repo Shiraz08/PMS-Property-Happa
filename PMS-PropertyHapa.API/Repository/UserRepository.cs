@@ -1814,7 +1814,7 @@ namespace MagicVilla_VillaAPI.Repository
                                       Breed = tpets.Breed,
                                       Type = tpets.Type,
                                       Quantity = tpets.Quantity,
-                                      Picture = tpets.Picture,
+                                      Picture = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Pets_Picture_" + tpets.PetId + Path.GetExtension(tpets.Picture)}",
                                   })
                      .AsNoTracking()
                      .ToListAsync();
@@ -1921,157 +1921,157 @@ namespace MagicVilla_VillaAPI.Repository
 
         public async Task<OwnerDto> GetSingleLandlordByIdAsync(int ownerId)
         {
-            var tenantDto = await _db.Owner.FirstOrDefaultAsync(t => t.OwnerId == ownerId && t.IsDeleted != true);
+            var landlordDto = await _db.Owner.FirstOrDefaultAsync(t => t.OwnerId == ownerId && t.IsDeleted != true);
 
-            if (tenantDto == null)
+            if (landlordDto == null)
                 return new OwnerDto();
-            var tenant = new OwnerDto
+            var landlord = new OwnerDto
             {
-                OwnerId = tenantDto.OwnerId,
-                FirstName = tenantDto.FirstName,
-                MiddleName = tenantDto.MiddleName,
-                LastName = tenantDto.LastName,
-                EmailAddress = tenantDto.EmailAddress,
-                EmailAddress2 = tenantDto.EmailAddress2,
-                PhoneNumber = tenantDto.PhoneNumber,
-                PhoneNumber2 = tenantDto.PhoneNumber2,
-                Fax = tenantDto.Fax,
-                TaxId = tenantDto.TaxId,
-                DocumentName = tenantDto.Document,
-                Document = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Owner_Document_" + tenantDto.OwnerId + Path.GetExtension(tenantDto.Document)}",
-                EmergencyContactInfo = tenantDto.EmergencyContactInfo,
-                LeaseAgreementId = tenantDto.LeaseAgreementId,
-                OwnerNationality = tenantDto.OwnerNationality,
-                Gender = tenantDto.Gender,
-                DOB = tenantDto.DOB,
-                VAT = tenantDto.VAT,
-                LegalName = tenantDto.LegalName,
-                Account_Name = tenantDto.Account_Name,
-                Account_Holder = tenantDto.Account_Holder,
-                Account_IBAN = tenantDto.Account_IBAN,
-                Account_Swift = tenantDto.Account_Swift,
-                Account_Bank = tenantDto.Account_Bank,
-                Account_Currency = tenantDto.Account_Currency,
-                AppTenantId = tenantDto.AppTenantId,
-                Address = tenantDto.Address,
-                Address2 = tenantDto.Address2,
-                Locality = tenantDto.Locality,
-                Region = tenantDto.Region,
-                PostalCode = tenantDto.PostalCode,
-                Country = tenantDto.Country,
-                CountryCode = tenantDto.CountryCode,
-                PictureName = tenantDto.Picture,
-                Picture = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Owner_Picture_" + tenantDto.OwnerId + Path.GetExtension(tenantDto.Picture)}",
+                OwnerId = landlordDto.OwnerId,
+                FirstName = landlordDto.FirstName,
+                MiddleName = landlordDto.MiddleName,
+                LastName = landlordDto.LastName,
+                EmailAddress = landlordDto.EmailAddress,
+                EmailAddress2 = landlordDto.EmailAddress2,
+                PhoneNumber = landlordDto.PhoneNumber,
+                PhoneNumber2 = landlordDto.PhoneNumber2,
+                Fax = landlordDto.Fax,
+                TaxId = landlordDto.TaxId,
+                DocumentName = landlordDto.Document,
+                Document = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Owner_Document_" + landlordDto.OwnerId + Path.GetExtension(landlordDto.Document)}",
+                EmergencyContactInfo = landlordDto.EmergencyContactInfo,
+                LeaseAgreementId = landlordDto.LeaseAgreementId,
+                OwnerNationality = landlordDto.OwnerNationality,
+                Gender = landlordDto.Gender,
+                DOB = landlordDto.DOB,
+                VAT = landlordDto.VAT,
+                LegalName = landlordDto.LegalName,
+                Account_Name = landlordDto.Account_Name,
+                Account_Holder = landlordDto.Account_Holder,
+                Account_IBAN = landlordDto.Account_IBAN,
+                Account_Swift = landlordDto.Account_Swift,
+                Account_Bank = landlordDto.Account_Bank,
+                Account_Currency = landlordDto.Account_Currency,
+                AppTenantId = landlordDto.AppTenantId,
+                Address = landlordDto.Address,
+                Address2 = landlordDto.Address2,
+                Locality = landlordDto.Locality,
+                Region = landlordDto.Region,
+                PostalCode = landlordDto.PostalCode,
+                Country = landlordDto.Country,
+                CountryCode = landlordDto.CountryCode,
+                PictureName = landlordDto.Picture,
+                Picture = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Owner_Picture_" + landlordDto.OwnerId + Path.GetExtension(landlordDto.Picture)}",
             };
 
             var ownerOrganization = await _db.OwnerOrganization.FirstOrDefaultAsync(o => o.OwnerId == ownerId && o.IsDeleted != true);
             if (ownerOrganization != null)
             {
-                tenant.OrganizationName = ownerOrganization.OrganizationName;
-                tenant.OrganizationDescription = ownerOrganization.OrganizationDescription;
-                tenant.OrganizationIcon = ownerOrganization.OrganizationIcon;
-                tenant.OrganizationLogo = ownerOrganization.OrganizationLogo;
-                tenant.Website = ownerOrganization.Website;
+                landlord.OrganizationName = ownerOrganization.OrganizationName;
+                landlord.OrganizationDescription = ownerOrganization.OrganizationDescription;
+                landlord.OrganizationIcon = ownerOrganization.OrganizationIcon;
+                landlord.OrganizationLogo = ownerOrganization.OrganizationLogo;
+                landlord.Website = ownerOrganization.Website;
             }
             else
             {
 
-                tenant.OrganizationName = "";
-                tenant.OrganizationDescription = "";
-                tenant.OrganizationIcon = "";
-                tenant.OrganizationLogo = "";
-                tenant.Website = "";
+                landlord.OrganizationName = "";
+                landlord.OrganizationDescription = "";
+                landlord.OrganizationIcon = "";
+                landlord.OrganizationLogo = "";
+                landlord.Website = "";
             }
 
-            return tenant;
+            return landlord;
         }
 
-        public async Task<bool> CreateOwnerAsync(OwnerDto tenantDto)
+        public async Task<bool> CreateOwnerAsync(OwnerDto landlordDto)
         {
-            var newTenant = new Owner
+            var newLandlord = new Owner
             {
-                FirstName = tenantDto.FirstName,
-                MiddleName = tenantDto.MiddleName,
-                LastName = tenantDto.LastName,
-                EmailAddress = tenantDto.EmailAddress,
-                EmailAddress2 = tenantDto.EmailAddress2,
-                PhoneNumber = tenantDto.PhoneNumber,
-                PhoneNumber2 = tenantDto.PhoneNumber2,
-                Fax = tenantDto.Fax,
-                TaxId = tenantDto.TaxId,
-                EmergencyContactInfo = tenantDto.EmergencyContactInfo,
-                LeaseAgreementId = tenantDto.LeaseAgreementId,
-                OwnerNationality = tenantDto.OwnerNationality,
-                Gender = tenantDto.Gender,
-                DOB = tenantDto.DOB,
-                VAT = tenantDto.VAT,
+                FirstName = landlordDto.FirstName,
+                MiddleName = landlordDto.MiddleName,
+                LastName = landlordDto.LastName,
+                EmailAddress = landlordDto.EmailAddress,
+                EmailAddress2 = landlordDto.EmailAddress2,
+                PhoneNumber = landlordDto.PhoneNumber,
+                PhoneNumber2 = landlordDto.PhoneNumber2,
+                Fax = landlordDto.Fax,
+                TaxId = landlordDto.TaxId,
+                EmergencyContactInfo = landlordDto.EmergencyContactInfo,
+                LeaseAgreementId = landlordDto.LeaseAgreementId,
+                OwnerNationality = landlordDto.OwnerNationality,
+                Gender = landlordDto.Gender,
+                DOB = landlordDto.DOB,
+                VAT = landlordDto.VAT,
                 Status = true,
-                LegalName = tenantDto.LegalName,
-                Document = tenantDto.DocumentUrl.FileName,
-                Account_Name = tenantDto.Account_Name,
-                Account_Holder = tenantDto.Account_Holder,
-                Account_IBAN = tenantDto.Account_IBAN,
-                Account_Swift = tenantDto.Account_Swift,
-                Account_Bank = tenantDto.Account_Bank,
-                Account_Currency = tenantDto.Account_Currency,
-                AppTenantId = tenantDto.AppTenantId,
-                Address = tenantDto.Address,
-                Address2 = tenantDto.Address2,
-                Locality = tenantDto.Locality,
-                Region = tenantDto.Region,
-                PostalCode = tenantDto.PostalCode,
-                Country = tenantDto.Country,
-                CountryCode = tenantDto.CountryCode,
-                Picture = tenantDto.PictureUrl.FileName,
-                AddedBy = tenantDto.AddedBy,
+                LegalName = landlordDto.LegalName,
+                Document = landlordDto.DocumentUrl != null ? landlordDto.DocumentUrl.FileName : "",
+                Account_Name = landlordDto.Account_Name,
+                Account_Holder = landlordDto.Account_Holder,
+                Account_IBAN = landlordDto.Account_IBAN,
+                Account_Swift = landlordDto.Account_Swift,
+                Account_Bank = landlordDto.Account_Bank,
+                Account_Currency = landlordDto.Account_Currency,
+                AppTenantId = landlordDto.AppTenantId,
+                Address = landlordDto.Address,
+                Address2 = landlordDto.Address2,
+                Locality = landlordDto.Locality,
+                Region = landlordDto.Region,
+                PostalCode = landlordDto.PostalCode,
+                Country = landlordDto.Country,
+                CountryCode = landlordDto.CountryCode,
+                Picture = landlordDto.PictureUrl != null ? landlordDto.PictureUrl.FileName : "",
+                AddedBy = landlordDto.AddedBy,
                 AddedDate = DateTime.Now
             };
 
 
 
-            await _db.Owner.AddAsync(newTenant);
+            await _db.Owner.AddAsync(newLandlord);
             await _db.SaveChangesAsync();
 
-            if (tenantDto.PictureUrl != null)
+            if (landlordDto.PictureUrl != null)
             {
-                var ext = Path.GetExtension(tenantDto.PictureUrl.FileName);
-                await _googleCloudStorageService.UploadImageAsync(tenantDto.PictureUrl, "Owner_Picture_" + newTenant.OwnerId + ext);
+                var ext = Path.GetExtension(landlordDto.PictureUrl.FileName);
+                await _googleCloudStorageService.UploadImageAsync(landlordDto.PictureUrl, "Owner_Picture_" + newLandlord.OwnerId + ext);
             }
 
-            if (tenantDto.DocumentUrl != null)
+            if (landlordDto.DocumentUrl != null)
             {
-                var ext = Path.GetExtension(tenantDto.DocumentUrl.FileName);
-                await _googleCloudStorageService.UploadImageAsync(tenantDto.DocumentUrl, "Owner_Document_" + newTenant.OwnerId + ext);
+                var ext = Path.GetExtension(landlordDto.DocumentUrl.FileName);
+                await _googleCloudStorageService.UploadImageAsync(landlordDto.DocumentUrl, "Owner_Document_" + newLandlord.OwnerId + ext);
             }
 
 
-            if (tenantDto.OrganizationName != null)
+            if (landlordDto.OrganizationName != null)
             {
                 var newOwnerOrganization = new OwnerOrganization
                 {
-                    OwnerId = newTenant.OwnerId,
-                    OrganizationName = tenantDto.OrganizationName,
-                    OrganizationDescription = tenantDto.OrganizationDescription,
-                    OrganizationIcon = tenantDto.OrganizationIconFile.FileName,
-                    OrganizationLogo = tenantDto.OrganizationLogoFile.FileName,
-                    Website = tenantDto.Website,
-                    AddedBy = tenantDto.AddedBy,
+                    OwnerId = newLandlord.OwnerId,
+                    OrganizationName = landlordDto.OrganizationName,
+                    OrganizationDescription = landlordDto.OrganizationDescription,
+                    OrganizationIcon = landlordDto.OrganizationIconFile.FileName,
+                    OrganizationLogo = landlordDto.OrganizationLogoFile.FileName,
+                    Website = landlordDto.Website,
+                    AddedBy = landlordDto.AddedBy,
                     AddedDate = DateTime.Now
                 };
                 await _db.OwnerOrganization.AddAsync(newOwnerOrganization);
 
                 await _db.SaveChangesAsync();
 
-                if (tenantDto.OrganizationIconFile != null)
+                if (landlordDto.OrganizationIconFile != null)
                 {
-                    var ext = Path.GetExtension(tenantDto.OrganizationIconFile.FileName);
-                    await _googleCloudStorageService.UploadImageAsync(tenantDto.OrganizationIconFile, "Owner_OrganizationIcon_" + newTenant.OwnerId + ext);
+                    var ext = Path.GetExtension(landlordDto.OrganizationIconFile.FileName);
+                    await _googleCloudStorageService.UploadImageAsync(landlordDto.OrganizationIconFile, "Owner_OrganizationIcon_" + newOwnerOrganization.Id + ext);
                 }
 
-                if (tenantDto.OrganizationLogoFile != null)
+                if (landlordDto.OrganizationLogoFile != null)
                 {
-                    var ext = Path.GetExtension(tenantDto.OrganizationLogoFile.FileName);
-                    await _googleCloudStorageService.UploadImageAsync(tenantDto.OrganizationLogoFile, "Owner_OrganizationLogo_" + newTenant.OwnerId + ext);
+                    var ext = Path.GetExtension(landlordDto.OrganizationLogoFile.FileName);
+                    await _googleCloudStorageService.UploadImageAsync(landlordDto.OrganizationLogoFile, "Owner_OrganizationLogo_" + newOwnerOrganization.Id + ext);
                 }
             }
 
@@ -2096,7 +2096,7 @@ namespace MagicVilla_VillaAPI.Repository
             tenant.PhoneNumber2 = tenantDto.PhoneNumber2;
             tenant.Fax = tenantDto.Fax;
             tenant.TaxId = tenantDto.TaxId;
-            if (tenant.Document != null)
+            if (tenantDto.DocumentUrl != null)
             {
                 tenant.Document = tenantDto.DocumentUrl.FileName;
             }
@@ -2124,7 +2124,7 @@ namespace MagicVilla_VillaAPI.Repository
             tenant.CountryCode = tenantDto.CountryCode;
             tenant.ModifiedBy = tenantDto.AddedBy;
             tenant.ModifiedDate = DateTime.Now;
-            if (tenant.Picture != null)
+            if (tenantDto.PictureUrl != null)
             {
                 tenant.Picture = tenantDto.PictureUrl.FileName;
             }
@@ -2245,6 +2245,84 @@ namespace MagicVilla_VillaAPI.Repository
             }
 
             return response;
+        }
+
+        public async Task<List<OwnerDto>> GetLandlordOrganizationAsync(ReportFilter reportFilter)
+        {
+            try
+            {
+                var organizations = await (from oorg in _db.OwnerOrganization
+                                  from o in _db.Owner.Where(x => x.OwnerId == oorg.OwnerId).DefaultIfEmpty()
+                                  where oorg.IsDeleted != true && oorg.AddedBy == reportFilter.AddedBy
+                                  select new OwnerDto
+                                  {
+                                      OwnerId = oorg.OwnerId,
+                                      FirstName = o.FirstName,
+                                      LastName = o.LastName,
+                                      OrganizationName = oorg.OrganizationName,
+                                      OrganizationDescription = oorg.OrganizationDescription,
+                                      OrganizationIcon = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Owner_OrganizationIcon_" + oorg.Id + Path.GetExtension(oorg.OrganizationIcon)}",
+                                      OrganizationLogo = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Owner_OrganizationLogo_" + oorg.Id + Path.GetExtension(oorg.OrganizationLogo)}",
+                                      Website = oorg.Website,
+                                  })
+                     .AsNoTracking()
+                     .ToListAsync();
+
+                if (reportFilter.LandlordIds.Count() > 0 && reportFilter.LandlordIds.Any())
+                {
+                    organizations = organizations
+                        .Where(x => reportFilter.LandlordIds.Contains(x.OwnerId))
+                        .ToList();
+                }
+
+                return organizations;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping Owners: {ex.Message}");
+                throw;
+            }
+
+        }
+
+        public async Task<List<AssetDTO>> GetLandlordAssetAsync(ReportFilter reportFilter)
+        {
+            try
+            {
+                var assets = await (from oasset in _db.Assets
+                                      from o in _db.Owner.Where(x => x.OwnerId == oasset.OwnerId).DefaultIfEmpty()
+                                      where oasset.IsDeleted != true && oasset.AddedBy == reportFilter.AddedBy
+                                      select new AssetDTO
+                                      {
+                                          AssetId = oasset.AssetId,
+                                          OwnerId = o.OwnerId,
+                                          OwnerFirstName = o.FirstName,
+                                          OwnerLastName = o.LastName,
+                                          BuildingNo = oasset.BuildingNo,
+                                          BuildingName = oasset.BuildingName,
+                                          Country = oasset.Country,
+                                          State = oasset.State,
+                                          City = oasset.City,
+                                          Zipcode = oasset.Zipcode,
+                                      })
+                     .AsNoTracking()
+                     .ToListAsync();
+
+                if (reportFilter.LandlordIds.Count() > 0 && reportFilter.LandlordIds.Any())
+                {
+                    assets = assets
+                        .Where(x => reportFilter.LandlordIds.Contains(x.OwnerId))
+                        .ToList();
+                }
+
+                return assets;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping Assets: {ex.Message}");
+                throw;
+            }
+
         }
 
         #endregion
@@ -7616,12 +7694,17 @@ namespace MagicVilla_VillaAPI.Repository
         {
             try
             {
-                var taskRequestReports = await (from t in _db.TaskRequest
+                var taskRequestReports = await (from l in _db.LineItem
+                                                from t in _db.TaskRequest.Where(x=>x.TaskRequestId == l.TaskRequestId).DefaultIfEmpty()
                                                 join p in _db.Assets on t.AssetId equals p.AssetId into properties
                                                 from p in properties.DefaultIfEmpty()
                                                 where t.IsDeleted != true && (p == null || p.IsDeleted != true)
                                                 select new TaskRequestReportDto
                                                 {
+                                                    Memo = l.Memo,
+                                                    Quantity = l.Quantity,
+                                                    Price = l.Price,
+                                                    Total = l.Price * l.Quantity,
                                                     Task = t.Subject,
                                                     DueDate = t.DueDate,
                                                     StartDate = t.StartDate,
@@ -7668,6 +7751,127 @@ namespace MagicVilla_VillaAPI.Repository
             catch (Exception ex)
             {
                 Console.WriteLine($"An error occurred while mapping Task Requests: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<List<FinanceReportDto>> GetFinanceReportsAsync(ReportFilter reportFilter)
+        {
+            try
+            {
+                var financeReports1 = await (from l in _db.LineItem
+                                            from t in _db.TaskRequest.Where(x => x.TaskRequestId == l.TaskRequestId).DefaultIfEmpty()
+                                            join p in _db.Assets on t.AssetId equals p.AssetId into properties
+                                            from p in properties.DefaultIfEmpty()
+                                            where t.IsDeleted != true && (p == null || p.IsDeleted != true)
+                                            select new FinanceReportDto
+                                            {
+                                                Total = l.Price * l.Quantity,
+                                                Task = t.Subject,
+                                                StartDate = t.StartDate,
+                                                EndDate = t.EndDate,
+                                                PropertyId = p.AssetId,
+                                                Property = p != null ? p.BuildingNo + " - " + p.BuildingName : null,
+                                                UnitId = t.UnitId,
+                                                Unit = t.Unit.UnitName,
+                                            }).ToListAsync();
+
+                var financeReports2 = await (from i in _db.Invoices
+                                                  join l in _db.Lease on i.LeaseId equals l.LeaseId into leaseGroup
+                                                  from l in leaseGroup.Where(x => x.IsDeleted != true).DefaultIfEmpty()
+                                                  join p in _db.Assets on l.AssetId equals p.AssetId into properties
+                                                  from p in properties.Where(x => x.IsDeleted != true).DefaultIfEmpty()
+                                                  join rc in _db.RentCharge on l.LeaseId equals rc.LeaseId into rentCharges
+                                                  from rc in rentCharges.DefaultIfEmpty()
+                                                  where i.IsDeleted != true
+                                                  group new { i, l, p, rc } by new
+                                                  {
+                                                      i.InvoiceId,
+                                                      l.LeaseId,
+                                                      l.StartDate,
+                                                      l.EndDate,
+                                                      p.AssetId,
+                                                      p.BuildingNo,
+                                                      p.BuildingName,
+                                                      l.SelectedUnit
+                                                  } into g
+                                                  select new FinanceReportDto
+                                                  {
+                                                      Invoice = g.Key.InvoiceId.ToString(),
+                                                      StartDate = g.Key.StartDate,
+                                                      EndDate = g.Key.EndDate,
+                                                      PropertyId = (int?)g.Key.AssetId,
+                                                      Property = g.Key.BuildingNo + " - " + g.Key.BuildingName,
+                                                      Unit = g.Key.SelectedUnit,
+                                                      RentCharges = g.Sum(x => x.rc.Amount)
+                                                  }).ToListAsync();
+                // Concatenate both lists
+                var combinedReports = financeReports1.Concat(financeReports2).ToList();
+
+                // Apply filters
+                if (reportFilter.PropertiesIds != null && reportFilter.PropertiesIds.Any())
+                {
+                    combinedReports = combinedReports
+                        .Where(x => reportFilter.PropertiesIds.Contains(x.PropertyId))
+                        .ToList();
+                }
+
+                if (reportFilter.UnitsIds != null && reportFilter.UnitsIds.Any())
+                {
+                    combinedReports = combinedReports
+                        .Where(x => reportFilter.UnitsIds.Contains(x.UnitId))
+                        .ToList();
+                }
+
+                if (reportFilter.TaskStartDateFilter != null && reportFilter.TaskEndDateFilter != null)
+                {
+                    combinedReports = combinedReports
+                        .Where(x => x.StartDate >= reportFilter.TaskStartDateFilter && x.EndDate <= reportFilter.TaskEndDateFilter)
+                        .ToList();
+                }
+
+                return combinedReports;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping Task Requests: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<List<UnitDTO>> GetUnitsByAssetAsync(ReportFilter reportFilter)
+        {
+            try
+            {
+                var units = await (from u in _db.AssetsUnits
+                                    from a in _db.Assets.Where(x => x.AssetId == u.AssetId).DefaultIfEmpty()
+                                    where u.IsDeleted != true && u.AddedBy == reportFilter.AddedBy
+                                    select new UnitDTO
+                                    {
+                                        AssetId = u.AssetId,
+                                        Asset = a.BuildingNo + " - " + a.BuildingName,
+                                        UnitId = u.UnitId,
+                                        UnitName = u.UnitName,
+                                        Bath = u.Bath,
+                                        Beds = u.Beds,
+                                        Rent = u.Rent,
+                                        Size = u.Size
+                                    })
+                     .AsNoTracking()
+                     .ToListAsync();
+
+                if (reportFilter.AssetsIds.Count() > 0 && reportFilter.AssetsIds.Any())
+                {
+                    units = units
+                        .Where(x => reportFilter.AssetsIds.Contains(x.AssetId))
+                        .ToList();
+                }
+
+                return units;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping Assets: {ex.Message}");
                 throw;
             }
         }

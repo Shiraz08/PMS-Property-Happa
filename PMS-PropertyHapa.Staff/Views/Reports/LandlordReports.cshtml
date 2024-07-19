@@ -8,7 +8,7 @@
         <div class="page-title">
             <div class="row">
                 <div class="col-12 col-sm-6">
-                    <h3>LandLord Reports</h3>
+                    <h3>Landlord Reports</h3>
                 </div>
                 <div class="col-12 col-sm-6">
                     <ol class="breadcrumb">
@@ -20,13 +20,14 @@
             </div>
         </div>
     </div>
+
     <div class="col-md-12 project-list">
         <div class="card">
             <div class="row">
                 <div class="col-md-12 p-0">
                     <ul class="nav nav-tabs border-tab" id="top-tab" role="tablist">
-                        <li class="nav-item"><a class="nav-link active" id="income-top-tab" data-bs-toggle="tab" href="#incomeReports" role="tab" aria-controls="incomeReports" aria-selected="false"><i data-feather="info"></i>Income</a></li>
-                        <li class="nav-item"><a class="nav-link" id="expense-top-tab" data-bs-toggle="tab" href="#expenseReports" role="tab" aria-controls="expenseReports" aria-selected="false"><i data-feather="check-circle"></i>Expense</a></li>
+                        <li class="nav-item"><a class="nav-link active" id="org-top-tab" data-bs-toggle="tab" href="#orgReports" role="tab" aria-controls="orgReports" aria-selected="false"><i data-feather="info"></i>Orgnaizations Report</a></li>
+                        <li class="nav-item"><a class="nav-link" id="asset-top-tab" data-bs-toggle="tab" href="#assetReports" role="tab" aria-controls="assetReports" aria-selected="false"><i data-feather="check-circle"></i>Assets Report</a></li>
                     </ul>
                 </div>
             </div>
@@ -34,61 +35,28 @@
     </div>
     <div class="col-sm-12 mt-4">
         <div class="tab-content" id="top-tabContent">
-            <div class="tab-pane fade show active" id="incomeReports" role="tabpanel" aria-labelledby="income-top-tab">
+            <div class="tab-pane fade show active" id="orgReports" role="tabpanel" aria-labelledby="org-top-tab">
                 <div class="row mb-3">
-                    <div class="col-md-3 mt-4">
-                        <div class="left-side-header">
-                            <div class="input-group">
-                                <span class="input-group-text" id="basic-addon1">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <g>
-                                            <g>
-                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M11.2753 2.71436C16.0029 2.71436 19.8363 6.54674 19.8363 11.2753C19.8363 16.0039 16.0029 19.8363 11.2753 19.8363C6.54674 19.8363 2.71436 16.0039 2.71436 11.2753C2.71436 6.54674 6.54674 2.71436 11.2753 2.71436Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M19.8987 18.4878C20.6778 18.4878 21.3092 19.1202 21.3092 19.8983C21.3092 20.6783 20.6778 21.3097 19.8987 21.3097C19.1197 21.3097 18.4873 20.6783 18.4873 19.8983C18.4873 19.1202 19.1197 18.4878 19.8987 18.4878Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                                            </g>
-                                        </g>
-                                    </svg>
-                                </span>
-                                <input class="form-control" type="text" id="searchInput" placeholder="Search" aria-label="search" aria-describedby="basic-addon1">
-                            </div>
-                        </div>
-                    </div>
                     <div class="col-md-3">
-                        <label for="newProperty" class="form-label ">Property</label>
-                        <select class="form-control select2" id="newProperty">
-                            <option value="">Select Property</option>
+                        <label for="orgLandlord" class="form-label ">Landlord</label>
+                        <select class="form-control select2" multiple id="orgLandlord">
                         </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="newOwner" class="form-label ">Owner</label>
-                        <select class="form-control select2" id="newOwner">
-                            <option value="">Select Owner</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3 mt-4">
-                        <select class="form-control select2" id="dueRent" name="DueRent">
-                            <option value="rentReceived">Rent Received This Month</option>
-                            <option value="rentDue">Rent Due This Month</option>
-                            <option value="allOverdueRent">All Overdue Rent</option>
-                        </select>
-
                     </div>
                 </div>
                 <div class="card">
                     <div class="card-body">
                         <div class="row">
                             <div class="table-responsive">
-                                <h3 class="card-title">Income</h3>
-                                <table class="table display" id="incomeReportsTable">
+                                <h3 class="card-title">Organizations</h3>
+                                <table class="table display" id="orgReportTable">
                                     <thead>
                                         <tr>
-                                            <th>Period</th>
-                                            <th>Payee</th>
-                                            <th>Category</th>
-                                            <th>Description</th>
-                                            <th>Property</th>
-                                            <th>Amount</th>
-                                            <th>Attachment</th>
+                                            <th>Name</th>
+                                            <th>Discription</th>
+                                            <th>Icon</th>
+                                            <th>Logo</th>
+                                            <th>Website</th>
+                                            <th>Landlord Name</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -100,49 +68,28 @@
                 </div>
 
             </div>
-            <div class="tab-pane fade" id="expenseReports" role="tabpanel" aria-labelledby="expense-top-tab">
+            <div class="tab-pane fade" id="assetReports" role="tabpanel" aria-labelledby="asset-top-tab">
                 <div class="row mb-3">
-                    <div class="col-md-3 mt-4">
-                        <div class="left-side-header">
-                            <div class="input-group">
-                                <span class="input-group-text" id="basic-addon1">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <g>
-                                            <g>
-                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M11.2753 2.71436C16.0029 2.71436 19.8363 6.54674 19.8363 11.2753C19.8363 16.0039 16.0029 19.8363 11.2753 19.8363C6.54674 19.8363 2.71436 16.0039 2.71436 11.2753C2.71436 6.54674 6.54674 2.71436 11.2753 2.71436Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M19.8987 18.4878C20.6778 18.4878 21.3092 19.1202 21.3092 19.8983C21.3092 20.6783 20.6778 21.3097 19.8987 21.3097C19.1197 21.3097 18.4873 20.6783 18.4873 19.8983C18.4873 19.1202 19.1197 18.4878 19.8987 18.4878Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                                            </g>
-                                        </g>
-                                    </svg>
-                                </span>
-                                <input class="form-control" type="text" id="searchInput" placeholder="Search" aria-label="search" aria-describedby="basic-addon1">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 mt-4">
-                        <select class="form-control select2" id="dueExpense" name="DueExpense">
-                            <option value="expensePaid">Expense Paid This Month</option>
-                            <option value="expenseDue">Expense Due This Month</option>
-                            <option value="allOverdueExpense">All Overdue Expense</option>
+                    <div class="col-md-3">
+                        <label for="assetLandlord" class="form-label ">Landlord</label>
+                        <select class="form-control select2" multiple id="assetLandlord">
                         </select>
                     </div>
                 </div>
                 <div class="card">
                     <div class="card-body">
                         <div class="table-responsive">
-                            <h3 class="card-title">Expense</h3>
-                            <table class="table display" id="expenseReportsTable">
+                            <h3 class="card-title">Assets</h3>
+                            <table class="table display" id="assetReportTable">
                                 <thead>
                                     <tr>
-                                        @* <th>Date Paid</th> *@
-                                        <th>Due Date</th>
-                                        <th>Payee</th>
-                                        <th>Category</th>
-                                        <th>Description</th>
-                                        <th>Property</th>
-                                        <th>Amount</th>
-                                        <th>Status</th>
-                                        <th>Attachment</th>
+                                        <th>Building No</th>
+                                        <th>Building Name</th>
+                                        <th>Country</th>
+                                        <th>State</th>
+                                        <th>City</th>
+                                        <th>Zipcode</th>
+                                        <th>Landlord Name</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -157,79 +104,148 @@
 </div>
 
 <script>
-    $$(document).ready(function () {
-        $('#searchInput').on('input', function () {
-            var searchText = $(this).val().toLowerCase();
-            $('.nav-link').each(function () {
-                var ownerName = $(this).find('.first_name_0').text().toLowerCase() + ' ' + $(this).find('.last_name_0').text().toLowerCase();
-                if (ownerName.includes(searchText)) {
-                    $(this).show();
-                } else {
-                    $(this).hide();
-                }
-            });
-        });
+    var orgLandlordIdsList = [];
+    var assetLandlordIdsList = [];
 
+    $(document).ready(function () {
         $.ajax({
             url: '@Url.Action("GetLandlordDll", "Landlord")',
             type: 'GET',
             dataType: 'json',
             success: function (data) {
-                var ownerDropdown = document.getElementById('newOwner');
-                // ownerDropdown.innerHTML = ''; // Clear existing options
+                var orgLandlordsDropdown = document.getElementById('orgLandlord');
+                // orgLandlordsDropdown.innerHTML = ''; // Clear existing options
                 data.forEach(function (item) {
                     var option = new Option(item.FirstName + ' ' + item.LastName, item.OwnerId);
-                    ownerDropdown.appendChild(option);
+                    orgLandlordsDropdown.appendChild(option);
                 });
             }
         });
         $.ajax({
-            url: '@Url.Action("GetProperties", "Communication")',
+            url: '@Url.Action("GetLandlordDll", "Landlord")',
             type: 'GET',
             dataType: 'json',
             success: function (data) {
-                var newPropertyDropdown = document.getElementById('newProperty');
-                // newPropertyDropdown.innerHTML = ''; // Clear existing options
+                var assetLandlordsDropdown = document.getElementById('assetLandlord');
+                // orgLandlordsDropdown.innerHTML = ''; // Clear existing options
                 data.forEach(function (item) {
-                    var option = new Option(item.BuildingNo + " - " + item.BuildingName, item.AssetId);
-                    newPropertyDropdown.appendChild(option);
+                    var option = new Option(item.FirstName + ' ' + item.LastName, item.OwnerId);
+                    assetLandlordsDropdown.appendChild(option);
                 });
             }
         });
+        $("#orgLandlord").on("change", loadOrgLandlordDataTable);
+        $("#assetLandlord").on("change", loadAssetLandlordDataTable);
 
-        getIncomeReports();
-        getExpenseReports();
+        loadOrgLandlordDataTable();
+        loadAssetLandlordDataTable();
     });
 
-    function getIncomeReports() {
-        $('#incomeReportsTable').DataTable();
 
-    }
-    function getExpenseReports() {
-        $('#expenseReportsTable').DataTable();
+    function loadOrgLandlordDataTable() {
 
-    }
-    function populateUnits(propertyId, selectedUnit) {
-        $.ajax({
-            url: '/Lease/GetUnitsDll',
-            method: 'POST',
-            dataType: 'json',
-            data: { AssetIds: propertyId },
-            success: function (units) {
-                var newUnitDropdown = document.getElementById('newUnit');
-                $("#newUnit").empty();
-                units.forEach(function (unit) {
-                    var option = new Option(unit.UnitName, unit.UnitId);
-                    newUnitDropdown.appendChild(option);
-                });
-
-                if (selectedUnit) {
-                    $("#newUnit").val(selectedUnit).trigger("change")
+        if ($.fn.dataTable.isDataTable('#orgReportTable')) {
+            $('#orgReportTable').DataTable().clear().destroy();
+        }
+        orgLandlordIdsList = $("#orgLandlord").val();
+        objOrgTenantTable = $("#orgReportTable").DataTable({
+            ajax: {
+                url: "/Landlord/GetLandlordOrganization",
+                type: 'POST',
+                contentType: 'application/json',
+                data: function (d) {
+                    return JSON.stringify({
+                        LandlordIds: orgLandlordIdsList
+                    });
+                },
+                dataSrc: "",
+                error: function (xhr, error, thrown) {
+                    console.error("Error occurred: ", error, thrown);
+                    alert("An error occurred while loading the data table: " + error);
                 }
             },
-            error: function (error) {
-                console.error('Error fetching units:', error.responseText || 'Unknown error');
-            }
+            initComplete: function () {
+
+            },
+            order: [[0, "asc"]],
+            columns: [
+                { data: "OrganizationName" },
+                { data: "OrganizationDescription" },
+                {
+                    data: "OrganizationIcon",
+                    render: (data, type, row) => {
+                        if (data) {
+                            return `<img src="${data}" alt="Image" style="width: 50px; height: auto;" />`;
+                        }
+                        return '';
+                    }
+                },
+                {
+                    data: "OrganizationLogo",
+                    render: (data, type, row) => {
+                        if (data) {
+                            return `<img src="${data}" alt="Image" style="width: 50px; height: auto;" />`;
+                        }
+                        return '';
+                    }
+                },
+                { data: "Website" },
+                {
+                    data: null,
+                    render: (data, type, row) => {
+                        const { FirstName, LastName } = data;
+                        return `${FirstName} ${LastName}`;
+                    }
+                },
+            ]
         });
     }
+
+    function loadAssetLandlordDataTable() {
+        console.log("loadAssetLandlordDataTable")
+        if ($.fn.dataTable.isDataTable('#assetReportTable')) {
+            $('#assetReportTable').DataTable().clear().destroy();
+        }
+        console.log("loadAssetLandlordDataTable")
+        assetLandlordIdsList = $("#assetLandlord").val();
+        objAssetLandlordTable = $("#assetReportTable").DataTable({
+            ajax: {
+                url: "/Landlord/GetLandlordAsset",
+                type: 'POST',
+                contentType: 'application/json',
+                data: function (d) {
+                    return JSON.stringify({
+                        LandlordIds: assetLandlordIdsList
+                    });
+                },
+                dataSrc: "",
+                error: function (xhr, error, thrown) {
+                    console.error("Error occurred: ", error, thrown);
+                    alert("An error occurred while loading the data table: " + error);
+                }
+            },
+            initComplete: function () {
+
+            },
+            order: [[0, "asc"]],
+            columns: [
+                { data: "BuildingNo" },
+                { data: "BuildingName" },
+                { data: "Country" },
+                { data: "State" },
+                { data: "City" },
+                { data: "Zipcode" },
+                {
+                    data: null,
+                    render: (data, type, row) => {
+                        const { OwnerFirstName, OwnerLastName } = data;
+                        return `${OwnerFirstName} ${OwnerLastName}`;
+                    }
+                },
+            ]
+        });
+        console.log("loadAssetLandlordDataTable")
+
+    }
+
 </script>

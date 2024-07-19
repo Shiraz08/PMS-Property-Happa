@@ -2,7 +2,25 @@
     ViewData["Title"] = "InvoiceReports";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-@*
+<style>
+    .offcanvas {
+        z-index: 1050; /* Adjust if needed */
+    }
+
+    .daterangepicker {
+        z-index: 1060; /* Adjust if needed */
+    }
+</style>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+<link href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" rel="stylesheet">
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/5.0.2/css/bootstrap.min.css" rel="stylesheet">
+
+
+@*<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
 <!-- Page Sidebar Ends-->
 <div class="page-body">
     <div class="container-fluid">
@@ -119,7 +137,8 @@
             <div class="row">
                 <div class="col-md-12 p-0">
                     <ul class="nav nav-tabs border-tab" id="top-tab" role="tablist">
-                        <li class="nav-item"><a class="nav-link active" id="income-top-tab" data-bs-toggle="tab" href="#incomeFinanceReports" role="tab" aria-controls="incomeFinanceReports" aria-selected="false"><i data-feather="info"></i>Income</a></li>
+                        <li class="nav-item"><a class="nav-link active" id="all-top-tab" data-bs-toggle="tab" href="#allFinanceReports" role="tab" aria-controls="allFinanceReports" aria-selected="false"><i data-feather="check-circle"></i>All</a></li>
+                        <li class="nav-item"><a class="nav-link" id="income-top-tab" data-bs-toggle="tab" href="#incomeFinanceReports" role="tab" aria-controls="incomeFinanceReports" aria-selected="false"><i data-feather="info"></i>Income</a></li>
                         <li class="nav-item"><a class="nav-link" id="expense-top-tab" data-bs-toggle="tab" href="#expenseFinanceReports" role="tab" aria-controls="expenseFinanceReports" aria-selected="false"><i data-feather="check-circle"></i>Expense</a></li>
                     </ul>
                 </div>
@@ -128,7 +147,57 @@
     </div>
     <div class="col-sm-12 mt-4">
         <div class="tab-content" id="top-tabContent">
-            <div class="tab-pane fade show active" id="incomeFinanceReports" role="tabpanel" aria-labelledby="income-top-tab">
+            <div class="tab-pane fade show active" id="allFinanceReports" role="tabpanel" aria-labelledby="all-top-tab">
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <label class="col-sm-12 mb-0 font-weight-bold">Property</label>
+                        <div col-sm-12>
+                            <select id="allPropertyFilter" multiple name="allPropertyFilter" class="form-control select2"></select>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="col-sm-12 mb-0 font-weight-bold">Unit</label>
+                        <div col-sm-12>
+                            <select id="allUnitFilter" multiple name="allUnitFilter" class="form-control select2"></select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="col-sm-12 mb-0 font-weight-bold">Start/End Date</label>
+                        <div class="col-sm-12">
+                            <input type="text" class="form-control" id="allCreatedInvoiceRange" />
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <button class="btn btn-primary mt-4" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Filter</button>
+                    </div>
+                </div>
+                <div class="card mt-3">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="table-responsive">
+                                <h3 class="card-title">All</h3>
+                                <table class="table display" id="allFinanceReportsTbl">
+                                    <thead>
+                                        <tr>
+                                            <th>Invoice</th>
+                                            <th>Task Type</th>
+                                            <th>Start Date</th>
+                                            <th>End Date</th>
+                                            <th>Property</th>
+                                            <th>Unit</th>
+                                            <th>Income</th>
+                                            <th>Expense</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="incomeFinanceReports" role="tabpanel" aria-labelledby="income-top-tab">
                 <div class="row mb-3">
                     <div class="col-md-3">
                         <label class="col-sm-12 mb-0 font-weight-bold">Property</label>
@@ -148,6 +217,9 @@
                             <input type="text" class="form-control" id="incomeCreatedInvoiceRange" />
                         </div>
                     </div>
+                    <div class="col-md-3">
+                        <button class="btn btn-primary mt-4" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Filter</button>
+                    </div>
                 </div>
                 <div class="card mt-3">
                     <div class="card-body">
@@ -157,14 +229,14 @@
                                 <table class="table display" id="incomeFinanceReportsTbl">
                                     <thead>
                                         <tr>
-                                            <th scope="col" class="tableHeaderbg">Invoice</th>
-                                            <th scope="col" class="tableHeaderbg">Start Date</th>
-                                            <th scope="col" class="tableHeaderbg">End Date</th>
-                                            <th scope="col" class="tableHeaderbg">Status</th>
-                                            <th scope="col" class="tableHeaderbg">Property</th>
-                                            <th scope="col" class="tableHeaderbg">Unit</th>
-                                            <th scope="col" class="tableHeaderbg">Rent Charges</th>
-                                            <th scope="col" class="tableHeaderbg">Invoice Date</th>
+                                            <th>Invoice</th>
+                                            <th>Start Date</th>
+                                            <th>End Date</th>
+                                            <th>Status</th>
+                                            <th>Property</th>
+                                            <th>Unit</th>
+                                            <th>Rent Charges</th>
+                                            <th>Invoice Date</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -174,7 +246,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
             <div class="tab-pane fade" id="expenseFinanceReports" role="tabpanel" aria-labelledby="expense-top-tab">
                 <div class="row mb-3">
@@ -196,11 +267,14 @@
                             <input type="text" class="form-control" id="expenseCreatedAtRange" />
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <label class="col-sm-12 mb-0 font-weight-bold">Due Date</label>
                         <div class="col-sm-12">
                             <input type="text" class="form-control" id="expenseCreatedDueRange" />
                         </div>
+                    </div>
+                    <div class="col-md-1">
+                        <button class="btn btn-primary mt-4" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight1" aria-controls="offcanvasRight">Filter</button>
                     </div>
                 </div>
                 <div class="card">
@@ -210,13 +284,13 @@
                             <table class="table display" id="expenseReportsTable">
                                 <thead>
                                     <tr>
-                                        <th scope="col" class="tableHeaderbg">Task Type</th>
-                                        <th scope="col" class="tableHeaderbg">Due At</th>
-                                        <th scope="col" class="tableHeaderbg">Start Date</th>
-                                        <th scope="col" class="tableHeaderbg">Expiring Date</th>
-                                        <th scope="col" class="tableHeaderbg">Property</th>
-                                        <th scope="col" class="tableHeaderbg">Unit</th>
-                                        <th scope="col" class="tableHeaderbg">Status</th>
+                                        <th>Task Type</th>
+                                        <th>Due At</th>
+                                        <th>Start Date</th>
+                                        <th>Expiring Date</th>
+                                        <th>Property</th>
+                                        <th>Unit</th>
+                                        <th>Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -230,8 +304,139 @@
     </div>
 </div>
 
+<div class="offcanvas offcanvas-end w-50" tabindex="-1" id="offcanvasRight2" aria-labelledby="offcanvasRightLabel">
+    <div class="offcanvas-header">
+        <h5 id="offcanvasRightLabel">Filter All Reports</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label class="col-sm-12 mb-0 font-weight-bold">Property</label>
+                <div col-sm-12>
+                    <select id="allPropertyFilterOffcanvas" multiple name="allPropertyFilterOffcanvas" class="form-control select2"></select>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label class="col-sm-12 mb-0 font-weight-bold">Units</label>
+                <div col-sm-12>
+                    <select id="allUnitFilterOffcanvas" multiple name="allUnitFilterOffcanvas" class="form-control select2"></select>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label class="col-sm-12 mb-0 font-weight-bold">Start/End Date</label>
+                <div class="col-sm-12">
+                    <input type="text" class="form-control" id="allCreatedRangeOffcanvas" />
+                </div>
+            </div>
+        </div>
+        <div class="d-flex justify-content-end">
+            <button class="btn btn-primary me-2" type="button" id="applyAllFilters">Filter</button>
+            <button class="btn btn-secondary" type="button" id="clearAllFilters">Clear</button>
+        </div>
+    </div>
+</div>
+
+<!-- Offcanvas for Income Filters -->
+<div class="offcanvas offcanvas-end w-50" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+    <div class="offcanvas-header">
+        <h5 id="offcanvasRightLabel">Filter Income Reports</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label class="col-sm-12 mb-0 font-weight-bold">Property</label>
+                <div col-sm-12>
+                    <select id="incomePropertyFilterOffcanvas" multiple name="incomePropertyFilterOffcanvas" class="form-control select2"></select>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label class="col-sm-12 mb-0 font-weight-bold">Units</label>
+                <div col-sm-12>
+                    <select id="incomeUnitFilterOffcanvas" multiple name="incomeUnitFilterOffcanvas" class="form-control select2"></select>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label class="col-sm-12 mb-0 font-weight-bold">MoveIn/MoveOut Date</label>
+                <div class="col-sm-12">
+                    <input type="text" class="form-control" id="incomeCreatedAtRangeOffcanvas" />
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label class="col-sm-12 mb-0 font-weight-bold">Invoice Start/End Date</label>
+                <div class="col-sm-12">
+                    <input type="text" class="form-control" id="incomeCreatedInvoiceRangeOffcanvas" />
+                </div>
+            </div>
+        </div>
+        <div class="d-flex justify-content-end">
+            <button class="btn btn-primary me-2" type="button" id="applyIncomeFilters">Filter</button>
+            <button class="btn btn-secondary" type="button" id="clearIncomeFilters">Clear</button>
+        </div>
+    </div>
+</div>
+
+<!-- Offcanvas for Expense Filters -->
+<div class="offcanvas offcanvas-end w-50" tabindex="-1" id="offcanvasRight1" aria-labelledby="offcanvasRightLabel">
+    <div class="offcanvas-header">
+        <h5 id="offcanvasRightLabel">Filter Expense Reports</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label class="col-sm-12 mb-0 font-weight-bold">Property</label>
+                <div col-sm-12>
+                    <select id="expensePropertyFilterOffcanvas" multiple name="expensePropertyFilterOffcanvas" class="form-control select2"></select>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label class="col-sm-12 mb-0 font-weight-bold">Units</label>
+                <div col-sm-12>
+                    <select id="expenseUnitFilterOffcanvas" multiple name="expenseUnitFilterOffcanvas" class="form-control select2"></select>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label class="col-sm-12 mb-0 font-weight-bold">Task Start/End Date</label>
+                <div class="col-sm-12">
+                    <input type="text" id="expenseCreatedAtRangeOffcanvas" class="form-control" />
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label class="col-sm-12 mb-0 font-weight-bold">Due Date</label>
+                <div class="col-sm-12">
+                    <input type="text" class="form-control" id="expenseCreatedDueRangeOffcanvas" />
+                </div>
+            </div>
+        </div>
+        <div class="d-flex justify-content-end">
+            <button class="btn btn-primary me-2" type="button" id="applyExpenseFilters">Filter</button>
+            <button class="btn btn-secondary" type="button" id="clearExpenseFilters">Clear</button>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/5.0.2/js/bootstrap.bundle.min.js"></script>
 
 <script>
+    var allPropertiesIdsList = [];
+    var allUnitsIdsList = [];
+    var allFinanceStartDateFilter = null;
+    var allFinanceEndDateFilter = null;
+
     var incomePropertiesIdsList = [];
     var incomeLeaseStartDateFilter = null;
     var incomeLeaseEndDateFilter = null;
@@ -245,22 +450,132 @@
     var expenseTaskDueStartDateFilter = null;
     var expenseTaskDueEndDateFilter = null;
 
-
     $(document).ready(function () {
         initDatePickers();
         populateDropDowns();
+        loadFinanceDataTable();
         loadInvoiceDataTable();
         loadTaskRequestDataTable();
-        $("#incomePropertyFilter").on("change", applyIncomeFilters);
-        $("#expensePropertyFilter").on("change", applyExpenseFilters);
-        $("#expensePropertyFilter").on("change", function () {
-            if ($("#expensePropertyFilter").val() != null) {
-                populateUnits($("#expensePropertyFilter").val().join(','));
+
+        // Synchronize All Filters between Tab and Offcanvas
+        $('#allPropertyFilter, #allPropertyFilterOffcanvas').change(function () {
+            var values = $(this).val();
+            $('#allPropertyFilter, #allPropertyFilterOffcanvas').val(values).trigger('change.select2');
+            if (values != null) {
+                var selectedValues = values.join(',');
+                populateUnits(selectedValues);
+                populateAllUnitsOffcanvas(selectedValues);
+            } else {
+                $("#allPropertyFilter").empty();
+                $("#allPropertyFilterOffcanvas").empty();
+            }
+            applyAllFilters();
+        });
+
+        $('#allUnitFilter, #allUnitFilterOffcanvas').change(function () {
+            var values = $(this).val();
+            $('#allUnitFilter, #allUnitFilterOffcanvas').val(values).trigger('change.select2');
+        });
+
+
+        $('#allCreatedDueRange, #allCreatedDueRangeOffcanvas').change(function () {
+            var value = $(this).val();
+            $('#allCreatedDueRange, #allCreatedDueRangeOffcanvas').val(value);
+        });
+      
+
+        // Synchronize Income Filters between Tab and Offcanvas
+        $('#incomePropertyFilter, #incomePropertyFilterOffcanvas').change(function () {
+            var values = $(this).val();
+            $('#incomePropertyFilter, #incomePropertyFilterOffcanvas').val(values).trigger('change.select2');
+            if ($('#incomePropertyFilter').is(':focus')) {
+                populateIncomeUnits($('#incomePropertyFilter').val());
+            } else {
+                populateIncomeUnits($('#incomePropertyFilterOffcanvas').val());
+            }
+        });
+
+        $('#incomeUnitFilter, #incomeUnitFilterOffcanvas').change(function () {
+            var values = $(this).val();
+            $('#incomeUnitFilter, #incomeUnitFilterOffcanvas').val(values).trigger('change.select2');
+        });
+
+        $('#incomeCreatedAtRange, #incomeCreatedAtRangeOffcanvas').change(function () {
+            var value = $(this).val();
+            $('#incomeCreatedAtRange, #incomeCreatedAtRangeOffcanvas').val(value);
+        });
+
+        $('#incomeCreatedInvoiceRange, #incomeCreatedInvoiceRangeOffcanvas').change(function () {
+            var value = $(this).val();
+            $('#incomeCreatedInvoiceRange, #incomeCreatedInvoiceRangeOffcanvas').val(value);
+        });
+
+        // Synchronize Expense Filters between Tab and Offcanvas
+        $('#expensePropertyFilter, #expensePropertyFilterOffcanvas').change(function () {
+            var values = $(this).val();
+            $('#expensePropertyFilter, #expensePropertyFilterOffcanvas').val(values).trigger('change.select2');
+            if (values != null) {
+                var selectedValues = values.join(',');
+                populateUnits(selectedValues);
+                populateExpenseUnitsOffcanvas(selectedValues);
             } else {
                 $("#expensePropertyFilter").empty();
+                $("#expensePropertyFilterOffcanvas").empty();
             }
             applyExpenseFilters();
         });
+
+        $('#expenseUnitFilter, #expenseUnitFilterOffcanvas').change(function () {
+            var values = $(this).val();
+            $('#expenseUnitFilter, #expenseUnitFilterOffcanvas').val(values).trigger('change.select2');
+        });
+
+        $('#expenseCreatedAtRange, #expenseCreatedAtRangeOffcanvas').change(function () {
+            var value = $(this).val();
+            $('#expenseCreatedAtRange, #expenseCreatedAtRangeOffcanvas').val(value);
+        });
+
+        $('#expenseCreatedDueRange, #expenseCreatedDueRangeOffcanvas').change(function () {
+            var value = $(this).val();
+            $('#expenseCreatedDueRange, #expenseCreatedDueRangeOffcanvas').val(value);
+        });
+
+        // Original event handlers
+        $("#allPropertyFilter, #allPropertyFilterOffcanvas").on("change", applyAllFilters);
+        $("#incomePropertyFilter, #incomePropertyFilterOffcanvas").on("change", applyIncomeFilters);
+        $("#expensePropertyFilter, #expensePropertyFilterOffcanvas").on("change", applyExpenseFilters);
+
+        // Offcanvas event handlers
+        $("#applyAllFilters").on("click", function () {
+            applyAllFiltersFromOffcanvas();
+            $("#offcanvasRight").modal('hide');
+        });
+
+        $("#clearAllFilters").on("click", function () {
+            clearAllFiltersFromOffcanvas();
+            $("#offcanvasRight").modal('hide');
+        });
+
+        $("#applyIncomeFilters").on("click", function () {
+            applyIncomeFiltersFromOffcanvas();
+            $("#offcanvasRight").modal('hide');
+        });
+
+        $("#clearIncomeFilters").on("click", function () {
+            clearIncomeFiltersFromOffcanvas();
+            $("#offcanvasRight").modal('hide');
+        });
+
+        $("#applyExpenseFilters").on("click", function () {
+            applyExpenseFiltersFromOffcanvas();
+            $("#offcanvasRight1").modal('hide');
+        });
+
+        $("#clearExpenseFilters").on("click", function () {
+            clearExpenseFiltersFromOffcanvas();
+            $("#offcanvasRight1").modal('hide');
+        });
+
     });
 
     var initDatePickers = function () {
@@ -349,8 +664,96 @@
             applyExpenseFilters();
         });
 
+        $('#incomeCreatedAtRangeOffcanvas').daterangepicker({
+            parentEl: '#offcanvasRight',
+            opens: 'right',
+            autoUpdateInput: false,
+            locale: {
+                cancelLabel: 'Clear'
+            }
+        });
+
+        $('#incomeCreatedAtRangeOffcanvas').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
+        });
+
+        $('#incomeCreatedAtRangeOffcanvas').on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('');
+        });
+        
+        $('#incomeCreatedInvoiceRangeOffcanvas').daterangepicker({
+            parentEl: '#offcanvasRight',
+            opens: 'right',
+            autoUpdateInput: false,
+            locale: {
+                cancelLabel: 'Clear'
+            }
+        });
+
+        $('#incomeCreatedInvoiceRangeOffcanvas').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
+        });
+
+        $('#incomeCreatedInvoiceRangeOffcanvas').on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('');
+        });
+        
+        $('#expenseCreatedAtRangeOffcanvas').daterangepicker({
+            parentEl: '#offcanvasRight1',
+            opens: 'right',
+            autoUpdateInput: false,
+            locale: {
+                cancelLabel: 'Clear'
+            }
+        });
+
+        $('#expenseCreatedAtRangeOffcanvas').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
+        });
+
+        $('#expenseCreatedAtRangeOffcanvas').on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('');
+        });
+
+        $('#expenseCreatedDueRangeOffcanvas').daterangepicker({
+            parentEl: '#offcanvasRight1',
+            opens: 'right',
+            autoUpdateInput: false,
+            locale: {
+                cancelLabel: 'Clear'
+            }
+        });
+
+        $('#expenseCreatedDueRangeOffcanvas').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
+        });
+
+        $('#expenseCreatedDueRangeOffcanvas').on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('');
+        });
+       
+        $('#allCreatedRangeOffcanvas').daterangepicker({
+            parentEl: '#offcanvasRight1',
+            opens: 'right',
+            autoUpdateInput: false,
+            locale: {
+                cancelLabel: 'Clear'
+            }
+        });
+
+        $('#allCreatedRangeOffcanvas').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
+        });
+
+        $('#allCreatedRangeOffcanvas').on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('');
+        });
     };
 
+    function parseDateRange(selector) {
+        var dates = $(selector).val().split(' - ');
+        return dates.length === 2 ? { start: dates[0], end: dates[1] } : null;
+    }
 
     function populateDropDowns() {
         $.ajax({
@@ -369,29 +772,130 @@
                     var option = new Option(item.BuildingNo + " - " + item.BuildingName, item.AssetId);
                     expensePropertyDropdown.appendChild(option);
                 });
+                
+                var allPropertyDropdown = document.getElementById('allPropertyFilter');
+                data.forEach(function (item) {
+                    var option = new Option(item.BuildingNo + " - " + item.BuildingName, item.AssetId);
+                    allPropertyDropdown.appendChild(option);
+                });
+
+                var incomePropertyFilterOffcanvas = document.getElementById('incomePropertyFilterOffcanvas');
+                data.forEach(function (item) {
+                    var option = new Option(item.BuildingNo + " - " + item.BuildingName, item.AssetId);
+                    incomePropertyFilterOffcanvas.appendChild(option);
+                });
+                
+                var expensePropertyFilterOffcanvas = document.getElementById('expensePropertyFilterOffcanvas');
+                data.forEach(function (item) {
+                    var option = new Option(item.BuildingNo + " - " + item.BuildingName, item.AssetId);
+                    expensePropertyFilterOffcanvas.appendChild(option);
+                });
+                
+                var allPropertyFilterOffcanvas = document.getElementById('allPropertyFilterOffcanvas');
+                data.forEach(function (item) {
+                    var option = new Option(item.BuildingNo + " - " + item.BuildingName, item.AssetId);
+                    allPropertyFilterOffcanvas.appendChild(option);
+                });
             }
         });
     }
 
-    function applyIncomeFilters() {
-        incomePropertiesIdsList = $("#incomePropertyFilter").val();
-        if ($("#incomeCreatedAtRange").val()) {
-            var dates = $("#incomeCreatedAtRange").val().split('-');
-            incomeLeaseStartDateFilter = dates[0];
-            incomeLeaseEndDateFilter = dates[1];
-        } else {
-            incomeLeaseStartDateFilter = null;
-            incomeLeaseEndDateFilter = null;
+    function applyAllFiltersFromOffcanvas() {
+        $('#allPropertyFilter').val($('#allPropertyFilterOffcanvas').val()).trigger('change');
+        $('#allUnitFilter').val($('#allUnitFilterOffcanvas').val()).trigger('change');
+        $('#allCreatedAtRange').val($('#allCreatedAtRangeOffcanvas').val()).trigger('change');
+        $('#allCreatedInvoiceRange').val($('#allCreatedInvoiceRangeOffcanvas').val()).trigger('change');
+        applyAllFilters();
+    }
+
+    function clearAllFiltersFromOffcanvas() {
+        $('#allPropertyFilterOffcanvas').val('').trigger('change');
+        $('#allUnitFilterOffcanvas').val('').trigger('change');
+        $('#allCreatedAtRangeOffcanvas').val('');
+        $('#allCreatedInvoiceRangeOffcanvas').val('');
+        applyAllFiltersFromOffcanvas();
+    }
+
+    function applyIncomeFiltersFromOffcanvas() {
+        $('#incomePropertyFilter').val($('#incomePropertyFilterOffcanvas').val()).trigger('change');
+        $('#incomeUnitFilter').val($('#incomeUnitFilterOffcanvas').val()).trigger('change');
+        $('#incomeCreatedAtRange').val($('#incomeCreatedAtRangeOffcanvas').val()).trigger('change');
+        $('#incomeCreatedInvoiceRange').val($('#incomeCreatedInvoiceRangeOffcanvas').val()).trigger('change');
+        applyIncomeFilters();
+    }
+
+    function clearIncomeFiltersFromOffcanvas() {
+        $('#incomePropertyFilterOffcanvas').val('').trigger('change');
+        $('#incomeUnitFilterOffcanvas').val('').trigger('change');
+        $('#incomeCreatedAtRangeOffcanvas').val('');
+        $('#incomeCreatedInvoiceRangeOffcanvas').val('');
+        applyIncomeFiltersFromOffcanvas();
+    }
+
+    function applyExpenseFiltersFromOffcanvas() {
+        $('#expensePropertyFilter').val($('#expensePropertyFilterOffcanvas').val()).trigger('change');
+        $('#expenseUnitFilter').val($('#expenseUnitFilterOffcanvas').val()).trigger('change');
+        $('#expenseCreatedAtRange').val($('#expenseCreatedAtRangeOffcanvas').val()).trigger('change');
+        $('#expenseCreatedDueRange').val($('#expenseCreatedDueRangeOffcanvas').val()).trigger('change');
+        applyExpenseFilters();
+    }
+
+    function clearExpenseFiltersFromOffcanvas() {
+        $('#expensePropertyFilterOffcanvas').val('').trigger('change');
+        $('#expenseUnitFilterOffcanvas').val('').trigger('change');
+        $('#expenseCreatedAtRangeOffcanvas').val('');
+        $('#expenseCreatedDueRangeOffcanvas').val('');
+        applyExpenseFiltersFromOffcanvas();
+    }
+
+    function loadFinanceDataTable() {
+        if ($.fn.dataTable.isDataTable('#allFinanceReportsTbl')) {
+            $('#allFinanceReportsTbl').DataTable().clear().destroy();
         }
-        if ($("#incomeCreatedInvoiceRange").val()) {
-            var dates = $("#incomeCreatedInvoiceRange").val().split('-');
-            incomeInvoiceStartDateFilter = dates[0];
-            incomeInvoiceEndDateFilter = dates[1];
-        } else {
-            incomeInvoiceStartDateFilter = null;
-            incomeInvoiceEndDateFilter = null;
-        }
-        loadInvoiceDataTable();
+
+        objLeaseTable = $("#allFinanceReportsTbl").DataTable({
+            ajax: {
+                url: "/Reports/GetFinanceReports",
+                type: 'POST',
+                contentType: 'application/json',
+                data: function (d) {
+                    return JSON.stringify({
+                        PropertiesIds: allPropertiesIdsList,
+                        UnitsIds: allUnitsIdsList,
+                        allFinanceStartDateFilter: allFinanceStartDateFilter,
+                        allFinanceEndDateFilter: allFinanceEndDateFilter,
+                    });
+                },
+                dataSrc: "",
+                error: function (xhr, error, thrown) {
+                    console.error("Error occurred: ", error, thrown);
+                    alert("An error occurred while loading the data table: " + error);
+                }
+            },
+            initComplete: function () {
+            },
+            order: [[0, "asc"]],
+            columns: [
+                { data: "Invoice" },
+                { data: "Task" },
+                {
+                    data: "StartDate",
+                    render: function (data, type, row) {
+                        return moment(data).format('MM/DD/YYYY');
+                    }
+                },
+                {
+                    data: "EndDate",
+                    render: function (data, type, row) {
+                        return moment(data).format('MM/DD/YYYY');
+                    }
+                },
+                { data: "Property" },
+                { data: "Unit" },
+                { data: "RentCharges" },
+                { data: "Total" },
+            ]
+        });
     }
 
     function loadInvoiceDataTable() {
@@ -456,28 +960,6 @@
     }
 
 
-    function applyExpenseFilters() {
-        expensePropertiesIdsList = $("#expensePropertyFilter").val();
-        expenseUnitsIdsList = $("#expenseUnitFilter").val();
-        if ($("#createdAtRange").val()) {
-            var dates = $("#createdAtRange").val().split('-');
-            expenseTaskStartDateFilter = dates[0];
-            expenseTaskEndDateFilter = dates[1];
-        } else {
-            expenseTaskStartDateFilter = null;
-            expenseTaskEndDateFilter = null;
-        }
-        if ($("#expenseCreatedDueRange").val()) {
-            var dates = $("#expenseCreatedDueRange").val().split('-');
-            expenseTaskDueStartDateFilter = dates[0];
-            expenseTaskDueEndDateFilter = dates[1];
-        } else {
-            expenseTaskDueStartDateFilter = null;
-            expenseTaskDueEndDateFilter = null;
-        }
-        loadTaskRequestDataTable();
-    }
-
     function populateUnits(propertyIds) {
         $.ajax({
             url: '/Lease/GetUnitsDll',
@@ -492,6 +974,97 @@
                 units.forEach(function (unit) {
                     var option = `<option value="${unit.UnitId}">${unit.UnitName}</option>`;
                     $reportUnitFilter.append(option);
+                });
+                
+
+            },
+            error: function (xhr, status, error) {
+                console.error('Error fetching units:', error);
+            }
+        });
+    }
+
+    function populateFinanceUnits(propertyIds) {
+        $.ajax({
+            url: '/Lease/GetUnitsDll',
+            method: 'POST',
+            data: { AssetIds: propertyIds },
+            dataType: 'json',
+            success: function (response) {
+                var units = response;
+                var $allUnitFilter = $('#allUnitFilter');
+                $allUnitFilter.empty();
+
+                units.forEach(function (unit) {
+                    var option = `<option value="${unit.UnitId}">${unit.UnitName}</option>`;
+                    $allUnitFilter.append(option);
+                });
+
+
+            },
+            error: function (xhr, status, error) {
+                console.error('Error fetching units:', error);
+            }
+        });
+    }
+
+    function populateFinanceUnitsOffcanvas(propertyIds) {
+        $.ajax({
+            url: '/Lease/GetUnitsDll',
+            method: 'POST',
+            data: { AssetIds: propertyIds },
+            dataType: 'json',
+            success: function (response) {
+                var units = response;
+                var $allUnitFilterOffcanvas = $('#allUnitFilterOffcanvas');
+                $allUnitFilterOffcanvas.empty();
+
+                units.forEach(function (unit) {
+                    var option = `<option value="${unit.UnitId}">${unit.UnitName}</option>`;
+                    $allUnitFilterOffcanvas.append(option);
+                });
+            },
+            error: function (xhr, status, error) {
+                console.error('Error fetching units:', error);
+            }
+        });
+    }
+    function populateIncomeUnitsOffcanvas(propertyIds) {
+        $.ajax({
+            url: '/Lease/GetUnitsDll',
+            method: 'POST',
+            data: { AssetIds: propertyIds },
+            dataType: 'json',
+            success: function (response) {
+                var units = response;
+                var $incomeUnitFilterOffcanvas = $('#incomeUnitFilterOffcanvas');
+                $incomeUnitFilterOffcanvas.empty();
+
+                units.forEach(function (unit) {
+                    var option = `<option value="${unit.UnitId}">${unit.UnitName}</option>`;
+                    $incomeUnitFilterOffcanvas.append(option);
+                });
+            },
+            error: function (xhr, status, error) {
+                console.error('Error fetching units:', error);
+            }
+        });
+    }
+    
+    function populateExpenseUnitsOffcanvas(propertyIds) {
+        $.ajax({
+            url: '/Lease/GetUnitsDll',
+            method: 'POST',
+            data: { AssetIds: propertyIds },
+            dataType: 'json',
+            success: function (response) {
+                var units = response;
+                var $expenseUnitFilterOffcanvas = $('#expenseUnitFilterOffcanvas');
+                $expenseUnitFilterOffcanvas.empty();
+
+                units.forEach(function (unit) {
+                    var option = `<option value="${unit.UnitId}">${unit.UnitName}</option>`;
+                    $expenseUnitFilterOffcanvas.append(option);
                 });
             },
             error: function (xhr, status, error) {
@@ -557,4 +1130,32 @@
         });
     }
 
+    function applyAllFilters() {
+        allPropertiesIdsList = $('#allPropertyFilter').val();
+        allFinanceStartDateFilter = parseDateRange('#incomeCreatedAtRange')?.start;
+        allFinanceEndDateFilter = parseDateRange('#incomeCreatedAtRange')?.end;
+
+        loadFinanceDataTable();
+    }
+
+    function applyIncomeFilters() {
+        incomePropertiesIdsList = $('#incomePropertyFilter').val();
+        incomeLeaseStartDateFilter = parseDateRange('#incomeCreatedAtRange')?.start;
+        incomeLeaseEndDateFilter = parseDateRange('#incomeCreatedAtRange')?.end;
+        incomeInvoiceStartDateFilter = parseDateRange('#incomeCreatedInvoiceRange')?.start;
+        incomeInvoiceEndDateFilter = parseDateRange('#incomeCreatedInvoiceRange')?.end;
+
+        loadInvoiceDataTable();
+    }
+
+    function applyExpenseFilters() {
+        expensePropertiesIdsList = $('#expensePropertyFilter').val();
+        expenseUnitsIdsList = $('#expenseUnitFilter').val();
+        expenseTaskStartDateFilter = parseDateRange('#expenseCreatedAtRange')?.start;
+        expenseTaskEndDateFilter = parseDateRange('#expenseCreatedAtRange')?.end;
+        expenseTaskDueStartDateFilter = parseDateRange('#expenseCreatedDueRange')?.start;
+        expenseTaskDueEndDateFilter = parseDateRange('#expenseCreatedDueRange')?.end;
+
+        loadTaskRequestDataTable();
+    }
 </script>

@@ -118,34 +118,24 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
         Task<bool> UpdateTenantOrgAsync(TenantOrganizationInfoDto tenantDto);
 
 
+        //Landlord
+        Task<List<OwnerDto>> GetAllLandlordAsync();
+        Task<List<OwnerDto>> GetAllLandlordDllAsync(Filter filter);
+        Task<bool> UpdateOwnerAsync(OwnerDto tenantDto);
+        Task<bool> CreateOwnerAsync(OwnerDto tenantDto);
+        Task<APIResponse> DeleteOwnerAsync(int ownerId);
+        Task<OwnerDto> GetSingleLandlordByIdAsync(int ownerId);
+        Task<List<OwnerDto>> GetLandlordOrganizationAsync(ReportFilter reportFilter);
+        Task<List<AssetDTO>> GetLandlordAssetAsync(ReportFilter reportFilter);
 
+        //Asset
+        Task<bool> CreateAssetAsync(AssetDTO assetDTO);
+        Task<bool> UpdateAssetAsync(AssetDTO assetDTO);
+        Task<APIResponse> DeleteAssetAsync(int assetId);
         Task<List<AssetDTO>> GetAllAssetsAsync();
         Task<AssetDTO> GetAssetByIdAsync(int assetId);
         Task<List<AssetDTO>> GetAssetsDllAsync(Filter filter);
         Task<List<UnitDTO>> GetUnitsDetailAsync(int assetId);
-
-
-        Task<List<OwnerDto>> GetAllLandlordAsync();
-        Task<List<OwnerDto>> GetAllLandlordDllAsync(Filter filter);
-
-
-
-        Task<bool> UpdateOwnerAsync(OwnerDto tenantDto);
-
-        Task<bool> CreateOwnerAsync(OwnerDto tenantDto);
-
-        Task<APIResponse> DeleteOwnerAsync(int ownerId);
-
-        Task<OwnerDto> GetSingleLandlordByIdAsync(int ownerId);
-
-
-
-
-        Task<bool> CreateAssetAsync(AssetDTO assetDTO);
-
-        Task<bool> UpdateAssetAsync(AssetDTO assetDTO);
-
-        Task<APIResponse> DeleteAssetAsync(int assetId);
 
 
 
@@ -277,6 +267,8 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
         Task<List<LeaseReportDto>> GetLeaseReportAsync(ReportFilter reportFilter);
         Task<List<InvoiceReportDto>> GetInvoiceReportAsync(ReportFilter reportFilter);
         Task<List<TaskRequestReportDto>> GetTaskRequestReportAsync(ReportFilter reportFilter);
+        Task<List<FinanceReportDto>> GetFinanceReportsAsync(ReportFilter reportFilter);
+        Task<List<UnitDTO>> GetUnitsByAssetAsync(ReportFilter reportFilter);
 
         //Document
         Task<List<DocumentsDto>> GetDocumentsAsync();

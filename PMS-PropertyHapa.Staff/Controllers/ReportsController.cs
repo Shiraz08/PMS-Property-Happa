@@ -67,8 +67,20 @@ namespace PMS_PropertyHapa.Staff.Controllers
             var res = await _authService.GetTaskRequestReports(reportFilter);
             return Ok(res);
         }
+        
+        [HttpPost]
+        public async Task<IActionResult> GetFinanceReports([FromBody] ReportFilter reportFilter)
+        {
+            var res = await _authService.GetFinanceReports(reportFilter);
+            return Ok(res);
+        }
 
-
-
+        [HttpPost]
+        public async Task<IActionResult> GetUnitsByAsset([FromBody] ReportFilter reportFilter)
+        {
+            reportFilter.AddedBy = Request?.Cookies["userId"]?.ToString();
+            var res = await _authService.GetUnitsByAsset(reportFilter);
+            return Ok(res);
+        }
     }
 }

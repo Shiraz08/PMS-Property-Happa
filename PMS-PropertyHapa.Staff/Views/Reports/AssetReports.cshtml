@@ -25,8 +25,7 @@
             <div class="row">
                 <div class="col-md-12 p-0">
                     <ul class="nav nav-tabs border-tab" id="top-tab" role="tablist">
-                        <li class="nav-item"><a class="nav-link active" id="income-top-tab" data-bs-toggle="tab" href="#incomeReports" role="tab" aria-controls="incomeReports" aria-selected="false"><i data-feather="info"></i>Income</a></li>
-                        <li class="nav-item"><a class="nav-link" id="expense-top-tab" data-bs-toggle="tab" href="#expenseReports" role="tab" aria-controls="expenseReports" aria-selected="false"><i data-feather="check-circle"></i>Expense</a></li>
+                        <li class="nav-item"><a class="nav-link active" id="units-top-tab" data-bs-toggle="tab" href="#unitsReports" role="tab" aria-controls="unitsReports" aria-selected="false"><i data-feather="info"></i>Units Report</a></li>
                     </ul>
                 </div>
             </div>
@@ -34,62 +33,28 @@
     </div>
     <div class="col-sm-12 mt-4">
         <div class="tab-content" id="top-tabContent">
-            <div class="tab-pane fade show active" id="incomeReports" role="tabpanel" aria-labelledby="income-top-tab">
+            <div class="tab-pane fade show active" id="unitsReports" role="tabpanel" aria-labelledby="units-top-tab">
                 <div class="row mb-3">
-                    <div class="col-md-3 mt-4">
-                        <div class="left-side-header">
-                            <div class="input-group">
-                                <span class="input-group-text" id="basic-addon1">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <g>
-                                            <g>
-                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M11.2753 2.71436C16.0029 2.71436 19.8363 6.54674 19.8363 11.2753C19.8363 16.0039 16.0029 19.8363 11.2753 19.8363C6.54674 19.8363 2.71436 16.0039 2.71436 11.2753C2.71436 6.54674 6.54674 2.71436 11.2753 2.71436Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M19.8987 18.4878C20.6778 18.4878 21.3092 19.1202 21.3092 19.8983C21.3092 20.6783 20.6778 21.3097 19.8987 21.3097C19.1197 21.3097 18.4873 20.6783 18.4873 19.8983C18.4873 19.1202 19.1197 18.4878 19.8987 18.4878Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                                            </g>
-                                        </g>
-                                    </svg>
-                                </span>
-                                <input class="form-control" type="text" id="searchInput" placeholder="Search" aria-label="search" aria-describedby="basic-addon1">
-                            </div>
-                        </div>
-                    </div>
                     <div class="col-md-3">
-                        <label for="newProperty" class="form-label ">Property</label>
-                        <select class="form-control select2" id="newProperty">
-                            <option value="">Select Property</option>
+                        <label for="unitsAsset" class="form-label ">Property</label>
+                        <select class="form-control select2" multiple id="unitsAsset">
                         </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="newOwner" class="form-label ">Owner</label>
-                        <select class="form-control select2" id="newOwner">
-                            <option value="">Select Owner</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3 mt-4">
-                        <select class="form-control select2" id="dueRent" name="DueRent">
-                            <option value="rentReceived">Rent Received This Month</option>
-                            <option value="rentDue">Rent Due This Month</option>
-                            <option value="allOverdueRent">All Overdue Rent</option>
-                        </select>
-
                     </div>
                 </div>
                 <div class="card">
                     <div class="card-body">
                         <div class="row">
                             <div class="table-responsive">
-                                <h3 class="card-title">Income</h3>
-                                <table class="table display" id="incomeReportsTable">
+                                <h3 class="card-title">Untis</h3>
+                                <table class="table display" id="unitsReportTable">
                                     <thead>
                                         <tr>
-                                            @* <th>Date Paid</th> *@
-                                            <th>Period</th>
-                                            <th>Payee</th>
-                                            <th>Category</th>
-                                            <th>Description</th>
-                                            <th>Property</th>
-                                            <th>Amount</th>
-                                            <th>Attachment</th>
+                                            <th>UnitName</th>
+                                            <th>Bath</th>
+                                            <th>Beds</th>
+                                            <th>Rent</th>
+                                            <th>Size</th>
+                                            <th>Property Name</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -99,138 +64,70 @@
                         </div>
                     </div>
                 </div>
-
-            </div>
-            <div class="tab-pane fade" id="expenseReports" role="tabpanel" aria-labelledby="expense-top-tab">
-                <div class="row mb-3">
-                    <div class="col-md-3 mt-4">
-                        <div class="left-side-header">
-                            <div class="input-group">
-                                <span class="input-group-text" id="basic-addon1">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <g>
-                                            <g>
-                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M11.2753 2.71436C16.0029 2.71436 19.8363 6.54674 19.8363 11.2753C19.8363 16.0039 16.0029 19.8363 11.2753 19.8363C6.54674 19.8363 2.71436 16.0039 2.71436 11.2753C2.71436 6.54674 6.54674 2.71436 11.2753 2.71436Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M19.8987 18.4878C20.6778 18.4878 21.3092 19.1202 21.3092 19.8983C21.3092 20.6783 20.6778 21.3097 19.8987 21.3097C19.1197 21.3097 18.4873 20.6783 18.4873 19.8983C18.4873 19.1202 19.1197 18.4878 19.8987 18.4878Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                                            </g>
-                                        </g>
-                                    </svg>
-                                </span>
-                                <input class="form-control" type="text" id="searchInput" placeholder="Search" aria-label="search" aria-describedby="basic-addon1">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 mt-4">
-                        <select class="form-control select2" id="dueExpense" name="DueExpense">
-                            <option value="expensePaid">Expense Paid This Month</option>
-                            <option value="expenseDue">Expense Due This Month</option>
-                            <option value="allOverdueExpense">All Overdue Expense</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <h3 class="card-title">Expense</h3>
-                            <table class="table display" id="expenseReportsTable">
-                                <thead>
-                                    <tr>
-                                        @* <th>Date Paid</th> *@
-                                        <th>Due Date</th>
-                                        <th>Payee</th>
-                                        <th>Category</th>
-                                        <th>Description</th>
-                                        <th>Property</th>
-                                        <th>Amount</th>
-                                        <th>Status</th>
-                                        <th>Attachment</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    $$(document).ready(function () {
-        $('#searchInput').on('input', function () {
-            var searchText = $(this).val().toLowerCase();
-            $('.nav-link').each(function () {
-                var ownerName = $(this).find('.first_name_0').text().toLowerCase() + ' ' + $(this).find('.last_name_0').text().toLowerCase();
-                if (ownerName.includes(searchText)) {
-                    $(this).show();
-                } else {
-                    $(this).hide();
-                }
-            });
-        });
+    var unitsAssetIdsList = [];
 
-        $.ajax({
-            url: '@Url.Action("GetLandlordDll", "Landlord")',
-            type: 'GET',
-            dataType: 'json',
-            success: function (data) {
-                var ownerDropdown = document.getElementById('newOwner');
-                // ownerDropdown.innerHTML = ''; // Clear existing options
-                data.forEach(function (item) {
-                    var option = new Option(item.FirstName + ' ' + item.LastName, item.OwnerId);
-                    ownerDropdown.appendChild(option);
-                });
-            }
-        });
+    $(document).ready(function () {
         $.ajax({
             url: '@Url.Action("GetProperties", "Communication")',
             type: 'GET',
             dataType: 'json',
             success: function (data) {
-                var newPropertyDropdown = document.getElementById('newProperty');
-                // newPropertyDropdown.innerHTML = ''; // Clear existing options
+                var unitsAssetDropdown = document.getElementById('unitsAsset');
                 data.forEach(function (item) {
                     var option = new Option(item.BuildingNo + " - " + item.BuildingName, item.AssetId);
-                    newPropertyDropdown.appendChild(option);
+                    unitsAssetDropdown.appendChild(option);
                 });
             }
         });
 
-        getIncomeReports();
-        getExpenseReports();
+        $("#unitsAsset").on("change", loadUnitsAssetDataTable);
+
+        loadUnitsAssetDataTable();
     });
 
-    function getIncomeReports() {
-        $('#incomeReportsTable').DataTable();
 
-    }
-    function getExpenseReports() {
-        $('#expenseReportsTable').DataTable();
+    function loadUnitsAssetDataTable() {
 
-    }
-    function populateUnits(propertyId, selectedUnit) {
-        $.ajax({
-            url: '/Lease/GetUnitsDll',
-            method: 'POST',
-            dataType: 'json',
-            data: { AssetIds: propertyId },
-            success: function (units) {
-                var newUnitDropdown = document.getElementById('newUnit');
-                $("#newUnit").empty();
-                units.forEach(function (unit) {
-                    var option = new Option(unit.UnitName, unit.UnitId);
-                    newUnitDropdown.appendChild(option);
-                });
-
-                if (selectedUnit) {
-                    $("#newUnit").val(selectedUnit).trigger("change")
+        if ($.fn.dataTable.isDataTable('#unitsReportTable')) {
+            $('#unitsReportTable').DataTable().clear().destroy();
+        }
+        unitsAssetIdsList = $("#unitsAsset").val();
+        objUnitsAssetTable = $("#unitsReportTable").DataTable({
+            ajax: {
+                url: "/Reports/GetUnitsByAsset",
+                type: 'POST',
+                contentType: 'application/json',
+                data: function (d) {
+                    return JSON.stringify({
+                        AssetsIds: unitsAssetIdsList
+                    });
+                },
+                dataSrc: "",
+                error: function (xhr, error, thrown) {
+                    console.error("Error occurred: ", error, thrown);
+                    alert("An error occurred while loading the data table: " + error);
                 }
             },
-            error: function (error) {
-                console.error('Error fetching units:', error.responseText || 'Unknown error');
-            }
+            initComplete: function () {
+
+            },
+            order: [[0, "asc"]],
+            columns: [
+                { data: "UnitName" },
+                { data: "Bath" },
+                { data: "Beds" },
+                { data: "Rent" },
+                { data: "Size" },
+                { data: "Asset" },
+            ]
         });
     }
+
+
 </script>

@@ -52,8 +52,6 @@ namespace PMS_PropertyHapa.Staff.Controllers
             return View();
         }
 
-
-
         [HttpGet]
         public async Task<IActionResult> GetLandlord()
         {
@@ -102,7 +100,6 @@ namespace PMS_PropertyHapa.Staff.Controllers
                 return StatusCode(500, $"An error occurred while fetching assets: {ex.Message}");
             }
         }
-
 
 
         [HttpPost]
@@ -274,5 +271,20 @@ namespace PMS_PropertyHapa.Staff.Controllers
     };
         }
 
+        [HttpPost]
+        public async Task<IActionResult> GetLandlordOrganization([FromBody] ReportFilter reportFilter)
+        {
+            reportFilter.AddedBy = Request?.Cookies["userId"]?.ToString();
+            var res = await _authService.GetLandlordOrganization(reportFilter);
+            return Ok(res);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetLandlordAsset([FromBody] ReportFilter reportFilter)
+        {
+            reportFilter.AddedBy = Request?.Cookies["userId"]?.ToString();
+            var res = await _authService.GetLandlordAsset(reportFilter);
+            return Ok(res);
+        }
     }
 }
