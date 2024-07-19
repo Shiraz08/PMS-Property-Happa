@@ -164,11 +164,11 @@
                     <div class="col-md-3">
                         <label class="col-sm-12 mb-0 font-weight-bold">Start/End Date</label>
                         <div class="col-sm-12">
-                            <input type="text" class="form-control" id="allCreatedInvoiceRange" />
+                            <input type="text" class="form-control" id="allCreatedRange" />
                         </div>
                     </div>
                     <div class="col-md-1">
-                        <button class="btn btn-primary mt-4" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Filter</button>
+                        <button class="btn btn-primary mt-4" type="button" data-bs-toggle="offcanvas" data-bs-target="#allOffcanvasRight" aria-controls="allOffcanvasRight">Filter</button>
                     </div>
                 </div>
                 <div class="card mt-3">
@@ -218,7 +218,7 @@
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <button class="btn btn-primary mt-4" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Filter</button>
+                        <button class="btn btn-primary mt-4" type="button" data-bs-toggle="offcanvas" data-bs-target="#incomeOffcanvasRight" aria-controls="incomeOffcanvasRight">Filter</button>
                     </div>
                 </div>
                 <div class="card mt-3">
@@ -274,7 +274,7 @@
                         </div>
                     </div>
                     <div class="col-md-1">
-                        <button class="btn btn-primary mt-4" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight1" aria-controls="offcanvasRight">Filter</button>
+                        <button class="btn btn-primary mt-4" type="button" data-bs-toggle="offcanvas" data-bs-target="#expenseOffcanvasRight" aria-controls="expenseOffcanvasRight">Filter</button>
                     </div>
                 </div>
                 <div class="card">
@@ -304,7 +304,7 @@
     </div>
 </div>
 
-<div class="offcanvas offcanvas-end w-50" tabindex="-1" id="offcanvasRight2" aria-labelledby="offcanvasRightLabel">
+<div class="offcanvas offcanvas-end w-50" tabindex="-1" id="allOffcanvasRight" aria-labelledby="offcanvasRightLabel">
     <div class="offcanvas-header">
         <h5 id="offcanvasRightLabel">Filter All Reports</h5>
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
@@ -340,7 +340,7 @@
 </div>
 
 <!-- Offcanvas for Income Filters -->
-<div class="offcanvas offcanvas-end w-50" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+<div class="offcanvas offcanvas-end w-50" tabindex="-1" id="incomeOffcanvasRight" aria-labelledby="offcanvasRightLabel">
     <div class="offcanvas-header">
         <h5 id="offcanvasRightLabel">Filter Income Reports</h5>
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
@@ -382,7 +382,7 @@
 </div>
 
 <!-- Offcanvas for Expense Filters -->
-<div class="offcanvas offcanvas-end w-50" tabindex="-1" id="offcanvasRight1" aria-labelledby="offcanvasRightLabel">
+<div class="offcanvas offcanvas-end w-50" tabindex="-1" id="expenseOffcanvasRight" aria-labelledby="offcanvasRightLabel">
     <div class="offcanvas-header">
         <h5 id="offcanvasRightLabel">Filter Expense Reports</h5>
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
@@ -438,6 +438,7 @@
     var allFinanceEndDateFilter = null;
 
     var incomePropertiesIdsList = [];
+    var incomeUnitsIdsList = [];
     var incomeLeaseStartDateFilter = null;
     var incomeLeaseEndDateFilter = null;
     var incomeInvoiceStartDateFilter = null;
@@ -458,47 +459,111 @@
         loadTaskRequestDataTable();
 
         // Synchronize All Filters between Tab and Offcanvas
-        $('#allPropertyFilter, #allPropertyFilterOffcanvas').change(function () {
-            var values = $(this).val();
-            $('#allPropertyFilter, #allPropertyFilterOffcanvas').val(values).trigger('change.select2');
-            if (values != null) {
-                var selectedValues = values.join(',');
-                populateUnits(selectedValues);
-                populateAllUnitsOffcanvas(selectedValues);
-            } else {
-                $("#allPropertyFilter").empty();
-                $("#allPropertyFilterOffcanvas").empty();
-            }
-            applyAllFilters();
-        });
+        // $('#allPropertyFilter, #allPropertyFilterOffcanvas').change(function () {
+        //     var values = $(this).val();
+        //     $('#allPropertyFilter, #allPropertyFilterOffcanvas').val(values).trigger('change.select2');
+        //     if (values != null) {
+        //         var selectedValues = values.join(',');
+        //         populateUnits(selectedValues);
+        //         populateAllUnitsOffcanvas(selectedValues);
+        //     } else {
+        //         $("#allPropertyFilter").empty();
+        //         $("#allPropertyFilterOffcanvas").empty();
+        //     }
+        //     applyAllFilters();
+        // });
 
+        // $('#allUnitFilter, #allUnitFilterOffcanvas').change(function () {
+        //     var values = $(this).val();
+        //     $('#allUnitFilter, #allUnitFilterOffcanvas').val(values).trigger('change.select2');
+        // });
+
+
+        // $('#allCreatedDueRange, #allCreatedDueRangeOffcanvas').change(function () {
+        //     var value = $(this).val();
+        //     $('#allCreatedDueRange, #allCreatedDueRangeOffcanvas').val(value);
+        // });
+      
+
+        // // Synchronize Income Filters between Tab and Offcanvas
+        // $('#incomePropertyFilter, #incomePropertyFilterOffcanvas').change(function () {
+        //     var values = $(this).val();
+        //     $('#incomePropertyFilter, #incomePropertyFilterOffcanvas').val(values).trigger('change.select2');
+        //     if ($('#incomePropertyFilter').val() != null) {
+        //         populateUnits($('#incomePropertyFilter').val());
+        //     } else {
+        //         populateUnits($('#incomePropertyFilterOffcanvas').val());
+        //     }
+        // });
+
+        // $('#incomeUnitFilter, #incomeUnitFilterOffcanvas').change(function () {
+        //     var values = $(this).val();
+        //     $('#incomeUnitFilter, #incomeUnitFilterOffcanvas').val(values).trigger('change.select2');
+        // });
+
+        // $('#incomeCreatedAtRange, #incomeCreatedAtRangeOffcanvas').change(function () {
+        //     var value = $(this).val();
+        //     $('#incomeCreatedAtRange, #incomeCreatedAtRangeOffcanvas').val(value);
+        // });
+
+        // $('#incomeCreatedInvoiceRange, #incomeCreatedInvoiceRangeOffcanvas').change(function () {
+        //     var value = $(this).val();
+        //     $('#incomeCreatedInvoiceRange, #incomeCreatedInvoiceRangeOffcanvas').val(value);
+        // });
+
+        // // Synchronize Expense Filters between Tab and Offcanvas
+        // $('#expensePropertyFilter, #expensePropertyFilterOffcanvas').change(function () {
+        //     var values = $(this).val();
+        //     $('#expensePropertyFilter, #expensePropertyFilterOffcanvas').val(values).trigger('change.select2');
+        //     if (values != null) {
+        //         var selectedValues = values.join(',');
+        //         populateUnits(selectedValues);
+        //         populateExpenseUnitsOffcanvas(selectedValues);
+        //     } else {
+        //         $("#expensePropertyFilter").empty();
+        //         $("#expensePropertyFilterOffcanvas").empty();
+        //     }
+        //     applyExpenseFilters();
+        // });
+
+        // $('#expenseUnitFilter, #expenseUnitFilterOffcanvas').change(function () {
+        //     var values = $(this).val();
+        //     $('#expenseUnitFilter, #expenseUnitFilterOffcanvas').val(values).trigger('change.select2');
+        // });
+
+        // $('#expenseCreatedAtRange, #expenseCreatedAtRangeOffcanvas').change(function () {
+        //     var value = $(this).val();
+        //     $('#expenseCreatedAtRange, #expenseCreatedAtRangeOffcanvas').val(value);
+        // });
+
+        // $('#expenseCreatedDueRange, #expenseCreatedDueRangeOffcanvas').change(function () {
+        //     var value = $(this).val();
+        //     $('#expenseCreatedDueRange, #expenseCreatedDueRangeOffcanvas').val(value);
+        // });
+
+        // // Original event handlers
+        // $("#allPropertyFilter, #allPropertyFilterOffcanvas").on("change", applyAllFilters);
+        // $("#incomePropertyFilter, #incomePropertyFilterOffcanvas").on("change", applyIncomeFilters);
+        // $("#expensePropertyFilter, #expensePropertyFilterOffcanvas").on("change", applyExpenseFilters);
+
+        // Synchronize Finance Filters between Tab and Offcanvas
         $('#allUnitFilter, #allUnitFilterOffcanvas').change(function () {
             var values = $(this).val();
             $('#allUnitFilter, #allUnitFilterOffcanvas').val(values).trigger('change.select2');
         });
 
+        $('#allCreatedAtRange, #allCreatedAtRangeOffcanvas').change(function () {
+            var value = $(this).val();
+            $('#allCreatedAtRange, #allCreatedAtRangeOffcanvas').val(value);
+        });
 
         $('#allCreatedDueRange, #allCreatedDueRangeOffcanvas').change(function () {
             var value = $(this).val();
             $('#allCreatedDueRange, #allCreatedDueRangeOffcanvas').val(value);
         });
-      
+
 
         // Synchronize Income Filters between Tab and Offcanvas
-        $('#incomePropertyFilter, #incomePropertyFilterOffcanvas').change(function () {
-            var values = $(this).val();
-            $('#incomePropertyFilter, #incomePropertyFilterOffcanvas').val(values).trigger('change.select2');
-            if ($('#incomePropertyFilter').is(':focus')) {
-                populateIncomeUnits($('#incomePropertyFilter').val());
-            } else {
-                populateIncomeUnits($('#incomePropertyFilterOffcanvas').val());
-            }
-        });
-
-        $('#incomeUnitFilter, #incomeUnitFilterOffcanvas').change(function () {
-            var values = $(this).val();
-            $('#incomeUnitFilter, #incomeUnitFilterOffcanvas').val(values).trigger('change.select2');
-        });
 
         $('#incomeCreatedAtRange, #incomeCreatedAtRangeOffcanvas').change(function () {
             var value = $(this).val();
@@ -506,25 +571,13 @@
         });
 
         $('#incomeCreatedInvoiceRange, #incomeCreatedInvoiceRangeOffcanvas').change(function () {
+            console.log("asdasd")
             var value = $(this).val();
+            console.log(value)
             $('#incomeCreatedInvoiceRange, #incomeCreatedInvoiceRangeOffcanvas').val(value);
         });
 
         // Synchronize Expense Filters between Tab and Offcanvas
-        $('#expensePropertyFilter, #expensePropertyFilterOffcanvas').change(function () {
-            var values = $(this).val();
-            $('#expensePropertyFilter, #expensePropertyFilterOffcanvas').val(values).trigger('change.select2');
-            if (values != null) {
-                var selectedValues = values.join(',');
-                populateUnits(selectedValues);
-                populateExpenseUnitsOffcanvas(selectedValues);
-            } else {
-                $("#expensePropertyFilter").empty();
-                $("#expensePropertyFilterOffcanvas").empty();
-            }
-            applyExpenseFilters();
-        });
-
         $('#expenseUnitFilter, #expenseUnitFilterOffcanvas').change(function () {
             var values = $(this).val();
             $('#expenseUnitFilter, #expenseUnitFilterOffcanvas').val(values).trigger('change.select2');
@@ -541,39 +594,82 @@
         });
 
         // Original event handlers
-        $("#allPropertyFilter, #allPropertyFilterOffcanvas").on("change", applyAllFilters);
-        $("#incomePropertyFilter, #incomePropertyFilterOffcanvas").on("change", applyIncomeFilters);
-        $("#expensePropertyFilter, #expensePropertyFilterOffcanvas").on("change", applyExpenseFilters);
+
+        $("#allPropertyFilter").on("change", function () {
+            var values = $(this).val();
+            $('#allPropertyFilterOffcanvas').val(values).trigger('change');
+            applyAllFilters();
+        });
+
+        $('#allPropertyFilterOffcanvas').on('change', function () {
+            if ($("#allPropertyFilterOffcanvas").val() != null && $("#allPropertyFilterOffcanvas option:selected").length > 0) {
+                populateFinanceUnits($("#allPropertyFilterOffcanvas").val());
+            } else {
+                $("#allUnitFilterOffcanvas").empty();
+                $("#allUnitFilter").empty();
+            }
+        });
+
+        $("#incomePropertyFilter").on("change", function () {
+            var values = $(this).val();
+            $('#incomePropertyFilterOffcanvas').val(values).trigger('change');
+            applyIncomeFilters();
+        });
+
+        $('#incomePropertyFilterOffcanvas').on('change', function () {
+            if ($("#incomePropertyFilterOffcanvas").val() != null || $("#incomePropertyFilterOffcanvas option:selected").length > 0) {
+                populateIncomeUnitsOffcanvas($("#incomePropertyFilterOffcanvas").val());
+            } else {
+                $("#incomeUnitFilterOffcanvas").empty();
+            }
+        });
+
+        $("#expensePropertyFilter").on("change", function () {
+            var values = $(this).val();
+            $('#expensePropertyFilterOffcanvas').val(values).trigger('change');
+            applyExpenseFilters();
+        });
+
+        $('#expensePropertyFilterOffcanvas').on('change', function () {
+            if ($("#expensePropertyFilterOffcanvas").val() != null && $("#expensePropertyFilterOffcanvas option:selected").length > 0) {
+                populateExpenseUnits($("#expensePropertyFilterOffcanvas").val());
+            } else {
+                $("#expenseUnitFilterOffcanvas").empty();
+                $("#expensePropertyFilter").empty();
+            }
+        });
+
+
 
         // Offcanvas event handlers
         $("#applyAllFilters").on("click", function () {
-            applyAllFiltersFromOffcanvas();
-            $("#offcanvasRight").modal('hide');
+            applyAllFilters();
+            $("#allOffcanvasRight").removeClass('show');;
         });
 
         $("#clearAllFilters").on("click", function () {
-            clearAllFiltersFromOffcanvas();
-            $("#offcanvasRight").modal('hide');
+            clearAllFilters();
+            $("#allOffcanvasRight").removeClass('show');
         });
 
         $("#applyIncomeFilters").on("click", function () {
-            applyIncomeFiltersFromOffcanvas();
-            $("#offcanvasRight").modal('hide');
+            applyIncomeFilters();
+            $("#incomeOffcanvasRight").removeClass('show');
         });
 
         $("#clearIncomeFilters").on("click", function () {
-            clearIncomeFiltersFromOffcanvas();
-            $("#offcanvasRight").modal('hide');
+            clearIncomeFilters();
+            $("#incomeOffcanvasRight").removeClass('show');
         });
 
         $("#applyExpenseFilters").on("click", function () {
-            applyExpenseFiltersFromOffcanvas();
-            $("#offcanvasRight1").modal('hide');
+            applyExpenseFilters();
+            $("#expenseOffcanvasRight").removeClass('show');
         });
 
         $("#clearExpenseFilters").on("click", function () {
-            clearExpenseFiltersFromOffcanvas();
-            $("#offcanvasRight1").modal('hide');
+            clearExpenseFilters();
+            $("#expenseOffcanvasRight").removeClass('show');
         });
 
     });
@@ -591,12 +687,14 @@
         });
 
         $('#incomeCreatedAtRange').on('apply.daterangepicker', function (ev, picker) {
-            $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+            $('#incomeCreatedAtRange').val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+            $('#incomeCreatedAtRangeOffcanvas').val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
             applyIncomeFilters();
         });
 
         $('#incomeCreatedAtRange').on('cancel.daterangepicker', function (ev, picker) {
-            $(this).val('');
+            $('#incomeCreatedAtRange').val('');
+            $('#incomeCreatedAtRangeOffcanvas').val('');
             applyIncomeFilters();
         });
 
@@ -612,15 +710,54 @@
         });
 
         $('#incomeCreatedInvoiceRange').on('apply.daterangepicker', function (ev, picker) {
-            $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+            $('#incomeCreatedInvoiceRange').val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+            $('#incomeCreatedInvoiceRangeOffcanvas').val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
             applyIncomeFilters();
         });
 
         $('#incomeCreatedInvoiceRange').on('cancel.daterangepicker', function (ev, picker) {
-            $(this).val('');
+            $('#incomeCreatedInvoiceRange').val('');
+            $('#incomeCreatedInvoiceRangeOffcanvas').val('');
             applyIncomeFilters();
         });
 
+        $('#incomeCreatedAtRangeOffcanvas').daterangepicker({
+            parentEl: '#incomeOffcanvasRight',
+            opens: 'right',
+            autoUpdateInput: false,
+            locale: {
+                cancelLabel: 'Clear'
+            }
+        });
+
+        $('#incomeCreatedAtRangeOffcanvas').on('apply.daterangepicker', function (ev, picker) {
+            $('#incomeCreatedAtRangeOffcanvas').val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
+            $('#incomeCreatedAtRange').val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
+        });
+
+        $('#incomeCreatedAtRangeOffcanvas').on('cancel.daterangepicker', function (ev, picker) {
+            $('#incomeCreatedAtRangeOffcanvas').val('');
+            $('#incomeCreatedAtRange').val('');
+        });
+
+        $('#incomeCreatedInvoiceRangeOffcanvas').daterangepicker({
+            parentEl: '#incomeOffcanvasRight',
+            opens: 'right',
+            autoUpdateInput: false,
+            locale: {
+                cancelLabel: 'Clear'
+            }
+        });
+
+        $('#incomeCreatedInvoiceRangeOffcanvas').on('apply.daterangepicker', function (ev, picker) {
+            $('#incomeCreatedInvoiceRangeOffcanvas').val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
+            $('#incomeCreatedInvoiceRange').val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
+        });
+
+        $('#incomeCreatedInvoiceRangeOffcanvas').on('cancel.daterangepicker', function (ev, picker) {
+            $('#incomeCreatedInvoiceRangeOffcanvas').val('');
+            $('#incomeCreatedInvoiceRange').val('');
+        });
 
         $('#expenseCreatedAtRange').daterangepicker({
             autoUpdateInput: false,
@@ -634,12 +771,14 @@
         });
 
         $('#expenseCreatedAtRange').on('apply.daterangepicker', function (ev, picker) {
-            $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+            $('#expenseCreatedAtRange').val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+            $('#expenseCreatedAtRangeOffcanvas').val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
             applyExpenseFilters();
         });
 
         $('#expenseCreatedAtRange').on('cancel.daterangepicker', function (ev, picker) {
-            $(this).val('');
+            $('#expenseCreatedAtRange').val('');
+            $('#expenseCreatedAtRangeOffcanvas').val('');
             applyExpenseFilters();
         });
 
@@ -655,51 +794,20 @@
         });
 
         $('#expenseCreatedDueRange').on('apply.daterangepicker', function (ev, picker) {
-            $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+            $('#expenseCreatedDueRange').val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+            $('#expenseCreatedDueRangeOffcanvas').val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
             applyExpenseFilters();
         });
 
         $('#expenseCreatedDueRange').on('cancel.daterangepicker', function (ev, picker) {
-            $(this).val('');
+            $('#expenseCreatedDueRange').val('');
+            $('#expenseCreatedDueRangeOffcanvas').val('');
             applyExpenseFilters();
         });
 
-        $('#incomeCreatedAtRangeOffcanvas').daterangepicker({
-            parentEl: '#offcanvasRight',
-            opens: 'right',
-            autoUpdateInput: false,
-            locale: {
-                cancelLabel: 'Clear'
-            }
-        });
 
-        $('#incomeCreatedAtRangeOffcanvas').on('apply.daterangepicker', function (ev, picker) {
-            $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
-        });
-
-        $('#incomeCreatedAtRangeOffcanvas').on('cancel.daterangepicker', function (ev, picker) {
-            $(this).val('');
-        });
-        
-        $('#incomeCreatedInvoiceRangeOffcanvas').daterangepicker({
-            parentEl: '#offcanvasRight',
-            opens: 'right',
-            autoUpdateInput: false,
-            locale: {
-                cancelLabel: 'Clear'
-            }
-        });
-
-        $('#incomeCreatedInvoiceRangeOffcanvas').on('apply.daterangepicker', function (ev, picker) {
-            $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
-        });
-
-        $('#incomeCreatedInvoiceRangeOffcanvas').on('cancel.daterangepicker', function (ev, picker) {
-            $(this).val('');
-        });
-        
         $('#expenseCreatedAtRangeOffcanvas').daterangepicker({
-            parentEl: '#offcanvasRight1',
+            parentEl: '#expenseOffcanvasRight',
             opens: 'right',
             autoUpdateInput: false,
             locale: {
@@ -708,15 +816,17 @@
         });
 
         $('#expenseCreatedAtRangeOffcanvas').on('apply.daterangepicker', function (ev, picker) {
-            $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
+            $('#expenseCreatedAtRangeOffcanvas').val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
+            $('#expenseCreatedAtRange').val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
         });
 
         $('#expenseCreatedAtRangeOffcanvas').on('cancel.daterangepicker', function (ev, picker) {
-            $(this).val('');
+            $('#expenseCreatedAtRangeOffcanvas').val('');
+            $('#expenseCreatedAtRange').val('');
         });
 
         $('#expenseCreatedDueRangeOffcanvas').daterangepicker({
-            parentEl: '#offcanvasRight1',
+            parentEl: '#expenseOffcanvasRight',
             opens: 'right',
             autoUpdateInput: false,
             locale: {
@@ -725,15 +835,35 @@
         });
 
         $('#expenseCreatedDueRangeOffcanvas').on('apply.daterangepicker', function (ev, picker) {
-            $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
+            $('#expenseCreatedDueRangeOffcanvas').val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
+            $('#expenseCreatedDueRange').val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
         });
 
         $('#expenseCreatedDueRangeOffcanvas').on('cancel.daterangepicker', function (ev, picker) {
-            $(this).val('');
+            $('#expenseCreatedDueRangeOffcanvas').val('');
+            $('#expenseCreatedDueRange').val('');
         });
        
+        $('#allCreatedRange').daterangepicker({
+            opens: 'right',
+            autoUpdateInput: false,
+            locale: {
+                cancelLabel: 'Clear'
+            }
+        });
+
+        $('#allCreatedRange').on('apply.daterangepicker', function (ev, picker) {
+            $('#allCreatedRangeOffcanvas').val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
+            $('#allCreatedRange').val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
+        });
+
+        $('#allCreatedRange').on('cancel.daterangepicker', function (ev, picker) {
+            $('#allCreatedRangeOffcanvas').val('');
+            $('#allCreatedRange').val('');
+        });
+        
         $('#allCreatedRangeOffcanvas').daterangepicker({
-            parentEl: '#offcanvasRight1',
+            parentEl: '#allOffcanvasRight',
             opens: 'right',
             autoUpdateInput: false,
             locale: {
@@ -742,11 +872,13 @@
         });
 
         $('#allCreatedRangeOffcanvas').on('apply.daterangepicker', function (ev, picker) {
-            $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
+            $('#allCreatedRangeOffcanvas').val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
+            $('#allCreatedRange').val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
         });
 
         $('#allCreatedRangeOffcanvas').on('cancel.daterangepicker', function (ev, picker) {
-            $(this).val('');
+            $('#allCreatedRangeOffcanvas').val('');
+            $('#allCreatedRange').val('');
         });
     };
 
@@ -755,98 +887,6 @@
         return dates.length === 2 ? { start: dates[0], end: dates[1] } : null;
     }
 
-    function populateDropDowns() {
-        $.ajax({
-            url: '@Url.Action("GetProperties", "Communication")',
-            type: 'GET',
-            dataType: 'json',
-            success: function (data) {
-                var incomePropertyDropdown = document.getElementById('incomePropertyFilter');
-                data.forEach(function (item) {
-                    var option = new Option(item.BuildingNo + " - " + item.BuildingName, item.AssetId);
-                    incomePropertyDropdown.appendChild(option);
-                });
-
-                var expensePropertyDropdown = document.getElementById('expensePropertyFilter');
-                data.forEach(function (item) {
-                    var option = new Option(item.BuildingNo + " - " + item.BuildingName, item.AssetId);
-                    expensePropertyDropdown.appendChild(option);
-                });
-                
-                var allPropertyDropdown = document.getElementById('allPropertyFilter');
-                data.forEach(function (item) {
-                    var option = new Option(item.BuildingNo + " - " + item.BuildingName, item.AssetId);
-                    allPropertyDropdown.appendChild(option);
-                });
-
-                var incomePropertyFilterOffcanvas = document.getElementById('incomePropertyFilterOffcanvas');
-                data.forEach(function (item) {
-                    var option = new Option(item.BuildingNo + " - " + item.BuildingName, item.AssetId);
-                    incomePropertyFilterOffcanvas.appendChild(option);
-                });
-                
-                var expensePropertyFilterOffcanvas = document.getElementById('expensePropertyFilterOffcanvas');
-                data.forEach(function (item) {
-                    var option = new Option(item.BuildingNo + " - " + item.BuildingName, item.AssetId);
-                    expensePropertyFilterOffcanvas.appendChild(option);
-                });
-                
-                var allPropertyFilterOffcanvas = document.getElementById('allPropertyFilterOffcanvas');
-                data.forEach(function (item) {
-                    var option = new Option(item.BuildingNo + " - " + item.BuildingName, item.AssetId);
-                    allPropertyFilterOffcanvas.appendChild(option);
-                });
-            }
-        });
-    }
-
-    function applyAllFiltersFromOffcanvas() {
-        $('#allPropertyFilter').val($('#allPropertyFilterOffcanvas').val()).trigger('change');
-        $('#allUnitFilter').val($('#allUnitFilterOffcanvas').val()).trigger('change');
-        $('#allCreatedAtRange').val($('#allCreatedAtRangeOffcanvas').val()).trigger('change');
-        $('#allCreatedInvoiceRange').val($('#allCreatedInvoiceRangeOffcanvas').val()).trigger('change');
-        applyAllFilters();
-    }
-
-    function clearAllFiltersFromOffcanvas() {
-        $('#allPropertyFilterOffcanvas').val('').trigger('change');
-        $('#allUnitFilterOffcanvas').val('').trigger('change');
-        $('#allCreatedAtRangeOffcanvas').val('');
-        $('#allCreatedInvoiceRangeOffcanvas').val('');
-        applyAllFiltersFromOffcanvas();
-    }
-
-    function applyIncomeFiltersFromOffcanvas() {
-        $('#incomePropertyFilter').val($('#incomePropertyFilterOffcanvas').val()).trigger('change');
-        $('#incomeUnitFilter').val($('#incomeUnitFilterOffcanvas').val()).trigger('change');
-        $('#incomeCreatedAtRange').val($('#incomeCreatedAtRangeOffcanvas').val()).trigger('change');
-        $('#incomeCreatedInvoiceRange').val($('#incomeCreatedInvoiceRangeOffcanvas').val()).trigger('change');
-        applyIncomeFilters();
-    }
-
-    function clearIncomeFiltersFromOffcanvas() {
-        $('#incomePropertyFilterOffcanvas').val('').trigger('change');
-        $('#incomeUnitFilterOffcanvas').val('').trigger('change');
-        $('#incomeCreatedAtRangeOffcanvas').val('');
-        $('#incomeCreatedInvoiceRangeOffcanvas').val('');
-        applyIncomeFiltersFromOffcanvas();
-    }
-
-    function applyExpenseFiltersFromOffcanvas() {
-        $('#expensePropertyFilter').val($('#expensePropertyFilterOffcanvas').val()).trigger('change');
-        $('#expenseUnitFilter').val($('#expenseUnitFilterOffcanvas').val()).trigger('change');
-        $('#expenseCreatedAtRange').val($('#expenseCreatedAtRangeOffcanvas').val()).trigger('change');
-        $('#expenseCreatedDueRange').val($('#expenseCreatedDueRangeOffcanvas').val()).trigger('change');
-        applyExpenseFilters();
-    }
-
-    function clearExpenseFiltersFromOffcanvas() {
-        $('#expensePropertyFilterOffcanvas').val('').trigger('change');
-        $('#expenseUnitFilterOffcanvas').val('').trigger('change');
-        $('#expenseCreatedAtRangeOffcanvas').val('');
-        $('#expenseCreatedDueRangeOffcanvas').val('');
-        applyExpenseFiltersFromOffcanvas();
-    }
 
     function loadFinanceDataTable() {
         if ($.fn.dataTable.isDataTable('#allFinanceReportsTbl')) {
@@ -911,6 +951,7 @@
                 data: function (d) {
                     return JSON.stringify({
                         PropertiesIds: incomePropertiesIdsList,
+                        UnitsIds: incomeUnitsIdsList,
                         LeaseStartDateFilter: incomeLeaseStartDateFilter,
                         LeaseEndDateFilter: incomeLeaseEndDateFilter,
                         InvoiceStartDateFilter: incomeInvoiceStartDateFilter,
@@ -958,122 +999,7 @@
             ]
         });
     }
-
-
-    function populateUnits(propertyIds) {
-        $.ajax({
-            url: '/Lease/GetUnitsDll',
-            method: 'POST',
-            data: { AssetIds: propertyIds },
-            dataType: 'json',
-            success: function (response) {
-                var units = response;
-                var $reportUnitFilter = $('#expenseUnitFilter');
-                $reportUnitFilter.empty();
-
-                units.forEach(function (unit) {
-                    var option = `<option value="${unit.UnitId}">${unit.UnitName}</option>`;
-                    $reportUnitFilter.append(option);
-                });
-                
-
-            },
-            error: function (xhr, status, error) {
-                console.error('Error fetching units:', error);
-            }
-        });
-    }
-
-    function populateFinanceUnits(propertyIds) {
-        $.ajax({
-            url: '/Lease/GetUnitsDll',
-            method: 'POST',
-            data: { AssetIds: propertyIds },
-            dataType: 'json',
-            success: function (response) {
-                var units = response;
-                var $allUnitFilter = $('#allUnitFilter');
-                $allUnitFilter.empty();
-
-                units.forEach(function (unit) {
-                    var option = `<option value="${unit.UnitId}">${unit.UnitName}</option>`;
-                    $allUnitFilter.append(option);
-                });
-
-
-            },
-            error: function (xhr, status, error) {
-                console.error('Error fetching units:', error);
-            }
-        });
-    }
-
-    function populateFinanceUnitsOffcanvas(propertyIds) {
-        $.ajax({
-            url: '/Lease/GetUnitsDll',
-            method: 'POST',
-            data: { AssetIds: propertyIds },
-            dataType: 'json',
-            success: function (response) {
-                var units = response;
-                var $allUnitFilterOffcanvas = $('#allUnitFilterOffcanvas');
-                $allUnitFilterOffcanvas.empty();
-
-                units.forEach(function (unit) {
-                    var option = `<option value="${unit.UnitId}">${unit.UnitName}</option>`;
-                    $allUnitFilterOffcanvas.append(option);
-                });
-            },
-            error: function (xhr, status, error) {
-                console.error('Error fetching units:', error);
-            }
-        });
-    }
-    function populateIncomeUnitsOffcanvas(propertyIds) {
-        $.ajax({
-            url: '/Lease/GetUnitsDll',
-            method: 'POST',
-            data: { AssetIds: propertyIds },
-            dataType: 'json',
-            success: function (response) {
-                var units = response;
-                var $incomeUnitFilterOffcanvas = $('#incomeUnitFilterOffcanvas');
-                $incomeUnitFilterOffcanvas.empty();
-
-                units.forEach(function (unit) {
-                    var option = `<option value="${unit.UnitId}">${unit.UnitName}</option>`;
-                    $incomeUnitFilterOffcanvas.append(option);
-                });
-            },
-            error: function (xhr, status, error) {
-                console.error('Error fetching units:', error);
-            }
-        });
-    }
     
-    function populateExpenseUnitsOffcanvas(propertyIds) {
-        $.ajax({
-            url: '/Lease/GetUnitsDll',
-            method: 'POST',
-            data: { AssetIds: propertyIds },
-            dataType: 'json',
-            success: function (response) {
-                var units = response;
-                var $expenseUnitFilterOffcanvas = $('#expenseUnitFilterOffcanvas');
-                $expenseUnitFilterOffcanvas.empty();
-
-                units.forEach(function (unit) {
-                    var option = `<option value="${unit.UnitId}">${unit.UnitName}</option>`;
-                    $expenseUnitFilterOffcanvas.append(option);
-                });
-            },
-            error: function (xhr, status, error) {
-                console.error('Error fetching units:', error);
-            }
-        });
-    }
-
-
     function loadTaskRequestDataTable() {
         if ($.fn.dataTable.isDataTable('#expenseReportsTable')) {
             $('#expenseReportsTable').DataTable().clear().destroy();
@@ -1130,16 +1056,146 @@
         });
     }
 
-    function applyAllFilters() {
-        allPropertiesIdsList = $('#allPropertyFilter').val();
-        allFinanceStartDateFilter = parseDateRange('#incomeCreatedAtRange')?.start;
-        allFinanceEndDateFilter = parseDateRange('#incomeCreatedAtRange')?.end;
 
-        loadFinanceDataTable();
+    function populateDropDowns() {
+        $.ajax({
+            url: '@Url.Action("GetProperties", "Communication")',
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                var incomePropertyDropdown = document.getElementById('incomePropertyFilter');
+                data.forEach(function (item) {
+                    var option = new Option(item.BuildingNo + " - " + item.BuildingName, item.AssetId);
+                    incomePropertyDropdown.appendChild(option);
+                });
+
+                var expensePropertyDropdown = document.getElementById('expensePropertyFilter');
+                data.forEach(function (item) {
+                    var option = new Option(item.BuildingNo + " - " + item.BuildingName, item.AssetId);
+                    expensePropertyDropdown.appendChild(option);
+                });
+                
+                var allPropertyDropdown = document.getElementById('allPropertyFilter');
+                data.forEach(function (item) {
+                    var option = new Option(item.BuildingNo + " - " + item.BuildingName, item.AssetId);
+                    allPropertyDropdown.appendChild(option);
+                });
+
+                var incomePropertyFilterOffcanvas = document.getElementById('incomePropertyFilterOffcanvas');
+                data.forEach(function (item) {
+                    var option = new Option(item.BuildingNo + " - " + item.BuildingName, item.AssetId);
+                    incomePropertyFilterOffcanvas.appendChild(option);
+                });
+                
+                var expensePropertyFilterOffcanvas = document.getElementById('expensePropertyFilterOffcanvas');
+                data.forEach(function (item) {
+                    var option = new Option(item.BuildingNo + " - " + item.BuildingName, item.AssetId);
+                    expensePropertyFilterOffcanvas.appendChild(option);
+                });
+                
+                var allPropertyFilterOffcanvas = document.getElementById('allPropertyFilterOffcanvas');
+                data.forEach(function (item) {
+                    var option = new Option(item.BuildingNo + " - " + item.BuildingName, item.AssetId);
+                    allPropertyFilterOffcanvas.appendChild(option);
+                });
+            }
+        });
     }
 
+    function populateFinanceUnits(propertyIds) {
+        if (propertyIds.length > 0) {
+            $.ajax({
+                url: '/Lease/GetUnitsDll',
+                method: 'POST',
+                data: { AssetIds: propertyIds },
+                dataType: 'json',
+                success: function (response) {
+                    var units = response;
+                    var $allUnitFilter = $('#allUnitFilter');
+                    $allUnitFilter.empty();
+
+                    units.forEach(function (unit) {
+                        var option = `<option value="${unit.UnitId}">${unit.UnitName}</option>`;
+                        $allUnitFilter.append(option);
+                    });
+
+                    var $allUnitFilterOffcanvas = $('#allUnitFilterOffcanvas');
+                    $allUnitFilterOffcanvas.empty();
+
+                    units.forEach(function (unit) {
+                        var option = `<option value="${unit.UnitId}">${unit.UnitName}</option>`;
+                        $allUnitFilterOffcanvas.append(option);
+                    });
+
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error fetching units:', error);
+                }
+            });
+        }
+    }
+
+    function populateIncomeUnitsOffcanvas(propertyIds) {
+        if (propertyIds.length > 0) {
+            $.ajax({
+                url: '/Lease/GetUnitsDll',
+                method: 'POST',
+                data: { AssetIds: propertyIds },
+                dataType: 'json',
+                success: function (response) {
+                    var units = response;
+                    var $incomeUnitFilterOffcanvas = $('#incomeUnitFilterOffcanvas');
+                    $incomeUnitFilterOffcanvas.empty();
+
+                    units.forEach(function (unit) {
+                        var option = `<option value="${unit.UnitId}">${unit.UnitName}</option>`;
+                        $incomeUnitFilterOffcanvas.append(option);
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error fetching units:', error);
+                }
+            });
+        }
+    }
+    
+    function populateExpenseUnits(propertyIds) {
+        if (propertyIds.length > 0) {
+            $.ajax({
+                url: '/Lease/GetUnitsDll',
+                method: 'POST',
+                data: { AssetIds: propertyIds },
+                dataType: 'json',
+                success: function (response) {
+                    var units = response;
+                    var $expenseUnitFilterOffcanvas = $('#expenseUnitFilterOffcanvas');
+                    $expenseUnitFilterOffcanvas.empty();
+
+                    units.forEach(function (unit) {
+                        var option = `<option value="${unit.UnitId}">${unit.UnitName}</option>`;
+                        $expenseUnitFilterOffcanvas.append(option);
+                    });
+
+                    var $reportUnitFilter = $('#expenseUnitFilter');
+                    $reportUnitFilter.empty();
+
+                    units.forEach(function (unit) {
+                        var option = `<option value="${unit.UnitId}">${unit.UnitName}</option>`;
+                        $reportUnitFilter.append(option);
+                    });
+
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error fetching units:', error);
+                }
+            });
+        }
+    }
+
+
     function applyIncomeFilters() {
-        incomePropertiesIdsList = $('#incomePropertyFilter').val();
+        incomePropertiesIdsList = $("#incomePropertyFilterOffcanvas").val();
+        incomeUnitsIdsList = $('#incomeUnitFilterOffcanvas').val();
         incomeLeaseStartDateFilter = parseDateRange('#incomeCreatedAtRange')?.start;
         incomeLeaseEndDateFilter = parseDateRange('#incomeCreatedAtRange')?.end;
         incomeInvoiceStartDateFilter = parseDateRange('#incomeCreatedInvoiceRange')?.start;
@@ -1148,8 +1204,20 @@
         loadInvoiceDataTable();
     }
 
+    function clearIncomeFilters() {
+        $('#incomePropertyFilter').val('').trigger('change');
+        $('#incomeUnitFilterOffcanvas').empty();
+        $('#incomeCreatedAtRange').val('');
+        $('#incomeCreatedAtRangeOffcanvas').val('');
+        $('#incomeCreatedInvoiceRange').val('');
+        $('#incomeCreatedInvoiceRangeOffcanvas').val('');
+        
+        loadInvoiceDataTable();
+    }
+
+
     function applyExpenseFilters() {
-        expensePropertiesIdsList = $('#expensePropertyFilter').val();
+        expensePropertiesIdsList = $('#expensePropertyFilterOffcanvas').val();
         expenseUnitsIdsList = $('#expenseUnitFilter').val();
         expenseTaskStartDateFilter = parseDateRange('#expenseCreatedAtRange')?.start;
         expenseTaskEndDateFilter = parseDateRange('#expenseCreatedAtRange')?.end;
@@ -1158,4 +1226,65 @@
 
         loadTaskRequestDataTable();
     }
+
+
+    function clearExpenseFilters() {
+
+        $('#expensePropertyFilter').val('').trigger('change');
+        $('#expenseUnitFilter').empty();
+        $('#expenseUnitFilterOffcanvas').empty();
+        $('#expenseCreatedAtRange').val('');
+        $('#expenseCreatedAtRangeOffcanvas').val('');
+        $('#expenseCreatedDueRange').val('');
+        $('#expenseCreatedDueRangeOffcanvas').val('');
+
+        loadTaskRequestDataTable();
+    }
+
+    function applyAllFilters() {
+        allPropertiesIdsList = $('#allPropertyFilterOffcanvas').val();
+        allUnitsIdsList = $('#allUnitFilterOffcanvas').val();
+        allFinanceStartDateFilter = parseDateRange('#incomeCreatedAtRange')?.start;
+        allFinanceEndDateFilter = parseDateRange('#incomeCreatedAtRange')?.end;
+
+        loadFinanceDataTable();
+    }
+
+
+
+    function clearAllFilters() {
+        $('#allPropertyFilter').val('').trigger('change');
+        $('#allUnitFilter').empty();
+        $('#allUnitFilterOffcanvas').empty();
+        $('#allCreatedAtRange').val('');
+        $('#allCreatedAtRangeOffcanvas').val('');
+        $('#allCreatedInvoiceRange').val('');
+        $('#allCreatedInvoiceRangeOffcanvas').val('');
+
+        loadFinanceDataTable();
+    }
+    // function applyAllFilters() {
+    //     allPropertiesIdsList = $('#allPropertyFilterOffcanvas').val();
+    //     allUnitsIdsList = $('#allUnitFilterOffcanvas').val();
+    //     allFinanceStartDateFilter = parseDateRange('#incomeCreatedAtRange')?.start;
+    //     allFinanceEndDateFilter = parseDateRange('#incomeCreatedAtRange')?.end;
+
+    //     loadFinanceDataTable();
+    // }
+
+
+
+    // function clearAllFilters() {
+    //     $('#allPropertyFilter').val('').trigger('change');
+    //     $('#allUnitFilter').empty();
+    //     $('#allUnitFilterOffcanvas').empty();
+    //     $('#allCreatedAtRange').val('');
+    //     $('#allCreatedAtRangeOffcanvas').val('');
+    //     $('#allCreatedInvoiceRange').val('');
+    //     $('#allCreatedInvoiceRangeOffcanvas').val('');
+
+    //     loadFinanceDataTable();
+    // }
+
+
 </script>

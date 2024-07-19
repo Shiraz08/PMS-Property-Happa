@@ -7628,6 +7628,8 @@ namespace MagicVilla_VillaAPI.Repository
                                                   from l in leaseGroup.Where(x => x.IsDeleted != true).DefaultIfEmpty()
                                                   join p in _db.Assets on l.AssetId equals p.AssetId into properties
                                                   from p in properties.Where(x => x.IsDeleted != true).DefaultIfEmpty()
+                                                  join u in _db.AssetsUnits on l.UnitId equals u.UnitId into units
+                                                  from u in units.Where(x => x.IsDeleted != true).DefaultIfEmpty()
                                                   join rc in _db.RentCharge on l.LeaseId equals rc.LeaseId into rentCharges
                                                   from rc in rentCharges.DefaultIfEmpty()
                                                   where i.IsDeleted != true
@@ -7642,7 +7644,8 @@ namespace MagicVilla_VillaAPI.Repository
                                                       p.AssetId,
                                                       p.BuildingNo,
                                                       p.BuildingName,
-                                                      l.SelectedUnit
+                                                      u.UnitId,
+                                                      u.UnitName,
                                                   } into g
                                                   select new InvoiceReportDto
                                                   {
@@ -7652,7 +7655,8 @@ namespace MagicVilla_VillaAPI.Repository
                                                       Status = g.Key.Status,
                                                       PropertyId = (int?)g.Key.AssetId,
                                                       Property = g.Key.BuildingNo + " - " + g.Key.BuildingName,
-                                                      Unit = g.Key.SelectedUnit,
+                                                      UnitId = g.Key.UnitId,
+                                                      Unit = g.Key.UnitName,
                                                       InvoiceDate = g.Key.InvoiceDate,
                                                       RentCharges = g.Sum(x => x.rc.Amount)
                                                   }).ToListAsync();
@@ -7662,6 +7666,13 @@ namespace MagicVilla_VillaAPI.Repository
                 {
                     invoiceReportDtoList = invoiceReportDtoList
                         .Where(x => reportFilter.PropertiesIds.Contains(x.PropertyId))
+                        .ToList();
+                }
+
+                if (reportFilter.UnitsIds.Count() > 0 && reportFilter.UnitsIds.Any())
+                {
+                    invoiceReportDtoList = invoiceReportDtoList
+                        .Where(x => reportFilter.UnitsIds.Contains(x.UnitId))
                         .ToList();
                 }
 
@@ -7806,31 +7817,31 @@ namespace MagicVilla_VillaAPI.Repository
                                                       RentCharges = g.Sum(x => x.rc.Amount)
                                                   }).ToListAsync();
                 // Concatenate both lists
-                var combinedReports = financeReports1.Concat(financeReports2).ToList();
+        var combinedReports = financeReports1.Concat(financeReports2).ToList();
 
-                // Apply filters
-                if (reportFilter.PropertiesIds != null && reportFilter.PropertiesIds.Any())
-                {
-                    combinedReports = combinedReports
-                        .Where(x => reportFilter.PropertiesIds.Contains(x.PropertyId))
-                        .ToList();
-                }
+        // Apply filters
+        if (reportFilter.PropertiesIds != null && reportFilter.PropertiesIds.Any())
+        {
+            combinedReports = combinedReports
+                .Where(x => reportFilter.PropertiesIds.Contains(x.PropertyId))
+                .ToList();
+        }
 
-                if (reportFilter.UnitsIds != null && reportFilter.UnitsIds.Any())
-                {
-                    combinedReports = combinedReports
-                        .Where(x => reportFilter.UnitsIds.Contains(x.UnitId))
-                        .ToList();
-                }
+        if (reportFilter.UnitsIds != null && reportFilter.UnitsIds.Any())
+        {
+            combinedReports = combinedReports
+                .Where(x => reportFilter.UnitsIds.Contains(x.UnitId))
+                .ToList();
+        }
 
-                if (reportFilter.TaskStartDateFilter != null && reportFilter.TaskEndDateFilter != null)
-                {
-                    combinedReports = combinedReports
-                        .Where(x => x.StartDate >= reportFilter.TaskStartDateFilter && x.EndDate <= reportFilter.TaskEndDateFilter)
-                        .ToList();
-                }
+        if (reportFilter.TaskStartDateFilter != null && reportFilter.TaskEndDateFilter != null)
+        {
+            combinedReports = combinedReports
+                .Where(x => x.StartDate >= reportFilter.TaskStartDateFilter && x.EndDate <= reportFilter.TaskEndDateFilter)
+                .ToList();
+        }
 
-                return combinedReports;
+        return combinedReports;
             }
             catch (Exception ex)
             {
