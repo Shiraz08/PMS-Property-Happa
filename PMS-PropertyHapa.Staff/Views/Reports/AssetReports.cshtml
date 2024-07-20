@@ -3,6 +3,14 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 
 }
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+<link href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" rel="stylesheet">
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/5.0.2/css/bootstrap.min.css" rel="stylesheet">
+
+
 <div class="page-body">
     <div class="container-fluid">
         <div class="page-title">
@@ -40,6 +48,9 @@
                         <select class="form-control select2" multiple id="unitsAsset">
                         </select>
                     </div>
+                    <div class="col-md-1">
+                        <button class="btn btn-primary mt-4" type="button" data-bs-toggle="offcanvas" data-bs-target="#unitsReportOffcanvas" aria-controls="leaseOffcanvas">Filter</button>
+                    </div>
                 </div>
                 <div class="card">
                     <div class="card-body">
@@ -69,10 +80,70 @@
     </div>
 </div>
 
+
+<!-- Offcanvas for Units Filters -->
+<div class="offcanvas offcanvas-end w-50" tabindex="-1" id="unitsReportOffcanvas" aria-labelledby="unitsReportOffcanvasLabel">
+    <div class="offcanvas-header">
+        <h5 id="leaseOffcanvasLabel">Filter Units Reports</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label class="col-sm-12 mb-0 font-weight-bold">Property</label>
+                <div col-sm-12>
+                    <select id="unitsAssetOffcanvas" multiple name="unitsAssetOffcanvas" class="form-control select2"></select>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex justify-content-end">
+            <button class="btn btn-primary me-2" type="button" id="applyFilters">Filter</button>
+            <button class="btn btn-secondary" type="button" id="clearFilters">Clear</button>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/5.0.2/js/bootstrap.bundle.min.js"></script>
+
+
 <script>
     var unitsAssetIdsList = [];
 
     $(document).ready(function () {
+
+        populateDropDowns();
+
+        $("#unitsAsset").on("change", function () {
+            var values = $(this).val();
+            $('#unitsAssetOffcanvas').val(values).trigger('change.select2');
+            applyFilters();
+        });
+        
+        $("#unitsAssetOffcanvas").on("change", function () {
+            var values = $(this).val();
+            $('#unitsAsset').val(values).trigger('change.select2');
+        });
+
+        $("#applyFilters").on("click", function () {
+            applyFilters();
+            $("#unitsReportOffcanvas").removeClass('show');;
+        });
+
+        $("#clearFilters").on("click", function () {
+            clearFilters();
+            $("#unitsReportOffcanvas").removeClass('show');
+        });
+
+        loadUnitsAssetDataTable();
+    });
+
+    function populateDropDowns(){
         $.ajax({
             url: '@Url.Action("GetProperties", "Communication")',
             type: 'GET',
@@ -83,14 +154,16 @@
                     var option = new Option(item.BuildingNo + " - " + item.BuildingName, item.AssetId);
                     unitsAssetDropdown.appendChild(option);
                 });
+                
+                var unitsAssetOffcanvasDropdown = document.getElementById('unitsAssetOffcanvas');
+                data.forEach(function (item) {
+                    var option = new Option(item.BuildingNo + " - " + item.BuildingName, item.AssetId);
+                    unitsAssetOffcanvasDropdown.appendChild(option);
+                });
             }
         });
 
-        $("#unitsAsset").on("change", loadUnitsAssetDataTable);
-
-        loadUnitsAssetDataTable();
-    });
-
+    }
 
     function loadUnitsAssetDataTable() {
 
@@ -129,5 +202,16 @@
         });
     }
 
+    function applyFilters() {
+        propertiesIdsList = $("#unitsAssetOffcanvas").val();
+
+        loadUnitsAssetDataTable();
+    }
+
+    function clearFilters() {
+        $('#unitsAsset').val('').trigger('change');
+
+        loadUnitsAssetDataTable();
+    }
 
 </script>

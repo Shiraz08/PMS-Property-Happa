@@ -3,6 +3,13 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+<link href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" rel="stylesheet">
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/5.0.2/css/bootstrap.min.css" rel="stylesheet">
+
+
 <div class="page-body">
     <div class="container-fluid">
         <div class="page-title">
@@ -35,23 +42,6 @@
         <div class="tab-content" id="top-tabContent">
             <div class="tab-pane fade show active" id="leaseReports" role="tabpanel" aria-labelledby="income-top-tab">
                 <div class="row mb-3">
-         @*            <div class="col-md-3 mt-4">
-                        <div class="left-side-header">
-                            <div class="input-group">
-                                <span class="input-group-text" id="basic-addon1">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <g>
-                                            <g>
-                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M11.2753 2.71436C16.0029 2.71436 19.8363 6.54674 19.8363 11.2753C19.8363 16.0039 16.0029 19.8363 11.2753 19.8363C6.54674 19.8363 2.71436 16.0039 2.71436 11.2753C2.71436 6.54674 6.54674 2.71436 11.2753 2.71436Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M19.8987 18.4878C20.6778 18.4878 21.3092 19.1202 21.3092 19.8983C21.3092 20.6783 20.6778 21.3097 19.8987 21.3097C19.1197 21.3097 18.4873 20.6783 18.4873 19.8983C18.4873 19.1202 19.1197 18.4878 19.8987 18.4878Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                                            </g>
-                                        </g>
-                                    </svg>
-                                </span>
-                                <input class="form-control" type="text" id="searchInput" placeholder="Search" aria-label="search" aria-describedby="basic-addon1">
-                            </div>
-                        </div>
-                    </div> *@
                     <div class="col-md-3">
                         <label class="col-sm-12 mb-0 font-weight-bold">Property</label>
                         <div col-sm-12>
@@ -69,6 +59,9 @@
                         <div class="col-sm-12">
                             <input type="text" class="form-control" id="createdAtRange" />
                         </div>
+                    </div>
+                    <div class="col-md-1">
+                        <button class="btn btn-primary mt-4" type="button" data-bs-toggle="offcanvas" data-bs-target="#leaseOffcanvas" aria-controls="leaseOffcanvas">Filter</button>
                     </div>
                 </div>
 
@@ -104,6 +97,51 @@
 </div>
 
 
+<!-- Offcanvas for Lease Filters -->
+<div class="offcanvas offcanvas-end w-50" tabindex="-1" id="leaseOffcanvas" aria-labelledby="offcanvasRightLabel">
+    <div class="offcanvas-header">
+        <h5 id="leaseOffcanvasLabel">Filter Lease Reports</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label class="col-sm-12 mb-0 font-weight-bold">Property</label>
+                <div col-sm-12>
+                    <select id="reportPropertyFilterOffcanvas" multiple name="reportPropertyFilterOffcanvas" class="form-control select2"></select>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label class="col-sm-12 mb-0 font-weight-bold">Units</label>
+                <div col-sm-12>
+                    <select id="reportUnitFilterOffcanvas" multiple name="reportUnitFilterOffcanvas" class="form-control select2"></select>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label class="col-sm-12 mb-0 font-weight-bold">MoveIn/MoveOut Date</label>
+                <div class="col-sm-12">
+                    <input type="text" class="form-control" id="createdAtRangeOffcanvas" />
+                </div>
+            </div>
+        </div>
+        <div class="d-flex justify-content-end">
+            <button class="btn btn-primary me-2" type="button" id="applyFilters">Filter</button>
+            <button class="btn btn-secondary" type="button" id="clearFilters">Clear</button>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/5.0.2/js/bootstrap.bundle.min.js"></script>
+
+
 <script>
     var propertiesIdsList = [];
     var unitsIdsList = [];
@@ -114,15 +152,44 @@
         initDatePickers();
         populateDropDowns();
         loadLeaseDataTable();
-        $('#reportUnitFilter').on('change', applyFilters)
-        $('#reportPropertyFilter').on('change', function () {
-            if ($("#reportPropertyFilter").val() != null) {
-                populateUnits($("#reportPropertyFilter").val().join(','));
-            } else {
-                $("#reportPropertyFilter").empty();
-            }
+
+        $('#reportUnitFilter, #reportUnitFilterOffcanvas').change(function () {
+            var values = $(this).val();
+            $('#reportUnitFilter, #reportUnitFilterOffcanvas').val(values).trigger('change.select2');
+        });
+
+        $('#createdAtRange, #createdAtRangeOffcanvas').change(function () {
+            var value = $(this).val();
+            $('#createdAtRange, #createdAtRangeOffcanvas').val(value);
+        });
+
+        $("#reportPropertyFilter").on("change", function () {
+            var values = $(this).val();
+            $('#reportPropertyFilterOffcanvas').val(values).trigger('change.select2');
             applyFilters();
         });
+
+        $('#reportPropertyFilterOffcanvas').on('change', function () {
+            var values = $(this).val();
+            $('#reportPropertyFilter').val(values).trigger('change.select2');
+            if ($("#reportPropertyFilterOffcanvas").val() != null && $("#reportPropertyFilterOffcanvas option:selected").length > 0) {
+                populateUnits($("#reportPropertyFilterOffcanvas").val());
+            } else {
+                $("#reportUnitFilterOffcanvas").empty();
+                $("#reportUnitFilter").empty();
+            }
+        });
+
+        $("#applyFilters").on("click", function () {
+            applyFilters();
+            $("#leaseOffcanvas").removeClass('show');;
+        });
+
+        $("#clearFilters").on("click", function () {
+            clearFilters();
+            $("#leaseOffcanvas").removeClass('show');
+        });
+
     });
 
     var initDatePickers = function () {
@@ -138,13 +205,36 @@
         });
 
         $('#createdAtRange').on('apply.daterangepicker', function (ev, picker) {
-            $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+            $('#createdAtRange').val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+            $('#createdAtRangeOffcanvas').val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
             applyFilters();
         });
 
         $('#createdAtRange').on('cancel.daterangepicker', function (ev, picker) {
-            $(this).val('');
+            $('#createdAtRange').val('');
+            $('#createdAtRangeOffcanvas').val('');
             applyFilters();
+        });
+        
+        $('#createdAtRangeOffcanvas').daterangepicker({
+            autoUpdateInput: false,
+            locale: {
+                format: 'MM/DD/YYYY',
+                cancelLabel: 'Clear'
+            },
+            timePicker: false,
+            startDate: moment().subtract(30, 'days'),
+            endDate: moment().add(1, 'days')
+        });
+
+        $('#createdAtRangeOffcanvas').on('apply.daterangepicker', function (ev, picker) {
+            $('#createdAtRangeOffcanvas').val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+            $('#createdAtRange').val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+        });
+
+        $('#createdAtRangeOffcanvas').on('cancel.daterangepicker', function (ev, picker) {
+            $('#createdAtRangeOffcanvas').val('');
+            $('#createdAtRange').val('');
         });
     };
 
@@ -163,6 +253,14 @@
                     var option = `<option value="${unit.UnitId}">${unit.UnitName}</option>`;
                     $reportUnitFilter.append(option);
                 });
+                
+                var $reportUnitFilterOffcanvas = $('#reportUnitFilterOffcanvas');
+                $reportUnitFilterOffcanvas.empty();
+
+                units.forEach(function (unit) {
+                    var option = `<option value="${unit.UnitId}">${unit.UnitName}</option>`;
+                    $reportUnitFilterOffcanvas.append(option);
+                });
             },
             error: function (xhr, status, error) {
                 console.error('Error fetching units:', error);
@@ -176,19 +274,27 @@
             type: 'GET',
             dataType: 'json',
             success: function (data) {
-                var vendorPropertyDropdown = document.getElementById('reportPropertyFilter');
-                // vendorPropertyDropdown.innerHTML = ''; // Clear existing options
+                var leasePropertyDropdown = document.getElementById('reportPropertyFilter');
                 data.forEach(function (item) {
                     var option = new Option(item.BuildingNo + " - " + item.BuildingName, item.AssetId);
-                    vendorPropertyDropdown.appendChild(option);
+                    leasePropertyDropdown.appendChild(option);
+                });
+                
+                var leasePropertyOffcanvasDropdown = document.getElementById('reportPropertyFilterOffcanvas');
+                data.forEach(function (item) {
+                    var option = new Option(item.BuildingNo + " - " + item.BuildingName, item.AssetId);
+                    leasePropertyOffcanvasDropdown.appendChild(option);
                 });
             }
         });
     }
 
 
+
+
+
     function applyFilters() {
-        propertiesIdsList = $("#reportPropertyFilter").val();
+        propertiesIdsList = $("#reportPropertyFilterOffcanvas").val();
         unitsIdsList = $("#reportUnitFilter").val();
         if ($("#createdAtRange").val()) {
             var dates = $("#createdAtRange").val().split('-');
@@ -198,6 +304,16 @@
             leaseStartDateFilter = null;
             leaseEndDateFilter = null;
         }
+        loadLeaseDataTable();
+    }
+
+    function clearFilters() {
+        $('#reportPropertyFilter').val('').trigger('change');
+        $('#reportUnitFilter').empty();
+        $('#reportUnitFilterOffcanvas').empty();
+        $('#createdAtRange').val('');
+        $('#createdAtRangeOffcanvas').val('');
+
         loadLeaseDataTable();
     }
 

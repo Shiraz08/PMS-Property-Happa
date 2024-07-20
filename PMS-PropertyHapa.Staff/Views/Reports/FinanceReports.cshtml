@@ -2,7 +2,7 @@
     ViewData["Title"] = "InvoiceReports";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<style>
+@* <style>
     .offcanvas {
         z-index: 1050; /* Adjust if needed */
     }
@@ -10,110 +10,13 @@
     .daterangepicker {
         z-index: 1060; /* Adjust if needed */
     }
-</style>
+</style> *@
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
 <link href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" rel="stylesheet">
 <link href="https://maxcdn.bootstrapcdn.com/bootstrap/5.0.2/css/bootstrap.min.css" rel="stylesheet">
-
-
-@*<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-
-<!-- Page Sidebar Ends-->
-<div class="page-body">
-    <div class="container-fluid">
-        <div class="page-title">
-            <div class="row">
-                <div class="col-12 col-sm-6">
-                    <h3>Invoice Report</h3>
-                </div>
-                <div class="col-12 col-sm-6">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="/Reports/Index"><i data-feather="home"></i></a></li>
-                        <li class="breadcrumb-item">Invoice</li>
-                        <li class="breadcrumb-item active">List</li>
-                    </ol>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="container-fluid my-4">
-        <div class="row">
-            <!-- Column 1: Properties Table (80% on lg screens) -->
-            <div class="col-12 col-md-12 mb-4">
-                <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <h4 class="card-title mb-0 flex-grow-1 font-weight-bold">Filters</h4>
-                    </div>
-                    <div class="card-body">
-                        <div class="row mt-1 d-flex">
-                            <div class="col-lg-4 col-md-4">
-                                <div class="row">
-                                    <label class="col-sm-12 mb-0 font-weight-bold">Property</label>
-                                    <div col-sm-12>
-                                        <select id="expensePropertyFilter" multiple name="expensePropertyFilter" class="form-control select2"></select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-4 col-md-4">
-                                <div class="row">
-                                    <label class="col-sm-12 mb-0 font-weight-bold">MoveIn/MoveOut Date</label>
-                                    <div class="col-sm-12">
-                                        <input type="text" class="form-control" id="createdAtRange" />
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-4 col-md-4">
-                                <div class="row">
-                                    <label class="col-sm-12 mb-0 font-weight-bold">Invoice Start/End Date</label>
-                                    <div class="col-sm-12">
-                                        <input type="text" class="form-control" id="createdInvoiceRange" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-footer text-end d-flex justify-content-end">
-                        <button onclick="clearFilters()" type="button" class="btn btn-danger mr-2 font-weight-bold" style="padding-left: 2.75rem  !important; padding-right: 2.75rem  !important;">Clear</button>
-                        <button onclick="applyFilters()" type="button" class="btn btn-success font-weight-bold" style="padding-left: 2.75rem  !important; padding-right: 2.75rem  !important;">Apply</button>
-                    </div>
-                    <div class="card-body">
-                        <div class="d-flex justify-content-start mb-3">
-                            <button id="copyButton" class="btn btn-success mr-1">Copy</button>
-                            <button id="csvButton" class="btn btn-success mr-1">CSV</button>
-                            <button id="excelButton" class="btn btn-success mr-1">Excel</button>
-                            <button id="pdfButton" class="btn btn-success mr-1">PDF</button>
-                            <button id="printButton" class="btn btn-success mr-1">Print</button>
-                        </div>
-                        <div class="table-responsive">
-                            <table class="table" id="invoiceReportsTbl">
-                                <thead>
-                                    <tr>
-                                        <th scope="col" class="tableHeaderbg">Invoice</th>
-                                        <th scope="col" class="tableHeaderbg">Start Date</th>
-                                        <th scope="col" class="tableHeaderbg">End Date</th>
-                                        <th scope="col" class="tableHeaderbg">Status</th>
-                                        <th scope="col" class="tableHeaderbg">Property</th>
-                                        <th scope="col" class="tableHeaderbg">Unit</th>
-                                        <th scope="col" class="tableHeaderbg">Rent Charges</th>
-                                        <th scope="col" class="tableHeaderbg">Invoice Date</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </div>
-</div> *@
-
 
 <div class="page-body">
     <div class="container-fluid">
@@ -457,96 +360,7 @@
         loadFinanceDataTable();
         loadInvoiceDataTable();
         loadTaskRequestDataTable();
-
-        // Synchronize All Filters between Tab and Offcanvas
-        // $('#allPropertyFilter, #allPropertyFilterOffcanvas').change(function () {
-        //     var values = $(this).val();
-        //     $('#allPropertyFilter, #allPropertyFilterOffcanvas').val(values).trigger('change.select2');
-        //     if (values != null) {
-        //         var selectedValues = values.join(',');
-        //         populateUnits(selectedValues);
-        //         populateAllUnitsOffcanvas(selectedValues);
-        //     } else {
-        //         $("#allPropertyFilter").empty();
-        //         $("#allPropertyFilterOffcanvas").empty();
-        //     }
-        //     applyAllFilters();
-        // });
-
-        // $('#allUnitFilter, #allUnitFilterOffcanvas').change(function () {
-        //     var values = $(this).val();
-        //     $('#allUnitFilter, #allUnitFilterOffcanvas').val(values).trigger('change.select2');
-        // });
-
-
-        // $('#allCreatedDueRange, #allCreatedDueRangeOffcanvas').change(function () {
-        //     var value = $(this).val();
-        //     $('#allCreatedDueRange, #allCreatedDueRangeOffcanvas').val(value);
-        // });
-      
-
-        // // Synchronize Income Filters between Tab and Offcanvas
-        // $('#incomePropertyFilter, #incomePropertyFilterOffcanvas').change(function () {
-        //     var values = $(this).val();
-        //     $('#incomePropertyFilter, #incomePropertyFilterOffcanvas').val(values).trigger('change.select2');
-        //     if ($('#incomePropertyFilter').val() != null) {
-        //         populateUnits($('#incomePropertyFilter').val());
-        //     } else {
-        //         populateUnits($('#incomePropertyFilterOffcanvas').val());
-        //     }
-        // });
-
-        // $('#incomeUnitFilter, #incomeUnitFilterOffcanvas').change(function () {
-        //     var values = $(this).val();
-        //     $('#incomeUnitFilter, #incomeUnitFilterOffcanvas').val(values).trigger('change.select2');
-        // });
-
-        // $('#incomeCreatedAtRange, #incomeCreatedAtRangeOffcanvas').change(function () {
-        //     var value = $(this).val();
-        //     $('#incomeCreatedAtRange, #incomeCreatedAtRangeOffcanvas').val(value);
-        // });
-
-        // $('#incomeCreatedInvoiceRange, #incomeCreatedInvoiceRangeOffcanvas').change(function () {
-        //     var value = $(this).val();
-        //     $('#incomeCreatedInvoiceRange, #incomeCreatedInvoiceRangeOffcanvas').val(value);
-        // });
-
-        // // Synchronize Expense Filters between Tab and Offcanvas
-        // $('#expensePropertyFilter, #expensePropertyFilterOffcanvas').change(function () {
-        //     var values = $(this).val();
-        //     $('#expensePropertyFilter, #expensePropertyFilterOffcanvas').val(values).trigger('change.select2');
-        //     if (values != null) {
-        //         var selectedValues = values.join(',');
-        //         populateUnits(selectedValues);
-        //         populateExpenseUnitsOffcanvas(selectedValues);
-        //     } else {
-        //         $("#expensePropertyFilter").empty();
-        //         $("#expensePropertyFilterOffcanvas").empty();
-        //     }
-        //     applyExpenseFilters();
-        // });
-
-        // $('#expenseUnitFilter, #expenseUnitFilterOffcanvas').change(function () {
-        //     var values = $(this).val();
-        //     $('#expenseUnitFilter, #expenseUnitFilterOffcanvas').val(values).trigger('change.select2');
-        // });
-
-        // $('#expenseCreatedAtRange, #expenseCreatedAtRangeOffcanvas').change(function () {
-        //     var value = $(this).val();
-        //     $('#expenseCreatedAtRange, #expenseCreatedAtRangeOffcanvas').val(value);
-        // });
-
-        // $('#expenseCreatedDueRange, #expenseCreatedDueRangeOffcanvas').change(function () {
-        //     var value = $(this).val();
-        //     $('#expenseCreatedDueRange, #expenseCreatedDueRangeOffcanvas').val(value);
-        // });
-
-        // // Original event handlers
-        // $("#allPropertyFilter, #allPropertyFilterOffcanvas").on("change", applyAllFilters);
-        // $("#incomePropertyFilter, #incomePropertyFilterOffcanvas").on("change", applyIncomeFilters);
-        // $("#expensePropertyFilter, #expensePropertyFilterOffcanvas").on("change", applyExpenseFilters);
-
-        // Synchronize Finance Filters between Tab and Offcanvas
+        
         $('#allUnitFilter, #allUnitFilterOffcanvas').change(function () {
             var values = $(this).val();
             $('#allUnitFilter, #allUnitFilterOffcanvas').val(values).trigger('change.select2');
@@ -563,21 +377,17 @@
         });
 
 
-        // Synchronize Income Filters between Tab and Offcanvas
-
         $('#incomeCreatedAtRange, #incomeCreatedAtRangeOffcanvas').change(function () {
             var value = $(this).val();
             $('#incomeCreatedAtRange, #incomeCreatedAtRangeOffcanvas').val(value);
         });
 
         $('#incomeCreatedInvoiceRange, #incomeCreatedInvoiceRangeOffcanvas').change(function () {
-            console.log("asdasd")
             var value = $(this).val();
-            console.log(value)
             $('#incomeCreatedInvoiceRange, #incomeCreatedInvoiceRangeOffcanvas').val(value);
         });
 
-        // Synchronize Expense Filters between Tab and Offcanvas
+
         $('#expenseUnitFilter, #expenseUnitFilterOffcanvas').change(function () {
             var values = $(this).val();
             $('#expenseUnitFilter, #expenseUnitFilterOffcanvas').val(values).trigger('change.select2');
@@ -593,15 +403,16 @@
             $('#expenseCreatedDueRange, #expenseCreatedDueRangeOffcanvas').val(value);
         });
 
-        // Original event handlers
 
         $("#allPropertyFilter").on("change", function () {
             var values = $(this).val();
-            $('#allPropertyFilterOffcanvas').val(values).trigger('change');
+            $('#allPropertyFilterOffcanvas').val(values).trigger('change.select2');
             applyAllFilters();
         });
 
         $('#allPropertyFilterOffcanvas').on('change', function () {
+            var values = $(this).val();
+            $('#allPropertyFilter').val(values).trigger('change.select2');
             if ($("#allPropertyFilterOffcanvas").val() != null && $("#allPropertyFilterOffcanvas option:selected").length > 0) {
                 populateFinanceUnits($("#allPropertyFilterOffcanvas").val());
             } else {
@@ -612,11 +423,13 @@
 
         $("#incomePropertyFilter").on("change", function () {
             var values = $(this).val();
-            $('#incomePropertyFilterOffcanvas').val(values).trigger('change');
+            $('#incomePropertyFilterOffcanvas').val(values).trigger('change.select2');
             applyIncomeFilters();
         });
 
         $('#incomePropertyFilterOffcanvas').on('change', function () {
+            var values = $(this).val();
+            $('#incomePropertyFilter').val(values).trigger('change.select2');
             if ($("#incomePropertyFilterOffcanvas").val() != null || $("#incomePropertyFilterOffcanvas option:selected").length > 0) {
                 populateIncomeUnitsOffcanvas($("#incomePropertyFilterOffcanvas").val());
             } else {
@@ -626,22 +439,21 @@
 
         $("#expensePropertyFilter").on("change", function () {
             var values = $(this).val();
-            $('#expensePropertyFilterOffcanvas').val(values).trigger('change');
+            $('#expensePropertyFilterOffcanvas').val(values).trigger('change.select2');
             applyExpenseFilters();
         });
 
         $('#expensePropertyFilterOffcanvas').on('change', function () {
+            var values = $(this).val();
+            $('#expensePropertyFilter').val(values).trigger('change.select2');
             if ($("#expensePropertyFilterOffcanvas").val() != null && $("#expensePropertyFilterOffcanvas option:selected").length > 0) {
                 populateExpenseUnits($("#expensePropertyFilterOffcanvas").val());
             } else {
                 $("#expenseUnitFilterOffcanvas").empty();
-                $("#expensePropertyFilter").empty();
+                $("#expenseUnitFilter").empty();
             }
         });
 
-
-
-        // Offcanvas event handlers
         $("#applyAllFilters").on("click", function () {
             applyAllFilters();
             $("#allOffcanvasRight").removeClass('show');;
@@ -887,7 +699,6 @@
         return dates.length === 2 ? { start: dates[0], end: dates[1] } : null;
     }
 
-
     function loadFinanceDataTable() {
         if ($.fn.dataTable.isDataTable('#allFinanceReportsTbl')) {
             $('#allFinanceReportsTbl').DataTable().clear().destroy();
@@ -1056,7 +867,6 @@
         });
     }
 
-
     function populateDropDowns() {
         $.ajax({
             url: '@Url.Action("GetProperties", "Communication")',
@@ -1192,7 +1002,6 @@
         }
     }
 
-
     function applyIncomeFilters() {
         incomePropertiesIdsList = $("#incomePropertyFilterOffcanvas").val();
         incomeUnitsIdsList = $('#incomeUnitFilterOffcanvas').val();
@@ -1215,7 +1024,6 @@
         loadInvoiceDataTable();
     }
 
-
     function applyExpenseFilters() {
         expensePropertiesIdsList = $('#expensePropertyFilterOffcanvas').val();
         expenseUnitsIdsList = $('#expenseUnitFilter').val();
@@ -1226,7 +1034,6 @@
 
         loadTaskRequestDataTable();
     }
-
 
     function clearExpenseFilters() {
 
@@ -1250,8 +1057,6 @@
         loadFinanceDataTable();
     }
 
-
-
     function clearAllFilters() {
         $('#allPropertyFilter').val('').trigger('change');
         $('#allUnitFilter').empty();
@@ -1263,28 +1068,5 @@
 
         loadFinanceDataTable();
     }
-    // function applyAllFilters() {
-    //     allPropertiesIdsList = $('#allPropertyFilterOffcanvas').val();
-    //     allUnitsIdsList = $('#allUnitFilterOffcanvas').val();
-    //     allFinanceStartDateFilter = parseDateRange('#incomeCreatedAtRange')?.start;
-    //     allFinanceEndDateFilter = parseDateRange('#incomeCreatedAtRange')?.end;
-
-    //     loadFinanceDataTable();
-    // }
-
-
-
-    // function clearAllFilters() {
-    //     $('#allPropertyFilter').val('').trigger('change');
-    //     $('#allUnitFilter').empty();
-    //     $('#allUnitFilterOffcanvas').empty();
-    //     $('#allCreatedAtRange').val('');
-    //     $('#allCreatedAtRangeOffcanvas').val('');
-    //     $('#allCreatedInvoiceRange').val('');
-    //     $('#allCreatedInvoiceRangeOffcanvas').val('');
-
-    //     loadFinanceDataTable();
-    // }
-
 
 </script>
