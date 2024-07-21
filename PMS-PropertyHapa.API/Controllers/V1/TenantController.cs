@@ -238,17 +238,17 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             }
         }
 
-        [HttpPost("TenantPets")]
-        public async Task<IActionResult> GetTenantPets(ReportFilter reportFilter)
+        [HttpPost("TenantsReport")]
+        public async Task<IActionResult> GetTenantsReport(ReportFilter reportFilter)
         {
             try
             {
-                var pets = await _userRepo.GetTenantPetsAsync(reportFilter);
-                if (pets != null)
+                var tenants = await _userRepo.GetTenantsReportAsync(reportFilter);
+                if (tenants != null)
                 {
                     _response.StatusCode = HttpStatusCode.OK;
                     _response.IsSuccess = true;
-                    _response.Result = pets;
+                    _response.Result = tenants;
                     return Ok(_response);
                 }
                 else
@@ -267,17 +267,17 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             }
         }
         
-        [HttpPost("TenantVehicles")]
-        public async Task<IActionResult> GetTenantVehicles(ReportFilter reportFilter)
+        [HttpPost("InvoicesReport")]
+        public async Task<IActionResult> GetInvoicesReport(ReportFilter reportFilter)
         {
             try
             {
-                var vehicles = await _userRepo.GetTenantVehiclesAsync(reportFilter);
-                if (vehicles != null)
+                var invoices = await _userRepo.GetInvoicesReportAsync(reportFilter);
+                if (invoices != null)
                 {
                     _response.StatusCode = HttpStatusCode.OK;
                     _response.IsSuccess = true;
-                    _response.Result = vehicles;
+                    _response.Result = invoices;
                     return Ok(_response);
                 }
                 else

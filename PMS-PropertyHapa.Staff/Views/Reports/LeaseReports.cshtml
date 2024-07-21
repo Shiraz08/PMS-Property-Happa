@@ -126,6 +126,20 @@
                 </div>
             </div>
         </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label class="col-sm-12 mb-0 font-weight-bold">Min Rent</label>
+                <div class="col-sm-12">
+                    <input type="number" class="form-control" id="minRentOffcanvas" />
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label class="col-sm-12 mb-0 font-weight-bold">Max Rent</label>
+                <div class="col-sm-12">
+                    <input type="number" class="form-control" id="maxRentOffcanvas" />
+                </div>
+            </div>
+        </div>
         <div class="d-flex justify-content-end">
             <button class="btn btn-primary me-2" type="button" id="applyFilters">Filter</button>
             <button class="btn btn-secondary" type="button" id="clearFilters">Clear</button>
@@ -147,6 +161,8 @@
     var unitsIdsList = [];
     var leaseStartDateFilter = null;
     var leaseEndDateFilter = null;
+    var leaseMinRentFilter = null;
+    var leaseMaxRentFilter = null;
 
     $(document).ready(function () {
         initDatePickers();
@@ -166,6 +182,12 @@
         $("#reportPropertyFilter").on("change", function () {
             var values = $(this).val();
             $('#reportPropertyFilterOffcanvas').val(values).trigger('change.select2');
+            if ($("#reportPropertyFilter").val() != null && $("#reportPropertyFilter option:selected").length > 0) {
+                populateUnits($("#reportPropertyFilter").val());
+            } else {
+                $("#reportUnitFilterOffcanvas").empty();
+                $("#reportUnitFilter").empty();
+            }
             applyFilters();
         });
 
@@ -304,6 +326,8 @@
             leaseStartDateFilter = null;
             leaseEndDateFilter = null;
         }
+        leaseMinRentFilter = $("#minRentOffcanvas").val();
+        leaseMaxRentFilter = $("#maxRentOffcanvas").val();
         loadLeaseDataTable();
     }
 
@@ -311,6 +335,8 @@
         $('#reportPropertyFilter').val('').trigger('change');
         $('#reportUnitFilter').empty();
         $('#reportUnitFilterOffcanvas').empty();
+        $("#minRentOffcanvas").val('');
+        $("#minRentOffcanvas").val('');
         $('#createdAtRange').val('');
         $('#createdAtRangeOffcanvas').val('');
 
@@ -334,8 +360,12 @@
                         PropertiesIds: propertiesIdsList,
                         UnitsIds: unitsIdsList,
                         LeaseStartDateFilter: leaseStartDateFilter,
-                        LeaseEndDateFilter: leaseEndDateFilter
+                        LeaseEndDateFilter: leaseEndDateFilter,
+                        LeaseMinRentFilter: leaseMinRentFilter,
+                        LeaseMaxRentFilter: leaseMaxRentFilter,
+                        
                     });
+                    
                 },
                 dataSrc: "",
                 error: function (xhr, error, thrown) {

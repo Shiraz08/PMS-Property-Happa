@@ -17,6 +17,11 @@ namespace PMS_PropertyHapa.Models.DTO
         public string Property { get; set; }
         public int? UnitId { get; set; }
         public string Unit { get; set; }
+        public int? TenantId { get; set; }
+        public string Tenant { get; set; }
         public decimal RentCharges { get; set; }
+        public bool InvoicePaid { get; set; }
+        public int IsPaid { get; set; }
+
     }
 }

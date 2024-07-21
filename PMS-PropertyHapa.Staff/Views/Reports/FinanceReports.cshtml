@@ -293,13 +293,13 @@
     <div class="offcanvas-body">
         <div class="row mb-3">
             <div class="col-md-6">
-                <label class="col-sm-12 mb-0 font-weight-bold">Property</label>
+                <label class="col-sm-12 mb-0 form-label  font-weight-bold">Property</label>
                 <div col-sm-12>
                     <select id="expensePropertyFilterOffcanvas" multiple name="expensePropertyFilterOffcanvas" class="form-control select2"></select>
                 </div>
             </div>
             <div class="col-md-6">
-                <label class="col-sm-12 mb-0 font-weight-bold">Units</label>
+                <label class="col-sm-12 mb-0 form-label  font-weight-bold">Units</label>
                 <div col-sm-12>
                     <select id="expenseUnitFilterOffcanvas" multiple name="expenseUnitFilterOffcanvas" class="form-control select2"></select>
                 </div>
@@ -307,13 +307,13 @@
         </div>
         <div class="row mb-3">
             <div class="col-md-6">
-                <label class="col-sm-12 mb-0 font-weight-bold">Task Start/End Date</label>
+                <label class="col-sm-12 mb-0 form-label  font-weight-bold">Task Start/End Date</label>
                 <div class="col-sm-12">
                     <input type="text" id="expenseCreatedAtRangeOffcanvas" class="form-control" />
                 </div>
             </div>
             <div class="col-md-6">
-                <label class="col-sm-12 mb-0 font-weight-bold">Due Date</label>
+                <label class="col-sm-12 mb-0 form-label font-weight-bold">Due Date</label>
                 <div class="col-sm-12">
                     <input type="text" class="form-control" id="expenseCreatedDueRangeOffcanvas" />
                 </div>
@@ -407,6 +407,12 @@
         $("#allPropertyFilter").on("change", function () {
             var values = $(this).val();
             $('#allPropertyFilterOffcanvas').val(values).trigger('change.select2');
+            if ($("#allPropertyFilter").val() != null && $("#allPropertyFilter option:selected").length > 0) {
+                populateFinanceUnits($("#allPropertyFilter").val());
+            } else {
+                $("#allUnitFilterOffcanvas").empty();
+                $("#allUnitFilter").empty();
+            }
             applyAllFilters();
         });
 
@@ -424,6 +430,11 @@
         $("#incomePropertyFilter").on("change", function () {
             var values = $(this).val();
             $('#incomePropertyFilterOffcanvas').val(values).trigger('change.select2');
+            if ($("#incomePropertyFilter").val() != null || $("#incomePropertyFilter option:selected").length > 0) {
+                populateIncomeUnitsOffcanvas($("#incomePropertyFilter").val());
+            } else {
+                $("#incomeUnitFilterOffcanvas").empty();
+            }
             applyIncomeFilters();
         });
 
@@ -440,6 +451,12 @@
         $("#expensePropertyFilter").on("change", function () {
             var values = $(this).val();
             $('#expensePropertyFilterOffcanvas').val(values).trigger('change.select2');
+            if ($("#expensePropertyFilter").val() != null && $("#expensePropertyFilter option:selected").length > 0) {
+                populateExpenseUnits($("#expensePropertyFilter").val());
+            } else {
+                $("#expenseUnitFilterOffcanvas").empty();
+                $("#expenseUnitFilter").empty();
+            }
             applyExpenseFilters();
         });
 

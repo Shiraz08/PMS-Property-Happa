@@ -1798,35 +1798,74 @@ namespace MagicVilla_VillaAPI.Repository
         }
 
 
-        public async Task<List<PetDto>> GetTenantPetsAsync(ReportFilter reportFilter)
+        public async Task<List<TenantModelDto>> GetTenantsReportAsync(ReportFilter reportFilter)
         {
 
             try
             {
-                var pets = await (from tpets in _db.Pets
-                                  from t in _db.Tenant.Where(x=>x.TenantId == tpets.TenantId).DefaultIfEmpty()
-                                  where tpets.IsDeleted != true && tpets.AddedBy == reportFilter.AddedBy
-                                  select new PetDto
+                var tenants = await (from tenant in _db.Tenant
+                                  where tenant.IsDeleted != true && tenant.AddedBy == reportFilter.AddedBy
+                                  select new TenantModelDto
                                   {
-                                      TenantId = tpets.TenantId,
-                                      TenantName = t.FirstName + " " + t.LastName,
-                                      Name = tpets.Name,
-                                      Breed = tpets.Breed,
-                                      Type = tpets.Type,
-                                      Quantity = tpets.Quantity,
-                                      Picture = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Pets_Picture_" + tpets.PetId + Path.GetExtension(tpets.Picture)}",
+                                      TenantId = tenant.TenantId,
+                                      FirstName = tenant.FirstName,
+                                      LastName = tenant.LastName,
+                                      EmailAddress = tenant.EmailAddress,
+                                      PhoneNumber = tenant.PhoneNumber,
+                                      EmergencyContactInfo = tenant.EmergencyContactInfo,
+                                      LeaseAgreementId = tenant.LeaseAgreementId,
+                                      TenantNationality = tenant.TenantNationality,
+                                      Gender = tenant.Gender,
+                                      DOB = tenant.DOB,
+                                      VAT = tenant.VAT,
+                                      LegalName = tenant.LegalName,
+                                      Account_Name = tenant.Account_Name,
+                                      Account_Holder = tenant.Account_Holder,
+                                      Account_IBAN = tenant.Account_IBAN,
+                                      Account_Swift = tenant.Account_Swift,
+                                      Account_Bank = tenant.Account_Bank,
+                                      Account_Currency = tenant.Account_Currency,
+                                      Address = tenant.Address,
+                                      Address2 = tenant.Address2,
+                                      Locality = tenant.Locality,
+                                      Region = tenant.Region,
+                                      PostalCode = tenant.PostalCode,
+                                      Country = tenant.Country,
+                                      CountryCode = tenant.CountryCode,
+                                      PictureName = tenant.Picture,
+                                      Picture = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Tenant_Picture_" + tenant.TenantId + Path.GetExtension(tenant.Picture)}",
+                                      DocumentName = tenant.Document,
+                                      Document = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Tenant_Document_" + tenant.TenantId + Path.GetExtension(tenant.Document)}",
+                                      AddedBy = tenant.AddedBy,
+                                      AddedDate = tenant.AddedDate,
+                                      IsTenanted = _db.Lease.Any(x => x.TenantsTenantId == tenant.TenantId && x.StartDate <= DateTime.Now && x.EndDate >= DateTime.Now) ? (int)TenantTypes.Tenanted : (int)TenantTypes.NonTenanted,
                                   })
                      .AsNoTracking()
                      .ToListAsync();
 
                 if (reportFilter.TenantsIds.Count() > 0 && reportFilter.TenantsIds.Any())
                 {
-                    pets = pets
+                    tenants = tenants
                         .Where(x => reportFilter.TenantsIds.Contains(x.TenantId))
                         .ToList();
                 }
 
-                return pets;
+                if (reportFilter.TenantTypes.Count() > 0 && reportFilter.TenantTypes.Any())
+                {
+
+                    tenants = tenants
+                        .Where(x => reportFilter.TenantTypes.Contains(x.IsTenanted))
+                        .ToList();
+                }
+
+                if (reportFilter.TenantAddedStartDateFilter != null && reportFilter.TenantAddedEndDateFilter != null)
+                {
+                    tenants = tenants
+                        .Where(x => x.AddedDate >= reportFilter.TenantAddedStartDateFilter && x.AddedDate <= reportFilter.TenantAddedEndDateFilter)
+                        .ToList();
+                }
+
+                return tenants;
             }
             catch (Exception ex)
             {
@@ -1836,35 +1875,55 @@ namespace MagicVilla_VillaAPI.Repository
 
         }
 
-        public async Task<List<VehicleDto>> GetTenantVehiclesAsync(ReportFilter reportFilter)
+        public async Task<List<InvoiceReportDto>> GetInvoicesReportAsync(ReportFilter reportFilter)
         {
 
             try
             {
-                var vehicles = await (from tvehicle in _db.Vehicle
-                                  from t in _db.Tenant.Where(x => x.TenantId == tvehicle.TenantId).DefaultIfEmpty()
-                                  where tvehicle.IsDeleted != true && tvehicle.AddedBy == reportFilter.AddedBy
-                                  select new VehicleDto
+                var invoices = await (from i in _db.Invoices
+                                  from l in _db.Lease.Where(x => x.LeaseId == i.LeaseId && !x.IsDeleted).DefaultIfEmpty()
+                                  from t in _db.Tenant.Where(x => x.TenantId == l.TenantsTenantId).DefaultIfEmpty()
+                                  where i.IsDeleted != true && i.AddedBy == reportFilter.AddedBy
+                                  select new InvoiceReportDto
                                   {
-                                      TenantId = tvehicle.TenantId,
-                                      TenantName = t.FirstName + " " + t.LastName,
-                                      ModelName = tvehicle.ModelName,
-                                      ModelVariant = tvehicle.ModelVariant,
-                                      Year = tvehicle.Year,
-                                      Manufacturer = tvehicle.Manufacturer,
-                                      Color = tvehicle.color,
+                                      Invoice = i.InvoiceId.ToString(),
+                                      StartDate = l.StartDate,
+                                      EndDate = l.EndDate,
+                                      Status = l.Status,
+                                      PropertyId = (int?)l.AssetId,
+                                      Property = l.SelectedProperty,
+                                      TenantId = t.TenantId,
+                                      Tenant = t.FirstName + "-" + t.LastName,
+                                      InvoicePaid = i.InvoicePaid ?? false,
+                                      IsPaid = i.InvoicePaid == true ? (int)InvoiceTypes.Paid : (int)InvoiceTypes.UnPaid
                                   })
                      .AsNoTracking()
                      .ToListAsync();
 
                 if (reportFilter.TenantsIds.Count() > 0 && reportFilter.TenantsIds.Any())
                 {
-                    vehicles = vehicles
+                    invoices = invoices
                         .Where(x => reportFilter.TenantsIds.Contains(x.TenantId))
                         .ToList();
                 }
 
-                return vehicles;
+                if (reportFilter.InvoicePaid.Count() > 0 && reportFilter.InvoicePaid.Any())
+                {
+                    invoices = invoices
+                        .Where(x => reportFilter.InvoicePaid.Contains(x.IsPaid))
+                        .ToList();
+                }
+
+                if (reportFilter.PropertiesIds != null && reportFilter.PropertiesIds.Any())
+                {
+                    invoices = invoices
+                        .Where(x => reportFilter.PropertiesIds.Contains(x.PropertyId))
+                        .ToList();
+                }
+
+
+
+                return invoices;
             }
             catch (Exception ex)
             {
@@ -7567,6 +7626,29 @@ namespace MagicVilla_VillaAPI.Repository
                         .Where(x => x.StartDate >= reportFilter.LeaseStartDateFilter && x.EndDate <= reportFilter.LeaseEndDateFilter)
                         .ToList();
                 }
+                if (reportFilter.LeaseMinRentFilter != null)
+                {
+                    leaseReportDtoList = leaseReportDtoList
+                        .Where(x => x.RentCharges >= reportFilter.LeaseMinRentFilter)
+                        .ToList();
+                }
+
+                if (reportFilter.LeaseMaxRentFilter != null)
+                {
+                    leaseReportDtoList = leaseReportDtoList
+                        .Where(x => x.RentCharges <= reportFilter.LeaseMaxRentFilter)
+                        .ToList();
+                }
+
+
+                //if (reportFilter.LeaseMinRentFilter != null && reportFilter.LeaseMinRentFilter.Any() &&
+                //    reportFilter.LeaseMaxRentFilter != null && reportFilter.LeaseMaxRentFilter.Any())
+                //{
+                //    leaseReportDtoList = leaseReportDtoList
+                //        .Where(x => reportFilter.LeaseMinRentFilter.All(min => min == null || x.RentCharges >= min) &&
+                //                    reportFilter.LeaseMaxRentFilter.All(max => max == null || x.RentCharges <= max))
+                //        .ToList();
+                //}
 
 
                 return leaseReportDtoList;

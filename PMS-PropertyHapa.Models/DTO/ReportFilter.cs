@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static PMS_PropertyHapa.Shared.Enum.SD;
 
 namespace PMS_PropertyHapa.Models.DTO
 {
@@ -22,5 +23,12 @@ namespace PMS_PropertyHapa.Models.DTO
         public DateTime? TaskEndDateFilter { get; set; }
         public DateTime? TaskDueStartDateFilter { get; set; }
         public DateTime? TaskDueEndDateFilter { get; set; }
+        public DateTime? TenantAddedStartDateFilter { get; set; }
+        public DateTime? TenantAddedEndDateFilter { get; set; }
+        public List<int?> TenantTypes { get; set; }
+        public List<int?> InvoicePaid { get; set; }
+        public decimal? LeaseMinRentFilter { get; set; }
+        public decimal? LeaseMaxRentFilter { get; set; }
+
     }
 }

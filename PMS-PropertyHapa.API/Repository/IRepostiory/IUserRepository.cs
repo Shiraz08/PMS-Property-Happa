@@ -61,8 +61,8 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
 
         Task<TenantModelDto> GetSingleTenantByIdAsync(int tenantId);
 
-        Task<List<PetDto>> GetTenantPetsAsync(ReportFilter reportFilter);
-        Task<List<VehicleDto>> GetTenantVehiclesAsync(ReportFilter reportFilter);
+        Task<List<TenantModelDto>> GetTenantsReportAsync(ReportFilter reportFilter);
+        Task<List<InvoiceReportDto>> GetInvoicesReportAsync(ReportFilter reportFilter);
         Task<List<TenantDependentDto>> GetTenantDependentsAsync(ReportFilter reportFilter);
         #endregion
 

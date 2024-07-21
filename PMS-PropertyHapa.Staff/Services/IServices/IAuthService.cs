@@ -33,8 +33,8 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
         Task<bool> CreateTenantAsync(TenantModelDto tenant);
         Task<bool> UpdateTenantAsync(TenantModelDto tenant);
         Task<APIResponse> DeleteTenantAsync(int tenantId);
-        Task<IEnumerable<PetDto>> GetTenantPets(ReportFilter reportFilter);
-        Task<IEnumerable<VehicleDto>> GetTenantVehicles(ReportFilter reportFilter);
+        Task<IEnumerable<TenantModelDto>> GetTenantsReport(ReportFilter reportFilter);
+        Task<IEnumerable<InvoiceReportDto>> GetInvoicesReport(ReportFilter reportFilter);
         Task<IEnumerable<TenantDependentDto>> GetTenantDependents(ReportFilter reportFilter);
 
 

@@ -453,7 +453,7 @@ namespace PMS_PropertyHapa.Staff.Services
             }
         }
 
-        public async Task<IEnumerable<PetDto>> GetTenantPets(ReportFilter reportFilter)
+        public async Task<IEnumerable<TenantModelDto>> GetTenantsReport(ReportFilter reportFilter)
         {
             try
             {
@@ -461,13 +461,13 @@ namespace PMS_PropertyHapa.Staff.Services
                 {
                     ApiType = SD.ApiType.POST,
                     Data = reportFilter,
-                    Url = $"{villaUrl}/api/v1/Tenantauth/TenantPets"
+                    Url = $"{villaUrl}/api/v1/Tenantauth/TenantsReport"
                 });
 
                 if (response != null && response.IsSuccess)
                 {
                     var userListJson = Convert.ToString(response.Result);
-                    var pets = JsonConvert.DeserializeObject<IEnumerable<PetDto>>(userListJson);
+                    var pets = JsonConvert.DeserializeObject<IEnumerable<TenantModelDto>>(userListJson);
                     return pets;
                 }
                 else
@@ -481,7 +481,7 @@ namespace PMS_PropertyHapa.Staff.Services
             }
         }   
         
-        public async Task<IEnumerable<VehicleDto>> GetTenantVehicles(ReportFilter reportFilter)
+        public async Task<IEnumerable<InvoiceReportDto>> GetInvoicesReport(ReportFilter reportFilter)
         {
             try
             {
@@ -489,14 +489,14 @@ namespace PMS_PropertyHapa.Staff.Services
                 {
                     ApiType = SD.ApiType.POST,
                     Data = reportFilter,
-                    Url = $"{villaUrl}/api/v1/Tenantauth/TenantVehicles"
+                    Url = $"{villaUrl}/api/v1/Tenantauth/InvoicesReport"
                 });
 
                 if (response != null && response.IsSuccess)
                 {
                     var userListJson = Convert.ToString(response.Result);
-                    var vehicles = JsonConvert.DeserializeObject<IEnumerable<VehicleDto>>(userListJson);
-                    return vehicles;
+                    var invoices = JsonConvert.DeserializeObject<IEnumerable<InvoiceReportDto>>(userListJson);
+                    return invoices;
                 }
                 else
                 {

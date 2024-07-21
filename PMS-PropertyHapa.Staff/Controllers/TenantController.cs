@@ -391,18 +391,18 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> GetTenantPets([FromBody] ReportFilter reportFilter)
+        public async Task<IActionResult> GetTenantsReport([FromBody] ReportFilter reportFilter)
         {
             reportFilter.AddedBy = Request?.Cookies["userId"]?.ToString();
-            var res = await _authService.GetTenantPets(reportFilter);
+            var res = await _authService.GetTenantsReport(reportFilter);
             return Ok(res);
         }
 
         [HttpPost]
-        public async Task<IActionResult> GetTenantVehicles([FromBody] ReportFilter reportFilter)
+        public async Task<IActionResult> GetInvoicesReport([FromBody] ReportFilter reportFilter)
         {
             reportFilter.AddedBy = Request?.Cookies["userId"]?.ToString();
-            var res = await _authService.GetTenantVehicles(reportFilter);
+            var res = await _authService.GetInvoicesReport(reportFilter);
             return Ok(res);
         }
 

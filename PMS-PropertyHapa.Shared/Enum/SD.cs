@@ -39,6 +39,18 @@ namespace PMS_PropertyHapa.Shared.Enum
             public const string WorkOrderRequest = "WorkOrderRequest";
         }
         
+        public enum TenantTypes
+        {
+          Tenanted = 1,
+          NonTenanted = 2,
+        }
+        
+        public enum InvoiceTypes
+        {
+          Paid = 1,
+          UnPaid = 2,
+        }
+        
         public enum TaskStatusTypes
         {
           NotStarted,

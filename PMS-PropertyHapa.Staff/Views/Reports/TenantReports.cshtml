@@ -26,9 +26,9 @@
             <div class="row">
                 <div class="col-md-12 p-0">
                     <ul class="nav nav-tabs border-tab" id="top-tab" role="tablist">
-                        <li class="nav-item"><a class="nav-link active" id="pets-top-tab" data-bs-toggle="tab" href="#petsReports" role="tab" aria-controls="petsReports" aria-selected="false"><i data-feather="info"></i>Pets Report</a></li>
-                        <li class="nav-item"><a class="nav-link" id="vehicles-top-tab" data-bs-toggle="tab" href="#vehiclesReports" role="tab" aria-controls="vehiclesReports" aria-selected="false"><i data-feather="check-circle"></i>Vehicles Report</a></li>
-                        <li class="nav-item"><a class="nav-link" id="dependents-top-tab" data-bs-toggle="tab" href="#dependentsReports" role="tab" aria-controls="dependentsReports" aria-selected="false"><i data-feather="check-circle"></i>Dependents Report</a></li>
+                        <li class="nav-item"><a class="nav-link active" id="all-top-tab" data-bs-toggle="tab" href="#allReports" role="tab" aria-controls="allReports" aria-selected="false"><i data-feather="info"></i>All</a></li>
+                        @* <li class="nav-item"><a class="nav-link" id="transactions-top-tab" data-bs-toggle="tab" href="#transactionsReports" role="tab" aria-controls="transactionReports" aria-selected="false"><i data-feather="check-circle"></i>Transaction</a></li> *@
+                        <li class="nav-item"><a class="nav-link" id="invoices-top-tab" data-bs-toggle="tab" href="#invoicesReports" role="tab" aria-controls="invoicesReports" aria-selected="false"><i data-feather="check-circle"></i>Invoices</a></li>
                     </ul>
                 </div>
             </div>
@@ -36,28 +36,35 @@
     </div>
     <div class="col-sm-12 mt-4">
         <div class="tab-content" id="top-tabContent">
-            <div class="tab-pane fade show active" id="petsReports" role="tabpanel" aria-labelledby="pets-top-tab">
+            <div class="tab-pane fade show active" id="allReports" role="tabpanel" aria-labelledby="all-top-tab">
                 <div class="row mb-3">
                     <div class="col-md-3">
-                        <label for="petTenant" class="form-label ">Tenant</label>
-                        <select class="form-control select2" multiple id="petTenant">
+                        <label for="allTenant" class="form-label ">Tenant</label>
+                        <select class="form-control select2" multiple id="allTenant">
                         </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="col-sm-12 mb-0 font-weight-bold">Added Date</label>
+                        <div class="col-sm-12">
+                            <input type="text" class="form-control" id="allTenantAddedDate" />
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <button class="btn btn-primary mt-4" type="button" data-bs-toggle="offcanvas" data-bs-target="#allReportOffcanvas" aria-controls="tenantOffcanvas">Filter</button>
                     </div>
                 </div>
                 <div class="card">
                     <div class="card-body">
                         <div class="row">
                             <div class="table-responsive">
-                                <h3 class="card-title">Pets</h3>
-                                <table class="table display" id="petsReportTable">
+                                <h3 class="card-title">All Tenant</h3>
+                                <table class="table display" id="allReportTable">
                                     <thead>
                                         <tr>
-                                            <th></th>
-                                            <th>Name</th>
-                                            <th>Breed</th>
-                                            <th>Type</th>
-                                            <th>Quantity</th>
+                                            <th>Picture</th>
                                             <th>Tenant Name</th>
+                                            <th>Contact</th>
+                                            <th>Since</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -69,19 +76,22 @@
                 </div>
 
             </div>
-             <div class="tab-pane fade" id="vehiclesReports" role="tabpanel" aria-labelledby="vehiclesvehicles-top-tab">
+           @*  <div class="tab-pane fade" id="transactionsReports" role="tabpanel" aria-labelledby="transactions-top-tab">
                 <div class="row mb-3">
                     <div class="col-md-3">
-                        <label for="vehicleTenant" class="form-label ">Tenant</label>
-                        <select class="form-control select2" multiple id="vehicleTenant">
+                        <label for="transactionTenant" class="form-label ">Tenant</label>
+                        <select class="form-control select2" multiple id="transactionTenant">
                         </select>
+                    </div>
+                    <div class="col-md-1">
+                        <button class="btn btn-primary mt-4" type="button" data-bs-toggle="offcanvas" data-bs-target="#transactionsReportOffcanvas" aria-controls="tenantOffcanvas">Filter</button>
                     </div>
                 </div>
                 <div class="card">
                     <div class="card-body">
                         <div class="table-responsive">
-                            <h3 class="card-title">Vehicles</h3>
-                            <table class="table display" id="vehiclesReportTable">
+                            <h3 class="card-title">Transactions</h3>
+                            <table class="table display" id="transactionsReportTable">
                                 <thead>
                                     <tr>
                                         <th>Manufacturer</th>
@@ -98,28 +108,31 @@
                         </div>
                     </div>
                 </div>
-            </div>
-             <div class="tab-pane fade" id="dependentsReports" role="tabpanel" aria-labelledby="dependents-top-tab">
+            </div> *@
+            <div class="tab-pane fade" id="invoicesReports" role="tabpanel" aria-labelledby="invoices-top-tab">
                 <div class="row mb-3">
                     <div class="col-md-3">
-                        <label for="dependentTenant" class="form-label ">Tenant</label>
-                        <select class="form-control select2" multiple id="dependentTenant">
+                        <label for="invoiceTenant" class="form-label ">Tenant</label>
+                        <select class="form-control select2" multiple id="invoiceTenant">
                         </select>
+                    </div>
+                    <div class="col-md-1">
+                        <button class="btn btn-primary mt-4" type="button" data-bs-toggle="offcanvas" data-bs-target="#invoicesReportOffcanvas" aria-controls="tenantOffcanvas">Filter</button>
                     </div>
                 </div>
                 <div class="card">
                     <div class="card-body">
                         <div class="table-responsive">
-                            <h3 class="card-title">Dependents</h3>
-                            <table class="table display" id="dependentsReportTable">
+                            <h3 class="card-title">Invoices</h3>
+                            <table class="table display" id="invoicesReportTable">
                                 <thead>
                                     <tr>
-                                        <th>Name</th>
-                                        <th>Email Address</th>
-                                        <th>Phone Number</th>
-                                        <th>DOB</th>
-                                        <th>Relation</th>
+                                        <th>Invoice</th>
                                         <th>Tenant Name</th>
+                                        <th>Property</th>
+                                        <th>Start Date</th>
+                                        <th>End Date</th>
+                                        <th>InvoicePaid</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -133,75 +146,328 @@
     </div>
 </div>
 
+<!-- Offcanvas for All Filters -->
+<div class="offcanvas offcanvas-end w-50" tabindex="-1" id="allReportOffcanvas" aria-labelledby="allReportOffcanvasLabel">
+    <div class="offcanvas-header">
+        <h5 id="allOffcanvasLabel">Tenants All Report</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label class="col-sm-12 mb-0 font-weight-bold">Tenant</label>
+                <div col-sm-12>
+                    <select id="allTenantOffcanvas" multiple name="allTenantOffcanvas" class="form-control select2"></select>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label class="col-sm-12 mb-0 font-weight-bold">Tenant Type</label>
+                <div col-sm-12>
+                    <select id="allTenantTypeOffcanvas" multiple name="allTenantTypeOffcanvas" class="form-control select2">
+                        <option value="1">Tenanted</option>
+                        <option value="2">Non-Tenanted</option>
+                    </select>
+                </div>
+            </div>
+        </div>  
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label class="col-sm-12 mb-0 font-weight-bold">Added Date</label>
+                <div class="col-sm-12">
+                    <input type="text" class="form-control" id="allTenantAddedDateOffcanvas" />
+                </div>
+            </div>
+        </div>
+        <div class="d-flex justify-content-end">
+            <button class="btn btn-primary me-2" type="button" id="allApplyFilters">Filter</button>
+            <button class="btn btn-secondary" type="button" id="allClearFilters">Clear</button>
+        </div>
+    </div>
+</div>
+
+<!-- Offcanvas for Transaction Filters -->
+@* <div class="offcanvas offcanvas-end" tabindex="-1" id="transactionsReportOffcanvas" aria-labelledby="transactionsReportOffcanvasLabel">
+    <div class="offcanvas-header">
+        <h5 id="transactionOffcanvasLabel">Tenant Transactions Report</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <label class="col-sm-12 mb-0 font-weight-bold">Tenant</label>
+                <div col-sm-12>
+                    <select id="transactionsTenantOffcanvas" multiple name="transactionsTenantOffcanvas" class="form-control select2"></select>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex justify-content-end">
+            <button class="btn btn-primary me-2" type="button" id="transactionsApplyFilters">Filter</button>
+            <button class="btn btn-secondary" type="button" id="transactionsClearFilters">Clear</button>
+        </div>
+    </div>
+</div> *@
+
+<!-- Offcanvas for Invoices Filters -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="invoicesReportOffcanvas" aria-labelledby="invoicesReportOffcanvasLabel">
+    <div class="offcanvas-header">
+        <h5 id="invoicesOffcanvasLabel">Tenant Invoices Reports</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <label class="col-sm-12 mb-0 font-weight-bold">Tenant</label>
+                <div col-sm-12>
+                    <select id="invoicesTenantOffcanvas" multiple name="invoicesTenantOffcanvas" class="form-control select2"></select>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <label class="col-sm-12 mb-0 font-weight-bold">Tenant Type</label>
+                <div col-sm-12>
+                    <select id="isPaidInvoicesOffcanvas" multiple name="isPaidInvoicesOffcanvas" class="form-control select2">
+                        <option value="1">Paid</option>
+                        <option value="2">UnPaid</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <label class="col-sm-12 mb-0 font-weight-bold">Tenant Type</label>
+                <div col-sm-12>
+                    <select id="invoicesPropertyOffcanvas" multiple name="invoicesPropertyOffcanvas" class="form-control select2">
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex justify-content-end">
+            <button class="btn btn-primary me-2" type="button" id="invoicesApplyFilters">Filter</button>
+            <button class="btn btn-secondary" type="button" id="invoicesClearFilters">Clear</button>
+        </div>
+    </div>
+</div>
+
 <script>
-    var petTenantIdsList = [];
-    var vehicleTenantIdsList = [];
-    var dependentTenantIdsList = [];
+    var allTenantIdsList = [];
+    var allTenantTypeList = [];
+    var allTenantAddedStartDateFilter = null;
+    var allTenantAddedEndDateFilter = null;
+    var transactionTenantIdsList = [];
+    var invoiceTenantIdsList = [];
+    var invoiceIsPaidList = [];
+    var invoicePropertyList = [];
 
     $(document).ready(function () {
-        $.ajax({
-            url: '@Url.Action("GetTenantsDll", "Communication")',
-            type: 'GET',
-            dataType: 'json',
-            success: function (data) {
-                var petTenantsDropdown = document.getElementById('petTenant');
-                data.forEach(function (item) {
-                    var option = new Option(item.FirstName + ' ' + item.LastName, item.TenantId);
-                    petTenantsDropdown.appendChild(option);
-                });
+        initDatePickers();
+        populateDropDowns();
+        populateDropDown();
 
-            }
+        $("#allTenant").on("change", function () {
+            var values = $(this).val();
+            $('#allTenantOffcanvas').val(values).trigger('change.select2');
+            allApplyFilters();
         });
-        $.ajax({
-            url: '@Url.Action("GetTenantsDll", "Communication")',
-            type: 'GET',
-            dataType: 'json',
-            success: function (data) {
-                var vehicleTenantsDropdown = document.getElementById('vehicleTenant');
-                data.forEach(function (item) {
-                    var option = new Option(item.FirstName + ' ' + item.LastName, item.TenantId);
-                    vehicleTenantsDropdown.appendChild(option);
-                });
 
-            }
+        $("#allTenantOffcanvas").on("change", function () {
+            var values = $(this).val();
+            $('#allTenant').val(values).trigger('change.select2');
         });
-        $.ajax({
-            url: '@Url.Action("GetTenantsDll", "Communication")',
-            type: 'GET',
-            dataType: 'json',
-            success: function (data) {
-                var dependentTenantsDropdown = document.getElementById('dependentTenant');
-                data.forEach(function (item) {
-                    var option = new Option(item.FirstName + ' ' + item.LastName, item.TenantId);
-                    dependentTenantsDropdown.appendChild(option);
-                });
 
-            }
+        $('#allTenantAddedDate, #allTenantAddedDateOffcanvas').change(function () {
+            var value = $(this).val();
+            $('#allTenantAddedDate, #allTenantAddedDateOffcanvas').val(value);
         });
-        $("#petTenant").on("change", loadPetTenantDataTable);
-        $("#vehicleTenant").on("change", loadVehicleTenantDataTable);
-        $("#dependentTenant").on("change", loadDependentTenantDataTable);
 
-        loadPetTenantDataTable();
-        loadVehicleTenantDataTable();
-        loadDependentTenantDataTable();
+        // $("#transactionTenant").on("change", function () {
+        //     var values = $(this).val();
+        //     $('#transactionsTenantOffcanvas').val(values).trigger('change.select2');
+        //     transactionsApplyFilters();
+        // });
+
+        // $("#transactionsTenantOffcanvas").on("change", function () {
+        //     var values = $(this).val();
+        //     $('#transactionTenant').val(values).trigger('change.select2');
+        // });
+
+        $("#invoiceTenant").on("change", function () {
+            var values = $(this).val();
+            $('#invoicesTenantOffcanvas').val(values).trigger('change.select2');
+            invoicesApplyFilters();
+        });
+
+        $("#invoicesTenantOffcanvas").on("change", function () {
+            var values = $(this).val();
+            $('#invoiceTenant').val(values).trigger('change.select2');
+        });
+
+
+        $("#allApplyFilters").on("click", function () {
+            allApplyFilters();
+            $("#allReportOffcanvas").removeClass('show');;
+        });
+
+        $("#allClearFilters").on("click", function () {
+            allClearFilters();
+            $("#allReportOffcanvas").removeClass('show');
+        });
+
+        // $("#transactionsApplyFilters").on("click", function () {
+        //     transactionsApplyFilters();
+        //     $("#transactionsReportOffcanvas").removeClass('show');;
+        // });
+
+        // $("#transactionsClearFilters").on("click", function () {
+        //     transactionsClearFilters();
+        //     $("#transactionsReportOffcanvas").removeClass('show');
+        // });
+
+        $("#invoicesApplyFilters").on("click", function () {
+            invoicesApplyFilters();
+            $("#invoicesTenantOffcanvas").removeClass('show');;
+        });
+
+        $("#invoicesClearFilters").on("click", function () {
+            invoicesClearFilters();
+            $("#invoicesTenantOffcanvas").removeClass('show');
+        });
+
+        loadAllTenantDataTable();
+        //loadTransactionTenantDataTable();
+        loadInvoiceTenantDataTable();
+
+
     });
 
+    var initDatePickers = function () {
+        $('#allTenantAddedDate').daterangepicker({
+            autoUpdateInput: false,
+            locale: {
+                format: 'MM/DD/YYYY',
+                cancelLabel: 'Clear'
+            },
+            timePicker: false,
+            startDate: moment().subtract(30, 'days'),
+            endDate: moment().add(1, 'days')
+        });
 
-    function loadPetTenantDataTable() {
+        $('#allTenantAddedDate').on('apply.daterangepicker', function (ev, picker) {
+            $('#allTenantAddedDate').val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+            $('#allTenantAddedDateOffcanvas').val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+            allApplyFilters();
+        });
 
-        if ($.fn.dataTable.isDataTable('#petsReportTable')) {
-            $('#petsReportTable').DataTable().clear().destroy();
+        $('#allTenantAddedDate').on('cancel.daterangepicker', function (ev, picker) {
+            $('#allTenantAddedDate').val('');
+            $('#allTenantAddedDateOffcanvas').val('');
+            allApplyFilters();
+        });
+
+
+        $('#allTenantAddedDateOffcanvas').daterangepicker({
+            parentEl: '#allReportOffcanvas',
+            opens: 'right',
+            autoUpdateInput: false,
+            locale: {
+            cancelLabel: 'Clear'
+            }
+        });
+
+        $('#allTenantAddedDateOffcanvas').on('apply.daterangepicker', function (ev, picker) {
+            $('#allTenantAddedDateOffcanvas').val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
+            $('#allTenantAddedDate').val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
+        });
+
+        $('#allTenantAddedDateOffcanvas').on('cancel.daterangepicker', function (ev, picker) {
+            $('#allTenantAddedDateOffcanvas').val('');
+            $('#allTenantAddedDate').val('');
+        });
+    };
+
+    function parseDateRange(selector) {
+        var dates = $(selector).val().split(' - ');
+        return dates.length === 2 ? { start: dates[0], end: dates[1] } : null;
+    }
+
+    function populateDropDowns(){
+        $.ajax({
+            url: '@Url.Action("GetTenantsDll", "Communication")',
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                var allTenantsDropdown = document.getElementById('allTenant');
+                data.forEach(function (item) {
+                    var option = new Option(item.FirstName + ' ' + item.LastName, item.TenantId);
+                    allTenantsDropdown.appendChild(option);
+                });
+
+                var allTenantOffcanvasDropdown = document.getElementById('allTenantOffcanvas');
+                data.forEach(function (item) {
+                    var option = new Option(item.FirstName + ' ' + item.LastName, item.TenantId);
+                    allTenantOffcanvasDropdown.appendChild(option);
+                });
+
+                // var transactionTenantsDropdown = document.getElementById('transactionTenant');
+                // data.forEach(function (item) {
+                //     var option = new Option(item.FirstName + ' ' + item.LastName, item.TenantId);
+                //     transactionTenantsDropdown.appendChild(option);
+                // });
+
+                // var transactionsTenantOffcanvasDropdown = document.getElementById('transactionsTenantOffcanvas');
+                // data.forEach(function (item) {
+                //     var option = new Option(item.FirstName + ' ' + item.LastName, item.TenantId);
+                //     transactionsTenantOffcanvasDropdown.appendChild(option);
+                // });
+
+                var invoiceTenantsDropdown = document.getElementById('invoiceTenant');
+                data.forEach(function (item) {
+                    var option = new Option(item.FirstName + ' ' + item.LastName, item.TenantId);
+                    invoiceTenantsDropdown.appendChild(option);
+                });
+
+                var invoicesTenantOffcanvasDropdown = document.getElementById('invoicesTenantOffcanvas');
+                data.forEach(function (item) {
+                    var option = new Option(item.FirstName + ' ' + item.LastName, item.TenantId);
+                    invoicesTenantOffcanvasDropdown.appendChild(option);
+                });
+
+            }
+        });
+    }
+
+    function populateDropDown() {
+        $.ajax({
+            url: '@Url.Action("GetProperties", "Communication")',
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                var invoicePropertyDropdown = document.getElementById('invoicesPropertyOffcanvas');
+                data.forEach(function (item) {
+                    var option = new Option(item.BuildingNo + " - " + item.BuildingName, item.AssetId);
+                    invoicePropertyDropdown.appendChild(option);
+                });
+            }
+        });
+    }
+
+    function loadAllTenantDataTable() {
+
+        if ($.fn.dataTable.isDataTable('#allReportTable')) {
+            $('#allReportTable').DataTable().clear().destroy();
         }
-        petTenantIdsList = $("#petTenant").val();
-        objPetTenantTable = $("#petsReportTable").DataTable({
+        //allTenantIdsList = $("#allTenant").val();
+        objAllTenantTable = $("#allReportTable").DataTable({
             ajax: {
-                url: "/Tenant/GetTenantPets",
+                url: "/Tenant/GetTenantsReport",
                 type: 'POST',
                 contentType: 'application/json',
                 data: function (d) {
                     return JSON.stringify({
-                        TenantsIds: petTenantIdsList
+                        TenantsIds: allTenantIdsList,
+                        TenantTypes: allTenantTypeList,
+                        TenantAddedStartDateFilter: allTenantAddedStartDateFilter,
+                        TenantAddedEndDateFilter: allTenantAddedEndDateFilter,
                     });
                 },
                 dataSrc: "",
@@ -224,28 +490,54 @@
                         return '';
                     }
                 },
-                { data: "Name" },
-                { data: "Breed" },
-                { data: "Type" },
-                { data: "Quantity" },
-                { data: "TenantName" }
+                {
+                    data: null,
+                    render: function (data, type, row) {
+                        return `${row.FirstName} ${row.LastName}`;
+                    }
+                },
+                {
+                    data: null,
+                    render: function (data, type, row) {
+                        return `
+                            <div>
+                                <div>
+                                    <i class="fa fa-envelope"></i> ${row.EmailAddress}
+                                </div>
+                                <div>
+                                    <i class="fa fa-phone"></i> ${row.PhoneNumber}
+                                </div>
+                            </div>
+                        `;
+                    }
+                },
+                {
+                    data: "AddedDate",
+                    render: function (data, type, row) {
+                        var date = new Date(data);
+                        var day = ("0" + date.getDate()).slice(-2);
+                        var month = ("0" + (date.getMonth() + 1)).slice(-2);
+                        var year = date.getFullYear();
+                        return `${year}-${month}-${day}`;
+                    }
+                }
             ]
         });
     }
     
-    function loadVehicleTenantDataTable() {
-        if ($.fn.dataTable.isDataTable('#vehiclesReportTable')) {
-            $('#vehiclesReportTable').DataTable().clear().destroy();
+    function loadTransactionTenantDataTable() {
+        if ($.fn.dataTable.isDataTable('#transactionsReportTable')) {
+            $('#transactionsReportTable').DataTable().clear().destroy();
         }
-        vehicleTenantIdsList = $("#vehicleTenant").val()
-        objVehicleTenantTable = $("#vehiclesReportTable").DataTable({
+        transactionTenantIdsList = $("#transactionTenant").val()
+        objTransactionTenantTable = $("#transactionsReportTable").DataTable({
             ajax: {
                 url: "/Tenant/GetTenantVehicles",
                 type: 'POST',
                 contentType: 'application/json',
                 data: function (d) {
                     return JSON.stringify({
-                        TenantsIds: vehicleTenantIdsList
+                        TenantsIds: transactionTenantIdsList
                     });
                 },
                 dataSrc: "",
@@ -270,20 +562,21 @@
 
     }
 
-    function loadDependentTenantDataTable() {
-        dependentTenantIdsList = $("#dependentTenant").val();
-        if ($.fn.dataTable.isDataTable('#dependentsReportTable')) {
-            $('#dependentsReportTable').DataTable().clear().destroy();
+    function loadInvoiceTenantDataTable() {
+        if ($.fn.dataTable.isDataTable('#invoicesReportTable')) {
+            $('#invoicesReportTable').DataTable().clear().destroy();
         }
 
-        objDependentTenantTable = $("#dependentsReportTable").DataTable({
+        objInvoiceTenantTable = $("#invoicesReportTable").DataTable({
             ajax: {
-                url: "/Tenant/GetTenantDependents",
+                url: "/Tenant/GetInvoicesReport",
                 type: 'POST',
                 contentType: 'application/json',
                 data: function (d) {
                     return JSON.stringify({
-                        TenantsIds: dependentTenantIdsList
+                        TenantsIds: invoiceTenantIdsList,
+                        InvoicePaid: invoiceIsPaidList,
+                        PropertiesIds: invoicePropertyList,
                     });
                 },
                 dataSrc: "",
@@ -297,20 +590,81 @@
             },
             order: [[0, "asc"]],
             columns: [
+                { data: "Invoice" },
+                { data: "Tenant" },
+                { data: "Property" },
                 {
-                    data: null,
-                    render: (data, type, row) => {
-                        const { FirstName, LastName } = data;
-                        return `${FirstName} ${LastName}`;
+                    data: "StartDate",
+                    render: function (data, type, row) {
+                        var date = new Date(data);
+                        var day = ("0" + date.getDate()).slice(-2);
+                        var month = ("0" + (date.getMonth() + 1)).slice(-2);
+                        var year = date.getFullYear();
+                        return `${year}-${month}-${day}`;
                     }
                 },
-                { data: "EmailAddress" },
-                { data: "PhoneNumber" },
-                { data: "DOB" },
-                { data: "Relation" },
-                { data: "TenantName" }
+                {
+                    data: "EndDate",
+                    render: function (data, type, row) {
+                        var date = new Date(data);
+                        var day = ("0" + date.getDate()).slice(-2);
+                        var month = ("0" + (date.getMonth() + 1)).slice(-2);
+                        var year = date.getFullYear();
+                        return `${year}-${month}-${day}`;
+                    }
+                },
+                {
+                    data: "InvoicePaid",
+                    render: function (data, type, row) {
+                        return data ? 'Paid' : 'Unpaid';
+                    }
+                }
             ]
         });
+    }
+
+    function allApplyFilters() {
+        allTenantIdsList = $("#allTenantOffcanvas").val();
+        allTenantTypeList = $("#allTenantTypeOffcanvas").val();
+        allTenantAddedStartDateFilter = parseDateRange('#allTenantAddedDate')?.start;
+        allTenantAddedEndDateFilter = parseDateRange('#allTenantAddedDate')?.end;
+
+        loadAllTenantDataTable();
+    }
+
+    function allClearFilters() {
+        $('#allTenant').val('').trigger('change');
+        $('#allTenantAddedDate').val('');
+        $('#allTenantAddedDateOffcanvas').val('')
+
+        loadAllTenantDataTable();
+    }
+
+    function transactionsApplyFilters() {
+        transactionTenantIdsList = $("#transactionsTenantOffcanvas").val();
+
+        loadTransactionTenantDataTable();
+    }
+
+    function transactionsClearFilters() {
+        $('#transactionTenant').val('').trigger('change');
+
+        loadTransactionTenantDataTable();
+    }
+
+    function invoicesApplyFilters() {
+        invoiceTenantIdsList = $("#invoiceTenant").val();
+        invoiceIsPaidList = $("#isPaidInvoicesOffcanvas").val();
+        invoicePropertyList = $("#invoicesPropertyOffcanvas").val();
+
+        loadInvoiceTenantDataTable();
+    }
+
+    function invoicesClearFilters() {
+        $('#invoiceTenant').val('').trigger('change');
+        $("#isPaidInvoicesOffcanvas").val('');
+        $("#invoicesPropertyOffcanvas").val('');
+        loadInvoiceTenantDataTable();
     }
 
 </script>
