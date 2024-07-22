@@ -72,8 +72,18 @@ namespace PMS_PropertyHapa.Staff.Controllers
         
         public async Task<IActionResult> GetDocumentByAsset(int assetId)
         {
-            var invoices = await _authService.GetDocumentByAssetAsync(assetId);
-            return Ok(invoices);
+            var assetDocuments = await _authService.GetDocumentByAssetAsync(assetId);
+            return Ok(assetDocuments);
+        }
+        public async Task<IActionResult> GetDocumentByTenant(int tenantId)
+        {
+            var tenantDocuments = await _authService.GetDocumentByTenantAsync(tenantId);
+            return Ok(tenantDocuments);
+        }
+        public async Task<IActionResult> GetDocumentByLandLord(int landlordId)
+        {
+            var landLordDocuments = await _authService.GetDocumentByLandLordAsync(landlordId);
+            return Ok(landLordDocuments);
         }
 
     }

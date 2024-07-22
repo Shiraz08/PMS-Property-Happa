@@ -49,8 +49,8 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             try
             {
                 var tenants = await _userRepo.GetAllTenantsAsync();
-              _response.Result = tenants;
-                    return Ok(_response);
+                _response.Result = tenants;
+                return Ok(_response);
 
             }
             catch (Exception ex)
@@ -74,7 +74,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
-        
+
 
 
         [HttpGet("Tenant/{tenantId}")]
@@ -266,7 +266,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
-        
+
         [HttpPost("InvoicesReport")]
         public async Task<IActionResult> GetInvoicesReport(ReportFilter reportFilter)
         {
@@ -295,7 +295,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
-        
+
         [HttpPost("TenantDependents")]
         public async Task<IActionResult> GetTenantDependents(ReportFilter reportFilter)
         {

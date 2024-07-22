@@ -319,6 +319,68 @@ namespace PMS_PropertyHapa.API.Controllers.V1
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
+        
+        [HttpGet("GetInvoicesByTenant/{tenantId}")]
+        public async Task<ActionResult<InvoiceDto>> GetInvoicesByTenant(int tenantId)
+        {
+            try
+            {
+                var invoices = await _userRepo.GetInvoicesByTenantAsync(tenantId);
+
+                _response.StatusCode = HttpStatusCode.OK;
+                _response.IsSuccess = true;
+                _response.Result = invoices;
+                return Ok(_response);
+  
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+        
+        
+        [HttpGet("GetInvoicesByLandLord/{landlordId}")]
+        public async Task<ActionResult<InvoiceDto>> GetInvoicesByLandLord(int landlordId)
+        {
+            try
+            {
+                var invoices = await _userRepo.GetInvoicesByLandLordAsync(landlordId);
+
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = invoices;
+                    return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+        
+        [HttpGet("GetTenantHistoryByTenant/{tenantId}")]
+        public async Task<ActionResult<LeaseDto>> GetTenantHistoryByTenant(int tenantId)
+        {
+            try
+            {
+                var lease = await _userRepo.GetTenantHistoryByTenantAsync(tenantId);
+                if (lease != null)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = lease;
+                    return Ok(_response);
+                }
+                else
+                {
+                    return NotFound($"Lease with ID {tenantId} not found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
 
         #endregion
 

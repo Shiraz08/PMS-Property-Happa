@@ -389,7 +389,11 @@ namespace PMS_PropertyHapa.Staff.Controllers
             return View("AddTenant", tenant);
         }
 
-
+        public IActionResult TenantDetails(int id)
+        {
+            ViewBag.tenantId = id;
+            return View();
+        }
         [HttpPost]
         public async Task<IActionResult> GetTenantsReport([FromBody] ReportFilter reportFilter)
         {
@@ -414,5 +418,10 @@ namespace PMS_PropertyHapa.Staff.Controllers
             return Ok(res);
         }
 
+        public async Task<IActionResult> GetTenantDetailById(int tenantId)
+        {
+            var tenant = await _authService.GetSingleTenantAsync(tenantId);
+            return Ok(tenant);
+        }
     }
 }

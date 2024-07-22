@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<PMS_PropertyHapa.Models.DTO.AssetDTO>
 @{
-    ViewData["Title"] = "PropertyDetails";
+    ViewData["Title"] = "AssetDetails";
     Layout = "~/Views/Shared/_Layout.cshtml";
 
     var assetId = ViewBag.assetId;
@@ -15,7 +15,7 @@
                 <div class="col-12 col-sm-6">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="/Assests/Index"><i data-feather="home"></i></a></li>
-                        <li class="breadcrumb-item">Reports</li>
+                        <li class="breadcrumb-item">Assets</li>
                         <li class="breadcrumb-item active">List</li>
                     </ol>
                 </div>
@@ -32,8 +32,8 @@
                             <li class="nav-item"><a class="nav-link" id="profile-top-tab" data-bs-toggle="tab" href="#assetIncome" role="tab" aria-controls="assetIncome" aria-selected="false"><i data-feather="info"></i>Income</a></li>
                             <li class="nav-item"><a class="nav-link" id="expense-top-tab" data-bs-toggle="tab" href="#assetExpense" role="tab" aria-controls="assetExpense" aria-selected="false"><i data-feather="check-circle"></i>Expense</a></li>
                             <li class="nav-item"><a class="nav-link" id="tenancy-top-tab" data-bs-toggle="tab" href="#assetTenancy" role="tab" aria-controls="assetTenancy" aria-selected="false"><i data-feather="check-circle"></i>Tenancy History</a></li>
-                            <li class="nav-item"><a class="nav-link" id="reminders-top-tab" data-bs-toggle="tab" href="#assetReminders" role="tab" aria-controls="assetReminders" aria-selected="false"><i data-feather="check-circle"></i>Reminders</a></li>
-                            <li class="nav-item"><a class="nav-link" id="document-top-tab" data-bs-toggle="tab" href="#assetDocument" role="tab" aria-controls="assetDocument" aria-selected="false"><i data-feather="check-circle"></i>Document</a></li>
+@*                             <li class="nav-item"><a class="nav-link" id="reminders-top-tab" data-bs-toggle="tab" href="#assetReminders" role="tab" aria-controls="assetReminders" aria-selected="false"><i data-feather="check-circle"></i>Reminders</a></li>
+ *@                            <li class="nav-item"><a class="nav-link" id="document-top-tab" data-bs-toggle="tab" href="#assetDocument" role="tab" aria-controls="assetDocument" aria-selected="false"><i data-feather="check-circle"></i>Document</a></li>
 @*                             <li class="nav-item"><a class="nav-link" id="notes-top-tab" data-bs-toggle="tab" href="#assetNotes" role="tab" aria-controls="assetNotes" aria-selected="false"><i data-feather="check-circle"></i>Notes</a></li>
  *@                        </ul>
                     </div>
@@ -50,7 +50,7 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="card mb-3">
-                                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRG_TUukNvS-0E486weXLkJDpTubsAcdHdmKw&usqp=CAU" style="width: 250px; height: 250px;" class="card-img-top" alt="Property Image">
+                                        <img id="assetImage" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRG_TUukNvS-0E486weXLkJDpTubsAcdHdmKw&usqp=CAU" style="width: 250px; height: 250px;" class="card-img-top" alt="Property Image">
                                             <div class="card-body">
                                                 <h5 class="card-title" id="buildingName">Building Name</h5>
                                             </div>
@@ -178,8 +178,8 @@
                                 </table>
                             </div>
                         </div>
-                        <div class="tab-pane fade" id="assetReminders" role="tabpanel" aria-labelledby="reminders-top-tab">
-                            @* <div class="table-responsive">
+                    @*  <div class="tab-pane fade" id="assetReminders" role="tabpanel" aria-labelledby="reminders-top-tab">
+                            <div class="table-responsive">
                                 <h3 class="card-title">Reminders</h3>
                                 <table class="table display" id="reminderTable">
                                     <thead>
@@ -196,11 +196,11 @@
                                     <tbody>
                                     </tbody>
                                 </table>
-                            </div> *@
+                            </div> 
                             <div class="row">
                                 Content for Reminders tab
                             </div>
-                        </div>
+                    </div>*@
                         <div class="tab-pane fade" id="assetDocument" role="tabpanel" aria-labelledby="document-top-tab">
                             <div class="table-responsive">
                                 <h3 class="card-title">Document</h3>
@@ -358,7 +358,6 @@
             type: 'POST',
             data: { assetId: assetId },
             success: function (res) {
-                console.log(res);
                 if ($.fn.DataTable.isDataTable('#expenseTable')) {
                     $('#expenseTable').DataTable().destroy();
                 }

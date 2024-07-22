@@ -17,6 +17,7 @@ namespace PMS_PropertyHapa.Models.DTO
         public bool? InvoicePaid { get; set; }
         public decimal RentAmount { get; set; }
         public int? LeaseId { get; set; }
+        public string Asset { get; set; }
         public string Unit { get; set; }
         public DateTime? InvoiceDate { get; set; }
         public bool? InvoicePaidToOwner { get; set; }

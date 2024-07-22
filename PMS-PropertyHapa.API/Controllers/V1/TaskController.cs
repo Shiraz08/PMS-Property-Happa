@@ -147,7 +147,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
         }
 
 
-        [HttpGet("ExpenseByAsset")]
+        [HttpGet("ExpenseByAsset/{assetId}")]
         public async Task<ActionResult<TaskRequestDto>> GetExpenseByAssetAsync(int assetId)
         {
             try
@@ -166,6 +166,61 @@ namespace PMS_PropertyHapa.API.Controllers.V1
                     _response.StatusCode = HttpStatusCode.NotFound;
                     _response.IsSuccess = false;
                     _response.ErrorMessages.Add("No asset found with this id.");
+                    return NotFound(_response);
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+        
+        [HttpGet("TasksByTenant/{tenantId}")]
+        public async Task<ActionResult<TaskRequestDto>> GetTasksByTenantAsync(int tenantId)
+        {
+            try
+            {
+                var assets = await _userRepo.GetTasksByTenantAsync(tenantId);
+
+                if (assets != null)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = assets;
+                    return Ok(_response);
+                }
+                else
+                {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("No task found with this id.");
+                    return NotFound(_response);
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+        [HttpGet("TasksByLandLord/{landlordId}")]
+        public async Task<ActionResult<TaskRequestDto>> GetTasksByLandLordAsync(int landlordId)
+        {
+            try
+            {
+                var assets = await _userRepo.GetTasksByLandLordAsync(landlordId);
+
+                if (assets != null)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = assets;
+                    return Ok(_response);
+                }
+                else
+                {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("No task found with this id.");
                     return NotFound(_response);
                 }
             }

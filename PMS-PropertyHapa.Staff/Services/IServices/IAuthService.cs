@@ -128,6 +128,9 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
         Task<InvoiceDto> GetInvoiceByIdAsync(int invoiceId);
         Task<IEnumerable<InvoiceDto>> GetInvoicesByAsset(int assetId);
         Task<IEnumerable<LeaseDto>> GetTenantHistoryByAsset(int assetId);
+        Task<IEnumerable<InvoiceDto>> GetInvoicesByTenant(int tenantId);
+        Task<IEnumerable<InvoiceDto>> GetInvoicesByLandLord(int landlordId);
+        Task<IEnumerable<LeaseDto>> GetTenantHistoryByTenant(int tenantId);
 
 
 
@@ -151,6 +154,8 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
         Task<IEnumerable<TaskRequestDto>> GetAllTaskRequestsAsync();
         Task<IEnumerable<LineItemDto>> GetAllLineItemsAsync();
         Task<IEnumerable<TaskRequestDto>> GetExpenseByAssetAsync(int assetId);
+        Task<IEnumerable<TaskRequestDto>> GetTasksByTenantAsync(int tenantId);
+        Task<IEnumerable<TaskRequestDto>> GetTasksByLandLordAsync(int landlordId);
         Task<IEnumerable<TaskRequestDto>> GetTaskRequestsAsync();
         Task<TaskRequestDto> GetTaskRequestByIdAsync(int id);
         Task<bool> SaveTaskAsync(TaskRequestDto taskRequestDto);
@@ -258,6 +263,8 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
         Task<bool> SaveDocumentAsync(DocumentsDto document);
         Task<bool> DeleteDocumentAsync(int id);
         Task<IEnumerable<DocumentsDto>> GetDocumentByAssetAsync(int assetId);
+        Task<IEnumerable<DocumentsDto>> GetDocumentByTenantAsync(int tenantId);
+        Task<IEnumerable<DocumentsDto>> GetDocumentByLandLordAsync(int landlordId);
 
         #endregion
 

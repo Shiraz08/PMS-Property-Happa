@@ -1,0 +1,337 @@
+﻿@model IEnumerable<PMS_PropertyHapa.Models.DTO.TenantModelDto>
+@{
+    ViewData["Title"] = "TenantDetails";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var tenantId = ViewBag.tenantId;
+}
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-sm-6">
+                    <h3>Tenant Detail</h3>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/Tenant/Index"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item">Tenants</li>
+                        <li class="breadcrumb-item active">List</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12 project-list">
+        <div class="card">
+            <div class="row">
+                <div class="col-md-12 p-0">
+                    <ul class="nav nav-tabs border-tab" id="top-tab" role="tablist">
+                        <li class="nav-item"><a class="nav-link active" id="tenantOverview-tab" data-bs-toggle="tab" href="#tenantOverview" role="tab" aria-controls="tenantOverview" aria-selected="true"><i data-feather="target"></i>Overview</a></li>
+                        <li class="nav-item"><a class="nav-link" id="invoice-top-tab" data-bs-toggle="tab" href="#tenantInvoice" role="tab" aria-controls="tenantInvoice" aria-selected="false"><i data-feather="info"></i>Invoices</a></li>
+                        <li class="nav-item"><a class="nav-link" id="task-top-tab" data-bs-toggle="tab" href="#tenantTask" role="tab" aria-controls="tenantTask" aria-selected="false"><i data-feather="check-circle"></i>TaskRequest</a></li>
+                        <li class="nav-item"><a class="nav-link" id="tenancy-top-tab" data-bs-toggle="tab" href="#tenantTenancy" role="tab" aria-controls="tenantTenancy" aria-selected="false"><i data-feather="check-circle"></i>Tenancy History</a></li>
+                        <li class="nav-item"><a class="nav-link" id="document-top-tab" data-bs-toggle="tab" href="#tenantDocument" role="tab" aria-controls="tenantDocument" aria-selected="false"><i data-feather="check-circle"></i>Document</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-12 mt-4">
+        <div class="card">
+            <div class="card-body">
+                <div class="tab-content" id="top-tabContent">
+                    <div class="tab-pane fade show active" id="tenantOverview" role="tabpanel" aria-labelledby="tenantOverview-tab">
+                        <div class="container mt-4">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="card mb-3">
+                                        <img id="tenantImage" src="http://bootdey.com/img/Content/avatar/avatar1.png" style="width: 250px; height: 250px;" class="card-img-top" alt="Tenant Image">
+                                        @* <div class="card-body">
+                                            <h5 class="card-title" id="tenantName">Tenant Name</h5>
+                                        </div> *@
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h3 class="card-title">Details</h3>
+                                            <div class="mb-3">
+                                                <strong>Tenant Name:</strong> <span id="tenantName"></span><br>
+                                                <strong>Email Address:</strong> <span id="tenantEmail"></span><br>
+                                                <strong>Phone No.:</strong> <span id="tenantPhone"></span><br>
+                                                <strong>Added Date:</strong> <span id="tenantAddedDate"></span><br>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="tenantInvoice" role="tabpanel" aria-labelledby="invoice-top-tab">
+                        <div class="row">
+                            <div class="table-responsive">
+                                <h3 class="card-title">Invoices</h3>
+                                <table class="table display" id="invoiceTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Tenant</th>
+                                            <th>Unit</th>
+                                            <th>Amount</th>
+                                            <th>Invoice Date</th>
+                                            <th>Invoice Paid</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="tenantTask" role="tabpanel" aria-labelledby="task-top-tab">
+                        <div class="row">
+                            <div class="table-responsive">
+                                <h3 class="card-title">Task Request</h3>
+                                <table class="table display" id="taskTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Due Date</th>
+                                            <th>Category</th>
+                                            <th>Description</th>
+                                            <th>Status</th>
+                                            <th>Priority</th>
+                                            <th>Tenant Name</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="tenantTenancy" role="tabpanel" aria-labelledby="tenancy-top-tab">
+                        <div class="table-responsive">
+                            <h3 class="card-title">Tenant History</h3>
+                            <table class="table display" id="tenantHistoryTable">
+                                <thead>
+                                    <tr>
+                                        <th>Tenant</th>
+                                        <th>Unit</th>
+                                        <th>Rent Amount</th>
+                                        <th>Frequency</th>
+                                        <th>Start Date</th>
+                                        <th>End Date</th>
+                                        <th>Total Period</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div> 
+                    <div class="tab-pane fade" id="tenantDocument" role="tabpanel" aria-labelledby="document-top-tab">
+                        <div class="table-responsive">
+                            <h3 class="card-title">Document</h3>
+                            <table class="table display" id="documentTable">
+                                <thead>
+                                    <tr>
+                                        <th>Tenant</th>
+                                        <th>Date Uploaded</th>
+                                        <th>Title</th>
+                                        <th>Description</th>
+                                        <th>Attachment</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    var tenantId = '@ViewBag.tenantId'
+    $(document).ready(function () {
+        getTenantDetail(tenantId);
+        getTenantInvoices(tenantId);       
+        getTenantTaskRequest(tenantId); 
+        getTenantHistory(tenantId);
+        getTenantDocument(tenantId);      
+    });
+    function getTenantDetail(tenantId) {
+        $.ajax({
+            url: '@Url.Action("GetTenantDetailById", "Tenant")',
+            type: 'POST',
+            data: { tenantId: tenantId },
+            success: function (res) {
+                if (res.Picture != null) {
+                    $("#tenantImage").attr("src", res.Picture);
+                } else {
+                    $("#tenantImage").attr("src", "http://bootdey.com/img/Content/avatar/avatar1.png");
+                }
+                $("#tenantName").html(res.FirstName + " " + res.LastName);
+                $("#tenantEmail").html(res.EmailAddress);
+                $("#tenantPhone").html(res.PhoneNumber);
+                var addedDate = new Date(res.AddedDate);
+                var formattedDate = addedDate.toLocaleDateString('en-US'); 
+                $("#tenantAddedDate").html(formattedDate);
+            },
+            error: function (xhr, status, error) {
+                console.error('Error:', error);
+                alert('Failed to retrieve data');
+            },
+        });
+    }
+
+    function getTenantInvoices(tenantId) {
+        $.ajax({
+            url: '@Url.Action("GetInvoicesByTenant", "Lease")',
+            type: 'POST',
+            data: { tenantId: tenantId },
+            success: function (res) {
+                if ($.fn.DataTable.isDataTable('#invoiceTable')) {
+                    $('#invoiceTable').DataTable().destroy();
+                }
+                $('#invoiceTable tbody').empty();
+
+                res.forEach(function (item) {
+                        $('#invoiceTable tbody').append(`
+                                <tr>
+                                    <td>${item.TenantName}</td>
+                                    <td>${item.Unit}</td>
+                                    <td>${item.RentAmount}</td>
+                                    <td>${moment(item.InvoiceDate).format('MM/DD/YYYY')}</td>
+                                    <td>${item.InvoicePaid ? 'Yes' : 'No'}</td>
+                                </tr>
+                        `);
+                });
+
+                $('#invoiceTable').DataTable();
+
+            },
+            error: function (xhr, status, error) {
+                console.error('Error:', error);
+                alert('Failed to retrieve data');
+            },
+        });
+    }
+
+    function getTenantTaskRequest(tenantId) {
+        $.ajax({
+            url: '@Url.Action("GetTasksByTenant", "Task")',
+            type: 'POST',
+            data: { tenantId: tenantId },
+            success: function (res) {
+                console.log(res);
+                if ($.fn.DataTable.isDataTable('#taskTable')) {
+                    $('#taskTable').DataTable().destroy();
+                }
+                $('#taskTable tbody').empty();
+                res.forEach(function (item) {
+                    var dueDate = new Date(item.DueDate);
+                    var formattedDueDate = dueDate.toLocaleDateString('en-US');
+                    $('#taskTable tbody').append(`
+                        <tr>
+                            <td>${formattedDueDate}</td>
+                            <td>${item.Subject}</td>
+                            <td>${item.Description}</td>
+                            <td>${item.Status}</td>
+                                <td>${item.Priority}</td>
+                            <td>${item.Tenant}</td>
+                        </tr>
+                    `);
+                });
+
+                $('#taskTable').DataTable();
+            },
+            error: function (xhr, status, error) {
+                console.error('Error:', error);
+                alert('Failed to retrieve data');
+            },
+        });
+    }
+
+    function getTenantHistory(tenantId) {
+        $.ajax({
+            url: '@Url.Action("GetTenantHistoryByTenant", "Lease")',
+            type: 'POST',
+            data: { tenantId: tenantId },
+            success: function (res) {
+                console.log(res);
+                if ($.fn.DataTable.isDataTable('#tenantHistoryTable')) {
+                    $('#tenantHistoryTable').DataTable().destroy();
+                }
+                $('#tenantHistoryTable tbody').empty();
+                res.forEach(function (item) {
+                    const totalRentAmount = item.TotalRentAmount;
+                    $('#tenantHistoryTable tbody').append(`
+                            <tr>
+                                <td>${item.Tenant.FirstName} ${item.Tenant.LastName}</td>
+                                <td>${item.SelectedUnit}</td>
+                                <td>${totalRentAmount.toFixed(2)}</td>
+                                <td>${item.Frequency}</td>
+                                <td>${moment(item.StartDate).format('MM/DD/YYYY')}</td>
+                                <td>${moment(item.EndDate).format('MM/DD/YYYY')}</td>
+                                <td>${calculateTotalDays(item.StartDate, item.EndDate)} days</td>
+                            </tr>
+                        `);
+                });
+
+                $('#tenantHistoryTable').DataTable();
+            },
+            error: function (xhr, status, error) {
+                console.error('Error:', error);
+                alert('Failed to retrieve data');
+            },
+        });
+    }
+
+    function getTenantDocument(tenantId) {
+        $.ajax({
+            url: '@Url.Action("GetDocumentByTenant", "Documents")',
+            type: 'POST',
+            data: { tenantId: tenantId },
+            success: function (res) {
+                console.log(res);
+                if ($.fn.DataTable.isDataTable('#documentTable')) {
+                    $('#documentTable').DataTable().destroy();
+                }
+                $('#documentTable tbody').empty();
+                res.forEach(function (item) {
+                    $('#documentTable tbody').append(`
+                                <tr>
+                                        <td>${item.TenantName}</td>
+                                    <td>${moment(item.CreatedDate).format('MM/DD/YYYY')}</td>
+                                    <td>${item.Title}</td>
+                                    <td>${item.Description}</td>
+                                    <td><a href="${item.DocumentUrl}" target="_blank">${item.DocumentName}</a></td>
+                                </tr>
+                        `);
+                });
+
+                $('#documentTable').DataTable();
+            },
+            error: function (xhr, status, error) {
+                console.error('Error:', error);
+                alert('Failed to retrieve data');
+            },
+        });
+    }
+
+    function calculateTotalDays(startDate, endDate) {
+        const start = moment(startDate);
+        const end = moment(endDate);
+        return end.diff(start, 'days');
+    }
+
+    
+
+
+</script>

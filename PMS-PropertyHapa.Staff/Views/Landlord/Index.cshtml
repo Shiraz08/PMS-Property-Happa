@@ -155,7 +155,9 @@
                         <div class="profile-mail">
                             <div class="d-flex justify-content-between border-0 p-2" style="align-items: flex-start !important; background-color: #f4f8ff;">
                                 <div class="media align-items-center">
-                                    <img class="img-100 img-fluid m-r-20 rounded-circle update_img_0" src="${landlord.Picture}" alt="Sample Image">
+                                    <a href="/Landlord/LandlordDetails/${landlord.OwnerId}" class="text-decoration-none text-dark">
+                                        <img class="img-100 img-fluid m-r-20 rounded-circle update_img_0" src="${landlord.Picture != null ? landlord.Picture : 'https://bootdey.com/img/Content/avatar/avatar1.png'}" alt="Sample Image">
+                                    </a>
                                     <div class="media-body mt-0">
                                         <h3 class="font-primary" id="landlordName">${landlord.FirstName} ${landlord.LastName}</h3>
                                         <div class="d-flex justify-content-between gap-5 border-0 flex-wrap">

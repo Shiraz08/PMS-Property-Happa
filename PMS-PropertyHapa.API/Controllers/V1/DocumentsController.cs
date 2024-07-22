@@ -153,7 +153,71 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             {
                 _response.StatusCode = HttpStatusCode.NotFound;
                 _response.IsSuccess = false;
-                _response.ErrorMessages.Add("Error Occured");
+                _response.ErrorMessages.Add(ex.Message);
+                return NotFound(_response);
+            }
+        }
+        
+        [HttpGet("GetDocumentByTenant/{tenantId}")]
+        public async Task<IActionResult> GetDocumentByTenant(int tenantId)
+        {
+
+            try
+            {
+                var document = await _userRepo.GetDocumentByTenantAsync(tenantId);
+
+                if (document != null)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = document;
+                    return Ok(_response);
+                }
+                else
+                {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("No document found with this id.");
+                    return NotFound(_response);
+                }
+            }
+            catch (Exception ex)
+            {
+                _response.StatusCode = HttpStatusCode.NotFound;
+                _response.IsSuccess = false;
+                _response.ErrorMessages.Add(ex.Message);
+                return NotFound(_response);
+            }
+        }
+        
+        [HttpGet("GetDocumentByLandLord/{landlordId}")]
+        public async Task<IActionResult> GetDocumentByLandLord(int landlordId)
+        {
+
+            try
+            {
+                var document = await _userRepo.GetDocumentByLandLordAsync(landlordId);
+
+                if (document != null)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = document;
+                    return Ok(_response);
+                }
+                else
+                {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("No document found with this id.");
+                    return NotFound(_response);
+                }
+            }
+            catch (Exception ex)
+            {
+                _response.StatusCode = HttpStatusCode.NotFound;
+                _response.IsSuccess = false;
+                _response.ErrorMessages.Add(ex.Message);
                 return NotFound(_response);
             }
         }

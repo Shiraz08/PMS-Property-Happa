@@ -87,6 +87,9 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
         Task<bool> UpdateLeaseAsync(LeaseDto leaseDto);
         Task<List<InvoiceDto>> GetInvoicesByAssetAsync(int assetId);
         Task<List<LeaseDto>> GetTenantHistoryByAssetAsync(int assetId);
+        Task<List<InvoiceDto>> GetInvoicesByTenantAsync(int tenantId);
+        Task<List<InvoiceDto>> GetInvoicesByLandLordAsync(int landlordId);
+        Task<List<LeaseDto>> GetTenantHistoryByTenantAsync(int tenantId);
 
 
         //Invoices 
@@ -187,6 +190,8 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
         Task<List<TaskRequestDto>> GetAllTaskRequestsAsync();
         Task<List<LineItemDto>> GetAllLineItemsAsync();
         Task<List<TaskRequestDto>> GetExpenseByAssetAsync(int assetId);
+        Task<List<TaskRequestDto>> GetTasksByTenantAsync(int tenantId);
+        Task<List<TaskRequestDto>> GetTasksByLandLordAsync(int landlordId);
         Task<List<TaskRequestDto>> GetTaskRequestsAsync();
         Task<TaskRequestDto> GetTaskByIdAsync(int id);
         Task<bool> SaveTaskAsync(TaskRequestDto taskRequestDto);
@@ -276,6 +281,8 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
         Task<bool> SaveDocumentAsync(DocumentsDto document);
         Task<bool> DeleteDocumentAsync(int id);
         Task<List<DocumentsDto>> GetDocumentByAssetAsync(int assetId);
+        Task<List<DocumentsDto>> GetDocumentByTenantAsync(int tenantId);
+        Task<List<DocumentsDto>> GetDocumentByLandLordAsync(int landlordId);
 
         //SupportCenter
         Task<List<FAQ>> GetFAQsAsync();

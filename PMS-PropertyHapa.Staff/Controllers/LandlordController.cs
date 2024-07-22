@@ -286,5 +286,17 @@ namespace PMS_PropertyHapa.Staff.Controllers
             var res = await _authService.GetLandlordAsset(reportFilter);
             return Ok(res);
         }
+
+        public IActionResult LandlordDetails(int id)
+        {
+            ViewBag.landlordId = id;
+            return View();
+        }
+
+        public async Task<IActionResult> GetLandlordDetailById(int ownerId)
+        {
+            var landlord = await _authService.GetSingleLandlordAsync(ownerId);
+            return Ok(landlord);
+        }
     }
 }

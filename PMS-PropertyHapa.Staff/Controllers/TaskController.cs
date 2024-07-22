@@ -228,5 +228,16 @@ namespace PMS_PropertyHapa.Staff.Controllers
             var invoices = await _authService.GetExpenseByAssetAsync(assetId);
             return Ok(invoices);
         }
+        public async Task<IActionResult> GetTasksByTenant(int tenantId)
+        {
+            var invoices = await _authService.GetTasksByTenantAsync(tenantId);
+            return Ok(invoices);
+        }
+        
+        public async Task<IActionResult> GetTasksByLandLord(int landlordId)
+        {
+            var invoices = await _authService.GetTasksByLandLordAsync(landlordId);
+            return Ok(invoices);
+        }
     }
 }

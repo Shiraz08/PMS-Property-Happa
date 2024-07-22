@@ -1,0 +1,283 @@
+﻿@model IEnumerable<PMS_PropertyHapa.Models.DTO.OwnerDto>
+@{
+    ViewData["Title"] = "LandlordDetails";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var landlordId = ViewBag.landlordId;
+}
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-sm-6">
+                    <h3>Landlord</h3>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/Landlord/Index"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item">Landlord</li>
+                        <li class="breadcrumb-item active">List</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12 project-list">
+        <div class="card">
+            <div class="row">
+                <div class="col-md-12 p-0">
+                    <ul class="nav nav-tabs border-tab" id="top-tab" role="tablist">
+                        <li class="nav-item"><a class="nav-link active" id="landlordOverview-tab" data-bs-toggle="tab" href="#landlordOverview" role="tab" aria-controls="landlordOverview" aria-selected="true"><i data-feather="target"></i>Overview</a></li>
+                        <li class="nav-item"><a class="nav-link" id="invoice-top-tab" data-bs-toggle="tab" href="#landlordInvoice" role="tab" aria-controls="landlordInvoice" aria-selected="false"><i data-feather="info"></i>Invoices</a></li>
+                        <li class="nav-item"><a class="nav-link" id="task-top-tab" data-bs-toggle="tab" href="#landlordTask" role="tab" aria-controls="landlordTask" aria-selected="false"><i data-feather="check-circle"></i>TaskRequest</a></li>
+                        <li class="nav-item"><a class="nav-link" id="document-top-tab" data-bs-toggle="tab" href="#landlordDocument" role="tab" aria-controls="landlordDocument" aria-selected="false"><i data-feather="check-circle"></i>Document</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-12 mt-4">
+        <div class="card">
+            <div class="card-body">
+                <div class="tab-content" id="top-tabContent">
+                    <div class="tab-pane fade show active" id="landlordOverview" role="tabpanel" aria-labelledby="landlordOverview-tab">
+                        <div class="container mt-4">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="card mb-3">
+                                        <img id="landlordImage" src="http://bootdey.com/img/Content/avatar/avatar1.png" style="width: 250px; height: 250px;" class="card-img-top" alt="Owner Image">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h3 class="card-title">Details</h3>
+                                            <div class="mb-3">
+                                                <strong>Landlord Name:</strong> <span id="landlordName"></span><br>
+                                                <strong>Email Address:</strong> <span id="landlordEmail"></span><br>
+                                                <strong>Phone No.:</strong> <span id="landlordPhone"></span><br>
+                                                <strong>Added Date:</strong> <span id="landlordAddedDate"></span><br>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="landlordInvoice" role="tabpanel" aria-labelledby="profile-top-tab">
+                        <div class="row">
+                            <div class="table-responsive">
+                                <h3 class="card-title">Income</h3>
+                                <table class="table display" id="invoiceTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Owner</th>
+                                            <th>Asset</th>
+                                            <th>Unit</th>
+                                            <th>Amount</th>
+                                            <th>Invoice Date</th>
+                                            <th>Invoice Paid</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="landlordTask" role="tabpanel" aria-labelledby="expense-top-tab">
+                        <div class="row">
+                            <div class="table-responsive">
+                                <h3 class="card-title">Tasks</h3>
+                                <table class="table display" id="taskTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Due Date</th>
+                                            <th>Subject</th>
+                                            <th>Description</th>
+                                            <th>Status</th>
+                                            <th>Priority</th>
+                                            <th>Owner</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="landlordDocument" role="tabpanel" aria-labelledby="document-top-tab">
+                        <div class="table-responsive">
+                            <h3 class="card-title">Document</h3>
+                            <table class="table display" id="documentTable">
+                                <thead>
+                                    <tr>
+                                        <th>Owner Name</th>
+                                        <th>Date Uploaded</th>
+                                        <th>Title</th>
+                                        <th>Description</th>
+                                        <th>Attachment</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<script>
+
+    var landlordId = '@ViewBag.landlordId'
+    $(document).ready(function () {
+        getLandlordDetail(landlordId);
+        getLandlordInvoices(landlordId);
+        getLandlordTaskRequest(landlordId);
+        getLandlordDocument(landlordId);
+    });
+
+
+    function getLandlordDetail(landlordId) {
+        $.ajax({
+            url: '@Url.Action("GetLandlordDetailById", "Landlord")',
+            type: 'POST',
+            data: { ownerId: landlordId },
+            success: function (res) {
+                if (res.Picture != null) {
+                    $("#landlordImage").attr("src", res.Picture);
+                } else {
+                    $("#landlordImage").attr("src", "http://bootdey.com/img/Content/avatar/avatar1.png");
+                }
+                $("#landlordName").html(res.FirstName + " " + res.LastName);
+                $("#landlordEmail").html(res.EmailAddress);
+                $("#landlordPhone").html(res.PhoneNumber);
+                var addedDate = new Date(res.AddedDate);
+                var formattedDate = addedDate.toLocaleDateString('en-US'); 
+                $("#landlordAddedDate").html(formattedDate);
+            },
+            error: function (xhr, status, error) {
+                console.error('Error:', error);
+                alert('Failed to retrieve data');
+            },
+        });
+    }
+
+    function getLandlordInvoices(landlordId) {
+        $.ajax({
+            url: '@Url.Action("GetInvoicesByLandLord", "Lease")',
+            type: 'POST',
+            data: { landlordId: landlordId },
+            success: function (res) {
+                if ($.fn.DataTable.isDataTable('#invoiceTable')) {
+                    $('#invoiceTable').DataTable().destroy();
+                }
+                $('#invoiceTable tbody').empty();
+
+                res.forEach(function (item) {
+                    console.log(item)
+                        $('#invoiceTable tbody').append(`
+                                    <tr>
+                                        <td>${item.OwnerName}</td>
+                                        <td>${item.Asset}</td>
+                                        <td>${item.Unit}</td>
+                                        <td>${item.RentAmount}</td>
+                                        <td>${moment(item.InvoiceDate).format('MM/DD/YYYY')}</td>
+                                        <td>${item.InvoicePaid ? 'Yes' : 'No'}</td>                                    </tr>
+                            `);
+                });
+
+                $('#invoiceTable').DataTable();
+
+            },
+            error: function (xhr, status, error) {
+                console.error('Error:', error);
+                alert('Failed to retrieve data');
+            },
+        });
+    }
+
+    function getLandlordTaskRequest(landlordId) {
+        $.ajax({
+            url: '@Url.Action("GetTasksByLandLord", "Task")',
+            type: 'POST',
+            data: { landlordId: landlordId },
+            success: function (res) {
+                console.log(res);
+                if ($.fn.DataTable.isDataTable('#taskTable')) {
+                    $('#taskTable').DataTable().destroy();
+                }
+                $('#taskTable tbody').empty();
+                res.forEach(function (item) {
+                    var dueDate = new Date(item.DueDate);
+                    var formattedDueDate = dueDate.toLocaleDateString('en-US');
+                    $('#taskTable tbody').append(`
+                            <tr>
+                                <td>${formattedDueDate}</td>
+                                <td>${item.Subject}</td>
+                                <td>${item.Description}</td>
+                                <td>${item.Status}</td>
+                                <td>${item.Priority}</td>
+                                <td>${item.Owner}</td>
+                            </tr>
+                        `);
+                });
+
+                $('#taskTable').DataTable();
+            },
+            error: function (xhr, status, error) {
+                console.error('Error:', error);
+                alert('Failed to retrieve data');
+            },
+        });
+    }
+
+    function getLandlordDocument(landlordId) {
+        $.ajax({
+            url: '@Url.Action("GetDocumentByLandLord", "Documents")',
+            type: 'POST',
+            data: { landlordId: landlordId },
+            success: function (res) {
+                console.log(res);
+                if ($.fn.DataTable.isDataTable('#documentTable')) {
+                    $('#documentTable').DataTable().destroy();
+                }
+                $('#documentTable tbody').empty();
+                res.forEach(function (item) {
+                    $('#documentTable tbody').append(`
+                                    <tr>
+                                            <td>${item.OwnerName}</td>
+                                        <td>${moment(item.CreatedDate).format('MM/DD/YYYY')}</td>
+                                        <td>${item.Title}</td>
+                                        <td>${item.Description}</td>
+                                        <td><a href="${item.DocumentUrl}" target="_blank">${item.DocumentName}</a></td>
+                                    </tr>
+                            `);
+                });
+
+                $('#documentTable').DataTable();
+            },
+            error: function (xhr, status, error) {
+                console.error('Error:', error);
+                alert('Failed to retrieve data');
+            },
+        });
+    }
+
+
+
+    function calculateTotalDays(startDate, endDate) {
+        const start = moment(startDate);
+        const end = moment(endDate);
+        return end.diff(start, 'days');
+    }
+
+
+
+</script>

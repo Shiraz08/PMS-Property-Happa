@@ -1284,6 +1284,8 @@ namespace MagicVilla_VillaAPI.Repository
                 Country = tenant.Country,
                 CountryCode = tenant.CountryCode,
                 Unit = tenant.Unit,
+                AddedBy = tenant.AddedBy,
+                AddedDate = tenant.AddedDate,
                 Pets = tenant.Pets.Where(x => x.IsDeleted != true).Select(p => new PetDto
                 {
                     PetId = p.PetId,
@@ -2021,6 +2023,8 @@ namespace MagicVilla_VillaAPI.Repository
                 CountryCode = landlordDto.CountryCode,
                 PictureName = landlordDto.Picture,
                 Picture = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Owner_Picture_" + landlordDto.OwnerId + Path.GetExtension(landlordDto.Picture)}",
+                AddedBy = landlordDto.AddedBy,
+                AddedDate = landlordDto.AddedDate,
             };
 
             var ownerOrganization = await _db.OwnerOrganization.FirstOrDefaultAsync(o => o.OwnerId == ownerId && o.IsDeleted != true);
@@ -2759,31 +2763,147 @@ namespace MagicVilla_VillaAPI.Repository
                 throw;
             }
         }
+        
+        public async Task<List<InvoiceDto>> GetInvoicesByTenantAsync(int tenantId)
+        {
+            try
+            {
+                var invoices = await (from i in _db.Invoices
+                                      from l in _db.Lease.Where(x=>x.LeaseId == i.LeaseId).DefaultIfEmpty()
+                                      from t in _db.Tenant.Where(x=>x.TenantId == l.TenantsTenantId).DefaultIfEmpty()
+                                      from u in _db.AssetsUnits.Where(x=>x.UnitId == l.UnitId).DefaultIfEmpty()
+                                      where l.TenantsTenantId == tenantId && !i.IsDeleted
+                                      select new InvoiceDto
+                                      {
+                                          InvoiceId = i.InvoiceId,
+                                          TenantId = l.TenantsTenantId,
+                                          TenantName = t != null ? t.FirstName + " " + t.LastName : null,
+                                          InvoiceCreatedDate = i.InvoiceCreatedDate,
+                                          InvoicePaid = i.InvoicePaid,
+                                          RentAmount = i.RentAmount,
+                                          LeaseId = i.LeaseId,
+                                          InvoiceDate = i.InvoiceDate,
+                                          InvoicePaidToOwner = i.InvoicePaidToOwner,
+                                          Unit = u.UnitName,
+                                          AddedBy = i.AddedBy
+                                      }).AsNoTracking().ToListAsync();
 
-        //public async Task<List<LeaseDto>> GetTenantHistoryByAssetAsync(int assetId)
-        //{
-        //    try
-        //    {
-        //        var invoices = await (from l in _db.Lease
-        //                              from a in _db.Assets.Where(x=>x.AssetId == l.AssetId).DefaultIfEmpty()
-        //                              from u in _db.AssetsUnits.Where(x=>x.UnitId == l.UnitId).DefaultIfEmpty()
-        //                              from t in _db.Tenant.Where(x=>x.TenantId == l.TenantsTenantId).DefaultIfEmpty()
-        //                              from i in _db.Invoices.Where(x=>x.LeaseId == l.LeaseId).DefaultIfEmpty()
-        //                              where l.AssetId == assetId && !l.IsDeleted
-        //                              select new LeaseDto
-        //                              {
-        //                                  Tenant = t.FirstName + " " + t.LastName,
+                return invoices;
+            }
+            catch (Exception ex)
+            {
+                // Optionally log the exception
+                throw;
+            }
+        }
+        
+        public async Task<List<InvoiceDto>> GetInvoicesByLandLordAsync(int landlordId)
+        {
+            try
+            {
+                var invoices = await (from i in _db.Invoices
+                                      from l in _db.Lease.Where(x=>x.LeaseId == i.LeaseId).DefaultIfEmpty()
+                                      from t in _db.Tenant.Where(x=>x.TenantId == l.TenantsTenantId).DefaultIfEmpty()
+                                      from a in _db.Assets.Where(x=>x.AssetId == l.AssetId).DefaultIfEmpty()
+                                      from o in _db.Owner.Where(x=>x.OwnerId == a.OwnerId).DefaultIfEmpty()
+                                      from u in _db.AssetsUnits.Where(x=>x.UnitId == l.UnitId).DefaultIfEmpty()
+                                      where a.OwnerId == landlordId && !i.IsDeleted
+                                      select new InvoiceDto
+                                      {
+                                          InvoiceId = i.InvoiceId,
+                                          TenantId = l.TenantsTenantId,
+                                          TenantName = t != null ? t.FirstName + " " + t.LastName : null,
+                                          InvoiceCreatedDate = i.InvoiceCreatedDate,
+                                          InvoicePaid = i.InvoicePaid,
+                                          RentAmount = i.RentAmount,
+                                          LeaseId = i.LeaseId,
+                                          InvoiceDate = i.InvoiceDate,
+                                          InvoicePaidToOwner = i.InvoicePaidToOwner,
+                                          OwnerId = o.OwnerId,
+                                          OwnerName = o.FirstName + " " + o.LastName,
+                                          Asset = a.BuildingNo + "-" + a.BuildingName,
+                                          Unit = u.UnitName,
+                                          AddedBy = i.AddedBy
+                                      }).AsNoTracking().ToListAsync();
 
-        //                              }).AsNoTracking().ToListAsync();
+                return invoices;
+            }
+            catch (Exception ex)
+            {
+                // Optionally log the exception
+                throw;
+            }
+        }
 
-        //        return invoices;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // Optionally log the exception
-        //        throw;
-        //    }
-        //}
+        public async Task<List<LeaseDto>> GetTenantHistoryByTenantAsync(int tenantId)
+        {
+            try
+            {
+                var leases = await (from l in _db.Lease
+                                    from a in _db.Assets.Where(x => x.AssetId == l.AssetId).DefaultIfEmpty()
+                                    from u in _db.AssetsUnits.Where(x => x.UnitId == l.UnitId).DefaultIfEmpty()
+                                    from t in _db.Tenant.Where(x => x.TenantId == l.TenantsTenantId).DefaultIfEmpty()
+                                    from i in _db.Invoices.Where(x => x.LeaseId == l.LeaseId).DefaultIfEmpty()
+                                    from f in _db.FeeCharge.Where(x => x.LeaseId == l.LeaseId).DefaultIfEmpty()
+                                    where l.TenantsTenantId == tenantId && !l.IsDeleted
+                                    group new { l, t, u, i, f } by new
+                                    {
+                                        l.LeaseId,
+                                        l.StartDate,
+                                        l.EndDate,
+                                        l.IsSigned,
+                                        l.SignatureImagePath,
+                                        l.AssetId,
+                                        a.BuildingNo,
+                                        a.BuildingName,
+                                        l.SelectedProperty,
+                                        l.UnitId,
+                                        u.UnitName,
+                                        l.IsFixedTerm,
+                                        l.IsMonthToMonth,
+                                        l.HasSecurityDeposit,
+                                        l.LateFeesPolicy,
+                                        l.AppTenantId,
+                                        t.FirstName,
+                                        t.LastName,
+                                        l.AddedBy
+                                    } into g
+                                    select new LeaseDto
+                                    {
+                                        LeaseId = g.Key.LeaseId,
+                                        StartDate = g.Key.StartDate,
+                                        EndDate = g.Key.EndDate,
+                                        IsSigned = g.Key.IsSigned,
+                                        SignatureImagePath = g.Key.SignatureImagePath,
+                                        AssetId = g.Key.AssetId,
+                                        SelectedProperty = g.Key.BuildingNo + "-" + g.Key.BuildingName,
+                                        UnitId = g.Key.UnitId,
+                                        SelectedUnit = g.Key.UnitName,
+                                        IsFixedTerm = g.Key.IsFixedTerm,
+                                        IsMonthToMonth = g.Key.IsMonthToMonth,
+                                        HasSecurityDeposit = g.Key.HasSecurityDeposit,
+                                        LateFeesPolicy = g.Key.LateFeesPolicy,
+                                        Tenant = new TenantModelDto
+                                        {
+                                            FirstName = g.Key.FirstName,
+                                            LastName = g.Key.LastName
+                                        },
+                                        AddedBy = g.Key.AddedBy,
+                                        Frequency = g.Key.IsFixedTerm ? "Fixed" : (g.Key.IsMonthToMonth ? "Monthly" : ""),
+                                        RentCharges = g.Select(x => new RentChargeDto
+                                        {
+                                            Amount = x.i != null ? x.i.RentAmount : 0,
+                                        }).ToList(),
+                                        TotalRentAmount = g.Sum(x => x.i != null ? x.i.RentAmount : 0)
+                                    }).AsNoTracking().ToListAsync();
+
+                return leases;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
 
         public async Task<List<LeaseDto>> GetTenantHistoryByAssetAsync(int assetId)
         {
@@ -4543,7 +4663,96 @@ namespace MagicVilla_VillaAPI.Repository
             }
         }
 
+        public async Task<List<TaskRequestDto>> GetTasksByTenantAsync(int tenantId)
+        {
+            try
+            {
 
+               var result = await (from t in _db.TaskRequest
+                                   from tn in _db.Tenant.Where(x => x.TenantId == t.TenantId).DefaultIfEmpty()
+                                   where t.TenantId == tenantId && t.IsDeleted != true
+                                   select new TaskRequestDto
+                                    {
+                                        TaskRequestId = t.TaskRequestId,
+                                        Type = t.Type,
+                                        Subject = t.Subject,
+                                        Description = t.Description,
+                                        StartDate = t.StartDate,
+                                        EndDate = t.EndDate,
+                                        Frequency = t.Frequency,
+                                        DueDays = t.DueDays,
+                                        IsTaskRepeat = t.IsTaskRepeat,
+                                        DueDate = t.DueDate,
+                                        Priority = t.Priority,
+                                        Status = t.Status,
+                                        Assignees = t.Assignees,
+                                        IsNotifyAssignee = t.IsNotifyAssignee,
+                                        TenantId = t.TenantId,
+                                        Tenant = tn.FirstName + " " + tn.LastName,
+                                        HasPermissionToEnter = t.HasPermissionToEnter,
+                                        EntryNotes = t.EntryNotes,
+                                        VendorId = t.VendorId,
+                                        PartsAndLabor = t.PartsAndLabor,
+                                    })
+                     .AsNoTracking()
+                     .ToListAsync();
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping line items {ex.Message}");
+                throw;
+            }
+        }
+        public async Task<List<TaskRequestDto>> GetTasksByLandLordAsync(int landlordId)
+        {
+            try
+            {
+
+               var result = await (from t in _db.TaskRequest
+                                   from a in _db.Assets.Where(x => x.AssetId == t.AssetId && x.IsDeleted != true).DefaultIfEmpty()
+                                   from u in _db.AssetsUnits.Where(x => x.UnitId == t.UnitId && x.IsDeleted != true).DefaultIfEmpty()
+                                   from o in _db.Owner.Where(x => x.OwnerId == t.OwnerId).DefaultIfEmpty()
+                                   where t.OwnerId == landlordId && t.IsDeleted != true
+                                   select new TaskRequestDto
+                                    {
+                                        TaskRequestId = t.TaskRequestId,
+                                        Type = t.Type,
+                                        Subject = t.Subject,
+                                        Description = t.Description,
+                                        StartDate = t.StartDate,
+                                        EndDate = t.EndDate,
+                                        Frequency = t.Frequency,
+                                        DueDays = t.DueDays,
+                                        IsTaskRepeat = t.IsTaskRepeat,
+                                        DueDate = t.DueDate,
+                                        Priority = t.Priority,
+                                        Status = t.Status,
+                                        Assignees = t.Assignees,
+                                        IsNotifyAssignee = t.IsNotifyAssignee,
+                                        OwnerId = t.OwnerId,
+                                        Owner = o.FirstName + " " + o.LastName,
+                                        AssetId = t.AssetId,
+                                        Asset = a.BuildingNo + "-" + a.BuildingName,
+                                        UnitId = t.UnitId,
+                                        Unit = u.UnitName,
+                                        HasPermissionToEnter = t.HasPermissionToEnter,
+                                        EntryNotes = t.EntryNotes,
+                                        VendorId = t.VendorId,
+                                        PartsAndLabor = t.PartsAndLabor,
+                                    })
+                     .AsNoTracking()
+                     .ToListAsync();
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping line items {ex.Message}");
+                throw;
+            }
+        }
 
         public async Task<List<TaskRequestDto>> GetTaskRequestsAsync()
         {
@@ -8135,6 +8344,74 @@ namespace MagicVilla_VillaAPI.Repository
                                         AssetName = a.BuildingNo + "-" + a.BuildingName,
                                         UnitId = d.UnitId,
                                         UnitName = u.UnitName,
+                                        DocumentName = d.DocumentUrl,
+                                        DocumentUrl = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Documents_DocumentUrl_" + d.DocumentsId + Path.GetExtension(d.DocumentUrl)}",
+                                        CreatedDate = d.AddedDate,
+                                        AddedBy = d.AddedBy,
+
+                                    })
+                     .AsNoTracking()
+                     .ToListAsync();
+
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping Document: {ex.Message}");
+                throw;
+            }
+        }
+        
+        public async Task<List<DocumentsDto>> GetDocumentByTenantAsync(int tenantId)
+        {
+            try
+            {
+                var result = await (from d in _db.Documents
+                                    from t in _db.Tenant.Where(x => x.TenantId == d.TenantId && x.IsDeleted != true).DefaultIfEmpty()
+                                    where d.TenantId == tenantId && d.IsDeleted != true
+                                    select new DocumentsDto
+                                    {
+                                        DocumentsId = d.DocumentsId,
+                                        Title = d.Title,
+                                        Description = d.Description,
+                                        Type = d.Type,
+                                        TenantId = d.TenantId,
+                                        TenantName = t.FirstName + " " + t.LastName,
+                                        DocumentName = d.DocumentUrl,
+                                        DocumentUrl = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Documents_DocumentUrl_" + d.DocumentsId + Path.GetExtension(d.DocumentUrl)}",
+                                        CreatedDate = d.AddedDate,
+                                        AddedBy = d.AddedBy,
+
+                                    })
+                     .AsNoTracking()
+                     .ToListAsync();
+
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping Document: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<List<DocumentsDto>> GetDocumentByLandLordAsync(int landlordId)
+        {
+            try
+            {
+                var result = await (from d in _db.Documents
+                                    from o in _db.Owner.Where(x => x.OwnerId == d.OwnerId && x.IsDeleted != true).DefaultIfEmpty()
+                                    where d.OwnerId == landlordId && d.IsDeleted != true
+                                    select new DocumentsDto
+                                    {
+                                        DocumentsId = d.DocumentsId,
+                                        Title = d.Title,
+                                        Description = d.Description,
+                                        Type = d.Type,
+                                        OwnerId = d.OwnerId,
+                                        OwnerName = o.FirstName + " " + o.LastName,
                                         DocumentName = d.DocumentUrl,
                                         DocumentUrl = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Documents_DocumentUrl_" + d.DocumentsId + Path.GetExtension(d.DocumentUrl)}",
                                         CreatedDate = d.AddedDate,
