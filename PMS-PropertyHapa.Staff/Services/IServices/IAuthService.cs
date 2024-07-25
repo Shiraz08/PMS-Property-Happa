@@ -288,5 +288,12 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
         Task<bool> SaveLateFeeAssetAsync(LateFeeAssetDto lateFeeAsset);
 
         #endregion
+
+        #region Subscription
+
+        Task<List<SubscriptionDto>> GetAllSubscriptionsAsync();
+
+
+        #endregion
     }
 }

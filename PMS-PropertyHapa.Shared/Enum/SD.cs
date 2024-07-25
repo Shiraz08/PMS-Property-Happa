@@ -38,7 +38,22 @@ namespace PMS_PropertyHapa.Shared.Enum
             public const string OwnerRequest = "OwnerRequest";
             public const string WorkOrderRequest = "WorkOrderRequest";
         }
-        
+
+        public enum PaymentMode
+        {
+            OneTime,
+            Subscription
+        }
+
+        public enum PaymentInterval
+        {
+            None,
+            Day,
+            Week,
+            Month,
+            Year
+        }
+
         public enum TenantTypes
         {
           Tenanted = 1,

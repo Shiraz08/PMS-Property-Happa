@@ -239,6 +239,7 @@
 
 
 
+<script src="https://js.stripe.com/v3/"></script>
 
 <script>
 
@@ -247,7 +248,7 @@
     $(document).ready(function () {
         $.ajax({
             url: '@Url.Action("GetAllPropertyTypesDll", "Auth")',
-            type: 'POST',
+            type: 'Get',
             dataType: 'json',
             success: function (data) {
                 var propertiesDropdown = document.getElementById('propertyType');
@@ -340,21 +341,28 @@
 
 
     function loadSubscriptions() {
-        $.get('/Subscription/GetAllSubscriptions', function (response) {
-            if (response.success && Array.isArray(response.data)) {
-                const monthlyContainer = $('#monthly-container');
-                const yearlyContainer = $('#yearly-container');
+        $.ajax({
+            url: '@Url.Action("GetAllSubscriptionBlocks", "Subscription")',
+            type: 'Post',
+            success: function (response) {
+                if (response.success && Array.isArray(response.data)) {
+                    const monthlyContainer = $('#monthly-container');
+                    const yearlyContainer = $('#yearly-container');
 
-                response.data.forEach(sub => {
-                    const subscriptionBlock = createSubscriptionBlock(sub);
-                    if (sub.SubscriptionType === 'Monthly') {
-                        monthlyContainer.append(subscriptionBlock);
-                    } else if (sub.SubscriptionType === 'Yearly') {
-                        yearlyContainer.append(subscriptionBlock);
-                    }
-                });
-            } else {
-                console.error('Failed to load subscriptions:', response.message);
+                    response.data.forEach(sub => {
+                        const subscriptionBlock = createSubscriptionBlock(sub);
+                        if (sub.SubscriptionType === 'Monthly') {
+                            monthlyContainer.append(subscriptionBlock);
+                        } else if (sub.SubscriptionType === 'Yearly') {
+                            yearlyContainer.append(subscriptionBlock);
+                        }
+                    });
+                } else {
+                    console.error('Failed to load subscriptions:', response.message);
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error('An error occurred while fetching subscriptions:', error);
             }
         });
     }
@@ -385,14 +393,14 @@
                                                 <span> Tax</span></h6>
                                         </li>
                                     </ul>
-                                    <button class="btn btn-primary btn-lg" onclick="handleSubscriptionClick(${subscription.Price}, '${subscription.Id}', '${subscription.SubscriptionName}')" type="button">Subscribe</button>
+                                            <button class="btn btn-primary btn-lg" onclick="handleSubscriptionClick(${subscription.Price}, '${subscription.Id}', '${subscription.SubscriptionName}', '${subscription.NoOfUnits}')" type="button">Subscribe</button>
                                 </div>
                             </div>
         </div>`;
     }
 
 
-    function handleSubscriptionClick(price, id, name) {
+    function handleSubscriptionClick(price, id, name, units) {
         $("#subscriptionId").val(id);
         $("#subscriptionName").val(name);
         $("#subscriptionPrice").val(price);
@@ -406,6 +414,8 @@
             $('.btn-register').removeClass('d-none');
               $('.bank-account-form').removeClass('d-none');
         }
+        
+
     }
 
 
@@ -484,6 +494,7 @@
             Currency: $("#currency").val(),
             SubscriptionName: $("#subscriptionName").val(),
             SubscriptionId: $("#subscriptionId").val(),
+            Price: $("#subscriptionPrice").val(),
         };
 
         if (isNotFree) {
@@ -504,11 +515,20 @@
             type: 'POST',
             data: data,
             success: function (response) {
+                console.log("response")
+                console.log(response)
                 $.unblockUI();
                 if (response.success) {
-                    toastr.success(response.message);
-                    window.location.href = "/Auth/ConfirmEmailPage";
+                    var stripe = Stripe(response.PubKey);
+                    stripe.redirectToCheckout({ sessionId: response.SessionId })
+                        .then(function (result) {
+                            if (result.error) {
+                                alert(result.error.message);
+                            }
+                        });
+                    //window.location.href = "/Auth/ConfirmEmailPage";
                 } else {
+                    alert("Error Message");
                     toastr.error(response.message);
                 }
             },
@@ -567,6 +587,7 @@
                         toastr.success(response.message);
                         isEmailVerified = true
                         $("#emailAddress").attr("readOnly", true)
+                        $('#otpEmail').hide();
                     } else {
                         toastr.error(response.message);
                         $("#otpEmail").prop('disabled', false);
@@ -622,6 +643,8 @@
                     if (response.success) {
                         toastr.success(response.message);
                         $("#phoneNumber").attr("readOnly", true)
+                        $('#otpPhone').hide();
+
                     } else {
                         toastr.error(response.message);
                         $("#otpPhone").prop('disabled', false);

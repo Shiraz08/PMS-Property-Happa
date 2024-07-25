@@ -3403,5 +3403,38 @@ namespace PMS_PropertyHapa.Staff.Services
         }
 
         #endregion
+
+        #region Subscription
+
+        public async Task<List<SubscriptionDto>> GetAllSubscriptionsAsync()
+        {
+            try
+            {
+                var apiResponse = await _baseService.SendAsync<APIResponse>(new APIRequest
+                {
+                    ApiType = SD.ApiType.GET,
+                    Url = $"{villaUrl}/api/v1/SubscriptionAuth/Subscription"
+                });
+
+                if (apiResponse != null && apiResponse.IsSuccess)
+                {
+                    var subscriptions = JsonConvert.DeserializeObject<List<SubscriptionDto>>(Convert.ToString(apiResponse.Result));
+                    return subscriptions;
+                }
+                else
+                {
+                    throw new Exception("Failed to retrieve subscriptions data");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when fetching subscriptions data: {ex.Message}", ex);
+            }
+        }
+
+
+        #endregion
+
+
     }
 }

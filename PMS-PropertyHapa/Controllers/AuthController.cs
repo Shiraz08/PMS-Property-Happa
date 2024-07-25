@@ -18,6 +18,9 @@ using System.Text;
 using System.Web;
 using PMS_PropertyHapa.MigrationsFiles.Migrations;
 using PMS_PropertyHapa.Shared.Twilio;
+using PMS_PropertyHapa.Models.Stripe;
+using static PMS_PropertyHapa.Shared.Enum.SD;
+using PMS_PropertyHapa.API.Services;
 
 namespace PMS_PropertyHapa.Controllers
 {
@@ -32,7 +35,10 @@ namespace PMS_PropertyHapa.Controllers
         private readonly IUserStore<ApplicationUser> _userStore;
         EmailSender _emailSender = new EmailSender();
         private IWebHostEnvironment _environment;
-        public AuthController(IAuthService authService, ITokenProvider tokenProvider, IWebHostEnvironment Environment, ILogger<HomeController> logger, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, ApiDbContext context, IUserStore<ApplicationUser> userStore)
+        private readonly IConfiguration _configuration;
+        private readonly IStripeService _stripeService;
+
+        public AuthController(IAuthService authService, ITokenProvider tokenProvider, IWebHostEnvironment Environment, ILogger<HomeController> logger, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, ApiDbContext context, IUserStore<ApplicationUser> userStore, IConfiguration configuration, IStripeService stripeService)
         {
             _authService = authService;
             _tokenProvider = tokenProvider;
@@ -42,6 +48,8 @@ namespace PMS_PropertyHapa.Controllers
             _context = context;
             _userStore = userStore;
             _environment = Environment;
+            _configuration = configuration;
+            _stripeService = stripeService;
         }
 
         [HttpGet]
@@ -113,6 +121,17 @@ namespace PMS_PropertyHapa.Controllers
             //return View(model);
             return View();
         }
+        [HttpGet("Subscription/Success")]
+        public IActionResult Success(string sessionId)
+        {
+            // Optionally, you can retrieve the session details using the sessionId if needed.
+            ViewBag.SessionId = sessionId;
+            return View();
+        }
+        public IActionResult Cancel()
+        {
+            return View();
+        }
 
         [HttpPost]
         public async Task<IActionResult> Register(RegisterationRequestDTO model)
@@ -172,20 +191,86 @@ namespace PMS_PropertyHapa.Controllers
                                                 </div>
                                             </body>
                                             </html>";
-                    await _emailSender.SendEmailAsync(user.Email, "Confirm your email.", htmlContent);
+                   // await _emailSender.SendEmailAsync(user.Email, "Confirm your email.", htmlContent);
 
-                    return Ok(new { success = true, message = "User registered successfully." });
+                    //return Ok(new { success = true, message = "User registered successfully." });
                 }
                 var errorMessage = "";
                 foreach (var error in result.Errors)
                 {
                     errorMessage += error.Description + " ";
                 }
-                return Ok(new { success = false, message = errorMessage });
+                await _context.SaveChangesAsync();
+                model.UserId = user.Id;
+               return await SavePayment(model);
+                //return Ok(new { success = false, message = errorMessage });
             }
 
             return Ok(new { success = false, message = "Model is not valid." });
         }
+
+        [HttpPost]
+        public async Task<IActionResult> SavePayment([FromBody] RegisterationRequestDTO productModel)
+        {
+            var _stripeSettings = _configuration.GetSection("StripeSettings");
+
+            var CurrentUser = await _authService.GetProfileAsync(productModel.UserId);
+            Guid newGuid = Guid.NewGuid();
+            try
+            {
+                PaymentGuid paymentGatewaysGuid = new PaymentGuid
+                {
+                    Guid = newGuid.ToString(),
+                };
+                ProductModel product = new ProductModel
+                {
+                    Id = productModel.SubscriptionId ?? 0,
+                    Title = productModel.SubscriptionName,
+                    Description = (productModel.Units ?? 0).ToString() + " Units",
+                    ImageUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRG_TUukNvS-0E486weXLkJDpTubsAcdHdmKw&usqp=CAU",
+                    Price = productModel.Price * 100,  //cents to dollar
+                    Currency = "USD"
+                };
+
+                CheckoutData request = new CheckoutData
+                {
+                    CustomerEmail = CurrentUser.Email,
+                    UserId = CurrentUser.UserId,
+                    Quantity = 1,
+                    Product = product,
+                    PaymentGuid = paymentGatewaysGuid,
+                    PaymentMode = PaymentMode.Subscription,
+                    PaymentInterval = PaymentInterval.Month,
+                    PaymentIntervalCount = 1,
+                    SuccessCallbackUrl = _stripeSettings["SuccessCallbackUrl"],
+                    CancelCallbackUrl = _stripeSettings["CancelCallbackUrl"],
+                };
+                var sessionId = await _stripeService.CreateSessionAsync(request, false);
+                var pubKey = _stripeSettings["PublicKey"];
+
+                var CheckouOrderResponse = new CheckoutOrderDto()
+                {
+                    SessionId = sessionId,
+                    PubKey = pubKey,
+                };
+                PaymentGuidDto paymentGuid = new PaymentGuidDto
+                {
+                    Guid = newGuid.ToString(),
+                    Description = "CheckOut to Dashboard",
+                    DateTime = DateTime.Now,
+                    SessionId = sessionId,
+                    UserId = CurrentUser.UserId,
+                };
+                //SAve Payment Guid Api
+                await _authService.SavePaymentGuid(paymentGuid);
+                return Ok(new { success = true, message = "user created successfully.", PubKey = CheckouOrderResponse.PubKey, SessionId = CheckouOrderResponse.SessionId });
+            }
+            catch (Exception exp)
+            {
+                throw;
+            }
+        }
+
 
         [HttpGet]
         public async Task<IActionResult> ConfirmEmail(string name, string code)

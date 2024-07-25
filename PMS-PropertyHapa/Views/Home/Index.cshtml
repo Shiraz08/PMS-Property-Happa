@@ -109,21 +109,29 @@
     }
 
     function loadSubscriptions() {
-        $.get('/Subscription/GetAllSubscriptions', function (response) {
-            if (response.success && Array.isArray(response.data)) {
-                const monthlyContainer = $('#monthly-container');
-                const yearlyContainer = $('#yearly-container');
+        $.ajax({
+            url: '/Subscription/GetAllSubscriptions',
+            type: 'GET',
+            dataType: 'json',
+            success: function (response) {
+                if (response.success && Array.isArray(response.data)) {
+                    const monthlyContainer = $('#monthly-container');
+                    const yearlyContainer = $('#yearly-container');
 
-                response.data.forEach(sub => {
-                    const subscriptionBlock = createSubscriptionBlock(sub);
-                    if (sub.SubscriptionType === 'Monthly') {
-                        monthlyContainer.append(subscriptionBlock);
-                    } else if (sub.SubscriptionType === 'Yearly') {
-                        yearlyContainer.append(subscriptionBlock);
-                    }
-                });
-            } else {
-                console.error('Failed to load subscriptions:', response.message);
+                    response.data.forEach(sub => {
+                        const subscriptionBlock = createSubscriptionBlock(sub);
+                        if (sub.SubscriptionType === 'Monthly') {
+                            monthlyContainer.append(subscriptionBlock);
+                        } else if (sub.SubscriptionType === 'Yearly') {
+                            yearlyContainer.append(subscriptionBlock);
+                        }
+                    });
+                } else {
+                    console.error('Failed to load subscriptions:', response.message);
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error('An error occurred while fetching subscriptions:', error);
             }
         });
     }

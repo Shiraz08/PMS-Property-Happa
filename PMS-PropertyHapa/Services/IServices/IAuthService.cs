@@ -1,6 +1,7 @@
 ﻿
 using PMS_PropertyHapa.Models;
 using PMS_PropertyHapa.Models.DTO;
+using PMS_PropertyHapa.Models.Stripe;
 using System.Threading.Tasks;
 
 namespace PMS_PropertyHapa.Services.IServices
@@ -77,7 +78,7 @@ namespace PMS_PropertyHapa.Services.IServices
         Task<TenantOrganizationInfoDto> GetTenantOrganizationByIdAsync(int tenantId);
 
 
-        Task<List<SubscriptionDto>> GetAllSubscriptionsAsync();
+        Task<List<SubscriptionDto>> GetAllSubscriptionBlocksAsync();
 
         Task<List<SubscriptionDto>> GetSubscriptionsByIdAsync(int Id);
 
@@ -86,5 +87,13 @@ namespace PMS_PropertyHapa.Services.IServices
         Task<bool> UpdateSubscriptionAsync(SubscriptionDto subscription);
 
         Task<bool> DeleteSubscriptionAsync(int Id);
+
+        #region Stripe subscription
+        Task<bool> SavePaymentGuid(PaymentGuidDto paymentGuidDto);
+        Task<bool> SavePaymentInformation(PaymentInformationDto paymentInformationDto);
+        Task<bool> SavePaymentMethodInformation(PaymentMethodInformationDto paymentMethodInformationDto);
+        Task<bool> SaveStripeSubscription(StripeSubscriptionDto stripeSubscriptionDto);
+
+        #endregion
     }
 }

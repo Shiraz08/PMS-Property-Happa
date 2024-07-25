@@ -66,6 +66,10 @@ namespace PMS_PropertyHapa.MigrationsFiles.Data
         public DbSet<LateFee> LateFees { get; set; }
         public DbSet<LateFeeAsset> LateFeeAsset { get; set; }
         public DbSet<RecurringJob> RecurringJobs { get; set; }
+        public DbSet<PaymentGuid> PaymentGuids { get; set; }
+        public DbSet<PaymentInformation> PaymentInformations { get; set; }
+        public DbSet<PaymentMethodInformation> PaymentMethodInformations { get; set; }
+        public DbSet<StripeSubscription> StripeSubscriptions { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Tenant>()

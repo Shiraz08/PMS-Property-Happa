@@ -1,0 +1,23 @@
+﻿@{
+    ViewData["Title"] = "Success";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    ViewBag.Title = "Subscription Successful";
+}
+<div class="page-body py-4">
+    <div class="container">
+        <div class="card success-card p-5">
+            <div class="text-center">
+                <div class="mb-4">
+                    <i class="bi bi-check-circle success-icon"></i>
+                </div>
+                <h1 class="display-4">Subscription Successful!</h1>
+                <p class="lead">Thank you for subscribing. Your payment was successful, and your subscription is now active.</p>
+                <hr class="my-4">
+                <p class="mb-4">You can manage your subscription and access your benefits from your account dashboard.</p>
+                <a class="btn btn-custom btn-lg" href="/account/dashboard" role="button">Go to Dashboard</a>
+            </div>
+        </div>
+    </div>
+</div>

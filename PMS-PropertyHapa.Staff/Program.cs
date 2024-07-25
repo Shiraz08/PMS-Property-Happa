@@ -13,6 +13,7 @@ using PMS_PropertyHapa.Shared.EmailSenderFile;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using PMS_PropertyHapa.Shared.Email;
 using PMS_PropertyHapa.Staff.Models.ViewModels;
+using PMS_PropertyHapa.Models.Configrations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +29,7 @@ builder.Services.AddScoped<GoogleCloudStorageService>();
 builder.Services.AddScoped<ITokenProvider, TokenProvider>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<PMS_PropertyHapa.API.Services.IStripeService, PMS_PropertyHapa.API.Services.StripeService>();
 builder.Services.AddDistributedMemoryCache();
 // Add services to the container.
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
@@ -74,6 +76,7 @@ builder.Services.AddControllers().AddNewtonsoftJson(options =>
 });
 
 builder.Configuration.GetSection("ServiceUrls");
+builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("StripeSettings"));
 builder.Services.AddControllersWithViews();
 var app = builder.Build();
 if (!app.Environment.IsDevelopment())

@@ -17,6 +17,13 @@ using System.Net;
 using System.Text;
 using System.Web;
 using Humanizer;
+using PMS_PropertyHapa.Models.Configrations;
+using PMS_PropertyHapa.Models.Stripe;
+using static PMS_PropertyHapa.Shared.Enum.SD;
+using System.Security.Claims;
+using Microsoft.Extensions.Logging;
+using PMS_PropertyHapa.API.Services;
+using Stripe;
 
 namespace PMS_PropertyHapa.Controllers
 {
@@ -31,9 +38,11 @@ namespace PMS_PropertyHapa.Controllers
         private ApiDbContext _context;
         private readonly IUserStore<ApplicationUser> _userStore;
         EmailSender _emailSender = new EmailSender();
+        private readonly IConfiguration _configuration;
         private IWebHostEnvironment _environment;
+        private readonly IStripeService _stripeService;
 
-        public SubscriptionController(IAuthService authService, ITokenProvider tokenProvider, IWebHostEnvironment Environment, ILogger<HomeController> logger, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, ApiDbContext context, IUserStore<ApplicationUser> userStore)
+        public SubscriptionController(IAuthService authService, ITokenProvider tokenProvider, IWebHostEnvironment Environment, ILogger<HomeController> logger, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, ApiDbContext context, IUserStore<ApplicationUser> userStore, IConfiguration configuration, IStripeService stripeService)
         {
             _authService = authService;
             _tokenProvider = tokenProvider;
@@ -43,6 +52,8 @@ namespace PMS_PropertyHapa.Controllers
             _context = context;
             _userStore = userStore;
             _environment = Environment;
+            _configuration = configuration;
+            _stripeService = stripeService;
         }
 
         [HttpGet]
@@ -144,12 +155,11 @@ namespace PMS_PropertyHapa.Controllers
         }
 
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllSubscriptions()
+        public async Task<IActionResult> GetAllSubscriptionBlocks()
         {
             try
             {
-                var subscriptions = await _authService.GetAllSubscriptionsAsync();
+                var subscriptions = await _authService.GetAllSubscriptionBlocksAsync();
                 var sortedItems = subscriptions.OrderBy(item => item.SubscriptionType == "Yearly").ToList();
 
                 if (subscriptions == null || !subscriptions.Any())
@@ -167,6 +177,96 @@ namespace PMS_PropertyHapa.Controllers
         }
 
 
+
+        [HttpPost("webhook")]
+        public async Task<IActionResult> Webhook()
+        {
+            var _stripeSettings = _configuration.GetSection("StripeSettings");
+
+            var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
+            var stripeEvent = EventUtility.ConstructEvent(json,
+                Request.Headers["Stripe-Signature"], _stripeSettings["EndPointKey"]);
+            if (stripeEvent.Type == Events.PaymentIntentSucceeded)
+            {
+                var paymentIntent = stripeEvent.Data.Object as PaymentIntent;
+                var paymentInformationDto = new PaymentInformationDto
+                {
+                    TransactionId = paymentIntent.Id,
+                    ProductPrice = paymentIntent.Amount / 100,
+                    AmountCharged = paymentIntent.AmountReceived / 100,
+                    ChargeDate = paymentIntent.Created,
+                    PaymentStatus = paymentIntent.Status,
+                    Currency = paymentIntent.Currency,
+                    CustomerId = paymentIntent.CustomerId,
+                };
+                //Save payment INfo api
+                var res = await _authService.SavePaymentInformation(paymentInformationDto);
+
+            }
+            else if (stripeEvent.Type == Events.CustomerSubscriptionCreated)
+            {
+                var subscription = stripeEvent.Data.Object as Stripe.Subscription;
+                StripeConfiguration.ApiKey = _stripeSettings["SecretKey"];
+                var service = new SubscriptionService();
+                var sub = service.Get(subscription.Id);
+                var paymentservice = new PaymentMethodService();
+                var pay = paymentservice.Get(sub.DefaultPaymentMethodId);
+                //var Sessionservice = new SessionService();
+                //var session = Sessionservice.Get(sessionId);
+                var customerService = new CustomerService();
+                var customerId = subscription.CustomerId;
+                var customer = customerService.Get(customerId);
+                var tenantIdString = subscription.Metadata.ContainsKey("tenantId") ? subscription.Metadata["tenantId"] : null;
+                var tenantId = string.IsNullOrEmpty(tenantIdString) ? 0 : int.Parse(tenantIdString);
+                var UserId = subscription.Metadata.ContainsKey("UserId") ? subscription.Metadata["UserId"] : null;
+                //var UserId = string.IsNullOrEmpty(UserIdString) ? 0 : int.Parse(UserIdString);
+                var Guid = subscription.Metadata.ContainsKey("PaymentGuid") ? subscription.Metadata["PaymentGuid"] : null;
+                var isTrialString = subscription.Metadata.ContainsKey("IsTrial") ? subscription.Metadata["IsTrial"] : null;
+                bool istrial = bool.Parse(isTrialString);
+                var subscriptionDto = new StripeSubscriptionDto
+                {
+                    IsCanceled = false,
+                    StartDate = subscription.StartDate,
+                    EndDate = subscription.CurrentPeriodEnd,
+                    EmailAddress = customer.Email,
+                    SubscriptionId = subscription.Id,
+                    UserId = UserId,
+                    BillingInterval = subscription.Items.Data[0].Plan.Interval,
+                    SubscriptionType = subscription.Items.Data[0].Price.Type,
+                    IsTrial = istrial,
+                    GUID = Guid.ToString(),
+                    Currency = subscription.Currency,
+                    Status = sub.Status,
+                    CustomerId = subscription.CustomerId,
+                };
+                var paymentMethodInformationDto = new PaymentMethodInformationDto
+                {
+                    Country = pay.BillingDetails.Address.Country,
+                    CardType = pay.Card.Brand,
+                    CardHolderName = pay.BillingDetails.Name,
+                    CardLast4Digit = pay.Card.Last4,
+                    ExpiryMonth = pay.Card.ExpMonth.ToString(),
+                    ExpiryYear = pay.Card.ExpYear.ToString(),
+                    Email = pay.BillingDetails.Email,
+                    GUID = Guid.ToString(),
+                    PaymentMethodId = pay.Id,
+                    CustomerId = pay.CustomerId,
+                };
+                //Save payment method api
+                //Save payment subscription  api
+
+                var result = await _authService.SavePaymentMethodInformation(paymentMethodInformationDto);
+                var result2 = await _authService.SaveStripeSubscription(subscriptionDto);
+            }
+            else
+            {
+                {
+                    Console.WriteLine("Unhandled event type: {0}", stripeEvent.Type);
+                    return BadRequest();
+                }
+            }
+            return Ok();
+        }
 
     }
 }

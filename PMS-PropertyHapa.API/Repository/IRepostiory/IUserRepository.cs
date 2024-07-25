@@ -7,6 +7,7 @@ using PMS_PropertyHapa.Models;
 using PMS_PropertyHapa.Models.DTO;
 using PMS_PropertyHapa.Models.Entities;
 using PMS_PropertyHapa.Models.Roles;
+using PMS_PropertyHapa.Models.Stripe;
 using static PMS_PropertyHapa.Models.DTO.TenantModelDto;
 
 namespace MagicVilla_VillaAPI.Repository.IRepostiory
@@ -294,5 +295,11 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
         Task<LateFeeAssetDto> GetLateFeeByAssetAsync(int assetId);
         Task<bool> SaveLateFeeAsync(LateFeeDto lateFee);
         Task<bool> SaveLateFeeAssetAsync(LateFeeAssetDto lateFeeAsset);
+
+        //  Stripe Subscription
+        Task<bool> SavePaymentGuidAsync(PaymentGuidDto paymentGuidDto);
+        Task<bool> SavePaymentInformationAsync(PaymentInformationDto paymentInformationDto);
+        Task<bool> SavePaymentMethodInformationAsync(PaymentMethodInformationDto paymentMethodInformationDto);
+        Task<bool> SaveStripeSubscriptionAsync(StripeSubscriptionDto stripeSubscriptionDto);
     }
 }

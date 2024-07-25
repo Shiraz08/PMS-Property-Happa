@@ -15,6 +15,7 @@ using PMS_PropertyHapa.Models;
 using PMS_PropertyHapa.Models.DTO;
 using PMS_PropertyHapa.Models.Entities;
 using PMS_PropertyHapa.Models.Roles;
+using PMS_PropertyHapa.Models.Stripe;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Claims;
@@ -626,7 +627,7 @@ namespace MagicVilla_VillaAPI.Repository
                 return null;
             }
 
-            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == userId && u.IsDeleted != true);
+            var user = await _db.ApplicationUsers.FirstOrDefaultAsync(u => u.Id == userId && u.IsDeleted != true);
 
             if (user == null)
             {
@@ -763,10 +764,10 @@ namespace MagicVilla_VillaAPI.Repository
                                               })
                                               .AsNoTracking()
                                               .ToListAsync();
-                if (string.IsNullOrEmpty(filter.AddedBy))
-                {
-                    propertyTypeDtos = propertyTypeDtos.Where(x => x.AddedBy == filter.AddedBy).ToList();
-                }
+                //if (string.IsNullOrEmpty(filter.AddedBy))
+                //{
+                //    propertyTypeDtos = propertyTypeDtos.Where(x => x.AddedBy == filter.AddedBy).ToList();
+                //}
 
                 return propertyTypeDtos;
             }
@@ -8673,6 +8674,96 @@ namespace MagicVilla_VillaAPI.Repository
             return result > 0;
 
         }
+
+        #endregion
+        #region Stripe subscription
+        public async Task<bool> SavePaymentGuidAsync(PaymentGuidDto paymentGuidDto)
+        {
+            var paymentGuid = new PaymentGuid();
+
+            paymentGuid.Guid = paymentGuidDto.Guid;
+            paymentGuid.Description = paymentGuidDto.Description ;
+            paymentGuid.DateTime = paymentGuidDto.DateTime ;
+            paymentGuid.SessionId = paymentGuidDto.SessionId ;
+            paymentGuid.UserId = paymentGuidDto.UserId ;
+            paymentGuid.AddedBy = paymentGuidDto.AddedBy;
+            paymentGuid.AddedDate = DateTime.Now;
+            _db.PaymentGuids.Add(paymentGuid);
+
+            var result = await _db.SaveChangesAsync();
+            return result > 0;
+        }
+        public async Task<bool> SavePaymentInformationAsync(PaymentInformationDto paymentInformationDto)
+        {
+            var paymentInformation = new PaymentInformation();
+            paymentInformation.Id = paymentInformationDto.Id;
+            paymentInformation.ProductPrice = paymentInformationDto.ProductPrice;
+            paymentInformation.AmountCharged = paymentInformationDto.AmountCharged;
+            paymentInformation.ChargeDate = paymentInformationDto.ChargeDate;
+            paymentInformation.TransactionId = paymentInformationDto.TransactionId;
+            paymentInformation.PaymentStatus = paymentInformationDto.PaymentStatus;
+            paymentInformation.Currency = paymentInformationDto.Currency;
+            paymentInformation.CustomerId = paymentInformationDto.CustomerId;
+
+            paymentInformation.AddedBy = paymentInformationDto.AddedBy;
+            paymentInformation.AddedDate = DateTime.Now;
+            _db.PaymentInformations.Add(paymentInformation);
+
+            var result = await _db.SaveChangesAsync();
+            return result > 0;
+        }
+        
+        public async Task<bool> SavePaymentMethodInformationAsync(PaymentMethodInformationDto paymentMethodInformationDto)
+        {
+            var paymentMethodInformation = new PaymentMethodInformation();
+            paymentMethodInformation.Id = paymentMethodInformationDto.Id;
+            paymentMethodInformation.Country = paymentMethodInformationDto.Country;
+            paymentMethodInformation.CardType = paymentMethodInformationDto.CardType;
+            paymentMethodInformation.CardHolderName = paymentMethodInformationDto.CardHolderName;
+            paymentMethodInformation.CardLast4Digit = paymentMethodInformationDto.CardLast4Digit;
+            paymentMethodInformation.ExpiryMonth = paymentMethodInformationDto.ExpiryMonth;
+            paymentMethodInformation.ExpiryYear = paymentMethodInformationDto.ExpiryYear;
+            paymentMethodInformation.Email = paymentMethodInformationDto.Email;
+            paymentMethodInformation.GUID = paymentMethodInformationDto.GUID;
+            paymentMethodInformation.PaymentMethodId = paymentMethodInformationDto.PaymentMethodId;
+            paymentMethodInformation.CustomerId = paymentMethodInformationDto.CustomerId;
+
+            paymentMethodInformation.AddedBy = paymentMethodInformationDto.AddedBy;
+            paymentMethodInformation.AddedDate = DateTime.Now;
+            _db.PaymentMethodInformations.Add(paymentMethodInformation);
+
+            var result = await _db.SaveChangesAsync();
+            return result > 0;
+        }
+
+        public async Task<bool> SaveStripeSubscriptionAsync(StripeSubscriptionDto stripeSubscriptionDto)
+        {
+            var stripeSubscription = new StripeSubscription();
+            stripeSubscription.Id = stripeSubscriptionDto.Id;
+            stripeSubscription.UserId = stripeSubscriptionDto.UserId;
+            stripeSubscription.StartDate = stripeSubscriptionDto.StartDate;
+            stripeSubscription.EndDate = stripeSubscriptionDto.EndDate;
+            stripeSubscription.SubscriptionId = stripeSubscriptionDto.SubscriptionId;
+            stripeSubscription.EmailAddress = stripeSubscriptionDto.EmailAddress;
+            stripeSubscription.IsCanceled = stripeSubscriptionDto.IsCanceled;
+            stripeSubscription.BillingInterval = stripeSubscriptionDto.BillingInterval;
+            stripeSubscription.SubscriptionType = stripeSubscriptionDto.SubscriptionType;
+            stripeSubscription.IsTrial = stripeSubscriptionDto.IsTrial;
+            stripeSubscription.GUID = stripeSubscriptionDto.GUID;
+            stripeSubscription.Status = stripeSubscriptionDto.Status;
+            stripeSubscription.Currency = stripeSubscriptionDto.Currency;
+            stripeSubscription.CustomerId = stripeSubscriptionDto.CustomerId;
+
+            stripeSubscription.AddedBy = stripeSubscriptionDto.AddedBy;
+            stripeSubscription.AddedDate = DateTime.Now;
+            _db.StripeSubscriptions.Add(stripeSubscription);
+
+            var result = await _db.SaveChangesAsync();
+            return result > 0;
+        }
+
+
+
 
         #endregion
 
