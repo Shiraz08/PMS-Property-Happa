@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using PMS_PropertyHapa.MigrationsFiles.Data;
 using PMS_PropertyHapa.Models.Roles;
 using NuGet.ContentModel;
+using PMS_PropertyHapa.Models.Entities;
+using PMS_PropertyHapa.Models.Stripe;
 
 namespace PMS_PropertyHapa.API.Controllers.V1
 {
@@ -124,6 +126,34 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             {
                 var isSuccess = await _userRepo.DeleteSubscriptionAsync(Id);
                 return Ok(isSuccess);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
+        [HttpGet("TrialDays/{currenUserId}")]
+        public async Task<ActionResult<StripeSubscriptionDto>> CheckTrialDays(string currenUserId)
+        {
+            try
+            {
+                var trialdays = await _userRepo.CheckTrialDaysAsync(currenUserId);
+
+                if (trialdays != null)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = trialdays;
+                    return Ok(_response);
+                }
+                else
+                {
+                    _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("No trial user found with this id.");
+                    return NotFound(_response);
+                }
             }
             catch (Exception ex)
             {

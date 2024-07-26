@@ -128,6 +128,7 @@ namespace PMS_PropertyHapa.Controllers
             ViewBag.SessionId = sessionId;
             return View();
         }
+        [HttpGet("Subscription/Cancel")]
         public IActionResult Cancel()
         {
             return View();
@@ -240,12 +241,12 @@ namespace PMS_PropertyHapa.Controllers
                     Product = product,
                     PaymentGuid = paymentGatewaysGuid,
                     PaymentMode = PaymentMode.Subscription,
-                    PaymentInterval = PaymentInterval.Month,
+                    PaymentInterval = productModel.IsYearly ? PaymentInterval.Year : PaymentInterval.Month,
                     PaymentIntervalCount = 1,
                     SuccessCallbackUrl = _stripeSettings["SuccessCallbackUrl"],
                     CancelCallbackUrl = _stripeSettings["CancelCallbackUrl"],
                 };
-                var sessionId = await _stripeService.CreateSessionAsync(request, false);
+                var sessionId = await _stripeService.CreateSessionAsync(request, productModel.IsTrial);
                 var pubKey = _stripeSettings["PublicKey"];
 
                 var CheckouOrderResponse = new CheckoutOrderDto()
@@ -352,7 +353,7 @@ namespace PMS_PropertyHapa.Controllers
                                         </body>
                                         </html>
                                         ";
-                await _emailSender.SendEmailAsync(email, "Confirm your email.", htmlContent);
+                //await _emailSender.SendEmailAsync(email, "Confirm your email.", htmlContent);
 
                 await _authService.SaveEmailOTP(model);
 

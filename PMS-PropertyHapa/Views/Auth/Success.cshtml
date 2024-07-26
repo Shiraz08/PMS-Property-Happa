@@ -1,10 +1,60 @@
 ﻿@{
     ViewData["Title"] = "Success";
-    Layout = "~/Views/Shared/_IdentityLayout.cshtml";
+    //Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @{
     ViewBag.Title = "Subscription Successful";
 }
+@using Microsoft.AspNetCore.Hosting
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment env
+<style>
+    body {
+        
+        color: black;
+        font-family: 'Arial', sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    .success-page {
+        max-width: 600px;
+        text-align: center;
+        padding: 2rem;
+    }
+
+    .success-card {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s ease-in-out;
+    }
+
+        .success-card:hover {
+            transform: translateY(-10px);
+        }
+
+    .success-icon {
+        font-size: 4rem;
+        color: #28a745;
+    }
+
+    .btn-custom {
+        
+        border: none;
+        color: black;
+    }
+
+        .btn-custom:hover {
+            background-color: #57a1be;
+        }
+
+    .lead, .display-4 {
+        margin-bottom: 1rem;
+    }
+</style>
 <div class="container success-page">
     <div class="card success-card">
         <div class="mb-4">
@@ -14,6 +64,13 @@
         <p class="lead">Thank you for subscribing. Your payment was successful, and your subscription is now active.</p>
         <hr class="my-4">
         <p>You can manage your subscription and access your benefits from your account dashboard.</p>
-        <a class="btn btn-custom btn-lg" href="https://pmc.propertyhapa.com/" role="button">Go to Dashboard</a>
+        @if (env.EnvironmentName == "Development")
+        {
+            <a class="btn btn-custom btn-lg" href="https://localhost:7247/" role="button">Go to Dashboard</a>
+        }
+        else
+        {
+            <a class="btn btn-custom btn-lg" href="https://pmc.propertyhapa.com/" role="button">Go to Dashboard</a>
+        }
     </div>
 </div>

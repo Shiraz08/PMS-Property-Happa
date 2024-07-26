@@ -34,6 +34,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
             ViewBag.SessionId = sessionId;
             return View();
         }
+        
         public IActionResult Cancel()
         {
             return View();
@@ -113,6 +114,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
                     SessionId = sessionId,
                     UserId = CurrentUser.UserId,
                 };
+                await _authService.SavePaymentGuid(paymentGuid);
                 return Ok(CheckouOrderResponse);
             }
             catch (Exception exp)
@@ -184,5 +186,15 @@ namespace PMS_PropertyHapa.Staff.Controllers
         //    }
         //}
 
+        [HttpGet]
+        public async Task<IActionResult> CheckTrialDays()
+        {
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
+
+            StripeSubscriptionDto trialDays = new StripeSubscriptionDto();
+            trialDays = await _authService.CheckTrialDaysAsync(currenUserId);
+            return Ok(trialDays);
+
+        }
     }
 }

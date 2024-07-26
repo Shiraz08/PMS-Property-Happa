@@ -10,6 +10,7 @@ using PMS_PropertyHapa.Staff.Services.IServices;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Humanizer.Localisation;
 using static PMS_PropertyHapa.Models.DTO.TenantModelDto;
+using PMS_PropertyHapa.Models.Stripe;
 
 namespace PMS_PropertyHapa.Staff.Services
 {
@@ -3432,6 +3433,45 @@ namespace PMS_PropertyHapa.Staff.Services
             }
         }
 
+        public async Task<StripeSubscriptionDto> CheckTrialDaysAsync(string currenUserId)
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = $"{villaUrl}/api/v1/SubscriptionAuth/TrialDays/{currenUserId}"
+            });
+
+            if (response.IsSuccess == true)
+            {
+                var userListJson = Convert.ToString(response.Result);
+                var trialdays = JsonConvert.DeserializeObject<StripeSubscriptionDto>(userListJson);
+                return trialdays;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve user data");
+            }
+        }
+
+        public async Task<bool> SavePaymentGuid(PaymentGuidDto paymentGuidDto)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Data = paymentGuidDto,
+                    Url = $"{villaUrl}/api/v1/StripeSubscriptionAuth/SavePaymentGuid"
+                });
+
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when creating Payment Guid: {ex.Message}", ex);
+            }
+        }
 
         #endregion
 

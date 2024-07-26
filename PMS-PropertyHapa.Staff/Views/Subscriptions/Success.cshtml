@@ -1,23 +1,65 @@
 ﻿@{
     ViewData["Title"] = "Success";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    //Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @{
     ViewBag.Title = "Subscription Successful";
 }
-<div class="page-body py-4">
-    <div class="container">
-        <div class="card success-card p-5">
-            <div class="text-center">
-                <div class="mb-4">
-                    <i class="bi bi-check-circle success-icon"></i>
-                </div>
-                <h1 class="display-4">Subscription Successful!</h1>
-                <p class="lead">Thank you for subscribing. Your payment was successful, and your subscription is now active.</p>
-                <hr class="my-4">
-                <p class="mb-4">You can manage your subscription and access your benefits from your account dashboard.</p>
-                <a class="btn btn-custom btn-lg" href="/account/dashboard" role="button">Go to Dashboard</a>
-            </div>
+<style>
+    body {
+        color: black;
+        font-family: 'Arial', sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    .success-page {
+        max-width: 600px;
+        text-align: center;
+        padding: 2rem;
+    }
+
+    .success-card {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s ease-in-out;
+    }
+
+        .success-card:hover {
+            transform: translateY(-10px);
+        }
+
+    .success-icon {
+        font-size: 4rem;
+        color: #28a745;
+    }
+
+    .btn-custom {
+        border: none;
+        color: black;
+    }
+
+        .btn-custom:hover {
+            background-color: #57a1be;
+        }
+
+    .lead, .display-4 {
+        margin-bottom: 1rem;
+    }
+</style>
+<div class="container success-page">
+    <div class="card success-card">
+        <div class="mb-4">
+            <i class="bi bi-check-circle success-icon"></i>
         </div>
+        <h1 class="display-4">Subscription Successful!</h1>
+        <p class="lead">Thank you for subscribing. Your payment was successful, and your subscription is now active.</p>
+        <hr class="my-4">
+        <p>You can manage your subscription and access your benefits from your account dashboard.</p>
+        <a class="btn btn-custom btn-lg" href="/Home/Index" role="button">Go to Dashboard</a>
     </div>
 </div>

@@ -67,8 +67,7 @@ namespace MagicVilla_VillaAPI.Repository
         public async Task<TokenDTO> Login(LoginRequestDTO loginRequestDTO)
         {
             var user = await _db.ApplicationUsers
-                                 .AsNoTracking()
-                                 .FirstOrDefaultAsync(u => u.Email.ToLower() == loginRequestDTO.Email.ToLower());
+                            .FirstOrDefaultAsync(u => u.Email.ToLower() == loginRequestDTO.Email.ToLower());
 
             if (user == null)
             {
@@ -93,13 +92,32 @@ namespace MagicVilla_VillaAPI.Repository
 
             // Fetch tenant organization details
             var tenantOrganization = await _db.TenantOrganizationInfo
-                                              .AsNoTracking()
-                                              .FirstOrDefaultAsync(to => to.TenantUserId == userIdGuid);
+                                                .AsNoTracking()
+                                                .FirstOrDefaultAsync(to => to.TenantUserId == userIdGuid);
 
             // Generate JWT token and refresh token
             var jwtTokenId = $"JTI{Guid.NewGuid()}";
             var accessToken = await GetAccessToken(user, jwtTokenId);
             var refreshToken = await CreateNewRefreshToken(user.Id, jwtTokenId);
+
+            //we need to handle subscription which is not added in database but the amount is charged from stripe Dashboard
+            var hasActiveSubscription = CheckUserSubscription(user.Id);
+            if (hasActiveSubscription)
+            {
+                var hasSubscribedRole = await _userManager.IsInRoleAsync(user, "SubscribedUser");
+                if (!hasSubscribedRole)
+                {
+                    await _userManager.AddToRoleAsync(user, "SubscribedUser");
+                }
+            }
+            else
+            {
+                var hasSubscribedRole = await _userManager.IsInRoleAsync(user, "SubscribedUser");
+                if (hasSubscribedRole)
+                {
+                    await _userManager.RemoveFromRoleAsync(user, "SubscribedUser");
+                }
+            }
 
             // Return TokenDTO including tenant organization details, if available
             return new TokenDTO
@@ -117,6 +135,17 @@ namespace MagicVilla_VillaAPI.Repository
                 Tid = tenantOrganization?.Id,
                 TenantId = user.TenantId
             };
+        }
+
+        private bool CheckUserSubscription(string userId)
+        {
+            var subscription = _db.StripeSubscriptions.FirstOrDefault(x => (x.UserId == userId) && !x.IsCanceled);
+            //var subscription = _db.StripeSubscriptions.Where(x => x.UserId == userId && !x.IsCanceled).OrderByDescending(x => x.Id).FirstOrDefault();
+            if (subscription != null && subscription.EndDate >= DateTime.UtcNow && subscription.IsCanceled != true)
+            {
+                return true;
+            }
+            return false;
         }
 
         public async Task<UserDTO> Register(RegisterationRequestDTO registerationRequestDTO)
@@ -8762,6 +8791,31 @@ namespace MagicVilla_VillaAPI.Repository
             return result > 0;
         }
 
+        public async Task<StripeSubscriptionDto> CheckTrialDaysAsync(string currentUserId)
+        {
+            try
+            {
+                var result = await _db.StripeSubscriptions
+                                      .Where(x => x.UserId == currentUserId && !x.IsCanceled && x.IsDeleted != true)
+                                      .Select(s => new StripeSubscriptionDto
+                                      {
+                                          Id = s.Id,
+                                          UserId = s.UserId,
+                                          StartDate = s.StartDate,
+                                          EndDate = s.EndDate,
+                                          IsTrial = s.IsTrial,
+                                          AddedBy = s.AddedBy,
+                                      })
+                                      .FirstOrDefaultAsync();
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping Subscription User: {ex.Message}");
+                throw;
+            }
+        }
 
 
 

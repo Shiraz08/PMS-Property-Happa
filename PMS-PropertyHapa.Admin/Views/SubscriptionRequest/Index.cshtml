@@ -1,0 +1,176 @@
+﻿@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 34px;
+        height: 20px;
+    }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: .4s;
+    }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 14px;
+            width: 14px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+        }
+
+    input:checked + .slider {
+        background-color: #2196F3;
+    }
+
+        input:checked + .slider:before {
+            transform: translateX(14px);
+        }
+
+    /* Rounded sliders */
+    .slider.round {
+        border-radius: 34px;
+    }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+</style>
+
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12">
+                    <h3>Subscription List</h3>
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a class="home-item" href="/"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item">Subscription</li>
+                        <li class="breadcrumb-item active">List</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table" id="subscriptionRequestsTable">
+                                <thead>
+                                    <tr>
+                                        <th>User Name</th>
+                                        <th>Subscription Name</th>
+                                        <th>Start Date</th>
+                                        <th>End Date</th>
+                                        <th>Billing Interval</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#subscriptionRequestsTable').DataTable({
+            "ajax": {
+                "url": "/SubscriptionRequest/GetSubscriptionRequests",
+                "type": "GET",
+                "dataSrc": ""
+            },
+            "columns": [
+                {
+                    "data": "User",
+                    "className": "text-center"
+                },
+                {
+                    "data": "SubscriptionType",
+                    "className": "text-center"
+                },
+                {
+                    "data": "StartDate",
+                    "className": "text-center",
+                    "render": function (data) {
+                        return new Date(data).toLocaleDateString();
+                    }
+                },
+                {
+                    "data": "EndDate",
+                    "className": "text-center",
+                    "render": function (data) {
+                        return new Date(data).toLocaleDateString();
+                    }
+                },
+                {
+                    "data": "BillingInterval",
+                    "className": "text-center"
+                },
+                {
+                    "data": "HasAdminPermission",
+                    "className": "text-center",
+                    "render": function (data, type, row) {
+                        let checked = data ? 'checked' : '';
+                        return `<label class="switch">
+                                    <input type="checkbox" ${checked} onchange="changeAdminPermission(${row.Id}, this.checked)">
+                                    <span class="slider round"></span>
+                                </label>`;
+                    }
+                }
+            ]
+        });
+    });
+
+    function changeAdminPermission(id, hasAdminPermission) {
+        console.log("id")
+        console.log(id)
+        console.log("HasAdminPermission")
+        console.log(hasAdminPermission)
+        $.ajax({
+            url: '/SubscriptionRequest/ChangeAdminPermission',
+            type: 'POST',
+            data: { id: id, hasPermission: hasAdminPermission },
+            success: function (response) {
+                console.log(response)
+                if (response.success) {
+                    alert('Admin permission updated successfully.');
+                } else {
+                    alert('Error: ' + response.message);
+                }
+            },
+            error: function (error) {
+                alert('Error updating admin permission.');
+            }
+        });
+    }
+</script>

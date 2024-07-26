@@ -32,6 +32,8 @@
         public string State { get; set; }
         public string Currency { get; set; }
         public long Price { get; set; }
+        public bool IsYearly { get; set; }
+        public bool IsTrial { get; set; }
 
     }
 }

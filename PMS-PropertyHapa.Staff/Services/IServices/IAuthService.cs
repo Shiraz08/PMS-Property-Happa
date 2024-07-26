@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using PMS_PropertyHapa.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
 using static PMS_PropertyHapa.Models.DTO.TenantModelDto;
+using PMS_PropertyHapa.Models.Stripe;
 
 namespace PMS_PropertyHapa.Staff.Services.IServices
 {
@@ -292,7 +293,8 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
         #region Subscription
 
         Task<List<SubscriptionDto>> GetAllSubscriptionsAsync();
-
+        Task<StripeSubscriptionDto> CheckTrialDaysAsync(string currenUserId);
+        Task<bool> SavePaymentGuid(PaymentGuidDto paymentGuidDto);
 
         #endregion
     }

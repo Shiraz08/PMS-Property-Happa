@@ -301,5 +301,6 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
         Task<bool> SavePaymentInformationAsync(PaymentInformationDto paymentInformationDto);
         Task<bool> SavePaymentMethodInformationAsync(PaymentMethodInformationDto paymentMethodInformationDto);
         Task<bool> SaveStripeSubscriptionAsync(StripeSubscriptionDto stripeSubscriptionDto);
+        Task<StripeSubscriptionDto> CheckTrialDaysAsync(string currenUserId);
     }
 }

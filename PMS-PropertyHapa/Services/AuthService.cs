@@ -1011,62 +1011,62 @@ namespace PMS_PropertyHapa.Services
                 throw new Exception($"An error occurred when creating Payment Guid: {ex.Message}", ex);
             }
         }
-        public async Task<bool> SavePaymentInformation(PaymentInformationDto paymentInformationDto)
-        {
-            try
-            {
-                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
-                {
-                    ApiType = SD.ApiType.POST,
-                    Data = paymentInformationDto,
-                    Url = $"{villaUrl}/api/v1/StripeSubscriptionAuth/SavePaymentInformation"
-                });
+        //public async Task<bool> SavePaymentInformation(PaymentInformationDto paymentInformationDto)
+        //{
+        //    try
+        //    {
+        //        var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+        //        {
+        //            ApiType = SD.ApiType.POST,
+        //            Data = paymentInformationDto,
+        //            Url = $"{villaUrl}/api/v1/StripeSubscriptionAuth/SavePaymentInformation"
+        //        });
 
-                return response.IsSuccess;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"An error occurred when creating Payment Information: {ex.Message}", ex);
-            }
-        }
+        //        return response.IsSuccess;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new Exception($"An error occurred when creating Payment Information: {ex.Message}", ex);
+        //    }
+        //}
 
-        public async Task<bool> SavePaymentMethodInformation(PaymentMethodInformationDto paymentMethodInformationDto)
-        {
-            try
-            {
-                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
-                {
-                    ApiType = SD.ApiType.POST,
-                    Data = paymentMethodInformationDto,
-                    Url = $"{villaUrl}/api/v1/StripeSubscriptionAuth/SavePaymentMethodInformation"
-                });
+        //public async Task<bool> SavePaymentMethodInformation(PaymentMethodInformationDto paymentMethodInformationDto)
+        //{
+        //    try
+        //    {
+        //        var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+        //        {
+        //            ApiType = SD.ApiType.POST,
+        //            Data = paymentMethodInformationDto,
+        //            Url = $"{villaUrl}/api/v1/StripeSubscriptionAuth/SavePaymentMethodInformation"
+        //        });
 
-                return response.IsSuccess;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"An error occurred when creating Payment Information: {ex.Message}", ex);
-            }
-        }
+        //        return response.IsSuccess;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new Exception($"An error occurred when creating Payment Information: {ex.Message}", ex);
+        //    }
+        //}
         
-        public async Task<bool> SaveStripeSubscription(StripeSubscriptionDto stripeSubscriptionDto)
-        {
-            try
-            {
-                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
-                {
-                    ApiType = SD.ApiType.POST,
-                    Data = stripeSubscriptionDto,
-                    Url = $"{villaUrl}/api/v1/StripeSubscriptionAuth/SaveStripeSubscription"
-                });
+        //public async Task<bool> SaveStripeSubscription(StripeSubscriptionDto stripeSubscriptionDto)
+        //{
+        //    try
+        //    {
+        //        var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+        //        {
+        //            ApiType = SD.ApiType.POST,
+        //            Data = stripeSubscriptionDto,
+        //            Url = $"{villaUrl}/api/v1/StripeSubscriptionAuth/SaveStripeSubscription"
+        //        });
 
-                return response.IsSuccess;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"An error occurred when creating Payment Information: {ex.Message}", ex);
-            }
-        }
+        //        return response.IsSuccess;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new Exception($"An error occurred when creating Payment Information: {ex.Message}", ex);
+        //    }
+        //}
 
         #endregion
     }

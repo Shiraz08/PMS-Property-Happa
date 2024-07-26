@@ -110,8 +110,8 @@
 
     function loadSubscriptions() {
         $.ajax({
-            url: '/Subscription/GetAllSubscriptions',
-            type: 'GET',
+            url: '@Url.Action("GetAllSubscriptionBlocks", "Subscription")',
+            type: 'Post',
             dataType: 'json',
             success: function (response) {
                 if (response.success && Array.isArray(response.data)) {
