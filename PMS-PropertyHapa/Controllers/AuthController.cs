@@ -192,7 +192,7 @@ namespace PMS_PropertyHapa.Controllers
                                                 </div>
                                             </body>
                                             </html>";
-                   // await _emailSender.SendEmailAsync(user.Email, "Confirm your email.", htmlContent);
+                    await _emailSender.SendEmailAsync(user.Email, "Confirm your email.", htmlContent);
 
                     //return Ok(new { success = true, message = "User registered successfully." });
                 }
@@ -353,7 +353,7 @@ namespace PMS_PropertyHapa.Controllers
                                         </body>
                                         </html>
                                         ";
-                //await _emailSender.SendEmailAsync(email, "Confirm your email.", htmlContent);
+                await _emailSender.SendEmailAsync(email, "Confirm your email.", htmlContent);
 
                 await _authService.SaveEmailOTP(model);
 
