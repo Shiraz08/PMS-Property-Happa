@@ -38,7 +38,7 @@ namespace PMS_PropertyHapa.Admin.Controllers
             {
                 var subscriptionRequests = await (from s in _context.StripeSubscriptions
                                                   from u in _context.ApplicationUsers.Where(x=>x.Id == s.UserId).DefaultIfEmpty()
-                                                  where s.IsDeleted != true
+                                                  where s.IsDeleted != true && s.IsTrial == true
                                                   select new StripeSubscriptionDto
                                                   {
                                                       Id = s.Id,
