@@ -16,6 +16,7 @@
         public string OrganizationIcon { get; set; }    
 
         public int? Tid { get; set; }    
-        public int TenantId { get; set; }    
+        public int TenantId { get; set; }
+        public List<string> Roles { get; set; }
     }
 }

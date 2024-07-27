@@ -20,7 +20,7 @@ using PMS_PropertyHapa.MigrationsFiles.Migrations;
 using PMS_PropertyHapa.Shared.Twilio;
 using PMS_PropertyHapa.Models.Stripe;
 using static PMS_PropertyHapa.Shared.Enum.SD;
-using PMS_PropertyHapa.API.Services;
+using PMS_PropertyHapa.Services;
 
 namespace PMS_PropertyHapa.Controllers
 {

@@ -118,7 +118,7 @@ namespace MagicVilla_VillaAPI.Repository
                     await _userManager.RemoveFromRoleAsync(user, "SubscribedUser");
                 }
             }
-
+            var roles = await _userManager.GetRolesAsync(user);
             // Return TokenDTO including tenant organization details, if available
             return new TokenDTO
             {
@@ -133,16 +133,21 @@ namespace MagicVilla_VillaAPI.Repository
                 OrganizationLogo = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"TenantOrganizationInfo_OrganizationLogo_" + tenantOrganization?.Id + Path.GetExtension(tenantOrganization?.OrganizationLogo)}",
                 OrganizationIcon = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"TenantOrganizationInfo_OrganizationIcon_" + tenantOrganization?.Id + Path.GetExtension(tenantOrganization?.OrganizationIcon)}",
                 Tid = tenantOrganization?.Id,
-                TenantId = user.TenantId
+                TenantId = user.TenantId,
+                Roles = roles.ToList()
             };
         }
 
         private bool CheckUserSubscription(string userId)
         {
-            var subscription = _db.StripeSubscriptions.FirstOrDefault(x => (x.UserId == userId) && !x.IsCanceled);
-            //var subscription = _db.StripeSubscriptions.Where(x => x.UserId == userId && !x.IsCanceled).OrderByDescending(x => x.Id).FirstOrDefault();
+            //var subscription = _db.StripeSubscriptions.FirstOrDefault(x => (x.UserId == userId) && !x.IsCanceled);
+            var subscription = _db.StripeSubscriptions.Where(x => x.UserId == userId && !x.IsCanceled).OrderByDescending(x => x.Id).FirstOrDefault();
             if (subscription != null && subscription.EndDate >= DateTime.UtcNow && subscription.IsCanceled != true)
             {
+                if (subscription.IsTrial == true && subscription.HasAdminPermission != true)
+                {
+                    return false;
+                }
                 return true;
             }
             return false;
@@ -4045,7 +4050,7 @@ namespace MagicVilla_VillaAPI.Repository
             if (assetDTO.Image != null)
             {
                 var ext = Path.GetExtension(assetDTO.PictureFileName);
-                await _googleCloudStorageService.UploadImagebyBase64Async(assetDTO.Image, "Assets_Image_" + existingAsset.AssetId + ext);
+                var res = await _googleCloudStorageService.UploadImagebyBase64Async(assetDTO.Image, "Assets_Image_" + existingAsset.AssetId + ext);
             }
 
             return result > 0;
@@ -4260,6 +4265,7 @@ namespace MagicVilla_VillaAPI.Repository
                                        join organization in _db.OwnerOrganization
                                        on owner.OwnerId equals organization.OwnerId into orgGroup
                                        from org in orgGroup.DefaultIfEmpty()
+                                       where owner.IsDeleted != true
                                        select new OwnerDto
                                        {
                                            OwnerId = owner.OwnerId,
@@ -6500,7 +6506,7 @@ namespace MagicVilla_VillaAPI.Repository
             if (model.Picture != null)
             {
                 var ext = Path.GetExtension(model.Picture.FileName);
-                await _googleCloudStorageService.UploadImageAsync(model.Picture, "Vendor_Picture_" + vendor.VendorId + ext);
+                var res = await _googleCloudStorageService.UploadImageAsync(model.Picture, "Vendor_Picture_" + vendor.VendorId + ext);
             }
 
             if (model.OrganizationIcon != null)

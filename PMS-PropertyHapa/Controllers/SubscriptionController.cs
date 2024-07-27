@@ -22,8 +22,8 @@ using PMS_PropertyHapa.Models.Stripe;
 using static PMS_PropertyHapa.Shared.Enum.SD;
 using System.Security.Claims;
 using Microsoft.Extensions.Logging;
-using PMS_PropertyHapa.API.Services;
 using Stripe;
+using PMS_PropertyHapa.Services;
 
 namespace PMS_PropertyHapa.Controllers
 {

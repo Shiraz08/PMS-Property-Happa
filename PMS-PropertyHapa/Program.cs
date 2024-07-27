@@ -28,7 +28,7 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.Configure<GoogleCloudStorageOptions>(builder.Configuration.GetSection("GoogleServiceAccount"));
 builder.Services.AddSingleton<GoogleCloudStorageService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<PMS_PropertyHapa.API.Services.IStripeService, PMS_PropertyHapa.API.Services.StripeService>();
+builder.Services.AddScoped<IStripeService, StripeService>();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
               .AddCookie(options =>

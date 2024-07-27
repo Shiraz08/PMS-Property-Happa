@@ -95,7 +95,6 @@
         }
 
         #trialNotification {
-            display: none; /* Initially hidden */
             padding: 10px;
             background-color: #f8d7da;
             color: #721c24;
@@ -354,7 +353,7 @@
                 </div>
             </div>
             <!-- Page Sidebar Ends-->
-            <div class="page-body" style="min-height:10px">
+            <div class="page-body d-none" id="trialBody" style="min-height:10px">
                 <div class="container-fluid">
                     <div class="row">
                         <div id="trialNotification">
@@ -771,22 +770,21 @@
                 url: '/Subscriptions/CheckTrialDays',
                 method: 'GET',
                 success: function (response) {
-                    console.log("response");
-                    console.log(response);
+                    if(response){
+                        const currentDate = new Date();
+                        const startDate = new Date(response.StartDate);
+                        const endDate = new Date(response.EndDate);
 
-                    const currentDate = new Date();
-                    const startDate = new Date(response.StartDate);
-                    const endDate = new Date(response.EndDate);
-
-                    const timeDiff = endDate - currentDate;
-                    const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)); 
-                    if (response.IsTrial == true) { 
-                        if (currentDate >= startDate && currentDate <= endDate) {
-                            $('#trialNotification').html(`You have ${diffDays} trial days left.`);
-                            $('#trialNotification').show();
-                        } else {
-                            $('#trialNotification').html('Your trial period has ended.');
-                            $('#trialNotification').show();
+                        const timeDiff = endDate - currentDate;
+                        const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)); 
+                        if (response.IsTrial == true) { 
+                            if (currentDate >= startDate && currentDate <= endDate) {
+                                $('#trialNotification').html(`You have ${diffDays} trial days left.`);
+                                $('#trialBody').removeClass('d-none');
+                            } else {
+                                $('#trialNotification').html('Your trial period has ended.');
+                                $('#trialBody').removeClass('d-none');
+                            }
                         }
                     }
                 },

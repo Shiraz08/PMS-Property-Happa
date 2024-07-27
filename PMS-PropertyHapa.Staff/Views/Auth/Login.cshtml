@@ -22,7 +22,7 @@
     <link href="path/to/bootstrap-icons.css" rel="stylesheet">
 
 
-    <script>
+     <script>
         function setCookie(name, value, days) {
             var expires = "";
             if (days) {
@@ -51,6 +51,9 @@
                             localStorage.setItem('userId', response.result.userId);
                             setCookie("userId", response.result.userId, 7);
                             localStorage.setItem('userName', response.result.userName);
+                            if (response.result.roles) {
+                                localStorage.setItem('roles', JSON.stringify(response.result.roles));
+                            }
                             if (response.result.organizationName) {
                                 localStorage.setItem('organizationName', response.result.organizationName);
                             }
@@ -102,7 +105,7 @@
                 }
             });
         });
-    </script>
+     </script>
 }
 
 

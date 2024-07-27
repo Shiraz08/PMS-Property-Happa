@@ -29,7 +29,7 @@ builder.Services.AddScoped<GoogleCloudStorageService>();
 builder.Services.AddScoped<ITokenProvider, TokenProvider>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<PMS_PropertyHapa.API.Services.IStripeService, PMS_PropertyHapa.API.Services.StripeService>();
+builder.Services.AddScoped<IStripeService, StripeService>();
 builder.Services.AddDistributedMemoryCache();
 // Add services to the container.
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();

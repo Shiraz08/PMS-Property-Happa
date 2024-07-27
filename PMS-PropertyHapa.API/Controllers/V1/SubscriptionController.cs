@@ -140,20 +140,10 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             {
                 var trialdays = await _userRepo.CheckTrialDaysAsync(currenUserId);
 
-                if (trialdays != null)
-                {
-                    _response.StatusCode = HttpStatusCode.OK;
-                    _response.IsSuccess = true;
-                    _response.Result = trialdays;
-                    return Ok(_response);
-                }
-                else
-                {
-                    _response.StatusCode = HttpStatusCode.NotFound;
-                    _response.IsSuccess = false;
-                    _response.ErrorMessages.Add("No trial user found with this id.");
-                    return NotFound(_response);
-                }
+                _response.StatusCode = HttpStatusCode.OK;
+                _response.IsSuccess = true;
+                _response.Result = trialdays;
+                return Ok(_response);
             }
             catch (Exception ex)
             {

@@ -799,7 +799,7 @@ namespace PMS_PropertyHapa.Staff.Services
             }
             else
             {
-                throw new Exception("Failed to retrieve asset data");
+                throw new Exception("Failed to retrieve landlord data");
             }
 
 
@@ -3444,8 +3444,7 @@ namespace PMS_PropertyHapa.Staff.Services
 
             if (response.IsSuccess == true)
             {
-                var userListJson = Convert.ToString(response.Result);
-                var trialdays = JsonConvert.DeserializeObject<StripeSubscriptionDto>(userListJson);
+                var trialdays = response.Result != null ? JsonConvert.DeserializeObject<StripeSubscriptionDto>(Convert.ToString(response.Result)) : null;
                 return trialdays;
             }
             else
