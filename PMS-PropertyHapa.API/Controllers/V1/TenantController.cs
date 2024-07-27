@@ -50,6 +50,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             {
                 var tenants = await _userRepo.GetAllTenantsAsync();
                 _response.Result = tenants;
+                _response.IsSuccess = true;
                 return Ok(_response);
 
             }

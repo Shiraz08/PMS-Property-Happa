@@ -53,20 +53,10 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             {
                 var assets = await _userRepo.GetAllLandlordAsync();
 
-                if (assets != null)
-                {
-                    _response.StatusCode = HttpStatusCode.OK;
-                    _response.IsSuccess = true;
-                    _response.Result = assets;
-                    return Ok(_response);
-                }
-                else
-                {
-                    _response.StatusCode = HttpStatusCode.NotFound;
-                    _response.IsSuccess = false;
-                    _response.ErrorMessages.Add("No asset found with this id.");
-                    return NotFound(_response);
-                }
+                _response.StatusCode = HttpStatusCode.OK;
+                _response.IsSuccess = true;
+                _response.Result = assets;
+                return Ok(_response);
             }
             catch (Exception ex)
             {

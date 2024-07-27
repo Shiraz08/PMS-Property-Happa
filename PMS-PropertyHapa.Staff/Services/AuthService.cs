@@ -204,10 +204,9 @@ namespace PMS_PropertyHapa.Staff.Services
                     Url = $"{villaUrl}/api/v1/Tenantauth/Tenant"
                 });
 
-                if (response != null && response.IsSuccess)
+                if (response.IsSuccess)
                 {
-                    var userListJson = Convert.ToString(response.Result);
-                    var tenants = JsonConvert.DeserializeObject<IEnumerable<TenantModelDto>>(userListJson);
+                    var tenants = response.Result != null ? JsonConvert.DeserializeObject<IEnumerable<TenantModelDto>>(Convert.ToString(response.Result)) : null;
                     return tenants;
                 }
                 else
@@ -793,8 +792,7 @@ namespace PMS_PropertyHapa.Staff.Services
 
             if (response.IsSuccess == true)
             {
-                var userListJson = Convert.ToString(response.Result);
-                var asset = JsonConvert.DeserializeObject<IEnumerable<OwnerDto>>(userListJson);
+                var asset = response.Result != null ? JsonConvert.DeserializeObject<IEnumerable<OwnerDto>>(Convert.ToString(response.Result)) : null;
                 return asset;
             }
             else
