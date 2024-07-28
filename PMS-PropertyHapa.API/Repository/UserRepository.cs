@@ -3843,16 +3843,16 @@ namespace MagicVilla_VillaAPI.Repository
                 {
                     existingOwner = new Owner
                     {
-                        FirstName = user.FirstName,
-                        LastName = user.LastName,
-                        EmailAddress = user.Email,
-                        Address = user.Address,
-                        District = user.District,
-                        Region = user.Region,
-                        Country = user.Country,
-                        PostalCode = user.PostalCode,
+                        FirstName = user.FirstName ?? "",
+                        LastName = user.LastName ?? "",
+                        EmailAddress = user.Email ?? "",
+                        Address = user.Address ?? "",
+                        District = user.District ?? "",
+                        Region = user.Region ?? "",
+                        Country = user.Country ?? "",
+                        PostalCode = user.PostalCode ?? "",
                         AppTenantId = Guid.Parse(assetDTO.AppTid),
-                        Picture = tenantOrganization.OrganizationLogo,
+                        Picture = tenantOrganization?.OrganizationLogo ?? "",
                         AddedDate = DateTime.Now,
                         AddedBy = assetDTO.AddedBy
 
@@ -3861,7 +3861,7 @@ namespace MagicVilla_VillaAPI.Repository
                     await _db.Owner.AddAsync(existingOwner);
                     await _db.SaveChangesAsync();
 
-                    if (existingOwner.Picture != null)
+                    if (tenantOrganization?.OrganizationLogo != null)
                     {
                         var ext = Path.GetExtension(existingOwner.Picture);
                         var picture = await _googleCloudStorageService.GetGoogleImageAsync("TenantOrganizationInfo_OrganizationLogo_" + tenantOrganization.Id + ext);

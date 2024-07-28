@@ -121,59 +121,73 @@
                     </div>
                 </div>
             } *@
-            @foreach (var item in Model)
+            @if (Model != null && Model.Any())
             {
-                <div class="col-lg-4 col-md-6 mb-4">
-                    <div class="card shadow-sm h-100">
-                        <div class="card-body card-body-custom">
-                            <a id="propertyDetails" href="/Assests/AssetDetails/@item?.AssetId" class="text-decoration-none text-dark">
-                                <div class="d-flex align-items-center mb-3">
-                                    @{
-                                        if (!string.IsNullOrEmpty(item.Image))
-                                        {
-                                            <img class="img-fluid rounded-1 property-img" src="@item.Image" alt="Property Image">
+                @foreach (var item in Model)
+                {
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-body card-body-custom">
+                                <a id="propertyDetails" href="/Assests/AssetDetails/@item?.AssetId" class="text-decoration-none text-dark">
+                                    <div class="d-flex align-items-center mb-3">
+                                        @{
+                                            if (!string.IsNullOrEmpty(item.Image))
+                                            {
+                                                <img class="img-fluid rounded-1 property-img" src="@item.Image" alt="Property Image">
+                                            }
+                                            else
+                                            {
+                                                <img class="img-fluid rounded-1 property-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRG_TUukNvS-0E486weXLkJDpTubsAcdHdmKw&usqp=CAU" alt="Default Image">
+                                            }
                                         }
-                                        else
-                                        {
-                                            <img class="img-fluid rounded-1 property-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRG_TUukNvS-0E486weXLkJDpTubsAcdHdmKw&usqp=CAU" alt="Default Image">
-                                        }
-                                    }
-                                    <div class="ms-3">
-                                        <h5 class="card-title">@item.BuildingNo - @item.BuildingName</h5>
-                                        <p class="card-text mb-0">@item.SelectedPropertyType</p>
-                                        <p class="card-text">@item.SelectedSubtype</p>
+                                        <div class="ms-3">
+                                            <h5 class="card-title">@item.BuildingNo - @item.BuildingName</h5>
+                                            <p class="card-text mb-0">@item.SelectedPropertyType</p>
+                                            <p class="card-text">@item.SelectedSubtype</p>
+                                        </div>
                                     </div>
-                                </div>
-                            </a>
+                                </a>
 
-                            <p class="card-text"><strong>Units:</strong> @item.Units.ToList().Count()</p>
-                            @if (item.Units.Any())
-                            {
-                                <p class="card-text"><strong>Unit Names:</strong> @string.Join(", ", item.Units.Select(u => u.UnitName))</p>
-                            }
+                                <p class="card-text"><strong>Units:</strong> @item.Units.ToList().Count()</p>
+                                @if (item.Units.Any())
+                                {
+                                    <p class="card-text"><strong>Unit Names:</strong> @string.Join(", ", item.Units.Select(u => u.UnitName))</p>
+                                }
 
-                            <p class="card-text"><strong>Address:</strong> @item.Street1, @item.State, @item.City, @item.Country</p>
-                            @if (item?.OwnerData != null)
-                            {
-                                <p class="card-text"><strong>Owner Name:</strong> @(string.IsNullOrEmpty(item.OwnerData.FirstName) && string.IsNullOrEmpty(item.OwnerData.LastName) ? "N/A" : $"{item.OwnerData.FirstName} {item.OwnerData.LastName}")</p>
-                                <p class="card-text"><strong>Email:</strong> @(string.IsNullOrEmpty(item.OwnerData.EmailAddress) ? "N/A" : item.OwnerData.EmailAddress)</p>
-                            }
-                        </div>
-                        <div class="card-footer bg-transparent border-top-0">
-                            <div class="d-flex flex-wrap justify-content-between">
-                                <button type="button" class="btn btn-info btn-sm mb-2 me-2" onclick="openUnitsModal(@item?.AssetId)">
-                                    <i class="fa fa-info-circle"></i> Unit Detail
-                                </button>
-                                <button type="button" class="btn btn-warning btn-sm mb-2 me-2" onclick="assetLateFee(@item.AssetId)">
-                                    <i class="fa fa-pencil"></i> Late Fee
-                                </button>
-                                <button type="button" class="btn btn-success btn-sm mb-2 me-2" onclick="editAsset(@item.AssetId)">
-                                    <i class="fa fa-pencil"></i> Edit
-                                </button>
-                                <button type="button" class="btn btn-danger btn-sm mb-2 me-2" onclick="deleteAsset(@item.AssetId)">
-                                    <i class="fa fa-trash"></i> Delete
-                                </button>
+                                <p class="card-text"><strong>Address:</strong> @item.Street1, @item.State, @item.City, @item.Country</p>
+                                @if (item?.OwnerData != null)
+                                {
+                                    <p class="card-text"><strong>Owner Name:</strong> @(string.IsNullOrEmpty(item.OwnerData.FirstName) && string.IsNullOrEmpty(item.OwnerData.LastName) ? "N/A" : $"{item.OwnerData.FirstName} {item.OwnerData.LastName}")</p>
+                                    <p class="card-text"><strong>Email:</strong> @(string.IsNullOrEmpty(item.OwnerData.EmailAddress) ? "N/A" : item.OwnerData.EmailAddress)</p>
+                                }
                             </div>
+                            <div class="card-footer bg-transparent border-top-0">
+                                <div class="d-flex flex-wrap justify-content-between">
+                                    <button type="button" class="btn btn-info btn-sm mb-2 me-2" onclick="openUnitsModal(@item?.AssetId)">
+                                        <i class="fa fa-info-circle"></i> Unit Detail
+                                    </button>
+                                    <button type="button" class="btn btn-warning btn-sm mb-2 me-2" onclick="assetLateFee(@item.AssetId)">
+                                        <i class="fa fa-pencil"></i> Late Fee
+                                    </button>
+                                    <button type="button" class="btn btn-success btn-sm mb-2 me-2" onclick="editAsset(@item.AssetId)">
+                                        <i class="fa fa-pencil"></i> Edit
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-sm mb-2 me-2" onclick="deleteAsset(@item.AssetId)">
+                                        <i class="fa fa-trash"></i> Delete
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-lg-12 col-md-12 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">No Data Available</h5>
+                            <p class="card-text">There is no data added yet.</p>
                         </div>
                     </div>
                 </div>

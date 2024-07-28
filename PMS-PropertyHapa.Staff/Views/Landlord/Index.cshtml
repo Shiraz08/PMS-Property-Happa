@@ -114,7 +114,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/spin.js/2.3.2/spin.min.js"></script>
 
 <script>
-       $(document).ready(function () {
+      $(document).ready(function () {
+        
         $('#searchInput').on('input', function () {
             var searchText = $(this).val().toLowerCase();
             $('.nav-link').each(function () {
@@ -127,7 +128,12 @@
             });
         });
 
-        activeDivforowner(@Model?.OrderByDescending(x => x.OwnerId).Take(1).Select(x => x.OwnerId).FirstOrDefault());
+        
+        var firstOwner = @Html.Raw(Json.Serialize(@Model?.OrderByDescending(x => x.OwnerId)?.Take(1)?.Select(x => x.OwnerId)?.FirstOrDefault()));
+
+        if(firstOwner){
+           activeDivforowner(@Model?.OrderByDescending(x => x.OwnerId).Take(1).Select(x => x.OwnerId).FirstOrDefault());
+        }
     });
 
     function sumAmounts(items) {

@@ -125,7 +125,12 @@
                 }
             });
         });
-        activeDivForTenant(@Model?.OrderByDescending(x => x.TenantId).Take(1).Select(x => x.TenantId).FirstOrDefault());
+
+        var firstTenant = @Html.Raw(Json.Serialize(@Model?.OrderByDescending(x => x.TenantId)?.Take(1)?.Select(x => x.TenantId)?.FirstOrDefault()));
+        if (firstTenant) {
+            activeDivForTenant(@Model?.OrderByDescending(x => x.TenantId).Take(1).Select(x => x.TenantId).FirstOrDefault());
+
+        }
     });
 
     function sumAmounts(items) {

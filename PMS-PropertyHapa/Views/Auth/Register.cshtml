@@ -170,7 +170,7 @@
                     <!-- Yearly Subscription blocks will be dynamically inserted here -->
                 </div>
             </div>
-            <div class="bank-account-form d-none">
+@*             <div class="bank-account-form d-none">
                 <div class="row">
                     <div class="form-group col-md-6">
                         <label for="cardholderName">Cardholder Name</label>
@@ -206,7 +206,7 @@
                         <input type="text" class="form-control" id="state" placeholder="State" required>
                     </div>
                 </div>
-            </div>
+            </div> *@
             <div class="f1-buttons">
                 <button class="btn btn-primary btn-previous" type="button">Previous</button>
                 <button class="btn btn-primary btn-submit d-none btn-register" onclick="registerUser()" type="button">Register</button>
@@ -380,7 +380,7 @@
         $("#subscriptionId").val(id);
         $("#subscriptionName").val(name);
         $("#subscriptionPrice").val(price);
-        $('.bank-account-form').addClass('d-none');
+        // $('.bank-account-form').addClass('d-none');
 
         if (price === 0) {
             isNotFree = false;
@@ -388,7 +388,7 @@
         } else {
             isNotFree = true;
             $('.btn-register').removeClass('d-none');
-              $('.bank-account-form').removeClass('d-none');
+            //$('.bank-account-form').removeClass('d-none');
         }
         
 
@@ -412,47 +412,47 @@
             return;
         }
 
-        if (isNotFree) {
-            var cardholderName = $("#cardholderName").val();
-            var cardNumber = $("#cardNumber").val();
-            var expiryDate = $("#expiryDate").val();
-            var cvv = $("#cvv").val();
-            var streetAddress = $("#streetAddress").val();
-            var city = $("#city").val();
-            var state = $("#state").val();
-            var isvalid = true;
-            if (!cardholderName) {
-                toastr.error("Cardholder Name is required.");
-                isvalid = false;
-            }
-            if (!cardNumber) {
-                toastr.error("Card Number is required.");
-                isvalid = false;
-            }
-            if (!expiryDate) {
-                toastr.error("Expiration Date is required.");
-                isvalid = false;
-            }
-            if (!cvv) {
-                toastr.error("CVV is required.");
-                isvalid = false;
-            }
-            if (!streetAddress) {
-                toastr.error("Street Address is required.");
-                isvalid = false;
-            }
-            if (!city) {
-                toastr.error("City is required.");
-                isvalid = false;
-            }
-            if (!state) {
-                toastr.error("State is required.");
-                isvalid = false;
-            }
-            if (!isvalid) {
-                return;
-            }
-        }
+        // if (isNotFree) {
+        //     var cardholderName = $("#cardholderName").val();
+        //     var cardNumber = $("#cardNumber").val();
+        //     var expiryDate = $("#expiryDate").val();
+        //     var cvv = $("#cvv").val();
+        //     var streetAddress = $("#streetAddress").val();
+        //     var city = $("#city").val();
+        //     var state = $("#state").val();
+        //     var isvalid = true;
+        //     if (!cardholderName) {
+        //         toastr.error("Cardholder Name is required.");
+        //         isvalid = false;
+        //     }
+        //     if (!cardNumber) {
+        //         toastr.error("Card Number is required.");
+        //         isvalid = false;
+        //     }
+        //     if (!expiryDate) {
+        //         toastr.error("Expiration Date is required.");
+        //         isvalid = false;
+        //     }
+        //     if (!cvv) {
+        //         toastr.error("CVV is required.");
+        //         isvalid = false;
+        //     }
+        //     if (!streetAddress) {
+        //         toastr.error("Street Address is required.");
+        //         isvalid = false;
+        //     }
+        //     if (!city) {
+        //         toastr.error("City is required.");
+        //         isvalid = false;
+        //     }
+        //     if (!state) {
+        //         toastr.error("State is required.");
+        //         isvalid = false;
+        //     }
+        //     if (!isvalid) {
+        //         return;
+        //     }
+        // }
 
         var data = {
             UserName: $("#firstName").val(),
@@ -475,17 +475,17 @@
             IsTrial: $("#subscriptionName").val() == "Free" ? true : false
         };
 
-        if (isNotFree) {
-            $.extend(data, {
-                CardholderName: $("#cardholderName").val(),
-                CardNumber: $("#cardNumber").val(),
-                ExpirationDate: $("#expiryDate").val(),
-                CVV: $("#cvv").val(),
-                StreetAdress: $("#streetAddress").val(),
-                City: $("#city").val(),
-                State: $("#state").val()
-            });
-        }
+        // if (isNotFree) {
+        //     $.extend(data, {
+        //         CardholderName: $("#cardholderName").val(),
+        //         CardNumber: $("#cardNumber").val(),
+        //         ExpirationDate: $("#expiryDate").val(),
+        //         CVV: $("#cvv").val(),
+        //         StreetAdress: $("#streetAddress").val(),
+        //         City: $("#city").val(),
+        //         State: $("#state").val()
+        //     });
+        // }
 
         $.blockUI({ message: '<h1>Loading...</h1>' });
         $.ajax({
