@@ -193,7 +193,9 @@ namespace PMS_PropertyHapa.Controllers
                                             </body>
                                             </html>";
                     await _emailSender.SendEmailAsync(user.Email, "Confirm your email.", htmlContent);
-
+                    await _context.SaveChangesAsync();
+                    model.UserId = user.Id;
+                    return await SavePayment(model);
                     //return Ok(new { success = true, message = "User registered successfully." });
                 }
                 var errorMessage = "";
@@ -201,10 +203,7 @@ namespace PMS_PropertyHapa.Controllers
                 {
                     errorMessage += error.Description + " ";
                 }
-                await _context.SaveChangesAsync();
-                model.UserId = user.Id;
-               return await SavePayment(model);
-                //return Ok(new { success = false, message = errorMessage });
+                return Ok(new { success = false, message = errorMessage });
             }
 
             return Ok(new { success = false, message = "Model is not valid." });
@@ -271,7 +270,6 @@ namespace PMS_PropertyHapa.Controllers
                 throw;
             }
         }
-
 
         [HttpGet]
         public async Task<IActionResult> ConfirmEmail(string name, string code)

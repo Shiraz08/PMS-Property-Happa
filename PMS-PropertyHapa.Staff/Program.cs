@@ -14,9 +14,11 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using PMS_PropertyHapa.Shared.Email;
 using PMS_PropertyHapa.Staff.Models.ViewModels;
 using PMS_PropertyHapa.Models.Configrations;
+using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
 
+StripeConfiguration.ApiKey = builder.Configuration["StripeSettings:SecretKey"];
 builder.Services.AddControllersWithViews(u => u.Filters.Add(new AuthExceptionRedirection()));
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.AddHttpClient<IAuthService, AuthService>();
@@ -74,10 +76,19 @@ builder.Services.AddControllers().AddNewtonsoftJson(options =>
 {
     options.SerializerSettings.ContractResolver = new DefaultContractResolver();
 });
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", builder =>
+    {
+        builder.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader();
+    });
+});
 builder.Configuration.GetSection("ServiceUrls");
 builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("StripeSettings"));
 builder.Services.AddControllersWithViews();
+
 var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
@@ -88,6 +99,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseSession();

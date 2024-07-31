@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using PMS_PropertyHapa.MigrationsFiles.Data;
 using PMS_PropertyHapa.MigrationsFiles.Data;
 using PMS_PropertyHapa.Models.Roles;
@@ -30,8 +31,9 @@ namespace PMS_PropertyHapa.Admin.Controllers
             _environment = Environment;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+
             return View();
         }
 
@@ -40,6 +42,7 @@ namespace PMS_PropertyHapa.Admin.Controllers
         {
             return View();
         }
+
 
     }
 }

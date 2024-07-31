@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using PMS_PropertyHapa.MigrationsFiles.Data;
 using PMS_PropertyHapa.MigrationsFiles.Data;
 using PMS_PropertyHapa.Models.Roles;
@@ -32,6 +33,25 @@ namespace PMS_PropertyHapa.Admin.Controllers
         public IActionResult Index()
         {
             return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllSubscriptions()
+        {
+            try
+            {
+                var subscriptions = await _context.Subscriptions.ToListAsync();
+                var subscriptionCounts = subscriptions
+                    .GroupBy(s => s.SubscriptionName)
+                    .Select(g => new { SubscriptionName = g.Key, Count = g.Count() })
+                    .ToList();
+                var totalEarnings = subscriptions.Sum(s => s.Price);
+                return Json(new { success = true, data = subscriptionCounts, totalEarnings });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
         }
     }
 }

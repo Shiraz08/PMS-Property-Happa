@@ -25,7 +25,7 @@ namespace PMS_PropertyHapa.Services
                 StripeConfiguration.ApiKey = _stripeSettings["SecretKey"];
                 var priceData = new SessionLineItemPriceDataOptions
                 {
-                    UnitAmount = data.Product.Price, // Price is in USD cents.
+                    UnitAmount = data.Product.Price,
                     Currency = data.Product.Currency,
                     ProductData = new SessionLineItemPriceDataProductDataOptions
                     {

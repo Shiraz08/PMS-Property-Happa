@@ -2,6 +2,111 @@
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<style>
+
+    :root {
+        --light-grey: #F6F9FC;
+        --dark-terminal-color: #0A2540;
+        --accent-color: #635BFF;
+        --radius: 3px;
+    }
+
+    /*body {
+      padding: 20px;
+      font-family: 'Raleway';
+      display: flex;
+      justify-content: center;
+      font-size: 1.2em;
+      color: var(--dark-terminal-color);
+    }
+
+    main {
+      width: 480px;
+    }
+     */
+    form > * {
+        margin: 10px 0;
+    }
+
+    button {
+        background-color: var(--accent-color);
+    }
+
+    button {
+        background: var(--accent-color);
+        border-radius: var(--radius);
+        color: white;
+        border: 0;
+        padding: 12px 16px;
+        margin-top: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: block;
+    }
+
+        button:hover {
+            filter: contrast(115%);
+        }
+
+        button:active {
+            transform: translateY(0px) scale(0.98);
+            filter: brightness(0.9);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: none;
+        }
+
+    input, select {
+        display: block;
+        font-size: 1.1em;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    label {
+        display: block;
+    }
+
+    a {
+        color: var(--accent-color);
+        font-weight: 900;
+    }
+
+    small {
+        font-size: .6em;
+    }
+
+    fieldset, input, select {
+        border: 1px solid #efefef;
+    }
+
+    #payment-form {
+        border: #F6F9FC solid 1px;
+        border-radius: var(--radius);
+        padding: 20px;
+        margin: 20px 0;
+        box-shadow: 0 30px 50px -20px rgb(50 50 93 / 25%), 0 30px 60px -30px rgb(0 0 0 / 30%);
+    }
+
+    #messages {
+        font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New';
+        display: none; /* hide initially, then show once the first message arrives */
+        background-color: #0A253C;
+        color: #00D924;
+        padding: 20px;
+        margin: 20px 0;
+        border-radius: var(--radius);
+        font-size: 0.7em;
+        overflow: scroll;
+    }
+
+</style>
+
+
+<script src="~/js/jscontroller/utils.js"></script>
 <div class="page-body py-4">
     <div class="container">
         <div class="row justify-content-center">
@@ -30,19 +135,186 @@
     </div>
 </div>
 
+@* 
+<div class="modal fade" id="stripeModal" tabindex="-1" aria-labelledby="stripeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="stripeModalLabel">Checkout</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="payment-form">
+                <p class="d-none" id="product-Id"></p>
+                <label for="name">Name</label>
+                <input id="name" placeholder="Jenny Rosen" value="Jenny Rosen" required />
+
+                <label for="card-element">Card</label>
+                <div id="card-element"></div>
+                <div id="card-errors" role="alert"></div>
+
+                <div id="product-details">
+                    <h6 id="product-title"></h6>
+                    <p id="product-description"></p>
+                    <div id="price-section">
+                        <img id="price-image" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRG_TUukNvS-0E486weXLkJDpTubsAcdHdmKw&usqp=CAU" alt="Price Image" />
+                        <p class="d-none" id="product-price"></p>
+                        <p id="product-priceText"></p>
+                    </div>
+                </div>
+
+                <button id="submit">Pay</button>
+            </form>
+
+            <div id="messages" role="alert" style="display: none;"></div>
+        </div>
+    </div>
+</div>
+ *@
+
+
+<!-- Modal HTML -->
+<div class="modal fade" id="stripeModal" tabindex="-1" aria-labelledby="stripeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="stripeModalLabel">Checkout</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="payment-form">
+                <p class="d-none" id="product-Id"></p>
+                <label for="name">Name</label>
+                <input id="name" placeholder="Jenny Rosen" value="Jenny Rosen" required />
+
+                <label for="card-element">Card</label>
+                <div id="card-element"></div> <!-- Stripe Element will be mounted here -->
+                <div id="card-errors" role="alert"></div> <!-- Display errors -->
+
+                <div id="product-details">
+                    <h6 id="product-title"></h6>
+                    <p id="product-description"></p>
+                    <div id="price-section">
+                        <img id="price-image" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRG_TUukNvS-0E486weXLkJDpTubsAcdHdmKw&usqp=CAU" alt="Price Image" />
+                        <p class="d-none" id="product-price"></p>
+                        <p id="product-priceText"></p>
+                    </div>
+                </div>
+
+                <button id="submit">Pay</button>
+            </form>
+
+            <div id="messages" role="alert" style="display: none;"></div>
+        </div>
+    </div>
+</div>
+
+
 <script src="https://js.stripe.com/v3/"></script>
 <script>
-    $(document).ready(function () {
-        $('#planSelection').change(function () {
-            if ($(this).prop('checked')) {
-                $('#monthly-container').addClass('d-none');
-                $('#yearly-container').removeClass('d-none');
-            } else {
-                $('#monthly-container').removeClass('d-none');
-                $('#yearly-container').addClass('d-none');
+    document.addEventListener('DOMContentLoaded', async () => {
+        const stripe = Stripe('pk_test_51PATV6AezidaMUD1niwSxJ42oxgtI2vZLXEQo8lEMybnjmzaLF3JRV099zwzJ6HWb4cWVzqlvJSaLP7IiMn8YuXM00cA7HPhEH', {
+            apiVersion: '2024-06-20',
+        });
+
+        const elements = stripe.elements();
+        const cardElement = document.getElementById('card-element');
+        const card = elements.create('card');
+
+        if (cardElement) {
+            card.mount(cardElement); // Mount the Card Element
+        } else {
+            console.error('Card Element container not found.');
+        }
+
+        let submitted = false;
+
+        // Handle form submission
+        $('#payment-form').on('submit', async function (event) {
+            event.preventDefault();
+
+            if (submitted) return;
+            submitted = true;
+            $(this).find('button').prop('disabled', true);
+
+            const id = $('#product-Id').text();
+            const nameInput = $('#name').val();
+            const title = $('#product-title').text();
+            const description = $('#product-description').text();
+            const price = parseFloat($('#product-price').text());
+
+            const formData = {
+                Id: id,
+                Title: title,
+                Description: description,
+                Price: price,
+                Name: nameInput
+            };
+
+            try {
+                const response = await $.ajax({
+                    url: '/Subscriptions/SavePayment',
+                    method: 'POST',
+                    data: JSON.stringify(formData),
+                    contentType: 'application/json'
+                });
+
+                const { ClientSecret, PubKey } = response;
+
+                if (!ClientSecret) {
+                    addMessage('Error creating subscription on the server.');
+                    $('#submit').prop('disabled', false);
+                    return;
+                }
+
+                addMessage('Client secret returned.');
+
+                // Reinitialize Stripe and Elements with the new PubKey
+                const stripe = Stripe(PubKey);
+                const elements = stripe.elements();
+                const card = elements.create('card');
+                card.mount('#card-element'); // Ensure the Card Element is mounted
+
+                // Confirm the SetupIntent
+                const { error } = await stripe.confirmCardSetup(ClientSecret, {
+                    payment_method: {
+                        card: card,
+                        billing_details: {
+                            name: nameInput
+                        }
+                    }
+                });
+
+                if (error) {
+                    addMessage(`Error: ${error.message}`);
+                } else {
+                    addMessage('Subscription created successfully.');
+                }
+            } catch (error) {
+                console.error('Backend Error:', error);
+                addMessage('An error occurred while processing your subscription.');
+            } finally {
+                $('#submit').prop('disabled', false);
+                submitted = false;
             }
         });
-        loadSubscriptions();
+
+        function addMessage(message) {
+            $('#messages').text(message).show();
+        }
+
+        // Load subscriptions on document ready
+        $(document).ready(function () {
+            $('#planSelection').change(function () {
+                if ($(this).prop('checked')) {
+                    $('#monthly-container').addClass('d-none');
+                    $('#yearly-container').removeClass('d-none');
+                } else {
+                    $('#monthly-container').removeClass('d-none');
+                    $('#yearly-container').addClass('d-none');
+                }
+            });
+            loadSubscriptions();
+        });
+
     });
 
     function loadSubscriptions() {
@@ -75,69 +347,42 @@
 
     function createSubscriptionBlock(subscription) {
         return `
-                            <div class="col-auto">
-                                <div class="pricing-block card text-center">
-                                    <div class="pricing-header">
-                                        <h2>${subscription.SubscriptionName}</h2>
-                                        <div class="price-box">
-                                            <div>
-                                                    <h4 class="text-white" data-base-price="${subscription.Price.toFixed(2)}">$${subscription.Price.toFixed(2)} ${subscription.Currency}</h4>
-                                                <p>/ ${subscription.SubscriptionType}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="pricing-list">
-                                        <ul class="pricing-inner">
-                                            <li>
-                                                    <h6><span class="unitsBlock">${subscription.NoOfUnits}</span> Units</h6>
-                                            </li>
-                                            <li>
-                                                <h6>${subscription.SmallDescription}</h6>
-                                            </li>
-                                            <li>
-                                                <h6>${subscription.Tax}%
-                                                    <span> Tax</span></h6>
-                                            </li>
-                                        </ul>
-                                        <button class="btn btn-primary btn-lg" onclick="handleSubscriptionClick(${subscription.Price}, '${subscription.Id}', '${subscription.SubscriptionName}')" type="button">Subscribe</button>
+                    <div class="col-auto">
+                        <div class="pricing-block card text-center">
+                            <div class="pricing-header">
+                                <h2>${subscription.SubscriptionName}</h2>
+                                <div class="price-box">
+                                    <div>
+                                        <h4 class="text-white" data-base-price="${subscription.Price.toFixed(2)}">$${subscription.Price.toFixed(2)} ${subscription.Currency}</h4>
+                                        <p>/ ${subscription.SubscriptionType}</p>
                                     </div>
                                 </div>
-            </div>`;
+                            </div>
+                            <div class="pricing-list">
+                                <ul class="pricing-inner">
+                                    <li>
+                                        <h6><span class="unitsBlock">${subscription.NoOfUnits}</span> Units</h6>
+                                    </li>
+                                    <li>
+                                        <h6>${subscription.SmallDescription}</h6>
+                                    </li>
+                                    <li>
+                                        <h6>${subscription.Tax}%<span> Tax</span></h6>
+                                    </li>
+                                </ul>
+                                <button class="btn btn-primary btn-lg" onclick="handleSubscriptionClick(${subscription.Price}, '${subscription.Id}', '${subscription.SubscriptionName}')" type="button">Subscribe</button>
+                            </div>
+                        </div>
+                    </div>`;
     }
 
     function handleSubscriptionClick(price, id, name) {
-        var formData = {
-            Id : id,
-            Title :name,
-            Description: name,
-            Price : price,
-        };
-        console.log("formData")
-        $.ajax({
-            url: '@Url.Action("SavePayment", "Subscriptions")',
-            type: 'POST',
-            data: JSON.stringify(formData),
-            contentType: 'application/json',
-            success: function (res) {
-                console.log(res.PubKey);
-                console.log(res.SessionId);
-                // Initialize Stripe with the publishable key
-                var stripe = Stripe(res.PubKey);
+        $('#product-Id').text(id);
+        $('#product-title').text(name);
+        $('#product-description').text(name);
+        $('#product-price').text(price);
+        $('#product-priceText').text(`Price: $${price.toFixed(2)}`);
 
-                // Redirect to Stripe Checkout
-                stripe.redirectToCheckout({ sessionId: res.SessionId })
-                    .then(function (result) {
-                        if (result.error) {
-                            // Display error.message in your UI
-                            alert(result.error.message);
-                        }
-                    });
-            },
-            error: function (xhr, status, error) {
-                console.error('Error:', error);
-                alert('Failed to save subscription');
-            }
-        });
+        $("#stripeModal").modal("show");
     }
-
 </script>
