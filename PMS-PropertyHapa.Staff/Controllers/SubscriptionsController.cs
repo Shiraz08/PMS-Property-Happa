@@ -222,104 +222,104 @@ namespace PMS_PropertyHapa.Staff.Controllers
         //    }
         //}
 
-        //[HttpPost]
-        //public async Task<IActionResult> SavePayment([FromBody] ProductModel productModel)
-        //{
-        //    var stripeSettings = _configuration.GetSection("StripeSettings");
-        //    var currentUserId = Request?.Cookies["userId"]?.ToString();
+        [HttpPost]
+        public async Task<IActionResult> SavePayment([FromBody] ProductModel productModel)
+        {
+            var stripeSettings = _configuration.GetSection("StripeSettings");
+            var currentUserId = Request?.Cookies["userId"]?.ToString();
 
-        //    var currentUser = await _authService.GetProfileAsync(currentUserId);
-        //    Guid newGuid = Guid.NewGuid();
+            var currentUser = await _authService.GetProfileAsync(currentUserId);
+            Guid newGuid = Guid.NewGuid();
 
-        //    try
-        //    {
-        //        // Prepare product and user details
-        //        var product = new ProductModel
-        //        {
-        //            Id = productModel.Id,
-        //            Title = productModel.Title,
-        //            Description = productModel.Description,
-        //            ImageUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRG_TUukNvS-0E486weXLkJDpTubsAcdHdmKw&usqp=CAU",
-        //            Price = productModel.Price * 100, // Amount in cents
-        //            Currency = "USD"
-        //        };
+            try
+            {
+                // Prepare product and user details
+                var product = new ProductModel
+                {
+                    Id = productModel.Id,
+                    Title = productModel.Title,
+                    Description = productModel.Description,
+                    ImageUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRG_TUukNvS-0E486weXLkJDpTubsAcdHdmKw&usqp=CAU",
+                    Price = productModel.Price * 100, // Amount in cents
+                    Currency = "USD"
+                };
 
-        //        // Create a Price object for the subscription
-        //        var priceOptions = new PriceCreateOptions
-        //        {
-        //            UnitAmount = product.Price,
-        //            Currency = product.Currency,
-        //            Recurring = new PriceRecurringOptions
-        //            {
-        //                Interval = "month" // or "year" depending on your subscription interval
-        //            },
-        //            ProductData = new PriceProductDataOptions
-        //            {
-        //                Name = product.Title
-        //                // Description and Images are not valid properties here
-        //            }
-        //        };
-        //        var priceService = new PriceService();
-        //        var price = await priceService.CreateAsync(priceOptions);
+                // Create a Price object for the subscription
+                var priceOptions = new PriceCreateOptions
+                {
+                    UnitAmount = product.Price,
+                    Currency = product.Currency,
+                    Recurring = new PriceRecurringOptions
+                    {
+                        Interval = "month" // or "year" depending on your subscription interval
+                    },
+                    ProductData = new PriceProductDataOptions
+                    {
+                        Name = product.Title
+                        // Description and Images are not valid properties here
+                    }
+                };
+                var priceService = new PriceService();
+                var price = await priceService.CreateAsync(priceOptions);
 
-        //        // Create a customer for the subscription
-        //        var customerOptions = new CustomerCreateOptions
-        //        {
-        //            Email = currentUser.Email,
-        //            Metadata = new Dictionary<string, string>
-        //    {
-        //        { "UserId", currentUser.UserId.ToString() },
-        //        { "ProductId", product.Id.ToString() },
-        //        { "ProductTitle", product.Title }
-        //    }
-        //        };
-        //        var customerService = new CustomerService();
-        //        var customer = await customerService.CreateAsync(customerOptions);
+                // Create a customer for the subscription
+                var customerOptions = new CustomerCreateOptions
+                {
+                    Email = currentUser.Email,
+                    Metadata = new Dictionary<string, string>
+            {
+                { "UserId", currentUser.UserId.ToString() },
+                { "ProductId", product.Id.ToString() },
+                { "ProductTitle", product.Title }
+            }
+                };
+                var customerService = new CustomerService();
+                var customer = await customerService.CreateAsync(customerOptions);
 
-        //        // Create the SetupIntent for subscription
-        //        var setupIntentOptions = new SetupIntentCreateOptions
-        //        {
-        //            Customer = customer.Id,
-        //            PaymentMethodTypes = new List<string> { "card" },
-        //            Metadata = new Dictionary<string, string>
-        //    {
-        //        { "UserId", currentUser.UserId.ToString() },
-        //        { "ProductId", product.Id.ToString() },
-        //        { "ProductTitle", product.Title },
-        //        { "PaymentGuid", newGuid.ToString() }
-        //    }
-        //        };
-        //        var setupIntentService = new SetupIntentService();
-        //        var setupIntent = await setupIntentService.CreateAsync(setupIntentOptions);
+                // Create the SetupIntent for subscription
+                var setupIntentOptions = new SetupIntentCreateOptions
+                {
+                    Customer = customer.Id,
+                    PaymentMethodTypes = new List<string> { "card" },
+                    Metadata = new Dictionary<string, string>
+            {
+                { "UserId", currentUser.UserId.ToString() },
+                { "ProductId", product.Id.ToString() },
+                { "ProductTitle", product.Title },
+                { "PaymentGuid", newGuid.ToString() }
+            }
+                };
+                var setupIntentService = new SetupIntentService();
+                var setupIntent = await setupIntentService.CreateAsync(setupIntentOptions);
 
-        //        // Save payment information to your database
-        //        PaymentGuidDto paymentGuid = new PaymentGuidDto
-        //        {
-        //            Guid = newGuid.ToString(),
-        //            Description = "CheckOut to Dashboard",
-        //            DateTime = DateTime.Now,
-        //            SessionId = setupIntent.Id, // Save SetupIntent ID
-        //            UserId = currentUser.UserId,
-        //        };
-        //        await _authService.SavePaymentGuid(paymentGuid);
+                // Save payment information to your database
+                PaymentGuidDto paymentGuid = new PaymentGuidDto
+                {
+                    Guid = newGuid.ToString(),
+                    Description = "CheckOut to Dashboard",
+                    DateTime = DateTime.Now,
+                    SessionId = setupIntent.Id, // Save SetupIntent ID
+                    UserId = currentUser.UserId,
+                };
+                await _authService.SavePaymentGuid(paymentGuid);
 
-        //        // Return the SetupIntent client secret and public key
-        //        var pubKey = stripeSettings["PublicKey"];
-        //        var checkoutOrderResponse = new CheckoutOrderDto
-        //        {
-        //            ClientSecret = setupIntent.ClientSecret, // Correctly return the client secret
-        //            PubKey = pubKey,
-        //        };
+                // Return the SetupIntent client secret and public key
+                var pubKey = stripeSettings["PublicKey"];
+                var checkoutOrderResponse = new CheckoutOrderDto
+                {
+                    ClientSecret = setupIntent.ClientSecret, // Correctly return the client secret
+                    PubKey = pubKey,
+                };
 
-        //        return Ok(checkoutOrderResponse);
-        //    }
-        //    catch (Exception exp)
-        //    {
-        //        // Log the exception (logging code should be added here)
-        //        Console.Error.WriteLine($"Error processing payment: {exp.Message}");
-        //        return StatusCode(500, new { error = "An error occurred while processing your payment." });
-        //    }
-        //}
+                return Ok(checkoutOrderResponse);
+            }
+            catch (Exception exp)
+            {
+                // Log the exception (logging code should be added here)
+                Console.Error.WriteLine($"Error processing payment: {exp.Message}");
+                return StatusCode(500, new { error = "An error occurred while processing your payment." });
+            }
+        }
 
 
 
