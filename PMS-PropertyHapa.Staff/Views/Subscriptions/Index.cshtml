@@ -210,111 +210,99 @@
 
 <script src="https://js.stripe.com/v3/"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', async () => {
-        const stripe = Stripe('pk_test_51PATV6AezidaMUD1niwSxJ42oxgtI2vZLXEQo8lEMybnjmzaLF3JRV099zwzJ6HWb4cWVzqlvJSaLP7IiMn8YuXM00cA7HPhEH', {
-            apiVersion: '2024-06-20',
-        });
+        document.addEventListener('DOMContentLoaded', async () => {
+            const stripe = Stripe('pk_test_51PATV6AezidaMUD1niwSxJ42oxgtI2vZLXEQo8lEMybnjmzaLF3JRV099zwzJ6HWb4cWVzqlvJSaLP7IiMn8YuXM00cA7HPhEH');
 
-        const elements = stripe.elements();
-        const cardElement = document.getElementById('card-element');
-        const card = elements.create('card');
+            const elements = stripe.elements();
+            const cardElement = document.getElementById('card-element');
+            const card = elements.create('card');
 
-        if (cardElement) {
-            card.mount(cardElement); // Mount the Card Element
-        } else {
-            console.error('Card Element container not found.');
-        }
+            if (cardElement) {
+                card.mount(cardElement); // Mount the Card Element
+            } else {
+                console.error('Card Element container not found.');
+            }
 
-        let submitted = false;
+            let submitted = false;
 
-        // Handle form submission
-        $('#payment-form').on('submit', async function (event) {
-            event.preventDefault();
+            $('#payment-form').on('submit', async function (event) {
+                event.preventDefault();
 
-            if (submitted) return;
-            submitted = true;
-            $(this).find('button').prop('disabled', true);
+                if (submitted) return;
+                submitted = true;
+                $(this).find('button').prop('disabled', true);
 
-            const id = $('#product-Id').text();
-            const nameInput = $('#name').val();
-            const title = $('#product-title').text();
-            const description = $('#product-description').text();
-            const price = parseFloat($('#product-price').text());
+                const id = $('#product-Id').text();
+                const nameInput = $('#name').val();
+                const title = $('#product-title').text();
+                const description = $('#product-description').text();
+                const price = parseFloat($('#product-price').text());
 
-            const formData = {
-                Id: id,
-                Title: title,
-                Description: description,
-                Price: price,
-                Name: nameInput
-            };
+                const formData = {
+                    Id: id,
+                    Title: title,
+                    Description: description,
+                    Price: price,
+                    Name: nameInput
+                };
 
-            try {
-                const response = await $.ajax({
-                    url: '/Subscriptions/SavePayment',
-                    method: 'POST',
-                    data: JSON.stringify(formData),
-                    contentType: 'application/json'
-                });
+                try {
+                const response = await fetch('/Subscriptions/SavePayment', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(formData),
+                    });
+                    const checkoutOrder = await response.json();
 
-                const { ClientSecret, PubKey } = response;
+                    const { error, setupIntent } = await stripe.confirmCardSetup(
+                        checkoutOrder.ClientSecret,
+                        {
+                            payment_method: {
+                                card: card,
+                                billing_details: {
+                                    name: nameInput,
+                                },
+                            },
+                        }
+                    );
 
-                if (!ClientSecret) {
-                    addMessage('Error creating subscription on the server.');
-                    $('#submit').prop('disabled', false);
-                    return;
-                }
+                    if (error) {
+                        console.error(error.message);
+                    } else {
+                        console.log('Setup successful! Creating subscription...');
 
-                addMessage('Client secret returned.');
+                        const subscriptionResponse = await fetch('/Subscriptions/CreateSubscription', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                customerId: checkoutOrder.CustomerId,
+                                priceId: checkoutOrder.PriceId,
+                            paymentMethodId: setupIntent.payment_method,
+                            }),
+                        });
 
-                // Reinitialize Stripe and Elements with the new PubKey
-                const stripe = Stripe(PubKey);
-                const elements = stripe.elements();
-                const card = elements.create('card');
-                card.mount('#card-element'); // Ensure the Card Element is mounted
-
-                // Confirm the SetupIntent
-                const { error } = await stripe.confirmCardSetup(ClientSecret, {
-                    payment_method: {
-                        card: card,
-                        billing_details: {
-                            name: nameInput
+                        const subscriptionResult = await subscriptionResponse.json();
+                        if (subscriptionResult.error) {
+                            console.error('Subscription creation failed:', subscriptionResult.error);
+                        } else {
+                            console.log('Subscription created successfully!');
                         }
                     }
-                });
-
-                if (error) {
-                    addMessage(`Error: ${error.message}`);
-                } else {
-                    addMessage('Subscription created successfully.');
-                }
-            } catch (error) {
-                console.error('Backend Error:', error);
-                addMessage('An error occurred while processing your subscription.');
-            } finally {
-                $('#submit').prop('disabled', false);
-                submitted = false;
-            }
-        });
-
-        function addMessage(message) {
-            $('#messages').text(message).show();
-        }
-
-        // Load subscriptions on document ready
-        $(document).ready(function () {
-            $('#planSelection').change(function () {
-                if ($(this).prop('checked')) {
-                    $('#monthly-container').addClass('d-none');
-                    $('#yearly-container').removeClass('d-none');
-                } else {
-                    $('#monthly-container').removeClass('d-none');
-                    $('#yearly-container').addClass('d-none');
+                } catch (error) {
+                    console.error('Backend Error:', error);
+                    alert('An error occurred while processing your subscription.');
+                } finally {
+                    $('#submit').prop('disabled', false);
+                    submitted = false;
                 }
             });
-            loadSubscriptions();
         });
-
+    $(document).ready(function () {
+        loadSubscriptions();
     });
 
     function loadSubscriptions() {
@@ -385,4 +373,5 @@
 
         $("#stripeModal").modal("show");
     }
+
 </script>

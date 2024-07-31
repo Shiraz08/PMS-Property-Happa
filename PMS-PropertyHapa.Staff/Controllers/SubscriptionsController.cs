@@ -227,7 +227,6 @@ namespace PMS_PropertyHapa.Staff.Controllers
         {
             var stripeSettings = _configuration.GetSection("StripeSettings");
             var currentUserId = Request?.Cookies["userId"]?.ToString();
-
             var currentUser = await _authService.GetProfileAsync(currentUserId);
             Guid newGuid = Guid.NewGuid();
 
@@ -256,7 +255,6 @@ namespace PMS_PropertyHapa.Staff.Controllers
                     ProductData = new PriceProductDataOptions
                     {
                         Name = product.Title
-                        // Description and Images are not valid properties here
                     }
                 };
                 var priceService = new PriceService();
@@ -267,41 +265,25 @@ namespace PMS_PropertyHapa.Staff.Controllers
                 {
                     Email = currentUser.Email,
                     Metadata = new Dictionary<string, string>
-            {
-                { "UserId", currentUser.UserId.ToString() },
-                { "ProductId", product.Id.ToString() },
-                { "ProductTitle", product.Title }
-            }
+                {
+                    { "UserId", currentUser.UserId.ToString() },
+                    { "ProductId", product.Id.ToString() },
+                    { "ProductTitle", product.Title }
+                }
                 };
                 var customerService = new CustomerService();
                 var customer = await customerService.CreateAsync(customerOptions);
 
-                // Create the SetupIntent for subscription
+                // Create the SetupIntent
                 var setupIntentOptions = new SetupIntentCreateOptions
                 {
                     Customer = customer.Id,
                     PaymentMethodTypes = new List<string> { "card" },
-                    Metadata = new Dictionary<string, string>
-            {
-                { "UserId", currentUser.UserId.ToString() },
-                { "ProductId", product.Id.ToString() },
-                { "ProductTitle", product.Title },
-                { "PaymentGuid", newGuid.ToString() }
-            }
                 };
                 var setupIntentService = new SetupIntentService();
                 var setupIntent = await setupIntentService.CreateAsync(setupIntentOptions);
 
-                // Save payment information to your database
-                PaymentGuidDto paymentGuid = new PaymentGuidDto
-                {
-                    Guid = newGuid.ToString(),
-                    Description = "CheckOut to Dashboard",
-                    DateTime = DateTime.Now,
-                    SessionId = setupIntent.Id, // Save SetupIntent ID
-                    UserId = currentUser.UserId,
-                };
-                await _authService.SavePaymentGuid(paymentGuid);
+                // Save the setup intent details to your database if needed
 
                 // Return the SetupIntent client secret and public key
                 var pubKey = stripeSettings["PublicKey"];
@@ -309,6 +291,8 @@ namespace PMS_PropertyHapa.Staff.Controllers
                 {
                     ClientSecret = setupIntent.ClientSecret, // Correctly return the client secret
                     PubKey = pubKey,
+                    CustomerId = customer.Id,
+                    PriceId = price.Id,
                 };
 
                 return Ok(checkoutOrderResponse);
@@ -321,8 +305,65 @@ namespace PMS_PropertyHapa.Staff.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<IActionResult> CreateSubscription([FromBody] SubscriptionRequest request)
+        {
+            try
+            {
+                // Attach the payment method to the customer
+                var paymentMethodService = new PaymentMethodService();
+                var paymentMethod = await paymentMethodService.AttachAsync(
+                    request.PaymentMethodId,
+                    new PaymentMethodAttachOptions
+                    {
+                        Customer = request.CustomerId,
+                    }
+                );
 
+                // Set the default payment method on the customer
+                var customerService = new CustomerService();
+                await customerService.UpdateAsync(
+                    request.CustomerId,
+                    new CustomerUpdateOptions
+                    {
+                        InvoiceSettings = new CustomerInvoiceSettingsOptions
+                        {
+                            DefaultPaymentMethod = paymentMethod.Id,
+                        },
+                    }
+                );
 
+                // Create the Subscription
+                var subscriptionOptions = new SubscriptionCreateOptions
+                {
+                    Customer = request.CustomerId,
+                    Items = new List<SubscriptionItemOptions>
+                {
+                    new SubscriptionItemOptions
+                    {
+                        Price = request.PriceId,
+                    },
+                },
+                    Expand = new List<string> { "latest_invoice.payment_intent" }
+                };
+                var subscriptionService = new SubscriptionService();
+                var subscription = await subscriptionService.CreateAsync(subscriptionOptions);
+
+                return Ok(subscription);
+            }
+            catch (Exception exp)
+            {
+                // Log the exception (logging code should be added here)
+                Console.Error.WriteLine($"Error creating subscription: {exp.Message}");
+                return StatusCode(500, new { error = "An error occurred while creating the subscription." });
+            }
+        }
+        public class SubscriptionRequest
+        {
+            public string CustomerId { get; set; }
+            public string PriceId { get; set; }
+            public string PaymentMethodId { get; set; }
+        }
 
         //[HttpPost]
         //public async Task<IActionResult> SavePayment([FromBody] ProductModel productModel)
