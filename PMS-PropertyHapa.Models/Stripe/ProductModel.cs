@@ -15,7 +15,8 @@ namespace PMS_PropertyHapa.Models.Stripe
         public string? Description { get; set; }
         public string? ImageUrl { get; set; }
         public string Currency { get; set; }
-        public long Price { get; set; } //in cents
+        public long Price { get; set; }
+        //public bool IsYearly { get; set; }
+        //public bool IsTrial { get; set; }
     }
-
 }

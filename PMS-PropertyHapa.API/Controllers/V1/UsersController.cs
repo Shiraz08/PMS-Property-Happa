@@ -13,6 +13,7 @@ using PMS_PropertyHapa.Models.Roles;
 using PMS_PropertyHapa.API.Services;
 using PMS_PropertyHapa.API.ViewModels;
 using Microsoft.Extensions.Options;
+using PMS_PropertyHapa.Models.Entities;
 
 namespace PMS_PropertyHapa.API.Controllers.V1
 {
@@ -311,11 +312,45 @@ namespace PMS_PropertyHapa.API.Controllers.V1
         }
 
 
+        [HttpGet("Roles/{userId}")]
+        public async Task<IActionResult> GetUserRoles(string userId)
+        {
+            var roles = await _userRepo.GetUserRolesAsync(userId);
 
+            if (roles == null)
+            {
+                _response.StatusCode = HttpStatusCode.NotFound;
+                _response.IsSuccess = false;
+                _response.ErrorMessages.Add("User not found");
+                return NotFound(_response);
+            }
 
+            _response.StatusCode = HttpStatusCode.OK;
+            _response.IsSuccess = true;
+            _response.Result = roles;
+            return Ok(_response);
+        }
+        
+        [HttpGet("IsUserTrial/{userId}")]
+        public async Task<IActionResult> IsUserTrial(string userId)
+        {
+            try
+            {
+                var trial = await _userRepo.IsUserTrialAsync(userId);
 
-
-
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = trial;
+                    return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.StatusCode = HttpStatusCode.NotFound;
+                _response.IsSuccess = false;
+                _response.ErrorMessages.Add("Error Occured");
+                return NotFound(_response);
+            }
+        }
 
         #endregion
 

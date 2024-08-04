@@ -50,7 +50,8 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
 
         Task<IEnumerable<UserDTO>> GetAllUsersAsync();
 
-
+        Task<UserRolesDto> GetUserRolesAsync(string userId);
+        Task<bool> IsUserTrialAsync(string userId);
 
         #region Tenant
         Task<IEnumerable<TenantModelDto>> GetAllTenantsAsync();

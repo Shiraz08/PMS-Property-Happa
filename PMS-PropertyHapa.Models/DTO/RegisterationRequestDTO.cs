@@ -10,6 +10,7 @@
         public string Role { get; set; }
         public int? TenantId { get; set; }
 
+
         public string? SubscriptionName { get; set; }
         public int? SubscriptionId { get; set; }
 
@@ -19,6 +20,7 @@
         public string LastName { get; set; }
         public string PhoneNumber { get; set; }
         public string CompanyName { get; set; }
+        public string CountryCode { get; set; }
         public string Country { get; set; }
         public int? PropertyTypeId { get; set; }
         public int? Units { get; set; }

@@ -130,8 +130,8 @@
                                             </div>
                                             <div class="col-lg-2">
                                                 <div class="mt-2 mt-lg-0">
-                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Accounting</label>
-                                                    <div id="Show_Accounting_checkboxes"> </div>
+                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Calendar</label>
+                                                    <div id="Show_Calendar_checkboxes"> </div>
                                                 </div>
                                             </div>
                                             <div class="col-lg-2">
@@ -180,8 +180,8 @@
                                             </div>
                                             <div class="col-lg-2">
                                                 <div class="mt-2 mt-lg-0">
-                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Reports</label>
-                                                    <div id="Show_Reports_checkboxes"> </div>
+                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Applications</label>
+                                                    <div id="Show_Application_checkboxes"> </div>
                                                 </div>
                                             </div>
                                             <div class="col-lg-2">
@@ -197,11 +197,49 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class ="row">
+                                            <div class="col-lg-2">
+                                                <div class="mt-2 mt-lg-0">
+                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Settings</label>
+                                                    <div id="Show_Settings_checkboxes"> </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <div class="mt-2 mt-lg-0">
+                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Subscription</label>
+                                                    <div id="Show_Subscription_checkboxes"> </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                         <div class="row">
                                             <div class="col-lg-2">
                                                 <div class="mt-2 mt-lg-0">
                                                     <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Vendor</label>
                                                     <div id="Show_Vendor_checkboxes"> </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <div class="mt-2 mt-lg-0">
+                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Task</label>
+                                                    <div id="Show_Task_checkboxes"> </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <div class="mt-2 mt-lg-0">
+                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Support Center</label>
+                                                    <div id="Show_SupportCenter_checkboxes"> </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <div class="mt-2 mt-lg-0">
+                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Reports</label>
+                                                    <div id="Show_Reports_checkboxes"> </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2">
+                                                <div class="mt-2 mt-lg-0">
+                                                    <label class="form-check-label" style="padding-bottom: 8px;font-size: 17px;color: #405189;font-weight: bold;">Accounting</label>
+                                                    <div id="Show_Accounting_checkboxes"> </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -250,6 +288,12 @@
                 var Services     = '';
                 var Tenant       = '';
                 var Vendor       = '';
+                var Calendar     = '';
+                var Application  = '';
+                var Task         = '';
+                var SupportCenter = '';
+                var Settings     = '';
+                var Subscription = '';
 
                 $.each(response, function (key, item) 
                 {
@@ -294,6 +338,24 @@
                     if (item.RoleKey == "Vendor") {
                         Vendor += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
                     }
+                    if (item.RoleKey == "Calendar") {
+                        Calendar += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
+                    }
+                    if (item.RoleKey == "Application") {
+                        Application += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
+                    }
+                    if (item.RoleKey == "Task") {
+                        Task += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
+                    }
+                    if (item.RoleKey == "Support Center") {
+                        SupportCenter += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
+                    }
+                    if (item.RoleKey == "Settings") {
+                        Settings += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
+                    }
+                    if (item.RoleKey == "Subscription") {
+                        Subscription += '<div class="form-check form-check-success mb-3"><input class="form-check-input uncheck" type="checkbox" id="' + item.Id + '" name="' + item.RoleTitle + '" ><label class="form-check-label" for="' + item.Id + '">' + item.RoleTitle + '</label></div>';
+                    }
 
                 });
                 $('#Show_Identity_checkboxes').empty().append(Identity);
@@ -309,6 +371,12 @@
                 $('#Show_Services_checkboxes').empty().append(Services);
                 $('#Show_Tenant_checkboxes').empty().append(Tenant);
                 $('#Show_Vendor_checkboxes').empty().append(Vendor);
+                $('#Show_Calendar_checkboxes').empty().append(Calendar);
+                $('#Show_Application_checkboxes').empty().append(Application);
+                $('#Show_Task_checkboxes').empty().append(Task);
+                $('#Show_SupportCenter_checkboxes').empty().append(SupportCenter);
+                $('#Show_Settings_checkboxes').empty().append(Settings);
+                $('#Show_Subscription_checkboxes').empty().append(Subscription);
             }, 
             failure: function (response) {
                 $('#result').html(response);

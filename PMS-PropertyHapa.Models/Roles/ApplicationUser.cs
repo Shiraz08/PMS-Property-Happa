@@ -45,6 +45,7 @@ namespace PMS_PropertyHapa.Models.Roles
         public string? SubscriptionName { get; set; }    
         public int? SubscriptionId { get; set; }
 
+        public string CountryCode { get; set; }
         public string CompanyName { get; set; }
         public int? PropertyTypeId { get; set; }
         public int? Units { get; set; }

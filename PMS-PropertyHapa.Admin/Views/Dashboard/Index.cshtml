@@ -29,6 +29,98 @@
     </div>
     <div class="container-fluid default-dash">
         <div class="row">
+            <div class="col-xl-4 col-md-12 col-sm-12 box-col-4">
+                <div class="card">
+                    <div class="card-header pb-0">
+                        <h5>Active Users</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="ct-4 flot-chart-container" id="activeUserChart"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-4 col-md-12 col-sm-12 box-col-4">
+                <div class="card">
+                    <div class="card-header pb-0">
+                        <h5>Active Customers</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="ct-4 flot-chart-container" id="activeCustomerChart"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12 col-xl-4 box-col-4">
+                <div class="card">
+                    <div class="card-header pb-0">
+                        <h5>Subscriptions</h5>
+                    </div>
+                    <div class="card-body p-0 chart-block">
+                        <div class="chart-overflow" id="subscriptionPieChart"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xl-8 col-md-8 col-sm-12 box-col-8">
+                <div class="card">
+                    <div class="card-header pb-0">
+                        <h5>Line Chart</h5>
+                    </div>
+                    <div class="card-body chart-block">
+                        <div class="chart-overflow" id="newLeadsChart"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-4 col-md-4 col-sm-12 box-col-4">
+                <div class="card o-hidden">
+                    <div class="card-body">
+                        <div class="media static-widget">
+                            <div class="media-body">
+                                <h6 class="font-roboto">Subscription Earnings</h6>
+                                <h4 class="mb-0 counter" id="totalEarnings">0</h4>
+                            </div>
+                            <svg class="fill-secondary" width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M22.5938 14.1562V17.2278C20.9604 17.8102 19.7812 19.3566 19.7812 21.1875C19.7812 23.5138 21.6737 25.4062 24 25.4062C24.7759 25.4062 25.4062 26.0366 25.4062 26.8125C25.4062 27.5884 24.7759 28.2188 24 28.2188C23.2241 28.2188 22.5938 27.5884 22.5938 26.8125H19.7812C19.7812 28.6434 20.9604 30.1898 22.5938 30.7722V33.8438H25.4062V30.7722C27.0396 30.1898 28.2188 28.6434 28.2188 26.8125C28.2188 24.4862 26.3263 22.5938 24 22.5938C23.2241 22.5938 22.5938 21.9634 22.5938 21.1875C22.5938 20.4116 23.2241 19.7812 24 19.7812C24.7759 19.7812 25.4062 20.4116 25.4062 21.1875H28.2188C28.2188 19.3566 27.0396 17.8102 25.4062 17.2278V14.1562H22.5938Z"></path>
+                                <path d="M25.4062 0V11.4859C31.2498 12.1433 35.8642 16.7579 36.5232 22.5938H48C47.2954 10.5189 37.4829 0.704531 25.4062 0Z"></path>
+                                <path d="M14.1556 31.8558C12.4237 29.6903 11.3438 26.9823 11.3438 24C11.3438 17.5025 16.283 12.1958 22.5938 11.4859V0C10.0492 0.731813 0 11.2718 0 24C0 30.0952 2.39381 35.6398 6.14897 39.8624L14.1556 31.8558Z"></path>
+                                <path d="M47.9977 25.4062H36.5143C35.8044 31.717 30.4977 36.6562 24.0002 36.6562C21.0179 36.6562 18.3099 35.5763 16.1444 33.8444L8.13779 41.851C12.3604 45.6062 17.905 48 24.0002 48C36.7284 48 47.2659 37.9508 47.9977 25.4062Z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <div class="right-side-header">
+                        <h4>Customers</h4>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover text-center display" id="customerTable">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th scope="col" class="tableHeaderbg">User Name</th>
+                                    <th scope="col" class="tableHeaderbg">No. of Users</th>
+                                    <th scope="col" class="tableHeaderbg">Subscription</th>
+                                    <th scope="col" class="tableHeaderbg">Subscription Type</th>
+                                    <th scope="col" class="tableHeaderbg">Expiring</th>
+                                    <th scope="col" class="tableHeaderbg">Expiration Date</th>
+                                    <th scope="col" class="tableHeaderbg">Phone Number</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="row">
             <div class="col-xl-6 col-md-6 dash-xl-50">
                 <div class="card profile-greeting">
                     <div class="card-body">
@@ -58,9 +150,6 @@
                     </div>
                 </div>
             </div>
-
-
-
             <div class="col-sm-6 col-xl-3 col-lg-6">
                 <div class="card o-hidden">
                     <div class="card-body">
@@ -107,13 +196,10 @@
                                 <h4 class="mb-0 counter">893</h4>
                             </div>
                             <svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-                                <!-- Background rectangle for the invoice document -->
                                 <rect x="8" y="8" width="32" height="32" rx="2" ry="2" stroke="#333333" stroke-width="2" fill="#F0F0F0" />
-                                <!-- Lines on the invoice to represent text, with different colors -->
                                 <line x1="12" y1="14" x2="36" y2="14" stroke="#FF5733" stroke-width="2" />
                                 <line x1="12" y1="20" x2="28" y2="20" stroke="#33C3F0" stroke-width="2" />
                                 <line x1="12" y1="26" x2="36" y2="26" stroke="#F0DB4F" stroke-width="2" />
-                                <!-- A circle at the bottom to represent the total amount or seal, with a gradient fill -->
                                 <defs>
                                     <radialGradient id="grad1" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
                                         <stop offset="0%" style="stop-color:#FFD700; stop-opacity:1" />
@@ -141,48 +227,6 @@
                                 <path d="M31.6878 26.0152C31.8962 26.0152 32.1033 26.0214 32.309 26.0328C32.0007 25.5931 31.6439 25.2053 31.2264 24.8935C29.9817 23.9646 28.3698 23.6598 26.9448 23.0998C26.2511 22.8273 25.6299 22.5567 25.0468 22.2485C23.0787 24.4068 20.5123 25.5359 17.5236 25.5362C14.536 25.5362 11.9697 24.4071 10.0019 22.2485C9.41877 22.5568 8.79747 22.8273 8.10393 23.0998C6.67891 23.6599 5.06703 23.9646 3.82233 24.8935C1.6698 26.5001 1.11351 30.1144 0.676438 32.5797C0.315729 34.6148 0.0734026 36.6917 0.00267388 38.7588C-0.0521202 40.36 0.738448 40.5846 2.07801 41.0679C3.75528 41.6728 5.48712 42.1219 7.23061 42.4901C10.5977 43.2011 14.0684 43.7475 17.5242 43.7719C19.1987 43.76 20.8766 43.6249 22.5446 43.4087C21.3095 41.6193 20.5852 39.4517 20.5852 37.1179C20.5853 30.9957 25.5658 26.0152 31.6878 26.0152Z"></path>
                                 <path d="M31.6878 28.2357C26.7825 28.2357 22.8057 32.2126 22.8057 37.1179C22.8057 42.0232 26.7824 46 31.6878 46C36.5932 46 40.57 42.0232 40.57 37.1179C40.57 32.2125 36.5931 28.2357 31.6878 28.2357ZM35.5738 38.6417H33.2118V41.0037C33.2118 41.8453 32.5295 42.5277 31.6879 42.5277C30.8462 42.5277 30.1639 41.8453 30.1639 41.0037V38.6417H27.802C26.9603 38.6417 26.278 37.9595 26.278 37.1177C26.278 36.276 26.9602 35.5937 27.802 35.5937H30.1639V33.2318C30.1639 32.3901 30.8462 31.7078 31.6879 31.7078C32.5296 31.7078 33.2118 32.3901 33.2118 33.2318V35.5937H35.5738C36.4155 35.5937 37.0978 36.276 37.0978 37.1177C37.0977 37.9595 36.4155 38.6417 35.5738 38.6417Z"></path>
                             </svg>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-12 col-xl-6 box-col-6">
-                    <div class="card">
-                        <div class="card-header pb-0">
-                            <h5>Subscriptions</h5>
-                        </div>
-                        <div class="card-body p-0 chart-block">
-                            <div class="chart-overflow" id="subscriptionPieChart"></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-6 col-xl-3 col-lg-6">
-                    <div class="card o-hidden">
-                        <div class="card-body">
-                            <div class="media static-widget">
-                                <div class="media-body">
-                                    <h6 class="font-roboto">Subscription Earnings</h6>
-                                    <h4 class="mb-0 counter" id="totalEarnings">0</h4>
-                                </div>
-                                <svg class="fill-secondary" width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M22.5938 14.1562V17.2278C20.9604 17.8102 19.7812 19.3566 19.7812 21.1875C19.7812 23.5138 21.6737 25.4062 24 25.4062C24.7759 25.4062 25.4062 26.0366 25.4062 26.8125C25.4062 27.5884 24.7759 28.2188 24 28.2188C23.2241 28.2188 22.5938 27.5884 22.5938 26.8125H19.7812C19.7812 28.6434 20.9604 30.1898 22.5938 30.7722V33.8438H25.4062V30.7722C27.0396 30.1898 28.2188 28.6434 28.2188 26.8125C28.2188 24.4862 26.3263 22.5938 24 22.5938C23.2241 22.5938 22.5938 21.9634 22.5938 21.1875C22.5938 20.4116 23.2241 19.7812 24 19.7812C24.7759 19.7812 25.4062 20.4116 25.4062 21.1875H28.2188C28.2188 19.3566 27.0396 17.8102 25.4062 17.2278V14.1562H22.5938Z"></path>
-                                    <path d="M25.4062 0V11.4859C31.2498 12.1433 35.8642 16.7579 36.5232 22.5938H48C47.2954 10.5189 37.4829 0.704531 25.4062 0Z"></path>
-                                    <path d="M14.1556 31.8558C12.4237 29.6903 11.3438 26.9823 11.3438 24C11.3438 17.5025 16.283 12.1958 22.5938 11.4859V0C10.0492 0.731813 0 11.2718 0 24C0 30.0952 2.39381 35.6398 6.14897 39.8624L14.1556 31.8558Z"></path>
-                                    <path d="M47.9977 25.4062H36.5143C35.8044 31.717 30.4977 36.6562 24.0002 36.6562C21.0179 36.6562 18.3099 35.5763 16.1444 33.8444L8.13779 41.851C12.3604 45.6062 17.905 48 24.0002 48C36.7284 48 47.2659 37.9508 47.9977 25.4062Z"></path>
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-12 box-col-12">
-                    <div class="card">
-                        <div class="card-header pb-0">
-                            <h5>Line Chart</h5>
-                        </div>
-                        <div class="card-body chart-block">
-                            <div class="chart-overflow" id="newLeadsChart"></div>
                         </div>
                     </div>
                 </div>
@@ -364,7 +408,7 @@
                                     <tr>
                                         <td>
                                             <div class="media">
-                                                <div class="icon-wrappar"><i class="fa fa-trophy font-primary">                                    </i></div>
+                                                <div class="icon-wrappar"><i class="fa fa-trophy font-primary"></i></div>
                                                 <div class="media-body">
                                                     <a href="#">
                                                         <h5>Two Old Tenant left your Building</h5>
@@ -378,7 +422,7 @@
                                     <tr>
                                         <td>
                                             <div class="media">
-                                                <div class="icon-wrappar"><i class="fa fa-trophy font-primary">                                    </i></div>
+                                                <div class="icon-wrappar"><i class="fa fa-trophy font-primary"> </i></div>
                                                 <div class="media-body">
                                                     <a href="#">
                                                         <h5>Five New maintaince Request received</h5>
@@ -392,7 +436,7 @@
                                     <tr>
                                         <td>
                                             <div class="media">
-                                                <div class="icon-wrappar"><i class="fa fa-bookmark font-success">                                    </i></div>
+                                                <div class="icon-wrappar"><i class="fa fa-bookmark font-success"></i></div>
                                                 <div class="media-body">
                                                     <a href="#">
                                                         <h5>Win best seller of the year awaed </h5>
@@ -406,7 +450,7 @@
                                     <tr>
                                         <td>
                                             <div class="media">
-                                                <div class="icon-wrappar"><i class="fa fa-shopping-basket font-warning">                                     </i></div>
+                                                <div class="icon-wrappar"><i class="fa fa-shopping-basket font-warning"></i></div>
                                                 <div class="media-body">
                                                     <a href="#">
                                                         <h5>Apporved our product in checking</h5>
@@ -558,10 +602,59 @@
 
 <script>
     $(document).ready(function () {
+        $('#customerTable').DataTable({
+            "ajax": {
+                "url": "/Dashboard/GetAllUsers",
+                "type": "GET",
+                "dataSrc": ""
+            },
+            "columns": [
+                {
+                    "data": "Name",
+                    "className": "tableFontSize align-middle"
+                },
+                {
+                    "data": "OwnerCount", 
+                    "className": "tableFontSize align-middle"
+                },
+                {
+                    "data": "SubscriptionName",
+                    "className": "tableFontSize align-middle"
+                },
+                {
+                    "data": "SubscriptionType",
+                    "className": "tableFontSize align-middle"
+                },
+                {
+                    "data": "Expiring",
+                    "className": "tableFontSize align-middle",
+                    "render": function (data, type, row, meta) {
+                        return data + ' days';
+                    }
+                },
+                {
+                    "data": "EndDate",
+                    "className": "tableFontSize align-middle",
+                    "render": function (data, type, row, meta) {
+                        var date = new Date(data);
+                        return date.toLocaleDateString();
+                    }
+                },
+                {
+                    "data": "PhoneNumber",
+                    "className": "tableFontSize align-middle"
+                }
+            ]
+        });
+
         google.charts.load('current', {
             'packages': ['corechart']
         });
         google.charts.setOnLoadCallback(drawChart);
+
+        fetchLandlordData();
+
+        fetchSubscribedUserData();
 
         function drawChart() {
             $.ajax({
@@ -605,7 +698,7 @@
             data.addColumn('number', 'The Avengers');
             data.addColumn('number', 'Transformers: Age of Extinction');
             data.addRows([
-                [1, 37.8, 80.8, 41.8],
+                [1, 37.8, 60.8, 41.8],
                 [2, 30.9, 10.5, 32.4],
                 [3, 40.4, 57, 25.7],
                 [4, 11.7, 18.8, 10.5],
@@ -620,15 +713,70 @@
             ]);
             var options = {
                 chart: {
-                    title: 'Box Office Earnings in First Two Weeks of Opening',
-                    subtitle: 'in millions of dollars (USD)'
+                   
                 },
                 colors: [zetaAdminConfig.primary, zetaAdminConfig.secondary, "#51bb25"],
-                height: 500,
+                height: 300,
                 width: '100%',
             };
             var chart = new google.charts.Line(document.getElementById('newLeadsChart'));
             chart.draw(data, google.charts.Line.convertOptions(options));
         }
+
+        
     });
+    function fetchLandlordData() {
+        $.ajax({
+            url: '@Url.Action("GetAllLandlords", "Dashboard")',
+            method: 'GET',
+            dataType: 'json',
+            success: function (response) {
+                var labels = response.labels;
+                var series = [response.series];
+                new Chartist.Line('#activeUserChart', {
+                    labels: labels,
+                    series: series
+                }, {
+                    low: 0,
+                    showArea: true
+                });
+            },
+            error: function (error) {
+                console.error('Error fetching landlord data:', error);
+            }
+        });
+    }
+
+    function fetchSubscribedUserData() {
+        $.ajax({
+            url: '@Url.Action("GetAllSubscribedUsers", "Dashboard")',
+            method: 'GET',
+            dataType: 'json',
+            success: function (response) {
+                if (response.success) {
+                    var labels = response.labels;
+                    console.log("labels");
+                    console.log(labels);
+                    var series = [response.series];
+                    console.log("series");
+                    console.log(series);
+                    new Chartist.Line('#activeCustomerChart', {
+                        labels: labels,
+                        series: series
+                    }, {
+                        low: 0,
+                        showArea: true
+                    });
+                } else {
+                    console.error('Error fetching subscribed user data:', response.message);
+                }
+            },
+            error: function (error) {
+                console.error('Error fetching subscribed user data:', error);
+            }
+        });
+    }
+
+ 
+
 </script>

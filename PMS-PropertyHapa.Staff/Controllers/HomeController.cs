@@ -541,16 +541,6 @@ namespace PMS_PropertyHapa.Staff.Auth.Controllers
         }
 
 
-
-
-
-
-
-
-
-
-
-
         public class ChartDataModel
         {
             public List<int> Series { get; set; }
@@ -580,5 +570,20 @@ namespace PMS_PropertyHapa.Staff.Auth.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetUserRoles()
+        {
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
+            var roles = await _authService.GetUserRolesAsync(currenUserId);
+            return Ok(roles);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> IsUserTrial()
+        {
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
+            var roles = await _authService.IsUserTrialAsync(currenUserId);
+            return Ok(roles);
+        }
     }
 }

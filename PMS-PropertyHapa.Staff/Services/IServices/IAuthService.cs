@@ -6,6 +6,7 @@ using PMS_PropertyHapa.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
 using static PMS_PropertyHapa.Models.DTO.TenantModelDto;
 using PMS_PropertyHapa.Models.Stripe;
+using Microsoft.AspNetCore.Identity;
 
 namespace PMS_PropertyHapa.Staff.Services.IServices
 {
@@ -26,7 +27,8 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
         Task<ProfileModel> GetProfileAsync(string userId);
 
         Task<IEnumerable<UserDTO>> GetAllUsersAsync();
-
+        Task<UserRolesDto> GetUserRolesAsync(string userId);
+        Task<bool> IsUserTrialAsync(string userId);
 
         Task<IEnumerable<TenantModelDto>> GetAllTenantsAsync();
         Task<IEnumerable<TenantModelDto>> GetAllTenantsDllAsync(Filter filter);
@@ -296,6 +298,9 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
         Task<StripeSubscriptionDto> CheckTrialDaysAsync(string currenUserId);
         Task<bool> SavePaymentGuid(PaymentGuidDto paymentGuidDto);
 
+        Task<bool> SavePaymentInformation(PaymentInformationDto paymentInformationDto);
+        Task<bool> SavePaymentMethodInformation(PaymentMethodInformationDto paymentMethodInformationDto);
+        Task<bool> SaveStripeSubscription(StripeSubscriptionDto stripeSubscriptionDto);
         #endregion
     }
 }

@@ -77,7 +77,7 @@ namespace PMS_PropertyHapa.Services.IServices
 
         Task<TenantOrganizationInfoDto> GetTenantOrganizationByIdAsync(int tenantId);
 
-
+        
         Task<List<SubscriptionDto>> GetAllSubscriptionBlocksAsync();
 
         Task<List<SubscriptionDto>> GetSubscriptionsByIdAsync(int Id);
@@ -90,6 +90,10 @@ namespace PMS_PropertyHapa.Services.IServices
 
         #region Stripe subscription
         Task<bool> SavePaymentGuid(PaymentGuidDto paymentGuidDto);
+        Task<bool> SavePaymentInformation(PaymentInformationDto paymentInformationDto);
+        Task<bool> SavePaymentMethodInformation(PaymentMethodInformationDto paymentMethodInformationDto);
+        Task<bool> SaveStripeSubscription(StripeSubscriptionDto stripeSubscriptionDto);
+
         //Task<bool> SavePaymentInformation(PaymentInformationDto paymentInformationDto);
         //Task<bool> SavePaymentMethodInformation(PaymentMethodInformationDto paymentMethodInformationDto);
         //Task<bool> SaveStripeSubscription(StripeSubscriptionDto stripeSubscriptionDto);

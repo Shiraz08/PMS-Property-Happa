@@ -691,6 +691,52 @@ namespace MagicVilla_VillaAPI.Repository
             return profile;
         }
 
+        public async Task<UserRolesDto> GetUserRolesAsync(string userId)
+        {
+            if (userId == null)
+            {
+                return null;
+            }
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null || user.IsDeleted)
+            {
+                return null;
+            }
+
+            var roles = await _userManager.GetRolesAsync(user);
+
+            if (roles == null)
+            {
+                return null;
+            }
+            var isTrial = false;
+            var subscription = _db.StripeSubscriptions.Where(x => x.UserId == userId && !x.IsCanceled).OrderByDescending(x => x.Id).FirstOrDefault();
+            if (subscription != null && subscription.EndDate >= DateTime.UtcNow && subscription.IsCanceled != true && subscription.IsTrial == true)
+            {
+                isTrial = true;
+            }
+
+            var userRoles = new UserRolesDto
+            {
+                Roles = roles,
+                IsTrial = isTrial
+            };
+
+            return userRoles;
+        }
+
+        public async Task<bool> IsUserTrialAsync(string userId)
+        {
+            var subscription = _db.StripeSubscriptions.Where(x => x.UserId == userId && !x.IsCanceled).OrderByDescending(x => x.Id).FirstOrDefault();
+            if (subscription != null && subscription.EndDate >= DateTime.UtcNow && subscription.IsCanceled != true && subscription.IsTrial == true)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         public async Task<string> GeneratePasswordResetTokenAsync(ApplicationUser user)
         {
             if (user == null)

@@ -15,9 +15,11 @@ using PMS_PropertyHapa.Shared.Email;
 using Microsoft.Extensions.Options;
 using PMS_PropertyHapa.Models.ViewModels;
 using PMS_PropertyHapa.Models.Configrations;
+using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
+StripeConfiguration.ApiKey = builder.Configuration["StripeSettings:SecretKey"];
 builder.Services.AddControllersWithViews(u => u.Filters.Add(new AuthExceptionRedirection()));
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.AddHttpClient<IAuthService, AuthService>();

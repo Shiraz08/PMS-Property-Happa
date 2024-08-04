@@ -63,10 +63,10 @@ namespace PMS_PropertyHapa.Staff.Controllers
                 return Json(new { success = false, message = "Login Failed: Only Property Managers are allowed to log in." });
             }
 
-            if (!await _userManager.IsInRoleAsync(appUser, "SubscribedUser"))
-            {
-                return Json(new { success = false, message = "Login Failed: Your account is not active please contact your Admin." });
-            }
+            //if (!await _userManager.IsInRoleAsync(appUser, "SubscribedUser"))
+            //{
+            //    return Json(new { success = false, message = "Login Failed: Your account is not active please contact your Admin." });
+            //}
 
 
             if (response != null && response.IsSuccess)
