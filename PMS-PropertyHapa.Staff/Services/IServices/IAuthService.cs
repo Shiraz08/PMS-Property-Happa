@@ -301,6 +301,9 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
         Task<bool> SavePaymentInformation(PaymentInformationDto paymentInformationDto);
         Task<bool> SavePaymentMethodInformation(PaymentMethodInformationDto paymentMethodInformationDto);
         Task<bool> SaveStripeSubscription(StripeSubscriptionDto stripeSubscriptionDto);
+        Task<SubscriptionInvoiceDto> GetSubscriptionInvoice(string SubscriptionId);
+
+
         #endregion
     }
 }

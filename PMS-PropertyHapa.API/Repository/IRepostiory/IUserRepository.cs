@@ -52,7 +52,7 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
 
         Task<UserRolesDto> GetUserRolesAsync(string userId);
         Task<bool> IsUserTrialAsync(string userId);
-
+        Task<SubscriptionInvoiceDto> GetSubscriptionInvoiceAsync(string subscriptionId);
         #region Tenant
         Task<IEnumerable<TenantModelDto>> GetAllTenantsAsync();
         Task<IEnumerable<TenantModelDto>> GetAllTenantsDllAsync(Filter filter);

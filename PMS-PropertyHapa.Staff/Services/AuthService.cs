@@ -3576,6 +3576,32 @@ namespace PMS_PropertyHapa.Staff.Services
                 throw new Exception($"An error occurred when creating Payment Guid: {ex.Message}", ex);
             }
         }
+
+        public async Task<SubscriptionInvoiceDto> GetSubscriptionInvoice(string SubscriptionId)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.GET,
+                    Url = $"{villaUrl}/api/v1/StripeSubscriptionAuth/GetSubscriptionInvoice/{SubscriptionId}"
+                });
+
+                if (response.IsSuccess == true)
+                {
+                    var invoice = response.Result != null ? JsonConvert.DeserializeObject<SubscriptionInvoiceDto>(Convert.ToString(response.Result)) : new SubscriptionInvoiceDto();
+                    return invoice;
+                }
+                else
+                {
+                    throw new Exception("Failed to retrieve user data");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when creating Payment Guid: {ex.Message}", ex);
+            }
+        }
         #endregion
 
 

@@ -727,6 +727,44 @@ namespace MagicVilla_VillaAPI.Repository
             return userRoles;
         }
 
+        public async Task<SubscriptionInvoiceDto> GetSubscriptionInvoiceAsync(string subscriptionId)
+        {
+            var result = await (from ss in _db.StripeSubscriptions
+                                join u in _db.ApplicationUsers on ss.UserId equals u.Id into userJoin
+                                from u in userJoin.DefaultIfEmpty()
+                                join pi in _db.PaymentInformations on ss.CustomerId equals pi.CustomerId into paymentJoin
+                                from pi in paymentJoin.DefaultIfEmpty()
+                                where ss.SubscriptionId == subscriptionId
+                                select new
+                                {
+                                    User = u,
+                                    Subscription = ss,
+                                    PaymentInfo = pi
+                                }).FirstOrDefaultAsync();
+
+            if (result == null)
+            {
+                return null;
+            }
+
+            var user = result.User;
+            var subscription = result.Subscription;
+            var paymentInfo = result.PaymentInfo;
+
+            return new SubscriptionInvoiceDto
+            {
+                FullName = user != null ? $"{user.FirstName} {user.LastName}" : string.Empty,
+                Email = subscription.EmailAddress,
+                CompanyName = user?.CompanyName ?? string.Empty,
+                PhoneNumber = user?.PhoneNumber ?? string.Empty,
+                SubscriptionName = subscription.BillingInterval,
+                Currency = subscription.Currency,
+                Price = paymentInfo?.ProductPrice ?? 0
+            };
+        }
+
+
+
         public async Task<bool> IsUserTrialAsync(string userId)
         {
             var subscription = _db.StripeSubscriptions.Where(x => x.UserId == userId && !x.IsCanceled).OrderByDescending(x => x.Id).FirstOrDefault();
@@ -8818,7 +8856,7 @@ namespace MagicVilla_VillaAPI.Repository
             return result > 0;
         }
 
-        public async Task<bool> SaveStripeSubscriptionAsync(StripeSubscriptionDto stripeSubscriptionDto)
+        public async Task<bool> SaveStripeSubscriptionAsync(PMS_PropertyHapa.Models.Stripe.StripeSubscriptionDto stripeSubscriptionDto)
         {
             var stripeSubscription = new StripeSubscription();
             stripeSubscription.Id = stripeSubscriptionDto.Id;
@@ -8844,7 +8882,7 @@ namespace MagicVilla_VillaAPI.Repository
             return result > 0;
         }
 
-        public async Task<StripeSubscriptionDto> CheckTrialDaysAsync(string currentUserId)
+        public async Task<PMS_PropertyHapa.Models.Stripe.StripeSubscriptionDto> CheckTrialDaysAsync(string currentUserId)
         {
             try
             {

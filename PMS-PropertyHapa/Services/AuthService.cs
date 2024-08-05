@@ -1049,7 +1049,7 @@ namespace PMS_PropertyHapa.Services
                 throw new Exception($"An error occurred when creating Payment Guid: {ex.Message}", ex);
             }
         }
-        public async Task<bool> SaveStripeSubscription(StripeSubscriptionDto stripeSubscriptionDto)
+        public async Task<bool> SaveStripeSubscription(Models.Stripe.StripeSubscriptionDto stripeSubscriptionDto)
         {
             try
             {

@@ -358,7 +358,7 @@ namespace PMS_PropertyHapa.Controllers
 
                 var result = await _authService.SavePaymentInformation(paymentInformationDto);
 
-                var subscriptionDto = new StripeSubscriptionDto
+                var subscriptionDto = new Models.Stripe.StripeSubscriptionDto
                 {
                     IsCanceled = false,
                     StartDate = subscription.StartDate,

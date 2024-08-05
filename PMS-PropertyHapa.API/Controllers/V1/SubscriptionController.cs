@@ -134,7 +134,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
         }
 
         [HttpGet("TrialDays/{currenUserId}")]
-        public async Task<ActionResult<StripeSubscriptionDto>> CheckTrialDays(string currenUserId)
+        public async Task<ActionResult<Models.Stripe.StripeSubscriptionDto>> CheckTrialDays(string currenUserId)
         {
             try
             {

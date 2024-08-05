@@ -92,7 +92,7 @@ namespace PMS_PropertyHapa.Services.IServices
         Task<bool> SavePaymentGuid(PaymentGuidDto paymentGuidDto);
         Task<bool> SavePaymentInformation(PaymentInformationDto paymentInformationDto);
         Task<bool> SavePaymentMethodInformation(PaymentMethodInformationDto paymentMethodInformationDto);
-        Task<bool> SaveStripeSubscription(StripeSubscriptionDto stripeSubscriptionDto);
+        Task<bool> SaveStripeSubscription(Models.Stripe.StripeSubscriptionDto stripeSubscriptionDto);
 
         //Task<bool> SavePaymentInformation(PaymentInformationDto paymentInformationDto);
         //Task<bool> SavePaymentMethodInformation(PaymentMethodInformationDto paymentMethodInformationDto);

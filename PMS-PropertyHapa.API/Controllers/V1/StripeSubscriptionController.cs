@@ -113,6 +113,23 @@ namespace PMS_PropertyHapa.API.Controllers.V1
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
+        [HttpGet("GetSubscriptionInvoice/{subscriptionId}")]
+        public async Task<ActionResult<SubscriptionInvoiceDto>> GetSubscriptionInvoice(string subscriptionId)
+        {
+            try
+            {
+                var result = await _userRepo.GetSubscriptionInvoiceAsync(subscriptionId);
+   
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = result;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
 
 
         //[HttpPost("webhook")]

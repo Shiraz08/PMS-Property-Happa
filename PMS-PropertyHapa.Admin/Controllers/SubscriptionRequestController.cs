@@ -32,14 +32,14 @@ namespace PMS_PropertyHapa.Admin.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<StripeSubscriptionDto>> GetSubscriptionRequests()
+        public async Task<IEnumerable<PMS_PropertyHapa.Models.Stripe.StripeSubscriptionDto>> GetSubscriptionRequests()
         {
             try
             {
                 var subscriptionRequests = await (from s in _context.StripeSubscriptions
-                                                  from u in _context.ApplicationUsers.Where(x=>x.Id == s.UserId).DefaultIfEmpty()
+                                                  from u in _context.ApplicationUsers.Where(x => x.Id == s.UserId).DefaultIfEmpty()
                                                   where s.IsDeleted != true && s.IsTrial == true
-                                                  select new StripeSubscriptionDto
+                                                  select new PMS_PropertyHapa.Models.Stripe.StripeSubscriptionDto
                                                   {
                                                       Id = s.Id,
                                                       UserId = s.UserId,

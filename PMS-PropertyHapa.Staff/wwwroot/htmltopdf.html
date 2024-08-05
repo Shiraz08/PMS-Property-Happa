@@ -1,0 +1,79 @@
+﻿<html>
+<head>
+    <style>
+        @media print {
+            body {
+                width: 21cm;
+                height: 29.7cm;
+            }
+        }
+    </style>
+</head>
+
+<body style="font-family: Silka; font-size: 100%; font-weight: 400; line-height: 1.4; color: #000;">
+    <table style="max-width:850px; margin:0px auto 10px; background-color: #fff; padding: 40px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; -webkit-box-shadow: 0 1px 3px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.24); -moz-box-shadow: 0 1px 3px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.24); box-shadow: 0 1px 3px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.24); border-top: solid 10px #6362e7; border-bottom: solid 10px #6362e7;">
+        <thead>
+            <tr>
+                <th style="text-align:left;"><img style="max-width: 150px;background-color: #6362e7;border-radius: 3px;" src="https://propertyhapa.com/Dashboard/assets/images/Logo-01.jpg" alt="PropertyHappa" /></th>
+                <th style="text-align:right;font-weight:400;">{currentdate}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="height:25px;"></td>
+            </tr>
+            <tr>
+                <td colspan="2" style="border: solid 1px #ddd; padding:10px 20px;">
+                    <p style="font-size:14px;margin:0 0 6px 0;"><span style="font-weight:bold;display:inline-block;min-width:150px">Invoice Status</span><b style="color:#6362e7;font-weight:normal;margin:0">{InvocieStatus}</b></p>
+                    <p style="font-size:14px;margin:0 0 6px 0;"><span style="font-weight:bold;display:inline-block;min-width:146px">Invoice No</span> {InvoiceID}</p>
+                    <p style="font-size:14px;margin:0 0 0 0;"><span style="font-weight:bold;display:inline-block;min-width:150px">Invoice Amount</span>{Total}</p>
+                    <p style="font-size:14px;margin:0 0 0 0;"><span style="font-weight:bold;display:inline-block;min-width:150px">Invoice Date</span>{currentdate}</p>
+                </td>
+            </tr>
+            <tr>
+                <td style="height:25px;"></td>
+            </tr>
+            <tr>
+                <td style="width:50%;padding:15px;vertical-align:top">
+                    <p style="margin:0 0 10px 0;padding:0;font-size:14px;"><span style="display:block;font-weight:bold;font-size:13px">From</span></p>
+                    <p style="margin:0 0 10px 0;padding:0;font-size:14px;"><span style="display:block;font-weight:bold;font-size:13px;">Name:</span> Property Happa</p>
+                    <p style="margin:0 0 10px 0;padding:0;font-size:14px;"><span style="display:block;font-weight:bold;font-size:13px;">Address:</span>Office 1, Building 112, Road 134, Block 317, NYC, USA</p>
+                    <p style="margin:0 0 10px 0;padding:0;font-size:14px;"><span style="display:block;font-weight:bold;font-size:13px;">Email:</span> admin@gmail.com</p>
+                    <p style="margin:0 0 10px 0;padding:0;font-size:14px;"><span style="display:block;font-weight:bold;font-size:13px;">Phone:</span>+1234567890</p>
+                </td>
+                <td style="width:50%;padding:15px;vertical-align:top">
+                    <p style="margin:0 0 10px 0;padding:0;font-size:14px;"><span style="display:block;font-weight:bold;font-size:13px;">To</span></p>
+                    <p style="margin:0 0 10px 0;padding:0;font-size:14px;"><span style="display:block;font-weight:bold;font-size:13px;">Company Name:</span> {Company_Name}</p>
+                    <p style="margin:0 0 10px 0;padding:0;font-size:14px;"><span style="display:block;font-weight:bold;font-size:13px">Name:</span> {User_Name}</p>
+                    <p style="margin:0 0 10px 0;padding:0;font-size:14px;"><span style="display:block;font-weight:bold;font-size:13px;">Email:</span> {User_Email}</p>
+                    <p style="margin:0 0 10px 0;padding:0;font-size:14px;"><span style="display:block;font-weight:bold;font-size:13px;">Phone:</span> {User_Phone}</p>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="font-size:20px;padding:18px 15px 0 15px;">Subscription</td>
+            </tr>
+            <tr>
+                <td colspan="2" style="padding:15px;">
+                    <p style="font-size:14px;margin:0;padding:10px;border:solid 1px #ddd;">
+                        <span style="display:block;font-size:13px;font-weight:bold;">Subscription Name </span>{SubscriptionName}<b style="font-size:12px;font-weight:300;"></b>
+                    </p>
+                    <p style="font-size:14px;margin:0;padding:10px;border:solid 1px #ddd;"><span style="display:block;font-size:13px;font-weight:bold;">Subscription Period</span> {SubscriptionPeriod} </p>
+                    <p style="font-size:14px;margin:0;padding:10px;border:solid 1px #ddd;"><span style="display:block;font-size:13px;font-weight:bold;">Subscription Amount</span> {SubscriptionAmount} </p>
+                    <p style="font-size:14px;margin:0;padding:10px;border:solid 1px #ddd;"><span style="display:block;font-size:13px;font-weight:bold;">Setup Fee</span> {SetupFee} </p>
+                    <p style="font-size:14px;margin:0;padding:10px;border:solid 1px #ddd;"><span style="display:block;font-size:13px;font-weight:bold;">Discount</span> {Discount} </p>
+                    
+                    <p style="font-size:14px;margin:0;padding:10px;border:solid 1px #ddd;"><span style="display:block;font-size:13px;font-weight:bold;">Total</span> {Total}</p>
+                </td>
+            </tr>
+        </tbody>
+        <tfooter>
+            <tr>
+                <td colspan="2" style="font-size:14px;padding:50px 15px 0 15px;">
+                    <strong style="display:block;margin:0 0 10px 0;">Regards</strong>Property Happa<br /> Thank you for your payment<br />
+                </td>
+            </tr>
+        </tfooter>
+    </table>
+</body>
+
+</html>
