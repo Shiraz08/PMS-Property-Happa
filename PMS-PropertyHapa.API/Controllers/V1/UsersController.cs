@@ -284,6 +284,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             user.Region = model.Region;
             user.PostalCode = model.PostalCode;
             user.Country = model.Country;
+            user.CountryCode = model.CountryCode;
             user.Status = model.Status;
             user.TermsAndConditons = model.TermsAndConditons;
             user.Currency = model.Currency;

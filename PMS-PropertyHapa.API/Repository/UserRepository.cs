@@ -683,6 +683,7 @@ namespace MagicVilla_VillaAPI.Repository
                 Region = user.Region,
                 PostalCode = user.PostalCode,
                 Country = user.Country,
+                CountryCode = user.CountryCode,
                 TermsAndConditons = user.TermsAndConditons,
                 Currency = user.Currency,
                 Status = true

@@ -817,26 +817,40 @@
                 <h5 class="modal-title" id="stripeModalLabel">Checkout</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form id="payment-form">
-                <p class="d-none" id="product-Id"></p>
-                <label for="name">Name</label>
-                <input id="name" placeholder="Jenny Rosen" value="Jenny Rosen" required />
+            <form id="payment-form" class="p-3">
+                <div class="mb-3">
+                    <p class="d-none" id="product-Id"></p>
+                    <label for="name" class="form-label">Name</label>
+                    <input id="name" class="form-control" placeholder="Enter Name" required />
+                </div>
 
-                <label for="card-element">Card</label>
-                <div id="card-element"></div> <!-- Stripe Element will be mounted here -->
-                <div id="card-errors" role="alert"></div> <!-- Display errors -->
 
-                <div id="product-details">
-                    <h6 id="product-title"></h6>
-                    <p id="product-description"></p>
-                    <div id="price-section">
-                        <img id="price-image" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRG_TUukNvS-0E486weXLkJDpTubsAcdHdmKw&usqp=CAU" alt="Price Image" />
-                        <p class="d-none" id="product-price"></p>
-                        <p id="product-priceText"></p>
+                <div class="mb-3">
+                    <label for="card-element" class="form-label">Card</label>
+                    <div id="card-element" class="form-control"></div> <!-- Stripe Element will be mounted here -->
+                    <div id="card-errors" class="text-danger mt-2" role="alert"></div> <!-- Display errors -->
+                </div>
+
+                <div id="product-details" class="mb-3">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4 id="product-title"></h4>
+                            <p id="product-description"></p>
+                        </div>
+                        <div class="col-md-6 text-md-right">
+                            <p class="d-none" id="product-price"></p>
+                            <h4 id="product-priceText" class="mb-0"></h4>
+                        </div>
+                    </div>
+                    <div id="price-section" class="d-flex justify-content-center">
+                        <img id="price-image" class="me-4" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRG_TUukNvS-0E486weXLkJDpTubsAcdHdmKw&usqp=CAU" alt="Price Image" style="width: 50%; height: 50%;" />
                     </div>
                 </div>
 
-                <button id="submit">Pay</button>
+                <div class="d-flex justify-content-end">
+                    <button class="btn btn-primary" id="submit">Pay</button>
+                </div>
+
             </form>
 
             <div id="messages" role="alert" style="display: none;"></div>
@@ -852,7 +866,7 @@
 
     var isNotFree = false;
     var isEmailVerified = false;
-
+    let updatedPrice = 0;
     document.addEventListener('DOMContentLoaded', async () => {
         const stripe = Stripe('pk_test_51PATV6AezidaMUD1niwSxJ42oxgtI2vZLXEQo8lEMybnjmzaLF3JRV099zwzJ6HWb4cWVzqlvJSaLP7IiMn8YuXM00cA7HPhEH');
 
@@ -861,264 +875,13 @@
         const card = elements.create('card');
 
         if (cardElement) {
-            card.mount(cardElement); // Mount the Card Element
+            card.mount(cardElement);
         } else {
             console.error('Card Element container not found.');
         }
 
         let submitted = false;
 
-        // $('#payment-form').on('submit', async function (event) {
-        //     event.preventDefault();
-
-        //     if (submitted) return;
-        //     submitted = true;
-        //     $(this).find('button').prop('disabled', true);
-
-        //     var email = $("#emailAddress").val();
-        //     var otpEmail = $("#otpEmail").val();
-        //     var password = $("#password").val();
-        //     var confirmPassword = $("#confirmPassword").val();
-
-        //     if (!email || isEmailVerified == false) {
-        //         toastr.error("Please make email verified.");
-        //         return;
-        //     }
-
-        //     if (password !== confirmPassword) {
-        //         toastr.error("Password and Confirm Password do not match.");
-        //         return;
-        //     }
-
-        //     try {
-       
-
-        //             // if (isNotFree) {
-        //             //     var cardholderName = $("#cardholderName").val();
-        //             //     var cardNumber = $("#cardNumber").val();
-        //             //     var expiryDate = $("#expiryDate").val();
-        //             //     var cvv = $("#cvv").val();
-        //             //     var streetAddress = $("#streetAddress").val();
-        //             //     var city = $("#city").val();
-        //             //     var state = $("#state").val();
-        //             //     var isvalid = true;
-        //             //     if (!cardholderName) {
-        //             //         toastr.error("Cardholder Name is required.");
-        //             //         isvalid = false;
-        //             //     }
-        //             //     if (!cardNumber) {
-        //             //         toastr.error("Card Number is required.");
-        //             //         isvalid = false;
-        //             //     }
-        //             //     if (!expiryDate) {
-        //             //         toastr.error("Expiration Date is required.");
-        //             //         isvalid = false;
-        //             //     }
-        //             //     if (!cvv) {
-        //             //         toastr.error("CVV is required.");
-        //             //         isvalid = false;
-        //             //     }
-        //             //     if (!streetAddress) {
-        //             //         toastr.error("Street Address is required.");
-        //             //         isvalid = false;
-        //             //     }
-        //             //     if (!city) {
-        //             //         toastr.error("City is required.");
-        //             //         isvalid = false;
-        //             //     }
-        //             //     if (!state) {
-        //             //         toastr.error("State is required.");
-        //             //         isvalid = false;
-        //             //     }
-        //             //     if (!isvalid) {
-        //             //         return;
-        //             //     }
-        //             // }
-
-        //             var data = {
-        //                 UserName: $("#firstName").val(),
-        //                 FirstName: $("#firstName").val(),
-        //                 LastName: $("#lastName").val(),
-        //                 Password: $("#password").val(),
-        //                 Email: $("#emailAddress").val(),
-        //                 UserName: $("#emailAddress").val(),
-        //                 PhoneNumber: $("#phoneNumber").val(),
-        //                 CompanyName: $("#companyName").val(),
-        //                 //CountryCode: $("#countryCode").val(),
-        //                 Country: $("#country").val(),
-        //                 PropertyTypeId: $("#propertyType").val(),
-        //                 Units: $("#unitsFinal").val(),
-        //                 LeadGenration: $("#leadGeneration").val(),
-        //                 Currency: $("#currency").val(),
-        //                 SubscriptionName: $("#subscriptionName").val(),
-        //                 SubscriptionId: $("#subscriptionId").val(),
-        //                 Price: $("#subscriptionPrice").val(),
-        //                 IsYearly: $("#planSelection").is(":checked"),
-        //                 IsTrial: $("#subscriptionName").val() == "Free" ? true : false
-        //             };
-
-        //             // if (isNotFree) {
-        //             //     $.extend(data, {
-        //             //         CardholderName: $("#cardholderName").val(),
-        //             //         CardNumber: $("#cardNumber").val(),
-        //             //         ExpirationDate: $("#expiryDate").val(),
-        //             //         CVV: $("#cvv").val(),
-        //             //         StreetAdress: $("#streetAddress").val(),
-        //             //         City: $("#city").val(),
-        //             //         State: $("#state").val()
-        //             //     });
-        //             // }
-
-        //            // $.blockui({ message: '<h1>loading...</h1>' });
-        //             // $.ajax({
-        //             //    
-        //             //     type: 'post',
-        //             //     data: data,
-        //             //     success: function (response) {
-        //             //         console.log("response")
-        //             //         console.log(response)
-        //             //         $.unblockui();
-        //             //         if (response.success) {
-        //             //             var stripe = stripe(response.pubkey);
-        //             //             stripe.redirecttocheckout({ sessionid: response.sessionid })
-        //             //                 .then(function (result) {
-        //             //                     if (result.error) {
-        //             //                         alert(result.error.message);
-        //             //                     }
-        //             //                 });
-        //             //             //window.location.href = "/auth/confirmemailpage";
-        //             //         } else {
-        //             //             alert("error message");
-        //             //             toastr.error(response.message);
-        //             //         }
-        //             //     },
-        //             //     error: function (xhr, status, error) {
-        //             //         $.unblockui();
-        //             //         toastr.error("error in registering.");
-        //             //     }
-        //             // });
-
-
-
-
-        //         // const response = await fetch('/Auth/Register', {
-        //         //     method: 'POST',
-        //         //     data: data,
-        //         // });
-        //         // const checkoutOrder = await response.json();
-
-        //         // const { error, setupIntent } = await stripe.confirmCardSetup(
-        //         //     checkoutOrder.ClientSecret,
-        //         //     {
-        //         //         payment_method: {
-        //         //             card: card,
-        //         //             billing_details: {
-        //         //                 name: nameInput,
-        //         //             },
-        //         //         },
-        //         //     }
-        //         // );
-
-        //         async function registerAndCheckout(data) {
-        //             try {
-        //                 const params = new URLSearchParams();
-        //                 for (const key in data) {
-        //                     if (data.hasOwnProperty(key)) {
-        //                         params.append(key, data[key]);
-        //                     }
-        //                 }
-
-        //                 $.ajax({
-                        
-        //                     type: 'post',
-        //                     data: data,
-        //                     success: function (response) {
-        //                         console.log("response")
-        //                         console.log(response)
-        //                         $.unblockui();
-        //                         if (response.success) {
-        //                             if (!response.ok) {
-        //                                 throw new Error('Error in registering.');
-        //                             }
-
-        //                             const checkoutOrder = await response.json();
-
-        //                             if (checkoutOrder.success) {
-        //                                 var stripe = Stripe(checkoutOrder.PubKey);
-        //                                 stripe.redirectToCheckout({ sessionId: checkoutOrder.SessionId })
-        //                                     .then(function (result) {
-        //                                         if (result.error) {
-        //                                             alert(result.error.message);
-        //                                         }
-        //                                     });
-        //                             } else {
-        //                                 alert("Error Message");
-        //                                 toastr.error(checkoutOrder.message);
-        //                             }
-        //                             //window.location.href = "/auth/confirmemailpage";
-        //                         } else {
-        //                             alert("error message");
-        //                             toastr.error(response.message);
-        //                         }
-        //                     },
-        //                     error: function (xhr, status, error) {
-        //                         $.unblockui();
-        //                         toastr.error("error in registering.");
-        //                     }
-        //                 });
-
-        //                 // const response = await fetch('/Auth/Register', {
-        //                 //     method: 'POST',
-        //                 //     headers: {
-        //                 //         'Content-Type': 'application/x-www-form-urlencoded',
-        //                 //     },
-        //                 //     body: params.toString(),
-        //                 // });
-
-                       
-        //             } catch (error) {
-        //                 toastr.error(error.message || "Error in registering.");
-        //             } finally {
-        //                 $.unblockUI();
-        //             }
-        //         }
-
-                
-        //         //registerAndCheckout(data);
-
-
-        //         if (error) {
-        //             console.error(error.message);
-        //         } else {
-        //             console.log('Setup successful! Creating subscription...');
-
-        //             const subscriptionResponse = await fetch('/Auth/CreateSubscription', {
-        //                 method: 'POST',
-        //                 headers: {
-        //                     'Content-Type': 'application/json',
-        //                 },
-        //                 body: JSON.stringify({
-        //                     customerId: checkoutOrder.CustomerId,
-        //                     priceId: checkoutOrder.PriceId,
-        //                     paymentMethodId: setupIntent.payment_method,
-        //                 }),
-        //             });
-
-        //             const subscriptionResult = await subscriptionResponse.json();
-        //             if (subscriptionResult.error) {
-        //                 console.error('Subscription creation failed:', subscriptionResult.error);
-        //             } else {
-        //                 console.log('Subscription created successfully!');
-        //             }
-        //         }
-        //     } catch (error) {
-        //         console.error('Backend Error:', error);
-        //         alert('An error occurred while processing your subscription.');
-        //     } finally {
-        //         $('#submit').prop('disabled', false);
-        //         submitted = false;
-        //     }
-        // });
 
         $('#payment-form').on('submit', async function (event) {
             event.preventDefault();
@@ -1164,7 +927,7 @@
                     Currency: $("#currency").val(),
                     SubscriptionName: $("#subscriptionName").val(),
                     SubscriptionId: $("#subscriptionId").val(),
-                    Price: $("#subscriptionPrice").val(),
+                    Price: updatedPrice,
                     IsYearly: $("#planSelection").is(":checked"),
                     IsTrial: $("#subscriptionName").val() == "Free" ? true : false
                 };
@@ -1189,10 +952,6 @@
                         const checkoutOrder = await response.json();
                         const nameInput = $('#name').val();
 
-                        console.log("sdfsdf")
-                        console.log(checkoutOrder)
-                        console.log(nameInput)
-
                         const { error, setupIntent } = await stripe.confirmCardSetup(
                             checkoutOrder.ClientSecret,
                             {
@@ -1210,7 +969,7 @@
                         } else {
                             console.log('Setup successful! Creating subscription...');
 
-                            const subscriptionResponse = await fetch('/Subscriptions/CreateSubscription', {
+                            const subscriptionResponse = await fetch('/Auth/CreateSubscription', {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json',
@@ -1227,7 +986,7 @@
                                 console.error('Subscription creation failed:', subscriptionResult.error);
                             } else {
                                 console.log('Subscription created successfully!');
-                                location.reload();
+                                window.location = '/Subscription/Success';
                             }
                         }
                     } catch (error) {
@@ -1332,8 +1091,26 @@
             const unitsElement = $(this).find('.unitsBlock');
             unitsElement.text(units);
         });
+        updateModalPrice(units);
     }
 
+    function updateModalPrice(units) {
+        const modalPriceElement = $('#product-priceText');
+        const basePrice = parseFloat($('#product-price').text());
+        const subscriptionName = $('#product-title').text().trim();
+        let newPrice = basePrice * units;
+
+        if (subscriptionName === 'Basic') {
+            newPrice *= 1;
+        } else if (subscriptionName === 'Plus') {
+            newPrice *= 0.75;
+        } else if (subscriptionName === 'Premium') {
+            newPrice *= 0.5;
+        }
+
+        updatedPrice = newPrice;
+        modalPriceElement.text('Price: $' + newPrice.toFixed(2));
+    }
 
     function loadSubscriptions() {
         $.ajax({
@@ -1364,39 +1141,34 @@
 
     function createSubscriptionBlock(subscription) {
         return `
-                        <div class="col-auto">
-                            <div class="pricing-block card text-center">
-                                <div class="pricing-header">
-                                    <h2>${subscription.SubscriptionName}</h2>
-                                    <div class="price-box">
-                                        <div>
-                                                <h4 class="text-white" data-base-price="${subscription.Price.toFixed(2)}">$${subscription.Price.toFixed(2)} ${subscription.Currency}</h4>
-                                            <p>/ ${subscription.SubscriptionType}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="pricing-list">
-                                    <ul class="pricing-inner">
-                                        <li>
-                                                <h6><span class="unitsBlock">${subscription.NoOfUnits}</span> Units</h6>
-                                        </li>
-                                        <li>
-                                            <h6>${subscription.SmallDescription}</h6>
-                                        </li>
-                                        <li>
-                                            <h6>${subscription.Tax}%
-                                                <span> Tax</span></h6>
-                                        </li>
-                                    </ul>
-                                    <button
-                                        class="btn btn-primary btn-lg"
-                                            onclick="handleSubscriptionClick(${subscription.Price.toFixed(2)}, '${subscription.Id}', '${subscription.SubscriptionName}', '${subscription.NoOfUnits}')"
-                                        type="button">
-                                        ${subscription.SubscriptionName === 'Free' ? 'Trial' : 'Subscribe'}
-                                    </button>
+                <div class="col-auto">
+                    <div class="pricing-block card text-center">
+                        <div class="pricing-header">
+                            <h2>${subscription.SubscriptionName}</h2>
+                            <div class="price-box">
+                                <div>
+                                    <h4 class="text-white" data-base-price="${subscription.Price.toFixed(2)}">$${subscription.Price.toFixed(2)} ${subscription.Currency}</h4>
+                                    <p>/ ${subscription.SubscriptionType}</p>
                                 </div>
                             </div>
-        </div>`;
+                        </div>
+                        <div class="pricing-list">
+                            <ul class="pricing-inner">
+                                <li>
+                                    <h6><span class="unitsBlock">${subscription.NoOfUnits}</span> Units</h6>
+                                </li>
+                                <li>
+                                    <h6>${subscription.SmallDescription}</h6>
+                                </li>
+                                ${subscription.SubscriptionType === 'Yearly' ? '<li><h6>10% discount</h6></li>' : ''}
+                                <li>
+                                    <h6>${subscription.Tax}%<span> Tax</span></h6>
+                                </li>
+                            </ul>
+                            <button class="btn btn-primary btn-lg" onclick="handleSubscriptionClick(${subscription.Price.toFixed(2)}, '${subscription.Id}', '${subscription.SubscriptionName}')" type="button">Subscribe</button>
+                        </div>
+                    </div>
+                </div>`;
     }
 
 
@@ -1423,131 +1195,10 @@
             //$('.bank-account-form').removeClass('d-none');
         }
         
-
+        const unitFinal = $('#unitsFinal').val();
+        updateModalPrice(unitFinal);
     }
 
-
-    // function registerUser() {
-    //     var email = $("#emailAddress").val();
-    //     var otpEmail = $("#otpEmail").val();
-    //     var password = $("#password").val();
-    //     var confirmPassword = $("#confirmPassword").val();
-
-
-    //     if (!email || isEmailVerified == false) {
-    //         toastr.error("Please make email verified.");
-    //         return;
-    //     }
-        
-    //     if (password !== confirmPassword) {
-    //         toastr.error("Password and Confirm Password do not match.");
-    //         return;
-    //     }
-
-    //     // if (isNotFree) {
-    //     //     var cardholderName = $("#cardholderName").val();
-    //     //     var cardNumber = $("#cardNumber").val();
-    //     //     var expiryDate = $("#expiryDate").val();
-    //     //     var cvv = $("#cvv").val();
-    //     //     var streetAddress = $("#streetAddress").val();
-    //     //     var city = $("#city").val();
-    //     //     var state = $("#state").val();
-    //     //     var isvalid = true;
-    //     //     if (!cardholderName) {
-    //     //         toastr.error("Cardholder Name is required.");
-    //     //         isvalid = false;
-    //     //     }
-    //     //     if (!cardNumber) {
-    //     //         toastr.error("Card Number is required.");
-    //     //         isvalid = false;
-    //     //     }
-    //     //     if (!expiryDate) {
-    //     //         toastr.error("Expiration Date is required.");
-    //     //         isvalid = false;
-    //     //     }
-    //     //     if (!cvv) {
-    //     //         toastr.error("CVV is required.");
-    //     //         isvalid = false;
-    //     //     }
-    //     //     if (!streetAddress) {
-    //     //         toastr.error("Street Address is required.");
-    //     //         isvalid = false;
-    //     //     }
-    //     //     if (!city) {
-    //     //         toastr.error("City is required.");
-    //     //         isvalid = false;
-    //     //     }
-    //     //     if (!state) {
-    //     //         toastr.error("State is required.");
-    //     //         isvalid = false;
-    //     //     }
-    //     //     if (!isvalid) {
-    //     //         return;
-    //     //     }
-    //     // }
-
-    //     var data = {
-    //         UserName: $("#firstName").val(),
-    //         FirstName: $("#firstName").val(),
-    //         LastName: $("#lastName").val(),
-    //         Password: $("#password").val(),
-    //         Email: $("#emailAddress").val(),
-    //         UserName: $("#emailAddress").val(),
-    //         PhoneNumber: $("#phoneNumber").val(),
-    //         CompanyName: $("#companyName").val(),
-    //         Country: $("#country").val(),
-    //         PropertyTypeId: $("#propertyType").val(),
-    //         Units: $("#unitsFinal").val(),
-    //         LeadGenration: $("#leadGeneration").val(),
-    //         Currency: $("#currency").val(),
-    //         SubscriptionName: $("#subscriptionName").val(),
-    //         SubscriptionId: $("#subscriptionId").val(),
-    //         Price: $("#subscriptionPrice").val(),
-    //         IsYearly: $("#planSelection").is(":checked"),
-    //         IsTrial: $("#subscriptionName").val() == "Free" ? true : false
-    //     };
-
-    //     // if (isNotFree) {
-    //     //     $.extend(data, {
-    //     //         CardholderName: $("#cardholderName").val(),
-    //     //         CardNumber: $("#cardNumber").val(),
-    //     //         ExpirationDate: $("#expiryDate").val(),
-    //     //         CVV: $("#cvv").val(),
-    //     //         StreetAdress: $("#streetAddress").val(),
-    //     //         City: $("#city").val(),
-    //     //         State: $("#state").val()
-    //     //     });
-    //     // }
-
-    //     $.blockUI({ message: '<h1>Loading...</h1>' });
-    //     $.ajax({
-    //         url: '@Url.Action("Register", "Auth")',
-    //         type: 'POST',
-    //         data: data,
-    //         success: function (response) {
-    //             console.log("response")
-    //             console.log(response)
-    //             $.unblockUI();
-    //             if (response.success) {
-    //                 var stripe = Stripe(response.PubKey);
-    //                 stripe.redirectToCheckout({ sessionId: response.SessionId })
-    //                     .then(function (result) {
-    //                         if (result.error) {
-    //                             alert(result.error.message);
-    //                         }
-    //                     });
-    //                 //window.location.href = "/Auth/ConfirmEmailPage";
-    //             } else {
-    //                 alert("Error Message");
-    //                 toastr.error(response.message);
-    //             }
-    //         },
-    //         error: function (xhr, status, error) {
-    //             $.unblockUI();
-    //             toastr.error("Error in registering.");
-    //         }
-    //     });
-    // }
 
     function sendEmailOtp() {
         let email = $("#emailAddress").val().trim();

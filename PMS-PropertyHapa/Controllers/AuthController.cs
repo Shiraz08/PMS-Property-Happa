@@ -237,7 +237,7 @@ namespace PMS_PropertyHapa.Controllers
                     Currency = product.Currency,
                     Recurring = new PriceRecurringOptions
                     {
-                        Interval = "month"
+                        Interval = productModel.IsYearly ? "year" : "month"
                     },
                     ProductData = new PriceProductDataOptions
                     {
@@ -256,7 +256,7 @@ namespace PMS_PropertyHapa.Controllers
                                 { "ProductId", product.Id.ToString() },
                                 { "ProductTitle", product.Title },
                                 { "PaymentGuid", newGuid.ToString() },
-                                { "IsTrial", "true" }
+                                { "IsTrial", productModel.IsTrial ? "true" : "false" }
                             }
                 };
                 var customerService = new CustomerService();
