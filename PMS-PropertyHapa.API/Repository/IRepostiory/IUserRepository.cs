@@ -52,7 +52,7 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
 
         Task<UserRolesDto> GetUserRolesAsync(string userId);
         Task<bool> IsUserTrialAsync(string userId);
-        Task<SubscriptionInvoiceDto> GetSubscriptionInvoiceAsync(string subscriptionId);
+        Task<SubscriptionInvoiceData> GetSubscriptionInvoiceAsync(string subscriptionId);
         #region Tenant
         Task<IEnumerable<TenantModelDto>> GetAllTenantsAsync();
         Task<IEnumerable<TenantModelDto>> GetAllTenantsDllAsync(Filter filter);
@@ -302,6 +302,7 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
         Task<bool> SavePaymentInformationAsync(PaymentInformationDto paymentInformationDto);
         Task<bool> SavePaymentMethodInformationAsync(PaymentMethodInformationDto paymentMethodInformationDto);
         Task<bool> SaveStripeSubscriptionAsync(StripeSubscriptionDto stripeSubscriptionDto);
+        Task<bool> SaveSaveSubscriptionInvoiceAsync(SubscriptionInvoiceDto subscriptionInvoiceDto);
         Task<StripeSubscriptionDto> CheckTrialDaysAsync(string currenUserId);
     }
 }

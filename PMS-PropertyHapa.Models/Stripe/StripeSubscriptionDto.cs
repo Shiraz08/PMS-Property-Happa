@@ -27,5 +27,6 @@ namespace PMS_PropertyHapa.Models.Stripe
         public decimal? Amount { get; set; }
         public bool HasAdminPermission { get; set; }
         public string AddedBy { get; set; }
+        public int? SelectedSubscriptionId { get; set; }
     }
 }
