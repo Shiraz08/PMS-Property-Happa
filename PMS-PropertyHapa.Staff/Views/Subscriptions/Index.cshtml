@@ -165,9 +165,16 @@
                         </div>
                         <div class="col-md-6 text-md-right">
                             <p class="d-none" id="product-price"></p>
+                            <div id="free-trial-description" class="d-none mb-3">
+                                <p><strong>10-days free trial</strong></p>
+                            </div>
                             <h4 id="product-priceText" class="mb-0"></h4>
                         </div>
                     </div>
+                    <div id="free-trial-description" class="d-none mb-3">
+                        <p>10-day free trial</p>
+                    </div>
+
                     <div id="price-section" class="d-flex justify-content-center">
                         <img id="price-image" class="me-4" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRG_TUukNvS-0E486weXLkJDpTubsAcdHdmKw&usqp=CAU" alt="Price Image" style="width: 50%; height: 50%;" />
                     </div>
@@ -409,6 +416,12 @@
         $('#product-description').text($("#unitsFinal").val() + " Units");
         $('#product-price').text(price);
         $('#product-priceText').text(`Price: $${price.toFixed(2)}`);
+
+        if (name === "Free") {
+            $('#free-trial-description').removeClass('d-none');
+        } else {
+            $('#free-trial-description').addClass('d-none');
+        }
 
         $("#stripeModal").modal("show");
 

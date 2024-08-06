@@ -759,7 +759,11 @@ namespace MagicVilla_VillaAPI.Repository
                 PhoneNumber = user?.PhoneNumber ?? string.Empty,
                 SubscriptionName = subscription.BillingInterval,
                 Currency = subscription.Currency,
-                Price = paymentInfo?.ProductPrice ?? 0
+                Price = paymentInfo?.ProductPrice ?? 0,
+                ChargedAmount = paymentInfo?.AmountCharged ?? 0,
+                StartDate = subscription.StartDate,
+                EndDate = subscription.EndDate,
+                IsTrial = subscription.IsTrial
             };
         }
 
