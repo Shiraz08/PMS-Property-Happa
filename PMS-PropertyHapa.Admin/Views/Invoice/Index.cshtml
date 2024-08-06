@@ -35,14 +35,10 @@
                             <table class="table table-hover text-center display" id="invoiceTable">
                                 <thead class="table-dark">
                                     <tr>
-                                        <th scope="col" class="tableHeaderbg">Subscription Id</th>
+                                        <th scope="col" class="tableHeaderbg">User Id</th>
                                         <th scope="col" class="tableHeaderbg">Name</th>
                                         <th scope="col" class="tableHeaderbg">Email</th>
-                                        <th scope="col" class="tableHeaderbg">Start Date</th>
-                                        <th scope="col" class="tableHeaderbg">End Date</th>
-                                        <th scope="col" class="tableHeaderbg">Subscription Interval</th>
-                                        <th scope="col" class="tableHeaderbg">Amount</th>
-                                        <th scope="col" class="tableHeaderbg">Discount</th>
+                                        <th scope="col" class="tableHeaderbg">Download Invoice</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -62,54 +58,33 @@
     $(document).ready(function () {
         $('#invoiceTable').DataTable({
             "ajax": {
-                "url": "/Invoice/GetInvoicesData",
+                "url": "/Invoice/GetInvoices",
                 "type": "GET",
                 "dataSrc": ""
             },
-
             "columns": [
                 {
                     "data": "UserId",
-                    "className": "tableFontSize align-middle";
-
+                    "className": "tableFontSize align-middle"
                 },
                 {
-                    "data": "Name",
-                    "className": "tableFontSize align-middle";
-
+                    "data": "ToName",
+                    "className": "tableFontSize align-middle"
                 },
                 {
-                    "data": "Email",
-                    "className": "tableFontSize align-middle";
-
+                    "data": "ToEmail",
+                    "className": "tableFontSize align-middle"
                 },
                 {
-                    "data": "StartDate",
-                    "className": "tableFontSize align-middle";
-
-                },
-                {
-                    "data": "EndDate",
-                    "className": "tableFontSize align-middle";
-
-                },
-                {
-                    "data": "SubscriptionName",
-                    "className": "tableFontSize align-middle";
-
-                },
-                  {
-                    "data": "AmountCharged",
-                    "className": "tableFontSize align-middle";
-
-                },
-                {
-                    "data": "Discount",
-                    "className": "tableFontSize align-middle";
-
+                    "data": "File",
+                    "className": "tableFontSize align-middle",
+                    "render": function (data, type, row) {
+                        return '<a href="' + data + '" target="_blank">Open File</a>';
+                    }
                 }
             ]
         });
+    });
 </script>
 
 

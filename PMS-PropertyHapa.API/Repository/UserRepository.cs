@@ -8903,7 +8903,7 @@ namespace MagicVilla_VillaAPI.Repository
 
             if (subscriptionInvoiceDto.File != null)
             {
-                await _googleCloudStorageService.UploadImagebyBase64Async(subscriptionInvoiceDto.File, "SubscriptionInvoice_File_" + subscriptionInvoice.Id + ".pdf");
+                var res = await _googleCloudStorageService.UploadImagebyBase64Async(subscriptionInvoiceDto.File, "SubscriptionInvoice_File_" + subscriptionInvoice.Id + ".pdf");
             }
             return result > 0;
         }
