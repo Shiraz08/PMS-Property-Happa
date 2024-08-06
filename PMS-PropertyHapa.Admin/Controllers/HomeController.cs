@@ -49,6 +49,11 @@ namespace PMS_PropertyHapa.Admin.Controllers
 
         public async Task<IActionResult> Index()
         {
+
+            var totalEarnings = await _context.PaymentInformations.SumAsync(s => s.AmountCharged);
+
+            ViewBag.totalEarnings = totalEarnings;
+
             var taskRequests = await (from t in _context.TaskRequest
                                                from a in _context.Assets.Where(x => x.AssetId == t.AssetId && x.IsDeleted != true).DefaultIfEmpty()
                                                from u in _context.AssetsUnits.Where(x => x.UnitId == t.UnitId && x.IsDeleted != true).DefaultIfEmpty()
@@ -507,13 +512,17 @@ namespace PMS_PropertyHapa.Admin.Controllers
         {
             try
             {
-                var subscriptions = await _context.PaymentInformations.ToListAsync();
-                //var subscriptionCounts = subscriptions
-                //    .GroupBy(s => s.SubscriptionName)
-                //    .Select(g => new { SubscriptionName = g.Key, Count = g.Count() })
-                //    .ToList();
-                var totalEarnings = subscriptions.Sum(s => s.ProductPrice);
-                return Json(new { success = true, data =  totalEarnings });
+                // Fetch distinct subscriptions with their user count
+                var subscriptionCounts = await _context.Subscriptions
+                    .Select(s => new
+                    {
+                        s.SubscriptionName,
+                        UserCount = _context.ApplicationUsers.Count(u => u.SubscriptionId == s.Id)
+                    })
+                    .Distinct()
+                    .ToListAsync();
+
+                return Json(new { success = true, data = subscriptionCounts });
             }
             catch (Exception ex)
             {
