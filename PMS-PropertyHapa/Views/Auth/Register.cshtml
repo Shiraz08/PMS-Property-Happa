@@ -104,6 +104,14 @@
         overflow: scroll;
     }
 
+    .blockUI.blockOverlay {
+        z-index: 9999 !important; /* Set a high z-index value */
+    }
+
+    .blockUI.blockMsg {
+        z-index: 10000 !important; /* Ensure the message is above the overlay */
+    }
+
 </style>
 
 
@@ -799,7 +807,6 @@
             </div> *@
             <div class="f1-buttons">
                 <button class="btn btn-primary btn-previous" type="button">Previous</button>
-                <button class="btn btn-primary btn-submit d-none btn-register" onclick="registerUser()" type="button">Register</button>
                 <input type="hidden" value="" id="subscriptionId" />
                 <input type="hidden" value="" id="subscriptionName" />
                 <input type="hidden" value="" id="subscriptionPrice" />
@@ -810,7 +817,64 @@
 
 
 <!-- Modal HTML -->
+
 <div class="modal fade" id="stripeModal" tabindex="-1" aria-labelledby="stripeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white border-0">
+                <h5 class="modal-title" id="stripeModalLabel">Checkout</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="payment-form" class="m-0 p-0" style="box-shadow: none;">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <input type="hidden" id="product-Id">
+                        <label for="name" class="form-label">Name</label>
+                        <input id="name" class="form-control" placeholder="Enter Name" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="card-element" class="form-label">Card</label>
+                        <div id="card-element" class="form-control"></div>
+                        <div id="card-errors" class="text-danger mt-2" role="alert"></div>
+                    </div>
+
+                    <div id="product-details" class="mb-4">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h4 id="product-title" class="fw-bold mb-2"></h4>
+                                <p id="product-description" class="text-muted mb-3"></p>
+                            </div>
+                            <div class="col-md-6 text-md-end">
+                                <p class="d-none" id="product-price"></p>
+                                <div id="free-trial-description" class="d-none mb-3">
+                                    <p class="text-success fw-bold">10-day free trial</p>
+                                </div>
+                                <h4 id="product-priceText" class="mb-0 text-primary fw-bold"></h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="price-section" class="d-flex justify-content-center mb-4">
+                        <img id="price-image" class="img-fluid" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRG_TUukNvS-0E486weXLkJDpTubsAcdHdmKw&usqp=CAU" alt="Price Image" style="max-width: 100%; height: auto;" />
+                    </div>
+
+                </div>
+
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button class="btn btn-primary" id="submit">Pay</button>
+                </div>
+
+            </form>
+
+            <div id="messages" class="alert alert-danger mt-3 d-none" role="alert"></div>
+        </div>
+    </div>
+</div>
+
+
+@* <div class="modal fade" id="stripeModal" tabindex="-1" aria-labelledby="stripeModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -857,7 +921,7 @@
         </div>
     </div>
 </div>
-
+ *@
 
 
 <script src="https://js.stripe.com/v3/"></script>
@@ -867,6 +931,7 @@
     var isNotFree = false;
     var isEmailVerified = false;
     let updatedPrice = 0;
+    var submitted = false;
     document.addEventListener('DOMContentLoaded', async () => {
         const stripe = Stripe('pk_test_51PATV6AezidaMUD1niwSxJ42oxgtI2vZLXEQo8lEMybnjmzaLF3JRV099zwzJ6HWb4cWVzqlvJSaLP7IiMn8YuXM00cA7HPhEH');
 
@@ -880,35 +945,10 @@
             console.error('Card Element container not found.');
         }
 
-        let submitted = false;
-
-
         $('#payment-form').on('submit', async function (event) {
             event.preventDefault();
 
-            if (submitted) return;
-            submitted = true;
-            $(this).find('button').prop('disabled', true);
-
-            var email = $("#emailAddress").val();
-            var otpEmail = $("#otpEmail").val();
-            var password = $("#password").val();
-            var confirmPassword = $("#confirmPassword").val();
-
-            if (!email || isEmailVerified == false) {
-                toastr.error("Please make email verified.");
-                submitted = false;
-                $(this).find('button').prop('disabled', false);
-                return;
-            }
-
-            if (password !== confirmPassword) {
-                toastr.error("Password and Confirm Password do not match.");
-                submitted = false;
-                $(this).find('button').prop('disabled', false);
-                return;
-            }
-
+            $.blockUI({ message: '<h1>Loading...</h1>' });
             try {
                 var data = {
                     UserName: $("#firstName").val(),
@@ -1002,6 +1042,7 @@
                 console.error('Backend Error:', error);
                 alert('An error occurred while processing your subscription.');
             } finally {
+                $.unblockUI();
                 $('#submit').prop('disabled', false);
                 submitted = false;
             }
@@ -1173,6 +1214,28 @@
 
 
     function handleSubscriptionClick(price, id, name, units) {
+        if (submitted) return;
+        submitted = true;
+        $(this).find('button').prop('disabled', true);
+
+        var email = $("#emailAddress").val();
+        var otpEmail = $("#otpEmail").val();
+        var password = $("#password").val();
+        var confirmPassword = $("#confirmPassword").val();
+
+        if (!email || isEmailVerified == false) {
+            toastr.error("Please make email verified.");
+            submitted = false;
+            $(this).find('button').prop('disabled', false);
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            toastr.error("Password and Confirm Password do not match.");
+            submitted = false;
+            $(this).find('button').prop('disabled', false);
+            return;
+        }
         $("#subscriptionId").val(id);
         $("#subscriptionName").val(name);
         $("#subscriptionPrice").val(price);
@@ -1183,16 +1246,18 @@
         $('#product-price').text(price);
         $('#product-priceText').text(`Price: $${price.toFixed(2)}`);
 
+        if (name === "Free") {
+            $('#free-trial-description').removeClass('d-none');
+        } else {
+            $('#free-trial-description').addClass('d-none');
+        }
+
         $("#stripeModal").modal("show");
-        // $('.bank-account-form').addClass('d-none');
 
         if (price === 0) {
             isNotFree = false;
-            $('.btn-register').removeClass('d-none');
         } else {
             isNotFree = true;
-            $('.btn-register').removeClass('d-none');
-            //$('.bank-account-form').removeClass('d-none');
         }
         
         const unitFinal = $('#unitsFinal').val();
