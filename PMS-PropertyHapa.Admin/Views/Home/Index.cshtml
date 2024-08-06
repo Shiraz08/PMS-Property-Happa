@@ -3,6 +3,8 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 @using Microsoft.AspNetCore.Http
+@using Newtonsoft.Json
+@using PMS_PropertyHapa.Models.DTO
 @{
     ViewData["Title"] = "Home Page";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -216,151 +218,93 @@
                     </div>
                 </div>
             </div>
-            <div class="col-xl-4 col-md-6 dash-xl-50">
-                <div class="card news-update">
+            @using System.Collections.Generic
+            @using PMS_PropertyHapa.Models.DTO
+
+            <div class="col-xl-4 col-md-4 dash-xl-50">
+                <div class="card news-update d-flex align-items-stretch h-80" style="height: 510px;">
                     <div class="card-header card-no-border">
                         <div class="header-top">
                             <h5 class="m-0">News &amp; Update</h5>
-                            <div class="icon-box onhover-dropdown">
-                                <i data-feather="more-horizontal"></i>
-                                <div class="icon-box-show onhover-show-div">
-                                    <ul>
-                                        <li>
-                                            <a>
-                                                Today
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a>
-                                                Yesterday
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a>
-                                                Tommorow
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
+                            @*<div class="icon-box onhover-dropdown">
+                            <i data-feather="more-horizontal"></i>
+                            <div class="icon-box-show onhover-show-div">
+                            <ul>
+                            <li><a>Today</a></li>
+                            <li><a>Yesterday</a></li>
+                            <li><a>Tomorrow</a></li>
+                            </ul>
                             </div>
+                            </div> *@
                         </div>
                     </div>
-                    <div class="card-body pt-0">
-                        <div class="table-responsive custom-scrollbar">
+                    <div class="card-body pt-0 overflow-auto d-flex align-items-center justify-content-center" data-simplebar style="max-height: 425px;">
+                        <div class="table-responsive custom-scrollbar w-100">
                             <table class="table table-bordernone">
                                 <tbody>
-                                    <tr>
-                                        <td>
-                                            <div class="media">
-                                                <img class="img-fluid me-3 b-r-5" src="~/Dashboard/assets/images/dashboard/rectangle-26.jpg" alt="">
-                                                <div class="media-body">
-                                                    <a href="blog-single.html">
-                                                        <h5>Shiraz Paid his rent Today</h5>
-                                                    </a>
-                                                    <p>Next Amount date is 400$</p>
+                                    <!-- Task Requests -->
+                                    @{
+                                        var taskRequests = ViewBag.taskRequest as List<TaskRequestDto>;
+                                    }
+                                    @if (taskRequests != null && taskRequests.Any())
+                                    {
+                                        @foreach (var task in taskRequests)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <div class="media">
+                                                        @if (!string.IsNullOrEmpty(task.TaskRequestFile))
+                                                        {
+                                                            <img class="img-50 img-fluid m-r-20 rounded-circle update_img_0" src="@task.TaskRequestFile" alt="">
+                                                        }
+                                                        else
+                                                        {
+                                                            <img class="img-fluid me-3 b-r-5" src="~/Dashboard/assets/images/dashboard/rectangle-26.jpg" alt="">
+                                                        }
+                                                        <div class="media-body">
+                                                            <a href="#">
+                                                                <h4>@task.Type</h4>
+                                                                <h5>@task.Subject</h5>
+                                                            </a>
+                                                            <p>@task.Description</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td><span class="badge badge-light-theme-light font-theme-light">@task.AddedDate?.ToString("yyyy-MM-dd")</span></td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center justify-content-center" style="height: 425px;">
+                                                    <div class="media-body text-center">
+                                                        <h5>No Task is added yet</h5>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </td>
-                                        <td><span class="badge badge-light-theme-light font-theme-light">1 day ago</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="media">
-                                                <img class="img-fluid me-3 b-r-5" src="~/Dashboard/assets/images/dashboard/rectangle-26.jpg" alt="">
-                                                <div class="media-body">
-                                                    <a href="blog-single.html">
-                                                        <h5>Musa Paid his Due rent Today</h5>
-                                                    </a>
-                                                    <p>Next Amount date is 200$</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td><span class="badge badge-light-theme-light font-theme-light">5 day ago</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="media">
-                                                <img class="img-fluid me-3 b-r-5" src="~/Dashboard/assets/images/dashboard/rectangle-26.jpg" alt="">
-                                                <div class="media-body">
-                                                    <a href="blog-single.html">
-                                                        <h5>Ali Haider Paid his rent Today</h5>
-                                                    </a>
-                                                    <p>Next Amount date is 1000$</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td><span class="badge badge-light-theme-light font-theme-light">0 day ago</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="media">
-                                                <img class="img-fluid me-3 b-r-5" src="~/Dashboard/assets/images/dashboard/rectangle-26.jpg" alt="">
-                                                <div class="media-body">
-                                                    <a href="blog-single.html">
-                                                        <h5>Murtaza Paid his rent Today</h5>
-                                                    </a>
-                                                    <p>Next Amount date is 700$</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td><span class="badge badge-light-theme-light font-theme-light">2 day ago</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="media">
-                                                <img class="img-fluid me-3 b-r-5" src="~/Dashboard/assets/images/dashboard/rectangle-26.jpg" alt="">
-                                                <div class="media-body">
-                                                    <a href="blog-single.html">
-                                                        <h5>Mohsin Paid his rent Today</h5>
-                                                    </a>
-                                                    <p>Next Amount date is 360$</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td><span class="badge badge-light-theme-light font-theme-light">2 day ago</span></td>
-                                    </tr>
+                                            </td>
+                                        </tr>
+                                    }
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-xl-4 col-md-6 dash-xl-50">
-                <div class="card revenue-category">
-                    <div class="card-header card-no-border">
-                        <div class="media">
-                            <div class="media-body">
-                                <h5 class="mb-0">Building Revenue</h5>
-                            </div>
-                            <div class="icon-box onhover-dropdown">
-                                <i data-feather="more-horizontal"></i>
-                                <div class="icon-box-show onhover-show-div">
-                                    <ul>
-                                        <li>
-                                            <a>
-                                                Done
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a>
-                                                Pending
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
+
+
+            <div class="col-xl-4 col-md-4 dash-xl-50">
+                <div class="card" style="height: 510px;">
+                    <div class="card-header pb-0">
+                        <h5>Outstanding Payments </h5>
                     </div>
-                    <div class="card-body">
-                        <div class="donut-inner">
-                            <h5>16,349</h5>
-                            <h6>2,174 in pending</h6>
-                        </div>
-                        <div id="revenue-chart">            </div>
+                    <div class="card-body apex-chart">
+                        <div id="piechart" style="padding-top: 4.5rem !important;"></div>
                     </div>
                 </div>
             </div>
-            <div class="col-xl-4 col-md-6 dash-xl-50">
+            @* <div class="col-xl-4 col-md-6 dash-xl-50">
                 <div class="card our-activities">
                     <div class="card-header card-no-border">
                         <div class="media media-dashboard">
@@ -580,13 +524,60 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> *@
         </div>
     </div>
 </div>
 
 <script>
     $(document).ready(function () {
+        
+        google.charts.load('current', {
+            'packages': ['corechart']
+        });
+        google.charts.setOnLoadCallback(drawChart);
+        function drawChart() {
+            $.ajax({
+                url: '@Url.Action("GetAllSubscriptions", "Home")',
+                method: 'GET',
+                success: function (response) {
+                    if (response.success) {
+                        var data = google.visualization.arrayToDataTable([
+                            ['Subscription', 'Count'],
+                            ...response.data.map(item => [item.SubscriptionName, item.Count])
+                        ]);
+
+                        var options = {
+                            pieHole: 0.4,
+                            width: '100%',
+                            height: 300,
+                            colors: ["#f8d62b", "#a927f9", "#51bb25", zetaAdminConfig.secondary, zetaAdminConfig.primary]
+                        };
+
+                        var chart = new google.visualization.PieChart(document.getElementById('subscriptionPieChart'));
+                        chart.draw(data, options);
+
+
+                        // Update the total earnings
+                        $('#totalEarnings').html(response.totalEarnings);
+                        console.log("response.totalEarnings");
+                        console.log(response.totalEarnings);
+                    } else {
+                        console.error(response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        }
+
+
+
+        fetchLandlordData();
+
+        fetchSubscribedUserData(); 
+
         $('#customerTable').DataTable({
             "ajax": {
                 "url": "/Home/GetAllUsers",
@@ -599,7 +590,7 @@
                     "className": "tableFontSize align-middle"
                 },
                 {
-                    "data": "OwnerCount", 
+                    "data": "OwnerCount",
                     "className": "tableFontSize align-middle"
                 },
                 {
@@ -632,47 +623,68 @@
             ]
         });
 
-        google.charts.load('current', {
-            'packages': ['corechart']
-        });
-        google.charts.setOnLoadCallback(drawChart);
-
-        fetchLandlordData();
-
-        fetchSubscribedUserData(); 
-        
-            var data = new google.visualization.DataTable();
-            data.addColumn('number', 'month');
-            data.addColumn('number', 'Open Leads');
-            data.addColumn('number', 'Closed Leads');
-            data.addRows([
-                [1, 37.8, 60.8],
-                [2, 30.9, 10.5],
-                [3, 40.4, 57],
-                [4, 11.7, 18.8],
-                [5, 20, 17.6],
-                [6, 8.8, 13.6],
-                [7, 7.6, 12.3],
-                [8, 12.3, 29.2],
-                [9, 16.9, 42.9],
-                [10, 12.8, 30.9],
-                [11, 5.3, 7.9],
-                [12, 6.6, 8.4],
-            ]);
-            var options = {
-                chart: {
+        // Leads Chart
+        var data = new google.visualization.DataTable();
+        data.addColumn('number', 'month');
+        data.addColumn('number', 'Open Leads');
+        data.addColumn('number', 'Closed Leads');
+        data.addRows([
+            [1, 37.8, 60.8],
+            [2, 30.9, 10.5],
+            [3, 40.4, 57],
+            [4, 11.7, 18.8],
+            [5, 20, 17.6],
+            [6, 8.8, 13.6],
+            [7, 7.6, 12.3],
+            [8, 12.3, 29.2],
+            [9, 16.9, 42.9],
+            [10, 12.8, 30.9],
+            [11, 5.3, 7.9],
+            [12, 6.6, 8.4],
+        ]);
+        var options = {
+            chart: {
                    
-                },
-                colors: [zetaAdminConfig.primary, zetaAdminConfig.secondary, "#51bb25"],
-                height: 300,
-                width: '100%',
-            };
-            var chart = new google.charts.Line(document.getElementById('newLeadsChart'));
-            chart.draw(data, google.charts.Line.convertOptions(options));
-        
+            },
+            colors: [zetaAdminConfig.primary, zetaAdminConfig.secondary, "#51bb25"],
+            height: 300,
+            width: '100%',
+        };
+        var chart = new google.charts.Line(document.getElementById('newLeadsChart'));
+        chart.draw(data, google.charts.Line.convertOptions(options));
 
+        // Outstanding Payments Pie Chart
+        var options8 = {
+            chart: {
+                width: 380,
+                type: 'pie',
+            },
+            labels: ['Team A', 'Team B', 'Team C', 'Team D', 'Team E'],
+            series: [44, 55, 13, 43, 22],
+            responsive: [{
+                breakpoint: 480,
+                options: {
+                    chart: {
+
+                        width: 200
+                    },
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }],
+            colors: [zetaAdminConfig.primary, zetaAdminConfig.secondary, '#51bb25', '#a927f9', '#f8d62b']
+        }
+
+        var chart8 = new ApexCharts(
+            document.querySelector("#piechart"),
+            options8
+        );
+
+        chart8.render();
         
     });
+
     function fetchLandlordData() {
         $.ajax({
             url: '@Url.Action("GetAllLandlords", "Home")',
@@ -725,41 +737,7 @@
         });
     }
 
-    function drawChart() {
-        $.ajax({
-            url: '@Url.Action("GetAllSubscriptions", "Home")',
-            method: 'GET',
-            success: function (response) {
-                if (response.success) {
-                    var data = google.visualization.arrayToDataTable([
-                        ['Subscription', 'Count'],
-                        ...response.data.map(item => [item.SubscriptionName, item.Count])
-                    ]);
-
-                    var options = {
-                        pieHole: 0.4,
-                        width: '100%',
-                        height: 300,
-                        colors: ["#f8d62b", "#a927f9", "#51bb25", zetaAdminConfig.secondary, zetaAdminConfig.primary]
-                    };
-
-                    var chart = new google.visualization.PieChart(document.getElementById('subscriptionPieChart'));
-                    chart.draw(data, options);
-
-
-                    // Update the total earnings
-                    $('#totalEarnings').html(response.totalEarnings);
-                    console.log(response.totalEarnings);
-                } else {
-                    console.error(response.message);
-                }
-            },
-            error: function (xhr, status, error) {
-                console.error(error);
-            }
-        });
-    }
- 
+    
 
 </script>
 
