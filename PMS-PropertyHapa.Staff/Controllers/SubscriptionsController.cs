@@ -248,13 +248,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
                 var paymentMethodResult = await _authService.SavePaymentMethodInformation(paymentMethodInformationDto);
                 var subscriptionResult = await _authService.SaveStripeSubscription(subscriptionDto);
 
-
-                //=============================================Email Invoice work=============================================
-                //=============================================Email Invoice work=============================================
-
                 var invoiceData = await _authService.GetSubscriptionInvoice(subscription.Id);
-
-
                 // Send Email
                 string body = string.Empty;
                 _environment.WebRootPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
@@ -266,7 +260,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
                 }
                 //Fill EMail By Parameter
                 body = body.Replace("{title}", "PropertyHappa Payment Invoice");
-                body = body.Replace("{currentdate}", DateTime.UtcNow.ToString("yyyy-MM-dd hh:mm:ss tt"));
+                body = body.Replace("{currentdate}", DateTime.UtcNow.ToString("MM/dd/yyyy"));
 
                 body = body.Replace("{InvocieStatus}", "Payment Captured");
                 body = body.Replace("{InvoiceID}", subscription.Id);
@@ -282,8 +276,8 @@ namespace PMS_PropertyHapa.Staff.Controllers
                 string endDate = invoiceData.EndDate.ToString("MMMM dd, yyyy");
 
                 body = body.Replace("{SubscriptionPeriod}", $"{startDate} - {endDate}");
-                body = body.Replace("{SetupFee}", invoiceData.Price.ToString());
-                body = body.Replace("{Total}", invoiceData.Price.ToString());
+                body = body.Replace("{SetupFee}", invoiceData.Price.ToString("0.00"));
+                body = body.Replace("{Total}", invoiceData.Price.ToString("0.00"));
 
                 var bytes = (new NReco.PdfGenerator.HtmlToPdfConverter()).GeneratePdf(body);
 

@@ -197,7 +197,7 @@
                             <div class="col-lg-12">
                                 <div class="card">
                                     <div class="card-header align-items-center d-flex">
-                                        <h4 class="card-title mb-0 flex-grow-1">Tenant List</h4>
+                                        <h4 class="card-title mb-0 flex-grow-1">Organization List</h4>
                                     </div>
                                     <div class="card-body">
                                         <div class="live-preview">
@@ -571,21 +571,39 @@
             }
         });
     }
+    // function getGroups() {
+    //     $.ajax({
+    //         type: "GET",
+    //         url: "/LookUp/AspnetRolesDropDown",
+    //         data: "{}",
+    //         success: function (data) {
+    //             console.log(data)
+    //             var s = '<option value="">Please Select a Role</option>';
+    //             for (var i = 0; i < data.length; i++) {
+    //                 s += '<option value="' + data[i].Text + '">' + data[i].Text + '</option>';
+    //             }
+    //             $("#User_Group").html(s);
+    //         }
+    //     });
+    // }
     function getGroups() {
         $.ajax({
             type: "GET",
             url: "/LookUp/AspnetRolesDropDown",
             data: "{}",
             success: function (data) {
+                console.log(data);
                 var s = '<option value="">Please Select a Role</option>';
                 for (var i = 0; i < data.length; i++) {
-                    s += '<option value="' + data[i].Text + '">' + data[i].Text + '</option>';
+                    var selected = data[i].Text === "PropertyManager" ? ' selected' : '';
+                    s += '<option value="' + data[i].Text + '"' + selected + '>' + data[i].Text + '</option>';
                 }
                 $("#User_Group").html(s);
+                $("#User_Group").prop("disabled", true); // Disable the dropdown
             }
         });
-
     }
+
     function Refresh()
     {
         window.location.reload();
