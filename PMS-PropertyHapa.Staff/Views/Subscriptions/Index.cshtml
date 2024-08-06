@@ -139,22 +139,78 @@
 <div class="modal fade" id="stripeModal" tabindex="-1" aria-labelledby="stripeModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
+            <div class="modal-header bg-primary text-white border-0">
+                <h5 class="modal-title" id="stripeModalLabel">Checkout</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="payment-form" class="m-0 p-0" style="box-shadow: none;">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <input type="hidden" id="product-Id">
+                        <label for="name" class="form-label">Name</label>
+                        <input id="name" class="form-control" placeholder="Enter Name" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="card-element" class="form-label">Card</label>
+                        <div id="card-element" class="form-control"></div>
+                        <div id="card-errors" class="text-danger mt-2" role="alert"></div>
+                    </div>
+
+                    <div id="product-details" class="mb-4">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h4 id="product-title" class="fw-bold mb-2"></h4>
+                                <p id="product-description" class="text-muted mb-3"></p>
+                            </div>
+                            <div class="col-md-6 text-md-end">
+                                <p class="d-none" id="product-price"></p>
+                                <div id="free-trial-description" class="d-none mb-3">
+                                    <p class="text-success fw-bold">10-day free trial</p>
+                                </div>
+                                <h4 id="product-priceText" class="mb-0 text-primary fw-bold"></h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="price-section" class="d-flex justify-content-center mb-4">
+                        <img id="price-image" class="img-fluid" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRG_TUukNvS-0E486weXLkJDpTubsAcdHdmKw&usqp=CAU" alt="Price Image" style="max-width: 100%; height: auto;" />
+                    </div>
+
+                </div>
+
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button class="btn btn-primary" id="submit">Pay</button>
+                </div>
+
+            </form>
+
+            <div id="messages" class="alert alert-danger mt-3 d-none" role="alert"></div>
+        </div>
+    </div>
+</div>
+
+
+
+@* <div class="modal fade" id="stripeModal" tabindex="-1" aria-labelledby="stripeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="stripeModalLabel">Checkout</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form id="payment-form" class="p-3">
+            <form id="payment-form">
                 <div class="mb-3">
                     <p class="d-none" id="product-Id"></p>
                     <label for="name" class="form-label">Name</label>
                     <input id="name" class="form-control" placeholder="Enter Name" required />
                 </div>
                 
-
                  <div class="mb-3">
                     <label for="card-element" class="form-label">Card</label>
-                    <div id="card-element" class="form-control"></div> <!-- Stripe Element will be mounted here -->
-                    <div id="card-errors" class="text-danger mt-2" role="alert"></div> <!-- Display errors -->
+                    <div id="card-element" class="form-control"></div>
+                    <div id="card-errors" class="text-danger mt-2" role="alert"></div> 
                 </div>
 
                 <div id="product-details" class="mb-3">
@@ -189,7 +245,7 @@
             <div id="messages" role="alert" style="display: none;"></div>
         </div>
     </div>
-</div> 
+</div>  *@
 
 <script src="https://js.stripe.com/v3/"></script>
 <script>
