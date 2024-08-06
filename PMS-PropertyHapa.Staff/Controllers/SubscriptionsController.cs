@@ -220,9 +220,12 @@ namespace PMS_PropertyHapa.Staff.Controllers
                         PaymentStatus = paymentIntent.Status,
                         Currency = paymentIntent.Currency,
                         CustomerId = paymentIntent.CustomerId,
+                        SelectedSubscriptionId = customer.Metadata.ContainsKey("ProductId") ? int.Parse(customer.Metadata["ProductId"]) : null,
+
                     };
                     var result = await _authService.SavePaymentInformation(paymentInformationDto);
                 }
+                
                 var subscriptionDto = new StripeSubscriptionDto
                 {
                     IsCanceled = false,
@@ -238,6 +241,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
                     Currency = subscription.Currency,
                     Status = subscription.Status,
                     CustomerId = subscription.CustomerId,
+                    SelectedSubscriptionId = customer.Metadata.ContainsKey("ProductId") ? int.Parse(customer.Metadata["ProductId"]) : null,
                 };
 
                 var paymentMethodInformationDto = new PaymentMethodInformationDto
@@ -330,7 +334,17 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
                     _emailSenderBase.SendEmailWithFIle(bytes, invoiceData.Email, emailSubject, bodyemail, "invoice");
                 }
+                var base64Pdf = Convert.ToBase64String(bytes);
 
+                var subscriptionInvoiceDto = new SubscriptionInvoiceDto
+                {
+                    File = base64Pdf,
+                    ToEmail= invoiceData.Email,
+                    ToName= invoiceData.FullName,
+                    UserId = customer.Metadata.ContainsKey("UserId") ? customer.Metadata["UserId"] : null,
+                };
+
+                await _authService.SaveSubscriptionInvoice(subscriptionInvoiceDto);
 
                 return Ok(subscription);
             }

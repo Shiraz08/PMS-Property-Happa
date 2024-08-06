@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PMS_PropertyHapa.Models.DTO
 {
-    public class SubscriptionInvoiceDto
+    public class SubscriptionInvoiceData
     {
         public string FullName {  get; set; }
         public string Email { get; set; }

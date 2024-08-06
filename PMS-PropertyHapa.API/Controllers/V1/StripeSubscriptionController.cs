@@ -94,6 +94,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
+
         [HttpPost("SaveStripeSubscription")]
         public async Task<ActionResult<bool>> SaveStripeSubscription(StripeSubscriptionDto stripeSubscriptionDto)
         {
@@ -113,8 +114,28 @@ namespace PMS_PropertyHapa.API.Controllers.V1
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
+        
+        [HttpPost("SaveSubscriptionInvoice")]
+        public async Task<ActionResult<bool>> SaveSaveSubscriptionInvoice(SubscriptionInvoiceDto subscriptionInvoiceDto)
+        {
+            try
+            {
+                var isSuccess = await _userRepo.SaveSaveSubscriptionInvoiceAsync(subscriptionInvoiceDto);
+                if (isSuccess == true)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = isSuccess;
+                }
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
         [HttpGet("GetSubscriptionInvoice/{subscriptionId}")]
-        public async Task<ActionResult<SubscriptionInvoiceDto>> GetSubscriptionInvoice(string subscriptionId)
+        public async Task<ActionResult<SubscriptionInvoiceData>> GetSubscriptionInvoice(string subscriptionId)
         {
             try
             {

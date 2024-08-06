@@ -727,7 +727,7 @@ namespace MagicVilla_VillaAPI.Repository
             return userRoles;
         }
 
-        public async Task<SubscriptionInvoiceDto> GetSubscriptionInvoiceAsync(string subscriptionId)
+        public async Task<SubscriptionInvoiceData> GetSubscriptionInvoiceAsync(string subscriptionId)
         {
             var result = await (from ss in _db.StripeSubscriptions
                                 join u in _db.ApplicationUsers on ss.UserId equals u.Id into userJoin
@@ -751,7 +751,7 @@ namespace MagicVilla_VillaAPI.Repository
             var subscription = result.Subscription;
             var paymentInfo = result.PaymentInfo;
 
-            return new SubscriptionInvoiceDto
+            return new SubscriptionInvoiceData
             {
                 FullName = user != null ? $"{user.FirstName} {user.LastName}" : string.Empty,
                 Email = subscription.EmailAddress,
@@ -8828,6 +8828,7 @@ namespace MagicVilla_VillaAPI.Repository
             paymentInformation.PaymentStatus = paymentInformationDto.PaymentStatus;
             paymentInformation.Currency = paymentInformationDto.Currency;
             paymentInformation.CustomerId = paymentInformationDto.CustomerId;
+            paymentInformation.SelectedSubscriptionId = paymentInformationDto.SelectedSubscriptionId;
 
             paymentInformation.AddedBy = paymentInformationDto.AddedBy;
             paymentInformation.AddedDate = DateTime.Now;
@@ -8877,12 +8878,33 @@ namespace MagicVilla_VillaAPI.Repository
             stripeSubscription.Status = stripeSubscriptionDto.Status;
             stripeSubscription.Currency = stripeSubscriptionDto.Currency;
             stripeSubscription.CustomerId = stripeSubscriptionDto.CustomerId;
-
+            stripeSubscription.SelectedSubscriptionId = stripeSubscriptionDto.SelectedSubscriptionId;
             stripeSubscription.AddedBy = stripeSubscriptionDto.AddedBy;
             stripeSubscription.AddedDate = DateTime.Now;
             _db.StripeSubscriptions.Add(stripeSubscription);
 
             var result = await _db.SaveChangesAsync();
+            return result > 0;
+        }
+        
+        public async Task<bool> SaveSaveSubscriptionInvoiceAsync(SubscriptionInvoiceDto subscriptionInvoiceDto)
+        {
+            var subscriptionInvoice = new SubscriptionInvoice();
+            subscriptionInvoice.Id = subscriptionInvoiceDto.Id;
+            subscriptionInvoice.UserId = subscriptionInvoiceDto.UserId;
+            subscriptionInvoice.ToEmail = subscriptionInvoiceDto.ToEmail;
+            subscriptionInvoice.File = "invoice.pdf";
+            subscriptionInvoice.ToName = subscriptionInvoiceDto.ToName;
+            subscriptionInvoice.AddedBy = subscriptionInvoiceDto.AddedBy;
+            subscriptionInvoice.AddedDate = DateTime.Now;
+            _db.SubscriptionInvoices.Add(subscriptionInvoice);
+
+            var result = await _db.SaveChangesAsync();
+
+            if (subscriptionInvoiceDto.File != null)
+            {
+                await _googleCloudStorageService.UploadImagebyBase64Async(subscriptionInvoiceDto.File, "SubscriptionInvoice_File_" + subscriptionInvoice.Id + ".pdf");
+            }
             return result > 0;
         }
 

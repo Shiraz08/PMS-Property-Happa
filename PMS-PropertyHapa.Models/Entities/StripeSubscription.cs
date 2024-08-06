@@ -25,5 +25,6 @@ namespace PMS_PropertyHapa.Models.Entities
         public string Currency { get; set; }
         public string CustomerId { get; set; }
         public bool HasAdminPermission { get; set; }
+        public int? SelectedSubscriptionId { get; set; }
     }
 }

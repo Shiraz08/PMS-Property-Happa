@@ -70,6 +70,7 @@ namespace PMS_PropertyHapa.MigrationsFiles.Data
         public DbSet<PaymentInformation> PaymentInformations { get; set; }
         public DbSet<PaymentMethodInformation> PaymentMethodInformations { get; set; }
         public DbSet<StripeSubscription> StripeSubscriptions { get; set; }
+        public DbSet<SubscriptionInvoice> SubscriptionInvoices { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Tenant>()

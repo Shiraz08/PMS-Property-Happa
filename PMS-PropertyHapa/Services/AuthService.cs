@@ -1067,8 +1067,25 @@ namespace PMS_PropertyHapa.Services
                 throw new Exception($"An error occurred when creating Payment Guid: {ex.Message}", ex);
             }
         }
+        public async Task<bool> SaveSubscriptionInvoice(SubscriptionInvoiceDto subscriptionInvoiceDto)
+        {
+            try
+            {
+                var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+                {
+                    ApiType = SD.ApiType.POST,
+                    Data = subscriptionInvoiceDto,
+                    Url = $"{villaUrl}/api/v1/StripeSubscriptionAuth/SaveSubscriptionInvoice"
+                });
 
-        public async Task<SubscriptionInvoiceDto> GetSubscriptionInvoice(string SubscriptionId)
+                return response.IsSuccess;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred when creating Payment Guid: {ex.Message}", ex);
+            }
+        }
+        public async Task<SubscriptionInvoiceData> GetSubscriptionInvoice(string SubscriptionId)
         {
             try
             {
@@ -1080,7 +1097,7 @@ namespace PMS_PropertyHapa.Services
 
                 if (response.IsSuccess == true)
                 {
-                    var invoice = response.Result != null ? JsonConvert.DeserializeObject<SubscriptionInvoiceDto>(Convert.ToString(response.Result)) : new SubscriptionInvoiceDto();
+                    var invoice = response.Result != null ? JsonConvert.DeserializeObject<SubscriptionInvoiceData>(Convert.ToString(response.Result)) : new SubscriptionInvoiceData();
                     return invoice;
                 }
                 else
