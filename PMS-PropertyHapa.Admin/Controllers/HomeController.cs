@@ -9,6 +9,7 @@ using PMS_PropertyHapa.Admin.Services;
 using PMS_PropertyHapa.MigrationsFiles.Data;
 using PMS_PropertyHapa.MigrationsFiles.Data;
 using PMS_PropertyHapa.Models.DTO;
+using PMS_PropertyHapa.Models.Entities;
 using PMS_PropertyHapa.Models.Roles;
 using PMS_PropertyHapa.Shared.Email;
 using System.Diagnostics;
@@ -506,13 +507,13 @@ namespace PMS_PropertyHapa.Admin.Controllers
         {
             try
             {
-                var subscriptions = await _context.Subscriptions.ToListAsync();
-                var subscriptionCounts = subscriptions
-                    .GroupBy(s => s.SubscriptionName)
-                    .Select(g => new { SubscriptionName = g.Key, Count = g.Count() })
-                    .ToList();
-                var totalEarnings = subscriptions.Sum(s => s.Price);
-                return Json(new { success = true, data = subscriptionCounts, totalEarnings });
+                var subscriptions = await _context.PaymentInformations.ToListAsync();
+                //var subscriptionCounts = subscriptions
+                //    .GroupBy(s => s.SubscriptionName)
+                //    .Select(g => new { SubscriptionName = g.Key, Count = g.Count() })
+                //    .ToList();
+                var totalEarnings = subscriptions.Sum(s => s.ProductPrice);
+                return Json(new { success = true, data =  totalEarnings });
             }
             catch (Exception ex)
             {
@@ -581,6 +582,45 @@ namespace PMS_PropertyHapa.Admin.Controllers
         {
             try
             {
+                //var users = await (from ss in _context.StripeSubscriptions
+                //                   join u in _context.ApplicationUsers on ss.UserId equals u.Id into userGroup
+                //                   from u in userGroup.DefaultIfEmpty()
+                //                   join s in _context.Subscriptions on u.SubscriptionId equals s.Id into subGroup
+                //                   from s in subGroup.DefaultIfEmpty()
+                //                   join o in _context.Owner on u.Id equals o.AddedBy into ownerGroup
+                //                   from o in ownerGroup.DefaultIfEmpty()
+                //                   where ss.EndDate >= DateTime.UtcNow && !ss.IsCanceled
+                //                   group new { ss, u, s, o } by new
+                //                   {
+                //                       u.Id,
+                //                       ss.UserId,
+                //                       UserName = u.UserName ?? string.Empty,
+                //                       Email = u.Email ?? string.Empty,
+                //                       PhoneNumber = u.PhoneNumber ?? string.Empty,
+                //                       CompanyName = u.CompanyName ?? string.Empty,
+                //                       AddedDate = u.AddedDate,
+                //                       SubscriptionName = s.SubscriptionName ?? string.Empty,
+                //                       SubscriptionType = s.SubscriptionType ?? string.Empty,
+                //                       StartDate = ss.StartDate,
+                //                       EndDate = ss.EndDate
+                //                   } into g
+                //                   select new CustomerData
+                //                   {
+                //                       UserId = g.Key.UserId ?? string.Empty,
+                //                       Name = g.Key.UserName,
+                //                       EmailAddress = g.Key.Email,
+                //                       PhoneNumber = g.Key.PhoneNumber,
+                //                       SubscriptionName = g.Key.SubscriptionName,
+                //                       SubscriptionType = g.Key.SubscriptionType,
+                //                       Expiring = g.Key.EndDate.HasValue ?
+                //                           EF.Functions.DateDiffDay(DateTime.UtcNow, g.Key.EndDate.Value) : (int?)null,
+                //                       EndDate = g.Key.EndDate,
+                //                       CompanyName = g.Key.CompanyName,
+                //                       OwnerCount = g.Count(x => x.o != null)
+                //                   }).OrderByDescending(x => x.UserId).ToListAsync();
+
+                //return users;
+
                 var users = await (from ss in _context.StripeSubscriptions
                                    join u in _context.ApplicationUsers on ss.UserId equals u.Id into userGroup
                                    from u in userGroup.DefaultIfEmpty()
@@ -589,34 +629,36 @@ namespace PMS_PropertyHapa.Admin.Controllers
                                    join o in _context.Owner on u.Id equals o.AddedBy into ownerGroup
                                    from o in ownerGroup.DefaultIfEmpty()
                                    where ss.EndDate >= DateTime.UtcNow && !ss.IsCanceled
-                                   group new { ss, u, s, o } by new
+                                   select new
                                    {
-                                       u.Id,
                                        ss.UserId,
                                        UserName = u.UserName ?? string.Empty,
                                        Email = u.Email ?? string.Empty,
                                        PhoneNumber = u.PhoneNumber ?? string.Empty,
                                        CompanyName = u.CompanyName ?? string.Empty,
-                                       AddedDate = u.AddedDate,
                                        SubscriptionName = s.SubscriptionName ?? string.Empty,
                                        SubscriptionType = s.SubscriptionType ?? string.Empty,
-                                       StartDate = ss.StartDate,
-                                       EndDate = ss.EndDate
-                                   } into g
-                                   select new CustomerData
+                                       Expiring = ss.EndDate.HasValue ? EF.Functions.DateDiffDay(DateTime.UtcNow, ss.EndDate.Value) : (int?)null,
+                                       EndDate = ss.EndDate,
+                                       OwnerCount = o != null ? 1 : 0
+                                   })
+                                   .Distinct()
+                                   .GroupBy(x => new { x.UserId })
+                                   .Select(g => new CustomerData
                                    {
-                                       UserId = g.Key.UserId ?? string.Empty,
-                                       Name = g.Key.UserName,
-                                       EmailAddress = g.Key.Email,
-                                       PhoneNumber = g.Key.PhoneNumber,
-                                       SubscriptionName = g.Key.SubscriptionName,
-                                       SubscriptionType = g.Key.SubscriptionType,
-                                       Expiring = g.Key.EndDate.HasValue ?
-                                           EF.Functions.DateDiffDay(DateTime.UtcNow, g.Key.EndDate.Value) : (int?)null,
-                                       EndDate = g.Key.EndDate,
-                                       CompanyName = g.Key.CompanyName,
-                                       OwnerCount = g.Count(x => x.o != null)
-                                   }).OrderByDescending(x => x.UserId).ToListAsync();
+                                       UserId = g.Key.UserId,
+                                       Name = g.FirstOrDefault().UserName,
+                                       EmailAddress = g.FirstOrDefault().Email,
+                                       PhoneNumber = g.FirstOrDefault().PhoneNumber,
+                                       SubscriptionName = g.FirstOrDefault().SubscriptionName,
+                                       SubscriptionType = g.FirstOrDefault().SubscriptionType,
+                                       Expiring = g.FirstOrDefault().Expiring,
+                                       EndDate = g.FirstOrDefault().EndDate,
+                                       CompanyName = g.FirstOrDefault().CompanyName,
+                                       OwnerCount = g.Sum(x => x.OwnerCount)
+                                   })
+                                   .OrderByDescending(x => x.UserId)
+                                   .ToListAsync();
 
                 return users;
             }
