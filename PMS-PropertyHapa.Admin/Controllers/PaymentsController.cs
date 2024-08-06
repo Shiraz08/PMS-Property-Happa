@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using PMS_PropertyHapa.MigrationsFiles.Data;
 using PMS_PropertyHapa.Models.DTO;
+using PMS_PropertyHapa.Models.Entities;
 
 namespace PMS_PropertyHapa.Admin.Controllers
 {
@@ -17,48 +18,24 @@ namespace PMS_PropertyHapa.Admin.Controllers
         {
             return View();
         }
-        public async Task<IEnumerable<CustomerData>> GetPaymentsData()
+        public async Task<IEnumerable<PaymentInfoData>> GetPayments()
         {
             try
             {
                 var users = await (from ss in _context.StripeSubscriptions
-                                   join u in _context.ApplicationUsers on ss.UserId equals u.Id into userGroup
-                                   from u in userGroup.DefaultIfEmpty()
-                                   join s in _context.Subscriptions on u.SubscriptionId equals s.Id into subGroup
-                                   from s in subGroup.DefaultIfEmpty()
-                                   join o in _context.Owner on u.Id equals o.AddedBy into ownerGroup
-                                   from o in ownerGroup.DefaultIfEmpty()
-                                   where ss.EndDate >= DateTime.UtcNow && !ss.IsCanceled
-                                   select new
+                                   from u in _context.ApplicationUsers.Where(x=> x.Id == ss.UserId).DefaultIfEmpty()
+                                   from pi in _context.PaymentInformations.Where(x => x.CustomerId == ss.CustomerId).DefaultIfEmpty()
+                                   from s in _context.Subscriptions.Where(x=>x.Id == pi.SelectedSubscriptionId).DefaultIfEmpty()
+                                   where ss.IsTrial != true
+                                   select new PaymentInfoData
                                    {
-                                       ss.UserId,
-                                       UserName = u.UserName ?? string.Empty,
-                                       Email = u.Email ?? string.Empty,
-                                       PhoneNumber = u.PhoneNumber ?? string.Empty,
-                                       CompanyName = u.CompanyName ?? string.Empty,
-                                       SubscriptionName = s.SubscriptionName ?? string.Empty,
-                                       SubscriptionType = s.SubscriptionType ?? string.Empty,
-                                       Expiring = ss.EndDate.HasValue ? EF.Functions.DateDiffDay(DateTime.UtcNow, ss.EndDate.Value) : (int?)null,
+                                       Payee = u.FirstName + " " + u.LastName,
+                                       Amount = pi.AmountCharged,
+                                       SubscriptionType = s.SubscriptionName,
+                                       BillingInterval = ss.BillingInterval,
+                                       StartDate = ss.StartDate,
                                        EndDate = ss.EndDate,
-                                       OwnerCount = o != null ? 1 : 0
-                                   })
-                                   .Distinct()
-                                   .GroupBy(x => new { x.UserId })
-                                   .Select(g => new CustomerData
-                                   {
-                                       UserId = g.Key.UserId,
-                                       Name = g.FirstOrDefault().UserName,
-                                       EmailAddress = g.FirstOrDefault().Email,
-                                       PhoneNumber = g.FirstOrDefault().PhoneNumber,
-                                       SubscriptionName = g.FirstOrDefault().SubscriptionName,
-                                       SubscriptionType = g.FirstOrDefault().SubscriptionType,
-                                       Expiring = g.FirstOrDefault().Expiring,
-                                       EndDate = g.FirstOrDefault().EndDate,
-                                       CompanyName = g.FirstOrDefault().CompanyName,
-                                       OwnerCount = g.Sum(x => x.OwnerCount)
-                                   })
-                                   .OrderByDescending(x => x.UserId)
-                                   .ToListAsync();
+                                   }).ToListAsync();
 
                 return users;
             }
@@ -67,6 +44,5 @@ namespace PMS_PropertyHapa.Admin.Controllers
                 throw new Exception("An error occurred while retrieving the users.", ex);
             }
         }
-
     }
 }
