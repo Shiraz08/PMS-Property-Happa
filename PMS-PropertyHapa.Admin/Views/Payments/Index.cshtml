@@ -33,12 +33,12 @@
                             <table class="table table-hover text-center display" id="paymentTable">
                                 <thead class="table-dark">
                                     <tr>
-                                        <th scope="col" class="tableHeaderbg">Subscription Id</th>
-                                        <th scope="col" class="tableHeaderbg">Card Holder Name</th>
-                                        <th scope="col" class="tableHeaderbg">Price</th>
+                                        <th scope="col" class="tableHeaderbg">Payee</th>
+                                        <th scope="col" class="tableHeaderbg">Amount</th>
+                                        <th scope="col" class="tableHeaderbg">Subscription Type</th>
+                                        <th scope="col" class="tableHeaderbg">Billing Interval</th>
                                         <th scope="col" class="tableHeaderbg">Start Date</th>
                                         <th scope="col" class="tableHeaderbg">End Date</th>
-                                        <th scope="col" class="tableHeaderbg">Subscription Interval</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -57,43 +57,44 @@
     $(document).ready(function () {
         $('#paymentTable').DataTable({
             "ajax": {
-                "url": "/Payments/GetPaymentsData",
+                "url": "/Payments/GetPayments",
                 "type": "GET",
                 "dataSrc": ""
             },
-
             "columns": [
                 {
-                    "data": "SubscriptionId",
-                    "className": "tableFontSize align-middle";
-                    
+                    "data": "Payee",
+                    "className": "tableFontSize align-middle"
                 },
                 {
-                    "data": "CardHolderName",
-                    "className": "tableFontSize align-middle";
-                    
+                    "data": "Amount",
+                    "className": "tableFontSize align-middle"
                 },
                 {
-                    "data": "Price",
-                    "className": "tableFontSize align-middle";
-
-                },
-                {
-                    "data": "StartDate",
-                    "className": "tableFontSize align-middle";
-
-                },
-                {
-                    "data": "EndDate",
-                    "className": "tableFontSize align-middle";
-
+                    "data": "SubscriptionType",
+                    "className": "tableFontSize align-middle"
                 },
                 {
                     "data": "BillingInterval",
-                    "className": "tableFontSize align-middle";
-
+                    "className": "tableFontSize align-middle"
                 },
-            ]
+                {
+                    "data": "StartDate",
+                    "className": "tableFontSize align-middle",
+                    "render": function (data, type, row) {
+                        return moment(data).format('MM/DD/YYYY');
+                    }
+                },
+                {
+                    "data": "EndDate",
+                    "className": "tableFontSize align-middle",
+                    "render": function (data, type, row) {
+                        return moment(data).format('MM/DD/YYYY');
+                    }
+                }
+            ],
+            "order": [[4, "desc"]]
         });
+    });
 </script>
 

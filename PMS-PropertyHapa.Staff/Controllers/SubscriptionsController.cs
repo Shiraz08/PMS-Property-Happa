@@ -332,7 +332,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
                     var emailSubject = "PropertyHapa – Payment Receipt - " + subscription.Id;
                     var recipients = new List<string> { invoiceData.Email };
 
-                    _emailSenderBase.SendEmailWithFIle(bytes, invoiceData.Email, emailSubject, bodyemail, "invoice");
+                    await _emailSenderBase.SendEmailWithFIle(bytes, invoiceData.Email, emailSubject, bodyemail, "invoice");
                 }
                 var base64Pdf = Convert.ToBase64String(bytes);
 
