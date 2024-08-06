@@ -9,8 +9,8 @@ using NuGet.ContentModel;
 using PMS_PropertyHapa.Shared.ImageUpload;
 using System.Linq;
 using PMS_PropertyHapa.Models.Entities;
-using PMS_PropertyHapa.Shared.EmailSenderFile;
 using Microsoft.EntityFrameworkCore;
+using PMS_PropertyHapa.Shared.Email;
 
 namespace PMS_PropertyHapa.Staff.Controllers
 {
@@ -18,10 +18,10 @@ namespace PMS_PropertyHapa.Staff.Controllers
     {
 
         private readonly IAuthService _authService;
-        private readonly EmailSenderBase _emailSenderBase;
+        private readonly EmailSender _emailSenderBase;
 
 
-        public CommunicationController(IAuthService authService, EmailSenderBase emailSenderBase)
+        public CommunicationController(IAuthService authService, EmailSender emailSenderBase)
         {
             _authService = authService;
             _emailSenderBase = emailSenderBase;
@@ -151,7 +151,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
                             using (var memoryStream = new MemoryStream(fileBytes))
                             {
                                 // Send email with file to the tenant
-                                await _emailSenderBase.SendEmailWithFile(
+                                await _emailSenderBase.SendEmailWithFilebyStream(
                                     memoryStream,
                                     emailAddressList,
                                     CommunicationDto.Subject,
