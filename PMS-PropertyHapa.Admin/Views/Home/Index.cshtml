@@ -18,9 +18,9 @@
                 </div>
                 <div class="col-12 col-sm-6">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"> <a class="home-item" href="index.html"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item"> <a class="home-item" href="@Url.Action("Index","Home")"><i data-feather="home"></i></a></li>
                         <li class="breadcrumb-item"> Dashboard</li>
-                        <li class="breadcrumb-item active"> </li>
+                        <li class="breadcrumb-item active">Index</li>
                     </ol>
                 </div>
             </div>
@@ -28,7 +28,99 @@
     </div>
     <div class="container-fluid default-dash">
         <div class="row">
-            <div class="col-12">
+            <div class="col-xl-4 col-md-12 col-sm-12 box-col-4">
+                <div class="card">
+                    <div class="card-header pb-0">
+                        <h5>Active Users</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="ct-4 flot-chart-container" id="activeUserChart"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-4 col-md-12 col-sm-12 box-col-4">
+                <div class="card">
+                    <div class="card-header pb-0">
+                        <h5>Active Customers</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="ct-4 flot-chart-container" id="activeCustomerChart"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12 col-xl-4 box-col-4">
+                <div class="card">
+                    <div class="card-header pb-0">
+                        <h5>Subscriptions</h5>
+                    </div>
+                    <div class="card-body p-0 chart-block">
+                        <div class="chart-overflow" id="subscriptionPieChart"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xl-8 col-md-8 col-sm-12 box-col-8">
+                <div class="card">
+                    <div class="card-header pb-0">
+                        <h5>Line Chart</h5>
+                    </div>
+                    <div class="card-body chart-block">
+                        <div class="chart-overflow" id="newLeadsChart"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-4 col-md-4 col-sm-12 box-col-4">
+                <div class="card o-hidden">
+                    <div class="card-body">
+                        <div class="media static-widget">
+                            <div class="media-body">
+                                <h6 class="font-roboto">Subscription Earnings</h6>
+                                <h4 class="mb-0 counter" id="totalEarnings">0</h4>
+                            </div>
+                            <svg class="fill-secondary" width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M22.5938 14.1562V17.2278C20.9604 17.8102 19.7812 19.3566 19.7812 21.1875C19.7812 23.5138 21.6737 25.4062 24 25.4062C24.7759 25.4062 25.4062 26.0366 25.4062 26.8125C25.4062 27.5884 24.7759 28.2188 24 28.2188C23.2241 28.2188 22.5938 27.5884 22.5938 26.8125H19.7812C19.7812 28.6434 20.9604 30.1898 22.5938 30.7722V33.8438H25.4062V30.7722C27.0396 30.1898 28.2188 28.6434 28.2188 26.8125C28.2188 24.4862 26.3263 22.5938 24 22.5938C23.2241 22.5938 22.5938 21.9634 22.5938 21.1875C22.5938 20.4116 23.2241 19.7812 24 19.7812C24.7759 19.7812 25.4062 20.4116 25.4062 21.1875H28.2188C28.2188 19.3566 27.0396 17.8102 25.4062 17.2278V14.1562H22.5938Z"></path>
+                                <path d="M25.4062 0V11.4859C31.2498 12.1433 35.8642 16.7579 36.5232 22.5938H48C47.2954 10.5189 37.4829 0.704531 25.4062 0Z"></path>
+                                <path d="M14.1556 31.8558C12.4237 29.6903 11.3438 26.9823 11.3438 24C11.3438 17.5025 16.283 12.1958 22.5938 11.4859V0C10.0492 0.731813 0 11.2718 0 24C0 30.0952 2.39381 35.6398 6.14897 39.8624L14.1556 31.8558Z"></path>
+                                <path d="M47.9977 25.4062H36.5143C35.8044 31.717 30.4977 36.6562 24.0002 36.6562C21.0179 36.6562 18.3099 35.5763 16.1444 33.8444L8.13779 41.851C12.3604 45.6062 17.905 48 24.0002 48C36.7284 48 47.2659 37.9508 47.9977 25.4062Z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <div class="right-side-header">
+                        <h4>Customers</h4>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover text-center display" id="customerTable">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th scope="col" class="tableHeaderbg">User Name</th>
+                                    <th scope="col" class="tableHeaderbg">No. of Users</th>
+                                    <th scope="col" class="tableHeaderbg">Subscription</th>
+                                    <th scope="col" class="tableHeaderbg">Subscription Type</th>
+                                    <th scope="col" class="tableHeaderbg">Expiring</th>
+                                    <th scope="col" class="tableHeaderbg">Expiration Date</th>
+                                    <th scope="col" class="tableHeaderbg">Phone Number</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xl-6 col-md-6 dash-xl-50">
                 <div class="card profile-greeting">
                     <div class="card-body">
                         <div class="media">
@@ -39,11 +131,635 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="cartoon-img"><img class="img-fluid" src="~/Dashboard/assets/images/images.svg" alt="" style="height:173px!Important"></div>
+                        <div class="cartoon-img"><img class="img-fluid" src="~/Dashboard/assets/images/images.svg" alt=""></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6 col-md-6 dash-xl-50">
+                <div class="card pb-0 o-hidden earning-card">
+                    <div class="card-header earning-back"></div>
+                    <div class="card-body p-0">
+                        <div class="earning-content">
+                            <img class="img-fluid" src="~/Dashboard/assets/images/avatar.jpg" alt=""><a href="blog-single.html">
+                                <h4>Today's Earning</h4>
+                            </a><span>(Mon 15 - Sun 21)</span>
+                            <h6>$573.67</h6>
+                            <div id="earning-chart"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xl-3 col-md-6">
+                    <div class="card border">
+                        <a href="@Url.Action("Index","Landlord")">
+                            <h2 class="ml-5 mt-4 fs-3 fw-bold">@ViewBag.totalLandlords</h2>
+                            <div class="d-flex flex-row-reverse mr-5 ">
+                                <span class="fa-stack fa-2x" style="font-size: 2.5em; color: lightgreen;">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-user fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </div>
+                            <p class="ml-5 mb-4 text-secondary fs-3">Total Landlord</p>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="card border">
+                        <a href="@Url.Action("Index","Tenant")">
+                            <div class="card-block-small">
+                                <h2 class="ml-5 mt-4 fs-3 fw-bold">@ViewBag.totalTenants</h2>
+                                <div class="d-flex flex-row-reverse mr-5 ">
+                                    <span class="fa-stack fa-2x" style="font-size: 2.5em; color: orange;">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-group fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </div>
+                                <p class="ml-5 mb-4 text-secondary fs-3">Total Tenant</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="card border">
+                        <a href="@Url.Action("Index","Assests")">
+                            <div class="card-block-small">
+                                <h2 class="ml-5 mt-4 fs-3 fw-bold">@ViewBag.totalAssets</h2>
+                                <div class="d-flex flex-row-reverse mr-5 ">
+                                    <span class="fa-stack fa-2x" style="font-size: 2.5em; color: darkblue;">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-building-o fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </div>
+                                <p class="ml-5 mb-4 text-secondary fs-3">Total Assets</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="card border">
+                        <a href="@Url.Action("Index","Lease")">
+                            <div class="card-block-small">
+                                <h2 class="ml-5 mt-4 fs-3 fw-bold">@ViewBag.totalInvoices</h2>
+                                <div class="d-flex flex-row-reverse mr-5 ">
+                                    <span class="fa-stack fa-2x" style="font-size: 2.5em; color: lightblue;">
+                                        <i class="fa fa-circle fa-stack-2x"></i>
+                                        <i class="fa fa-print fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                </div>
+                                @* <span class="d-flex flex-row-reverse mr-5" style="font-size: 3em; color: lightblue;">
+                                <i class="icofont icofont-files fx-5"></i>
+                                </span> *@
+                                <p class="ml-5 mb-4 text-secondary fs-3">Total Invoices</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-4 col-md-6 dash-xl-50">
+                <div class="card news-update">
+                    <div class="card-header card-no-border">
+                        <div class="header-top">
+                            <h5 class="m-0">News &amp; Update</h5>
+                            <div class="icon-box onhover-dropdown">
+                                <i data-feather="more-horizontal"></i>
+                                <div class="icon-box-show onhover-show-div">
+                                    <ul>
+                                        <li>
+                                            <a>
+                                                Today
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a>
+                                                Yesterday
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a>
+                                                Tommorow
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body pt-0">
+                        <div class="table-responsive custom-scrollbar">
+                            <table class="table table-bordernone">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="media">
+                                                <img class="img-fluid me-3 b-r-5" src="~/Dashboard/assets/images/dashboard/rectangle-26.jpg" alt="">
+                                                <div class="media-body">
+                                                    <a href="blog-single.html">
+                                                        <h5>Shiraz Paid his rent Today</h5>
+                                                    </a>
+                                                    <p>Next Amount date is 400$</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td><span class="badge badge-light-theme-light font-theme-light">1 day ago</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="media">
+                                                <img class="img-fluid me-3 b-r-5" src="~/Dashboard/assets/images/dashboard/rectangle-26.jpg" alt="">
+                                                <div class="media-body">
+                                                    <a href="blog-single.html">
+                                                        <h5>Musa Paid his Due rent Today</h5>
+                                                    </a>
+                                                    <p>Next Amount date is 200$</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td><span class="badge badge-light-theme-light font-theme-light">5 day ago</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="media">
+                                                <img class="img-fluid me-3 b-r-5" src="~/Dashboard/assets/images/dashboard/rectangle-26.jpg" alt="">
+                                                <div class="media-body">
+                                                    <a href="blog-single.html">
+                                                        <h5>Ali Haider Paid his rent Today</h5>
+                                                    </a>
+                                                    <p>Next Amount date is 1000$</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td><span class="badge badge-light-theme-light font-theme-light">0 day ago</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="media">
+                                                <img class="img-fluid me-3 b-r-5" src="~/Dashboard/assets/images/dashboard/rectangle-26.jpg" alt="">
+                                                <div class="media-body">
+                                                    <a href="blog-single.html">
+                                                        <h5>Murtaza Paid his rent Today</h5>
+                                                    </a>
+                                                    <p>Next Amount date is 700$</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td><span class="badge badge-light-theme-light font-theme-light">2 day ago</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="media">
+                                                <img class="img-fluid me-3 b-r-5" src="~/Dashboard/assets/images/dashboard/rectangle-26.jpg" alt="">
+                                                <div class="media-body">
+                                                    <a href="blog-single.html">
+                                                        <h5>Mohsin Paid his rent Today</h5>
+                                                    </a>
+                                                    <p>Next Amount date is 360$</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td><span class="badge badge-light-theme-light font-theme-light">2 day ago</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-4 col-md-6 dash-xl-50">
+                <div class="card revenue-category">
+                    <div class="card-header card-no-border">
+                        <div class="media">
+                            <div class="media-body">
+                                <h5 class="mb-0">Building Revenue</h5>
+                            </div>
+                            <div class="icon-box onhover-dropdown">
+                                <i data-feather="more-horizontal"></i>
+                                <div class="icon-box-show onhover-show-div">
+                                    <ul>
+                                        <li>
+                                            <a>
+                                                Done
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a>
+                                                Pending
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="donut-inner">
+                            <h5>16,349</h5>
+                            <h6>2,174 in pending</h6>
+                        </div>
+                        <div id="revenue-chart">            </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-4 col-md-6 dash-xl-50">
+                <div class="card our-activities">
+                    <div class="card-header card-no-border">
+                        <div class="media media-dashboard">
+                            <div class="media-body">
+                                <h5 class="mb-0">Activities      </h5>
+                            </div>
+                            <div class="icon-box onhover-dropdown">
+                                <i data-feather="more-horizontal"></i>
+                                <div class="icon-box-show onhover-show-div">
+                                    <ul>
+                                        <li>
+                                            <a>
+                                                Latest
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a>
+                                                Earlist
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body pt-0">
+                        <div class="table-responsive">
+                            <table class="table table-bordernone">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="media">
+                                                <div class="icon-wrappar"><i class="fa fa-trophy font-primary"></i></div>
+                                                <div class="media-body">
+                                                    <a href="#">
+                                                        <h5>Two Old Tenant left your Building</h5>
+                                                    </a>
+                                                    <p>Buidling No 554, Street 6/Bs.</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td><span class="badge badge-light-theme-light font-theme-light">3 day ago</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="media">
+                                                <div class="icon-wrappar"><i class="fa fa-trophy font-primary"> </i></div>
+                                                <div class="media-body">
+                                                    <a href="#">
+                                                        <h5>Five New maintaince Request received</h5>
+                                                    </a>
+                                                    <p>Buidling No 550, Street 1/Bs.</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td><span class="badge badge-light-theme-light font-theme-light">3 day ago</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="media">
+                                                <div class="icon-wrappar"><i class="fa fa-bookmark font-success"></i></div>
+                                                <div class="media-body">
+                                                    <a href="#">
+                                                        <h5>Win best seller of the year awaed </h5>
+                                                    </a>
+                                                    <p>Company, San Francisco</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td><span class="badge badge-light-theme-light font-theme-light">3 day ago</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="media">
+                                                <div class="icon-wrappar"><i class="fa fa-shopping-basket font-warning"></i></div>
+                                                <div class="media-body">
+                                                    <a href="#">
+                                                        <h5>Apporved our product in checking</h5>
+                                                    </a>
+                                                    <p>35k Sales</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td><span class="badge badge-light-theme-light font-theme-light">2 hours ago</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6 col-md-6 dash-xl-50">
+                <div class="card ongoing-project">
+                    <div class="card-header card-no-border">
+                        <div class="media media-dashboard">
+                            <div class="media-body">
+                                <h5 class="mb-0">Invoices History</h5>
+                            </div>
+                            <div class="icon-box onhover-dropdown">
+                                <i data-feather="more-horizontal"></i>
+                                <div class="icon-box-show onhover-show-div">
+                                    <ul>
+                                        <li>
+                                            <a>
+                                                Done
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a>
+                                                Pending
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a>
+                                                Rejected
+                                            </a>
+                                        </li>
+                                        <li> <a>In Progress</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body pt-0">
+                        <div class="table-responsive custom-scrollbar">
+                            <table class="table table-bordernone">
+                                <thead>
+                                    <tr>
+                                        <th> <span>Name </span></th>
+                                        <th> <span>Date</span></th>
+                                        <th> <span>Status   </span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="media">
+                                                <div class="square-box me-2"><img class="img-fluid b-r-5" src="~/Dashboard/assets/images/avtar/boy.png" alt=""></div>
+                                                <div class="media-body ps-2">
+                                                    <div class="avatar-details">
+                                                        <a href="product-page.html">
+                                                            <h6>Gary</h6>
+                                                        </a><span> UK Desig Team</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="img-content-box">
+                                            <h6>12 May 2020</h6><span>In 6 Days</span>
+                                        </td>
+                                        <td>
+                                            <div class="badge badge-light-primary">Done</div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="media">
+                                                <div class="square-box me-2"><img class="img-fluid b-r-5" src="~/Dashboard/assets/images/avtar/girl.png" alt=""></div>
+                                                <div class="media-body ps-2">
+                                                    <div class="avatar-details">
+                                                        <a href="product-page.html">
+                                                            <h6>Ralph Waters</h6>
+                                                        </a><span> UX Ninjas</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="img-content-box">
+                                            <h6>06 May 2020</h6><span>Overdue</span>
+                                        </td>
+                                        <td>
+                                            <div class="badge badge-light-secondary">Pending</div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="media">
+                                                <div class="square-box me-2"><img class="img-fluid b-r-5" src="~/Dashboard/assets/images/avtar/man.png" alt=""></div>
+                                                <div class="media-body ps-2">
+                                                    <div class="avatar-details">
+                                                        <a href="product-page.html">
+                                                            <h6>Edwin Day</h6>
+                                                        </a><span> SF Dev Team</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="img-content-box">
+                                            <h6>28 Sep 2020</h6><span>in 4 Months</span>
+                                        </td>
+                                        <td>
+                                            <div class="badge badge-light-danger">Rejected</div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="media">
+                                                <div class="square-box me-2"><img class="img-fluid b-r-5" src="~/Dashboard/assets/images/avtar/woman.png" alt=""></div>
+                                                <div class="media-body ps-2">
+                                                    <div class="avatar-details">
+                                                        <a href="product-page.html">
+                                                            <h6>Gary</h6>
+                                                        </a><span> UK Desig Team</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="img-content-box">
+                                            <h6>12 May 2020</h6><span>In 6 Days</span>
+                                        </td>
+                                        <td>
+                                            <div class="badge badge-light-info">In Progress</div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function () {
+        $('#customerTable').DataTable({
+            "ajax": {
+                "url": "/Home/GetAllUsers",
+                "type": "GET",
+                "dataSrc": ""
+            },
+            "columns": [
+                {
+                    "data": "Name",
+                    "className": "tableFontSize align-middle"
+                },
+                {
+                    "data": "OwnerCount", 
+                    "className": "tableFontSize align-middle"
+                },
+                {
+                    "data": "SubscriptionName",
+                    "className": "tableFontSize align-middle"
+                },
+                {
+                    "data": "SubscriptionType",
+                    "className": "tableFontSize align-middle"
+                },
+                {
+                    "data": "Expiring",
+                    "className": "tableFontSize align-middle",
+                    "render": function (data, type, row, meta) {
+                        return data + ' days';
+                    }
+                },
+                {
+                    "data": "EndDate",
+                    "className": "tableFontSize align-middle",
+                    "render": function (data, type, row, meta) {
+                        var date = new Date(data);
+                        return date.toLocaleDateString();
+                    }
+                },
+                {
+                    "data": "PhoneNumber",
+                    "className": "tableFontSize align-middle"
+                }
+            ]
+        });
+
+        google.charts.load('current', {
+            'packages': ['corechart']
+        });
+        google.charts.setOnLoadCallback(drawChart);
+
+        fetchLandlordData();
+
+        fetchSubscribedUserData(); 
+        
+            var data = new google.visualization.DataTable();
+            data.addColumn('number', 'month');
+            data.addColumn('number', 'Open Leads');
+            data.addColumn('number', 'Closed Leads');
+            data.addRows([
+                [1, 37.8, 60.8],
+                [2, 30.9, 10.5],
+                [3, 40.4, 57],
+                [4, 11.7, 18.8],
+                [5, 20, 17.6],
+                [6, 8.8, 13.6],
+                [7, 7.6, 12.3],
+                [8, 12.3, 29.2],
+                [9, 16.9, 42.9],
+                [10, 12.8, 30.9],
+                [11, 5.3, 7.9],
+                [12, 6.6, 8.4],
+            ]);
+            var options = {
+                chart: {
+                   
+                },
+                colors: [zetaAdminConfig.primary, zetaAdminConfig.secondary, "#51bb25"],
+                height: 300,
+                width: '100%',
+            };
+            var chart = new google.charts.Line(document.getElementById('newLeadsChart'));
+            chart.draw(data, google.charts.Line.convertOptions(options));
+        
+
+        
+    });
+    function fetchLandlordData() {
+        $.ajax({
+            url: '@Url.Action("GetAllLandlords", "Home")',
+            method: 'GET',
+            dataType: 'json',
+            success: function (response) {
+                var labels = response.labels;
+                var series = [response.series];
+                new Chartist.Line('#activeUserChart', {
+                    labels: labels,
+                    series: series
+                }, {
+                    low: 0,
+                    showArea: true
+                });
+            },
+            error: function (error) {
+                console.error('Error fetching landlord data:', error);
+            }
+        });
+    }
+
+    function fetchSubscribedUserData() {
+        $.ajax({
+            url: '@Url.Action("GetAllSubscribedUsers", "Home")',
+            method: 'GET',
+            dataType: 'json',
+            success: function (response) {
+                if (response.success) {
+                    var labels = response.labels;
+                    console.log("labels");
+                    console.log(labels);
+                    var series = [response.series];
+                    console.log("series");
+                    console.log(series);
+                    new Chartist.Line('#activeCustomerChart', {
+                        labels: labels,
+                        series: series
+                    }, {
+                        low: 0,
+                        showArea: true
+                    });
+                } else {
+                    console.error('Error fetching subscribed user data:', response.message);
+                }
+            },
+            error: function (error) {
+                console.error('Error fetching subscribed user data:', error);
+            }
+        });
+    }
+
+    function drawChart() {
+        $.ajax({
+            url: '@Url.Action("GetAllSubscriptions", "Home")',
+            method: 'GET',
+            success: function (response) {
+                if (response.success) {
+                    var data = google.visualization.arrayToDataTable([
+                        ['Subscription', 'Count'],
+                        ...response.data.map(item => [item.SubscriptionName, item.Count])
+                    ]);
+
+                    var options = {
+                        pieHole: 0.4,
+                        width: '100%',
+                        height: 300,
+                        colors: ["#f8d62b", "#a927f9", "#51bb25", zetaAdminConfig.secondary, zetaAdminConfig.primary]
+                    };
+
+                    var chart = new google.visualization.PieChart(document.getElementById('subscriptionPieChart'));
+                    chart.draw(data, options);
+
+
+                    // Update the total earnings
+                    $('#totalEarnings').html(response.totalEarnings);
+                    console.log(response.totalEarnings);
+                } else {
+                    console.error(response.message);
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        });
+    }
+ 
+
+</script>
 
