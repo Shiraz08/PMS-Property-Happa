@@ -9,8 +9,8 @@ using PMS_PropertyHapa.Tenant.Services.IServices;
 using PMS_PropertyHapa.Tenant;
 using PMS_PropertyHapa.Tenant.Services;
 using MagicVilla_Web.Services;
-using PMS_PropertyHapa.Shared.EmailSenderFile;
 using PMS_PropertyHapa.Tenant.Models.ViewModels;
+using PMS_PropertyHapa.Shared.Email;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +19,7 @@ builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.AddHttpClient<IAuthService, AuthService>();
 builder.Services.AddSingleton<IApiMessageRequestBuilder, ApiMessageRequestBuilder>();
 builder.Services.AddScoped<IBaseService, BaseService>();
-builder.Services.AddScoped<EmailSenderBase>();
+builder.Services.AddScoped<EmailSender>();
 builder.Services.AddScoped<ITokenProvider, TokenProvider>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<IAuthService, AuthService>();

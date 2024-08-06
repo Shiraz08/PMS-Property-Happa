@@ -144,26 +144,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
                     {
                         var vendor = await _authService.GetVendorByIdAsync(taskRequestDto.VendorId ?? 0);
 
-                        string htmlContent = taskRequestDto.Status == TaskStatusTypes.NotStarted.ToString() ?
-                                             $@"<!DOCTYPE html>
-                                         <html lang=""en"">
-                                         <head>
-                                             <meta charset=""UTF-8"">
-                                             <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
-                                             <title>New Task Assignment</title>
-                                         </head>
-                                         <body>
-                                             <div style=""font-family: Arial, sans-serif; padding: 20px;"">
-                                                 <p>Hello {vendor.FirstName} {vendor.LastName},</p>
-                                                 <p>We are pleased to inform you that a new task has been assigned to you. Here are the details:</p>
-                                                 <p><strong>Task Type:</strong> {taskRequestDto.Type}</p>
-                                                 <p><strong>Task Description:</strong> {taskRequestDto.Description}</p>
-                                                 <p>If you have any questions or need further assistance, please do not hesitate to contact us.</p>
-                                                 <p>Thank you!</p>
-                                             </div>
-                                         </body>
-                                         </html>" :
-                                                             $@"<!DOCTYPE html>
+                        string htmlContent = $@"<!DOCTYPE html>
                                          <html lang=""en"">
                                          <head>
                                              <meta charset=""UTF-8"">
