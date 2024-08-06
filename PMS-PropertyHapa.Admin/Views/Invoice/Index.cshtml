@@ -1,0 +1,115 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-sm-6">
+                    <h3>Invoices</h3>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"> <a class="home-item" href="index.html"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item">Invoice</li>
+                        <li class="breadcrumb-item active">Invoices </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid my-4">
+        <div class="row">
+            <div class="col-xl-12 col-md-12 box-col-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <div class="right-side-header">
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover text-center display" id="invoiceTable">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th scope="col" class="tableHeaderbg">Subscription Id</th>
+                                        <th scope="col" class="tableHeaderbg">Name</th>
+                                        <th scope="col" class="tableHeaderbg">Email</th>
+                                        <th scope="col" class="tableHeaderbg">Start Date</th>
+                                        <th scope="col" class="tableHeaderbg">End Date</th>
+                                        <th scope="col" class="tableHeaderbg">Subscription Interval</th>
+                                        <th scope="col" class="tableHeaderbg">Amount</th>
+                                        <th scope="col" class="tableHeaderbg">Discount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        $('#invoiceTable').DataTable({
+            "ajax": {
+                "url": "/Invoice/GetInvoicesData",
+                "type": "GET",
+                "dataSrc": ""
+            },
+
+            "columns": [
+                {
+                    "data": "UserId",
+                    "className": "tableFontSize align-middle";
+
+                },
+                {
+                    "data": "Name",
+                    "className": "tableFontSize align-middle";
+
+                },
+                {
+                    "data": "Email",
+                    "className": "tableFontSize align-middle";
+
+                },
+                {
+                    "data": "StartDate",
+                    "className": "tableFontSize align-middle";
+
+                },
+                {
+                    "data": "EndDate",
+                    "className": "tableFontSize align-middle";
+
+                },
+                {
+                    "data": "SubscriptionName",
+                    "className": "tableFontSize align-middle";
+
+                },
+                  {
+                    "data": "AmountCharged",
+                    "className": "tableFontSize align-middle";
+
+                },
+                {
+                    "data": "Discount",
+                    "className": "tableFontSize align-middle";
+
+                }
+            ]
+        });
+</script>
+
+
