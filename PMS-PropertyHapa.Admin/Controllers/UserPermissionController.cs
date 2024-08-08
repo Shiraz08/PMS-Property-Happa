@@ -16,7 +16,7 @@ namespace PMS_PropertyHapa.Admin.Controllers
 
 
         }
-        [TypeFilter(typeof(PermissionFilter), Arguments = new object[] { UserPermissions.AdminMenuAccessvisable })]
+        //[TypeFilter(typeof(PermissionFilter), Arguments = new object[] { UserPermissions.AdminMenuAccessvisable })]
         public IActionResult Index()
         {
             return View();
@@ -24,10 +24,10 @@ namespace PMS_PropertyHapa.Admin.Controllers
         }
 
 
-        public IActionResult GetUsersPermissionsByRoles(string roleId)
+        public async Task<IActionResult> GetUsersPermissionsByRoles(string roleId)
         {
             var permissionCategories = _userPermissionService.GetPermissionCategories();
-            var userPermission = _userPermissionService.GetUsersPermissionsByRoles(roleId);
+            var userPermission = await _userPermissionService.GetUsersPermissionsByRoles(roleId);
 
             var result = new
             {
@@ -40,7 +40,7 @@ namespace PMS_PropertyHapa.Admin.Controllers
         #region Ajax 
 
         [HttpPost]
-        [TypeFilter(typeof(PermissionFilter), Arguments = new object[] { UserPermissions.AdminMenuAccessvisable })]
+        //[TypeFilter(typeof(PermissionFilter), Arguments = new object[] { UserPermissions.AdminMenuAccessvisable })]
         public async Task<IActionResult> ChangeUserPermissionCheckboxStatus(UserPermissionModel model)
         {
             await _userPermissionService.ChangeUserPermissionCheckboxStatus(model);

@@ -77,67 +77,68 @@
 <script>
     var _selectedRole = null;
     $(document).ready(function () {
-        getAllroles();
+        getAllRoles();
     });
 
-
-    function getAllroles() {
+    function getAllRoles() {
         $.ajax({
             type: 'GET',
-            url: '/GroupRoles/GetRoles',
-            processData: false,
-            contentType: false,
+            url: '/GroupRoles/GetAllGroups',
+            processData: true,
+            contentType: 'application/json',
             success: function (response) {
-                debugger
-                var op = '';
-                $.each(response, function (key, item) {
-                    debugger
-                    op += '<tr style="text-align:center!important">';
-                    op += '<td class="name" >' + item.RoleTitle + '</td>';
-                    op += '<td class="name">' + item.RoleKey + '</td>';
-                    if (item.RoleActive == true) {
-                        op += '<td style="color:green">Active</td>';
-                        op += '<td><div class="d-flex gap-2"><div class="edit"><button class="btn btn-sm btn-success edit-item-btn" data-bs-toggle="modal" data-bs-target="#EditRole" onclick="EditRole(\'' + item.Id + '\',\'' + item.GroupName + '\',\'' + item.RoleTitle + '\',\'' + item.RoleKey + '\')">Edit App Page</button></div><div class="remove"></div><button class="btn btn-sm btn-warning remove-item-btn" onclick="DeleteInactive(\'' + item.Id + '\')">In-Active App Page</button><button class="btn btn-sm btn-danger remove-item-btn" onclick="DeleteR(\'' + item.Id + '\')">Delete App Page</button> </div></td>';
-                    }
-                    else {
-                        op += '<td style="color:red">In-Active</td>';
-                        op += '<td><div class="d-flex gap-2"><div class="edit"><button class="btn btn-sm btn-success edit-item-btn" data-bs-toggle="modal" data-bs-target="#EditRole" onclick="EditRole(\'' + item.Id + '\',\'' + item.GroupName + '\',\'' + item.RoleTitle + '\',\'' + item.RoleKey + '\')">Edit App Page</button></div><div class="remove"></div><button class="btn btn-sm btn-info remove-item-btn" onclick="DeleteRoleactive(\'' + item.Id + '\')">Active App Page</button><button class="btn btn-sm btn-danger remove-item-btn" onclick="DeleteR(\'' + item.Id + '\')">Delete App Page</button>  </div></td>';
-                    }
-                    op += '</tr>';
+
+                var rolesDropdown = document.getElementById('ddlUserRoles');
+                response.forEach(function (item) {
+                    var option = new Option(item.Name, item.Id);
+                    rolesDropdown.appendChild(option);
                 });
-                op = op.replace(/^\s*|\s*$/g, '');
-                op = op.replace(/\\r\\n/gm, '');
-                var expr = "</tr>\\s*<tr";
-                var regEx = new RegExp(expr, "gm");
-                var newRows = op.replace(regEx, "</tr><tr");
-                $("#grouproles").DataTable().clear().rows.add($(newRows)).draw();
             },
-            failure: function (response) {
-                $('#result').html(response);
+            error: function (response) {
+                $('#result').html('Failed to retrieve roles');
             }
         });
     }
 
-
-    function getUsersPermissionsByRoless() {
+    function getUsersPermissionsByRoles() {
         $('#usersPermissions').empty();
         _selectedRole = $("#ddlUserRoles").val();
         if (_selectedRole != null) {
-            owfApp.postData({
+
+            $.ajax({
+                type: 'GET',
                 url: "/UserPermission/GetUsersPermissionsByRoles",
-                blockUI: true,
                 data: { roleId: _selectedRole },
-                displayResponseMessage: false,
-                callback: function (res) {
+                success: function (res) {
                     usersPermissionsByRoleFill(res);
+                },
+                error: function (response) {
+                    $('#result').html('Failed to retrieve roles');
                 }
             });
         }
     }
 
     function usersPermissionsByRoleFill(permissionsData) {
+        console.log(permissionsData)
         var container = $('#usersPermissions');
         container.empty();
+
+        if (!permissionsData || typeof permissionsData !== 'object') {
+            console.log('permissionsData is not an object or is undefined.');
+            return;
+        }
+
+        if (!Array.isArray(permissionsData.PermissionCategories) || permissionsData.PermissionCategories.length === 0) {
+            console.log('PermissionCategories is either not defined or is an empty array.');
+            return;
+        }
+
+        if (!Array.isArray(permissionsData.UserPermissions) || permissionsData.UserPermissions.length === 0) {
+            console.log('UserPermissions is either not defined or is an empty array.');
+            return;
+        }
+
 
         var row = $('<div class="row"></div>');
 
@@ -188,6 +189,18 @@
                 isChecked: isChecked,
             };
             if (!event.isTrigger) {
+
+                $.ajax({
+                    type: 'POST',
+                    url: "/UserPermission/ChangeUserPermissionCheckboxStatus",
+                    data: { model: data },
+                    success: function (res) {
+                    },
+                    error: function (response) {
+                        $('#result').html('Failed to retrieve roles');
+                    }
+                });
+
                 owfApp.postData({
                     blockUI: true,
                     displayResponseMessage: true,

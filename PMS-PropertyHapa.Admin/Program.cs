@@ -44,6 +44,8 @@ builder.Services.AddTransient<IEmailSender, EmailSender>();
 builder.Services.Configure<GoogleCloudStorageOptions>(builder.Configuration.GetSection("GoogleServiceAccount"));
 builder.Services.AddScoped<GoogleCloudStorageService>();//Register dapper in scope    
 builder.Services.AddScoped<IDapper, DapperServices>();
+builder.Services.AddScoped<IPermissionService, PermissionService>();
+builder.Services.AddScoped<IUserPermissionService, UserPermissionService>();
 // Auto Mapper Configurations
 var mapperConfig = new MapperConfiguration(mc =>
 {
