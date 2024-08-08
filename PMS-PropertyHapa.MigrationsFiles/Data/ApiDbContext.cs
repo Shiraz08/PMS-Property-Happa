@@ -71,6 +71,9 @@ namespace PMS_PropertyHapa.MigrationsFiles.Data
         public DbSet<PaymentMethodInformation> PaymentMethodInformations { get; set; }
         public DbSet<StripeSubscription> StripeSubscriptions { get; set; }
         public DbSet<SubscriptionInvoice> SubscriptionInvoices { get; set; }
+        public DbSet<Permission> Permissions { get; set; }
+        public DbSet<UserPermission> UserPermissions { get; set; }
+        public DbSet<PermissionCategory> PermissionCategories { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Tenant>()

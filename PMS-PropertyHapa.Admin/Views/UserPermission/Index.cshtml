@@ -1,0 +1,201 @@
+﻿@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .category-container h3 {
+        font-size: 16px;
+        margin-left: 20px;
+    }
+
+    .permissions-list {
+        margin-left: 40px;
+    }
+
+    .permission-item {
+        list-style-type: none;
+    }
+
+        .permission-item label {
+            margin-left: 5px;
+        }
+</style>
+
+<div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12">
+                    <h3>UserPermissions</h3>
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a class="home-item" href="/Home"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item">UserPermissions</li>
+                        <li class="breadcrumb-item active">UserPermissions</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header align-items-center d-flex">
+                        <h4 class="card-title mb-0 flex-grow-1">User Permission</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mt-1 mb-3">
+                            <div class="col-xxl-3">
+                                <label for="ddlUserRoles" class="form-label">Roles</label>
+                                <select id="ddlUserRoles" name="ddlUserRoles" onchange="getUsersPermissionsByRoles()" class="form-control select2">
+                                    <!-- Options will be populated here -->
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mt-4" id="usersPermissions">
+                            <!-- User permissions will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+    var _selectedRole = null;
+    $(document).ready(function () {
+        getAllroles();
+    });
+
+
+    function getAllroles() {
+        $.ajax({
+            type: 'GET',
+            url: '/GroupRoles/GetRoles',
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                debugger
+                var op = '';
+                $.each(response, function (key, item) {
+                    debugger
+                    op += '<tr style="text-align:center!important">';
+                    op += '<td class="name" >' + item.RoleTitle + '</td>';
+                    op += '<td class="name">' + item.RoleKey + '</td>';
+                    if (item.RoleActive == true) {
+                        op += '<td style="color:green">Active</td>';
+                        op += '<td><div class="d-flex gap-2"><div class="edit"><button class="btn btn-sm btn-success edit-item-btn" data-bs-toggle="modal" data-bs-target="#EditRole" onclick="EditRole(\'' + item.Id + '\',\'' + item.GroupName + '\',\'' + item.RoleTitle + '\',\'' + item.RoleKey + '\')">Edit App Page</button></div><div class="remove"></div><button class="btn btn-sm btn-warning remove-item-btn" onclick="DeleteInactive(\'' + item.Id + '\')">In-Active App Page</button><button class="btn btn-sm btn-danger remove-item-btn" onclick="DeleteR(\'' + item.Id + '\')">Delete App Page</button> </div></td>';
+                    }
+                    else {
+                        op += '<td style="color:red">In-Active</td>';
+                        op += '<td><div class="d-flex gap-2"><div class="edit"><button class="btn btn-sm btn-success edit-item-btn" data-bs-toggle="modal" data-bs-target="#EditRole" onclick="EditRole(\'' + item.Id + '\',\'' + item.GroupName + '\',\'' + item.RoleTitle + '\',\'' + item.RoleKey + '\')">Edit App Page</button></div><div class="remove"></div><button class="btn btn-sm btn-info remove-item-btn" onclick="DeleteRoleactive(\'' + item.Id + '\')">Active App Page</button><button class="btn btn-sm btn-danger remove-item-btn" onclick="DeleteR(\'' + item.Id + '\')">Delete App Page</button>  </div></td>';
+                    }
+                    op += '</tr>';
+                });
+                op = op.replace(/^\s*|\s*$/g, '');
+                op = op.replace(/\\r\\n/gm, '');
+                var expr = "</tr>\\s*<tr";
+                var regEx = new RegExp(expr, "gm");
+                var newRows = op.replace(regEx, "</tr><tr");
+                $("#grouproles").DataTable().clear().rows.add($(newRows)).draw();
+            },
+            failure: function (response) {
+                $('#result').html(response);
+            }
+        });
+    }
+
+
+    function getUsersPermissionsByRoless() {
+        $('#usersPermissions').empty();
+        _selectedRole = $("#ddlUserRoles").val();
+        if (_selectedRole != null) {
+            owfApp.postData({
+                url: "/UserPermission/GetUsersPermissionsByRoles",
+                blockUI: true,
+                data: { roleId: _selectedRole },
+                displayResponseMessage: false,
+                callback: function (res) {
+                    usersPermissionsByRoleFill(res);
+                }
+            });
+        }
+    }
+
+    function usersPermissionsByRoleFill(permissionsData) {
+        var container = $('#usersPermissions');
+        container.empty();
+
+        var row = $('<div class="row"></div>');
+
+        for (var i = 0; i < permissionsData.permissionCategories.length; i++) {
+            var category = permissionsData.permissionCategories[i];
+            var col = $('<div class="col-xxl-3 col-md-6"></div>');
+            var card = $('<div class="card"></div>');
+            var cardHeader = $('<div class="card-header card-title">' + category.name + '</div>');
+            var cardBody = $('<div class="card-body"></div>');
+
+            for (var k = 0; k < permissionsData.userPermissions.length; k++) {
+                var permission = permissionsData.userPermissions[k];
+                if (permission.permissionCategoryId === category.id) {
+                    var permissionId = 'permission' + permission.id;
+                    var permissionItem = $(
+                        '<div class="form-check">' +
+                        '<input class="form-check-input" type="checkbox" name="userPermission" ' +
+                        'id="' + permissionId + '" ' +
+                        'data-Id="' + permission.id + '" ' +
+                        'data-PermissionId="' + permission.id + '" ' +
+                        (permission.isChecked ? 'checked' : '') + '>' +
+                        '<label class="form-check-label" for="' + permissionId + '">' + permission.name + '</label>' +
+                        '</div>'
+                    );
+                    cardBody.append(permissionItem);
+                }
+            }
+
+            if (cardBody.children().length === 0) {
+                cardBody.append('<p class="text-muted">No permissions available</p>');
+            }
+
+            card.append(cardHeader).append(cardBody);
+            col.append(card);
+            row.append(col);
+        }
+
+        container.append(row);
+
+        container.off('click', 'input[name="userPermission"]');
+        container.on('click', 'input[name="userPermission"]', function (event) {
+            var permissionId = $(this).attr('data-PermissionId');
+            var _selectedRole = $("#ddlUserRoles").val();
+            var isChecked = $(this).prop('checked');
+            var data = {
+                permissionId: permissionId,
+                roleId: _selectedRole,
+                isChecked: isChecked,
+            };
+            if (!event.isTrigger) {
+                owfApp.postData({
+                    blockUI: true,
+                    displayResponseMessage: true,
+                    data: data,
+                    url: "/UserPermission/ChangeUserPermissionCheckboxStatus",
+                });
+            }
+        });
+    };
+
+</script>
