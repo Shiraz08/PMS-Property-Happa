@@ -2120,6 +2120,8 @@ namespace MagicVilla_VillaAPI.Repository
                 EmailAddress2 = landlordDto.EmailAddress2,
                 PhoneNumber = landlordDto.PhoneNumber,
                 PhoneNumber2 = landlordDto.PhoneNumber2,
+                Longitude = landlordDto.Longitude,
+                Latitude = landlordDto.Latitude,
                 Fax = landlordDto.Fax,
                 TaxId = landlordDto.TaxId,
                 DocumentName = landlordDto.Document,
@@ -2184,6 +2186,8 @@ namespace MagicVilla_VillaAPI.Repository
                 EmailAddress2 = landlordDto.EmailAddress2,
                 PhoneNumber = landlordDto.PhoneNumber,
                 PhoneNumber2 = landlordDto.PhoneNumber2,
+                Longitude = landlordDto.Longitude,
+                Latitude = landlordDto.Latitude,
                 Fax = landlordDto.Fax,
                 TaxId = landlordDto.TaxId,
                 EmergencyContactInfo = landlordDto.EmergencyContactInfo,
@@ -2281,6 +2285,8 @@ namespace MagicVilla_VillaAPI.Repository
             tenant.EmailAddress2 = tenantDto.EmailAddress2;
             tenant.PhoneNumber = tenantDto.PhoneNumber;
             tenant.PhoneNumber2 = tenantDto.PhoneNumber2;
+            tenant.Longitude = tenantDto.Longitude;
+            tenant.Latitude = tenantDto.Latitude;
             tenant.Fax = tenantDto.Fax;
             tenant.TaxId = tenantDto.TaxId;
             if (tenantDto.DocumentUrl != null)
@@ -4369,6 +4375,8 @@ namespace MagicVilla_VillaAPI.Repository
                                            Picture = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Owner_Picture_" + owner.OwnerId + Path.GetExtension(owner.Picture)}",
                                            PhoneNumber = owner.PhoneNumber,
                                            PhoneNumber2 = owner.PhoneNumber2,
+                                           Longitude = owner.Longitude,
+                                           Latitude = owner.Latitude,
                                            EmergencyContactInfo = owner.EmergencyContactInfo,
                                            LeaseAgreementId = owner.LeaseAgreementId,
                                            OwnerNationality = owner.OwnerNationality,
@@ -8829,6 +8837,7 @@ namespace MagicVilla_VillaAPI.Repository
             paymentInformation.Currency = paymentInformationDto.Currency;
             paymentInformation.CustomerId = paymentInformationDto.CustomerId;
             paymentInformation.SelectedSubscriptionId = paymentInformationDto.SelectedSubscriptionId;
+            paymentInformation.NoOfUnits = paymentInformationDto.Units;
 
             paymentInformation.AddedBy = paymentInformationDto.AddedBy;
             paymentInformation.AddedDate = DateTime.Now;
@@ -8879,6 +8888,7 @@ namespace MagicVilla_VillaAPI.Repository
             stripeSubscription.Currency = stripeSubscriptionDto.Currency;
             stripeSubscription.CustomerId = stripeSubscriptionDto.CustomerId;
             stripeSubscription.SelectedSubscriptionId = stripeSubscriptionDto.SelectedSubscriptionId;
+            stripeSubscription.NoOfUnits = stripeSubscriptionDto.Units;
             stripeSubscription.AddedBy = stripeSubscriptionDto.AddedBy;
             stripeSubscription.AddedDate = DateTime.Now;
             _db.StripeSubscriptions.Add(stripeSubscription);

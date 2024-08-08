@@ -220,6 +220,29 @@
                                             </div>
                                         </div>
 
+                                        <!-- Longitutde & Lantitude -->
+                                        <div class="col-sm-6 col-md-3">
+                                            <div class="mb-3">
+                                                <label for="longitude" class="form-label">Longitude</label>
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" id="longitude" value="@Model?.Longitude" name="Longitude">
+                                                    <button type="button" class="btn btn-outline-secondary" id="getLongitudeBtn">
+                                                        <i class="fa fa-globe"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 col-md-3">
+                                            <div class="mb-3">
+                                                <label for="latitude" class="form-label">Latitude</label>
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" id="latitude" value="@Model?.Latitude" name="Latitude">
+                                                    <button type="button" class="btn btn-outline-secondary" id="getLatitudeBtn">
+                                                        <i class="fa fa-globe"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
 
                                         <!-- Fax -->
                                         <div class="col-sm-6 col-md-3">
@@ -369,7 +392,6 @@
 
     if (saveButton) {
         saveButton.addEventListener('click', function (event) {
-            console.log("111")
             event.preventDefault();
             const OwnerID = Number(document.getElementById('OwnerId') ? document.getElementById('OwnerId').value : '0');
             checkValidationsAndSubmit();
@@ -382,7 +404,29 @@
         });
     }
 
+    document.getElementById('getLongitudeBtn').addEventListener('click', function () {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function (position) {
+                document.getElementById('longitude').value = position.coords.longitude;
+            }, function (error) {
+                alert('Error fetching location: ' + error.message);
+            });
+        } else {
+            alert('Geolocation is not supported by this browser.');
+        }
+    });
 
+    document.getElementById('getLatitudeBtn').addEventListener('click', function () {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function (position) {
+                document.getElementById('latitude').value = position.coords.latitude;
+            }, function (error) {
+                alert('Error fetching location: ' + error.message);
+            });
+        } else {
+            alert('Geolocation is not supported by this browser.');
+        }
+    });
     // noPropertyManagerBtn.addEventListener('click', function () {
     //     $('#propertyManagerModal').modal('hide');
     //     submitTenantForm();
@@ -586,6 +630,8 @@
     const emailAddress2 = document.getElementById('EmailAddress2');
     const phoneNumber = document.getElementById('PhoneNumber');
     const phoneNumber2 = document.getElementById('PhoneNumber2');
+    const longitude = document.getElementById('longitude');
+    const latitude = document.getElementById('latitude');
     const website = document.getElementById('Website');
     const address = document.getElementById('Address');
     const FirstName = document.getElementById('FirstName');

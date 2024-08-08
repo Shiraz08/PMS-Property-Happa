@@ -28,5 +28,6 @@ namespace PMS_PropertyHapa.Models.Stripe
         public bool HasAdminPermission { get; set; }
         public string AddedBy { get; set; }
         public int? SelectedSubscriptionId { get; set; }
+        public int? Units { get; set; }
     }
 }

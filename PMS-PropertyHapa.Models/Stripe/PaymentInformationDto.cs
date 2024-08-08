@@ -25,5 +25,6 @@ namespace PMS_PropertyHapa.Models.Stripe
         public string CustomerId { get; set; }
         public string AddedBy { get; set; }
         public int? SelectedSubscriptionId { get; set; }
+        public int? Units { get; set; }
     }
 }

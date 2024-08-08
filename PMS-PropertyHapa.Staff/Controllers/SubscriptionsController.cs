@@ -9,6 +9,7 @@ using PMS_PropertyHapa.Staff.Services;
 using PMS_PropertyHapa.Staff.Services.IServices;
 using Stripe;
 using System.Security.Claims;
+using System.Text.RegularExpressions;
 using static PMS_PropertyHapa.Shared.Enum.SD;
 
 namespace PMS_PropertyHapa.Staff.Controllers
@@ -87,7 +88,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
                     Price = productModel.Price * 100, 
                     Currency = "USD"
                 };
-
+                
                 var priceOptions = new PriceCreateOptions
                 {
                     UnitAmount = product.Price,
@@ -111,6 +112,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
                             {
                                 { "UserId", currentUser.UserId.ToString() },
                                 { "ProductId", product.Id.ToString() },
+                                { "Units", productModel.Units.ToString() },
                                 { "ProductTitle", product.Title },
                                 { "PaymentGuid", newGuid.ToString() },
                                 { "IsTrial", productModel.IsTrial ? "true" : "false" } 
@@ -221,6 +223,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
                         Currency = paymentIntent.Currency,
                         CustomerId = paymentIntent.CustomerId,
                         SelectedSubscriptionId = customer.Metadata.ContainsKey("ProductId") ? int.Parse(customer.Metadata["ProductId"]) : null,
+                        Units = customer.Metadata.ContainsKey("Units") ? int.Parse(customer.Metadata["Units"]) : null
 
                     };
                     var result = await _authService.SavePaymentInformation(paymentInformationDto);
@@ -242,6 +245,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
                     Status = subscription.Status,
                     CustomerId = subscription.CustomerId,
                     SelectedSubscriptionId = customer.Metadata.ContainsKey("ProductId") ? int.Parse(customer.Metadata["ProductId"]) : null,
+                    Units = customer.Metadata.ContainsKey("Units") ? int.Parse(customer.Metadata["Units"]) : null
                 };
 
                 var paymentMethodInformationDto = new PaymentMethodInformationDto

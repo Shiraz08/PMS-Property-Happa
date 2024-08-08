@@ -16,5 +16,6 @@ namespace PMS_PropertyHapa.Models.DTO
         public long Price { get; set; }
         public bool IsYearly { get; set; }
         public bool IsTrial { get; set; }
+        public int Units { get; set; }
     }
 }
