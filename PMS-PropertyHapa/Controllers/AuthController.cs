@@ -254,6 +254,7 @@ namespace PMS_PropertyHapa.Controllers
                             {
                                 { "UserId", currentUser.UserId.ToString() },
                                 { "ProductId", product.Id.ToString() },
+                                { "Units", productModel.Units.ToString() },
                                 { "ProductTitle", product.Title },
                                 { "PaymentGuid", newGuid.ToString() },
                                 { "IsTrial", productModel.IsTrial ? "true" : "false" }
@@ -364,7 +365,7 @@ namespace PMS_PropertyHapa.Controllers
                         Currency = paymentIntent.Currency,
                         CustomerId = paymentIntent.CustomerId,
                         SelectedSubscriptionId = customer.Metadata.ContainsKey("ProductId") ? int.Parse(customer.Metadata["ProductId"]) : null,
-
+                        Units = customer.Metadata.ContainsKey("Units") ? int.Parse(customer.Metadata["Units"]) : null
                     };
                     var result = await _authService.SavePaymentInformation(paymentInformationDto);
                 }
@@ -385,6 +386,7 @@ namespace PMS_PropertyHapa.Controllers
                     Status = subscription.Status,
                     CustomerId = subscription.CustomerId,
                     SelectedSubscriptionId = customer.Metadata.ContainsKey("ProductId") ? int.Parse(customer.Metadata["ProductId"]) : null,
+                    Units = customer.Metadata.ContainsKey("Units") ? int.Parse(customer.Metadata["Units"]) : null
                 };
 
                 var paymentMethodInformationDto = new PaymentMethodInformationDto

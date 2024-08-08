@@ -18,6 +18,8 @@ namespace PMS_PropertyHapa.Models.Entities
         public string Document { get; set; }
         public string PhoneNumber { get; set; }
         public string PhoneNumber2 { get; set; }
+        public string Longitude { get; set; }
+        public string Latitude { get; set; }
         public string EmergencyContactInfo { get; set; } 
         public int? LeaseAgreementId { get; set; }
 

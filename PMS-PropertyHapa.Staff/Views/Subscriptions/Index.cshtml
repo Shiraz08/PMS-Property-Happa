@@ -284,7 +284,8 @@
                 Price: updatedPrice,
                 Name: nameInput,
                 IsYearly: $("#planSelection").is(":checked"),
-                IsTrial: title == "Free" ? true : false
+                IsTrial: title == "Free" ? true : false,
+                Units: $("#unitsFinal").val()
             };
 
             try {
