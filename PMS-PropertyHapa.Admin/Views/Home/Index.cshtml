@@ -62,7 +62,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-xl-8 col-md-8 col-sm-12 box-col-8">
+           @*  <div class="col-xl-8 col-md-8 col-sm-12 box-col-8">
                 <div class="card">
                     <div class="card-header pb-0">
                         <h5>Line Chart</h5>
@@ -71,7 +71,7 @@
                         <div class="chart-overflow" id="newLeadsChart"></div>
                     </div>
                 </div>
-            </div>
+            </div> *@
             <div class="col-xl-4 col-md-4 col-sm-12 box-col-4">
                 <div class="card o-hidden">
                     <div class="card-body">
@@ -122,7 +122,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-xl-6 col-md-6 dash-xl-50">
+            @* <div class="col-xl-6 col-md-6 dash-xl-50">
                 <div class="card profile-greeting">
                     <div class="card-body">
                         <div class="media">
@@ -150,10 +150,10 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> *@
             <div class="row">
                 <div class="col-xl-3 col-md-6">
-                    <div class="card border p-2">
+                    <div class="card border p-4">
                         <a href="@Url.Action("Index","Landlord")">
                             <h2 class="ml-5 mt-4 fs-3 fw-bold">@ViewBag.totalLandlords</h2>
                             <div class="d-flex flex-row-reverse mr-5 ">
@@ -167,7 +167,7 @@
                     </div>
                 </div>
                 <div class="col-xl-3 col-md-6">
-                    <div class="card border p-2">
+                    <div class="card border p-4">
                         <a href="@Url.Action("Index","Tenant")">
                             <div class="card-block-small">
                                 <h2 class="ml-5 mt-4 fs-3 fw-bold">@ViewBag.totalTenants</h2>
@@ -183,7 +183,7 @@
                     </div>
                 </div>
                 <div class="col-xl-3 col-md-6">
-                    <div class="card border p-2">
+                    <div class="card border p-4">
                         <a href="@Url.Action("Index","Assests")">
                             <div class="card-block-small">
                                 <h2 class="ml-5 mt-4 fs-3 fw-bold">@ViewBag.totalAssets</h2>
@@ -199,7 +199,7 @@
                     </div>
                 </div>
                 <div class="col-xl-3 col-md-6">
-                    <div class="card border p-2">
+                    <div class="card border p-4">
                         <a href="@Url.Action("Index","Lease")">
                             <div class="card-block-small">
                                 <h2 class="ml-5 mt-4 fs-3 fw-bold">@ViewBag.totalInvoices</h2>
@@ -292,7 +292,7 @@
             </div>
 
 
-            <div class="col-xl-4 col-md-4 dash-xl-50">
+           @*  <div class="col-xl-4 col-md-4 dash-xl-50">
                 <div class="card" style="height: 510px;">
                     <div class="card-header pb-0">
                         <h5>Outstanding Payments </h5>
@@ -301,7 +301,7 @@
                         <div id="piechart" style="padding-top: 4.5rem !important;"></div>
                     </div>
                 </div>
-            </div>
+            </div> *@
             @* <div class="col-xl-4 col-md-6 dash-xl-50">
                 <div class="card our-activities">
                     <div class="card-header card-no-border">
@@ -616,37 +616,37 @@
             ]
         });
 
-        loadLeadChart();
+        // loadLeadChart();
 
         // Outstanding Payments Pie Chart
-        var options8 = {
-            chart: {
-                width: 380,
-                type: 'pie',
-            },
-            labels: ['Team A', 'Team B', 'Team C', 'Team D', 'Team E'],
-            series: [44, 55, 13, 43, 22],
-            responsive: [{
-                breakpoint: 480,
-                options: {
-                    chart: {
+        // var options8 = {
+        //     chart: {
+        //         width: 380,
+        //         type: 'pie',
+        //     },
+        //     labels: ['Team A', 'Team B', 'Team C', 'Team D', 'Team E'],
+        //     series: [44, 55, 13, 43, 22],
+        //     responsive: [{
+        //         breakpoint: 480,
+        //         options: {
+        //             chart: {
 
-                        width: 200
-                    },
-                    legend: {
-                        position: 'bottom'
-                    }
-                }
-            }],
-            colors: [zetaAdminConfig.primary, zetaAdminConfig.secondary, '#51bb25', '#a927f9', '#f8d62b']
-        }
+        //                 width: 200
+        //             },
+        //             legend: {
+        //                 position: 'bottom'
+        //             }
+        //         }
+        //     }],
+        //     colors: [zetaAdminConfig.primary, zetaAdminConfig.secondary, '#51bb25', '#a927f9', '#f8d62b']
+        // }
 
-        var chart8 = new ApexCharts(
-            document.querySelector("#piechart"),
-            options8
-        );
+        // var chart8 = new ApexCharts(
+        //     document.querySelector("#piechart"),
+        //     options8
+        // );
 
-        chart8.render();
+        // chart8.render();
         
     });
 
@@ -698,43 +698,43 @@
         });
     }
 
-    function loadLeadChart() {
-        google.charts.load('current', { 'packages': ['corechart', 'line'] });
-        google.charts.setOnLoadCallback(drawChart);
+    // function loadLeadChart() {
+    //     google.charts.load('current', { 'packages': ['corechart', 'line'] });
+    //     google.charts.setOnLoadCallback(drawChart);
 
-        function drawChart() {
-            var data = new google.visualization.DataTable();
-            data.addColumn('number', 'Month');
-            data.addColumn('number', 'Open Leads');
-            data.addColumn('number', 'Closed Leads');
-            data.addRows([
-                [1, 37.8, 60.8],
-                [2, 30.9, 10.5],
-                [3, 40.4, 57],
-                [4, 11.7, 18.8],
-                [5, 20, 17.6],
-                [6, 8.8, 13.6],
-                [7, 7.6, 12.3],
-                [8, 12.3, 29.2],
-                [9, 16.9, 42.9],
-                [10, 12.8, 30.9],
-                [11, 5.3, 7.9],
-                [12, 6.6, 8.4]
-            ]);
+    //     function drawChart() {
+    //         var data = new google.visualization.DataTable();
+    //         data.addColumn('number', 'Month');
+    //         data.addColumn('number', 'Open Leads');
+    //         data.addColumn('number', 'Closed Leads');
+    //         data.addRows([
+    //             [1, 37.8, 60.8],
+    //             [2, 30.9, 10.5],
+    //             [3, 40.4, 57],
+    //             [4, 11.7, 18.8],
+    //             [5, 20, 17.6],
+    //             [6, 8.8, 13.6],
+    //             [7, 7.6, 12.3],
+    //             [8, 12.3, 29.2],
+    //             [9, 16.9, 42.9],
+    //             [10, 12.8, 30.9],
+    //             [11, 5.3, 7.9],
+    //             [12, 6.6, 8.4]
+    //         ]);
 
-            var options = {
-                chart: {
-                    title: 'Leads'
-                },
-                colors: [zetaAdminConfig.primary, zetaAdminConfig.secondary, "#51bb25"],
-                height: 300,
-                width: '100%'
-            };
+    //         var options = {
+    //             chart: {
+    //                 title: 'Leads'
+    //             },
+    //             colors: [zetaAdminConfig.primary, zetaAdminConfig.secondary, "#51bb25"],
+    //             height: 300,
+    //             width: '100%'
+    //         };
 
-            var chart = new google.visualization.LineChart(document.getElementById('newLeadsChart'));
-            chart.draw(data, options);
-        }
-    }
+    //         var chart = new google.visualization.LineChart(document.getElementById('newLeadsChart'));
+    //         chart.draw(data, options);
+    //     }
+    // }
 
 </script>
 

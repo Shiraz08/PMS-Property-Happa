@@ -224,13 +224,23 @@
                                         <div class="col-sm-6 col-md-3">
                                             <div class="mb-3">
                                                 <label for="longitude" class="form-label">Longitude</label>
-                                                <input type="text" class="form-control" id="longitude" value="@Model?.Longitude" name="Longitude">
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" id="longitude" value="@Model?.Longitude" name="Longitude">
+                                                    <button type="button" class="btn btn-outline-secondary" id="getLongitudeBtn">
+                                                        <i class="fa fa-globe"></i>
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="col-sm-6 col-md-3">
                                             <div class="mb-3">
                                                 <label for="latitude" class="form-label">Latitude</label>
-                                                <input type="text" class="form-control" id="latitude" value="@Model?.Latitude" name="Latitude">
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" id="latitude" value="@Model?.Latitude" name="Latitude">
+                                                    <button type="button" class="btn btn-outline-secondary" id="getLatitudeBtn">
+                                                        <i class="fa fa-globe"></i>
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
 
@@ -394,7 +404,29 @@
         });
     }
 
+    document.getElementById('getLongitudeBtn').addEventListener('click', function () {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function (position) {
+                document.getElementById('longitude').value = position.coords.longitude;
+            }, function (error) {
+                alert('Error fetching location: ' + error.message);
+            });
+        } else {
+            alert('Geolocation is not supported by this browser.');
+        }
+    });
 
+    document.getElementById('getLatitudeBtn').addEventListener('click', function () {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function (position) {
+                document.getElementById('latitude').value = position.coords.latitude;
+            }, function (error) {
+                alert('Error fetching location: ' + error.message);
+            });
+        } else {
+            alert('Geolocation is not supported by this browser.');
+        }
+    });
     // noPropertyManagerBtn.addEventListener('click', function () {
     //     $('#propertyManagerModal').modal('hide');
     //     submitTenantForm();

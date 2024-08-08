@@ -128,8 +128,8 @@ namespace PMS_PropertyHapa.Admin.Controllers
 
            
             ViewBag.totalTaskRequests = taskRequests.Count();
-            taskRequests = taskRequests.Where(s => (s.AddedDate.HasValue && s.AddedDate.Value.ToString("yyyy-MM-dd") == currentDate)
-                                        || (s.ModifiedDate.HasValue && s.ModifiedDate.Value.ToString("yyyy-MM-dd") == currentDate)).ToList();
+            //taskRequests = taskRequests.Where(s => (s.AddedDate.HasValue && s.AddedDate.Value.ToString("yyyy-MM-dd") == currentDate)
+            //                            || (s.ModifiedDate.HasValue && s.ModifiedDate.Value.ToString("yyyy-MM-dd") == currentDate)).ToList();
 
 
             var landlords = await (from owner in _context.Owner
@@ -448,7 +448,7 @@ namespace PMS_PropertyHapa.Admin.Controllers
 
             ViewBag.DataPoints = JsonConvert.SerializeObject(dataPoints);
             ViewBag.invoiceStatus = JsonConvert.SerializeObject(invoiceStatus);
-            ViewBag.taskRequest = taskRequests.ToList();
+            ViewBag.taskRequest = taskRequests.OrderByDescending(x => x.TaskRequestId).Take(50).ToList();
             ViewBag.landlords = landlords.ToList();
             ViewBag.tenants = tenants.ToList();
             ViewBag.assets = assets.ToList();
