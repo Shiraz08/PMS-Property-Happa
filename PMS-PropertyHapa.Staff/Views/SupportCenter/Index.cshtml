@@ -1,7 +1,19 @@
-﻿@{
+﻿@using PMS_PropertyHapa.Staff.Services
+@using PMS_PropertyHapa.Staff.Services.IServices
+@using System.Security.Claims
+@{
     ViewData["Title"] = "Support Center";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+@inject IPermissionService _permissionService;
+@{
+    var userId = Context.Request.Cookies["userId"];
+    bool viewFAQPermission = await _permissionService.HasAccess(userId, (int)UserPermissions.ViewFAQ);
+    bool contactUsPermission = await _permissionService.HasAccess(userId, (int)UserPermissions.ContactUs);
+    bool bookAFreeDemoPermission = await _permissionService.HasAccess(userId, (int)UserPermissions.BookAFreeDemo);
+    bool viewVideoTutorialPermission = await _permissionService.HasAccess(userId, (int)UserPermissions.ViewVideoTutorial);
+}
+
 <div class="page-body">
     <div class="container-fluid">
         <div class="page-title">
@@ -21,54 +33,67 @@
     </div>
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body d-flex justify-content-center align-items-center">
-                        <i class="fa fa-question-circle fa-3x"></i>
-                    </div>
-                    <div class="card-footer">
-                        <h4 class="card-title text-center">
-                            <a href="@Url.Action("FAQ", "SupportCenter")">FAQ's</a>
-                        </h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body d-flex justify-content-center align-items-center">
-                        <i class="fa fa-address-book fa-3x"></i>
-                    </div>
-                    <div class="card-footer">
-                        <h4 class="card-title text-center">
-                            <a href="@Url.Action("ContactUs", "SupportCenter")">Contact Us</a>
-                        </h4>
+            @if (viewFAQPermission)
+            {
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body d-flex justify-content-center align-items-center">
+                            <i class="fa fa-question-circle fa-3x"></i>
+                        </div>
+                        <div class="card-footer">
+                            <h4 class="card-title text-center">
+                                <a href="@Url.Action("FAQ", "SupportCenter")">FAQ's</a>
+                            </h4>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body d-flex justify-content-center align-items-center">
-                        <i class="fa fa-book fa-3x"></i>
-                    </div>
-                    <div class="card-footer">
-                        <h4 class="card-title text-center">
-                            <a href="@Url.Action("BookDemo", "SupportCenter")">Book a Free Demo</a>
-                        </h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body d-flex justify-content-center align-items-center">
-                        <i class="fa fa-video-camera fa-3x"></i>
-                    </div>
-                    <div class="card-footer">
-                        <h4 class="card-title text-center">
-                            <a href="@Url.Action("VideoTutorial", "SupportCenter")">Video Tutorial</a>
-                        </h4>
+            }
+            @if (contactUsPermission)
+            {
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body d-flex justify-content-center align-items-center">
+                            <i class="fa fa-address-book fa-3x"></i>
+                        </div>
+                        <div class="card-footer">
+                            <h4 class="card-title text-center">
+                                <a href="@Url.Action("ContactUs", "SupportCenter")">Contact Us</a>
+                            </h4>
+                        </div>
                     </div>
                 </div>
-            </div>
+            }
+            @if (bookAFreeDemoPermission)
+            {
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body d-flex justify-content-center align-items-center">
+                            <i class="fa fa-book fa-3x"></i>
+                        </div>
+                        <div class="card-footer">
+                            <h4 class="card-title text-center">
+                                <a href="@Url.Action("BookDemo", "SupportCenter")">Book a Free Demo</a>
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+            }
+            @if (viewVideoTutorialPermission)
+            {
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body d-flex justify-content-center align-items-center">
+                            <i class="fa fa-video-camera fa-3x"></i>
+                        </div>
+                        <div class="card-footer">
+                            <h4 class="card-title text-center">
+                                <a href="@Url.Action("VideoTutorial", "SupportCenter")">Video Tutorial</a>
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+            }
+            
         </div>
     </div>
 </div>

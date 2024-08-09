@@ -950,9 +950,30 @@
                     type: 'POST',
                     contentType: 'application/x-www-form-urlencoded',
                     data: formData,
-                    success: function (response) {
-                        console.log("Success:", response);
-                        window.location.href = '/Assests/Index';
+                    // success: function (response) {
+                    //     console.log("Success:", response);
+                    //     window.location.href = '/Assests/Index';
+                    // },
+                    // error: function (xhr, status, error) {
+                    //     console.error("Error:", error);
+                    // }
+                    success: function (res) {
+                        if (res.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Asset created successfully',
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                            window.location.href = '/Assests/Index';
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: res.message,
+                                text: 'Number of units are exceeding. Please upgrade your subscription.',
+                            });
+                            window.location.href = '/Assests/Index';
+                        }
                     },
                     error: function (xhr, status, error) {
                         console.error("Error:", error);

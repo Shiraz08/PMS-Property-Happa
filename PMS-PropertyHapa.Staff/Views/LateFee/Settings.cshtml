@@ -1,6 +1,14 @@
-﻿@{
+﻿@using PMS_PropertyHapa.Staff.Services
+@using PMS_PropertyHapa.Staff.Services.IServices
+@using System.Security.Claims
+@{
     ViewData["Title"] = "Settings";
     Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@inject IPermissionService _permissionService;
+@{
+    var userId = Context.Request.Cookies["userId"];
+    bool addLateFeePermission = await _permissionService.HasAccess(userId, (int)UserPermissions.AddLateFee);
 }
     <div class="page-body">
         <div class="container-fluid">
@@ -21,18 +29,22 @@
         </div>
         <div class="container-fluid">
             <div class="row">
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-body d-flex justify-content-center align-items-center">
-                            <i class="icon-files fa-3x"></i>
-                        </div>
-                        <div class="card-footer">
-                            <h4 class="card-title text-center">
-                                <a href="@Url.Action("Index", "LateFee")">LateFee</a>
-                            </h4>
+                @if(addLateFeePermission)
+                {
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body d-flex justify-content-center align-items-center">
+                                <i class="icon-files fa-3x"></i>
+                            </div>
+                            <div class="card-footer">
+                                <h4 class="card-title text-center">
+                                    <a href="@Url.Action("Index", "LateFee")">LateFee</a>
+                                </h4>
+                            </div>
                         </div>
                     </div>
-                </div>
+                }
+                
             </div>
         </div>
     </div>

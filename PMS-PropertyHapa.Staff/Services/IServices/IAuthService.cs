@@ -62,10 +62,10 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
 
         Task<PropertyTypeDto> GetSinglePropertyTypeAsync(int propertytypeId);
 
-        Task<bool> CreateAssetAsync(AssetDTO asset);
+        Task<APIResponse> CreateAssetAsync(AssetDTO asset);
 
         Task<APIResponse> DeleteAssetAsync(int propertyId);
-        Task<bool> UpdateAssetAsync(AssetDTO asset);
+        Task<APIResponse> UpdateAssetAsync(AssetDTO asset);
 
         Task<IEnumerable<AssetDTO>> GetAllAssetsAsync();
         Task<AssetDTO> GetAssetByIdAsync(int assetId);

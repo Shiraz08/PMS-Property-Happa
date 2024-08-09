@@ -1,11 +1,16 @@
-﻿
+﻿@using PMS_PropertyHapa.Staff.Services
+@using PMS_PropertyHapa.Staff.Services.IServices
+@using System.Security.Claims
 @{
     ViewData["Title"] = "ViewApplication";
     Layout = "~/Views/Shared/_Layout.cshtml";
      var userId = ViewBag.UserId as string;
 }
-
-
+@inject IPermissionService _permissionService;
+@{
+    var currentUserId = Context.Request.Cookies["userId"];
+    bool addApplicationPermission = await _permissionService.HasAccess(currentUserId, (int)UserPermissions.AddApplication);
+}
 <div class="page-body">
     <div class="container-fluid">
         <div class="page-title">
@@ -29,9 +34,12 @@
             <div class="col-xl-12 col-md-12 box-col-12">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <div class="right-side-header">
-                            <a href="@Url.Action("AddApplication", "Applications", new { id = userId })" class="btn btn-success">Add Application</a>
-                        </div>
+                        @if (addApplicationPermission)
+                        {
+                            <div class="right-side-header">
+                                <a href="@Url.Action("AddApplication", "Applications", new { id = userId })" class="btn btn-success">Add Application</a>
+                            </div>
+                        }
                     </div>
 
                     <div class="card-body">
@@ -112,14 +120,16 @@
                                 <div class="dropdown">
                                     <div class="btn-group mb-0">
                                         <button class="dropbtn btn btn-success" type="button">Action <span><i class="icofont icofont-arrow-down"></i></span></button>
-                                        <div class="dropdown-content">
-                                            <a class="btn btn-secondary me-1" onclick="editApplications(${data})">
-                                                <i class="fa fa-pencil"></i> Edit
-                                            </a>
-                                            <a class="btn btn-secondary" onclick="deleteApplications(${data})">
-                                                <i class="fa fa-trash"></i> Delete
-                                            </a>
-                                        </div>
+                                        @if(addApplicationPermission){
+                                            <div class="dropdown-content">
+                                                <a class="btn btn-secondary me-1" onclick="editApplications(${data})">
+                                                    <i class="fa fa-pencil"></i> Edit
+                                                </a>
+                                                <a class="btn btn-secondary" onclick="deleteApplications(${data})">
+                                                    <i class="fa fa-trash"></i> Delete
+                                                </a>
+                                            </div>
+                                        }
                                     </div>
                                 </div>
                             </div>

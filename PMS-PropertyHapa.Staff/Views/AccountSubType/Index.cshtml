@@ -1,8 +1,16 @@
-﻿@using PMS_PropertyHapa.Models.DTO
+﻿@using PMS_PropertyHapa.Staff.Services
+@using PMS_PropertyHapa.Staff.Services.IServices
+@using System.Security.Claims
+@using PMS_PropertyHapa.Models.DTO
 @model IEnumerable<AccountSubTypeDto>
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@inject IPermissionService _permissionService;
+@{
+    var userId = Context.Request.Cookies["userId"];
+    bool addAccountSubTypePermission = await _permissionService.HasAccess(userId, (int)UserPermissions.AddAccountSubType);
 }
 <div class="page-body">
     <div class="container-fluid">
@@ -27,9 +35,13 @@
             <div class="col-xl-12 col-md-12 box-col-12">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <div class="right-side-header">
-                            <button class="btn btn-success" id="newAccountSubTypeBtn">Add Sub Account</button>
-                        </div>
+                        @if (addAccountSubTypePermission)
+                        {
+                            <div class="right-side-header">
+                                <button class="btn btn-success" id="newAccountSubTypeBtn">Add Sub Account</button>
+                            </div>
+                        }
+                        
                     </div>
 
                     <div class="card-body">
@@ -122,6 +134,8 @@
                         return `
                             <div class="dropdown-basic">
                                 <div class="dropdown">
+                                @if (addAccountSubTypePermission)
+                                {
                                     <div class="btn-group mb-0">
                                         <button class="dropbtn btn btn-success" type="button">Action <span><i class="icofont icofont-arrow-down"></i></span></button>
                                         <div class="dropdown-content">
@@ -133,6 +147,7 @@
                                             </a>
                                         </div>
                                     </div>
+                                }
                                 </div>
                             </div>
                         `;

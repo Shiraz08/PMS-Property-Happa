@@ -48,7 +48,8 @@
                         <div class="row mt-1 mb-3">
                             <div class="col-xxl-3">
                                 <label for="ddlUserRoles" class="form-label">Roles</label>
-                                <select id="ddlUserRoles" name="ddlUserRoles" onchange="getUsersPermissionsByRoles()" class="form-control select2">
+                                <select id="ddlUserRoles" class="form-control select2" name="ddlUserRoles" onchange="getUsersPermissionsByRoles()">
+                                    <option></option>
                                     <!-- Options will be populated here -->
                                 </select>
                             </div>
@@ -62,16 +63,6 @@
         </div>
     </div>
 </div>
-
-
-
-
-
-
-
-
-
-
 
 
 <script>
@@ -124,43 +115,27 @@
         var container = $('#usersPermissions');
         container.empty();
 
-        if (!permissionsData || typeof permissionsData !== 'object') {
-            console.log('permissionsData is not an object or is undefined.');
-            return;
-        }
-
-        if (!Array.isArray(permissionsData.PermissionCategories) || permissionsData.PermissionCategories.length === 0) {
-            console.log('PermissionCategories is either not defined or is an empty array.');
-            return;
-        }
-
-        if (!Array.isArray(permissionsData.UserPermissions) || permissionsData.UserPermissions.length === 0) {
-            console.log('UserPermissions is either not defined or is an empty array.');
-            return;
-        }
-
-
         var row = $('<div class="row"></div>');
 
-        for (var i = 0; i < permissionsData.permissionCategories.length; i++) {
-            var category = permissionsData.permissionCategories[i];
-            var col = $('<div class="col-xxl-3 col-md-6"></div>');
-            var card = $('<div class="card"></div>');
-            var cardHeader = $('<div class="card-header card-title">' + category.name + '</div>');
+        for (var i = 0; i < permissionsData.PermissionCategories.length; i++) {
+            var category = permissionsData.PermissionCategories[i];
+            var col = $('<div class="col-xxl-3 col-md-6 mb-4"></div>'); // Added bottom margin for spacing between cards
+            var card = $('<div class="card h-100 shadow-sm"></div>'); // Added shadow for better aesthetics and h-100 for equal height
+            var cardHeader = $('<div class="card-header bg-primary text-white fs-5">' + category.Name + '</div>'); // Primary background and white text for the header
             var cardBody = $('<div class="card-body"></div>');
 
-            for (var k = 0; k < permissionsData.userPermissions.length; k++) {
-                var permission = permissionsData.userPermissions[k];
-                if (permission.permissionCategoryId === category.id) {
-                    var permissionId = 'permission' + permission.id;
+            for (var k = 0; k < permissionsData.UserPermissions.length; k++) {
+                var permission = permissionsData.UserPermissions[k];
+                if (permission.PermissionCategoryId === category.Id) {
+                    var permissionId = 'permission' + permission.Id;
                     var permissionItem = $(
                         '<div class="form-check">' +
                         '<input class="form-check-input" type="checkbox" name="userPermission" ' +
                         'id="' + permissionId + '" ' +
-                        'data-Id="' + permission.id + '" ' +
-                        'data-PermissionId="' + permission.id + '" ' +
-                        (permission.isChecked ? 'checked' : '') + '>' +
-                        '<label class="form-check-label" for="' + permissionId + '">' + permission.name + '</label>' +
+                        'data-Id="' + permission.Id + '" ' +
+                        'data-PermissionId="' + permission.Id + '" ' +
+                        (permission.IsChecked ? 'checked' : '') + '>' +
+                        '<label class="form-check-label ms-2" for="' + permissionId + '">' + permission.Name + '</label>' + // Added margin to the label for better spacing
                         '</div>'
                     );
                     cardBody.append(permissionItem);
@@ -175,6 +150,7 @@
             col.append(card);
             row.append(col);
         }
+
 
         container.append(row);
 

@@ -1,8 +1,17 @@
-﻿@model IEnumerable<PMS_PropertyHapa.Models.DTO.OwnerDto>
+﻿@using PMS_PropertyHapa.Staff.Services
+@using PMS_PropertyHapa.Staff.Services.IServices
+@using System.Security.Claims
+@model IEnumerable<PMS_PropertyHapa.Models.DTO.OwnerDto>
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+@inject IPermissionService _permissionService;
+@{
+    var userId = Context.Request.Cookies["userId"];
+    bool addLandlordPermission = await _permissionService.HasAccess(userId, (int)UserPermissions.AddLandlord);
+}
+
 <style>
     .card {
         margin-bottom: 0px !important;
@@ -56,9 +65,12 @@
                                                             <input class="form-control" type="text" id="searchInput" placeholder="Search Landlord" aria-label="search" aria-describedby="basic-addon1">
                                                         </div>
                                                     </div>
-                                                    <div class="right-side-header">
-                                                        <a class="btn btn-success" href="@Url.Action("AddLandlord","Landlord")">Add New Landlord</a>
-                                                    </div>
+                                                    @if (addLandlordPermission)
+                                                    {
+                                                        <div class="right-side-header">
+                                                            <a class="btn btn-success" href="@Url.Action("AddLandlord", "Landlord")">Add New Landlord</a>
+                                                        </div>
+                                                    }
                                                 </div>
                                             </div>
                                             <div class="card-body p-0">
@@ -187,14 +199,17 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="right-side-header" style="padding-top:18px!important;padding-right: 27px!important;">
-                                    <button class="btn btn-success" style="background-color: #c9c9c9;color: white;" type="button" type="button" onclick="editLandlord(${landlord.OwnerId})">
-                                        Edit LandLord
-                                    </button>
-                                    <button class="btn btn-danger" style="background-color: #c9c9c9;color: white;" type="button" type="button" onclick="deleteOwner(${landlord.OwnerId})">
-                                        Delete LandLord
-                                    </button>
-                               </div>
+                                @if (addLandlordPermission)
+                                {
+                                        <div class="right-side-header" style="padding-top:18px!important; padding-right: 27px!important;">
+                                            <button class="btn btn-success" style="background-color: #c9c9c9; color: white;" type="button" onclick="editLandlord(${landlord.OwnerId})">
+                                                Edit LandLord
+                                            </button>
+                                            <button class="btn btn-danger" style="background-color: #c9c9c9; color: white;" type="button" onclick="deleteOwner(${landlord.OwnerId})">
+                                                Delete LandLord
+                                            </button>
+                                        </div>
+                                }
                             </div>
                         </div>
                         <div class="row w-100 px-2">

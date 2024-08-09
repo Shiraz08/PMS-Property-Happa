@@ -11,7 +11,9 @@ namespace PMS_PropertyHapa.Models.DTO
         public decimal? Amount {  get; set; }
         public string Payee { get; set; }
         public string SubscriptionType { get; set; }
+        public string EmailAddress { get; set; }
         public string BillingInterval { get; set; }
+        public decimal? NoOfUnits { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
 

@@ -1,7 +1,15 @@
+@using PMS_PropertyHapa.Staff.Services
+@using PMS_PropertyHapa.Staff.Services.IServices
+@using System.Security.Claims
 @model PMS_PropertyHapa.Models.DTO.CommunicationsViewModel
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@inject IPermissionService _permissionService;
+@{
+    var userId = Context.Request.Cookies["userId"];
+    bool addCommunicationPermission = await _permissionService.HasAccess(userId, (int)UserPermissions.AddCommunication);
 }
 
 <style>
@@ -40,11 +48,15 @@
                                 <button id="pdfButton" class="btn btn-success mr-1">PDF</button>
                                 <button id="printButton" class="btn btn-success mr-1">Print</button>
                             </div>
-                            <div class="right-side-header">
-                                <a class="btn btn-success d-flex border-0 align-items-center" href="@Url.Action("AddCommunication", "Communication")">
-                                    Add New Communication
-                                </a>
-                            </div>
+                            @if (addCommunicationPermission)
+                            {
+                                <div class="right-side-header">
+                                    <a class="btn btn-success d-flex border-0 align-items-center" href="@Url.Action("AddCommunication", "Communication")">
+                                        Add New Communication
+                                    </a>
+                                </div>
+                            }
+                            
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
@@ -106,11 +118,13 @@
                                                         <i class="fa fa-globe fa-2x text-info mb-2" title="Tenant Portal"></i>
                                                     }
                                                 </td>
-
                                                 <td style="justify-content:center">
-                                                    <button onclick="editCommunication(@communication.Communication_Id)" class="btn btn-success btn-sm" style="padding: 3px 8px; margin-right: 5px; display: inline-block;">Edit</button>
-                                                    <button onclick="deleteCommunication(@communication.Communication_Id)" class="btn btn-danger btn-sm" style="padding: 3px 8px; display: inline-block;">Delete</button>
-                                                </td>
+                                                    @if (addCommunicationPermission)
+                                                    {
+                                                        <button onclick="editCommunication(@communication.Communication_Id)" class="btn btn-success btn-sm" style="padding: 3px 8px; margin-right: 5px; display: inline-block;">Edit</button>
+                                                        <button onclick="deleteCommunication(@communication.Communication_Id)" class="btn btn-danger btn-sm" style="padding: 3px 8px; display: inline-block;">Delete</button>
+                                                    }
+                                                    </td>
                                             </tr>
                                         }
 

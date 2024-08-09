@@ -1,11 +1,18 @@
-﻿@model IEnumerable<PMS_PropertyHapa.Models.DTO.LeaseDto>
+﻿@using PMS_PropertyHapa.Staff.Services
+@using PMS_PropertyHapa.Staff.Services.IServices
+@using System.Security.Claims
+@model IEnumerable<PMS_PropertyHapa.Models.DTO.LeaseDto>
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 
 }
-
-
+@inject IPermissionService _permissionService;
+@{
+    var userId = Context.Request.Cookies["userId"];
+    bool addLeasePermission = await _permissionService.HasAccess(userId, (int)UserPermissions.AddLease);
+    bool viewInvoiceLeasePermission = await _permissionService.HasAccess(userId, (int)UserPermissions.ViewLeaseInvoices);
+}
 
 <!-- Page Sidebar Ends-->
 <div class="page-body">
@@ -92,10 +99,16 @@
                                                         <div class="btn-group mb-0">
                                                             <button class="dropbtn btn-success" type="button">Action <span><i class="icofont icofont-arrow-down"></i></span></button>
                                                             <div class="dropdown-content">
-                                                                <a class="dropdown-item btn-secondary rounded" href="@Url.Action("EditLease", "Lease", new { leaseId = lease.LeaseId })">Edit</a>
-                                                                <a class="dropdown-item btn-secondary rounded" onclick="deleteLease('@lease.LeaseId')">Delete</a>
-                                                                <a class="dropdown-item btn-secondary rounded" href="@Url.Action("InvoiceDetails", "Lease", new { leaseId = lease.LeaseId })">Invoice</a>
-                                                            </div>
+                                                                @if (addLeasePermission)
+                                                                {
+                                                                    <a class="dropdown-item btn-secondary rounded" href="@Url.Action("EditLease", "Lease", new { leaseId = lease.LeaseId })">Edit</a>
+                                                                    <a class="dropdown-item btn-secondary rounded" onclick="deleteLease('@lease.LeaseId')">Delete</a>
+                                                                }
+                                                                @if (viewInvoiceLeasePermission)
+                                                                {
+                                                                    <a class="dropdown-item btn-secondary rounded" href="@Url.Action("InvoiceDetails", "Lease", new { leaseId = lease.LeaseId })">Invoice</a>
+                                                                }
+                                                                </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -111,15 +124,18 @@
 
 
             <div class="col-12 col-lg-2">
-
-                <div class="mb-2">
-                    <a class="btn btn-info w-100 d-flex border-0 align-items-center" href="@Url.Action("AddLease","Lease")">
-                        <div class="plusCircle">
-                            +
-                        </div>
-                        New Lease
-                    </a>
-                </div>
+                @if (addLeasePermission)
+                {
+                    <div class="mb-2">
+                        <a class="btn btn-info w-100 d-flex border-0 align-items-center" href="@Url.Action("AddLease","Lease")">
+                            <div class="plusCircle">
+                                +
+                            </div>
+                            New Lease
+                        </a>
+                    </div>
+                }
+                
                 <!-- Statistics Panels -->
 
                 <div class="">

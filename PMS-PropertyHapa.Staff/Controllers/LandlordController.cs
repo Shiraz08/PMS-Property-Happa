@@ -13,6 +13,8 @@ using PMS_PropertyHapa.Shared.ImageUpload;
 using PMS_PropertyHapa.Staff.Auth.Controllers;
 using PMS_PropertyHapa.Staff.Services.IServices;
 using Newtonsoft.Json;
+using static PMS_PropertyHapa.Shared.Enum.SD;
+using PMS_PropertyHapa.Staff.Filters;
 
 namespace PMS_PropertyHapa.Staff.Controllers
 {
@@ -37,6 +39,8 @@ namespace PMS_PropertyHapa.Staff.Controllers
             _userStore = userStore;
             _environment = Environment;
         }
+
+        //[TypeFilter(typeof(PermissionFilter), Arguments = new object[] { UserPermissions.ViewLandlord })]
         public async Task<IActionResult> Index()
         {
             var owner = await _authService.GetAllLandlordAsync();

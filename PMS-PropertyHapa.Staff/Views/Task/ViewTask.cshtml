@@ -1,9 +1,18 @@
-﻿
+﻿@using PMS_PropertyHapa.Staff.Services
+@using PMS_PropertyHapa.Staff.Services.IServices
+@using System.Security.Claims
 @{
     ViewData["Title"] = "ViewTask";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
+@inject IPermissionService _permissionService;
+@{
+    var userId = Context.Request.Cookies["userId"];
+    bool addTaskPermission = await _permissionService.HasAccess(userId, (int)UserPermissions.AddTask);
+    bool addOwnerRequestPermission = await _permissionService.HasAccess(userId, (int)UserPermissions.AddOwnerRequest);
+    bool addTenantRequestPermission = await _permissionService.HasAccess(userId, (int)UserPermissions.AddTenantRequest);
+    bool addWorkOrderPermission = await _permissionService.HasAccess(userId, (int)UserPermissions.AddWorkOrder);
+}
 
 <style>
     .card {
@@ -37,21 +46,34 @@
             <div class="col-xl-12 col-md-12 box-col-12">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-
-
                         <div class="right-side-header">
-                            <button class="btn btn-outline-success" style="margin-right: 5px;" id="newTaskBtn">
-                                <i class="fa fa-tasks"></i> New Task
-                            </button>
-                            <button class="btn btn-outline-success" style="margin-right: 5px;" id="newOwnerRequestBtn">
-                                <i class="fa fa-user-plus"></i> New Owner Request
-                            </button>
-                            <button class="btn btn-outline-success" style="margin-right: 5px;" id="newTenantRequestBtn">
-                                <i class="fa fa-user-plus"></i> New Tenant Request
-                            </button>
-                            <button class="btn btn-outline-success" id="newWorkOrderBtn">
-                                <i class="fa fa-wrench"></i> New Work Order
-                            </button>
+                            @if (addTaskPermission)
+                            {
+                                <button class="btn btn-outline-success" style="margin-right: 5px;" id="newTaskBtn">
+                                    <i class="fa fa-tasks"></i> New Task
+                                </button>
+                            }
+                            @if (addOwnerRequestPermission)
+                            {
+                                <button class="btn btn-outline-success" style="margin-right: 5px;" id="newOwnerRequestBtn">
+                                    <i class="fa fa-user-plus"></i> New Owner Request
+                                </button>
+
+                            }
+                            @if (addTenantRequestPermission)
+                            {
+                                <button class="btn btn-outline-success" style="margin-right: 5px;" id="newTenantRequestBtn">
+                                    <i class="fa fa-user-plus"></i> New Tenant Request
+                                </button>
+
+                            }
+                            @if (addWorkOrderPermission)
+                            {
+                                <button class="btn btn-outline-success" id="newWorkOrderBtn">
+                                    <i class="fa fa-wrench"></i> New Work Order
+                                </button>
+
+                            }
                         </div>
                     </div>
 

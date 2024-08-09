@@ -1,6 +1,22 @@
-﻿@{
+﻿@using PMS_PropertyHapa.Staff.Services
+@using PMS_PropertyHapa.Staff.Services.IServices
+@using System.Security.Claims
+@{
     ViewData["Title"] = "Accounting";
     Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@inject IPermissionService _permissionService;
+@{
+    var userId = Context.Request.Cookies["userId"];
+    bool viewRentPermission = await _permissionService.HasAccess(userId, (int)UserPermissions.ViewRent);
+    bool viewAssestExpensePermission = await _permissionService.HasAccess(userId, (int)UserPermissions.ViewAssestExpense);
+    bool viewDepositPermission = await _permissionService.HasAccess(userId, (int)UserPermissions.ViewDeposit);
+    bool viewBillingPermission = await _permissionService.HasAccess(userId, (int)UserPermissions.ViewBilling);
+    bool viewInvoicesPermission = await _permissionService.HasAccess(userId, (int)UserPermissions.ViewInvoices);
+    bool viewAccountTypePermission = await _permissionService.HasAccess(userId, (int)UserPermissions.ViewAccountType);
+    bool viewAccountSubTypePermission = await _permissionService.HasAccess(userId, (int)UserPermissions.ViewAccountSubType);
+    bool viewChartofAccountsPermission = await _permissionService.HasAccess(userId, (int)UserPermissions.ViewChartofAccounts);
+    bool viewBudgetPermission = await _permissionService.HasAccess(userId, (int)UserPermissions.ViewBudget);
 }
 <div class="page-body">
     <div class="container-fluid">
@@ -23,128 +39,156 @@
         <!-- Row for three cards -->
         <div class="row">
             <!-- Card for Account Type -->
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body d-flex justify-content-center align-items-center">
-                        <i class="icon-folder fa-3x"></i> <!-- Updated icon class -->
-                    </div>
-                    <div class="card-footer">
-                        <h4 class="card-title text-center">
-                            <a href="@Url.Action("Index", "AccountType")">Account Type</a>
-                        </h4>
+            @if (viewAccountTypePermission)
+            {
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body d-flex justify-content-center align-items-center">
+                            <i class="icon-folder fa-3x"></i> <!-- Updated icon class -->
+                        </div>
+                    
+                            <div class="card-footer">
+                                <h4 class="card-title text-center">
+                                    <a href="@Url.Action("Index", "AccountType")">Account Type</a>
+                                </h4>
+                            </div>
                     </div>
                 </div>
-            </div>
+            }
             <!-- Card for Account Sub Type -->
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body d-flex justify-content-center align-items-center">
-                        <i class="icon-folder fa-3x"></i> <!-- Updated icon class -->
-                    </div>
-                    <div class="card-footer">
-                        <h4 class="card-title text-center">
-                            <a href="@Url.Action("Index", "AccountSubType")">Account Sub Type</a>
-                        </h4>
+            @if (viewAccountSubTypePermission)
+            {
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body d-flex justify-content-center align-items-center">
+                            <i class="icon-folder fa-3x"></i> <!-- Updated icon class -->
+                        </div>
+                        <div class="card-footer">
+                            <h4 class="card-title text-center">
+                                <a href="@Url.Action("Index", "AccountSubType")">Account Sub Type</a>
+                            </h4>
+                        </div>
                     </div>
                 </div>
-            </div>
+            }
             <!-- Card for Chart of Accounts -->
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body d-flex justify-content-center align-items-center">
-                        <i class="icon-bar-chart fa-3x"></i> <!-- Updated icon class -->
-                    </div>
-                    <div class="card-footer">
-                        <h4 class="card-title text-center">
-                            <a href="@Url.Action("Index", "ChartAccounts")">Chart of Accounts</a>
-                        </h4>
+            @if (viewChartofAccountsPermission)
+            {
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body d-flex justify-content-center align-items-center">
+                            <i class="icon-bar-chart fa-3x"></i> <!-- Updated icon class -->
+                        </div>
+                        <div class="card-footer">
+                            <h4 class="card-title text-center">
+                                <a href="@Url.Action("Index", "ChartAccounts")">Chart of Accounts</a>
+                            </h4>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
+            }
+            
         <!-- Repeat the row structure for the next set of three cards -->
-        <div class="row">
+        
             <!-- Card for View Rent -->
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body d-flex justify-content-center align-items-center">
-                        <i class="icon-eye fa-3x"></i> <!-- Updated icon class -->
-                    </div>
-                    <div class="card-footer">
-                        <h4 class="card-title text-center">
-                            <a href="@Url.Action("Rent", "Accounting")">View Rent</a>
-                        </h4>
+            @if (viewRentPermission)
+            {
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body d-flex justify-content-center align-items-center">
+                            <i class="icon-eye fa-3x"></i> <!-- Updated icon class -->
+                        </div>
+                        <div class="card-footer">
+                            <h4 class="card-title text-center">
+                                <a href="@Url.Action("Rent", "Accounting")">View Rent</a>
+                            </h4>
+                        </div>
                     </div>
                 </div>
-            </div>
+            }
             <!-- Card for View Assest Expense -->
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body d-flex justify-content-center align-items-center">
-                        <i class="icon-wallet fa-3x"></i> <!-- Updated icon class -->
-                    </div>
-                    <div class="card-footer">
-                        <h4 class="card-title text-center">
-                            <a href="@Url.Action("AssestExpense", "Accounting")">View Assest Expense</a>
-                        </h4>
+            @if (viewAssestExpensePermission)
+            {
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body d-flex justify-content-center align-items-center">
+                            <i class="icon-wallet fa-3x"></i> <!-- Updated icon class -->
+                        </div>
+                        <div class="card-footer">
+                            <h4 class="card-title text-center">
+                                <a href="@Url.Action("AssestExpense", "Accounting")">View Assest Expense</a>
+                            </h4>
+                        </div>
                     </div>
                 </div>
-            </div>
+            }
             <!-- Card for View Deposit -->
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body d-flex justify-content-center align-items-center">
-                        <i class="icon-bag fa-3x"></i> <!-- Updated icon class -->
-                    </div>
-                    <div class="card-footer">
-                        <h4 class="card-title text-center">
-                            <a href="@Url.Action("Deposit", "Accounting")">View Deposit</a>
-                        </h4>
+            @if (viewDepositPermission)
+            {
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body d-flex justify-content-center align-items-center">
+                            <i class="icon-bag fa-3x"></i> <!-- Updated icon class -->
+                        </div>
+                        <div class="card-footer">
+                            <h4 class="card-title text-center">
+                                <a href="@Url.Action("Deposit", "Accounting")">View Deposit</a>
+                            </h4>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
+            }
         <!-- Continue for remaining cards -->
-        <div class="row">
+        
             <!-- Card for View Billing -->
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body d-flex justify-content-center align-items-center">
-                        <i class="icon-clipboard fa-3x"></i> <!-- Updated icon class -->
-                    </div>
-                    <div class="card-footer">
-                        <h4 class="card-title text-center">
-                            <a href="@Url.Action("Billing", "Accounting")">View Billing</a>
-                        </h4>
+            @if (viewBillingPermission)
+            {
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body d-flex justify-content-center align-items-center">
+                            <i class="icon-clipboard fa-3x"></i> <!-- Updated icon class -->
+                        </div>
+                        <div class="card-footer">
+                            <h4 class="card-title text-center">
+                                <a href="@Url.Action("Billing", "Accounting")">View Billing</a>
+                            </h4>
+                        </div>
                     </div>
                 </div>
-            </div>
+            }
             <!-- Card for View Invoices -->
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body d-flex justify-content-center align-items-center">
-                        <i class="icon-clipboard fa-3x"></i> <!-- Updated icon class -->
-                    </div>
-                    <div class="card-footer">
-                        <h4 class="card-title text-center">
-                            <a href="@Url.Action("Invoices", "Accounting")">View Invoices</a>
-                        </h4>
+            @if (viewInvoicesPermission)
+            {
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body d-flex justify-content-center align-items-center">
+                            <i class="icon-clipboard fa-3x"></i> <!-- Updated icon class -->
+                        </div>
+                        <div class="card-footer">
+                            <h4 class="card-title text-center">
+                                <a href="@Url.Action("Invoices", "Accounting")">View Invoices</a>
+                            </h4>
+                        </div>
                     </div>
                 </div>
-            </div>
+            }
+            
             <!-- Card for Budgeting -->
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body d-flex justify-content-center align-items-center">
-                        <i class="icon-money fa-3x"></i> <!-- Updated icon class -->
-                    </div>
-                    <div class="card-footer">
-                        <h4 class="card-title text-center">
-                            <a href="@Url.Action("Index", "Budget")">Budgeting</a>
-                        </h4>
+            @if (viewBudgetPermission)
+            {
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body d-flex justify-content-center align-items-center">
+                            <i class="icon-money fa-3x"></i> <!-- Updated icon class -->
+                        </div>
+                        <div class="card-footer">
+                            <h4 class="card-title text-center">
+                                <a href="@Url.Action("Index", "Budget")">Budgeting</a>
+                            </h4>
+                        </div>
                     </div>
                 </div>
-            </div>
+            }
         </div>
     </div>
 </div>

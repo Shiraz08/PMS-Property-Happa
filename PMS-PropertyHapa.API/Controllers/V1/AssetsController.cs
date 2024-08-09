@@ -146,7 +146,14 @@ namespace PMS_PropertyHapa.API.Controllers.V1
                     _response.StatusCode = HttpStatusCode.OK;
                     _response.IsSuccess = true;
                     _response.Result = isSuccess;
-                   
+
+                }
+                else
+                {
+                    _response.StatusCode = HttpStatusCode.InternalServerError;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("Number of units are exceeding. Please upgrade your subscription.");
+                    return NotFound(_response);
                 }
                 return Ok(_response);
             }
@@ -162,7 +169,21 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             try
             {
                 var isSuccess = await _userRepo.UpdateAssetAsync(asset);
-                return Ok(isSuccess);
+                if (isSuccess == true)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = isSuccess;
+
+                }
+                else
+                {
+                    _response.StatusCode = HttpStatusCode.InternalServerError;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("Number of units are exceeding. Please upgrade your subscription.");
+                    return NotFound(_response);
+                }
+                return Ok(_response);
             }
             catch (Exception ex)
             {

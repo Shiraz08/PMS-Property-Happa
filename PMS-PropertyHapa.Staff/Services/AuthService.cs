@@ -592,7 +592,7 @@ namespace PMS_PropertyHapa.Staff.Services
 
         
 
-        public async Task<bool> CreateAssetAsync(AssetDTO asset)
+        public async Task<APIResponse> CreateAssetAsync(AssetDTO asset)
         {
             try
             {
@@ -603,7 +603,7 @@ namespace PMS_PropertyHapa.Staff.Services
                     Url = $"{villaUrl}/api/v1/AssetsAuth/Asset"
                 });
 
-                return response.IsSuccess;
+                return response;
             }
             catch (Exception ex)
             {
@@ -612,7 +612,7 @@ namespace PMS_PropertyHapa.Staff.Services
         }
 
 
-        public async Task<bool> UpdateAssetAsync(AssetDTO asset)
+        public async Task<APIResponse> UpdateAssetAsync(AssetDTO asset)
         {
             try
             {
@@ -624,7 +624,7 @@ namespace PMS_PropertyHapa.Staff.Services
                     Url = $"{villaUrl}/api/v1/AssetsAuth/UpdateAsset"
                 });
 
-                return response.IsSuccess;
+                return response;
             }
             catch (Exception ex)
             {

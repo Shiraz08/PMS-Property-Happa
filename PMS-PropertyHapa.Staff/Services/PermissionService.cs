@@ -2,8 +2,9 @@
 using PMS_PropertyHapa.MigrationsFiles.Data;
 using PMS_PropertyHapa.Models.Roles;
 using PMS_PropertyHapa.Models.UserPermissions;
+using PMS_PropertyHapa.Staff.Services.IServices;
 
-namespace PMS_PropertyHapa.Admin.Services
+namespace PMS_PropertyHapa.Staff.Services
 {
     public class PermissionService : IPermissionService
     {

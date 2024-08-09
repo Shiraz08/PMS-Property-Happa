@@ -32,7 +32,9 @@ namespace PMS_PropertyHapa.Admin.Controllers
                                        Payee = u.FirstName + " " + u.LastName,
                                        Amount = pi.AmountCharged,
                                        SubscriptionType = s.SubscriptionName,
+                                       EmailAddress = ss.EmailAddress,
                                        BillingInterval = ss.BillingInterval,
+                                       NoOfUnits = ss.NoOfUnits,
                                        StartDate = ss.StartDate,
                                        EndDate = ss.EndDate,
                                    }).ToListAsync();

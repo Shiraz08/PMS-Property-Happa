@@ -1,7 +1,15 @@
-﻿@model IEnumerable<PMS_PropertyHapa.Models.DTO.TenantModelDto>
+﻿@using PMS_PropertyHapa.Staff.Services
+@using PMS_PropertyHapa.Staff.Services.IServices
+@using System.Security.Claims
+@model IEnumerable<PMS_PropertyHapa.Models.DTO.TenantModelDto>
 @{
     ViewData["Title"] = "Tenants";
     Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@inject IPermissionService _permissionService;
+@{
+    var userId = Context.Request.Cookies["userId"];
+    bool addTenantPermission = await _permissionService.HasAccess(userId, (int)UserPermissions.AddTenant);
 }
 <style>
     .card {
@@ -56,9 +64,13 @@
                                                             <input class="form-control" type="text" id="searchInput" placeholder="Search Tenant" aria-label="search" aria-describedby="basic-addon1">
                                                         </div>
                                                     </div>
-                                                    <div class="right-side-header" >
-                                                        <a class="btn btn-success" href="@Url.Action("AddTenant","Tenant")">Add New Tenant</a>
-                                                    </div>
+                                                    @if (addTenantPermission)
+                                                    {
+                                                        <div class="right-side-header">
+                                                            <a class="btn btn-success" href="@Url.Action("AddTenant","Tenant")">Add New Tenant</a>
+                                                        </div>
+                                                    }
+                                                    
                                                 </div>
                                             </div>
                                             <div class="card-body p-0">
@@ -186,14 +198,17 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="right-side-header" style="padding-top:18px!important;padding-right: 27px!important;">
-                                            <button class="btn btn-success" style="background-color: #c9c9c9;color: white;" type="button" type="button" onclick="editTenant(${tenant.TenantId})">
-                                                Edit Tenant
-                                            </button>
-                                            <button class="btn btn-danger" style="background-color: #c9c9c9;color: white;" type="button" type="button" onclick="deleteTenant(${tenant.TenantId})">
-                                                Delete Tenant
-                                            </button>
-                                       </div>
+                                        @if(addTenantPermission){
+                                            <div class="right-side-header" style="padding-top:18px!important;padding-right: 27px!important;">
+                                                <button class="btn btn-success" style="background-color: #c9c9c9;color: white;" type="button" type="button" onclick="editTenant(${tenant.TenantId})">
+                                                    Edit Tenant
+                                                </button>
+                                                <button class="btn btn-danger" style="background-color: #c9c9c9;color: white;" type="button" type="button" onclick="deleteTenant(${tenant.TenantId})">
+                                                    Delete Tenant
+                                                </button>
+                                            </div>
+                                        }
+                                        
                                     </div>
                                 </div>
                                 <div class="row w-100 px-2">

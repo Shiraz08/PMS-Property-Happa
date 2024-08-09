@@ -14,6 +14,8 @@ using PMS_PropertyHapa.Shared.Email;
 using PMS_PropertyHapa.Staff.Models.ViewModels;
 using PMS_PropertyHapa.Models.Configrations;
 using Stripe;
+using PMS_PropertyHapa.Staff.Filters;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,6 +33,8 @@ builder.Services.AddScoped<ITokenProvider, TokenProvider>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IStripeService, StripeService>();
+builder.Services.AddScoped<IPermissionService, PermissionService>();
+builder.Services.AddScoped<IUserPermissionService, UserPermissionService>();
 builder.Services.AddDistributedMemoryCache();
 // Add services to the container.
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();

@@ -1,8 +1,17 @@
-﻿@{
+﻿@using PMS_PropertyHapa.Staff.Services
+@using PMS_PropertyHapa.Staff.Services.IServices
+@using System.Security.Claims
+@{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
+@inject IPermissionService _permissionService;
+@{
+    var userId = Context.Request.Cookies["userId"];
+    bool addVendorPermission = await _permissionService.HasAccess(userId, (int)UserPermissions.AddVendor);
+    bool viewVendorCategoriesPermission = await _permissionService.HasAccess(userId, (int)UserPermissions.ViewVendorCategories);
+    bool viewVendorClassificationPermission = await _permissionService.HasAccess(userId, (int)UserPermissions.ViewVendorClassification);
+} 
 <style>
     .nav-sidebar {
         background-color: #f8f9fa; 
@@ -49,12 +58,19 @@
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <div class="right-side-header">
-                            <a href="@Url.Action("VendorClassification", "Vendor")" class="btn btn-success">Add Vendor Classification</a>
-                            <a href="@Url.Action("VendorCategories", "Vendor")" class="btn btn-success">Add Vendor Categories</a>
-                            <button type="button" class="btn btn-success" id="addVendorBtn">
-                                Add New Vendor
-                            </button>
-
+                            @if(viewVendorCategoriesPermission){
+                                <a href="@Url.Action("VendorClassification", "Vendor")" class="btn btn-success">Add Vendor Classification</a>
+                            }
+                            @if(viewVendorClassificationPermission){
+                                <a href="@Url.Action("VendorCategories", "Vendor")" class="btn btn-success">Add Vendor Categories</a>
+                            }
+                            
+                            @if (addVendorPermission)
+                            {
+                                <button type="button" class="btn btn-success" id="addVendorBtn">
+                                    Add New Vendor
+                                </button>
+                            }
                         </div>
                     </div>
 
@@ -526,14 +542,16 @@
                                     <div class="dropdown">
                                         <div class="btn-group mb-0">
                                             <button class="dropbtn btn btn-success" type="button">Action <span><i class="icofont icofont-arrow-down"></i></span></button>
-                                            <div class="dropdown-content">
-                                                <a class="btn btn-secondary me-1" onclick="editVendor(${data})">
-                                                    <i class="fa fa-edit"></i> Edit
-                                                </a>
-                                                <a class="btn btn-secondary" onclick="deleteVendor(${data})">
-                                                    <i class="fa fa-trash"></i> Delete
-                                                </a>
-                                            </div>
+                                            @if(addVendorPermission){
+                                                <div class="dropdown-content">
+                                                    <a class="btn btn-secondary me-1" onclick="editVendor(${data})">
+                                                        <i class="fa fa-edit"></i> Edit
+                                                    </a>
+                                                    <a class="btn btn-secondary" onclick="deleteVendor(${data})">
+                                                        <i class="fa fa-trash"></i> Delete
+                                                    </a>
+                                                </div>
+                                            }
                                         </div>
                                     </div>
                                 </div>

@@ -1,8 +1,16 @@
-﻿@{
+﻿@using PMS_PropertyHapa.Staff.Services
+@using PMS_PropertyHapa.Staff.Services.IServices
+@using System.Security.Claims
+@{
     ViewData["Title"] = "Calendar";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@inject IPermissionService _permissionService;
+@{
+    var userId = Context.Request.Cookies["userId"];
+    bool viewOccupancyOverviewPermission = await _permissionService.HasAccess(userId, (int)UserPermissions.ViewOccupancyOverview);
+}
 
 <!-- Page Sidebar Ends-->
 <div class="page-body">
@@ -30,7 +38,10 @@
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h4 class="card-title mb-0 flex-grow-1 font-weight-bold">Filters</h4>
-                        <a href="@Url.Action("OccupancyOverview","Calendar")" class="btn btn-success">Occupancy Overview</a>
+                        @if (viewOccupancyOverviewPermission)
+                        {
+                            <a href="@Url.Action("OccupancyOverview","Calendar")" class="btn btn-success">Occupancy Overview</a>
+                        }
                     </div>
                     <div class="card-body">
                         <div class="row mt-1 d-flex">

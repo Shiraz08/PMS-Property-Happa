@@ -8,6 +8,7 @@ using PMS_PropertyHapa.Staff.Services.IServices;
 using NuGet.ContentModel;
 using PMS_PropertyHapa.Shared.ImageUpload;
 using PMS_PropertyHapa.Models.Entities;
+using Twilio.Http;
 
 namespace PMS_PropertyHapa.Staff.Controllers
 {
@@ -50,7 +51,12 @@ namespace PMS_PropertyHapa.Staff.Controllers
                 //}
 
                 assetDTO.AddedBy = Request?.Cookies["userId"]?.ToString();
-                await _authService.CreateAssetAsync(assetDTO);
+                var response =  await _authService.CreateAssetAsync(assetDTO);
+                if (!response.IsSuccess)
+                {
+                    return Ok(new { success = false, message = string.Join(", ", response.ErrorMessages) });
+
+                }
                 return Ok(new { success = true, message = "Asset added successfully" });
             }
             catch (Exception ex)
@@ -72,7 +78,12 @@ namespace PMS_PropertyHapa.Staff.Controllers
             try
             {
                 assetDTO.AddedBy = Request?.Cookies["userId"]?.ToString();
-                await _authService.UpdateAssetAsync(assetDTO);
+                var response = await _authService.UpdateAssetAsync(assetDTO);
+                if (!response.IsSuccess)
+                {
+                    return Ok(new { success = false, message = string.Join(", ", response.ErrorMessages) });
+
+                }
                 return Ok(new { success = true, message = "Asset added successfully" });
             }
             catch (Exception ex)

@@ -3908,25 +3908,34 @@ namespace MagicVilla_VillaAPI.Repository
         public async Task<bool> CreateAssetAsync(AssetDTO assetDTO)
         {
             var user = await _db.ApplicationUsers.FirstOrDefaultAsync(x => x.Id == assetDTO.AddedBy && x.IsDeleted != true);
+            //if (user != null)
+            //{
+            //    var subscription = await _db.Subscriptions.FirstOrDefaultAsync(x => x.Id == user.SubscriptionId && x.IsDeleted != true);
+
+            //    if (subscription != null && subscription.SubscriptionName == SubscriptionTypes.Free.ToString())
+            //    {
+            //        var leaseCount = await _db.Assets
+            //            .Where(x => x.AddedBy == assetDTO.AddedBy && x.IsDeleted != true)
+            //            .AsNoTracking()
+            //            .CountAsync();
+
+            //        if (leaseCount >= 5)
+            //        {
+            //            return false;
+            //        }
+            //    }
+
+            //}
             if (user != null)
             {
-                var subscription = await _db.Subscriptions.FirstOrDefaultAsync(x => x.Id == user.SubscriptionId && x.IsDeleted != true);
-
-                if (subscription != null && subscription.SubscriptionName == SubscriptionTypes.Free.ToString())
+                var userUnits = _db.AssetsUnits.Where(x => x.AddedBy == assetDTO.AddedBy && !x.IsDeleted).Count();
+                var toatalUnits = userUnits + assetDTO.Units?.Count();
+                var subscription = _db.StripeSubscriptions.Where(x => x.UserId == user.Id && !x.IsCanceled).OrderByDescending(x => x.Id).FirstOrDefault();
+                if (subscription != null && toatalUnits > subscription.NoOfUnits)
                 {
-                    var leaseCount = await _db.Assets
-                        .Where(x => x.AddedBy == assetDTO.AddedBy && x.IsDeleted != true)
-                        .AsNoTracking()
-                        .CountAsync();
-
-                    if (leaseCount >= 5)
-                    {
-                        return false;
-                    }
+                    return false;
                 }
-
             }
-
             if (assetDTO.SelectedOwnershipOption == "owned-by-me")
             {
 
@@ -4023,9 +4032,20 @@ namespace MagicVilla_VillaAPI.Repository
         public async Task<bool> UpdateAssetAsync(AssetDTO assetDTO)
         {
 
+            var user = await _db.ApplicationUsers.FirstOrDefaultAsync(x => x.Id == assetDTO.AddedBy && x.IsDeleted != true);
+            if (user != null)
+            {
+                var userUnits = _db.AssetsUnits.Where(x => x.AddedBy == assetDTO.AddedBy && !x.IsDeleted).Count();
+                var toatalUnits = userUnits + assetDTO.Units?.Count();
+                var subscription = _db.StripeSubscriptions.Where(x => x.UserId == user.Id && !x.IsCanceled).OrderByDescending(x => x.Id).FirstOrDefault();
+                if (subscription != null && toatalUnits > subscription.NoOfUnits)
+                {
+                    return false;
+                }
+            }
             if (assetDTO.SelectedOwnershipOption == "owned-by-me")
             {
-                var user = await _db.ApplicationUsers.FirstOrDefaultAsync(x => x.Id == assetDTO.AddedBy && x.IsDeleted != true);
+
                 var existingOwner = await _db.Owner.FirstOrDefaultAsync(o => o.EmailAddress == user.Email && o.IsDeleted != true);
                 if (existingOwner == null)
                 {
@@ -4213,6 +4233,10 @@ namespace MagicVilla_VillaAPI.Repository
 
                 asset.IsDeleted = true;
                 _db.Assets.Update(asset);
+
+                var assetUnits = _db.AssetsUnits.Where(x => x.AssetId == asset.AssetId && !x.IsDeleted).ToList();
+                assetUnits.ForEach(x => x.IsDeleted = true);
+                _db.AssetsUnits.UpdateRange(assetUnits);
 
                 await _db.SaveChangesAsync();
 

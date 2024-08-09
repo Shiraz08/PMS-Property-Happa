@@ -1,9 +1,16 @@
+@using PMS_PropertyHapa.Staff.Services
+@using PMS_PropertyHapa.Staff.Services.IServices
+@using System.Security.Claims
 @model IEnumerable<PMS_PropertyHapa.Models.DTO.AssetDTO>
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
+@inject IPermissionService _permissionService;
+@{
+    var userId = Context.Request.Cookies["userId"];
+    bool addAssetsPermission = await _permissionService.HasAccess(userId, (int)UserPermissions.AddAssets);
+}
 <style>
     .card-title {
         font-size: 1.25rem;
@@ -49,14 +56,18 @@
                 <div class="col-12 col-sm-8 d-flex align-items-center">
                     <h3 class="mb-0">Assets</h3>
                 </div>
-                <div class="col-12 col-sm-2 mb-3 mb-sm-0">
-                    <a class="btn btn-success w-100 d-flex align-items-center justify-content-center" href="@Url.Action("AddAssest","Assests")">
-                        <div class="plusCircle me-2">
-                            +
-                        </div>
-                        New Asset
-                    </a>
-                </div>
+                @if (addAssetsPermission)
+                {
+                    <div class="col-12 col-sm-2 mb-3 mb-sm-0">
+                        <a class="btn btn-success w-100 d-flex align-items-center justify-content-center" href="@Url.Action("AddAssest","Assests")">
+                            <div class="plusCircle me-2">
+                                +
+                            </div>
+                            New Asset
+                        </a>
+                    </div>
+                }
+                
                 <div class="col-12 col-sm-2">
                     <ol class="breadcrumb bg-transparent p-0">
                         <li class="breadcrumb-item"><a href="/Home/Index"><i data-feather="home"></i></a></li>
@@ -121,6 +132,7 @@
                     </div>
                 </div>
             } *@
+
             @if (Model != null && Model.Any())
             {
                 @foreach (var item in Model)
@@ -166,15 +178,20 @@
                                     <button type="button" class="btn btn-info btn-sm mb-2 me-2" onclick="openUnitsModal(@item?.AssetId)">
                                         <i class="fa fa-info-circle"></i> Unit Detail
                                     </button>
-                                    <button type="button" class="btn btn-warning btn-sm mb-2 me-2" onclick="assetLateFee(@item.AssetId)">
-                                        <i class="fa fa-pencil"></i> Late Fee
-                                    </button>
-                                    <button type="button" class="btn btn-success btn-sm mb-2 me-2" onclick="editAsset(@item.AssetId)">
-                                        <i class="fa fa-pencil"></i> Edit
-                                    </button>
-                                    <button type="button" class="btn btn-danger btn-sm mb-2 me-2" onclick="deleteAsset(@item.AssetId)">
-                                        <i class="fa fa-trash"></i> Delete
-                                    </button>
+
+                                    @if (addAssetsPermission)
+                                    {
+                                        <button type="button" class="btn btn-warning btn-sm mb-2 me-2" onclick="assetLateFee(@item.AssetId)">
+                                            <i class="fa fa-pencil"></i> Late Fee
+                                        </button>
+                                        <button type="button" class="btn btn-success btn-sm mb-2 me-2" onclick="editAsset(@item.AssetId)">
+                                            <i class="fa fa-pencil"></i> Edit
+                                        </button>
+                                        <button type="button" class="btn btn-danger btn-sm mb-2 me-2" onclick="deleteAsset(@item.AssetId)">
+                                            <i class="fa fa-trash"></i> Delete
+                                        </button>
+                                    }
+                                   
                                 </div>
                             </div>
                         </div>

@@ -1,6 +1,18 @@
-﻿@{
+﻿@using PMS_PropertyHapa.Staff.Services
+@using PMS_PropertyHapa.Staff.Services.IServices
+@using System.Security.Claims
+@{
     ViewData["Title"] = "Reports";
     Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@inject IPermissionService _permissionService;
+@{
+    var userId = Context.Request.Cookies["userId"];
+    bool viewLeaseReportsPermission = await _permissionService.HasAccess(userId, (int)UserPermissions.ViewLeaseReports);
+    bool viewFinanceReportsPermission = await _permissionService.HasAccess(userId, (int)UserPermissions.ViewFinanceReports);
+    bool viewTenantReportsPermission = await _permissionService.HasAccess(userId, (int)UserPermissions.ViewTenantReports);
+    bool viewAssetReportsPermission = await _permissionService.HasAccess(userId, (int)UserPermissions.ViewAssetReports);
+    bool viewLandlordReportsPermission = await _permissionService.HasAccess(userId, (int)UserPermissions.ViewLandlordReports);
 }
 <div class="page-body">
     <div class="container-fluid">
@@ -33,66 +45,85 @@
                     </div>
                 </div>
             </div> *@
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body d-flex justify-content-center align-items-center">
-                        <i class="icon-files fa-3x"></i>
-                    </div>
-                    <div class="card-footer">
-                        <h4 class="card-title text-center">
-                            <a href="@Url.Action("FinanceReports", "Reports")">Finance Reports</a>
-                        </h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body d-flex justify-content-center align-items-center">
-                        <i class="icon-files fa-3x"></i>
-                    </div>
-                    <div class="card-footer">
-                        <h4 class="card-title text-center">
-                            <a href="@Url.Action("TenantReports", "Reports")">Tenant Reports</a>
-                        </h4>
+            @if (viewFinanceReportsPermission)
+            {
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body d-flex justify-content-center align-items-center">
+                            <i class="icon-files fa-3x"></i>
+                        </div>
+                        <div class="card-footer">
+                            <h4 class="card-title text-center">
+                                <a href="@Url.Action("FinanceReports", "Reports")">Finance Reports</a>
+                            </h4>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body d-flex justify-content-center align-items-center">
-                        <i class="icon-files fa-3x"></i>
-                    </div>
-                    <div class="card-footer">
-                        <h4 class="card-title text-center">
-                            <a href="@Url.Action("AssetReports", "Reports")">Asset Reports</a>
-                        </h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body d-flex justify-content-center align-items-center">
-                        <i class="icon-files fa-3x"></i>
-                    </div>
-                    <div class="card-footer">
-                        <h4 class="card-title text-center">
-                            <a href="@Url.Action("LeaseReports", "Reports")">Lease Reports</a>
-                        </h4>
+            }
+            
+            @if (viewTenantReportsPermission)
+            {
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body d-flex justify-content-center align-items-center">
+                            <i class="icon-files fa-3x"></i>
+                        </div>
+                        <div class="card-footer">
+                            <h4 class="card-title text-center">
+                                <a href="@Url.Action("TenantReports", "Reports")">Tenant Reports</a>
+                            </h4>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body d-flex justify-content-center align-items-center">
-                        <i class="icon-files fa-3x"></i>
-                    </div>
-                    <div class="card-footer">
-                        <h4 class="card-title text-center">
-                            <a href="@Url.Action("LandlordReports", "Reports")">Landlord Reports</a>
-                        </h4>
+            }
+            
+            @if (viewAssetReportsPermission)
+            {
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body d-flex justify-content-center align-items-center">
+                            <i class="icon-files fa-3x"></i>
+                        </div>
+                        <div class="card-footer">
+                            <h4 class="card-title text-center">
+                                <a href="@Url.Action("AssetReports", "Reports")">Asset Reports</a>
+                            </h4>
+                        </div>
                     </div>
                 </div>
-            </div>
+            }
+            
+            @if (viewLeaseReportsPermission)
+            {
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body d-flex justify-content-center align-items-center">
+                            <i class="icon-files fa-3x"></i>
+                        </div>
+                        <div class="card-footer">
+                            <h4 class="card-title text-center">
+                                <a href="@Url.Action("LeaseReports", "Reports")">Lease Reports</a>
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+            }
+            
+            @if (viewLandlordReportsPermission)
+            {
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body d-flex justify-content-center align-items-center">
+                            <i class="icon-files fa-3x"></i>
+                        </div>
+                        <div class="card-footer">
+                            <h4 class="card-title text-center">
+                                <a href="@Url.Action("LandlordReports", "Reports")">Landlord Reports</a>
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+            }
 @*             <div class="col-md-4">
                 <div class="card">
                     <div class="card-body d-flex justify-content-center align-items-center">

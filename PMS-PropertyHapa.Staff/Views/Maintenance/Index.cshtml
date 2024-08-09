@@ -1,9 +1,15 @@
-﻿
+﻿@using PMS_PropertyHapa.Staff.Services
+@using PMS_PropertyHapa.Staff.Services.IServices
+@using System.Security.Claims
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
+@inject IPermissionService _permissionService;
+@{
+    var userId = Context.Request.Cookies["userId"];
+    bool addMaintenancePermission = await _permissionService.HasAccess(userId, (int)UserPermissions.AddMaintenance);
+}
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap5.min.css">
 
 <div class="page-body">
@@ -260,7 +266,11 @@
                                 <div class="dropdown-basic">
                                     <div class="dropdown">
                                         <div class="btn-group mb-0">
-                                            <button class="dropbtn btn btn-success" type="button">Action <span><i class="icofont icofont-arrow-down"></i></span></button>
+                                        @if (addMaintenancePermission)
+                                        {
+                                                    <button class="dropbtn btn btn-success" type="button">Action <span><i class="icofont icofont-arrow-down"></i></span></button>
+
+                                        }
                                             <div class="dropdown-content">
                                                 ${row.Type == "WorkOrderRequest" ? `
                                                 <a class="info-button btn-secondary" onclick="showTaskLineItems(${JSON.stringify(row.LineItems)})">
@@ -284,6 +294,7 @@
                                                     </div>
                                                     ` : ""}
                                             </div>
+                                            
 
                                         </div>
                                     </div>
