@@ -11,6 +11,8 @@ namespace PMS_PropertyHapa.Models.Stripe
     {
         public int Id { get; set; }
         public string UserId { get; set; }
+        public string PhoneNumber { get; set; }
+        public string Address { get; set; }
         public string ToName { get; set; }
         public string ToEmail { get; set; }
         public string File { get; set; }

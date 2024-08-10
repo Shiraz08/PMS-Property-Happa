@@ -61,7 +61,7 @@
                 </div>
             </div>
         </div>
-        <div class="row">
+         <div class="row">
            @*  <div class="col-xl-8 col-md-8 col-sm-12 box-col-8">
                 <div class="card">
                     <div class="card-header pb-0">
@@ -72,12 +72,76 @@
                     </div>
                 </div>
             </div> *@
-            <div class="col-xl-4 col-md-4 col-sm-12 box-col-4">
+            <div class="col-md-2 box-col-3">
+                <div class="card o-hidden">
+                    <div class="card-body mt-0">
+                        <div class="media static-widget">
+                            <div class="media-body">
+                                <h6 class="font-roboto text-nowrap">Total Landlord</h6>
+                                <h4 class="mb-0">@ViewBag.totalLandlords</h4>
+                            </div>
+                            <span class="fa-stack fa-2x" style="color: lightgreen;">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-user fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2 box-col-3">
                 <div class="card o-hidden">
                     <div class="card-body">
                         <div class="media static-widget">
                             <div class="media-body">
-                                <h6 class="font-roboto">Subscription Earnings</h6>
+                                <h6 class="font-roboto text-nowrap">Total Tenant</h6>
+                                <h4 class="mb-0">@ViewBag.totalTenants</h4>
+                            </div>
+                            <span class="fa-stack fa-2x" style="color: orange;">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-group fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2 box-col-3">
+                <div class="card o-hidden">
+                    <div class="card-body">
+                        <div class="media static-widget">
+                            <div class="media-body">
+                                <h6 class="font-roboto text-nowrap">Total Assets</h6>
+                                <h4 class="mb-0">@ViewBag.totalAssets</h4>
+                            </div>
+                            <span class="fa-stack fa-2x" style="color: darkblue;">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-building-o fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2 box-col-3">
+                <div class="card o-hidden">
+                    <div class="card-body">
+                        <div class="media static-widget">
+                            <div class="media-body">
+                                <h6 class="font-roboto text-nowrap">Total Invoices</h6>
+                                <h4 class="mb-0">@ViewBag.totalInvoices</h4>
+                            </div>
+                            <span class="fa-stack fa-2x" style="color: lightblue;">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-print fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 box-col-3">
+                <div class="card o-hidden">
+                    <div class="card-body mt-1">
+                        <div class="media static-widget">
+                            <div class="media-body">
+                                <h6 class="font-roboto text-nowrap">Subscription Earnings</h6>
                                 <h4 class="mb-0 counter" id="totalEarnings">@ViewBag.totalEarnings</h4>
                             </div>
                             <svg class="fill-secondary" width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -90,6 +154,7 @@
                     </div>
                 </div>
             </div>
+
         </div>
         <div class="row">
             <div class="card">
@@ -151,73 +216,6 @@
                     </div>
                 </div>
             </div> *@
-            <div class="row">
-                <div class="col-xl-3 col-md-6">
-                    <div class="card border p-4">
-                        <a href="@Url.Action("Index","Landlord")">
-                            <h2 class="ml-5 mt-4 fs-3 fw-bold">@ViewBag.totalLandlords</h2>
-                            <div class="d-flex flex-row-reverse mr-5 ">
-                                <span class="fa-stack fa-2x" style="font-size: 2.5em; color: lightgreen;">
-                                    <i class="fa fa-circle fa-stack-2x"></i>
-                                    <i class="fa fa-user fa-stack-1x fa-inverse"></i>
-                                </span>
-                            </div>
-                            <p class="ml-5 mb-4 text-secondary fs-3">Total Landlord</p>
-                        </a>
-                    </div>
-                </div>
-                <div class="col-xl-3 col-md-6">
-                    <div class="card border p-4">
-                        <a href="@Url.Action("Index","Tenant")">
-                            <div class="card-block-small">
-                                <h2 class="ml-5 mt-4 fs-3 fw-bold">@ViewBag.totalTenants</h2>
-                                <div class="d-flex flex-row-reverse mr-5 ">
-                                    <span class="fa-stack fa-2x" style="font-size: 2.5em; color: orange;">
-                                        <i class="fa fa-circle fa-stack-2x"></i>
-                                        <i class="fa fa-group fa-stack-1x fa-inverse"></i>
-                                    </span>
-                                </div>
-                                <p class="ml-5 mb-4 text-secondary fs-3">Total Tenant</p>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="col-xl-3 col-md-6">
-                    <div class="card border p-4">
-                        <a href="@Url.Action("Index","Assests")">
-                            <div class="card-block-small">
-                                <h2 class="ml-5 mt-4 fs-3 fw-bold">@ViewBag.totalAssets</h2>
-                                <div class="d-flex flex-row-reverse mr-5 ">
-                                    <span class="fa-stack fa-2x" style="font-size: 2.5em; color: darkblue;">
-                                        <i class="fa fa-circle fa-stack-2x"></i>
-                                        <i class="fa fa-building-o fa-stack-1x fa-inverse"></i>
-                                    </span>
-                                </div>
-                                <p class="ml-5 mb-4 text-secondary fs-3">Total Assets</p>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="col-xl-3 col-md-6">
-                    <div class="card border p-4">
-                        <a href="@Url.Action("Index","Lease")">
-                            <div class="card-block-small">
-                                <h2 class="ml-5 mt-4 fs-3 fw-bold">@ViewBag.totalInvoices</h2>
-                                <div class="d-flex flex-row-reverse mr-5 ">
-                                    <span class="fa-stack fa-2x" style="font-size: 2.5em; color: lightblue;">
-                                        <i class="fa fa-circle fa-stack-2x"></i>
-                                        <i class="fa fa-print fa-stack-1x fa-inverse"></i>
-                                    </span>
-                                </div>
-                                @* <span class="d-flex flex-row-reverse mr-5" style="font-size: 3em; color: lightblue;">
-                                <i class="icofont icofont-files fx-5"></i>
-                                </span> *@
-                                <p class="ml-5 mb-4 text-secondary fs-3">Total Invoices</p>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-            </div>
 
             <div class="col-xl-4 col-md-4 dash-xl-50">
                 <div class="card news-update d-flex align-items-stretch h-80" style="height: 510px;">

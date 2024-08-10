@@ -37,6 +37,8 @@ namespace PMS_PropertyHapa.Admin.Controllers
                                        NoOfUnits = ss.NoOfUnits,
                                        StartDate = ss.StartDate,
                                        EndDate = ss.EndDate,
+                                       PhoneNumber = u.PhoneNumber,
+                                       Address = u.Address,
                                    }).ToListAsync();
 
                 return users;

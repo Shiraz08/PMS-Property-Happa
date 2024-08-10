@@ -10,6 +10,8 @@ namespace PMS_PropertyHapa.Models.DTO
     {
         public decimal? Amount {  get; set; }
         public string Payee { get; set; }
+        public string PhoneNumber { get; set; }
+        public string Address { get; set; }
         public string SubscriptionType { get; set; }
         public string EmailAddress { get; set; }
         public string BillingInterval { get; set; }

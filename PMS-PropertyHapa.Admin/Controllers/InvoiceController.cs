@@ -30,9 +30,12 @@ namespace PMS_PropertyHapa.Admin.Controllers
             try
             {
                 var invoices = await (from si in _context.SubscriptionInvoices
+                                      from u in _context.ApplicationUsers.Where(x=>x.Id == si.UserId).DefaultIfEmpty()
                                       select new SubscriptionInvoiceDto
                                       {
                                           Id = si.Id,
+                                          PhoneNumber= u.PhoneNumber,
+                                          Address= u.Address,
                                           UserId = si.UserId,
                                           ToName = si.ToName,
                                           ToEmail = si.ToEmail,
