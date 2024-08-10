@@ -13,14 +13,23 @@ namespace PMS_PropertyHapa.Staff.Controllers
     public class TaskController : Controller
     {
         private readonly IAuthService _authService;
+        private readonly IPermissionService _permissionService;
         EmailSender _emailSender = new EmailSender();
 
-        public TaskController(IAuthService authService)
+        public TaskController(IAuthService authService, IPermissionService permissionService)
         {
             _authService = authService;
+            _permissionService = permissionService;
         }
         public async Task<IActionResult> ViewTask()
         {
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(currenUserId, (int)UserPermissions.ViewTask);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             return View();
         }
 
@@ -40,6 +49,13 @@ namespace PMS_PropertyHapa.Staff.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveTask([FromBody] TaskRequestDto taskRequestDto)
         {
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(currenUserId, (int)UserPermissions.AddTask);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             if (taskRequestDto == null)
             {
                 return Json(new { success = false, message = "Received data is null." });
@@ -177,6 +193,13 @@ namespace PMS_PropertyHapa.Staff.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteTask(int id)
         {
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(currenUserId, (int)UserPermissions.AddTask);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             await _authService.DeleteTaskAsync(id);
             return Json(new { success = true, message = "Task deleted successfully" });
         }

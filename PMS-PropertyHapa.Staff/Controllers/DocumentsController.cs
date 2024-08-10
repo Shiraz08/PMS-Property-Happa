@@ -2,19 +2,29 @@
 using PMS_PropertyHapa.Models.DTO;
 using PMS_PropertyHapa.Models.Entities;
 using PMS_PropertyHapa.Staff.Services.IServices;
+using static PMS_PropertyHapa.Shared.Enum.SD;
 
 namespace PMS_PropertyHapa.Staff.Controllers
 {
     public class DocumentsController : Controller
     {
         private readonly IAuthService _authService;
+        private readonly IPermissionService _permissionService;
 
-        public DocumentsController(IAuthService authService)
+        public DocumentsController(IAuthService authService, IPermissionService permissionService)
         {
             _authService = authService;
+            _permissionService = permissionService;
         }
         public async Task<IActionResult> Documents()
         {
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(currenUserId, (int)UserPermissions.ViewDocuments);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             return View();
         }
 
@@ -34,6 +44,13 @@ namespace PMS_PropertyHapa.Staff.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveDocument(DocumentsDto document)
         {
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(currenUserId, (int)UserPermissions.AddDocuments);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             if (document == null)
             {
                 return Json(new { success = false, message = "Received data is null." });
@@ -56,6 +73,13 @@ namespace PMS_PropertyHapa.Staff.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteDocument(int id)
         {
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(currenUserId, (int)UserPermissions.AddDocuments);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             await _authService.DeleteDocumentAsync(id);
             return Json(new { success = true, message = "Document deleted successfully" });
         }

@@ -21,13 +21,15 @@ namespace PMS_PropertyHapa.Staff.Controllers
         private readonly IStripeService _stripeService;
         private readonly EmailSender _emailSenderBase;
         public readonly IWebHostEnvironment _environment;
-        public SubscriptionsController(IAuthService authService, IConfiguration configuration, IStripeService stripeService, EmailSender emailSenderBase, IWebHostEnvironment environment = null)
+        private readonly IPermissionService _permissionService;
+        public SubscriptionsController(IAuthService authService, IConfiguration configuration, IStripeService stripeService, EmailSender emailSenderBase, IWebHostEnvironment environment = null, IPermissionService permissionService = null)
         {
             _authService = authService;
             _configuration = configuration;
             _stripeService = stripeService;
             _emailSenderBase = emailSenderBase;
             _environment = environment;
+            _permissionService = permissionService;
         }
 
         public IActionResult Index()
@@ -161,6 +163,13 @@ namespace PMS_PropertyHapa.Staff.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateSubscription([FromBody] SubscriptionRequest request)
         {
+            var userId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(userId, (int)UserPermissions.AddSubscription);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             try
             {
 

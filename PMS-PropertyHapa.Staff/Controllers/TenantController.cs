@@ -11,6 +11,7 @@ using Humanizer.Localisation;
 using PMS_PropertyHapa.MigrationsFiles.Migrations;
 using System.Drawing;
 using System.IO;
+using static PMS_PropertyHapa.Shared.Enum.SD;
 
 namespace PMS_PropertyHapa.Staff.Controllers
 {
@@ -18,17 +19,26 @@ namespace PMS_PropertyHapa.Staff.Controllers
     {
         private readonly IAuthService _authService;
         private readonly ITokenProvider _tokenProvider;
+        private readonly IPermissionService _permissionService;
         EmailSender _emailSender = new EmailSender();
 
-        public TenantController(IAuthService authService, ITokenProvider tokenProvider)
+        public TenantController(IAuthService authService, ITokenProvider tokenProvider, IPermissionService permissionService)
         {
             _authService = authService;
             _tokenProvider = tokenProvider;
+            _permissionService = permissionService;
         }
 
 
         public async Task<IActionResult> Index()
         {
+            var userId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(userId, (int)UserPermissions.ViewTenant);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             var owner = await _authService.GetAllTenantsAsync();
             var currenUserId = Request?.Cookies["userId"]?.ToString();
             if (currenUserId != null)
@@ -95,6 +105,13 @@ namespace PMS_PropertyHapa.Staff.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(TenantModelDto tenant)
         {
+            var userId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(userId, (int)UserPermissions.AddTenant);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             if (!Guid.TryParse(tenant.AppTid, out Guid appTenantId))
             {
                 return Json(new { success = false, message = "Invalid AppTid format" });
@@ -185,6 +202,13 @@ namespace PMS_PropertyHapa.Staff.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateTenantData(TenantModelDto tenant)
         {
+            var userId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(userId, (int)UserPermissions.AddTenant);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             if (!Guid.TryParse(tenant.AppTid, out Guid appTenantId))
             {
                 return Json(new { success = false, message = "Invalid AppTid format" });
@@ -257,6 +281,13 @@ namespace PMS_PropertyHapa.Staff.Controllers
         [HttpPost]
         public async Task<IActionResult> Update(TenantModelDto tenant)
         {
+            var userId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(userId, (int)UserPermissions.AddTenant);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             tenant.AppTenantId = Guid.Parse(tenant.AppTid);
 
             if (tenant.PictureUrl != null)
@@ -311,6 +342,13 @@ namespace PMS_PropertyHapa.Staff.Controllers
         {
             try
             {
+                var userId = Request?.Cookies["userId"]?.ToString();
+
+                bool hasAccess = await _permissionService.HasAccess(userId, (int)UserPermissions.AddTenant);
+                if (!hasAccess)
+                {
+                    return Unauthorized();
+                }
                 tenant.AppTenantId = Guid.Parse(tenant.AppTid);
 
                 if (tenant.PictureUrl != null)
@@ -351,6 +389,13 @@ namespace PMS_PropertyHapa.Staff.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(int tenantId)
         {
+            var userId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(userId, (int)UserPermissions.AddTenant);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             var response = await _authService.DeleteTenantAsync(tenantId);
             if (!response.IsSuccess)
             {
@@ -361,8 +406,15 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
         }
 
-        public IActionResult AddTenant()
+        public async Task<IActionResult> AddTenant()
         {
+            var userId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(userId, (int)UserPermissions.AddTenant);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             var model = new TenantModelDto();
 
             return View(model);
@@ -370,6 +422,13 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
         public async Task<IActionResult> EditTenant(int tenantId)
         {
+            var userId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(userId, (int)UserPermissions.AddTenant);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             TenantModelDto tenant;
 
             if (tenantId > 0)
@@ -389,8 +448,15 @@ namespace PMS_PropertyHapa.Staff.Controllers
             return View("AddTenant", tenant);
         }
 
-        public IActionResult TenantDetails(int id)
+        public async Task<IActionResult> TenantDetails(int id)
         {
+            var userId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(userId, (int)UserPermissions.ViewTenant);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             ViewBag.tenantId = id;
             return View();
         }

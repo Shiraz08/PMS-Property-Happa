@@ -6,6 +6,7 @@ using PMS_PropertyHapa.Models.DTO;
 using PMS_PropertyHapa.Models.Entities;
 using PMS_PropertyHapa.Shared.Email;
 using PMS_PropertyHapa.Staff.Services.IServices;
+using static PMS_PropertyHapa.Shared.Enum.SD;
 
 namespace PMS_PropertyHapa.Staff.Controllers
 {
@@ -13,31 +14,61 @@ namespace PMS_PropertyHapa.Staff.Controllers
     {
         private readonly IAuthService _authService;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IPermissionService _permissionService;
         EmailSender _emailSender = new EmailSender();
 
-        public VendorController(IAuthService authService, RoleManager<IdentityRole> roleManager)
+        public VendorController(IAuthService authService, RoleManager<IdentityRole> roleManager, IPermissionService permissionService)
         {
             _authService = authService;
             _roleManager = roleManager;
+            _permissionService = permissionService;
         }
         public async Task<IActionResult> Index()
         {
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(currenUserId, (int)UserPermissions.ViewVendor);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             return View();
         }
 
         public async Task<IActionResult> VendorCategories()
         {
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(currenUserId, (int)UserPermissions.ViewVendorCategories);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             return View();
         }
 
         public async Task<IActionResult> VendorClassification()
         {
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(currenUserId, (int)UserPermissions.ViewVendorClassification);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> SaveVendorCategory([FromBody] VendorCategory vendorCategory)
         {
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(currenUserId, (int)UserPermissions.AddVendorCategories);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             if (vendorCategory == null)
             {
                 return Json(new { success = false, message = "Received data is null." });
@@ -51,6 +82,13 @@ namespace PMS_PropertyHapa.Staff.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteVendorCategory(int id)
         {
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(currenUserId, (int)UserPermissions.AddVendorCategories);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             await _authService.DeleteVendorCategoryAsync(id);
             return Json(new { success = true, message = "Vendor Category deleted successfully" });
         }
@@ -96,6 +134,13 @@ namespace PMS_PropertyHapa.Staff.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveVendorClassification([FromBody] VendorClassification vendorClassification)
         {
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(currenUserId, (int)UserPermissions.AddVendorClassification);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             if (vendorClassification == null)
             {
                 return Json(new { success = false, message = "Received data is null." });
@@ -109,6 +154,13 @@ namespace PMS_PropertyHapa.Staff.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteVendorClassification(int id)
         {
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(currenUserId, (int)UserPermissions.AddVendorClassification);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             await _authService.DeleteVendorClassificationAsync(id);
             return Json(new { success = true, message = "Vendor Classification deleted successfully" });
         }
@@ -154,6 +206,13 @@ namespace PMS_PropertyHapa.Staff.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveVendor([FromForm] VendorDto vendor)
         {
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(currenUserId, (int)UserPermissions.AddVendor);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             if (vendor == null)
             {
                 return Json(new { success = false, message = "Received data is null." });
@@ -191,6 +250,13 @@ namespace PMS_PropertyHapa.Staff.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteVendor(int id)
         {
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(currenUserId, (int)UserPermissions.AddVendor);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             var response = await _authService.DeleteVendorAsync(id);
             if (!response.IsSuccess)
             {

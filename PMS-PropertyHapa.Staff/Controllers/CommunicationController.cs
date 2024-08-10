@@ -11,6 +11,7 @@ using System.Linq;
 using PMS_PropertyHapa.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using PMS_PropertyHapa.Shared.Email;
+using static PMS_PropertyHapa.Shared.Enum.SD;
 
 namespace PMS_PropertyHapa.Staff.Controllers
 {
@@ -19,16 +20,24 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
         private readonly IAuthService _authService;
         private readonly EmailSender _emailSenderBase;
+        private readonly IPermissionService _permissionService;
 
-
-        public CommunicationController(IAuthService authService, EmailSender emailSenderBase)
+        public CommunicationController(IAuthService authService, EmailSender emailSenderBase, IPermissionService permissionService)
         {
             _authService = authService;
             _emailSenderBase = emailSenderBase;
+            _permissionService = permissionService;
         }
 
         public async Task<IActionResult> Index()
         {
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(currenUserId, (int)UserPermissions.ViewCommunication);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             var communications = await _authService.GetAllCommunicationAsync();
             var propertiesCount = (await _authService.GetAllAssetsAsync()).Count();
             var tenantsCount = (await _authService.GetAllTenantsAsync()).Count();
@@ -43,8 +52,15 @@ namespace PMS_PropertyHapa.Staff.Controllers
             return View(model);
         }
 
-        public IActionResult AddCommunication()
+        public async Task<IActionResult> AddCommunication()
         {
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(currenUserId, (int)UserPermissions.AddCommunication);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             return View();
         }
 
@@ -126,6 +142,13 @@ namespace PMS_PropertyHapa.Staff.Controllers
         {
             try
             {
+                var currenUserId = Request?.Cookies["userId"]?.ToString();
+
+                bool hasAccess = await _permissionService.HasAccess(currenUserId, (int)UserPermissions.AddCommunication);
+                if (!hasAccess)
+                {
+                    return Unauthorized();
+                }
                 if (CommunicationDto.CommunicationFile != null && CommunicationDto.CommunicationFile.Length > 0)
                 {
                     var (fileName, base64String) = await ImageUploadUtility.UploadImageAsync(CommunicationDto.CommunicationFile, "uploads");
@@ -178,6 +201,13 @@ namespace PMS_PropertyHapa.Staff.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateCommunication(int Communication_Id, CommunicationDto CommunicationDto)
         {
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(currenUserId, (int)UserPermissions.AddCommunication);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -200,16 +230,26 @@ namespace PMS_PropertyHapa.Staff.Controllers
         [HttpDelete]
         public async Task<IActionResult> DeleteCommunication(int Communication_Id)
         {
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(currenUserId, (int)UserPermissions.AddCommunication);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             await _authService.DeleteCommunicationAsync(Communication_Id);
             return Json(new { success = true, message = "Announcement deleted successfully" });
         }
 
-
-
-
-
         public async Task<IActionResult> EditCommunication(int communicationId)
         {
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(currenUserId, (int)UserPermissions.AddCommunication);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             CommunicationDto Communication;
             IEnumerable<TenantModelDto> tenant;
             IEnumerable<AssetDTO> assets;
@@ -241,8 +281,6 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
             return View("AddCommunication");
         }
-
-
 
         [HttpPost]
         public async Task<IActionResult> AddTiwilo(TiwiloDto model)

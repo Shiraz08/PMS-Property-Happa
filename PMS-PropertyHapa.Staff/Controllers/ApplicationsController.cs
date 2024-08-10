@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using PMS_PropertyHapa.Models.DTO;
 using PMS_PropertyHapa.Models.Entities;
 using PMS_PropertyHapa.Staff.Services.IServices;
+using static PMS_PropertyHapa.Shared.Enum.SD;
 
 namespace PMS_PropertyHapa.Staff.Controllers
 {
@@ -10,15 +11,23 @@ namespace PMS_PropertyHapa.Staff.Controllers
     {
 
         private readonly IAuthService _authService;
+        private readonly IPermissionService _permissionService;
 
-        public ApplicationsController(IAuthService authService)
+        public ApplicationsController(IAuthService authService, IPermissionService permissionService)
         {
             _authService = authService;
+            _permissionService = permissionService;
         }
         [AllowAnonymous]
         public async Task<IActionResult> AddApplication(string id)
         {
+            var userId = Request?.Cookies["userId"]?.ToString();
 
+            bool hasAccess = await _permissionService.HasAccess(userId, (int)UserPermissions.AddApplication);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             var terms = await _authService.GetTermsbyId(id);
             ViewBag.Terms = terms;
 
@@ -26,6 +35,13 @@ namespace PMS_PropertyHapa.Staff.Controllers
         }
         public async Task<IActionResult> ViewApplication()
         {
+            var userId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(userId, (int)UserPermissions.ViewApplication);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             var currenUserId = Request?.Cookies["userId"]?.ToString();
             ViewBag.UserId = currenUserId;
             return View();
@@ -49,6 +65,13 @@ namespace PMS_PropertyHapa.Staff.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveApplication(ApplicationsDto applicationsDto)
         {
+            var userId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(userId, (int)UserPermissions.AddApplication);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             if (applicationsDto == null)
             {
                 return Json(new { success = false, message = "Received data is null." });
@@ -65,6 +88,13 @@ namespace PMS_PropertyHapa.Staff.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteApplication(int id)
         {
+            var userId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(userId, (int)UserPermissions.AddApplication);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             await _authService.DeleteApplicationAsync(id);
             return Json(new { success = true, message = "Application deleted successfully" });
         }
@@ -81,6 +111,13 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
         public async Task<IActionResult> EditApplication(int id)
         {
+            var userId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(userId, (int)UserPermissions.AddApplication);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             ApplicationsDto application = await _authService.GetApplicationByIdAsync(id);
             if (application == null)
             {

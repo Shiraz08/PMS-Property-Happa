@@ -5,6 +5,7 @@ using PMS_PropertyHapa.Models.Entities;
 using PMS_PropertyHapa.Staff.Services.IServices;
 using System.Collections.Generic;
 using System.Security.Policy;
+using static PMS_PropertyHapa.Shared.Enum.SD;
 
 namespace PMS_PropertyHapa.Staff.Controllers
 {
@@ -12,19 +13,35 @@ namespace PMS_PropertyHapa.Staff.Controllers
     {
         private IWebHostEnvironment _webHostEnvironment;
         private readonly IAuthService _authService;
-        public CalendarController(IWebHostEnvironment webHostEnvironment, IAuthService authService)
+        private readonly IPermissionService _permissionService;
+        public CalendarController(IWebHostEnvironment webHostEnvironment, IAuthService authService, IPermissionService permissionService)
         {
             _webHostEnvironment = webHostEnvironment;
             _authService = authService;
+            _permissionService = permissionService;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(currenUserId, (int)UserPermissions.ViewCalendar);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             return View();
         }
 
 
-        public IActionResult OccupancyOverview()
+        public async Task<IActionResult> OccupancyOverview()
         {
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(currenUserId, (int)UserPermissions.ViewOccupancyOverview);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             return View();
         }
 

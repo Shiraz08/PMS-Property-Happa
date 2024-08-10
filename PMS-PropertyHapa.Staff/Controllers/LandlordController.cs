@@ -28,7 +28,9 @@ namespace PMS_PropertyHapa.Staff.Controllers
         private ApiDbContext _context;
         private readonly IUserStore<ApplicationUser> _userStore;
         private IWebHostEnvironment _environment;
-        public LandlordController(IAuthService authService, ITokenProvider tokenProvider, IWebHostEnvironment Environment, ILogger<HomeController> logger, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, ApiDbContext context, IUserStore<ApplicationUser> userStore)
+        private readonly IPermissionService _permissionService;
+
+        public LandlordController(IAuthService authService, ITokenProvider tokenProvider, IWebHostEnvironment Environment, ILogger<HomeController> logger, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, ApiDbContext context, IUserStore<ApplicationUser> userStore, IPermissionService permissionService)
         {
             _authService = authService;
             _tokenProvider = tokenProvider;
@@ -38,21 +40,35 @@ namespace PMS_PropertyHapa.Staff.Controllers
             _context = context;
             _userStore = userStore;
             _environment = Environment;
+            _permissionService = permissionService;
         }
 
         //[TypeFilter(typeof(PermissionFilter), Arguments = new object[] { UserPermissions.ViewLandlord })]
         public async Task<IActionResult> Index()
         {
-            var owner = await _authService.GetAllLandlordAsync();
             var currenUserId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(currenUserId, (int)UserPermissions.ViewLandlord);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
+            var owner = await _authService.GetAllLandlordAsync();
             if (currenUserId != null)
             {
                 owner = owner.Where(s => s.AddedBy == currenUserId);
             }
             return View(owner);
         }
-        public IActionResult AddLandlord()
+        public async Task<IActionResult> AddLandlord()
         {
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(currenUserId, (int)UserPermissions.AddLandlord);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             return View();
         }
 
@@ -109,6 +125,13 @@ namespace PMS_PropertyHapa.Staff.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromForm] OwnerDto owner)
         {
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(currenUserId, (int)UserPermissions.AddLandlord);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             if (Guid.TryParse(owner.AppTid, out Guid appTenantId))
             {
                 owner.AppTenantId = appTenantId;
@@ -133,6 +156,13 @@ namespace PMS_PropertyHapa.Staff.Controllers
         [HttpPost]
         public async Task<IActionResult> Update([FromForm] OwnerDto owner)
         {
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(currenUserId, (int)UserPermissions.AddLandlord);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             owner.AppTenantId = Guid.Parse(owner.AppTid);
 
             if (owner.PictureUrl != null && owner.PictureUrl.Length > 0)
@@ -156,6 +186,13 @@ namespace PMS_PropertyHapa.Staff.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(int ownerId)
         {
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(currenUserId, (int)UserPermissions.AddLandlord);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             var response = await _authService.DeleteLandlordAsync(ownerId);
             if (!response.IsSuccess)
             {
@@ -197,6 +234,13 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
         public async Task<IActionResult> EditLandlord(int ownerId)
         {
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(currenUserId, (int)UserPermissions.AddLandlord);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             OwnerDto owner = null;
 
             if (ownerId > 0)
@@ -291,8 +335,15 @@ namespace PMS_PropertyHapa.Staff.Controllers
             return Ok(res);
         }
 
-        public IActionResult LandlordDetails(int id)
+        public async Task<IActionResult> LandlordDetails(int id)
         {
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(currenUserId, (int)UserPermissions.ViewLandlord);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             ViewBag.landlordId = id;
             return View();
         }

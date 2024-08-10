@@ -3,21 +3,30 @@ using PMS_PropertyHapa.Models.DTO;
 using PMS_PropertyHapa.Models.Entities;
 using PMS_PropertyHapa.Staff.Services.IServices;
 using System.CodeDom;
+using static PMS_PropertyHapa.Shared.Enum.SD;
 
 namespace PMS_PropertyHapa.Staff.Controllers
 {
     public class ChartAccountsController : Controller
     {
         private readonly IAuthService _authService;
+        private readonly IPermissionService _permissionService;
 
-        public ChartAccountsController(IAuthService authService)
+        public ChartAccountsController(IAuthService authService, IPermissionService permissionService)
         {
             _authService = authService;
+            _permissionService = permissionService;
         }
 
         public async Task<IActionResult> Index()
         {
-           
+            var userId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(userId, (int)UserPermissions.ViewChartofAccounts);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             return View();
         }
 
@@ -37,6 +46,13 @@ namespace PMS_PropertyHapa.Staff.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveChartAccount([FromBody] ChartAccount chartAccount)
         {
+            var userId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(userId, (int)UserPermissions.AddChartofAccounts);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             if (chartAccount == null)
             {
                 return Json(new { success = false, message = "Received data is null." });
@@ -49,6 +65,13 @@ namespace PMS_PropertyHapa.Staff.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteChartAccount(int id)
         {
+            var userId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(userId, (int)UserPermissions.AddChartofAccounts);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             var response = await _authService.DeleteChartAccountAsync(id);
             if (!response.IsSuccess)
             {

@@ -6,6 +6,7 @@ using PMS_PropertyHapa.Models.Configrations;
 using PMS_PropertyHapa.Models.DTO;
 using PMS_PropertyHapa.Models.Entities;
 using PMS_PropertyHapa.Staff.Services.IServices;
+using static PMS_PropertyHapa.Shared.Enum.SD;
 
 namespace PMS_PropertyHapa.Staff.Controllers
 {
@@ -15,15 +16,16 @@ namespace PMS_PropertyHapa.Staff.Controllers
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IEmailSender _emailSender;
         private readonly AdminInfo _adminInfo;
+        private readonly IPermissionService _permissionService;
 
 
-        public SupportCenterController(IAuthService authService, RoleManager<IdentityRole> roleManager, IEmailSender emailSender, IOptions<AdminInfo> adminInfo)
+        public SupportCenterController(IAuthService authService, RoleManager<IdentityRole> roleManager, IEmailSender emailSender, IOptions<AdminInfo> adminInfo, IPermissionService permissionService)
         {
             _authService = authService;
             _roleManager = roleManager;
             _emailSender = emailSender;
             _adminInfo = adminInfo.Value;
-
+            _permissionService = permissionService;
         }
         public IActionResult AddTickets()
         {
@@ -33,19 +35,40 @@ namespace PMS_PropertyHapa.Staff.Controllers
         {
             return View();
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            var userId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(userId, (int)UserPermissions.ViewSupportCenter);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             return View();
         }
         public async Task<IActionResult> FAQ()
         {
+            var userId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(userId, (int)UserPermissions.ViewFAQ);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             IEnumerable<FAQ> faq = new List<FAQ>();
             faq = await _authService.GetFAQsAsync();
             var currenUserId = Request?.Cookies["userId"]?.ToString();
             return View(faq);
         }
-        public IActionResult ContactUs()
+        public async Task<IActionResult> ContactUs()
         {
+            var userId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(userId, (int)UserPermissions.ContactUs);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             return View();
         }
         public async Task<IActionResult> SaveContactUs(ContactUsDto contactUsDto)
@@ -77,8 +100,15 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
             return Ok();
         }
-        public IActionResult BookDemo()
+        public async Task<IActionResult> BookDemo()
         {
+            var userId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(userId, (int)UserPermissions.BookAFreeDemo);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             return View();
         }
         public async Task<IActionResult> SaveBookDemo(BookDemoDto bookDemoDto)
@@ -111,6 +141,13 @@ namespace PMS_PropertyHapa.Staff.Controllers
         }
         public async Task<IActionResult> VideoTutorial()
         {
+            var userId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(userId, (int)UserPermissions.ViewVideoTutorial);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             IEnumerable<VideoTutorial> vt = new List<VideoTutorial>();
             vt = await _authService.GetVideoTutorialsAsync();
             var currenUserId = Request?.Cookies["userId"]?.ToString();

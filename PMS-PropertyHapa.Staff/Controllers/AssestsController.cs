@@ -9,6 +9,7 @@ using NuGet.ContentModel;
 using PMS_PropertyHapa.Shared.ImageUpload;
 using PMS_PropertyHapa.Models.Entities;
 using Twilio.Http;
+using static PMS_PropertyHapa.Shared.Enum.SD;
 
 namespace PMS_PropertyHapa.Staff.Controllers
 {
@@ -16,13 +17,22 @@ namespace PMS_PropertyHapa.Staff.Controllers
     {
 
         private readonly IAuthService _authService;
+        private readonly IPermissionService _permissionService;
 
-        public AssestsController(IAuthService authService)
+        public AssestsController(IAuthService authService, IPermissionService permissionService)
         {
             _authService = authService;
+            _permissionService = permissionService;
         }
         public async Task<IActionResult> Index()
         {
+            var userId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(userId, (int)UserPermissions.ViewAssets);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             var assets = await _authService.GetAllAssetsAsync();
             var currenUserId = Request?.Cookies["userId"]?.ToString();
             if (currenUserId != null)
@@ -49,7 +59,13 @@ namespace PMS_PropertyHapa.Staff.Controllers
                 //    }
                 //    assetDTO.PictureFile = null;
                 //}
+                var userId = Request?.Cookies["userId"]?.ToString();
 
+                bool hasAccess = await _permissionService.HasAccess(userId, (int)UserPermissions.AddAssets);
+                if (!hasAccess)
+                {
+                    return Unauthorized();
+                }
                 assetDTO.AddedBy = Request?.Cookies["userId"]?.ToString();
                 var response =  await _authService.CreateAssetAsync(assetDTO);
                 if (!response.IsSuccess)
@@ -77,6 +93,13 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
             try
             {
+                var userId = Request?.Cookies["userId"]?.ToString();
+
+                bool hasAccess = await _permissionService.HasAccess(userId, (int)UserPermissions.AddAssets);
+                if (!hasAccess)
+                {
+                    return Unauthorized();
+                }
                 assetDTO.AddedBy = Request?.Cookies["userId"]?.ToString();
                 var response = await _authService.UpdateAssetAsync(assetDTO);
                 if (!response.IsSuccess)
@@ -97,6 +120,13 @@ namespace PMS_PropertyHapa.Staff.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteAsset(int assetId)
         {
+            var userId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(userId, (int)UserPermissions.AddAssets);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             var response = await _authService.DeleteAssetAsync(assetId);
             if (!response.IsSuccess)
             {
@@ -133,6 +163,13 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
         public async Task<IActionResult> AddAssest()
         {
+            var userId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(userId, (int)UserPermissions.AddAssets);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             //Changes by Raas
             var owners = await _authService.GetAllLandlordAsync();
             var currenUserId = Request?.Cookies["userId"]?.ToString();
@@ -151,6 +188,13 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
         public async Task<IActionResult> EditAsset(int assetId)
         {
+            var userId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(userId, (int)UserPermissions.AddAssets);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             var asset = new AssetDTO();
             IEnumerable<OwnerDto> owners;
             var currenUserId = Request?.Cookies["userId"]?.ToString();
@@ -194,8 +238,15 @@ namespace PMS_PropertyHapa.Staff.Controllers
             return Ok(unitDetails);
         }
 
-        public  IActionResult AssetDetails(int id)
+        public async  Task<IActionResult> AssetDetails(int id)
         {
+            var userId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(userId, (int)UserPermissions.ViewAssets);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             ViewBag.assetId = id;
             return View();
         }

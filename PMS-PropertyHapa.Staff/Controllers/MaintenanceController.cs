@@ -10,15 +10,23 @@ namespace PMS_PropertyHapa.Staff.Controllers
     public class MaintenanceController : Controller
     {
         private readonly IAuthService _authService;
+        private readonly IPermissionService _permissionService;
         EmailSender _emailSender = new EmailSender();
 
-        public MaintenanceController(IAuthService authService)
+        public MaintenanceController(IAuthService authService, IPermissionService permissionService)
         {
             _authService = authService;
+            _permissionService = permissionService;
         }
         public async Task<IActionResult> Index()
         {
-            
+            var userId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(userId, (int)UserPermissions.ViewMaintenance);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             return View();
         }
 
@@ -41,6 +49,13 @@ namespace PMS_PropertyHapa.Staff.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveTaskHistory([FromForm] TaskRequestHistoryDto taskRequestHistoryDto)
         {
+            var userId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(userId, (int)UserPermissions.AddMaintenance);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             if (taskRequestHistoryDto == null)
             {
                 return Json(new { success = false, message = "Received data is null." });

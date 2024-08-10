@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PMS_PropertyHapa.Models.DTO;
 using PMS_PropertyHapa.Staff.Services.IServices;
+using static PMS_PropertyHapa.Shared.Enum.SD;
 
 namespace PMS_PropertyHapa.Staff.Controllers
 {
@@ -8,36 +9,80 @@ namespace PMS_PropertyHapa.Staff.Controllers
     public class ReportsController : Controller
     {
         private readonly IAuthService _authService;
-        public ReportsController(IAuthService authService)
+        private readonly IPermissionService _permissionService;
+        public ReportsController(IAuthService authService, IPermissionService permissionService)
         {
             _authService = authService;
+            _permissionService = permissionService;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(currenUserId, (int)UserPermissions.ViewReports);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             return View();
         }
         public IActionResult TaskReports()
         {
             return View();
         }
-        public IActionResult LeaseReports()
+        public async Task<IActionResult> LeaseReports()
         {
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(currenUserId, (int)UserPermissions.ViewLeaseReports);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             return View();
         }
-        public IActionResult AssetReports()
+        public async Task<IActionResult> AssetReports()
         {
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(currenUserId, (int)UserPermissions.ViewAssetReports);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             return View();
         }
-        public IActionResult LandlordReports()
+        public async Task<IActionResult> LandlordReports()
         {
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(currenUserId, (int)UserPermissions.ViewLandlordReports);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             return View();
         }
-        public IActionResult TenantReports()
+        public async Task<IActionResult> TenantReports()
         {
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(currenUserId, (int)UserPermissions.ViewTenantReports);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             return View();
         }
-        public IActionResult FinanceReports()
+        public async Task<IActionResult> FinanceReports()
         {
+            var currenUserId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(currenUserId, (int)UserPermissions.ViewFinanceReports);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             return View();
         }
         public IActionResult SmartReports()

@@ -8,6 +8,7 @@ using PMS_PropertyHapa.Models.Entities;
 using PMS_PropertyHapa.Models.Roles;
 using PMS_PropertyHapa.Staff.Auth.Controllers;
 using PMS_PropertyHapa.Staff.Services.IServices;
+using static PMS_PropertyHapa.Shared.Enum.SD;
 
 namespace PMS_PropertyHapa.Staff.Controllers
 {
@@ -21,8 +22,9 @@ namespace PMS_PropertyHapa.Staff.Controllers
         private ApiDbContext _context;
         private readonly IUserStore<ApplicationUser> _userStore;
         private IWebHostEnvironment _environment;
+        private readonly IPermissionService _permissionService;
 
-        public LeaseController(IAuthService authService, ITokenProvider tokenProvider, IWebHostEnvironment Environment, ILogger<HomeController> logger, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, ApiDbContext context, IUserStore<ApplicationUser> userStore)
+        public LeaseController(IAuthService authService, ITokenProvider tokenProvider, IWebHostEnvironment Environment, ILogger<HomeController> logger, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, ApiDbContext context, IUserStore<ApplicationUser> userStore, IPermissionService permissionService)
         {
             _authService = authService;
             _tokenProvider = tokenProvider;
@@ -32,9 +34,17 @@ namespace PMS_PropertyHapa.Staff.Controllers
             _context = context;
             _userStore = userStore;
             _environment = Environment;
+            _permissionService = permissionService;
         }
         public async Task<IActionResult> Index()
         {
+            var userId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(userId, (int)UserPermissions.ViewLease);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             var lease = await _authService.GetAllLeasesAsync();
             var currenUserId = Request?.Cookies["userId"]?.ToString();
             if (currenUserId != null)
@@ -46,6 +56,13 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
         public async Task<IActionResult> AddLease()
         {
+            var userId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(userId, (int)UserPermissions.AddLease);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             var selectedAssets = await _authService.GetAllAssetsAsync();
             var currenUserId = Request?.Cookies["userId"]?.ToString();
             if (currenUserId != null)
@@ -151,6 +168,13 @@ namespace PMS_PropertyHapa.Staff.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(LeaseDto lease)
         {
+            var userId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(userId, (int)UserPermissions.AddLease);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             lease.TenantId = Convert.ToInt32(lease.TenantIdValue);
             if (lease == null)
             {
@@ -190,6 +214,13 @@ namespace PMS_PropertyHapa.Staff.Controllers
         [HttpPost]
         public async Task<IActionResult> Update(LeaseDto lease)
         {
+            var userId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(userId, (int)UserPermissions.AddLease);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             lease.TenantId = Convert.ToInt32(lease.TenantIdValue);
             if (lease == null)
             {
@@ -206,6 +237,13 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
         public async Task<IActionResult> EditLease(int leaseId)
         {
+            var userId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(userId, (int)UserPermissions.AddLease);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             LeaseDto lease;
 
             if (leaseId > 0)
@@ -228,6 +266,13 @@ namespace PMS_PropertyHapa.Staff.Controllers
         [HttpPost]
         public async Task<IActionResult> DeletLease(int leaseId)
         {
+            var userId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(userId, (int)UserPermissions.AddLease);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             var response = await _authService.DeleteLeaseAsync(leaseId);
             if (!response.IsSuccess)
             {
@@ -240,6 +285,13 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
         public async Task<IActionResult> InvoiceDetails(int leaseId)
         {
+            var userId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(userId, (int)UserPermissions.ViewLeaseInvoices);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             List<InvoiceDto> invoices = await _authService.GetInvoicesAsync(leaseId);
 
             ViewBag.Paid = invoices?.Where(x => x.InvoicePaid == true).Select(x => x.RentAmount).Sum() ?? 0;

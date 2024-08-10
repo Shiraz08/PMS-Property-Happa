@@ -2,20 +2,30 @@
 using PMS_PropertyHapa.Models.DTO;
 using PMS_PropertyHapa.Models.Entities;
 using PMS_PropertyHapa.Staff.Services.IServices;
+using static PMS_PropertyHapa.Shared.Enum.SD;
 
 namespace PMS_PropertyHapa.Staff.Controllers
 {
     public class AccountSubTypeController : Controller
     {
         private readonly IAuthService _authService;
+        private readonly IPermissionService _permissionService;
 
-        public AccountSubTypeController(IAuthService authService)
+        public AccountSubTypeController(IAuthService authService, IPermissionService permissionService)
         {
             _authService = authService;
+            _permissionService = permissionService;
         }
 
         public async Task<IActionResult> Index()
         {
+            var userId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(userId, (int)UserPermissions.ViewAccountSubType);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             return View();
         }
         [HttpGet]
@@ -34,6 +44,13 @@ namespace PMS_PropertyHapa.Staff.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveAccountSubType([FromBody] AccountSubType accountSubType)
         {
+            var userId = Request?.Cookies["userId"]?.ToString();
+
+            bool hasAccess = await _permissionService.HasAccess(userId, (int)UserPermissions.AddAccountSubType);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             if (accountSubType == null)
             {
                 return Json(new { success = false, message = "Received data is null." });
@@ -46,7 +63,13 @@ namespace PMS_PropertyHapa.Staff.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteAccountSubType(int id)
         {
+            var userId = Request?.Cookies["userId"]?.ToString();
 
+            bool hasAccess = await _permissionService.HasAccess(userId, (int)UserPermissions.AddAccountSubType);
+            if (!hasAccess)
+            {
+                return Unauthorized();
+            }
             var response = await _authService.DeleteAccountSubTypeAsync(id);
             if (!response.IsSuccess)
             {
