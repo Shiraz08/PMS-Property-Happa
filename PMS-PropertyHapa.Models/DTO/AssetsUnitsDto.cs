@@ -18,5 +18,8 @@ namespace PMS_PropertyHapa.Models.DTO
         public int Bath { get; set; }
         public int Size { get; set; }
         public decimal Rent { get; set; }
+        public string AddedBy { get; set; }
+        public DateTime AddedDate { get; set; }
+
     }
 }

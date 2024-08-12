@@ -3812,6 +3812,7 @@ namespace MagicVilla_VillaAPI.Repository
                     Beds = tenant.Beds,
                     Rent = tenant.Rent,
                     Size = tenant.Size,
+                    AddedBy = tenant.AddedBy,
                 }).ToList();
 
 

@@ -42,7 +42,6 @@ namespace PMS_PropertyHapa.Staff.Controllers
             return View(assets);
         }
 
-
         [HttpPost]
         public async Task<IActionResult> AddAsset([FromForm] AssetDTO assetDTO)
         {

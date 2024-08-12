@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NuGet.ContentModel;
 using PMS_PropertyHapa.Models;
 using PMS_PropertyHapa.Models.DTO;
 using PMS_PropertyHapa.Models.Entities;
@@ -50,7 +51,7 @@ namespace PMS_PropertyHapa.Staff.Auth.Controllers
                 new PieChart(TaskStatusTypes.NotStarted.ToString(), taskRequests.Count(x => x.Status == TaskStatusTypes.NotStarted.ToString()))
             };
 
-            string currentDate = DateTime.Now.ToString("yyyy-MM-dd"); 
+            string currentDate = DateTime.Now.ToString("yyyy-MM-dd");
 
             if (currentUserId != null)
             {
@@ -60,36 +61,80 @@ namespace PMS_PropertyHapa.Staff.Auth.Controllers
                                                       || (s.ModifiedDate.HasValue && s.ModifiedDate.Value.ToString("yyyy-MM-dd") == currentDate)));
             }
             var landlords = await _authService.GetAllLandlordAsync();
-            
+
             if (currentUserId != null)
             {
                 landlords = landlords.Where(s => s.AddedBy == currentUserId);
                 ViewBag.totalLandlords = landlords.Count();
             }
-            
+
             var tenants = await _authService.GetAllTenantsAsync();
-            
+
             if (currentUserId != null)
             {
                 tenants = tenants.Where(s => s.AddedBy == currentUserId);
                 ViewBag.totalTenants = tenants.Count();
             }
-            
+
 
             var assets = await _authService.GetAllAssetsAsync();
-            
+
             if (currentUserId != null)
             {
                 assets = assets.Where(s => s.AddedBy == currentUserId);
                 ViewBag.totalAssets = assets.Count();
+
             }
-            
+
+            var filter = new Filter();
+            filter.AddedBy = currentUserId;
+            var assetUnits = await _authService.GetUnitsByUserAsync(filter);
+
+            var totalUnits = assetUnits.Count();
+            ViewBag.totalUnits = totalUnits;
+
+            var unitIds = assetUnits.Where(x => x.AddedBy == currentUserId).Select(x => x.UnitId).ToList();
+
+            var leases = await _authService.GetAllLeasesAsync();
+            if (currentUserId != null)
+            {
+                leases = leases.Where(s => s.AddedBy == currentUserId).ToList();
+            }
+
+            var occupiedUnits = leases.Select(l => l.UnitId).Distinct().Count();
+
+            var vacancy = totalUnits - occupiedUnits;
+
+            ViewBag.totalOccupiedUnits = occupiedUnits;
+            ViewBag.totalVacancy = vacancy;
+
+            var tasks = await _authService.GetAllTaskRequestsAsync();
+            if (currentUserId != null)
+            {
+                tasks = tasks.Where(s => s.AddedBy == currentUserId && s.Status == "NotStarted").ToList();
+                ViewBag.totalTasks = tasks.Count();
+            }
+
+            var assignTasks = await _authService.GetAllTaskRequestsAsync();
+            if (currentUserId != null)
+            {
+                assignTasks = assignTasks.Where(s => s.AddedBy == currentUserId && s.Status == "InProgress").ToList();
+                ViewBag.totalAssignTasks = assignTasks.Count();
+            }
+
+            var closedTasks = await _authService.GetAllTaskRequestsAsync();
+            if (currentUserId != null)
+            {
+                closedTasks = closedTasks.Where(s => s.AddedBy == currentUserId && s.Status == "Completed").ToList();
+                ViewBag.totalClosedTasks = closedTasks.Count();
+            }
+
             var invoiceHistory = await _authService.GetAllInvoicesAsync();
 
             if (currentUserId != null)
             {
                 invoiceHistory = invoiceHistory.Where(s => s.AddedBy == currentUserId).ToList();
-                
+
             }
             ViewBag.totalInvoices = invoiceHistory.Count();
 
@@ -110,7 +155,7 @@ namespace PMS_PropertyHapa.Staff.Auth.Controllers
 
 
             var taskCountsByMonth = taskRequests
-                    .Where(t => t.AddedBy == currentUserId) 
+                    .Where(t => t.AddedBy == currentUserId)
                     .GroupBy(t => new { t.AddedDate?.Year, t.AddedDate?.Month })
                     .Select(g => new
                     {
@@ -137,14 +182,14 @@ namespace PMS_PropertyHapa.Staff.Auth.Controllers
                 i++;
             }
 
-          
+
             ViewBag.DataPoints1 = JsonConvert.SerializeObject(dataPoints1);
 
             ViewBag.DataPoints = JsonConvert.SerializeObject(dataPoints);
             ViewBag.invoiceStatus = JsonConvert.SerializeObject(invoiceStatus);
-            ViewBag.taskRequest = taskRequests.ToList(); 
-            ViewBag.landlords = landlords.ToList(); 
-            ViewBag.tenants = tenants.ToList(); 
+            ViewBag.taskRequest = taskRequests.ToList();
+            ViewBag.landlords = landlords.ToList();
+            ViewBag.tenants = tenants.ToList();
             ViewBag.assets = assets.ToList();
             ViewBag.InvoiceHistory = JsonConvert.SerializeObject(invoiceHistory);
 
@@ -194,7 +239,7 @@ namespace PMS_PropertyHapa.Staff.Auth.Controllers
 
             return View();
         }
-
+        
         public async Task<IActionResult> GetRevenueExpense()
         {
             var invoiceHistory = await _authService.GetAllInvoicesAsync();
@@ -305,6 +350,37 @@ namespace PMS_PropertyHapa.Staff.Auth.Controllers
             return Ok(data);
         }
 
+        //public async Task<IActionResult> GetOccupancyRate()
+        //{
+        //    var filter = new Filter();
+        //    var currentUserId = Request?.Cookies["userId"]?.ToString();
+        //    filter.AddedBy = currentUserId;
+        //    var units = await _authService.GetUnitsByUserAsync(filter);
+
+        //    var totalUnits = units.Count();
+        //    var unitIds = units.Select(x => x.UnitId).ToList();
+
+        //    var leases = await _authService.GetAllLeasesAsync();
+        //    if (currentUserId != null)
+        //    {
+        //        leases = leases.Where(s => s.AddedBy == currentUserId);
+        //    }
+        //    var occupiedUnits = leases.Select(l => l.UnitId).Distinct().Count();
+
+
+        //    var occupancyRate = (occupiedUnits / (double)totalUnits) * 100;
+        //    var vacancyRate = 100 - occupancyRate;
+
+        //    var radialChart = new ChartDataModel
+        //    {
+        //        Series = new List<int> { (int)occupancyRate, (int)vacancyRate },
+        //        Labels = new List<string> { "Occupancy Rate", "Vacancy Rate" },
+        //        Total = totalUnits,
+        //    };
+
+        //    return Ok(radialChart);
+        //}
+
         public async Task<IActionResult> GetOccupancyRate()
         {
             var filter = new Filter();
@@ -323,17 +399,48 @@ namespace PMS_PropertyHapa.Staff.Auth.Controllers
             var occupiedUnits = leases.Select(l => l.UnitId).Distinct().Count();
 
             var occupancyRate = (occupiedUnits / (double)totalUnits) * 100;
-            var vacancyRate = 100 - occupancyRate;
 
             var radialChart = new ChartDataModel
             {
-                Series = new List<int> { (int)occupancyRate, (int)vacancyRate },
-                Labels = new List<string> { "Occupancy Rate", "Vacancy Rate" },
+                Series = new List<int> { occupiedUnits, (int)occupancyRate },
+                Labels = new List<string> { $"Total Occupancy", $"Occupancy Rate" },
                 Total = totalUnits,
             };
 
             return Ok(radialChart);
         }
+
+
+        public async Task<IActionResult> GetVacancyRate()
+        {
+            var filter = new Filter();
+            var currentUserId = Request?.Cookies["userId"]?.ToString();
+            filter.AddedBy = currentUserId;
+            var units = await _authService.GetUnitsByUserAsync(filter);
+
+            var totalUnits = units.Count();
+            var unitIds = units.Select(x => x.UnitId).ToList();
+
+            var leases = await _authService.GetAllLeasesAsync();
+            if (currentUserId != null)
+            {
+                leases = leases.Where(s => s.AddedBy == currentUserId);
+            }
+            var occupiedUnits = leases.Select(l => l.UnitId).Distinct().Count();
+
+            var vacancyRate = 100 - (occupiedUnits / (double)totalUnits) * 100;
+            var vacantUnits = totalUnits - occupiedUnits;
+
+            var radialChart = new ChartDataModel
+            {
+                Series = new List<int> { vacantUnits, (int)vacancyRate },
+                Labels = new List<string> { $"Total Vacancy", $"Vacancy Rate" },
+                Total = totalUnits,
+            };
+
+            return Ok(radialChart);
+        }
+
 
         //public async Task<IActionResult> GetRentStatus()
         //{

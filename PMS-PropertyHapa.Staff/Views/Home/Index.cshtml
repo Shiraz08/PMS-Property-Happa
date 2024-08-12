@@ -4,7 +4,1642 @@
     ViewData["Title"] = "Home Page";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<div class="page-body">
+
+<div class="pagetitle d-flex align-items-center justify-content-between">
+    <h1>Welcome Ail Ali 👋</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="index.html"><i class="bi bi-house-door"></i></a>
+            </li>
+            <li class="breadcrumb-item active">Dashboard</li>
+        </ol>
+    </nav>
+</div>
+<!-- End Page Title -->
+<section class="section dashboard">
+    <!-- filters dropdowns -->
+    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-6">
+        <div class="col">
+            <div class="dropdown">
+                <button class="btn select-filters dropdown-toggle"
+                        type="button"
+                        id="propertiesDropdownMenu"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                    Properties
+                </button>
+                <div class="dropdown-menu select-dropdown-menu select-filters-menu"
+                     aria-labelledby="propertiesDropdownMenu">
+                    <div class="form-check">
+                        <input class="form-check-input"
+                               type="checkbox"
+                               id="selectAll" />
+                        <label class="form-check-label" for="selectAll">
+                            Select All
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <input type="text"
+                               class="form-control"
+                               id="searchBox"
+                               placeholder="Search" />
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input"
+                               type="checkbox"
+                               id="property1" />
+                        <label class="form-check-label" for="properties">
+                            Property 1
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="dropdown">
+                <button class="btn select-filters dropdown-toggle"
+                        type="button"
+                        id="portfolioDropdownMenu"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                    Portfolio
+                </button>
+                <div class="dropdown-menu select-dropdown-menu select-filters-menu"
+                     aria-labelledby="portfolioDropdownMenu">
+                    <div class="form-check">
+                        <input class="form-check-input"
+                               type="checkbox"
+                               id="selectAll" />
+                        <label class="form-check-label" for="selectAll">
+                            Select All
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <input type="text"
+                               class="form-control"
+                               id="searchBox"
+                               placeholder="Search" />
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input"
+                               type="checkbox"
+                               id="portfolio1" />
+                        <label class="form-check-label" for="portfolio1">
+                            Portfolio 1
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input"
+                               type="checkbox"
+                               id="portfolio2" />
+                        <label class="form-check-label" for="portfolio2">
+                            Portfolio 2
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input"
+                               type="checkbox"
+                               id="portfolio3" />
+                        <label class="form-check-label" for="portfolio3">
+                            Portfolio 3
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="dropdown">
+                <button class="btn select-filters dropdown-toggle"
+                        type="button"
+                        id="rentsDropdownMenu"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                    Rents
+                </button>
+                <div class="dropdown-menu select-dropdown-menu select-filters-menu"
+                     aria-labelledby="rentsDropdownMenu">
+                    <div class="form-check">
+                        <input class="form-check-input"
+                               type="checkbox"
+                               id="selectAll" />
+                        <label class="form-check-label" for="selectAll">
+                            Select All
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <input type="text"
+                               class="form-control"
+                               id="searchBox"
+                               placeholder="Search" />
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="rent1" />
+                        <label class="form-check-label" for="rent1"> Rent 1 </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="rent2" />
+                        <label class="form-check-label" for="rent2"> Rent 2 </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="rent3" />
+                        <label class="form-check-label" for="rent3"> Rent 3 </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="dropdown">
+                <button class="btn select-filters dropdown-toggle"
+                        type="button"
+                        id="occupancyRatesDropdownMenu"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                    Occupancy Rates
+                </button>
+                <div class="dropdown-menu select-dropdown-menu select-filters-menu"
+                     aria-labelledby="occupancyRatesDropdownMenu">
+                    <div class="form-check">
+                        <input class="form-check-input"
+                               type="checkbox"
+                               id="selectAll" />
+                        <label class="form-check-label" for="selectAll">
+                            Select All
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <input type="text"
+                               class="form-control"
+                               id="searchBox"
+                               placeholder="Search" />
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input"
+                               type="checkbox"
+                               id="occupancyRate1" />
+                        <label class="form-check-label" for="occupancyRate1">
+                            Occupancy Rate 1
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input"
+                               type="checkbox"
+                               id="occupancyRate2" />
+                        <label class="form-check-label" for="occupancyRate2">
+                            Occupancy Rate 2
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input"
+                               type="checkbox"
+                               id="occupancyRate3" />
+                        <label class="form-check-label" for="occupancyRate3">
+                            Occupancy Rate 3
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="filter-btn" id="filterBtn">
+                <span class="me-auto">Filter</span> <i class="bi bi-sliders"></i>
+            </div>
+        </div>
+        <!-- Filter Modal -->
+        <div class="modal fade filter_modal"
+             id="filterModal"
+             tabindex="-1"
+             aria-labelledby="filterModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="filterModalLabel">Filter</h5>
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form class="row g-4" id="filterForm">
+                            <div class="col-12">
+                                <div class="dates-wrap">
+                                    <input type="text"
+                                           class="form-control"
+                                           id="startDate"
+                                           placeholder="Start date" />
+                                    <span class="icon">|</span>
+                                    <input type="date"
+                                           class="form-control"
+                                           id="endDate"
+                                           placeholder="End date" />
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="dropdown">
+                                    <button class="btn form-dropdown-select dropdown-toggle"
+                                            type="button"
+                                            id="propertiesDropdownMenu"
+                                            data-bs-toggle="dropdown"
+                                            aria-expanded="false">
+                                        All Properties
+                                    </button>
+                                    <div class="dropdown-menu select-dropdown-menu"
+                                         aria-labelledby="propertiesDropdownMenu">
+                                        <div class="form-check">
+                                            <input class="form-check-input"
+                                                   type="checkbox"
+                                                   id="selectAll" />
+                                            <label class="form-check-label" for="selectAll">
+                                                Select All
+                                            </label>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text"
+                                                   class="form-control"
+                                                   id="searchBox"
+                                                   placeholder="Search" />
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input"
+                                                   type="checkbox"
+                                                   id="property1" />
+                                            <label class="form-check-label" for="property1">
+                                                Property 1
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input"
+                                                   type="checkbox"
+                                                   id="property2" />
+                                            <label class="form-check-label" for="property2">
+                                                Property 2
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input"
+                                                   type="checkbox"
+                                                   id="property3" />
+                                            <label class="form-check-label" for="property3">
+                                                Property 3
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="dropdown">
+                                    <button class="btn form-dropdown-select dropdown-toggle"
+                                            type="button"
+                                            id="unitsDropdownMenu"
+                                            data-bs-toggle="dropdown"
+                                            aria-expanded="false">
+                                        All Unites
+                                    </button>
+                                    <div class="dropdown-menu select-dropdown-menu"
+                                         aria-labelledby="unitsDropdownMenu">
+                                        <div class="form-check">
+                                            <input class="form-check-input"
+                                                   type="checkbox"
+                                                   id="selectAll" />
+                                            <label class="form-check-label" for="selectAll">
+                                                Select All
+                                            </label>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text"
+                                                   class="form-control"
+                                                   id="searchBox"
+                                                   placeholder="Search" />
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input"
+                                                   type="checkbox"
+                                                   id="unitType1" />
+                                            <label class="form-check-label" for="unitType1">
+                                                Unit 1
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input"
+                                                   type="checkbox"
+                                                   id="unitType2" />
+                                            <label class="form-check-label" for="unitType2">
+                                                Unit 2
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input"
+                                                   type="checkbox"
+                                                   id="unitType3" />
+                                            <label class="form-check-label" for="unitType3">
+                                                Unit 3
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="dropdown">
+                                    <button class="btn form-dropdown-select dropdown-toggle"
+                                            type="button"
+                                            id="expenseCategoriesDropdownMenu"
+                                            data-bs-toggle="dropdown"
+                                            aria-expanded="false">
+                                        Expense Categories
+                                    </button>
+                                    <div class="dropdown-menu select-dropdown-menu"
+                                         aria-labelledby="expenseCategoriesDropdownMenu">
+                                        <div class="form-check">
+                                            <input class="form-check-input"
+                                                   type="checkbox"
+                                                   id="selectAll" />
+                                            <label class="form-check-label" for="selectAll">
+                                                Select All
+                                            </label>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text"
+                                                   class="form-control"
+                                                   id="searchBox"
+                                                   placeholder="Search" />
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input"
+                                                   type="checkbox"
+                                                   id="expense1" />
+                                            <label class="form-check-label" for="expense1">
+                                                Expense 1
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input"
+                                                   type="checkbox"
+                                                   id="expense2" />
+                                            <label class="form-check-label" for="expense2">
+                                                Expense 2
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input"
+                                                   type="checkbox"
+                                                   id="expense3" />
+                                            <label class="form-check-label" for="expense3">
+                                                Expense 3
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="dropdown">
+                                    <button class="btn form-dropdown-select dropdown-toggle"
+                                            type="button"
+                                            id="incomeCategoriesDropdownMenu"
+                                            data-bs-toggle="dropdown"
+                                            aria-expanded="false">
+                                        Income Categories
+                                    </button>
+                                    <div class="dropdown-menu select-dropdown-menu"
+                                         aria-labelledby="incomeCategoriesDropdownMenu">
+                                        <div class="form-check">
+                                            <input class="form-check-input"
+                                                   type="checkbox"
+                                                   id="selectAll" />
+                                            <label class="form-check-label" for="selectAll">
+                                                Select All
+                                            </label>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text"
+                                                   class="form-control"
+                                                   id="searchBox"
+                                                   placeholder="Search" />
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input"
+                                                   type="checkbox"
+                                                   id="income1" />
+                                            <label class="form-check-label" for="income1">
+                                                Income 1
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input"
+                                                   type="checkbox"
+                                                   id="income2" />
+                                            <label class="form-check-label" for="income2">
+                                                Income 2
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input"
+                                                   type="checkbox"
+                                                   id="income3" />
+                                            <label class="form-check-label" for="income3">
+                                                Income 3
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="dropdown">
+                                    <button class="btn form-dropdown-select dropdown-toggle"
+                                            type="button"
+                                            id="expenseTypeDropdownMenu"
+                                            data-bs-toggle="dropdown"
+                                            aria-expanded="false">
+                                        Expense Type
+                                    </button>
+                                    <div class="dropdown-menu select-dropdown-menu"
+                                         aria-labelledby="expenseTypeDropdownMenu">
+                                        <div class="form-check">
+                                            <input class="form-check-input"
+                                                   type="checkbox"
+                                                   id="selectAll" />
+                                            <label class="form-check-label" for="selectAll">
+                                                Select All
+                                            </label>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text"
+                                                   class="form-control"
+                                                   id="searchBox"
+                                                   placeholder="Search" />
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input"
+                                                   type="checkbox"
+                                                   id="expenseType1" />
+                                            <label class="form-check-label" for="expenseType1">
+                                                Expense Type 1
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input"
+                                                   type="checkbox"
+                                                   id="expenseType2" />
+                                            <label class="form-check-label" for="expenseType2">
+                                                Expense Type 2
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input"
+                                                   type="checkbox"
+                                                   id="expenseType3" />
+                                            <label class="form-check-label" for="expenseType3">
+                                                Expense Type 3
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <input type="number"
+                                       class="form-control"
+                                       id="amount"
+                                       placeholder="Enter Amount" />
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="dropdown">
+                                    <button class="btn form-dropdown-select dropdown-toggle"
+                                            type="button"
+                                            id="ownersDropdownMenu"
+                                            data-bs-toggle="dropdown"
+                                            aria-expanded="false">
+                                        Owners
+                                    </button>
+                                    <div class="dropdown-menu select-dropdown-menu"
+                                         aria-labelledby="ownersDropdownMenu">
+                                        <div class="form-check">
+                                            <input class="form-check-input"
+                                                   type="checkbox"
+                                                   id="selectAll" />
+                                            <label class="form-check-label" for="selectAll">
+                                                Select All
+                                            </label>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text"
+                                                   class="form-control"
+                                                   id="searchBox"
+                                                   placeholder="Search" />
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input"
+                                                   type="checkbox"
+                                                   id="owner1" />
+                                            <label class="form-check-label" for="owner1">
+                                                Owner 1
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input"
+                                                   type="checkbox"
+                                                   id="owner2" />
+                                            <label class="form-check-label" for="owner2">
+                                                Owner 2
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input"
+                                                   type="checkbox"
+                                                   id="owner3" />
+                                            <label class="form-check-label" for="owner3">
+                                                Owner 3
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <input type="text"
+                                       class="form-control"
+                                       id="description"
+                                       placeholder="Enter Descriptions" />
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <button type="button"
+                                        class="btn filter-modal-btn reset-btn"
+                                        id="resetBtn">
+                                    RESET
+                                </button>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <button type="button"
+                                        class="btn filter-modal-btn"
+                                        id="applyFilterBtn">
+                                    Apply
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="dropdown custom-dropdown">
+                <button class="btn custom-add-btn dropdown-toggle"
+                        type="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                    <i class="bi bi-plus"></i> ADD
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="@Url.Action("AddAssest","Assests")">Add Property</a></li>
+                    <li><a class="dropdown-item active" href="@Url.Action("AddTenant","Tenant")">Add Tenant</a></li>
+                    <li>
+                        <a class="dropdown-item" href="@Url.Action("AddLandlord", "Landlord")">Add Landlord</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="@Url.Action("Index", "Vendor")">Add Vendor</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- Info Cards  -->
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-5">
+        <div class="col d-flex">
+            <div class="card info-dashboard-card owner-card flex-fill">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div>
+                            <img src="~/assets/img/icons/owner-icon.png"
+                                 alt="owner icon" />
+                        </div>
+                        <div class="ps-3">
+                            <h5>Total Landlords</h5>
+                            <h6>@ViewBag.totalLandlords</h6>
+                            <div class="dropdown custom-card-dropdown">
+                                <button class="btn custom-card-btn dropdown-toggle"
+                                        type="button"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false">
+                                    3 months
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item" href="#">1 month</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item active" href="#">3 months</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="#">6 months</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col d-flex">
+            <div class="card info-dashboard-card properties-card flex-fill">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div>
+                            <img src="~/assets/img/icons/properties-icon.png"
+                                 alt="owner icon" />
+                        </div>
+                        <div class="ps-3">
+                            <h5>Total Assets</h5>
+                            <h6>@ViewBag.totalAssets</h6>
+                            <div class="dropdown custom-card-dropdown">
+                                <button class="btn custom-card-btn dropdown-toggle"
+                                        type="button"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false">
+                                    3 months
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item" href="#">1 month</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item active" href="#">3 months</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="#">6 months</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col d-flex">
+            <div class="card info-dashboard-card units-card flex-fill">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div>
+                            <img src="~/assets/img/icons/units-icon.png"
+                                 alt="owner icon" />
+                        </div>
+                        <div class="ps-3">
+                            <h5>Total Units</h5>
+                            <h6>@ViewBag.totalUnits</h6>
+                            <div class="dropdown custom-card-dropdown">
+                                <button class="btn custom-card-btn dropdown-toggle"
+                                        type="button"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false">
+                                    3 months
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item" href="#">1 month</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item active" href="#">3 months</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="#">6 months</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col d-flex">
+            <div class="card info-dashboard-card occupancy-card flex-fill">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div>
+                            <img src="~/assets/img/icons/occupancy-icon.png"
+                                 alt="owner icon" />
+                        </div>
+                        <div class="ps-3">
+                            <h5>Total Occupancy</h5>
+                            <h6>@ViewBag.totalOccupiedUnits</h6>
+                            <div class="dropdown custom-card-dropdown">
+                                <button class="btn custom-card-btn dropdown-toggle"
+                                        type="button"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false">
+                                    3 months
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item" href="#">1 month</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item active" href="#">3 months</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="#">6 months</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col d-flex">
+            <div class="card info-dashboard-card vacancy-card flex-fill">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div>
+                            <img src="~/assets/img/icons/vacancy-icon.png"
+                                 alt="owner icon" />
+                        </div>
+                        <div class="ps-3">
+                            <h5>Total Vacancy</h5>
+                            <h6>@ViewBag.totalVacancy</h6>
+                            <div class="dropdown custom-card-dropdown">
+                                <button class="btn custom-card-btn dropdown-toggle"
+                                        type="button"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false">
+                                    3 months
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item" href="#">1 month</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item active" href="#">3 months</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="#">6 months</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- charts cards -->
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-2">
+        <div class="col-lg-6 box"
+             id="div1"
+             ondrop="drop(event)"
+             ondragover="allowDrop(event)">
+            <!-- Cash Flow Chart -->
+            <div class="card info-chart-card flex-fill"
+                 id="card1"
+                 draggable="true"
+                 ondragstart="drag(event)">
+                <div class="filter">
+                    <a class="icon" href="#" data-bs-toggle="dropdown">
+                        <i class="bi bi-three-dots"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                        <li>
+                            <a class="dropdown-item" href="#" id="monthlyCashFilter">Monthly</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#" id="yearlyCashFilter">Yearly</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="card-body">
+                    <h5 class="card-title">
+                        Cash Flow <br /><span>(Revenue vs Expenses)</span>
+                    </h5>
+                    <div id="cashFlowChart" class="mt-4"></div>
+                </div>
+            </div>
+            <!-- End Cash Flow Chart -->
+        </div>
+        <div class="col-lg-6 box"
+             id="div2"
+             ondrop="drop(event)"
+             ondragover="allowDrop(event)">
+            <!-- Occupancy / Vacancy Chart -->
+            <div class="card info-vacancy-card flex-fill"
+                 id="card2"
+                 draggable="true"
+                 ondragstart="drag(event)">
+                <div class="card-body">
+                    <div class="vacancy-chart-container">
+                        <div>
+                            <h5>Occupancy</h5>
+                            <div id="occupancyChart"></div>
+                        </div>
+                        <div>
+                            <h5>Vacancy</h5>
+                            <div id="vacancyChart"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Occupancy / Vacancy Chart -->
+        </div>
+    </div>
+    <div class="row row-cols-1 row-cols-lg-2">
+        <div class="col-lg-5 box"
+             id="div3"
+             ondrop="drop(event)"
+             ondragover="allowDrop(event)">
+            <!-- Rent Collection chart -->
+            <div class="card info-chart-card flex-fill"
+                 id="card3"
+                 draggable="true"
+                 ondragstart="drag(event)">
+                <div class="filter">
+                    <a class="icon" href="#" data-bs-toggle="dropdown">
+                        <i class="bi bi-three-dots"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                        <li>
+                            <a class="dropdown-item" href="#" id="weeklyRentFilter">Weekly</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#" id="monthlyRentFilter">Monthly</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Rent Collection Status</h5>
+                    <div id="rentCollectionChart"></div>
+                </div>
+            </div>
+            <!-- End Rent Collection chart -->
+        </div>
+        <div class="col-lg-7 box"
+             id="div4"
+             ondrop="drop(event)"
+             ondragover="allowDrop(event)">
+            <div id="card4" draggable="true" ondragstart="drag(event)">
+                <div class="row row-cols-2 row-cols-lg-3">
+                    <!-- new task Card -->
+                    <div class="col">
+                        <div class="card task-card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div>
+                                        <img src="~/assets/img/icons/new-task-icon.png"
+                                             alt="owner icon" />
+                                    </div>
+                                    <div class="ps-2">
+                                        <h5>New Task</h5>
+                                        <h6>@ViewBag.totalTasks</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End New Task Card -->
+                    <!-- assigned task Card -->
+                    <div class="col">
+                        <div class="card task-card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div>
+                                        <img src="~/assets/img/icons/assigned-task-icon.png"
+                                             alt="owner icon" />
+                                    </div>
+                                    <div class="ps-2">
+                                        <h5>Assigned Task</h5>
+                                        <h6>@ViewBag.totalAssignTasks</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End assigned Task Card -->
+                    <!-- close task Card -->
+                    <div class="col">
+                        <div class="card task-card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div>
+                                        <img src="~/assets/img/icons/occupancy-icon.png"
+                                             alt="owner icon" />
+                                    </div>
+                                    <div class="ps-2">
+                                        <h5>Close Task</h5>
+                                        <h6>@ViewBag.totalClosedTasks</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End close Task Card -->
+                </div>
+                <div class="row">
+                    <!-- Task Sumary Card -->
+                    <div class="col-12 d-flex">
+                        <div class="card info-chart-card flex-fill">
+                            <div class="filter">
+                                <a class="icon" href="#" data-bs-toggle="dropdown">
+                                    <i class="bi bi-three-dots"></i>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                                    <li>
+                                        <a class="dropdown-item" href="#" id="monthlyFilter">Monthly</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="#" id="yearlyFilter">Yearly</a>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Task Summary <br /><span>On-Time Completion Rate</span>
+                                </h5>
+
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <div class="task-chart-card">
+                                        <p>Complete Tasks</p>
+                                        <h6>
+                                            43.50%
+                                            <span class="text-success bg-success-light rounded-pill ms-2">+2.45%</span>
+                                        </h6>
+                                    </div>
+                                    <div class="ms-3 task-chart-card">
+                                        <p>Incomplete Tasks</p>
+                                        <h6>
+                                            $52,422
+                                            <span class="text-danger bg-danger-light rounded-pill ms-2">-4.75%</span>
+                                        </h6>
+                                    </div>
+                                </div>
+                                <div id="taskSummaryChart" class="mt-4"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Task Sumary Card -->
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+
+<!-- Filter modal -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var filterBtn = document.getElementById("filterBtn");
+        var filterModal = new bootstrap.Modal(
+            document.getElementById("filterModal")
+        );
+
+        filterBtn.addEventListener("click", function () {
+            filterModal.show();
+        });
+
+        // Handle form submission
+        var applyFilterBtn = document.getElementById("applyFilterBtn");
+        applyFilterBtn.addEventListener("click", function () {
+            // Here you can handle form submission or validation
+            filterModal.hide();
+        });
+    });
+</script>
+
+<!-- reset form button functionality -->
+<script>
+    // Function to reset the form
+    function resetForm() {
+        document.getElementById("filterForm").reset();
+        // Reset all checkboxes and text inputs
+        document.querySelectorAll(".form-check-input").forEach((input) => {
+            if (input.type === "checkbox") {
+                input.checked = false;
+            }
+        });
+        // Hide all checkboxes by default
+        document.querySelectorAll(".form-check").forEach((checkbox) => {
+            checkbox.style.display = "";
+        });
+    }
+
+    // Event listener for reset button
+    document.getElementById("resetBtn").addEventListener("click", resetForm);
+</script>
+
+<!-- date picker -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let startDate = new Datepicker("#startDate");
+        let endDate = new Datepicker("#endDate");
+    });
+
+    function closeNotification(element) {
+        element.parentElement.style.display = "none";
+    }
+</script>
+
+<!-- checkbox dropdowns -->
+<script>
+    document
+        .querySelectorAll(".select-dropdown-menu")
+        .forEach((dropdownMenu) => {
+            // Select All functionality
+            dropdownMenu
+                .querySelector(".form-check-input[id='selectAll']")
+                .addEventListener("change", function () {
+                    let checkboxes = dropdownMenu.querySelectorAll(
+                        ".form-check-input:not(#selectAll)"
+                    );
+                    checkboxes.forEach(
+                        (checkbox) => (checkbox.checked = this.checked)
+                    );
+                });
+
+            // Search functionality
+            dropdownMenu
+                .querySelector(".form-control[id='searchBox']")
+                .addEventListener("input", function () {
+                    let filter = this.value.toLowerCase();
+                    let checkboxes = dropdownMenu.querySelectorAll(".form-check");
+                    checkboxes.forEach((checkbox) => {
+                        let label = checkbox
+                            .querySelector("label")
+                            .innerText.toLowerCase();
+                        checkbox.style.display = label.includes(filter) ? "" : "none";
+                    });
+                });
+        });
+</script>
+
+<!-- Drag and Drop Charts -->
+<script>
+    let chartInstances = {};
+
+    function allowDrop(ev) {
+        ev.preventDefault();
+    }
+
+    function drag(ev) {
+        ev.dataTransfer.setData("text", ev.target.id);
+    }
+
+    function drop(ev) {
+        ev.preventDefault();
+        const data = ev.dataTransfer.getData("text");
+        const draggedElement = document.getElementById(data);
+
+        let dropTarget = ev.target;
+        if (!dropTarget.classList.contains("box")) {
+            dropTarget = dropTarget.closest(".box");
+        }
+
+        if (
+            dropTarget &&
+            draggedElement &&
+            dropTarget !== draggedElement.parentNode
+        ) {
+            const sourceDiv = draggedElement.parentNode;
+            const dropTargetElement = dropTarget.firstElementChild;
+
+            if (dropTargetElement) {
+                sourceDiv.appendChild(dropTargetElement);
+            }
+
+            dropTarget.appendChild(draggedElement);
+
+            // Save the current state to localStorage
+            saveState();
+
+            // Reinitialize the charts after moving the elements
+            initializeCharts();
+        }
+    }
+
+    function saveState() {
+        const boxes = document.querySelectorAll(".box");
+        boxes.forEach((box, index) => {
+            localStorage.setItem("box" + (index + 1), box.innerHTML);
+        });
+    }
+
+    function loadState() {
+        const boxes = document.querySelectorAll(".box");
+        boxes.forEach((box, index) => {
+            const savedContent = localStorage.getItem("box" + (index + 1));
+            if (savedContent) {
+                box.innerHTML = savedContent;
+            }
+        });
+    }
+
+    function clearChartElements() {
+        const chartSelectors = [
+            "#cashFlowChart",
+            "#occupancyChart",
+            "#vacancyChart",
+            "#rentCollectionChart",
+            "#taskSummaryChart",
+        ];
+        chartSelectors.forEach((selector) => {
+            const chartElement = document.querySelector(selector);
+            if (chartElement) {
+                chartElement.innerHTML = ""; // Clear out existing chart HTML
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        $.ajax({
+            url: '@Url.Action("GetProperties", "Communication")',
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                var dropdownMenu = document.querySelector('.select-dropdown-menu');
+
+                // Clear existing items except for 'Select All' and search box
+                dropdownMenu.innerHTML = `
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="selectAll" />
+                        <label class="form-check-label" for="selectAll">Select All</label>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="searchBox" placeholder="Search" />
+                    </div>
+                `;
+
+                // Add each property as a checkbox
+                data.forEach(function (item, index) {
+                    var checkboxId = 'property' + item.AssetId;
+                    var propertyCheckbox = `
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="${checkboxId}" value="${item.AssetId}" />
+                            <label class="form-check-label" for="${checkboxId}">
+                                ${item.BuildingNo} - ${item.BuildingName}
+                            </label>
+                        </div>
+                    `;
+                    dropdownMenu.insertAdjacentHTML('beforeend', propertyCheckbox);
+                });
+
+                // Handle the 'Select All' checkbox functionality
+                $('#selectAll').change(function () {
+                    var checked = $(this).is(':checked');
+                    $('.form-check-input').not('#selectAll').prop('checked', checked);
+                });
+
+                // Search functionality within the dropdown
+                $('#searchBox').on('input', function () {
+                    var searchTerm = $(this).val().toLowerCase();
+                    $('.form-check-label').each(function () {
+                        var label = $(this).text().toLowerCase();
+                        $(this).closest('.form-check').toggle(label.includes(searchTerm));
+                    });
+                });
+            },
+            error: function (xhr, status, error) {
+                console.error('Error fetching properties:', error);
+            }
+        });
+    });
+
+
+    function initializeCharts() {
+        // Clear any existing chart elements
+        clearChartElements();
+
+        // Destroy any existing chart instances
+        for (let key in chartInstances) {
+            chartInstances[key].destroy();
+        }
+        chartInstances = {};
+
+
+        // Cash Flow Chart
+        const optionsCash = {
+            chart: {
+                type: 'bar',
+                height: 500,
+                toolbar: {
+                    show: false, // Hide the toolbar
+                },
+            },
+            colors: ["#0162DD", "#FDB813"],
+            plotOptions: {
+                bar: {
+                    horizontal: false,
+                    columnWidth: '85%',
+                    endingShape: 'rounded',
+                    borderRadius: 3,
+                },
+            },
+            dataLabels: {
+                enabled: false,
+            },
+            stroke: {
+                show: true,
+                width: 2,
+                colors: ["transparent"],
+            },
+            series: [], // Initialize with empty series
+            xaxis: {
+                categories: [], // Initialize with empty categories
+            },
+            fill: {
+                opacity: 1,
+            },
+            tooltip: {
+                enabled: true,
+                shared: false,
+                custom: function ({ series, seriesIndex, dataPointIndex, w }) {
+                    const seriesName = w.config.series[seriesIndex].name;
+                    const tooltipClass = seriesName === "Expenses" ? "expense_div" : "income_div";
+
+                    return `
+                <div class="${tooltipClass}">
+                    <p>${w.globals.labels[dataPointIndex]} 2024</p>
+                    <h3>$ ${series[seriesIndex][dataPointIndex]}</h3>
+                    <p>${seriesName}</p>
+                </div>`;
+                },
+            },
+            onDatasetHover: {
+                highlightDataSeries: true,
+            },
+            followCursor: true,
+        };
+
+        const cashChartElement = document.querySelector("#cashFlowChart");
+        if (cashChartElement) {
+            const cashChart = new ApexCharts(cashChartElement, optionsCash);
+            cashChart.render();
+
+            $.ajax({
+                url: '/Home/GetRevenueExpense',
+                dataType: 'json',
+                success: function (data) {
+                    const seriesData = data.Series.map(function (series) {
+                        return { name: series.Name, data: series.Data };
+                    });
+                    cashChart.updateOptions({
+                        series: seriesData,
+                        xaxis: {
+                            categories: data.Categories
+                        }
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error fetching data:', error);
+                }
+            });
+        }
+
+        function setChartHeight() {
+            const chartHeight = window.innerWidth < 992 ? 400 : 500;
+            cashChart.updateOptions({
+                chart: {
+                    height: chartHeight,
+                },
+            });
+        }
+
+        window.addEventListener("resize", setChartHeight);
+        setChartHeight();
+
+
+
+
+        // Occupancy Chart
+        const optionsOccupancy = {
+            chart: {
+                type: 'donut',
+                width: 350,
+            },
+            colors: ["#0162DD", "#00DB2D"],
+            plotOptions: {
+                pie: {
+                    donut: {
+                        labels: {
+                            show: true,
+                            total: {
+                                show: true,
+                                label: "Occupancy",
+                                formatter: function (w) {
+                                    return w.globals.seriesTotals.reduce((a, b) => a + b, 0) + "%";
+                                },
+                                fontSize: "12px",
+                            },
+                        },
+                    },
+                },
+            },
+            dataLabels: {
+                enabled: false,
+            },
+            legend: {
+                position: "bottom",
+                labels: {
+                    colors: "#939393",
+                },
+            },
+            series: [],
+            labels: [],
+        };
+
+        const occupancyChartElement = document.querySelector("#occupancyChart");
+        if (occupancyChartElement) {
+            const occupancyChart = new ApexCharts(occupancyChartElement, optionsOccupancy);
+            occupancyChart.render();
+
+            $.ajax({
+                url: '/Home/GetOccupancyRate',
+                dataType: 'json',
+                success: function (data) {
+                    console.log("occ");
+                    console.log(data);
+                    occupancyChart.updateOptions({
+                        series: data.Series,
+                        labels: data.Labels,
+                        plotOptions: {
+                            pie: {
+                                donut: {
+                                    labels: {
+                                        total: {
+                                            show: true,
+                                            label: "Occupancy",
+                                            formatter: function () {
+                                                return data.Total + "%";
+                                            },
+                                            fontSize: "12px",
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error fetching data:', error);
+                }
+            });
+        }
+
+
+
+        // Vacancy Chart
+        const vacancyRateOptions = {
+            chart: {
+                type: 'donut',
+                width: 350,
+            },
+            colors: ["#0162DD", "#FDB813"],
+            plotOptions: {
+                pie: {
+                    donut: {
+                        labels: {
+                            show: true,
+                            total: {
+                                show: true,
+                                label: 'Vacancy',
+                                formatter: function (w) {
+                                    return w.globals.seriesTotals.reduce((a, b) => a + b, 0) + "%";
+                                },
+                                fontSize: "12px",
+                            },
+                        },
+                    },
+                },
+            },
+            dataLabels: {
+                enabled: false,
+            },
+            legend: {
+                position: "bottom",
+                labels: {
+                    colors: "#939393",
+                },
+            },
+            series: [],
+            labels: [],
+        };
+
+        const vacancyChartElement = document.querySelector("#vacancyChart");
+        if (vacancyChartElement) {
+            const vacancyChart = new ApexCharts(vacancyChartElement, vacancyRateOptions);
+            vacancyChart.render();
+
+            $.ajax({
+                url: '/Home/GetVacancyRate',
+                dataType: 'json',
+                success: function (data) {
+                    console.log("Vacancy data fetched:", data);
+                    vacancyChart.updateOptions({
+                        series: data.Series,
+                        labels: data.Labels,
+                        plotOptions: {
+                            pie: {
+                                donut: {
+                                    labels: {
+                                        total: {
+                                            show: true,
+                                            label: 'Vacancy',
+                                            formatter: function () {
+                                                return data.Total + "%";
+                                            },
+                                            fontSize: "12px",
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error fetching vacancy data:', error);
+                }
+            });
+        }
+
+       // // Rent Collection Chart
+        // const optionsRent = {
+        //     chart: {
+        //         height: 350,
+        //         type: 'bar',
+        //         stacked: true,
+        //         stackType: '100%',
+        //         toolbar: {
+        //             show: false,
+        //         }
+        //     },
+        //     plotOptions: {
+        //         bar: {
+        //             horizontal: false,
+        //             columnWidth: '20px',
+        //             borderRadius: 5,
+        //         },
+        //     },
+        //     grid: {
+        //         show: false,
+        //         xaxis: {
+        //             lines: {
+        //                 show: false
+        //             }
+        //         }
+        //     },
+        //     dataLabels: {
+        //         enabled: false,
+        //     },
+        //     fill: {
+        //         opacity: 1
+        //     },
+        //     legend: {
+        //         show: false
+        //     },
+        //     states: {
+        //         hover: {
+        //             filter: {
+        //                 type: 'darken',
+        //                 value: 1,
+        //             }
+        //         }
+        //     },
+        //     colors: ['#008FFB', '#00E396'],
+        //     yaxis: {
+        //         tickAmount: 3,
+        //         min: 0,
+        //         max: 800,
+        //         axisBorder: {
+        //             show: false,
+        //         },
+        //         axisTicks: {
+        //             show: false,
+        //         },
+        //     },
+        //     xaxis: {
+        //         categories: [], // Initialize with empty categories
+        //         axisBorder: {
+        //             show: false,
+        //         },
+        //         axisTicks: {
+        //             show: false,
+        //         },
+        //     },
+        //     responsive: [
+        //         {
+        //             breakpoint: 1661,
+        //             options: {
+        //                 chart: {
+        //                     height: 420,
+        //                 }
+        //             }
+        //         },
+        //         {
+        //             breakpoint: 1366,
+        //             options: {
+        //                 chart: {
+        //                     height: 435,
+        //                 }
+        //             }
+        //         },
+        //         {
+        //             breakpoint: 1101,
+        //             options: {
+        //                 chart: {
+        //                     height: 250,
+        //                 }
+        //             }
+        //         },
+        //         {
+        //             breakpoint: 1007,
+        //             options: {
+        //                 chart: {
+        //                     height: 435,
+        //                 }
+        //             }
+        //         }
+        //     ]
+        // };
+
+        // const rentChartElement = document.querySelector("#rentStatusContainer");
+        // if (rentChartElement) {
+        //     const rentStatusChart = new ApexCharts(rentChartElement, optionsRent);
+        //     rentStatusChart.render();
+
+        //     // Fetch data from server and update the chart
+        //     $.ajax({
+        //         url: '/Home/GetRentStatus',
+        //         dataType: 'json',
+        //         success: function (data) {
+        //             // Update chart with new data
+        //             rentStatusChart.updateOptions({
+        //                 series: data.Series,
+        //                 xaxis: {
+        //                     categories: data.Categories
+        //                 }
+        //             });
+        //         },
+        //         error: function (xhr, status, error) {
+        //             console.error('Error fetching data:', error);
+        //         }
+        //     });
+        // }
+
+        // function setChartHeight() {
+        //     const chartHeight = window.innerWidth < 992 ? 400 : 350;
+        //     rentStatusChart.updateOptions({
+        //         chart: {
+        //             height: chartHeight,
+        //         },
+        //     });
+        // }
+
+        // window.addEventListener("resize", setChartHeight);
+        // setChartHeight();]]
+
+
+
+        // Task Summary Chart
+        const sparklineData = [
+            30, 40, 25, 50, 49, 21, 70, 51, 42, 30, 40, 25, 50, 49, 21, 70, 51,
+            42,
+        ];
+        function randomizeArray(array) {
+            return array.slice().sort(() => Math.random() - 0.5);
+        }
+        const optionsTask = {
+            series: [{ data: randomizeArray(sparklineData) }],
+            chart: { type: "area", height: 160, sparkline: { enabled: true } },
+            stroke: { curve: "smooth" },
+            fill: { opacity: 0.3 },
+            xaxis: { crosshairs: { width: 1 } },
+            yaxis: { min: 0 },
+            colors: ["#4318FF"],
+            tooltip: {
+                enabled: false,
+            },
+        };
+        const taskChartElement = document.querySelector("#taskSummaryChart");
+        if (taskChartElement) {
+            chartInstances.chartTask = new ApexCharts(
+                taskChartElement,
+                optionsTask
+            );
+            chartInstances.chartTask.render();
+        }
+    }
+
+    window.onload = function () {
+        loadState();
+        initializeCharts();
+    };
+</script>
+
+
+
+
+
+
+
+
+
+
+@* <div class="page-body">
     <div class="container-fluid">
         <div class="page-title">
             <div class="row">
@@ -116,9 +1751,7 @@
                                             <i class="fa fa-print fa-stack-1x fa-inverse"></i>
                                         </span>
                                     </div>
-                                    @* <span class="d-flex flex-row-reverse mr-5" style="font-size: 3em; color: lightblue;">
-                                        <i class="icofont icofont-files fx-5"></i>
-                                    </span> *@
+
                                     <p class="ml-5 mb-4 text-secondary fs-3">Total Invoices</p>
                                 </div>
                             </a>
@@ -127,86 +1760,6 @@
                 </div>
             </div>
         </div>
-        
-        @*  <div class="row">
-            <div class="col-xl-3 col-md-6">
-                <div class="card">
-                    <a href="@Url.Action("Index","Application")">
-        
-                        <span style="font-size: 3em; color: lightgreen;">
-                            <i class="fa fa-user fx-5"></i>
-                        </span>
-                        <span class="text-secondary fs-3">Total Applications</span>
-                        <h2 class="text-center">@ViewBag.totalApplications</h2>
-        
-                    </a>
-                </div>
-            </div>
-            <div class="col-xl-3 col-md-6">
-                <div class="card">
-                    <a href="@Url.Action("Index","Tenant")">
-                        <div class="card-block-small">
-                            <span style="font-size: 3em; color: lightgreen;">
-                                <i class="fa fa-home fx-5"></i>
-                            </span>
-                            <span class="text-secondary fs-3">Total Tenant</span>
-                            <h2 class="text-center">@ViewBag.totalTaskRequests</h2>
-                        </div>
-                    </a>
-                </div>
-            </div>
-            <div class="col-xl-3 col-md-6">
-                <div class="card">
-                    <a href="@Url.Action("Index","Assests")">
-                        <div class="card-block-small">
-                            <span style="font-size: 3em; color: lightgreen;">
-                                <i class="fa fa-home fx-5"></i>
-                            </span>
-                            <span class="text-secondary fs-3">Total Assets</span>
-                            <h2 class="text-center">@ViewBag.totalAssets</h2>
-                        </div>
-                    </a>
-                </div>
-            </div>
-            <div class="col-xl-3 col-md-6">
-                <div class="card">
-                    <a href="@Url.Action("Index","Landlord")">
-                        <div class="card-block-small">
-                            <span style="font-size: 3em; color: lightgreen;">
-                                <i class="fa fa-home fx-5"></i>
-                            </span>
-                            <span class="text-secondary fs-3">Total Invoices</span>
-                            <h2 class="text-center">@ViewBag.totalInvoices</h2>
-                        </div>
-                    </a>
-                </div>
-            </div>
-        </div>*@
-    @*  <div class="col-xl-6 col-md-6 dash-xl-50">
-            <div class="card our-activities">
-                <div class="card-header card-no-border"></div>
-                <div class="card-body pt-0">
-                    <div id="chartTaskRequestByMonthContainer" style="height: 300px; width: 100%;"></div>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-6 col-md-6 dash-xl-50">
-            <div class="card">
-                <div class="card-header card-no-border"></div> 
-                <div class="card-body">
-                    <div id="chartContainer" style="height: 300px; width: 100%;"></div>
-                </div>
-            </div>
-        </div> *@
-        
-        @* <div class="col-xl-6 col-md-6 dash-xl-50">
-            <div class="card">
-                <div class="card-header card-no-border"></div>
-                <div class="card-body">
-                    <div id="chartInvoiceContainer" style="height: 300px; width: 100%;"></div>
-                </div>
-            </div>
-        </div> *@
         <div class="row">
             <div class="col-xl-4 col-md-4 dash-xl-50">
                 <div class="card d-flex align-items-stretch h-80">
@@ -240,22 +1793,12 @@
             </div>
         </div>
         <div class="row">
-            
+
             <div class="col-xl-4 col-md-4 dash-xl-50">
                 <div class="card news-update d-flex align-items-stretch h-80">
                     <div class="card-header card-no-border">
                         <div class="header-top">
                             <h5 class="m-0">News &amp; Update</h5>
-                            @*<div class="icon-box onhover-dropdown">
-                            <i data-feather="more-horizontal"></i>
-                            <div class="icon-box-show onhover-show-div">
-                            <ul>
-                            <li><a>Today</a></li>
-                            <li><a>Yesterday</a></li>
-                            <li><a>Tomorrow</a></li>
-                            </ul>
-                            </div>
-                            </div> *@
                         </div>
                     </div>
                     <div class="card-body pt-0 overflow-auto" data-simplebar style="max-height: 425px;">
@@ -318,20 +1861,6 @@
                 </div>
             </div>
         </div>
-        
-       @*  <div class="row">
-            <div class="col-12 box-col-12">
-                <div class="card">
-                    <div class="card-header pb-0">
-                        <h5>Preventive Maintenance Schedule </h5>
-                    </div>
-                    <div class="card-body chart-block">
-                        <div class="chart-overflow" id="gantt_chart"></div>
-                    </div>
-                </div>
-            </div>
-        </div> *@
-        
         <div class="col-12 colorfull-kanban">
             <div class="card">
                 <div class="card-header pb-0 text-center">
@@ -351,82 +1880,6 @@
 <script src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
 <script>
     $(document).ready(function () {
-      
-        // window.onload = function () {
-        //     // renderTaskStatusChart();
-        //     // renderInvoicesHistoryChart();
-        //     // renderAllTaskRequests();
-        // };
-
-        // // Function to render Task Status chart
-        // function renderTaskStatusChart() {
-        //     var taskStatusChart = new CanvasJS.Chart("chartContainer", {
-        //         theme: "light2",
-        //         exportEnabled: true,
-        //         animationEnabled: true,
-        //         title: {
-        //             text: "Task Status"
-        //         },
-        //         data: [{
-        //             type: "pie",
-        //             startAngle: 180,
-        //             toolTipContent: "<b>{label}</b>: {y}",
-        //             showInLegend: true,
-        //             legendText: "{label}",
-        //             indexLabel: "{label} - {y}",
-        //             dataPoints: @Html.Raw(ViewBag.DataPoints) 
-        //             }]
-        //     });
-        //     taskStatusChart.render();
-        // }
-
-        // // Function to render Invoices History chart
-        // function renderInvoicesHistoryChart() {
-        //     var invoicesHistoryChart = new CanvasJS.Chart("chartInvoiceContainer", {
-        //         theme: "light2", 
-        //         exportEnabled: true,
-        //         animationEnabled: true,
-        //         title: {
-        //             text: "Invoices Status"
-        //         },
-        //         data: [{
-        //             type: "pie",
-        //             startAngle: 180,
-        //             toolTipContent: "<b>{label}</b>: {y}",
-        //             showInLegend: true,
-        //             legendText: "{label}",
-        //             indexLabel: "{label} - {y}",
-        //             dataPoints: @Html.Raw(ViewBag.invoiceStatus) 
-        //         }]
-        //     });
-        //     invoicesHistoryChart.render();
-        // }
-
-        // function renderAllTaskRequests() {
-        //     var chart = new CanvasJS.Chart("chartTaskRequestByMonthContainer", {
-        //         theme: "light2", // Choose your theme
-        //         exportEnabled: true,
-        //         animationEnabled: true,
-        //         title: {
-        //             text: "Task Requests by Month"
-        //         },
-        //         axisX: {
-        //             title: "Month"
-        //         },
-        //         axisY: {
-        //             title: "Task Requests Count"
-        //         },
-        //         data: 
-        //         [{
-        //             type: "line", // Change chart type to line
-        //             name: "Task Requests",
-        //             showInLegend: true,
-        //             dataPoints: @Html.Raw(ViewBag.DataPoints1)
-        //         }]
-        //     });
-        //     chart.render();
-        // }
-
         var cashFlowOptions = {
             chart: {
                 height: 350,
@@ -517,9 +1970,9 @@
                 width: 2,
                 colors: ['transparent']
             },
-            series: [], 
+            series: [],
             xaxis: {
-                categories: [], 
+                categories: [],
             },
             yaxis: {
                 title: {
@@ -532,7 +1985,7 @@
             tooltip: {
                 y: {
                     formatter: function (val) {
-                        return "$ " + val 
+                        return "$ " + val
                     }
                 }
             },
@@ -602,7 +2055,7 @@
             occupancyRateOptions
         );
         occupancyChart.render();
-        
+
         $.ajax({
             url: '/Home/GetOccupancyRate',
             dataType: 'json',
@@ -631,133 +2084,6 @@
                 console.error('Error fetching data:', error);
             }
         });
-        //Occupancy Chart End
-        //Occupancy Chart End
-
-
-        //Rent Status Start
-        //Rent Status Start
-
-        // var rentStatusOptions = {
-        //     series: [],
-        //     chart: {
-        //         type: 'bar',
-        //         height: 350,
-        //         stacked: true,
-        //         stackType: '100%',
-        //         toolbar: {
-        //             show: false,
-        //         }
-        //     },
-        //     plotOptions: {
-        //         bar: {
-        //             horizontal: false,
-        //             columnWidth: '20px',
-        //             borderRadius: 5,
-        //         },
-        //     },
-        //     grid: {
-        //         show: false,
-        //         xaxis: {
-        //             lines: {
-        //                 show: false
-        //             }
-        //         }
-        //     },
-        //     dataLabels: {
-        //         enabled: false,
-        //     },
-        //     fill: {
-        //         opacity: 1
-        //     },
-        //     legend: {
-        //         show: false
-        //     },
-        //     states: {
-        //         hover: {
-        //             filter: {
-        //                 type: 'darken',
-        //                 value: 1,
-        //             }
-        //         }
-        //     },
-        //     colors: ['#008FFB', '#00E396'],
-        //     yaxis: {
-        //         tickAmount: 3,
-        //         min: 0,
-        //         max: 800,
-        //         axisBorder: {
-        //             show: false,
-        //         },
-        //         axisTicks: {
-        //             show: false,
-        //         },
-        //     },
-        //     xaxis: {
-        //         categories: [],
-        //         axisBorder: {
-        //             show: false,
-        //         },
-        //         axisTicks: {
-        //             show: false,
-        //         },
-        //     },
-        //     responsive: [
-        //         {
-        //             breakpoint: 1661,
-        //             options: {
-        //                 chart: {
-        //                     height: 420,
-        //                 }
-        //             }
-        //         },
-        //         {
-        //             breakpoint: 1366,
-        //             options: {
-        //                 chart: {
-        //                     height: 435,
-        //                 }
-        //             }
-        //         },
-        //         {
-        //             breakpoint: 1101,
-        //             options: {
-        //                 chart: {
-        //                     height: 250,
-        //                 }
-        //             }
-        //         },
-        //         {
-        //             breakpoint: 1007,
-        //             options: {
-        //                 chart: {
-        //                     height: 435,
-        //                 }
-        //             }
-        //         }
-        //     ]
-        // };
-
-        // var rentStatusChart = new ApexCharts(document.querySelector("#rentStatusContainer"), rentStatusOptions);
-        // rentStatusChart.render();
-
-        // $.ajax({
-        //     url: '/Home/GetRentStatus',
-        //     dataType: 'json',
-        //     success: function (data) {
-        //         rentStatusChart.updateOptions({
-        //             series: data.Series,
-        //             xaxis: {
-        //                 categories: data.Categories
-        //             }
-        //         });
-        //     },
-        //     error: function (xhr, status, error) {
-        //         console.error('Error fetching data:', error);
-        //     }
-        // });
-
-
 
         var rentStatusOptions = {
             series: [],
@@ -920,67 +2246,6 @@
             $("#TittlName").text(organizationName);
         }
 
-        // // Gantt Chart Start
-        // // Gantt chart
-        // google.charts.load('current', { 'packages': ['gantt'] });
-        // google.charts.setOnLoadCallback(drawChart);
-
-        // function daysToMilliseconds(days) {
-        //     return days * 24 * 60 * 60 * 1000;
-        // }
-
-        // function drawChart() {
-
-        //     var data = new google.visualization.DataTable();
-        //     data.addColumn('string', 'Task ID');
-        //     data.addColumn('string', 'Task Name');
-        //     data.addColumn('string', 'Resource');
-        //     data.addColumn('date', 'Start Date');
-        //     data.addColumn('date', 'End Date');
-        //     data.addColumn('number', 'Duration');
-        //     data.addColumn('number', 'Percent Complete');
-        //     data.addColumn('string', 'Dependencies');
-
-        //     data.addRows([
-        //         ['Research', 'Find sources', null,
-        //             new Date(2015, 0, 1), new Date(2015, 0, 5), null, 100, null],
-        //         ['Write', 'Write paper', 'write',
-        //             null, new Date(2015, 0, 9), daysToMilliseconds(3), 25, 'Research,Outline'],
-        //         ['Cite', 'Create bibliography', 'write',
-        //             null, new Date(2015, 0, 7), daysToMilliseconds(1), 20, 'Research'],
-        //         ['Complete', 'Hand in paper', 'complete',
-        //             null, new Date(2015, 0, 10), daysToMilliseconds(1), 0, 'Cite,Write'],
-        //         ['Outline', 'Outline paper', 'write',
-        //             null, new Date(2015, 0, 6), daysToMilliseconds(1), 100, 'Research']
-        //     ]);
-
-        //     var options = {
-        //         height: 275,
-        //         gantt: {
-        //             criticalPathEnabled: false, // Critical path arrows will be the same as other arrows.
-        //             arrow: {
-        //                 angle: 100,
-        //                 width: 5,
-        //                 color: '#51bb25',
-        //                 radius: 0
-        //             },
-
-        //             palette: [
-        //                 {
-        //                     "color": zetaAdminConfig.primary,
-        //                     "dark": zetaAdminConfig.secondary,
-        //                     "light": "#047afb"
-        //                 }
-        //             ]
-
-        //         }
-        //     };
-        //     var chart = new google.visualization.Gantt(document.getElementById('gantt_chart'));
-
-        //     chart.draw(data, options);
-        // }
-        // // Gantt Chart End
-
         // pie chart
         var options8 = {
             chart: {
@@ -993,7 +2258,7 @@
                 breakpoint: 480,
                 options: {
                     chart: {
-                        
+
                         width: 200
                     },
                     legend: {
@@ -1011,7 +2276,7 @@
 
         chart8.render();
     });
-</script>
+</script> *@
 
-  
+
 
