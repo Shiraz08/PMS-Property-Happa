@@ -72,6 +72,52 @@ namespace PMS_PropertyHapa.Staff.Controllers
             return View();
         }
 
+        public class LandlordFilter
+        {
+            public bool IsDaily { get; set; }
+            public bool IsWeekly { get; set; }
+            public bool IsMonthly { get; set; }
+            public bool IsResidential { get; set; }
+            public bool IsCommercial { get; set; }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllLandlords(LandlordFilter landlordFilter)
+        {
+            try
+            {
+                var owner = await _authService.GetAllLandlordAsync();
+                var currenUserId = Request?.Cookies["userId"]?.ToString();
+                if (currenUserId != null)
+                {
+                    owner = owner.Where(s => s.AddedBy == currenUserId);
+                }
+
+                if (landlordFilter.IsDaily)
+                {
+                    owner = owner.Where(s => s.AddedDate == DateTime.UtcNow);
+                }
+                
+                if (landlordFilter.IsWeekly)
+                {
+                    owner = owner.Where(s => s.AddedDate == DateTime.UtcNow);
+                }
+
+                if (landlordFilter.IsMonthly)
+                {
+                    owner = owner.Where(s => s.AddedDate == DateTime.UtcNow);
+                }
+
+
+                return Ok(owner);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while fetching assets: {ex.Message}");
+            }
+        }
+
+
         [HttpGet]
         public async Task<IActionResult> GetLandlord()
         {
