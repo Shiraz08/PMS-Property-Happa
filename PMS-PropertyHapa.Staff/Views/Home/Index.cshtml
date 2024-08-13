@@ -1022,36 +1022,27 @@
 
 <!-- checkbox dropdowns -->
 <script>
-    document
-        .querySelectorAll(".select-dropdown-menu")
-        .forEach((dropdownMenu) => {
-            // Select All functionality
-            dropdownMenu
-                .querySelector(".form-check-input[id='selectAll']")
-                .addEventListener("change", function () {
-                    let checkboxes = dropdownMenu.querySelectorAll(
-                        ".form-check-input:not(#selectAll)"
-                    );
-                    checkboxes.forEach(
-                        (checkbox) => (checkbox.checked = this.checked)
-                    );
-                });
+    $(".select-dropdown-menu").each(function () {
+        var $dropdownMenu = $(this);
 
-            // Search functionality
-            dropdownMenu
-                .querySelector(".form-control[id='searchBox']")
-                .addEventListener("input", function () {
-                    let filter = this.value.toLowerCase();
-                    let checkboxes = dropdownMenu.querySelectorAll(".form-check");
-                    checkboxes.forEach((checkbox) => {
-                        let label = checkbox
-                            .querySelector("label")
-                            .innerText.toLowerCase();
-                        checkbox.style.display = label.includes(filter) ? "" : "none";
-                    });
-                });
+        // Select All functionality
+        $dropdownMenu.find(".form-check-input[id='selectAll']").on("change", function () {
+            var isChecked = $(this).prop("checked");
+            $dropdownMenu.find(".form-check-input:not(#selectAll)").prop("checked", isChecked);
         });
+
+        // Search functionality
+        $dropdownMenu.find(".form-control[id='searchBox']").on("input", function () {
+            var filter = $(this).val().toLowerCase();
+            $dropdownMenu.find(".form-check").each(function () {
+                var $checkbox = $(this);
+                var label = $checkbox.find("label").text().toLowerCase();
+                $checkbox.toggle(label.includes(filter));
+            });
+        });
+    });
 </script>
+
 
 <!-- Drag and Drop Charts -->
 <script>
@@ -1062,32 +1053,28 @@
     }
 
     function drag(ev) {
-        ev.dataTransfer.setData("text", ev.target.id);
+        ev.originalEvent.dataTransfer.setData("text", ev.target.id);
     }
 
     function drop(ev) {
         ev.preventDefault();
-        const data = ev.dataTransfer.getData("text");
-        const draggedElement = document.getElementById(data);
+        const data = ev.originalEvent.dataTransfer.getData("text");
+        const $draggedElement = $("#" + data);
 
-        let dropTarget = ev.target;
-        if (!dropTarget.classList.contains("box")) {
-            dropTarget = dropTarget.closest(".box");
+        let $dropTarget = $(ev.target);
+        if (!$dropTarget.hasClass("box")) {
+            $dropTarget = $dropTarget.closest(".box");
         }
 
-        if (
-            dropTarget &&
-            draggedElement &&
-            dropTarget !== draggedElement.parentNode
-        ) {
-            const sourceDiv = draggedElement.parentNode;
-            const dropTargetElement = dropTarget.firstElementChild;
+        if ($dropTarget.length && $draggedElement.length && !$dropTarget.is($draggedElement.parent())) {
+            const $sourceDiv = $draggedElement.parent();
+            const $dropTargetElement = $dropTarget.children().first();
 
-            if (dropTargetElement) {
-                sourceDiv.appendChild(dropTargetElement);
+            if ($dropTargetElement.length) {
+                $sourceDiv.append($dropTargetElement);
             }
 
-            dropTarget.appendChild(draggedElement);
+            $dropTarget.append($draggedElement);
 
             saveState();
             initializeCharts();
@@ -1095,22 +1082,22 @@
     }
 
     function saveState() {
-        const boxes = document.querySelectorAll(".box");
-        boxes.forEach((box, index) => {
-            localStorage.setItem("box" + (index + 1), box.innerHTML);
+        $(".box").each(function (index) {
+            localStorage.setItem("box" + (index + 1), $(this).html());
         });
     }
 
     function loadState() {
-        const boxes = document.querySelectorAll(".box");
-        boxes.forEach((box, index) => {
+        $(".box").each(function (index) {
             const savedContent = localStorage.getItem("box" + (index + 1));
             if (savedContent) {
-                box.innerHTML = savedContent;
+                $(this).html(savedContent);
             }
         });
     }
 
+
+    // count functionality
     function updateLandlordCount(count, period, dropdownBtnId) {
         updateCount('landlordCount', count, dropdownBtnId, period);
     }
@@ -1132,20 +1119,22 @@
     }
 
     function updateCount(countElementId, count, dropdownBtnId, period) {
-        document.getElementById(countElementId).innerText = count;
+        $('#' + countElementId).text(count);
 
-        document.getElementById(dropdownBtnId).innerText = period;
+        $('#' + dropdownBtnId).text(period);
 
-        var dropdownItems = document.querySelectorAll(`#${dropdownBtnId} + .dropdown-menu .dropdown-item`);
-        dropdownItems.forEach(function (item) {
-            item.classList.remove('active');
+        var dropdownItems = $('#' + dropdownBtnId).next('.dropdown-menu').find('.dropdown-item');
+        dropdownItems.removeClass('active');
+
+        var activeItem = dropdownItems.filter(function () {
+            return $(this).text().includes(period);
         });
 
-        var activeItem = Array.from(dropdownItems).find(item => item.textContent.includes(period));
-        if (activeItem) {
-            activeItem.classList.add('active');
+        if (activeItem.length) {
+            activeItem.addClass('active');
         }
     }
+
 
 
 
