@@ -6,7 +6,7 @@
 }
 
 <div class="pagetitle d-flex align-items-center justify-content-between">
-    <h1>Welcome Ail Ali 👋</h1>
+    <h1>Welcome @ViewBag.UserName 👋</h1>
     <nav>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
@@ -606,31 +606,28 @@
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <div>
-                            <img src="~/assets/img/icons/owner-icon.png"
-                                 alt="owner icon" />
+                            <img src="~/assets/img/icons/owner-icon.png" alt="owner icon" />
                         </div>
                         <div class="ps-3">
                             <h5>Total Landlords</h5>
-                            <h6>@ViewBag.totalLandlords</h6>
+                            <h6 id="landlordCount">@ViewBag.totalLandlordsThreeMonths</h6> 
                             <div class="dropdown custom-card-dropdown">
-                                <button class="btn custom-card-btn dropdown-toggle"
-                                        type="button"
-                                        data-bs-toggle="dropdown"
-                                        aria-expanded="false">
+                                <button class="btn custom-card-btn dropdown-toggle" type="button" id="landlordDropdownBtn" data-bs-toggle="dropdown" aria-expanded="false">
                                     3 months
                                 </button>
                                 <ul class="dropdown-menu">
                                     <li>
-                                        <a class="dropdown-item" href="#">1 month</a>
+                                        <a class="dropdown-item" href="#" onclick="updateLandlordCount('@ViewBag.totalLandlordsOneMonth', '1 month', 'landlordDropdownBtn')">1 month</a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item active" href="#">3 months</a>
+                                        <a class="dropdown-item active" href="#" onclick="updateLandlordCount('@ViewBag.totalLandlordsThreeMonths', '3 months', 'landlordDropdownBtn')">3 months</a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="#">6 months</a>
+                                        <a class="dropdown-item" href="#" onclick="updateLandlordCount('@ViewBag.totalLandlordsSixMonths', '6 months', 'landlordDropdownBtn')">6 months</a>
                                     </li>
                                 </ul>
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -646,23 +643,20 @@
                         </div>
                         <div class="ps-3">
                             <h5>Total Assets</h5>
-                            <h6>@ViewBag.totalAssets</h6>
+                            <h6 id="assetCount">@ViewBag.totalAssetsThreeMonths</h6>
                             <div class="dropdown custom-card-dropdown">
-                                <button class="btn custom-card-btn dropdown-toggle"
-                                        type="button"
-                                        data-bs-toggle="dropdown"
-                                        aria-expanded="false">
+                                <button class="btn custom-card-btn dropdown-toggle" type="button" id="assetDropdownBtn" data-bs-toggle="dropdown" aria-expanded="false">
                                     3 months
                                 </button>
                                 <ul class="dropdown-menu">
                                     <li>
-                                        <a class="dropdown-item" href="#">1 month</a>
+                                        <a class="dropdown-item" href="#" onclick="updateAssetCount('@ViewBag.totalAssetsOneMonth', '1 month', 'assetDropdownBtn')">1 month</a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item active" href="#">3 months</a>
+                                        <a class="dropdown-item active" href="#" onclick="updateAssetCount('@ViewBag.totalAssetsThreeMonths', '3 months', 'assetDropdownBtn')">3 months</a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="#">6 months</a>
+                                        <a class="dropdown-item" href="#" onclick="updateAssetCount('@ViewBag.totalAssetsSixMonths', '6 months', 'assetDropdownBtn')">6 months</a>
                                     </li>
                                 </ul>
                             </div>
@@ -681,23 +675,20 @@
                         </div>
                         <div class="ps-3">
                             <h5>Total Units</h5>
-                            <h6>@ViewBag.totalUnits</h6>
+                            <h6 id="unitsCount">@ViewBag.totalUnitsThreeMonths</h6>
                             <div class="dropdown custom-card-dropdown">
-                                <button class="btn custom-card-btn dropdown-toggle"
-                                        type="button"
-                                        data-bs-toggle="dropdown"
-                                        aria-expanded="false">
+                                <button class="btn custom-card-btn dropdown-toggle" type="button" id="unitsDropdownBtn" data-bs-toggle="dropdown" aria-expanded="false">
                                     3 months
                                 </button>
                                 <ul class="dropdown-menu">
                                     <li>
-                                        <a class="dropdown-item" href="#">1 month</a>
+                                        <a class="dropdown-item" href="#" onclick="updateUnitsCount('@ViewBag.totalUnitsOneMonth', '1 month', 'unitsDropdownBtn')">1 month</a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item active" href="#">3 months</a>
+                                        <a class="dropdown-item active" href="#" onclick="updateUnitsCount('@ViewBag.totalUnitsThreeMonths', '3 months', 'unitsDropdownBtn')">3 months</a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="#">6 months</a>
+                                        <a class="dropdown-item" href="#" onclick="updateUnitsCount('@ViewBag.totalUnitsSixMonths', '6 months', 'unitsDropdownBtn')">6 months</a>
                                     </li>
                                 </ul>
                             </div>
@@ -716,23 +707,20 @@
                         </div>
                         <div class="ps-3">
                             <h5>Total Occupancy</h5>
-                            <h6>@ViewBag.totalOccupiedUnits</h6>
+                            <h6 id="occupiedUnitsCount">@ViewBag.totalOccupiedUnitsThreeMonths</h6>
                             <div class="dropdown custom-card-dropdown">
-                                <button class="btn custom-card-btn dropdown-toggle"
-                                        type="button"
-                                        data-bs-toggle="dropdown"
-                                        aria-expanded="false">
+                                <button class="btn custom-card-btn dropdown-toggle" type="button" id="occupiedUnitsDropdownBtn" data-bs-toggle="dropdown" aria-expanded="false">
                                     3 months
                                 </button>
                                 <ul class="dropdown-menu">
                                     <li>
-                                        <a class="dropdown-item" href="#">1 month</a>
+                                        <a class="dropdown-item" href="#" onclick="updateOccupiedUnitsCount('@ViewBag.totalOccupiedUnitsOneMonth', '1 month', 'occupiedUnitsDropdownBtn')">1 month</a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item active" href="#">3 months</a>
+                                        <a class="dropdown-item active" href="#" onclick="updateOccupiedUnitsCount('@ViewBag.totalOccupiedUnitsThreeMonths', '3 months', 'occupiedUnitsDropdownBtn')">3 months</a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="#">6 months</a>
+                                        <a class="dropdown-item" href="#" onclick="updateOccupiedUnitsCount('@ViewBag.totalOccupiedUnitsSixMonths', '6 months', 'occupiedUnitsDropdownBtn')">6 months</a>
                                     </li>
                                 </ul>
                             </div>
@@ -751,23 +739,20 @@
                         </div>
                         <div class="ps-3">
                             <h5>Total Vacancy</h5>
-                            <h6>@ViewBag.totalVacancy</h6>
+                            <h6 id="vacancyCount">@ViewBag.totalVacancyThreeMonths</h6>
                             <div class="dropdown custom-card-dropdown">
-                                <button class="btn custom-card-btn dropdown-toggle"
-                                        type="button"
-                                        data-bs-toggle="dropdown"
-                                        aria-expanded="false">
+                                <button class="btn custom-card-btn dropdown-toggle" type="button" id="vacancyDropdownBtn" data-bs-toggle="dropdown" aria-expanded="false">
                                     3 months
                                 </button>
                                 <ul class="dropdown-menu">
                                     <li>
-                                        <a class="dropdown-item" href="#">1 month</a>
+                                        <a class="dropdown-item" href="#" onclick="updateVacancyCount('@ViewBag.totalVacancyOneMonth', '1 month', 'vacancyDropdownBtn')">1 month</a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item active" href="#">3 months</a>
+                                        <a class="dropdown-item active" href="#" onclick="updateVacancyCount('@ViewBag.totalVacancyThreeMonths', '3 months', 'vacancyDropdownBtn')">3 months</a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="#">6 months</a>
+                                        <a class="dropdown-item" href="#" onclick="updateVacancyCount('@ViewBag.totalVacancySixMonths', '6 months', 'vacancyDropdownBtn')">6 months</a>
                                     </li>
                                 </ul>
                             </div>
@@ -1104,10 +1089,7 @@
 
             dropTarget.appendChild(draggedElement);
 
-            // Save the current state to localStorage
             saveState();
-
-            // Reinitialize the charts after moving the elements
             initializeCharts();
         }
     }
@@ -1128,6 +1110,44 @@
             }
         });
     }
+
+    function updateLandlordCount(count, period, dropdownBtnId) {
+        updateCount('landlordCount', count, dropdownBtnId, period);
+    }
+
+    function updateAssetCount(count, period, dropdownBtnId) {
+        updateCount('assetCount', count, dropdownBtnId, period);
+    }
+
+    function updateUnitsCount(count, period, dropdownBtnId) {
+        updateCount('unitsCount', count, dropdownBtnId, period);
+    }
+
+    function updateOccupiedUnitsCount(count, period, dropdownBtnId) {
+        updateCount('occupiedUnitsCount', count, dropdownBtnId, period);
+    }
+
+    function updateVacancyCount(count, period, dropdownBtnId) {
+        updateCount('vacancyCount', count, dropdownBtnId, period);
+    }
+
+    function updateCount(countElementId, count, dropdownBtnId, period) {
+        document.getElementById(countElementId).innerText = count;
+
+        document.getElementById(dropdownBtnId).innerText = period;
+
+        var dropdownItems = document.querySelectorAll(`#${dropdownBtnId} + .dropdown-menu .dropdown-item`);
+        dropdownItems.forEach(function (item) {
+            item.classList.remove('active');
+        });
+
+        var activeItem = Array.from(dropdownItems).find(item => item.textContent.includes(period));
+        if (activeItem) {
+            activeItem.classList.add('active');
+        }
+    }
+
+
 
     function clearChartElements() {
         const chartSelectors = [
@@ -1303,8 +1323,6 @@
         setChartHeight();
 
 
-
-
         // Occupancy Chart
         const optionsOccupancy = {
             chart: {
@@ -1321,7 +1339,7 @@
                                 show: true,
                                 label: "Occupancy",
                                 formatter: function (w) {
-                                    return w.globals.seriesTotals.reduce((a, b) => a + b, 0) + "%";
+                                    return w.globals.series[1] + "%"; // Occupancy Rate
                                 },
                                 fontSize: "12px",
                             },
@@ -1364,7 +1382,7 @@
                                             show: true,
                                             label: "Occupancy",
                                             formatter: function () {
-                                                return data.Total + "%";
+                                                return data.Series[1] + "%"; // Occupancy Rate
                                             },
                                             fontSize: "12px",
                                         },
@@ -1398,7 +1416,7 @@
                                 show: true,
                                 label: 'Vacancy',
                                 formatter: function (w) {
-                                    return w.globals.seriesTotals.reduce((a, b) => a + b, 0) + "%";
+                                    return w.globals.series[1] + "%"; // Vacancy Rate
                                 },
                                 fontSize: "12px",
                             },
@@ -1440,7 +1458,7 @@
                                             show: true,
                                             label: 'Vacancy',
                                             formatter: function () {
-                                                return data.Total + "%";
+                                                return data.Series[1] + "%"; // Vacancy Rate
                                             },
                                             fontSize: "12px",
                                         },
@@ -1456,141 +1474,196 @@
             });
         }
 
+
+        // Rent Collection Chart
+        const optionsRent = {
+            chart: { height: 370, type: "line", toolbar: { show: false } },
+            colors: ["#0095FF", "#00DB2D"],
+            dataLabels: { enabled: false },
+            stroke: { curve: "smooth" },
+            legend: {
+                show: true,
+                customLegendItems: ["Paid", "Unpaid"],
+                inverseOrder: true,
+                labels: { colors: "#939393" },
+            },
+            series: [],
+            xaxis: {
+                categories: [], // Months will be filled here
+                tooltip: { enabled: true },
+            },
+            yaxis: {
+                title: {
+                    text: 'Amount',
+                },
+            },
+            tooltip: {
+                enabled: true,
+                shared: true,
+                followCursor: true,
+                theme: "dark",
+            },
+        };
+
+        const rentChartElement = document.querySelector("#rentCollectionChart");
+        if (rentChartElement) {
+            const rentChart = new ApexCharts(rentChartElement, optionsRent);
+            rentChart.render();
+
+            $.ajax({
+                url: '/Home/GetRentStatus',
+                dataType: 'json',
+                success: function (data) {
+                    console.log("Rent status data fetched:", data);
+                    rentChart.updateOptions({
+                        series: data.Series,
+                        xaxis: {
+                            categories: data.Categories
+                        }
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error fetching rent status data:', error);
+                }
+            });
+        }
+
+
        // // Rent Collection Chart
-        // const optionsRent = {
-        //     chart: {
-        //         height: 350,
-        //         type: 'bar',
-        //         stacked: true,
-        //         stackType: '100%',
-        //         toolbar: {
-        //             show: false,
-        //         }
-        //     },
-        //     plotOptions: {
-        //         bar: {
-        //             horizontal: false,
-        //             columnWidth: '20px',
-        //             borderRadius: 5,
-        //         },
-        //     },
-        //     grid: {
-        //         show: false,
-        //         xaxis: {
-        //             lines: {
-        //                 show: false
-        //             }
-        //         }
-        //     },
-        //     dataLabels: {
-        //         enabled: false,
-        //     },
-        //     fill: {
-        //         opacity: 1
-        //     },
-        //     legend: {
-        //         show: false
-        //     },
-        //     states: {
-        //         hover: {
-        //             filter: {
-        //                 type: 'darken',
-        //                 value: 1,
-        //             }
-        //         }
-        //     },
-        //     colors: ['#008FFB', '#00E396'],
-        //     yaxis: {
-        //         tickAmount: 3,
-        //         min: 0,
-        //         max: 800,
-        //         axisBorder: {
-        //             show: false,
-        //         },
-        //         axisTicks: {
-        //             show: false,
-        //         },
-        //     },
-        //     xaxis: {
-        //         categories: [], // Initialize with empty categories
-        //         axisBorder: {
-        //             show: false,
-        //         },
-        //         axisTicks: {
-        //             show: false,
-        //         },
-        //     },
-        //     responsive: [
-        //         {
-        //             breakpoint: 1661,
-        //             options: {
-        //                 chart: {
-        //                     height: 420,
-        //                 }
-        //             }
-        //         },
-        //         {
-        //             breakpoint: 1366,
-        //             options: {
-        //                 chart: {
-        //                     height: 435,
-        //                 }
-        //             }
-        //         },
-        //         {
-        //             breakpoint: 1101,
-        //             options: {
-        //                 chart: {
-        //                     height: 250,
-        //                 }
-        //             }
-        //         },
-        //         {
-        //             breakpoint: 1007,
-        //             options: {
-        //                 chart: {
-        //                     height: 435,
-        //                 }
-        //             }
-        //         }
-        //     ]
-        // };
+       //  const optionsRent = {
+       //      chart: {
+       //          height: 350,
+       //          type: 'bar',
+       //          stacked: true,
+       //          stackType: '100%',
+       //          toolbar: {
+       //              show: false,
+       //          }
+       //      },
+       //      plotOptions: {
+       //          bar: {
+       //              horizontal: false,
+       //              columnWidth: '20px',
+       //              borderRadius: 5,
+       //          },
+       //      },
+       //      grid: {
+       //          show: false,
+       //          xaxis: {
+       //              lines: {
+       //                  show: false
+       //              }
+       //          }
+       //      },
+       //      dataLabels: {
+       //          enabled: false,
+       //      },
+       //      fill: {
+       //          opacity: 1
+       //      },
+       //      legend: {
+       //          show: false
+       //      },
+       //      states: {
+       //          hover: {
+       //              filter: {
+       //                  type: 'darken',
+       //                  value: 1,
+       //              }
+       //          }
+       //      },
+       //      colors: ['#008FFB', '#00E396'],
+       //      yaxis: {
+       //          tickAmount: 3,
+       //          min: 0,
+       //          max: 800,
+       //          axisBorder: {
+       //              show: false,
+       //          },
+       //          axisTicks: {
+       //              show: false,
+       //          },
+       //      },
+       //      xaxis: {
+       //          categories: [], // Initialize with empty categories
+       //          axisBorder: {
+       //              show: false,
+       //          },
+       //          axisTicks: {
+       //              show: false,
+       //          },
+       //      },
+       //      responsive: [
+       //          {
+       //              breakpoint: 1661,
+       //              options: {
+       //                  chart: {
+       //                      height: 420,
+       //                  }
+       //              }
+       //          },
+       //          {
+       //              breakpoint: 1366,
+       //              options: {
+       //                  chart: {
+       //                      height: 435,
+       //                  }
+       //              }
+       //          },
+       //          {
+       //              breakpoint: 1101,
+       //              options: {
+       //                  chart: {
+       //                      height: 250,
+       //                  }
+       //              }
+       //          },
+       //          {
+       //              breakpoint: 1007,
+       //              options: {
+       //                  chart: {
+       //                      height: 435,
+       //                  }
+       //              }
+       //          }
+       //      ]
+       //  };
 
-        // const rentChartElement = document.querySelector("#rentStatusContainer");
-        // if (rentChartElement) {
-        //     const rentStatusChart = new ApexCharts(rentChartElement, optionsRent);
-        //     rentStatusChart.render();
+       //  const rentChartElement = document.querySelector("#rentStatusContainer");
+       //  if (rentChartElement) {
+       //      const rentStatusChart = new ApexCharts(rentChartElement, optionsRent);
+       //      rentStatusChart.render();
 
-        //     // Fetch data from server and update the chart
-        //     $.ajax({
-        //         url: '/Home/GetRentStatus',
-        //         dataType: 'json',
-        //         success: function (data) {
-        //             // Update chart with new data
-        //             rentStatusChart.updateOptions({
-        //                 series: data.Series,
-        //                 xaxis: {
-        //                     categories: data.Categories
-        //                 }
-        //             });
-        //         },
-        //         error: function (xhr, status, error) {
-        //             console.error('Error fetching data:', error);
-        //         }
-        //     });
-        // }
+       //      // Fetch data from server and update the chart
+       //      $.ajax({
+       //          url: '/Home/GetRentStatus',
+       //          dataType: 'json',
+       //          success: function (data) {
+       //              // Update chart with new data
+       //              rentStatusChart.updateOptions({
+       //                  series: data.Series,
+       //                  xaxis: {
+       //                      categories: data.Categories
+       //                  }
+       //              });
+       //          },
+       //          error: function (xhr, status, error) {
+       //              console.error('Error fetching data:', error);
+       //          }
+       //      });
+       //  }
 
-        // function setChartHeight() {
-        //     const chartHeight = window.innerWidth < 992 ? 400 : 350;
-        //     rentStatusChart.updateOptions({
-        //         chart: {
-        //             height: chartHeight,
-        //         },
-        //     });
-        // }
+       //  function setChartHeight() {
+       //      const chartHeight = window.innerWidth < 992 ? 400 : 350;
+       //      rentStatusChart.updateOptions({
+       //          chart: {
+       //              height: chartHeight,
+       //          },
+       //      });
+       //  }
 
-        // window.addEventListener("resize", setChartHeight);
-        // setChartHeight();]]
+       //  window.addEventListener("resize", setChartHeight);
+       //  setChartHeight();]]
 
 
 

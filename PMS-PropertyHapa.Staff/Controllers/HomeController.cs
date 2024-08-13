@@ -38,6 +38,7 @@ namespace PMS_PropertyHapa.Staff.Auth.Controllers
         {
             var taskRequests = await _authService.GetAllTaskRequestsAsync();
             var currentUserId = Request?.Cookies["userId"]?.ToString();
+            
             if (currentUserId != null)
             {
                 taskRequests = taskRequests.Where(s => s.AddedBy == currentUserId);
@@ -60,54 +61,98 @@ namespace PMS_PropertyHapa.Staff.Auth.Controllers
                                                       && ((s.AddedDate.HasValue && s.AddedDate.Value.ToString("yyyy-MM-dd") == currentDate)
                                                       || (s.ModifiedDate.HasValue && s.ModifiedDate.Value.ToString("yyyy-MM-dd") == currentDate)));
             }
+
+
+            var userProfile = await _authService.GetProfileAsync(currentUserId);
+
+            ViewBag.UserName = userProfile?.Name ?? "User";
+
+
+
+            var addedDate = DateTime.Now;
+
+            var oneMonthAgo = addedDate.AddMonths(-1);
+            var threeMonthsAgo = addedDate.AddMonths(-3);
+            var sixMonthsAgo = addedDate.AddMonths(-6);
+            // Landlord Count
             var landlords = await _authService.GetAllLandlordAsync();
 
             if (currentUserId != null)
             {
                 landlords = landlords.Where(s => s.AddedBy == currentUserId);
-                ViewBag.totalLandlords = landlords.Count();
+
+                
+                ViewBag.totalLandlordsOneMonth = landlords.Count(s => s.AddedDate >= oneMonthAgo);
+                ViewBag.totalLandlordsThreeMonths = landlords.Count(s => s.AddedDate >= threeMonthsAgo);
+                ViewBag.totalLandlordsSixMonths = landlords.Count(s => s.AddedDate >= sixMonthsAgo);
             }
 
+            //Tenant Count
             var tenants = await _authService.GetAllTenantsAsync();
 
             if (currentUserId != null)
             {
                 tenants = tenants.Where(s => s.AddedBy == currentUserId);
-                ViewBag.totalTenants = tenants.Count();
+                ViewBag.totalTenantsOneMonth  = tenants.Count(s => s.AddedDate >= oneMonthAgo);
+                ViewBag.totalTenantsThreeMonths  = tenants.Count(s => s.AddedDate >= threeMonthsAgo);
+                ViewBag.totalTenantsSixMonths = tenants.Count(s => s.AddedDate >= sixMonthsAgo);
             }
 
-
+            //Assets Count
             var assets = await _authService.GetAllAssetsAsync();
 
             if (currentUserId != null)
             {
                 assets = assets.Where(s => s.AddedBy == currentUserId);
-                ViewBag.totalAssets = assets.Count();
+                ViewBag.totalAssetsOneMonth   = assets.Count(s => s.AddedDate >= oneMonthAgo);
+                ViewBag.totalAssetsThreeMonths   = assets.Count(s => s.AddedDate >= threeMonthsAgo);
+                ViewBag.totalAssetsSixMonths = assets.Count(s => s.AddedDate >= sixMonthsAgo);
 
             }
+            //Units Count
+           // var filter = new Filter();
+            //filter.AddedBy = currentUserId;
 
-            var filter = new Filter();
-            filter.AddedBy = currentUserId;
-            var assetUnits = await _authService.GetUnitsByUserAsync(filter);
+            //var assetUnits = await _authService.GetUnitsByUserAsync(filter);
+            var assetUnits = await _authService.GetAllUnitsAsync();
+            if(currentUserId != null)
+            {
+                assetUnits = assetUnits.Where(s => s.AddedBy == currentUserId);
+                ViewBag.totalUnitsOneMonth = assetUnits.Count(s => s.AddedDate >= oneMonthAgo);
+                ViewBag.totalUnitsThreeMonths = assetUnits.Count(s => s.AddedDate >= threeMonthsAgo);
+                ViewBag.totalUnitsSixMonths = assetUnits.Count(s => s.AddedDate >= sixMonthsAgo);
+                ViewBag.totalUnits = assetUnits.Count();
+            }
 
-            var totalUnits = assetUnits.Count();
-            ViewBag.totalUnits = totalUnits;
-
-            var unitIds = assetUnits.Where(x => x.AddedBy == currentUserId).Select(x => x.UnitId).ToList();
-
+            //Occupied and Vacant Units Count
             var leases = await _authService.GetAllLeasesAsync();
             if (currentUserId != null)
             {
                 leases = leases.Where(s => s.AddedBy == currentUserId).ToList();
             }
 
-            var occupiedUnits = leases.Select(l => l.UnitId).Distinct().Count();
+            var occupiedUnitsOneMonth = leases.Where(l => l.AddedDate >= oneMonthAgo).Select(l => l.UnitId).Distinct().Count();
 
-            var vacancy = totalUnits - occupiedUnits;
+            var occupiedUnitsThreeMonths = leases.Where(l => l.AddedDate >= threeMonthsAgo).Select(l => l.UnitId).Distinct().Count();
 
-            ViewBag.totalOccupiedUnits = occupiedUnits;
-            ViewBag.totalVacancy = vacancy;
+            var occupiedUnitsSixMonths = leases.Where(l => l.AddedDate >= sixMonthsAgo).Select(l => l.UnitId).Distinct().Count();
 
+            var vacancyOneMonth = ViewBag.totalUnitsOneMonth - occupiedUnitsOneMonth;
+            var vacancyThreeMonths = ViewBag.totalUnitsThreeMonths - occupiedUnitsThreeMonths;
+            var vacancySixMonths = ViewBag.totalUnitsSixMonths - occupiedUnitsSixMonths;
+
+            ViewBag.totalOccupiedUnitsOneMonth = occupiedUnitsOneMonth;
+            ViewBag.totalOccupiedUnitsThreeMonths = occupiedUnitsThreeMonths;
+            ViewBag.totalOccupiedUnitsSixMonths = occupiedUnitsSixMonths;
+
+            ViewBag.totalVacancyOneMonth = vacancyOneMonth;
+            ViewBag.totalVacancyThreeMonths = vacancyThreeMonths;
+            ViewBag.totalVacancySixMonths = vacancySixMonths;
+
+            var totalOccupiedUnits = leases.Select(l => l.UnitId).Distinct().Count();
+            ViewBag.totalVacancy = ViewBag.totalUnits - totalOccupiedUnits;
+
+            //TaskRequest Count
             var tasks = await _authService.GetAllTaskRequestsAsync();
             if (currentUserId != null)
             {
@@ -471,37 +516,56 @@ namespace PMS_PropertyHapa.Staff.Auth.Controllers
         //    return Json(data);
         //}
 
+
         public async Task<IActionResult> GetRentStatus()
         {
             var currentUserId = Request?.Cookies["userId"]?.ToString();
             var invoiceHistory = await _authService.GetAllInvoicesAsync();
 
-            // Filter invoices based on current user if applicable
             if (currentUserId != null)
             {
                 invoiceHistory = invoiceHistory.Where(s => s.AddedBy == currentUserId).ToList();
             }
 
-            // Calculate counts for different categories
-            var paidCount = invoiceHistory.Count(i => i.InvoicePaid == true);
-            var unpaidCount = invoiceHistory.Count(i => i.InvoicePaid != true);
-            var paidToOwnerCount = invoiceHistory.Count(i => i.InvoicePaidToOwner == true);
-            var unpaidToOwnerCount = invoiceHistory.Count(i => i.InvoicePaidToOwner != true);
+            // Generate a list of all 12 months
+            var allMonths = Enumerable.Range(1, 12).Select(m => new DateTime(DateTime.Now.Year, m, 1).ToString("MMM yyyy")).ToList();
 
-            // Prepare data for the chart
+            // Group by month and year, calculate sums
+            var groupedData = invoiceHistory
+                .GroupBy(i => new { Year = i.AddedDate.Year, Month = i.AddedDate.Month })
+                .Select(g => new
+                {
+                    Date = new DateTime(g.Key.Year, g.Key.Month, 1).ToString("MMM yyyy"),
+                    PaidAmount = g.Where(i => i.InvoicePaid == true).Sum(i => i.RentAmount),
+                    UnpaidAmount = g.Where(i => i.InvoicePaid != true).Sum(i => i.RentAmount)
+                })
+                .ToList();
+
+            // Merge with all 12 months
+            var finalData = allMonths.Select(month => new
+            {
+                Date = month,
+                PaidAmount = groupedData.FirstOrDefault(g => g.Date == month)?.PaidAmount ?? 0,
+                UnpaidAmount = groupedData.FirstOrDefault(g => g.Date == month)?.UnpaidAmount ?? 0
+            }).ToList();
+
             var data = new
             {
                 Series = new List<object>
         {
-            new { name = "Paid/Unpaid", data = new List<int> { paidCount, unpaidCount } },
-            new { name = "Paid to Owner/Unpaid to Owner", data = new List<int> { paidToOwnerCount, unpaidToOwnerCount } }
+            new { name = "Paid", data = finalData.Select(g => new { x = g.Date, y = g.PaidAmount }).ToList() },
+            new { name = "Unpaid", data = finalData.Select(g => new { x = g.Date, y = g.UnpaidAmount }).ToList() }
         },
-                Categories = new List<string> { "Paid", "Unpaid" },
-                SubCategories = new List<string> { "Paid/Unpaid", "Paid to Owner/Unpaid to Owner" }
+                Categories = allMonths
             };
 
             return Json(data);
         }
+
+
+
+
+
 
         public async Task<IActionResult> GetKanbanData()
         {
