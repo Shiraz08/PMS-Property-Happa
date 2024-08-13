@@ -4385,54 +4385,163 @@ namespace MagicVilla_VillaAPI.Repository
         {
             try
             {
+                //var ownerDtos = await (from owner in _db.Owner
+                //                       join organization in _db.OwnerOrganization
+                //                       on owner.OwnerId equals organization.OwnerId into orgGroup
+                //                       from org in orgGroup.DefaultIfEmpty()
+                //                       where owner.IsDeleted != true
+                //                       select new OwnerDto
+                //                       {
+                //                           OwnerId = owner.OwnerId,
+                //                           FirstName = owner.FirstName,
+                //                           MiddleName = owner.MiddleName,
+                //                           LastName = owner.LastName,
+                //                           Fax = owner.Fax,
+                //                           TaxId = owner.TaxId,
+                //                           EmailAddress = owner.EmailAddress,
+                //                           EmailAddress2 = owner.EmailAddress2,
+                //                           PictureName = owner.Picture,
+                //                           Picture = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Owner_Picture_" + owner.OwnerId + Path.GetExtension(owner.Picture)}",
+                //                           PhoneNumber = owner.PhoneNumber,
+                //                           PhoneNumber2 = owner.PhoneNumber2,
+                //                           Longitude = owner.Longitude,
+                //                           Latitude = owner.Latitude,
+                //                           EmergencyContactInfo = owner.EmergencyContactInfo,
+                //                           LeaseAgreementId = owner.LeaseAgreementId,
+                //                           OwnerNationality = owner.OwnerNationality,
+                //                           Gender = owner.Gender,
+                //                           DocumentName = owner.Document,
+                //                           Document = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Owner_Document_" + owner.OwnerId + Path.GetExtension(owner.Document)}",
+                //                           DOB = owner.DOB,
+                //                           VAT = owner.VAT,
+                //                           LegalName = owner.LegalName,
+                //                           Account_Name = owner.Account_Name,
+                //                           Account_Holder = owner.Account_Holder,
+                //                           Account_IBAN = owner.Account_IBAN,
+                //                           Account_Swift = owner.Account_Swift,
+                //                           Account_Bank = owner.Account_Bank,
+                //                           Account_Currency = owner.Account_Currency,
+                //                           OrganizationName = org.OrganizationName,
+                //                           OrganizationDescription = org.OrganizationDescription,
+                //                           OrganizationIcon = org.OrganizationIcon,
+                //                           OrganizationLogo = org.OrganizationLogo,
+                //                           Website = org.Website,
+                //                           AddedBy = owner.AddedBy,
+                //                           AddedDate = owner.AddedDate,
+                //                           ModifiedDate = owner.ModifiedDate
+
+                //                       })
+                //                       .AsNoTracking()
+                //                       .ToListAsync();
+
+
                 var ownerDtos = await (from owner in _db.Owner
                                        join organization in _db.OwnerOrganization
                                        on owner.OwnerId equals organization.OwnerId into orgGroup
                                        from org in orgGroup.DefaultIfEmpty()
+
+                                           // Join Asset table to get the count of Assets
+                                       join asset in _db.Assets
+                                       on owner.OwnerId equals asset.OwnerId into assetGroup
+                                       from ag in assetGroup.DefaultIfEmpty()
+
+                                           // Join AssetUnits table to get the count of Units
+                                       join assetUnit in _db.AssetsUnits
+                                       on ag.AssetId equals assetUnit.AssetId into assetUnitGroup
+                                       from aug in assetUnitGroup.DefaultIfEmpty()
+
                                        where owner.IsDeleted != true
+
+                                       group new { ag, aug } by new
+                                       {
+                                           owner.OwnerId,
+                                           owner.FirstName,
+                                           owner.MiddleName,
+                                           owner.LastName,
+                                           owner.Fax,
+                                           owner.TaxId,
+                                           owner.EmailAddress,
+                                           owner.EmailAddress2,
+                                           owner.Picture,
+                                           owner.PhoneNumber,
+                                           owner.PhoneNumber2,
+                                           owner.Longitude,
+                                           owner.Latitude,
+                                           owner.EmergencyContactInfo,
+                                           owner.LeaseAgreementId,
+                                           owner.OwnerNationality,
+                                           owner.Gender,
+                                           owner.Document,
+                                           owner.DOB,
+                                           owner.VAT,
+                                           owner.LegalName,
+                                           owner.Account_Name,
+                                           owner.Account_Holder,
+                                           owner.Account_IBAN,
+                                           owner.Account_Swift,
+                                           owner.Account_Bank,
+                                           owner.Account_Currency,
+                                           org.OrganizationName,
+                                           org.OrganizationDescription,
+                                           org.OrganizationIcon,
+                                           org.OrganizationLogo,
+                                           org.Website,
+                                           owner.AddedBy,
+                                           owner.AddedDate,
+                                           owner.ModifiedDate
+                                       } into g
                                        select new OwnerDto
                                        {
-                                           OwnerId = owner.OwnerId,
-                                           FirstName = owner.FirstName,
-                                           MiddleName = owner.MiddleName,
-                                           LastName = owner.LastName,
-                                           Fax = owner.Fax,
-                                           TaxId = owner.TaxId,
-                                           EmailAddress = owner.EmailAddress,
-                                           EmailAddress2 = owner.EmailAddress2,
-                                           PictureName = owner.Picture,
-                                           Picture = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Owner_Picture_" + owner.OwnerId + Path.GetExtension(owner.Picture)}",
-                                           PhoneNumber = owner.PhoneNumber,
-                                           PhoneNumber2 = owner.PhoneNumber2,
-                                           Longitude = owner.Longitude,
-                                           Latitude = owner.Latitude,
-                                           EmergencyContactInfo = owner.EmergencyContactInfo,
-                                           LeaseAgreementId = owner.LeaseAgreementId,
-                                           OwnerNationality = owner.OwnerNationality,
-                                           Gender = owner.Gender,
-                                           DocumentName = owner.Document,
-                                           Document = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Owner_Document_" + owner.OwnerId + Path.GetExtension(owner.Document)}",
-                                           DOB = owner.DOB,
-                                           VAT = owner.VAT,
-                                           LegalName = owner.LegalName,
-                                           Account_Name = owner.Account_Name,
-                                           Account_Holder = owner.Account_Holder,
-                                           Account_IBAN = owner.Account_IBAN,
-                                           Account_Swift = owner.Account_Swift,
-                                           Account_Bank = owner.Account_Bank,
-                                           Account_Currency = owner.Account_Currency,
-                                           OrganizationName = org.OrganizationName,
-                                           OrganizationDescription = org.OrganizationDescription,
-                                           OrganizationIcon = org.OrganizationIcon,
-                                           OrganizationLogo = org.OrganizationLogo,
-                                           Website = org.Website,
-                                           AddedBy = owner.AddedBy,
-                                           AddedDate = owner.AddedDate,
-                                           ModifiedDate = owner.ModifiedDate
+                                           OwnerId = g.Key.OwnerId,
+                                           FirstName = g.Key.FirstName,
+                                           MiddleName = g.Key.MiddleName,
+                                           LastName = g.Key.LastName,
+                                           Fax = g.Key.Fax,
+                                           TaxId = g.Key.TaxId,
+                                           EmailAddress = g.Key.EmailAddress,
+                                           EmailAddress2 = g.Key.EmailAddress2,
+                                           PictureName = g.Key.Picture,
+                                           Picture = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Owner_Picture_" + g.Key.OwnerId + Path.GetExtension(g.Key.Picture)}",
+                                           PhoneNumber = g.Key.PhoneNumber,
+                                           PhoneNumber2 = g.Key.PhoneNumber2,
+                                           Longitude = g.Key.Longitude,
+                                           Latitude = g.Key.Latitude,
+                                           EmergencyContactInfo = g.Key.EmergencyContactInfo,
+                                           LeaseAgreementId = g.Key.LeaseAgreementId,
+                                           OwnerNationality = g.Key.OwnerNationality,
+                                           Gender = g.Key.Gender,
+                                           DocumentName = g.Key.Document,
+                                           Document = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Owner_Document_" + g.Key.OwnerId + Path.GetExtension(g.Key.Document)}",
+                                           DOB = g.Key.DOB,
+                                           VAT = g.Key.VAT,
+                                           LegalName = g.Key.LegalName,
+                                           Account_Name = g.Key.Account_Name,
+                                           Account_Holder = g.Key.Account_Holder,
+                                           Account_IBAN = g.Key.Account_IBAN,
+                                           Account_Swift = g.Key.Account_Swift,
+                                           Account_Bank = g.Key.Account_Bank,
+                                           Account_Currency = g.Key.Account_Currency,
+                                           OrganizationName = g.Key.OrganizationName,
+                                           OrganizationDescription = g.Key.OrganizationDescription,
+                                           OrganizationIcon = g.Key.OrganizationIcon,
+                                           OrganizationLogo = g.Key.OrganizationLogo,
+                                           Website = g.Key.Website,
+                                           AddedBy = g.Key.AddedBy,
+                                           AddedDate = g.Key.AddedDate,
+                                           ModifiedDate = g.Key.ModifiedDate,
+
+                                           // Count the number of assets and units associated with the owner
+                                           NoOfAssets = g.Select(x => x.ag.AssetId).Distinct().Count(),
+                                           NoOfUnits = g.Select(x => x.aug.UnitId).Distinct().Count()
 
                                        })
-                                       .AsNoTracking()
-                                       .ToListAsync();
+                       .AsNoTracking()
+                       .ToListAsync();
+
+
+
+
+
 
                 return ownerDtos;
             }
