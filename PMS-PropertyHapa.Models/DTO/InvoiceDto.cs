@@ -22,5 +22,6 @@ namespace PMS_PropertyHapa.Models.DTO
         public DateTime? InvoiceDate { get; set; }
         public bool? InvoicePaidToOwner { get; set; }
         public string AddedBy { get; set; }
+        public DateTime AddedDate { get; set; }
     }
 }

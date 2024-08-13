@@ -672,6 +672,7 @@ namespace MagicVilla_VillaAPI.Repository
             {
                 UserId = user.Id,
                 UserName = user.UserName,
+                Name = $"{user.FirstName} {user.LastName}",
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
                 Address = user.Address,
@@ -2800,6 +2801,7 @@ namespace MagicVilla_VillaAPI.Repository
                     TenantId = lease.TenantsTenantId,
                     AppTenantId = lease.AppTenantId,
                     AddedBy = lease.AddedBy,
+                    AddedDate = lease.AddedDate,
                     RentCharges = lease.RentCharges.Where(x => x.IsDeleted != true).Select(rc => new RentChargeDto
                     {
 
@@ -3434,6 +3436,7 @@ namespace MagicVilla_VillaAPI.Repository
                                           InvoiceDate = i.InvoiceDate,
                                           InvoicePaidToOwner = i.InvoicePaidToOwner,
                                           AddedBy = i.AddedBy,
+                                          AddedDate = i.AddedDate,
                                       }).ToListAsync();
 
                 return invoices;
@@ -3813,6 +3816,7 @@ namespace MagicVilla_VillaAPI.Repository
                     Rent = tenant.Rent,
                     Size = tenant.Size,
                     AddedBy = tenant.AddedBy,
+                    AddedDate = tenant.AddedDate,
                 }).ToList();
 
 

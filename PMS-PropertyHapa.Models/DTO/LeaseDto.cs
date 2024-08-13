@@ -33,6 +33,7 @@ namespace PMS_PropertyHapa.Models.DTO
         public string Frequency { get; set; }
         public decimal? TotalRentAmount { get; set; }
         public string AddedBy { get; set; }
+        public DateTime AddedDate { get; set; }
         public TenantModelDto Tenant { get; set; }
         // Collections for Rent Charges and Security Deposits
         public List<RentChargeDto> RentCharges { get; set; }
