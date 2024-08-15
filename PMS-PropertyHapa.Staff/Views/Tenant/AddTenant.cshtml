@@ -78,7 +78,7 @@
                                         <!-- First Name -->
                                         <div class="col-sm-6 col-md-3">
                                             <div class="mb-3">
-                                                <label for="FirstName" class="form-label">First Name</label>
+                                                <label for="FirstName" class="form-label">First Name<span class="text-danger">*</span></label>
                                                 <input type="text" class="form-control" id="FirstName" name="FirstName" placeholder="Enter first name" value="@Model?.FirstName" pattern="[A-Za-z]+" required />
                                             </div>
                                         </div>
@@ -93,7 +93,7 @@
                                         <!-- Last Name -->
                                         <div class="col-sm-6 col-md-3">
                                             <div class="mb-3">
-                                                <label for="LastName" class="form-label">Last Name</label>
+                                                <label for="LastName" class="form-label">Last Name<span class="text-danger">*</span></label>
                                                 <input type="text" class="form-control" id="LastName" name="LastName" placeholder="Enter last name" value="@Model?.LastName" pattern="[A-Za-z]+" required />
                                             </div>
                                         </div>
@@ -119,7 +119,7 @@
                                         <!-- Phone Number -->
                                         <div class="col-sm-6 col-md-3">
                                             <div class="mb-3">
-                                                <label for="PhoneNumber" class="form-label">Phone Number</label>
+                                                <label for="PhoneNumber" class="form-label">Phone Number<span class="text-danger">*</span></label>
                                                 <input type="number" class="form-control" id="PhoneNumber" name="PhoneNumber" value="@Model?.PhoneNumber" required pattern="/^(\+{0,})(\d{0,})([(]{1}\d{1,3}[)]{0,}){0,}(\s?\d+|\+\d{2,3}\s{1}\d+|\d+){1}[\s|-]?\d+([\s|-]?\d+){1,2}(\s){0,}$/gm" placeholder="Enter phone number" title="Please enter a phone number" />
                                                 <small class="text-success" id="addAnotherPhone" onclick="togglePhoneField()" style="cursor: pointer;">
                                                     <i class="bi bi-plus-circle"></i> Add another phone
@@ -138,7 +138,7 @@
                                         <!-- Email Address -->
                                         <div class="col-sm-6 col-md-3">
                                             <div class="mb-3">
-                                                <label for="EmailAddress" class="form-label">Email Address</label>
+                                                <label for="EmailAddress" class="form-label">Email Address<span class="text-danger">*</span></label>
                                                 <input type="email" class="form-control" id="EmailAddress" placeholder="Enter email" title="Please enter a email address." name="EmailAddress" value="@Model?.EmailAddress" required />
                                                 <small class="text-success" id="addAnotherEmail" onclick="toggleEmailField()" style="cursor: pointer;">
                                                     <i class="bi bi-plus-circle"></i> Add another email
@@ -183,7 +183,7 @@
                                     <div class="row">
                                         <div class="col-sm-6 col-md-3">
                                             <div class="mb-3">
-                                                <label for="Address">Address</label>
+                                                <label for="Address">Address<span class="text-danger">*</span></label>
                                                 <input type="text" class="form-control" placeholder="Enter Address" id="Address" name="Address" value="@Model?.Address" required maxlength="255" title="Address cannot be empty and must be shorter than 255 characters." />
                                                 <div class="invalid-feedback">
                                                     Please provide a valid address.
@@ -198,19 +198,19 @@
                                         </div>
                                         <div class="col-sm-6 col-md-3">
                                             <div class="mb-3">
-                                                <label for="Unit">Unit/Ap. #</label>
+                                                <label for="Unit">Unit/Ap. #<span class="text-danger">*</span></label>
                                                 <input type="text" class="form-control" id="Unit" name="Unit" value="@Model?.Unit" placeholder="Enter Unit/Ap." />
                                             </div>
                                         </div>
                                         <div class="col-sm-6 col-md-3">
                                             <div class="mb-3">
-                                                <label for="Region">State / Region</label>
+                                                <label for="Region">State / Region<span class="text-danger">*</span></label>
                                                 <input type="text" class="form-control" id="Region" name="Region" value="@Model?.Region" placeholder="Enter Region" />
                                             </div>
                                         </div>
                                         <div class="col-sm-6 col-md-3">
                                             <div class="mb-3">
-                                                <label for="PostalCode">Zip</label>
+                                                <label for="PostalCode">Zip<span class="text-danger">*</span></label>
                                                 <input type="number" class="form-control" id="PostalCode" name="PostalCode" value="@Model?.PostalCode" placeholder="Enter Zip Code" />
                                             </div>
                                         </div>
@@ -269,6 +269,7 @@
                                             foreach (var pet in Model.Pets)
                                             {
                                                 <div class="row petEntry">
+                                                    <input type="hidden" class="" name="Pets[@i].PetId" id="Pets_@(i)__PetId" value="@pet.PetId">
                                                     <div class="col-sm-6 col-md-3">
                                                         <div class="mb-3">
                                                             <label for="Pets_@(i)__Picture">Pet Picture:</label>
@@ -329,6 +330,7 @@
                                             foreach (var vehicle in Model.Vehicles)
                                             {
                                                 <div class="row vehicleEntry">
+                                                    <input type="hidden" class="" name="Vehicles[@i].VehicleId" id="Vehicles_@(i)__VehicleId" value="@vehicle.VehicleId">
                                                     <div class="col-sm-6 col-md-3">
                                                         <div class="mb-3">
                                                             <label for="Vehicles_@(i)__Manufacturer">Make:</label>
@@ -389,6 +391,7 @@
                                             foreach (var dependent in Model.Dependent)
                                             {
                                                 <div class="row dependentEntry">
+                                                    <input type="hidden" class="" name="Dependent[@i].TenantDependentId" id="Dependent_@(i)__TenantDependentId" value="@dependent.TenantDependentId">
                                                     <div class="col-sm-6 col-md-3">
                                                         <div class="mb-3">
                                                             <label for="Dependent_@(i)__FirstName">First Name:</label>
@@ -455,6 +458,7 @@
                                             foreach (var coTenant in Model.CoTenant)
                                             {
                                                 <div class="row coTenantEntry">
+                                                    <input type="hidden" class="" name="CoTenant[@i].CoTenantId" id="CoTenant_@(i)__CoTenantId" value="@coTenant.CoTenantId">
                                                     <div class="col-sm-6 col-md-3">
                                                         <div class="mb-3">
                                                             <label for="CoTenant_@(i)__FirstName">First Name:</label>
@@ -584,7 +588,6 @@
                                         <div class="col-sm-6 col-md-3">
                                             <div class="mb-3">
                                                 <label for="Account_Currency">Account Currency</label>
-                                                @* <input type="text" class="form-control" id="Account_Currency" name="Account_Currency" placeholder="Enter currency" value="@Model?.Account_Currency"> *@
                                                 <select class="form-control select2" id="Account_Currency" name="Account_Currency" data-selected-currency="@Model?.Account_Currency">
                                                     <option value="" selected disabled hidden>Select Currency</option>
                                                     <option value="USD">USD - United States Dollar ($)</option>
@@ -629,7 +632,7 @@
 
 
 
-<script>
+ <script>
     document.addEventListener('DOMContentLoaded', function () {
         debugger;
         window.toggleEmergencyContact = function () {
@@ -911,6 +914,18 @@
             document.getElementById("Country").value = country;
         }
 
+        document.querySelectorAll('select[data-selected-country]').forEach(function (dropdown) {
+            var selectedCountry = dropdown.getAttribute('data-selected-country');
+            if (selectedCountry) {
+                dropdown.value = selectedCountry;
+            }
+        });
+
+        var selectedCurrency = document.getElementById("Account_Currency").getAttribute('data-selected-currency');
+        if (selectedCurrency) {
+            document.getElementById("Account_Currency").value = selectedCurrency;
+        }
+
     });
 
 
@@ -1182,5 +1197,5 @@
         }
     });
 
-</script>
+ </script>
 

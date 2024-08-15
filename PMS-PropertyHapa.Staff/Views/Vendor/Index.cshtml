@@ -134,7 +134,7 @@
                             <div class="row">
                                 <div class="col">
                                     <div class="mb-3">
-                                        <label for="firstName" class="form-label">First Name</label>
+                                        <label for="firstName" class="form-label">First Name<span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" placeholder="First Name" id="firstName">
                                     </div>
                                 </div>
@@ -146,7 +146,7 @@
                                 </div>
                                 <div class="col">
                                     <div class="mb-3">
-                                        <label for="lastName" class="form-label">Last Name</label>
+                                        <label for="lastName" class="form-label">Last Name<span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" placeholder="Last Name" id="lastName">
                                     </div>
                                 </div>
@@ -188,13 +188,13 @@
                             <div class="row">
                                 <div class="col">
                                     <div class="mb-3">
-                                        <label for="email1" class="form-label">Email</label>
+                                        <label for="email1" class="form-label">Email<span class="text-danger">*</span></label>
                                         <input type="email" class="form-control" placeholder="Email" id="email1" required>
                                     </div>
                                 </div>
                                 <div class="col">
                                     <div class="mb-3">
-                                        <label for="phone1" class="form-label">Phone</label>
+                                        <label for="phone1" class="form-label">Phone<span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" placeholder="Phone Number" id="phone1" required>
                                     </div>
                                 </div>
@@ -324,7 +324,7 @@
                             </div>
                             <!-- Vendor Categories -->
                             <div class="mb-3">
-                                <label for="vendorCategories" class="form-label">Vendor Categories</label>
+                                <label for="vendorCategories" class="form-label">Vendor Categories<span class="text-danger">*</span></label>
                                 <select class="form-control select2" multiple="multiple" id="vendorCategories" required>
                                 </select>
                             </div>
@@ -335,7 +335,7 @@
                             <!-- Insurance Form -->
                             <h2>Insurance</h2>
                             <div class="mb-3">
-                                <label for="hasInsurance" class="form-label">Do you have valid insurance?</label>
+                                <label for="hasInsurance" class="form-label">Do you have valid insurance?<span class="text-danger">*</span></label>
                                 <select class="form-control select2" id="hasInsurance" name="Insurance" required>
                                     <option selected disabled value="">Please Select</option>
                                     <option value="true">Yes</option>
@@ -345,19 +345,19 @@
                             <div class="row d-none hasInsuranceDiv">
                                 <div class="col">
                                     <div class="mb-3">
-                                        <label for="insuranceCompany" class="form-label">Insurance Company Name</label>
+                                        <label for="insuranceCompany" class="form-label">Insurance Company Name<span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" placeholder="Insurance Company Name" id="insuranceCompany" required>
                                     </div>
                                 </div>
                                 <div class="col">
                                     <div class="mb-3">
-                                        <label for="insurancePolicyNumber" class="form-label">Policy Number</label>
+                                        <label for="insurancePolicyNumber" class="form-label">Policy Number<span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" placeholder="Policy number" id="insurancePolicyNumber" required>
                                     </div>
                                 </div>
                                 <div class="col">
                                     <div class="mb-3">
-                                        <label for="insuranceAmount" class="form-label">Amount</label>
+                                        <label for="insuranceAmount" class="form-label">Amount<span class="text-danger">*</span></label>
                                         <input type="number" class="form-control" placeholder="Amount" id="insuranceAmount" required>
                                     </div>
                                 </div>

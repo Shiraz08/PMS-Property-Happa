@@ -118,17 +118,17 @@
                 <div class="modal-body scrollable-modal-body">
               
                     <div class="mb-3  d-none" id="newOwnerDiv">
-                        <label for="newOwner">Owner</label>
+                        <label for="newOwner">Owner <span class="text-danger">*</span></label>
                         <select class="form-control select2" id="newOwner" required>
                         </select>
                     </div>
                     <div class="mb-3  d-none" id="newTenantDiv">
-                        <label for="newTenant">Tenant</label>
+                        <label for="newTenant">Tenant <span class="text-danger">*</span></label>
                         <select class="form-control select2" id="newTenant" required>
                         </select>
                     </div>
                     <div class="mb-3  d-none" id="newVendorDiv">
-                        <label for="newVendor">Vendor</label>
+                        <label for="newVendor">Vendor <span class="text-danger">*</span></label>
                         <select class="form-control select2" id="newVendor" required>
                         </select>
                     </div>
@@ -136,13 +136,13 @@
                        
                     <div class="row mb-3 d-none" id="relatedToDiv">
                         <div class="col-md-6">
-                            <label for="taskProperty" class="form-label ">Related To</label>
+                            <label for="taskProperty" class="form-label ">Related To <span class="text-danger">*</span></label>
                             <select class="form-control select2" id="taskProperty" required>
                             </select>
                         </div>
 
                         <div class="col-md-6">
-                            <label for="taskUnit" class="form-label ">Units</label>
+                            <label for="taskUnit" class="form-label ">Units <span class="text-danger">*</span></label>
                             <select class="form-control select2 mt-2" id="taskUnit" required>
                                 <option value="">Select Unit</option>
                             </select>
@@ -150,7 +150,7 @@
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label for="taskSubject" class="form-label">Subject *</label>
+                            <label for="taskSubject" class="form-label">Subject <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="taskSubject" placeholder="Subject" required>
                         </div>
                         <div class="col-md-6">
@@ -172,15 +172,15 @@
                     <div id="recurringFields" class="d-none">
                         <div class="row mb-3">
                             <div class="col-md-4">
-                                <label for="recurringTaskStartDate" class="form-label">Start Date</label>
+                                <label for="recurringTaskStartDate" class="form-label">Start Date <span class="text-danger">*</span></label>
                                 <input type="date" class="form-control" id="recurringTaskStartDate" placeholder="Start Date" required>
                             </div>
                             <div class="col-md-4">
-                                <label for="recurringTaskEndDate" class="form-label">End Date</label>
+                                <label for="recurringTaskEndDate" class="form-label">End Date <span class="text-danger">*</span></label>
                                 <input type="date" class="form-control" id="recurringTaskEndDate" placeholder="End Date" required>
                             </div>
                             <div class="col-md-4">
-                                <label for="recurringTaskFrequency" class="form-label">Frequency</label>
+                                <label for="recurringTaskFrequency" class="form-label">Frequency <span class="text-danger">*</span></label>
                                 <select class="form-select select2" id="recurringTaskFrequency" required>
                                     @* <option value="">Select Frequency</option> *@
                                     <option>Daily</option>
@@ -201,20 +201,20 @@
                     </div>
                     <div class="row mb-3" id="dueDateDiv">
                         <div class="col-md-6">
-                            <label for="dueDate" class="form-label">Due Date</label>
+                            <label for="dueDate" class="form-label">Due Date <span class="text-danger">*</span></label>
                             <input type="date" class="form-control" id="dueDate" required>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label for="taskStatus" class="form-label">Status</label>
+                            <label for="taskStatus" class="form-label">Status <span class="text-danger">*</span></label>
                             <select class="form-select" id="taskStatus" required>
                                 <option value="NotStarted">Not Started</option>
                                  <option value="InProgress">In Progress</option>
                             </select>
                         </div>
                         <div class="col-md-6">
-                            <label for="taskPriority" class="form-label">Priority</label>
+                            <label for="taskPriority" class="form-label">Priority <span class="text-danger">*</span></label>
                             <select class="form-select select2" id="taskPriority" required>
                                 @* <option value="">Select Priority</option> *@
                                 <option>Low</option>
@@ -224,7 +224,7 @@
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label for="assignees" class="form-label">Assignees</label>
+                        <label for="assignees" class="form-label">Assignees <span class="text-danger">*</span></label>
                         <select class="form-control select2" multiple id="assignees" required>
                             <option value="1">Assignee 1</option>
                             <option value="2">Assignee 2</option>

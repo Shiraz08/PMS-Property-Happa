@@ -99,14 +99,21 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             }
         }
 
-        [HttpPut("Communication/{communicationId}")]
-        public async Task<ActionResult<bool>> UpdateCommunication(int communicationId, CommunicationDto communication)
+        [HttpPut("UpdateCommunication")]
+        public async Task<ActionResult<bool>> UpdateCommunication(CommunicationDto communication)
         {
             try
             {
-                communication.Communication_Id = communicationId; 
                 var isSuccess = await _userRepo.UpdateCommunicationAsync(communication);
-                return Ok(isSuccess);
+
+                if (isSuccess == true)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = isSuccess;
+
+                }
+                return Ok(_response);
             }
             catch (Exception ex)
             {
@@ -114,13 +121,21 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             }
         }
 
-        [HttpDelete("Communication/{communicationId}")]
+        [HttpPost("DeleteCommunication/{communicationId}")]
         public async Task<ActionResult<bool>> DeleteCommunication(int communicationId)
         {
             try
             {
                 var isSuccess = await _userRepo.DeleteCommunicationAsync(communicationId);
-                return Ok(isSuccess);
+
+                if (isSuccess == true)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = isSuccess;
+
+                }
+                return Ok(_response);
             }
             catch (Exception ex)
             {
@@ -135,7 +150,15 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             try
             {
                 var isSuccess = await _userRepo.UpdateAccountAsync(obj);
-                return Ok(isSuccess);
+
+                if (isSuccess == true)
+                {
+                    _response.StatusCode = HttpStatusCode.OK;
+                    _response.IsSuccess = true;
+                    _response.Result = isSuccess;
+
+                }
+                return Ok(_response);
             }
             catch (Exception ex)
             {

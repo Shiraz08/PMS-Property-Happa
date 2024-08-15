@@ -248,7 +248,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             }
         }
 
-        [HttpPut("Lease")]
+        [HttpPost("UpdateLease")]
         public async Task<ActionResult<bool>> UpdateLease(LeaseDto lease)
         {
             try

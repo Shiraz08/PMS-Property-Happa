@@ -1384,6 +1384,7 @@ namespace MagicVilla_VillaAPI.Repository
                 DocumentName = tenant.Document,
                 Document = $"https://storage.googleapis.com/{_googleCloudStorageOptions.BucketName}/{"Tenant_Document_" + tenant.TenantId + Path.GetExtension(tenant.Document)}",
                 FirstName = tenant.FirstName,
+                MiddleName = tenant.MiddleName,
                 LastName = tenant.LastName,
                 EmailAddress = tenant.EmailAddress,
                 PhoneNumber = tenant.PhoneNumber,
@@ -1404,6 +1405,7 @@ namespace MagicVilla_VillaAPI.Repository
                 Address2 = tenant.Address2,
                 Locality = tenant.Locality,
                 Region = tenant.Region,
+                District = tenant.District,
                 PostalCode = tenant.PostalCode,
                 Country = tenant.Country,
                 CountryCode = tenant.CountryCode,
@@ -1427,6 +1429,7 @@ namespace MagicVilla_VillaAPI.Repository
                     Manufacturer = v.Manufacturer,
                     ModelName = v.ModelName,
                     ModelVariant = v.ModelVariant,
+                    Color = v.color,
                     Year = v.Year
                 }).ToList(),
                 Dependent = tenant.TenantDependent.Where(x => x.IsDeleted != true).Select(d => new TenantDependentDto
@@ -1491,6 +1494,7 @@ namespace MagicVilla_VillaAPI.Repository
                 Address = tenantDto.Address,
                 Address2 = tenantDto.Address2,
                 Locality = tenantDto.Locality,
+                Unit = tenantDto.Unit,
                 District = tenantDto.District,
                 Region = tenantDto.Region,
                 PostalCode = tenantDto.PostalCode,
@@ -1558,6 +1562,7 @@ namespace MagicVilla_VillaAPI.Repository
                         Manufacturer = vehicleDto.Manufacturer,
                         ModelName = vehicleDto.ModelName,
                         ModelVariant = vehicleDto.ModelVariant,
+                        color = vehicleDto.Color,
                         Year = vehicleDto.Year,
                         AddedBy = tenantDto.AddedBy,
                         AddedDate = DateTime.Now
@@ -1634,6 +1639,7 @@ namespace MagicVilla_VillaAPI.Repository
                 return false;
 
             tenant.FirstName = tenantDto.FirstName;
+            tenant.MiddleName = tenantDto.MiddleName;
             tenant.LastName = tenantDto.LastName;
             tenant.EmailAddress = tenantDto.EmailAddress;
             tenant.PhoneNumber = tenantDto.PhoneNumber;
@@ -1655,6 +1661,9 @@ namespace MagicVilla_VillaAPI.Repository
             tenant.Address = tenantDto.Address;
             tenant.Address2 = tenantDto.Address2;
             tenant.Locality = tenantDto.Locality;
+            tenant.Unit = tenantDto.Unit;
+            tenant.District = tenantDto.District;
+            tenant.Region = tenantDto.District;
             tenant.Region = tenantDto.Region;
             tenant.PostalCode = tenantDto.PostalCode;
             tenant.Country = tenantDto.Country;
@@ -1664,9 +1673,17 @@ namespace MagicVilla_VillaAPI.Repository
             tenant.ModifiedBy = tenantDto.AddedBy;
             tenant.ModifiedDate = DateTime.Now;
 
+            // Pets Handling
+            var petIds = tenantDto.Pets.Select(x => x.PetId).ToArray();
+            var petsToBeDeleted = tenant.Pets
+                .Where(p => !petIds.Contains(p.PetId))
+                .ToList();
+
+            _db.Pets.RemoveRange(petsToBeDeleted);
+
             foreach (var petDto in tenantDto.Pets)
             {
-                var existingPet = tenant.Pets.FirstOrDefault(p => p.PetId == petDto.PetId && p.IsDeleted != true);
+                var existingPet = tenant.Pets.FirstOrDefault(p => p.PetId == petDto.PetId);
                 if (existingPet != null)
                 {
                     existingPet.Name = petDto.Name;
@@ -1700,6 +1717,7 @@ namespace MagicVilla_VillaAPI.Repository
                     };
                     tenant.Pets.Add(newPet);
                     await _db.SaveChangesAsync();
+
                     if (petDto.Picture != null)
                     {
                         var ext = Path.GetExtension(petDto.PictureName);
@@ -1708,15 +1726,23 @@ namespace MagicVilla_VillaAPI.Repository
                 }
             }
 
-            // Update or add vehicles
+            // Vehicles Handling
+            var vehicleIds = tenantDto.Vehicles.Select(x => x.VehicleId).ToArray();
+            var vehiclesToBeDeleted = tenant.Vehicle
+                .Where(v => !vehicleIds.Contains(v.VehicleId))
+                .ToList();
+
+            _db.Vehicle.RemoveRange(vehiclesToBeDeleted);
+
             foreach (var vehicleDto in tenantDto.Vehicles)
             {
-                var existingVehicle = tenant.Vehicle.FirstOrDefault(v => v.VehicleId == vehicleDto.VehicleId && v.IsDeleted != true);
+                var existingVehicle = tenant.Vehicle.FirstOrDefault(v => v.VehicleId == vehicleDto.VehicleId);
                 if (existingVehicle != null)
                 {
                     existingVehicle.Manufacturer = vehicleDto.Manufacturer;
                     existingVehicle.ModelName = vehicleDto.ModelName;
                     existingVehicle.ModelVariant = vehicleDto.ModelVariant;
+                    existingVehicle.color = vehicleDto.Color;
                     existingVehicle.Year = vehicleDto.Year;
                     existingVehicle.ModifiedBy = tenantDto.AddedBy;
                     existingVehicle.ModifiedDate = DateTime.Now;
@@ -1728,6 +1754,8 @@ namespace MagicVilla_VillaAPI.Repository
                         TenantId = tenant.TenantId,
                         Manufacturer = vehicleDto.Manufacturer,
                         ModelName = vehicleDto.ModelName,
+                        ModelVariant = vehicleDto.ModelVariant,
+                        color = vehicleDto.Color,
                         Year = vehicleDto.Year,
                         AddedBy = tenantDto.AddedBy,
                         AddedDate = DateTime.Now
@@ -1736,9 +1764,17 @@ namespace MagicVilla_VillaAPI.Repository
                 }
             }
 
+            // Dependents Handling
+            var dependentIds = tenantDto.Dependent.Select(x => x.TenantDependentId).ToArray();
+            var dependentsToBeDeleted = tenant.TenantDependent
+                .Where(d => !dependentIds.Contains(d.TenantDependentId))
+                .ToList();
+
+            _db.TenantDependent.RemoveRange(dependentsToBeDeleted);
+
             foreach (var dependentDto in tenantDto.Dependent)
             {
-                var existingDependent = tenant.TenantDependent.FirstOrDefault(d => d.TenantDependentId == dependentDto.TenantDependentId && d.IsDeleted != true);
+                var existingDependent = tenant.TenantDependent.FirstOrDefault(d => d.TenantDependentId == dependentDto.TenantDependentId);
                 if (existingDependent != null)
                 {
                     existingDependent.FirstName = dependentDto.FirstName;
@@ -1748,8 +1784,8 @@ namespace MagicVilla_VillaAPI.Repository
                     existingDependent.DOB = dependentDto.DOB;
                     existingDependent.Relation = dependentDto.Relation;
                     existingDependent.AppTenantId = tenantDto.AppTenantId;
-                    existingDependent.ModifiedDate = DateTime.Now;
                     existingDependent.ModifiedBy = tenantDto.AddedBy;
+                    existingDependent.ModifiedDate = DateTime.Now;
                 }
                 else
                 {
@@ -1770,12 +1806,19 @@ namespace MagicVilla_VillaAPI.Repository
                 }
             }
 
+            // CoTenants Handling
+            var coTenantIds = tenantDto.CoTenant.Select(x => x.CoTenantId).ToArray();
+            var coTenantsToBeDeleted = tenant.CoTenant
+                .Where(ct => !coTenantIds.Contains(ct.CoTenantId))
+                .ToList();
+
+            _db.CoTenant.RemoveRange(coTenantsToBeDeleted);
+
             foreach (var coTenantDto in tenantDto.CoTenant)
             {
-                var existingCoTenant = tenant.CoTenant.FirstOrDefault(ct => ct.CoTenantId == coTenantDto.CoTenantId && ct.IsDeleted != true);
+                var existingCoTenant = tenant.CoTenant.FirstOrDefault(ct => ct.CoTenantId == coTenantDto.CoTenantId);
                 if (existingCoTenant != null)
                 {
-
                     existingCoTenant.FirstName = coTenantDto.FirstName;
                     existingCoTenant.LastName = coTenantDto.LastName;
                     existingCoTenant.EmailAddress = coTenantDto.EmailAddress;
@@ -1786,15 +1829,12 @@ namespace MagicVilla_VillaAPI.Repository
                     existingCoTenant.Region = coTenantDto.Region;
                     existingCoTenant.PostalCode = coTenantDto.PostalCode;
                     existingCoTenant.Country = coTenantDto.Country;
-                    existingCoTenant.IsDeleted = false;
                     existingCoTenant.Status = true;
-                    existingCoTenant.AppTenantId = tenantDto.AppTenantId;
                     existingCoTenant.ModifiedBy = tenantDto.AddedBy;
                     existingCoTenant.ModifiedDate = DateTime.Now;
                 }
                 else
                 {
-
                     var newCoTenant = new CoTenant
                     {
                         TenantId = tenant.TenantId,
@@ -1808,7 +1848,6 @@ namespace MagicVilla_VillaAPI.Repository
                         Region = coTenantDto.Region,
                         PostalCode = coTenantDto.PostalCode,
                         Country = coTenantDto.Country,
-                        IsDeleted = false,
                         Status = true,
                         AppTenantId = tenantDto.AppTenantId,
                         AddedBy = tenantDto.AddedBy,
@@ -2177,97 +2216,94 @@ namespace MagicVilla_VillaAPI.Repository
 
         public async Task<bool> CreateOwnerAsync(OwnerDto landlordDto)
         {
-            var newLandlord = new Owner
-            {
-                FirstName = landlordDto.FirstName,
-                MiddleName = landlordDto.MiddleName,
-                LastName = landlordDto.LastName,
-                EmailAddress = landlordDto.EmailAddress,
-                EmailAddress2 = landlordDto.EmailAddress2,
-                PhoneNumber = landlordDto.PhoneNumber,
-                PhoneNumber2 = landlordDto.PhoneNumber2,
-                Longitude = landlordDto.Longitude,
-                Latitude = landlordDto.Latitude,
-                Fax = landlordDto.Fax,
-                TaxId = landlordDto.TaxId,
-                EmergencyContactInfo = landlordDto.EmergencyContactInfo,
-                LeaseAgreementId = landlordDto.LeaseAgreementId,
-                OwnerNationality = landlordDto.OwnerNationality,
-                Gender = landlordDto.Gender,
-                DOB = landlordDto.DOB,
-                VAT = landlordDto.VAT,
-                Status = true,
-                LegalName = landlordDto.LegalName,
-                Document = landlordDto.DocumentUrl != null ? landlordDto.DocumentUrl.FileName : "",
-                Account_Name = landlordDto.Account_Name,
-                Account_Holder = landlordDto.Account_Holder,
-                Account_IBAN = landlordDto.Account_IBAN,
-                Account_Swift = landlordDto.Account_Swift,
-                Account_Bank = landlordDto.Account_Bank,
-                Account_Currency = landlordDto.Account_Currency,
-                AppTenantId = landlordDto.AppTenantId,
-                Address = landlordDto.Address,
-                Address2 = landlordDto.Address2,
-                Locality = landlordDto.Locality,
-                Region = landlordDto.Region,
-                PostalCode = landlordDto.PostalCode,
-                Country = landlordDto.Country,
-                CountryCode = landlordDto.CountryCode,
-                Picture = landlordDto.PictureUrl != null ? landlordDto.PictureUrl.FileName : "",
-                AddedBy = landlordDto.AddedBy,
-                AddedDate = DateTime.Now
-            };
-
-
-
-            await _db.Owner.AddAsync(newLandlord);
-            await _db.SaveChangesAsync();
-
-            if (landlordDto.PictureUrl != null)
-            {
-                var ext = Path.GetExtension(landlordDto.PictureUrl.FileName);
-                await _googleCloudStorageService.UploadImageAsync(landlordDto.PictureUrl, "Owner_Picture_" + newLandlord.OwnerId + ext);
-            }
-
-            if (landlordDto.DocumentUrl != null)
-            {
-                var ext = Path.GetExtension(landlordDto.DocumentUrl.FileName);
-                await _googleCloudStorageService.UploadImageAsync(landlordDto.DocumentUrl, "Owner_Document_" + newLandlord.OwnerId + ext);
-            }
-
-
-            if (landlordDto.OrganizationName != null)
-            {
-                var newOwnerOrganization = new OwnerOrganization
+                var newLandlord = new Owner
                 {
-                    OwnerId = newLandlord.OwnerId,
-                    OrganizationName = landlordDto.OrganizationName,
-                    OrganizationDescription = landlordDto.OrganizationDescription,
-                    OrganizationIcon = landlordDto.OrganizationIconFile.FileName,
-                    OrganizationLogo = landlordDto.OrganizationLogoFile.FileName,
-                    Website = landlordDto.Website,
+                    FirstName = landlordDto.FirstName,
+                    MiddleName = landlordDto.MiddleName,
+                    LastName = landlordDto.LastName,
+                    EmailAddress = landlordDto.EmailAddress,
+                    EmailAddress2 = landlordDto.EmailAddress2,
+                    PhoneNumber = landlordDto.PhoneNumber,
+                    PhoneNumber2 = landlordDto.PhoneNumber2,
+                    Longitude = landlordDto.Longitude,
+                    Latitude = landlordDto.Latitude,
+                    Fax = landlordDto.Fax,
+                    TaxId = landlordDto.TaxId,
+                    EmergencyContactInfo = landlordDto.EmergencyContactInfo,
+                    LeaseAgreementId = landlordDto.LeaseAgreementId,
+                    OwnerNationality = landlordDto.OwnerNationality,
+                    Gender = landlordDto.Gender,
+                    DOB = landlordDto.DOB,
+                    VAT = landlordDto.VAT,
+                    Status = true,
+                    LegalName = landlordDto.LegalName,
+                    Document = landlordDto.DocumentUrl != null ? landlordDto.DocumentUrl.FileName : "",
+                    Account_Name = landlordDto.Account_Name,
+                    Account_Holder = landlordDto.Account_Holder,
+                    Account_IBAN = landlordDto.Account_IBAN,
+                    Account_Swift = landlordDto.Account_Swift,
+                    Account_Bank = landlordDto.Account_Bank,
+                    Account_Currency = landlordDto.Account_Currency,
+                    AppTenantId = landlordDto.AppTenantId,
+                    Address = landlordDto.Address,
+                    Address2 = landlordDto.Address2,
+                    Locality = landlordDto.Locality,
+                    Region = landlordDto.Region,
+                    PostalCode = landlordDto.PostalCode,
+                    Country = landlordDto.Country,
+                    CountryCode = landlordDto.CountryCode,
+                    Picture = landlordDto.PictureUrl != null ? landlordDto.PictureUrl.FileName : "",
                     AddedBy = landlordDto.AddedBy,
                     AddedDate = DateTime.Now
                 };
-                await _db.OwnerOrganization.AddAsync(newOwnerOrganization);
 
-                await _db.SaveChangesAsync();
+                await _db.Owner.AddAsync(newLandlord);
+                await _db.SaveChangesAsync(); 
 
-                if (landlordDto.OrganizationIconFile != null)
+                if (landlordDto.PictureUrl != null)
                 {
-                    var ext = Path.GetExtension(landlordDto.OrganizationIconFile.FileName);
-                    await _googleCloudStorageService.UploadImageAsync(landlordDto.OrganizationIconFile, "Owner_OrganizationIcon_" + newOwnerOrganization.Id + ext);
+                    var ext = Path.GetExtension(landlordDto.PictureUrl.FileName);
+                    await _googleCloudStorageService.UploadImageAsync(landlordDto.PictureUrl, "Owner_Picture_" + newLandlord.OwnerId + ext);
                 }
 
-                if (landlordDto.OrganizationLogoFile != null)
+                if (landlordDto.DocumentUrl != null)
                 {
-                    var ext = Path.GetExtension(landlordDto.OrganizationLogoFile.FileName);
-                    await _googleCloudStorageService.UploadImageAsync(landlordDto.OrganizationLogoFile, "Owner_OrganizationLogo_" + newOwnerOrganization.Id + ext);
+                    var ext = Path.GetExtension(landlordDto.DocumentUrl.FileName);
+                    await _googleCloudStorageService.UploadImageAsync(landlordDto.DocumentUrl, "Owner_Document_" + newLandlord.OwnerId + ext);
                 }
-            }
+
+                if (!string.IsNullOrEmpty(landlordDto.OrganizationName))
+                {
+                    var newOwnerOrganization = new OwnerOrganization
+                    {
+                        OwnerId = newLandlord.OwnerId,
+                        OrganizationName = landlordDto.OrganizationName,
+                        OrganizationDescription = landlordDto.OrganizationDescription,
+                        OrganizationIcon = landlordDto.OrganizationIconFile?.FileName,
+                        OrganizationLogo = landlordDto.OrganizationLogoFile?.FileName,
+                        Website = landlordDto.Website,
+                        AddedBy = landlordDto.AddedBy,
+                        AddedDate = DateTime.Now
+                    };
+                    await _db.OwnerOrganization.AddAsync(newOwnerOrganization);
+                    await _db.SaveChangesAsync();  
+
+                    if (landlordDto.OrganizationIconFile != null)
+                    {
+                        var ext = Path.GetExtension(landlordDto.OrganizationIconFile.FileName);
+                        await _googleCloudStorageService.UploadImageAsync(landlordDto.OrganizationIconFile, "Owner_OrganizationIcon_" + newOwnerOrganization.Id + ext);
+
+                    }
+
+                    if (landlordDto.OrganizationLogoFile != null)
+                    {
+                        var ext = Path.GetExtension(landlordDto.OrganizationLogoFile.FileName);
+                        await _googleCloudStorageService.UploadImageAsync(landlordDto.OrganizationLogoFile, "Owner_OrganizationLogo_" + newOwnerOrganization.Id + ext);
+                    }
+                }
 
 
-            return true;
+                return true;
         }
 
         public async Task<bool> UpdateOwnerAsync(OwnerDto tenantDto)
@@ -2327,8 +2363,14 @@ namespace MagicVilla_VillaAPI.Repository
             {
                 ownerOrganization.OrganizationName = tenantDto.OrganizationName;
                 ownerOrganization.OrganizationDescription = tenantDto.OrganizationDescription;
-                ownerOrganization.OrganizationIcon = tenantDto.OrganizationIcon;
-                ownerOrganization.OrganizationLogo = tenantDto.OrganizationLogo;
+                if (tenantDto.OrganizationIconFile != null)
+                {
+                    ownerOrganization.OrganizationIcon = tenantDto.OrganizationIconFile.FileName;
+                }
+                if (tenantDto.OrganizationLogoFile != null)
+                {
+                    ownerOrganization.OrganizationLogo = tenantDto.OrganizationLogoFile.FileName;
+                }
                 ownerOrganization.Website = tenantDto.Website;
                 ownerOrganization.ModifiedBy = tenantDto.AddedBy;
                 ownerOrganization.ModifiedDate = DateTime.Now;
@@ -2342,8 +2384,8 @@ namespace MagicVilla_VillaAPI.Repository
                     OwnerId = (int)tenantDto.OwnerId,
                     OrganizationName = tenantDto.OrganizationName,
                     OrganizationDescription = tenantDto.OrganizationDescription,
-                    OrganizationIcon = tenantDto.OrganizationIcon,
-                    OrganizationLogo = tenantDto.OrganizationLogo,
+                    OrganizationIcon = tenantDto.OrganizationIconFile != null ? tenantDto.OrganizationIconFile.FileName : "",
+                    OrganizationLogo = tenantDto.OrganizationLogoFile != null ? tenantDto.OrganizationLogoFile.FileName : "",
                     Website = tenantDto.Website,
                     AddedBy = tenantDto.AddedBy,
                     AddedDate = DateTime.Now
@@ -3126,8 +3168,6 @@ namespace MagicVilla_VillaAPI.Repository
                 existingLease.EndDate = leaseDto.EndDate;
                 existingLease.IsSigned = leaseDto.IsSigned;
                 existingLease.SelectedProperty = leaseDto.SelectedProperty;
-                //existingLease.AssetId = leaseDto.PropertyId;
-                //existingLease.UnitId = leaseDto.UnitId;
                 existingLease.SelectedUnit = leaseDto.SelectedUnit;
                 existingLease.SignatureImagePath = leaseDto.SignatureImagePath;
                 existingLease.IsFixedTerm = leaseDto.IsFixedTerm;
@@ -3142,6 +3182,19 @@ namespace MagicVilla_VillaAPI.Repository
 
                 if (leaseDto.RentCharges != null)
                 {
+                    var rentChargeIds = leaseDto.RentCharges.Select(x => x.RentChargeId).ToArray();
+                    var rentChargesToBeDeleted = existingLease.RentCharges
+                        .Where(rc => rc.LeaseId == existingLease.LeaseId && !rentChargeIds.Contains(rc.RentChargeId) && rc.IsDeleted != true)
+                        .ToList();
+
+                    foreach (var rentChargeToBeDeleted in rentChargesToBeDeleted)
+                    {
+                        rentChargeToBeDeleted.IsDeleted = true;
+                        rentChargeToBeDeleted.ModifiedBy = leaseDto.AddedBy;
+                        rentChargeToBeDeleted.ModifiedDate = DateTime.Now;
+                        _db.RentCharge.Update(rentChargeToBeDeleted);
+                    }
+
                     foreach (var rcDto in leaseDto.RentCharges)
                     {
                         var existingRc = existingLease.RentCharges.FirstOrDefault(rc => rc.RentChargeId == rcDto.RentChargeId && rc.IsDeleted != true);
@@ -3157,7 +3210,6 @@ namespace MagicVilla_VillaAPI.Repository
                         }
                         else
                         {
-
                             existingLease.RentCharges.Add(new RentCharge
                             {
                                 Amount = rcDto.Amount,
@@ -3234,12 +3286,24 @@ namespace MagicVilla_VillaAPI.Repository
 
                 if (leaseDto.SecurityDeposits != null)
                 {
+                    var securityDepositIds = leaseDto.SecurityDeposits.Select(x => x.SecurityDepositId).ToArray();
+                    var securityDepositsToBeDeleted = existingLease.SecurityDeposit
+                        .Where(sd => sd.LeaseId == existingLease.LeaseId && !securityDepositIds.Contains(sd.SecurityDepositId) && sd.IsDeleted != true)
+                        .ToList();
+
+                    foreach (var securityDepositToBeDeleted in securityDepositsToBeDeleted)
+                    {
+                        securityDepositToBeDeleted.IsDeleted = true;
+                        securityDepositToBeDeleted.ModifiedBy = leaseDto.AddedBy;
+                        securityDepositToBeDeleted.ModifiedDate = DateTime.Now;
+                        _db.SecurityDeposit.Update(securityDepositToBeDeleted);
+                    }
+
                     foreach (var sdDto in leaseDto.SecurityDeposits)
                     {
                         var existingSd = existingLease.SecurityDeposit.FirstOrDefault(sd => sd.SecurityDepositId == sdDto.SecurityDepositId && sd.IsDeleted != true);
                         if (existingSd != null)
                         {
-
                             existingSd.Amount = sdDto.Amount;
                             existingSd.Description = sdDto.Description;
                             existingSd.LeaseId = existingLease.LeaseId;
@@ -3248,7 +3312,6 @@ namespace MagicVilla_VillaAPI.Repository
                         }
                         else
                         {
-
                             existingLease.SecurityDeposit.Add(new SecurityDeposit
                             {
                                 Amount = sdDto.Amount,
@@ -4036,7 +4099,8 @@ namespace MagicVilla_VillaAPI.Repository
             if (user != null)
             {
                 var userUnits = _db.AssetsUnits.Where(x => x.AddedBy == assetDTO.AddedBy && !x.IsDeleted).Count();
-                var toatalUnits = userUnits + assetDTO.Units?.Count();
+                var newUnitsCount = assetDTO.Units?.Where(u => u.UnitId == 0).Count() ?? 0;
+                var toatalUnits = userUnits + newUnitsCount;
                 var subscription = _db.StripeSubscriptions.Where(x => x.UserId == user.Id && !x.IsCanceled).OrderByDescending(x => x.Id).FirstOrDefault();
                 if (subscription != null && toatalUnits > subscription.NoOfUnits)
                 {

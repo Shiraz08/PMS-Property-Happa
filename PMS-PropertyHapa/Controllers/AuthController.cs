@@ -195,7 +195,7 @@ namespace PMS_PropertyHapa.Controllers
                                                 </div>
                                             </body>
                                             </html>";
-                   //await _emailSender.SendEmailAsync(user.Email, "Confirm your email.", htmlContent);
+                    await _emailSender.SendEmailAsync(user.Email, "Confirm your email.", htmlContent);
                     await _context.SaveChangesAsync();
                     model.UserId = user.Id;
                     return await SavePayment(model);
@@ -477,7 +477,7 @@ namespace PMS_PropertyHapa.Controllers
                     var emailSubject = "PropertyHapa – Payment Receipt - " + subscription.Id;
                     var recipients = new List<string> { invoiceData.Email };
 
-                    //await _emailSender.SendEmailWithFIle(bytes, invoiceData.Email, emailSubject, bodyemail, "invoice");
+                   await _emailSender.SendEmailWithFIle(bytes, invoiceData.Email, emailSubject, bodyemail, "invoice");
                 }
                 var base64Pdf = Convert.ToBase64String(bytes);
 
@@ -581,7 +581,7 @@ namespace PMS_PropertyHapa.Controllers
                                         </body>
                                         </html>
                                         ";
-                //await _emailSender.SendEmailAsync(email, "Confirm your email.", htmlContent);
+                await _emailSender.SendEmailAsync(email, "Confirm your email.", htmlContent);
 
                 await _authService.SaveEmailOTP(model);
 

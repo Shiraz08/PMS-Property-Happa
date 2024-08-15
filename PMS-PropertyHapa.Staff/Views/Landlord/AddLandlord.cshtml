@@ -72,14 +72,14 @@
                                         <!-- First Name -->
                                         <div class="col-sm-6 col-md-3">
                                             <div class="mb-3">
-                                                <label for="FirstName" class="form-label">First Name</label>
+                                                <label for="FirstName" class="form-label">First Name<span class="text-danger">*</span></label>
                                                 <input type="text" class="form-control" id="FirstName" name="FirstName" value="@Model?.FirstName" pattern="[A-Za-z]+" required />
                                             </div>
                                         </div>
                                         <!-- Last Name -->
                                         <div class="col-sm-6 col-md-3">
                                             <div class="mb-3">
-                                                <label for="LastName" class="form-label">Last Name</label>
+                                                <label for="LastName" class="form-label">Last Name<span class="text-danger">*</span></label>
                                                 <input type="text" class="form-control" id="LastName" name="LastName" value="@Model?.LastName" pattern="[A-Za-z]+" required />
                                             </div>
                                         </div>
@@ -130,7 +130,7 @@
                                         <div class="col-sm-6 col-md-3 organization-field" style="display: none;">
                                             <div class="mb-3">
                                                 <label for="OrganizationIconFile" class="form-label">Organization Icon</label>
-                                                <input type="file" class="form-control" id="OrganizationIconFile" name="OrganizationIconFile" accept="image/*">
+                                                <input type="file" class="form-control" id="OrganizationIconFile" value="@Model?.OrganizationIcon" name="OrganizationIconFile" accept="image/*">
                                             </div>
                                             @*    @if (!string.IsNullOrEmpty(Model?.OrganizationIcon))
                                             {
@@ -149,7 +149,7 @@
                                         <div class="col-sm-6 col-md-3 organization-field" style="display: none;">
                                             <div class="mb-3">
                                                 <label for="OrganizationLogoFile" class="form-label">Organization Logo</label>
-                                                <input type="file" class="form-control" id="OrganizationLogoFile" name="OrganizationLogoFile" accept="image/*">
+                                                <input type="file" class="form-control" id="OrganizationLogoFile" value="@Model?.OrganizationLogo" name="OrganizationLogoFile" accept="image/*">
                                             </div>
                                             @*   @if (!string.IsNullOrEmpty(Model?.OrganizationLogo))
                                             {
@@ -185,7 +185,7 @@
                                         <!-- Email Address -->
                                         <div class="col-sm-6 col-md-3">
                                             <div class="mb-3">
-                                                <label for="EmailAddress" class="form-label">Email Address</label>
+                                                <label for="EmailAddress" class="form-label">Email Address<span class="text-danger">*</span></label>
                                                 <input type="email" class="form-control" id="EmailAddress" title="Please enter a valid email address." name="EmailAddress" value="@Model?.EmailAddress" required />
                                                 <small class="text-success" id="addAnotherEmail" onclick="toggleEmailField()" style="cursor: pointer;">
                                                     <i class="bi bi-plus-circle"></i> Add another email  +
@@ -204,7 +204,7 @@
                                         <!-- Phone Number -->
                                         <div class="col-sm-6 col-md-3">
                                             <div class="mb-3">
-                                                <label for="PhoneNumber" class="form-label">Phone Number</label>
+                                                <label for="PhoneNumber" class="form-label">Phone Number<span class="text-danger">*</span></label>
                                                 <input type="number" class="form-control" id="PhoneNumber" name="PhoneNumber" value="@Model?.PhoneNumber" required pattern="/^(\+{0,})(\d{0,})([(]{1}\d{1,3}[)]{0,}){0,}(\s?\d+|\+\d{2,3}\s{1}\d+|\d+){1}[\s|-]?\d+([\s|-]?\d+){1,2}(\s){0,}$/gm" title="Please enter a valid phone number." />
                                                 <small class="text-success" id="addAnotherPhone" onclick="togglePhoneField()" style="cursor: pointer;">
                                                     <i class="bi bi-plus-circle"></i> Add another phone  +
@@ -266,7 +266,7 @@
                                     <div class="row">
                                         <div class="col-sm-6 col-md-3">
                                             <div class="mb-3">
-                                                <label for="Address">Address</label>
+                                                <label for="Address">Address<span class="text-danger">*</span></label>
                                                 <input type="text" class="form-control" id="Address" name="Address" placeholder="Enter Address" value="@Model?.Address" required maxlength="255" title="Address cannot be empty and must be shorter than 255 characters." />
                                                 <div class="invalid-feedback">
                                                     Please provide a valid address.
@@ -275,7 +275,7 @@
                                         </div>
                                         <div class="col-sm-6 col-md-3">
                                             <div class="mb-3">
-                                                <label for="Address2">Unit/Ap. #</label>
+                                                <label for="Address2">Unit/Ap. #<span class="text-danger">*</span></label>
                                                 <input type="text" class="form-control" id="Address2" name="Address2" value="@Model?.Address2" placeholder="Enter Address2" />
                                             </div>
                                         </div>
@@ -287,13 +287,13 @@
                                         </div>
                                         <div class="col-sm-6 col-md-3">
                                             <div class="mb-3">
-                                                <label for="Region">State / Region</label>
+                                                <label for="Region">State / Region<span class="text-danger">*</span></label>
                                                 <input type="text" class="form-control" id="Region" name="Region" value="@Model?.Region" placeholder="Enter State/Region" />
                                             </div>
                                         </div>
                                         <div class="col-sm-6 col-md-3">
                                             <div class="mb-3">
-                                                <label for="PostalCode">Zip</label>
+                                                <label for="PostalCode">Zip<span class="text-danger">*</span></label>
                                                 <input type="number" class="form-control" id="PostalCode" name="PostalCode" value="@Model?.PostalCode" placeholder="Enter Zip Code" />
                                             </div>
                                         </div>
@@ -563,8 +563,6 @@
         return pattern.test(phoneNumber);
     }
 
-
-
     function validateFirstName(FirstName) {
         return FirstName.trim().length > 0;
     }
@@ -626,7 +624,6 @@
 
     // Collect input elements
     const emailAddress = document.getElementById('EmailAddress');
-    const OrganizationName = document.getElementById('OrganizationName');
     const emailAddress2 = document.getElementById('EmailAddress2');
     const phoneNumber = document.getElementById('PhoneNumber');
     const phoneNumber2 = document.getElementById('PhoneNumber2');
@@ -650,7 +647,7 @@
         const isLastNameValid = validateField(LastName, validateLastName, 'LastName cannot be empty.');
         const isUnitValid = validateField(Unit, validateUnit, 'Unit cannot be empty.');
         const isRegionValid = validateField(Region, validateRegion, 'Region cannot be empty.');
-        const isPostalCodeValid = validateField(PostalCode, validatePostalCode, 'PostalCode cannot be empty.');
+        const isPostalCodeValid = validateField(PostalCode, validatePostalCode, 'ZipCode cannot be empty.');
         if (isEmailAddressValid && isPhoneNumberValid && isWebsiteValid && isAddressValid && isEmail2Valid && isFirstNameValid && isLastNameValid && isUnitValid && isRegionValid && isPostalCodeValid) {
             submitTenantForm();
         } else {

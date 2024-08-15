@@ -772,12 +772,11 @@ namespace PMS_PropertyHapa.Staff.Services
         {
             try
             {
-                int communicationId = communication.Communication_Id;
                 var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
                 {
                     ApiType = SD.ApiType.POST,
                     Data = communication,
-                    Url = $"{villaUrl}/api/v1/CommunicationAuth/Communication/{communicationId}"
+                    Url = $"{villaUrl}/api/v1/CommunicationAuth/UpdateCommunication"
                 });
 
                 return response.IsSuccess;
@@ -795,8 +794,8 @@ namespace PMS_PropertyHapa.Staff.Services
             {
                 var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
                 {
-                    ApiType = SD.ApiType.DELETE,
-                    Url = $"{villaUrl}/api/v1/CommunicationAuth/Communication/{communicationId}"
+                    ApiType = SD.ApiType.POST,
+                    Url = $"{villaUrl}/api/v1/CommunicationAuth/DeleteCommunication/{communicationId}"
                 });
 
                 return response.IsSuccess;
@@ -1520,9 +1519,9 @@ namespace PMS_PropertyHapa.Staff.Services
             {
                 var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
                 {
-                    ApiType = SD.ApiType.PUT,
+                    ApiType = SD.ApiType.POST,
                     Data = lease,
-                    Url = $"{villaUrl}/api/v1/LeaseAuth/Lease"
+                    Url = $"{villaUrl}/api/v1/LeaseAuth/UpdateLease"
                 });
 
                 return response.IsSuccess;

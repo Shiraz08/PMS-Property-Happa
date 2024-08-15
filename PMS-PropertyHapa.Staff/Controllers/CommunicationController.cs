@@ -227,7 +227,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
 
 
-        [HttpDelete]
+        [HttpPost]
         public async Task<IActionResult> DeleteCommunication(int Communication_Id)
         {
             var currenUserId = Request?.Cookies["userId"]?.ToString();
@@ -279,7 +279,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
                 Communication = new CommunicationDto();
             }
 
-            return View("AddCommunication");
+            return View("AddCommunication", Communication);
         }
 
         [HttpPost]

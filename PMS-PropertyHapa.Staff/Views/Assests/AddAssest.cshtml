@@ -284,42 +284,42 @@
                                 <h3 class="mb-5">Property Info</h3>
                                 <div class="row">
                                     <div class="col-md-4 mb-2">
-                                        <label class="sr-only" for="buildingNo">Building #</label>
+                                        <label class="sr-only" for="buildingNo">Building #<span class="text-danger">*</span></label>
                                         <input class="form-control" id="buildingNo" type="text" name="buildingNo" placeholder="building #" value="@Model?.Asset?.BuildingNo" required="">
                                     </div>
                                     <div class="col-md-4 mb-2">
-                                        <label class="sr-only" for="buildingName">Building Name</label>
+                                        <label class="sr-only" for="buildingName">Building Name<span class="text-danger">*</span></label>
                                         <input class="form-control" id="buildingName" type="text" name="buildingName" placeholder="Building Name" value="@Model?.Asset?.BuildingName" required="">
                                     </div>
                                 </div>
                                 <h3 class="mb-5">Property Address</h3>
                                 <div class="row">
                                     <div class="col-md-4 mb-2">
-                                        <label class="sr-only" for="street1">Street 1</label>
+                                        <label class="sr-only" for="street1">Street 1<span class="text-danger">*</span></label>
                                         <input class="form-control" id="street1" type="text" name="street1" placeholder="Street 1" value="@Model?.Asset?.Street1" required="">
                                     </div>
                                     <div class="col-md-4 mb-2">
-                                        <label class="sr-only" for="street2">Street 2</label>
+                                        <label class="sr-only" for="street2">Street 2<span class="text-danger">*</span></label>
                                         <input class="form-control" id="street2" type="text" name="street2" placeholder="Street 2" value="@Model?.Asset?.Street2">
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-4 mb-2">
-                                        <label class="sr-only" for="city">City</label>
+                                        <label class="sr-only" for="city">City<span class="text-danger">*</span></label>
                                         <input class="form-control" id="city" type="text" name="city" placeholder="City" required="" value="@Model?.Asset?.City">
                                     </div>
                                     <div class="col-md-4 mb-2">
-                                        <label class="sr-only" for="state">State</label>
+                                        <label class="sr-only" for="state">State<span class="text-danger">*</span></label>
                                         <input class="form-control" id="state" type="text" name="state" placeholder="State" required="" value="@Model?.Asset?.State">
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-4 mb-2">
-                                        <label class="sr-only" for="country">Country</label>
+                                        <label class="sr-only" for="country">Country<span class="text-danger">*</span></label>
                                         <input class="form-control" id="country" type="text" name="country" placeholder="Country" required="" value="@Model?.Asset?.Country">
                                     </div>
                                     <div class="col-md-4 mb-2">
-                                        <label class="sr-only" for="zipcode">Zip Code</label>
+                                        <label class="sr-only" for="zipcode">Zip Code<span class="text-danger">*</span></label>
                                         <input class="form-control" id="zipcode" type="text" name="zipcode" placeholder="Zip Code" required="" value="@Model?.Asset?.Zipcode">
                                     </div>
                                 </div>
@@ -364,19 +364,19 @@
                                                 <div class="form-row">
                                                     <input type="hidden" name="unitId" value="@unit.UnitId" id="hiddenUnitId">
                                                     <div class="col">
-                                                        <input type="text" class="form-control" value="@unit.UnitName" placeholder="Unit Name" name="unitName">
+                                                        <input type="text" class="form-control" value="@unit.UnitName" placeholder="Unit Name*" name="unitName">
                                                     </div>
                                                     <div class="col">
-                                                        <input type="number" class="form-control" value="@unit.Beds" placeholder="Beds" name="beds">
+                                                        <input type="number" class="form-control" value="@unit.Beds" placeholder="Beds*" name="beds">
                                                     </div>
                                                     <div class="col">
-                                                        <input type="number" class="form-control" value="@unit.Bath" placeholder="Bath" name="bath">
+                                                        <input type="number" class="form-control" value="@unit.Bath" placeholder="Bath*" name="bath">
                                                     </div>
                                                     <div class="col">
-                                                        <input type="number" class="form-control" value="@unit.Size" placeholder="Size" name="size">
+                                                        <input type="number" class="form-control" value="@unit.Size" placeholder="Size*" name="size">
                                                     </div>
                                                     <div class="col">
-                                                        <input type="number" class="form-control" value="@unit.Rent" placeholder="Rent" name="rent">
+                                                        <input type="number" class="form-control" value="@unit.Rent" placeholder="Rent*" name="rent">
                                                     </div>
                                                 </div>
                                                 <div class="row mb-4">

@@ -248,7 +248,7 @@
             if (result.isConfirmed) {
                 $.ajax({
                     url: '@Url.Action("DeleteCommunication", "Communication")',
-                    type: 'DELETE',
+                    type: 'POST',
                     data: { Communication_Id: communicationId },
                     success: function (response) {
                         if (response.success) {
@@ -279,45 +279,6 @@
         });
     }
 
-
-    // // function updateCommunication(communicationId) {
-    // //     var communicationId = $('#communicationId').val();  
-    // //     var formData = new FormData($('#communicationForm')[0]); 
-
-    // //     $.ajax({
-    // //         url: '/Communication/EditCommunication?communicationId=' + communicationId,
-    // //         type: 'POST',
-    // //         data: formData,
-    // //         contentType: false, 
-    // //         processData: false,
-    // //         success: function (response) {
-    // //             if (response.success) {
-    // //                 Swal.fire({
-    // //                     icon: 'success',
-    // //                     title: 'Updated Successfully',
-    // //                     text: 'The communication has been updated successfully!',
-    // //                     timer: 3000,
-    // //                     showConfirmButton: false
-    // //                 }).then((result) => {
-    // //                     window.location.reload(); 
-    // //                 });
-    // //             } else {
-    // //                 Swal.fire({
-    // //                     icon: 'error',
-    // //                     title: 'Update Failed',
-    // //                     text: response.message 
-    // //                 });
-    // //             }
-    // //         },
-    // //         error: function (xhr, status, error) {
-    // //             Swal.fire({
-    // //                 icon: 'error',
-    // //                 title: 'Update Error',
-    // //                 text: 'An error occurred during the update process. Please try again.'
-    // //             });
-    // //         }
-    // //     });
-    // }
 
     function editCommunication(communicationId) {
         var url = '@Url.Action("EditCommunication", "Communication")' + '?communicationId=' + communicationId;

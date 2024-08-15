@@ -79,15 +79,15 @@
                 <input type="hidden" value="" id="documentId" />
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="documentTitle" class="form-label">Title *</label>
+                        <label for="documentTitle" class="form-label">Title <span class="text-danger">*</span></label>
                         <input type="text" class="form-control" name="documentTitle" id="documentTitle" placeholder="Title" >
                     </div>
                     <div class="mb-3">
-                        <label for="documentDescription" class="form-label">Description *</label>
+                        <label for="documentDescription" class="form-label">Description <span class="text-danger">*</span></label>
                         <textarea class="form-control" placeholder="Description" id="documentDescription"></textarea>
                     </div>
                     <div class="mb-3">
-                        <label for="documentType" class="form-label">Type *</label>
+                        <label for="documentType" class="form-label">Type <span class="text-danger">*</span></label>
                         <select class="form-control select2" id="documentType" name="Type">
                             <option value="" selected disabled hidden>Select Documnet Type</option>
                             <option value="Owner">Owner</option>
@@ -97,34 +97,34 @@
                         </select>
                     </div>
                     <div class="mb-3  d-none" id="newOwnerDiv">
-                        <label for="newOwner">Owner</label>
+                        <label for="newOwner">Owner <span class="text-danger">*</span></label>
                         <select class="form-control select2" id="newOwner">
                             <option value="">Select Unit</option>
                         </select>
                     </div>
                     <div class="mb-3  d-none" id="newTenantDiv">
-                        <label for="newTenant">Tenant</label>
+                        <label for="newTenant">Tenant <span class="text-danger">*</span></label>
                         <select class="form-control select2" id="newTenant">
                             <option value="">Select Unit</option>
                         </select>
                     </div>
                     <div class="row mb-3 d-none" id="newAssetDiv">
                         <div class="col-md-6">
-                            <label for="newProperty" class="form-label ">Property</label>
+                            <label for="newProperty" class="form-label ">Property <span class="text-danger">*</span></label>
                             <select class="form-control select2" id="newProperty">
-                                <option value="">Select Unit</option>
+                                <option value="">Select Asset</option>
                             </select>
                         </div>
 
                         <div class="col-md-6">
-                            <label for="newUnit" class="form-label ">Units</label>
+                            <label for="newUnit" class="form-label ">Units <span class="text-danger">*</span></label>
                             <select class="form-control select2 mt-2" id="newUnit">
                                 <option value="">Select Unit</option>
                             </select>
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label for="documentFile" class="form-label">Document Upload *</label>
+                        <label for="documentFile" class="form-label">Document Upload <span class="text-danger">*</span></label>
                         <input type="file" class="form-control" id="documentFile" name="DocumentFile" accept=".pdf,.xls,.xlsx,.doc,.docx,.png,.jpg,.jpeg,.gif">
                         <a id="currentDocumentLink" href="" target="_blank" class="d-none">View Current Document</a>
                     </div>
