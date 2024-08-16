@@ -177,14 +177,14 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
                                 using (var memoryStream = new MemoryStream(fileBytes))
                                 {
-                                    // Send email with file to the tenant
-                                    //await _emailSenderBase.SendEmailWithFilebyStream(
-                                    //    memoryStream,
-                                    //    emailAddressList,
-                                    //    CommunicationDto.Subject,
-                                    //    CommunicationDto.Message,
-                                    //    "AttachmentFileName.pdf" // Provide the file name here
-                                    //);
+                                    //Send email with file to the tenant
+                                   await _emailSenderBase.SendEmailWithFilebyStream(
+                                       memoryStream,
+                                       emailAddressList,
+                                       CommunicationDto.Subject,
+                                       CommunicationDto.Message,
+                                       "AttachmentFileName.pdf" // Provide the file name here
+                                   );
                                 }
                             }
                         }
@@ -200,14 +200,14 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
                                 using (var memoryStream = new MemoryStream(fileBytes))
                                 {
-                                    // Send email with file to the tenant
-                                    //await _emailSenderBase.SendEmailWithFilebyStream(
-                                    //    memoryStream,
-                                    //    emailAddressList,
-                                    //    CommunicationDto.Subject,
-                                    //    CommunicationDto.Message,
-                                    //    "AttachmentFileName.pdf" // Provide the file name here
-                                    //);
+                                     //Send email with file to the tenant
+                                    await _emailSenderBase.SendEmailWithFilebyStream(
+                                        memoryStream,
+                                        emailAddressList,
+                                        CommunicationDto.Subject,
+                                        CommunicationDto.Message,
+                                        "AttachmentFileName.pdf" // Provide the file name here
+                                    );
                                 }
                             }
                         }

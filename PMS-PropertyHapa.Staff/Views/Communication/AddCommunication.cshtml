@@ -558,8 +558,6 @@
 
     $(document).on('click', '.btn-next', function () {
         if (validateStep(currentStep)) {
-            console.log("currentStep")
-            console.log(currentStep)
             if (currentStep < totalSteps) {
                 currentStep++;
                 updateProgress(currentStep);

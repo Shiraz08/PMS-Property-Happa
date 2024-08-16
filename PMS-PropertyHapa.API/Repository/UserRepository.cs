@@ -1925,6 +1925,13 @@ namespace MagicVilla_VillaAPI.Repository
                     return response;
                 }
 
+                var user = await _db.ApplicationUsers.FirstOrDefaultAsync(x=>x.Email == tenant.EmailAddress);
+                if (user != null)
+                {
+                    _db.ApplicationUsers.Remove(user);
+                    await _db.SaveChangesAsync();
+                }
+
                 tenant.IsDeleted = true;
                 _db.Tenant.Update(tenant);
                
@@ -2453,6 +2460,13 @@ namespace MagicVilla_VillaAPI.Repository
                     response.IsSuccess = false;
                     response.ErrorMessages.Add("Owner not found.");
                     return response;
+                }
+
+                var user = await _db.ApplicationUsers.FirstOrDefaultAsync(x => x.Email == owner.EmailAddress);
+                if (user != null)
+                {
+                    _db.ApplicationUsers.Remove(user);
+                    await _db.SaveChangesAsync();
                 }
 
                 owner.IsDeleted = true;
