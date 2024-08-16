@@ -132,6 +132,8 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
         Task<OwnerDto> GetSingleLandlordByIdAsync(int ownerId);
         Task<List<OwnerDto>> GetLandlordOrganizationAsync(ReportFilter reportFilter);
         Task<List<AssetDTO>> GetLandlordAssetAsync(ReportFilter reportFilter);
+        Task<List<OwnerDto>> GetLandlordReportByExpenseAsync();
+        Task<List<OwnerDto>> GetLandlordReportByIncomeAsync();
 
         //Asset
         Task<bool> CreateAssetAsync(AssetDTO assetDTO);

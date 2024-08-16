@@ -381,6 +381,45 @@ namespace PMS_PropertyHapa.Staff.Controllers
             return Ok(res);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetLandlordReportByExpense()
+        {
+            try
+            {
+                var owner = await _authService.GetLandlordReportByExpenseAsync();
+                var currenUserId = Request?.Cookies["userId"]?.ToString();
+                if (currenUserId != null)
+                {
+                    owner = owner.Where(s => s.AddedBy == currenUserId);
+                }
+                return Ok(owner);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while fetching landlord: {ex.Message}");
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetLandlordReportByIncome()
+        {
+            try
+            {
+                var owner = await _authService.GetLandlordReportByIncomeAsync();
+                var currenUserId = Request?.Cookies["userId"]?.ToString();
+                if (currenUserId != null)
+                {
+                    owner = owner.Where(s => s.AddedBy == currenUserId);
+                }
+                return Ok(owner);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while fetching landlord: {ex.Message}");
+            }
+        }
+
+
         public async Task<IActionResult> LandlordDetails(int id)
         {
             var currenUserId = Request?.Cookies["userId"]?.ToString();

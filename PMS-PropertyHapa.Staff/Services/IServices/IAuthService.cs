@@ -47,8 +47,12 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
         Task<bool> UpdateLandlordAsync(OwnerDto owner);
         Task<APIResponse> DeleteLandlordAsync(int ownerId);
         Task<TenantModelDto> GetSingleTenantAsync(int tenantId);
+        Task<IEnumerable<OwnerDto>> GetAllLandlordAsync();
+        Task<IEnumerable<OwnerDto>> GetAllLandlordDllAsync(Filter filter);
         Task<IEnumerable<OwnerDto>> GetLandlordOrganization(ReportFilter reportFilter);
         Task<IEnumerable<AssetDTO>> GetLandlordAsset(ReportFilter reportFilter);
+        Task<IEnumerable<OwnerDto>> GetLandlordReportByExpenseAsync();
+        Task<IEnumerable<OwnerDto>> GetLandlordReportByIncomeAsync();
 
 
 
@@ -93,8 +97,7 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
 
         Task<List<PropertyTypeDto>> GetAllPropertyTypes();
 
-        Task<IEnumerable<OwnerDto>> GetAllLandlordAsync();
-        Task<IEnumerable<OwnerDto>> GetAllLandlordDllAsync(Filter filter);
+        
 
         Task<List<PropertySubTypeDto>> GetPropertySubTypeByIdAllAsync(string tenantId);
 

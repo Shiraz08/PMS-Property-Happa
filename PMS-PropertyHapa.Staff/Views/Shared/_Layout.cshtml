@@ -144,6 +144,8 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="~/Dashboard/assets/css/vendors/datatables.css">
+    <link href="~/dashboard/assets/css/vendors/select2.css" rel="stylesheet" />
+
     <!-- Main CSS File -->
     <link href="~/assets/css/style.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -733,6 +735,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.2/js/toastr.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <script src="~/dashboard/assets/js/select2/select2.full.min.js"></script>
+
 
     <script src="~/Dashboard/assets/js/datatable/datatables/jquery.dataTables.min.js"></script>
     
@@ -801,29 +805,29 @@
     <script>
         $(document).ready(function () {
             //debugger;
-            var organizationName = localStorage.getItem('organizationName');
-            var organizationLogo = localStorage.getItem('organizationLogo');
-            var organizationIcon = localStorage.getItem('organizationIcon');
-            var organizationDescription = localStorage.getItem('organizationDescription');
-            var tid = localStorage.getItem('tid');
-            if (tid) {
-                fetchTenantOrganizationInfo(tid);
-            } else {
-                console.error('Tenant ID not found');
-            }
-            var primaryColor = localStorage.getItem('primaryColor');
-            var secondaryColor = localStorage.getItem('secondaryColor');
-            if (organizationLogo != null) {
-                $('#NewPictureBase64').attr('src', organizationLogo);
-            }
-            if (organizationName != null) {
-                document.title = "Dashboard" + " " + "-" + " " + organizationName;
-                document.getElementById('companyname').innerHTML = "Copyright 2024 ©" + " " + "-" + " " + organizationName;
-                var urls = '@Html.Raw(Configuration.GetSection("ImageURl")["URL"].ToString())';
-                var imageUrl = urls.concat(organizationLogo);
-                var imageiconUrl = urls.concat(organizationIcon);
+            // var organizationName = localStorage.getItem('organizationName');
+            // var organizationLogo = localStorage.getItem('organizationLogo');
+            // var organizationIcon = localStorage.getItem('organizationIcon');
+            // var organizationDescription = localStorage.getItem('organizationDescription');
+            // var tid = localStorage.getItem('tid');
+            // if (tid) {
+            //     fetchTenantOrganizationInfo(tid);
+            // } else {
+            //     console.error('Tenant ID not found');
+            // }
+            // var primaryColor = localStorage.getItem('primaryColor');
+            // var secondaryColor = localStorage.getItem('secondaryColor');
+            // if (organizationLogo != null) {
+            //     $('#NewPictureBase64').attr('src', organizationLogo);
+            // }
+            // if (organizationName != null) {
+            //     document.title = "Dashboard" + " " + "-" + " " + organizationName;
+            //     document.getElementById('companyname').innerHTML = "Copyright 2024 ©" + " " + "-" + " " + organizationName;
+            //     var urls = '@Html.Raw(Configuration.GetSection("ImageURl")["URL"].ToString())';
+            //     var imageUrl = urls.concat(organizationLogo);
+            //     var imageiconUrl = urls.concat(organizationIcon);
 
-            }
+            // }
             $('.select2').select2({
                 allowClear: true,
                 placeholder: "Please select an option"
@@ -1116,19 +1120,19 @@
             });
         }
 
-        var organizationIconBase64 = localStorage.getItem('organizationIcon');
+        // var organizationIconBase64 = localStorage.getItem('organizationIcon');
 
-        if (organizationIconBase64) {
-            var organizationIconDataURI = organizationIconBase64;
-            var faviconIcon = document.getElementById('faviconIcon');
-            if (faviconIcon) {
-                faviconIcon.href = organizationIconDataURI;
-            } else {
-                console.error('faviconIcon element not found');
-            }
-        } else {
-            console.error('organizationIconBase64 is empty or not found in localStorage');
-        }
+        // if (organizationIconBase64) {
+        //     var organizationIconDataURI = organizationIconBase64;
+        //     var faviconIcon = document.getElementById('faviconIcon');
+        //     if (faviconIcon) {
+        //         faviconIcon.href = organizationIconDataURI;
+        //     } else {
+        //         console.error('faviconIcon element not found');
+        //     }
+        // } else {
+        //     console.error('organizationIconBase64 is empty or not found in localStorage');
+        // }
 
 
 

@@ -2519,6 +2519,67 @@ namespace MagicVilla_VillaAPI.Repository
 
         }
 
+        public async Task<List<OwnerDto>> GetLandlordReportByExpenseAsync()
+        {
+            try
+            {
+                var expenseReport = await (from li in _db.LineItem
+                                           join tr in _db.TaskRequest on li.TaskRequestId equals tr.TaskRequestId
+                                           join a in _db.Assets on tr.AssetId equals a.AssetId
+                                           join o in _db.Owner on a.OwnerId equals o.OwnerId
+                                           where !li.IsDeleted
+                                           group new { o.OwnerId, o.FirstName, o.LastName, li.Price } by new
+                                           {
+                                               o.OwnerId,
+                                               o.FirstName,
+                                               o.LastName
+                                           } into grouped
+                                           select new OwnerDto
+                                           {
+                                               OwnerId = grouped.Key.OwnerId,
+                                               OwnerName = grouped.Key.FirstName + " " + grouped.Key.LastName,
+                                               TotalExpense = grouped.Sum(x => x.Price)
+                                           }).ToListAsync();
+
+                return expenseReport;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while retrieving landlord report: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<List<OwnerDto>> GetLandlordReportByIncomeAsync()
+        {
+            try
+            {
+                var incomeReport = await (from lease in _db.Lease
+                                          join asset in _db.Assets on lease.AssetId equals asset.AssetId
+                                          join owner in _db.Owner on asset.OwnerId equals owner.OwnerId
+                                          where !lease.IsDeleted && !asset.IsDeleted
+                                          select new OwnerDto
+                                          {
+                                              OwnerId = owner.OwnerId,
+                                              OwnerName = owner.FirstName + " " + owner.LastName,
+                                              TotalIncome = lease.RentCharges.Where(rc => !rc.IsDeleted).Sum(rc => rc.Amount) +
+                                                            lease.FeeCharge.Where(fc => !fc.IsDeleted).Sum(fc => fc.Amount) +
+                                                            lease.SecurityDeposit.Where(sd => !sd.IsDeleted).Sum(sd => sd.Amount)
+                                          }).ToListAsync();
+
+                return incomeReport;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while retrieving landlord report: {ex.Message}");
+                throw;
+            }
+        }
+
+
+
+
+
         #endregion
 
         #region Lease

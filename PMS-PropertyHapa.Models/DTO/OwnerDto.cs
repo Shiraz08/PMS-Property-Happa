@@ -6,6 +6,7 @@ namespace PMS_PropertyHapa.Models.DTO
     public class OwnerDto
     {
         public int? OwnerId { get; set; }
+        public string OwnerName { get; set; }
         public string FirstName { get; set; }
         public string MiddleName { get; set; }
         public string Fax { get; set; }
@@ -65,5 +66,7 @@ namespace PMS_PropertyHapa.Models.DTO
         public string Role { get; set; }
         public int? NoOfAssets { get; set; }
         public int? NoOfUnits { get; set; }
+        public decimal TotalExpense {  get; set; }
+        public decimal TotalIncome {  get; set; }
     }
 }

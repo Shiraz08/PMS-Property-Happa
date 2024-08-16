@@ -234,6 +234,42 @@ namespace PMS_PropertyHapa.API.Controllers.V1
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
+
+        [HttpGet("LandlordReportByExpense")]
+        public async Task<ActionResult<OwnerDto>> GetLandlordReportByExpense()
+        {
+            try
+            {
+                var assets = await _userRepo.GetLandlordReportByExpenseAsync();
+
+                _response.StatusCode = HttpStatusCode.OK;
+                _response.IsSuccess = true;
+                _response.Result = assets;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+        
+        [HttpGet("LandlordReportByIncome")]
+        public async Task<ActionResult<OwnerDto>> GetLandlordReportByIncome()
+        {
+            try
+            {
+                var assets = await _userRepo.GetLandlordReportByIncomeAsync();
+
+                _response.StatusCode = HttpStatusCode.OK;
+                _response.IsSuccess = true;
+                _response.Result = assets;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
         #endregion
 
     }

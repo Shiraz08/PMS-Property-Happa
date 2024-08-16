@@ -1429,6 +1429,44 @@ namespace PMS_PropertyHapa.Staff.Services
             }
         }
 
+        public async Task<IEnumerable<OwnerDto>> GetLandlordReportByExpenseAsync()
+        {
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = $"{villaUrl}/api/v1/LandlordAuth/LandlordReportByExpense"
+            });
+
+            if (response.IsSuccess == true)
+            {
+                var asset = response.Result != null ? JsonConvert.DeserializeObject<IEnumerable<OwnerDto>>(Convert.ToString(response.Result)) : null;
+                return asset;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve landlord data");
+            }
+        }
+        
+        public async Task<IEnumerable<OwnerDto>> GetLandlordReportByIncomeAsync()
+        {
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+                Url = $"{villaUrl}/api/v1/LandlordAuth/LandlordReportByIncome"
+            });
+
+            if (response.IsSuccess == true)
+            {
+                var asset = response.Result != null ? JsonConvert.DeserializeObject<IEnumerable<OwnerDto>>(Convert.ToString(response.Result)) : null;
+                return asset;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve landlord data");
+            }
+        }
+
 
         #endregion
 
