@@ -911,23 +911,8 @@
             populateUnits(selectedPropertyId, null); // Ensure unit dropdown is populated without pre-selection
         }
 
-
-
-
-        // Populate existing security deposits if any
-
-        // Event handlers for the Yes/No buttons
-        // $('#yesSecurityFund, #noSecurityFund').on('click', function () {
-        //     $('#yesSecurityFund, #noSecurityFund').removeClass('selected');
-        //     $(this).addClass('selected');
-        //     var displaySection = $(this).is('#yesSecurityFund') ? 'slideDown' : 'slideUp';
-        //     $('#additionalDataSection')[displaySection]();
-        // });
-
         populateSecurityDeposits();
         populateRentCharges();
-
-
 
         var currentStep = 1;
         var maxSteps = 6;

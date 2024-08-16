@@ -187,7 +187,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
                 APIResponse result = await _authService.RegisterAsync<APIResponse>(registrationRequest);
                 if (!result.IsSuccess)
                 {
-                    return Json(new { success = false, message = "Failed to register tenant as user." });
+                    return Json(new { success = false, message = result.ErrorMessages });
                 }
 
                 var emailContent = $"Welcome {tenant.FirstName} {tenant.LastName},\n\nThank you for registering. Here are your details:\nUsername: {tenant.EmailAddress}\nPassword: Test@123\nTenant ID: {registrationRequest.TenantId}\n\nThank you!";

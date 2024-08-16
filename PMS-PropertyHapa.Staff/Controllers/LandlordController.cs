@@ -15,6 +15,8 @@ using PMS_PropertyHapa.Staff.Services.IServices;
 using Newtonsoft.Json;
 using static PMS_PropertyHapa.Shared.Enum.SD;
 using PMS_PropertyHapa.Staff.Filters;
+using PMS_PropertyHapa.MigrationsFiles.Migrations;
+using PMS_PropertyHapa.Shared.Email;
 
 namespace PMS_PropertyHapa.Staff.Controllers
 {
@@ -29,8 +31,9 @@ namespace PMS_PropertyHapa.Staff.Controllers
         private readonly IUserStore<ApplicationUser> _userStore;
         private IWebHostEnvironment _environment;
         private readonly IPermissionService _permissionService;
+        EmailSender _emailSender = new EmailSender();
 
-        public LandlordController(IAuthService authService, ITokenProvider tokenProvider, IWebHostEnvironment Environment, ILogger<HomeController> logger, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, ApiDbContext context, IUserStore<ApplicationUser> userStore, IPermissionService permissionService)
+        public LandlordController(IAuthService authService, ITokenProvider tokenProvider, IWebHostEnvironment Environment, ILogger<HomeController> logger, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, ApiDbContext context, IUserStore<ApplicationUser> userStore, IPermissionService permissionService, EmailSender emailSender)
         {
             _authService = authService;
             _tokenProvider = tokenProvider;
@@ -41,6 +44,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
             _userStore = userStore;
             _environment = Environment;
             _permissionService = permissionService;
+            _emailSender = emailSender;
         }
 
         //[TypeFilter(typeof(PermissionFilter), Arguments = new object[] { UserPermissions.ViewLandlord })]
@@ -150,9 +154,35 @@ namespace PMS_PropertyHapa.Staff.Controllers
             //}
             owner.AddedBy = Request?.Cookies["userId"]?.ToString();
             await _authService.CreateLandlordAsync(owner);
+
+            // Register owner as a user if required
+            if (owner.AddLandlordAsUser)
+            {
+                var newowner = await _authService.GetAllLandlordAsync();
+                if (currenUserId != null)
+                {
+                    newowner = newowner.Where(s => s.AddedBy == currenUserId);
+                }
+                var registrationRequest = new RegisterationRequestDTO
+                {
+                    UserName = owner.EmailAddress,
+                    Name = $"{owner.FirstName} {owner.LastName}",
+                    Email = owner.EmailAddress,
+                    Password = "Test@123",
+                    Role = "Owner",
+                    OwnerId = newowner.Max(s => s.OwnerId)
+                };
+
+                APIResponse result = await _authService.RegisterAsync<APIResponse>(registrationRequest);
+                if (!result.IsSuccess)
+                {
+                    return Json(new { success = false, message = result.ErrorMessages });
+                }
+                var emailContent = $"Welcome {owner.FirstName} {owner.LastName},\n\nThank you for registering. Here are your details:\nUsername: {owner.EmailAddress}\nPassword: Test@123\nTenant ID: {registrationRequest.OwnerId}\n\nThank you!";
+                await _emailSender.SendEmailAsync(owner.EmailAddress, "Welcome to Our Service!", emailContent);
+            }
             return Json(new { success = true, message = "Owner added successfully" });
         }
-
         [HttpPost]
         public async Task<IActionResult> Update([FromForm] OwnerDto owner)
         {

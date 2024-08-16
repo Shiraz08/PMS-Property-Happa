@@ -163,24 +163,52 @@ namespace PMS_PropertyHapa.Staff.Controllers
                     {
                         List<string> tenantIds = CommunicationDto.TenantIds.Split(',').ToList();
 
-                        foreach (var tenantId in tenantIds)
+                        var tenants = await _authService.GetAllTenantsAsync();
+                        tenants = tenants.Where(x => x.AddedBy == currenUserId);
+                        if (tenantIds.Count > 0)
                         {
-                            var tenant = await _authService.GetAllTenantsAsync();
-                            var emailAddress = tenant.Where(s=>s.TenantId == Convert.ToInt32(tenantId)).FirstOrDefault().EmailAddress;
-                            List<string> emailAddressList = new List<string> { emailAddress };
-
-                            var fileBytes = Convert.FromBase64String(CommunicationDto.Communication_File.Split(',')[1]);
-
-                            using (var memoryStream = new MemoryStream(fileBytes))
+                            foreach (var tenantId in tenantIds)
                             {
-                                // Send email with file to the tenant
-                                await _emailSenderBase.SendEmailWithFilebyStream(
-                                    memoryStream,
-                                    emailAddressList,
-                                    CommunicationDto.Subject,
-                                    CommunicationDto.Message,
-                                    "AttachmentFileName.pdf" // Provide the file name here
-                                );
+
+                                var emailAddress = tenants.Where(s => s.TenantId == Convert.ToInt32(tenantId)).FirstOrDefault().EmailAddress;
+                                List<string> emailAddressList = new List<string> { emailAddress };
+
+                                var fileBytes = Convert.FromBase64String(CommunicationDto.Communication_File.Split(',')[1]);
+
+                                using (var memoryStream = new MemoryStream(fileBytes))
+                                {
+                                    // Send email with file to the tenant
+                                    //await _emailSenderBase.SendEmailWithFilebyStream(
+                                    //    memoryStream,
+                                    //    emailAddressList,
+                                    //    CommunicationDto.Subject,
+                                    //    CommunicationDto.Message,
+                                    //    "AttachmentFileName.pdf" // Provide the file name here
+                                    //);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            foreach (var item in tenants)
+                            {
+
+                                var emailAddress = item.EmailAddress;
+                                List<string> emailAddressList = new List<string> { emailAddress };
+
+                                var fileBytes = Convert.FromBase64String(CommunicationDto.Communication_File.Split(',')[1]);
+
+                                using (var memoryStream = new MemoryStream(fileBytes))
+                                {
+                                    // Send email with file to the tenant
+                                    //await _emailSenderBase.SendEmailWithFilebyStream(
+                                    //    memoryStream,
+                                    //    emailAddressList,
+                                    //    CommunicationDto.Subject,
+                                    //    CommunicationDto.Message,
+                                    //    "AttachmentFileName.pdf" // Provide the file name here
+                                    //);
+                                }
                             }
                         }
                     }
@@ -215,6 +243,70 @@ namespace PMS_PropertyHapa.Staff.Controllers
 
             try
             {
+                if (CommunicationDto.CommunicationFile != null && CommunicationDto.CommunicationFile.Length > 0)
+                {
+                    var (fileName, base64String) = await ImageUploadUtility.UploadImageAsync(CommunicationDto.CommunicationFile, "uploads");
+                    CommunicationDto.Communication_File = $"data:image/png;base64,{base64String}";
+                }
+
+                CommunicationDto.CommunicationFile = null;
+
+                if (CommunicationDto.IsByEmail)
+                {
+                    if (CommunicationDto.Subject != null && CommunicationDto.Message != null && CommunicationDto.Communication_File != null)
+                    {
+                        List<string> tenantIds = CommunicationDto.TenantIds.Split(',').ToList();
+
+                        var tenants = await _authService.GetAllTenantsAsync();
+                        tenants = tenants.Where(x => x.AddedBy == currenUserId);
+                        if (tenantIds.Count > 0)
+                        {
+                            foreach (var tenantId in tenantIds)
+                            {
+
+                                var emailAddress = tenants.Where(s => s.TenantId == Convert.ToInt32(tenantId)).FirstOrDefault().EmailAddress;
+                                List<string> emailAddressList = new List<string> { emailAddress };
+
+                                var fileBytes = Convert.FromBase64String(CommunicationDto.Communication_File.Split(',')[1]);
+
+                                using (var memoryStream = new MemoryStream(fileBytes))
+                                {
+                                    // Send email with file to the tenant
+                                    await _emailSenderBase.SendEmailWithFilebyStream(
+                                        memoryStream,
+                                        emailAddressList,
+                                        CommunicationDto.Subject,
+                                        CommunicationDto.Message,
+                                        "AttachmentFileName.pdf" // Provide the file name here
+                                    );
+                                }
+                            }
+                        }
+                        else
+                        {
+                            foreach (var item in tenants)
+                            {
+
+                                var emailAddress = item.EmailAddress;
+                                List<string> emailAddressList = new List<string> { emailAddress };
+
+                                var fileBytes = Convert.FromBase64String(CommunicationDto.Communication_File.Split(',')[1]);
+
+                                using (var memoryStream = new MemoryStream(fileBytes))
+                                {
+                                    // Send email with file to the tenant
+                                    await _emailSenderBase.SendEmailWithFilebyStream(
+                                        memoryStream,
+                                        emailAddressList,
+                                        CommunicationDto.Subject,
+                                        CommunicationDto.Message,
+                                        "AttachmentFileName.pdf" // Provide the file name here
+                                    );
+                                }
+                            }
+                        }
+                    }
+                }
                 CommunicationDto.Communication_Id = Communication_Id;
                 await _authService.UpdateCommunicationAsync(CommunicationDto);
                 return Ok(new { success = true, message = "Communication added successfully" });
@@ -265,12 +357,12 @@ namespace PMS_PropertyHapa.Staff.Controllers
                 }
 
                 tenant = await _authService.GetAllTenantsAsync();
-                var tenantIds = Communication.TenantIds.Split(',').Select(int.Parse).ToList();
+                var tenantIds = Communication.TenantIds != null ? Communication.TenantIds.Split(',').Select(int.Parse).ToList() : new List<int>();
                 var filteredTenants = tenant.Where(t => tenantIds.Contains((int)t.TenantId)).ToList();
 
 
                 assets = await _authService.GetAllAssetsAsync();
-                var assetIds = Communication.PropertyIds.Split(',').Select(int.Parse).ToList();
+                var assetIds = Communication.PropertyIds != null ? Communication.PropertyIds.Split(',').Select(int.Parse).ToList() : new List<int>();
                 var filteredAssets = assets.Where(t => assetIds.Contains(t.AssetId)).ToList();
 
             }

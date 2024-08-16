@@ -4393,14 +4393,13 @@ namespace MagicVilla_VillaAPI.Repository
 
         public async Task<bool> UpdateCommunicationAsync(CommunicationDto communication)
         {
-
             var existingCommunication = await _db.Communication.FindAsync(communication.Communication_Id);
             if (existingCommunication == null)
             {
                 return false;
             }
 
-            existingCommunication.Communication_Id = communication.Communication_Id;
+            // Update fields
             existingCommunication.Communication_File = communication.Communication_File;
             existingCommunication.Subject = communication.Subject;
             existingCommunication.Message = communication.Message;
@@ -4420,6 +4419,7 @@ namespace MagicVilla_VillaAPI.Repository
 
             return result > 0;
         }
+
 
         public async Task<bool> DeleteCommunicationAsync(int communicationId)
         {

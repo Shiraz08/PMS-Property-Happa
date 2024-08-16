@@ -77,32 +77,32 @@
                                         {
                                             <tr>
                                                 <td><i class="fa fa-envelope"></i> @communication?.Subject</td>
-                                                @{
-                                                    // Splitting the comma-separated IDs and counting them
-                                                    var tenantIds = communication?.TenantIds?.Split(',', StringSplitOptions.RemoveEmptyEntries);
-                                                    var propertyIds = communication?.PropertyIds?.Split(',', StringSplitOptions.RemoveEmptyEntries);
+                                               @{
+    // Splitting the comma-separated IDs and counting them
+    var tenantIds = communication?.TenantIds?.Split(',', StringSplitOptions.RemoveEmptyEntries);
+    var propertyIds = communication?.PropertyIds?.Split(',', StringSplitOptions.RemoveEmptyEntries);
 
-                                                    bool allTenants = tenantIds?.Length == communication?.TotalTenantsCount;
-                                                    bool allProperties = propertyIds?.Length == communication?.TotalPropertiesCount;
-                                                }
+    // Checking if there are any tenant IDs or property IDs
+    bool hasSomeTenants = tenantIds?.Length > 0;
+    bool hasSomeProperties = propertyIds?.Length > 0;
+}
                                               
-                                                    @if (allTenants && allProperties)
-                                                    {
-                                                    <td>All Tenants, All Properties</td>
-                                                    }
-                                                    else if (allTenants)
-                                                    {
-                                                    <td>All Tenants, Some Properties</td>
-                                                    }
-                                                    else if (allProperties)
-                                                    {
-                                                    <td>Some Tenants, All Properties</td>
-                                                    }
-                                                    else
-                                                    {
-                                                    <td>Some Tenants, Some Properties</td>
-                                                    }
-                                               
+@if (hasSomeTenants && hasSomeProperties)
+{
+    <td>Some Tenants, Some Properties</td>
+}
+else if (hasSomeTenants)
+{
+    <td>Some Tenants, All Properties</td>
+}
+else if (hasSomeProperties)
+{
+    <td>All Tenants, Some Properties</td>
+}
+else
+{
+    <td>All Tenants, All Properties</td>
+}
                                                 <td>@communication?.AddedAt.ToString("yyyy-MM-dd")</td>
                                                 <td>@communication?.RemoveFeedDate?.ToString("yyyy-MM-dd")</td>
                                                 <td>

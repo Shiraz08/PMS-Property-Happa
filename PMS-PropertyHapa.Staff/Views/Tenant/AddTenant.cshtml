@@ -1025,8 +1025,13 @@
             if (response.ok) {
                 const result = await response.json();
                 console.log(result);
-                toastr.success('Tenant save successful');
-                window.location.href = '/Tenant/Index';
+                if (result.success) {
+                    toastr.success(result.message);
+                    window.location.href = '/Tenant/Index';
+                }else{
+                    toastr.error(result.message);
+                }
+
             } else {
                 console.error('Server responded with non-OK status');
                 toastr.error('Operation failed. Server responded with an error.');

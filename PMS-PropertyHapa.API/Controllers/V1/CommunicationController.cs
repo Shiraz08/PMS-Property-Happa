@@ -66,7 +66,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
                 {
                     _response.StatusCode = HttpStatusCode.NotFound;
                     _response.IsSuccess = false;
-                    _response.ErrorMessages.Add("No asset found with this id.");
+                    _response.ErrorMessages.Add("No communication found with this id.");
                     return NotFound(_response);
                 }
             }
@@ -99,7 +99,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             }
         }
 
-        [HttpPut("UpdateCommunication")]
+        [HttpPost("UpdateCommunication")]
         public async Task<ActionResult<bool>> UpdateCommunication(CommunicationDto communication)
         {
             try

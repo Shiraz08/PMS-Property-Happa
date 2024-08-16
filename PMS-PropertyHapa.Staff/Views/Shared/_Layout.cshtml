@@ -644,8 +644,6 @@
                 url: '/Home/GetUserRoles',
                     type: 'GET',
                     success: function (response) {
-                        console.log("response")
-                        console.log(response)
                         if (response.IsTrial) {
                             $("#assestsSideBar").css("display", "none");
                             $("#applicationsSideBar").css("display", "none");

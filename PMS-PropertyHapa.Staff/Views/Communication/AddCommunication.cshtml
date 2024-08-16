@@ -203,7 +203,6 @@
 
                                 <input type="hidden" id="propertyIds" name="PropertyIds" />
                                 <input type="hidden" id="tenantIds" name="TenantIds" />
-                                <input type="hidden" id="communicationId" name="Communication_Id" value="" />
                                 <input type="hidden" id="IsByEmail" name="IsByEmail" value="false">
                                 <input type="hidden" id="IsByText" name="IsByText" value="false">
                                 <input type="hidden" id="IsShowCommunicationInTenantPortal" name="IsShowCommunicationInTenantPortal" value="false">
@@ -329,12 +328,15 @@
     var message = @Html.Raw(Json.Serialize(Model?.Message));
     var propertyIds = @Html.Raw(Json.Serialize(Model?.PropertyIds?.Split(',').Select(int.Parse).ToArray() ?? new int[0]));
     var tenantIds = @Html.Raw(Json.Serialize(Model?.TenantIds?.Split(',').Select(int.Parse).ToArray() ?? new int[0]));
-    var hasPropertiesSome = false;
-    var hasTenatsSome = false;
+    var hasPropertiesSome = propertyIds.length > 0;
+    var hasTenatsSome = tenantIds.length > 0;
+    var isEditMode = $('#communicationId').val() && $.isNumeric($('#communicationId').val()) && Number($('#communicationId').val()) > 0;
 
     $(document).ready(function () {
         // Initialize form elements with these values
 
+
+        
         console.log("propertyIds")
         console.log(propertyIds)
         console.log("tenantIds")
@@ -345,10 +347,56 @@
         $('#tenantPortalSwitch').prop('checked', isShowCommunicationInTenantPortal);
         $('#announcementSubject').val(subject);
         $('#announcementMessage').val(message);
-        $('#announcementProperties').val(propertyIds).trigger('change');
-        $('#announcementTenants').val(tenantIds).trigger('change');
+        // $('#announcementProperties').val(propertyIds).trigger('change');
+        // $('#announcementTenants').val(tenantIds).trigger('change');
+
+        // Trigger the radio button to "Some" if there are corresponding propertyIds or tenantIds
+        if (hasPropertiesSome) {
+            $('input[name="propertiesRadioBtn"][value="some"]').prop('checked', true);
+        } else {
+            $('input[name="propertiesRadioBtn"][value="all"]').prop('checked', true);
+        }
+
+        if (hasTenatsSome) {
+            $('input[name="tenantsRadioBtn"][value="some"]').prop('checked', true);
+        } else {
+            $('input[name="tenantsRadioBtn"][value="all"]').prop('checked', true);
+        }
 
 
+        // Fetch Properties
+        $.ajax({
+            url: '@Url.Action("GetProperties", "Communication")',
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                var propertiesDropdown = document.getElementById('announcementProperties');
+                propertiesDropdown.innerHTML = ''; // Clear existing options
+                data.forEach(function (item) {
+                    var option = new Option(item.BuildingNo + " - " + item.BuildingName, item.AssetId);
+                    propertiesDropdown.appendChild(option);
+                });
+                // Set the selected values after the dropdown is populated
+                $('#announcementProperties').val(propertyIds).trigger('change');
+            }
+        });
+
+        // Fetch Tenants
+        $.ajax({
+            url: '@Url.Action("GetTenantsDll", "Communication")',
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                var tenantsDropdown = document.getElementById('announcementTenants');
+                tenantsDropdown.innerHTML = ''; // Clear existing options
+                data.forEach(function (item) {
+                    var option = new Option(item.FirstName + ' ' + item.LastName, item.TenantId);
+                    tenantsDropdown.appendChild(option);
+                });
+                // Set the selected values after the dropdown is populated
+                $('#announcementTenants').val(tenantIds).trigger('change');
+            }
+        });
 
         $('#textMessageSwitch').change(function () {
             if ($(this).is(':checked')) {
@@ -510,6 +558,8 @@
 
     $(document).on('click', '.btn-next', function () {
         if (validateStep(currentStep)) {
+            console.log("currentStep")
+            console.log(currentStep)
             if (currentStep < totalSteps) {
                 currentStep++;
                 updateProgress(currentStep);
@@ -540,29 +590,26 @@
 
 
     $(document).ready(function () {
-        // Function to toggle dropdown visibility
         function toggleDropdownVisibility() {
             if ($('input[name="propertiesRadioBtn"]:checked').val() === "some") {
-                hasPropertiesSome = true
-                $('#ddlPropertyDiv').show();
+                $('#propertiesDropdown').removeClass('d-none');
             } else {
-                hasPropertiesSome = false;
-                $('#ddlPropertyDiv').hide();
+                $('#propertiesDropdown').addClass('d-none');
             }
+
             if ($('input[name="tenantsRadioBtn"]:checked').val() === "some") {
-                hasTenatsSome = true;
-                $('#ddlTenantDiv').show();
+                $('#tenantsDropdown').removeClass('d-none');
             } else {
-                hasTenatsSome = false;
-                $('#ddlTenantDiv').hide();
+                $('#tenantsDropdown').addClass('d-none');
             }
         }
-
-        // Call toggleDropdownVisibility on page load
         toggleDropdownVisibility();
 
-        // Call toggleDropdownVisibility on radio button change
-        $('input[name="propertiesRadioBtn"], input[name="tenantsRadioBtn"]').change(function () {
+        $('input[name="propertiesRadioBtn"]').change(function () {
+            toggleDropdownVisibility();
+        });
+
+        $('input[name="tenantsRadioBtn"]').change(function () {
             toggleDropdownVisibility();
         });
     });
@@ -587,53 +634,25 @@
 
 
     $(document).ready(function () {
-        // Function to update selected property count
-        function updatePropertyCount() {
-            var selectedProperties = document.getElementById('announcementProperties').selectedOptions;
-            var propertyCount = selectedProperties ? selectedProperties.length : 0;
-            document.getElementById('propertyCount').textContent = propertyCount + ' Selected';
-        }
 
-        // Function to update selected tenant count
-        function updateTenantCount() {
-            var selectedTenants = document.getElementById('announcementTenants').selectedOptions;
-            var tenantCount = selectedTenants ? selectedTenants.length : 0;
-            document.getElementById('tenantCount').textContent = tenantCount + ' Selected';
-        }
+        // // Function to update selected property count
+        // function updatePropertyCount() {
+        //     var selectedProperties = document.getElementById('announcementProperties').selectedOptions;
+        //     var propertyCount = selectedProperties ? selectedProperties.length : 0;
+        //     document.getElementById('propertyCount').textContent = propertyCount + ' Selected';
+        // }
 
-        // Attach change event listeners to announcementProperties and announcementTenants
-        document.getElementById('announcementProperties').addEventListener('change', updatePropertyCount);
-        document.getElementById('announcementTenants').addEventListener('change', updateTenantCount);
+        // // Function to update selected tenant count
+        // function updateTenantCount() {
+        //     var selectedTenants = document.getElementById('announcementTenants').selectedOptions;
+        //     var tenantCount = selectedTenants ? selectedTenants.length : 0;
+        //     document.getElementById('tenantCount').textContent = tenantCount + ' Selected';
+        // }
 
-        // Fetch Properties
-        $.ajax({
-            url: '@Url.Action("GetProperties", "Communication")',
-            type: 'GET',
-            dataType: 'json',
-            success: function (data) {
-                var propertiesDropdown = document.getElementById('announcementProperties');
-                propertiesDropdown.innerHTML = ''; // Clear existing options
-                data.forEach(function (item) {
-                    var option = new Option(item.BuildingNo + " - " + item.BuildingName, item.AssetId);
-                    propertiesDropdown.appendChild(option);
-                });
-            }
-        });
+        // // Attach change event listeners to announcementProperties and announcementTenants
+        // document.getElementById('announcementProperties').addEventListener('change', updatePropertyCount);
+        // document.getElementById('announcementTenants').addEventListener('change', updateTenantCount);
 
-        // Fetch Tenants
-        $.ajax({
-            url: '@Url.Action("GetTenantsDll", "Communication")',
-            type: 'GET',
-            dataType: 'json',
-            success: function (data) {
-                var tenantsDropdown = document.getElementById('announcementTenants');
-                tenantsDropdown.innerHTML = ''; // Clear existing options
-                data.forEach(function (item) {
-                    var option = new Option(item.FirstName + ' ' + item.LastName, item.TenantId);
-                    tenantsDropdown.appendChild(option);
-                });
-            }
-        });
     });
 
 
@@ -722,19 +741,16 @@
 
 
 
-    $(document).on('click', '.btn-next', function () {
-        if (currentStep < totalSteps) {
+    // $(document).on('click', '.btn-next', function () {
+    //     if (currentStep < totalSteps) {
 
-            if (validateStep(currentStep)) {
-                currentStep++;
-                updateProgress(currentStep);
-            } 
+    //         if (validateStep(currentStep)) {
+    //             currentStep++;
+    //             updateProgress(currentStep);
+    //         } 
             
-        }
-    });
-
-
-
+    //     }
+    // });
 
 
     function validateStep(step) {
@@ -751,8 +767,16 @@
     }
 
     function validateStep1() {
-        return (hasPropertiesSome ? $('#announcementProperties').val().length > 0 : $('#announcementProperties').val() !== null)
-            && (hasTenatsSome ? $('#announcementTenants').val().length > 0 : $('#announcementTenants').val() !== null);
+        var hasPropertiesSome = $('input[name="propertiesRadioBtn"]:checked').val() === 'some';
+        var hasTenantsSome = $('input[name="tenantsRadioBtn"]:checked').val() === 'some';
+
+        var propertiesValue = $('#announcementProperties').val();
+        var tenantsValue = $('#announcementTenants').val();
+
+        var propertiesValid = !hasPropertiesSome || (hasPropertiesSome && propertiesValue.length > 0);
+        var tenantsValid = !hasTenantsSome || (hasTenantsSome && tenantsValue.length > 0);
+
+        return propertiesValid && tenantsValid;
     }
 
     function validateStep2() {
