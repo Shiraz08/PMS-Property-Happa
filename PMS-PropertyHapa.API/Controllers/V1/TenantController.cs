@@ -9,6 +9,7 @@ using PMS_PropertyHapa.MigrationsFiles.Data;
 using PMS_PropertyHapa.Models.Roles;
 using NuGet.ContentModel;
 using static PMS_PropertyHapa.Models.DTO.TenantModelDto;
+using PMS_PropertyHapa.Models.Entities;
 
 namespace PMS_PropertyHapa.API.Controllers.V1
 {
@@ -148,7 +149,8 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             try
             {
                 var isSuccess = await _userRepo.CreateTenantAsync(tenant);
-                return Ok(isSuccess);
+                _response.Result = isSuccess;
+                return Ok(_response);
             }
             catch (Exception ex)
             {
@@ -163,7 +165,8 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             {
                 tenant.TenantId = tenantId; // Ensure tenantId is set
                 var isSuccess = await _userRepo.UpdateTenantAsync(tenant);
-                return Ok(isSuccess);
+                _response.Result = isSuccess;
+                return Ok(_response);
             }
             catch (Exception ex)
             {

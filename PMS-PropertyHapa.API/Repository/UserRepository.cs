@@ -1465,7 +1465,6 @@ namespace MagicVilla_VillaAPI.Repository
 
         public async Task<bool> CreateTenantAsync(TenantModelDto tenantDto)
         {
-
             var newTenant = new Tenant
             {
                 FirstName = tenantDto.FirstName,
@@ -1507,9 +1506,8 @@ namespace MagicVilla_VillaAPI.Repository
                 AddedDate = DateTime.Now
             };
 
-            _db.Tenant.Add(newTenant);
+            await _db.Tenant.AddAsync(newTenant);
             await _db.SaveChangesAsync();
-
 
             if (tenantDto.Picture != null)
             {
@@ -1522,7 +1520,6 @@ namespace MagicVilla_VillaAPI.Repository
                 var ext = Path.GetExtension(tenantDto.DocumentName);
                 await _googleCloudStorageService.UploadImagebyBase64Async(tenantDto.Document, "Tenant_Document_" + newTenant.TenantId + ext);
             }
-
 
             if (tenantDto.Pets != null)
             {
@@ -1541,9 +1538,9 @@ namespace MagicVilla_VillaAPI.Repository
                         AddedDate = DateTime.Now
                     };
 
-                    _db.Pets.Add(pet);
-
+                    await _db.Pets.AddAsync(pet);
                     await _db.SaveChangesAsync();
+
                     if (petDto.Picture != null)
                     {
                         var ext = Path.GetExtension(petDto.PictureName);
@@ -1568,11 +1565,12 @@ namespace MagicVilla_VillaAPI.Repository
                         AddedDate = DateTime.Now
                     };
 
-                    _db.Vehicle.Add(vehicle);
+                   await _db.Vehicle.AddAsync(vehicle);
                 }
 
                 await _db.SaveChangesAsync();
             }
+
             if (tenantDto.Dependent != null)
             {
                 foreach (var dependentDto in tenantDto.Dependent)
@@ -1591,11 +1589,12 @@ namespace MagicVilla_VillaAPI.Repository
                         AddedDate = DateTime.Now
                     };
 
-                    _db.TenantDependent.Add(dependent);
+                    await _db.TenantDependent.AddAsync(dependent);
                 }
 
                 await _db.SaveChangesAsync();
             }
+
             if (tenantDto.CoTenant != null)
             {
                 foreach (var coTenantDto in tenantDto.CoTenant)
@@ -1618,7 +1617,7 @@ namespace MagicVilla_VillaAPI.Repository
                         AddedDate = DateTime.Now
                     };
 
-                    _db.CoTenant.Add(coTenant);
+                    await _db.CoTenant.AddAsync(coTenant);
                 }
                 await _db.SaveChangesAsync();
             }
@@ -1627,6 +1626,7 @@ namespace MagicVilla_VillaAPI.Repository
 
             return true;
         }
+
 
         public async Task<bool> UpdateTenantAsync(TenantModelDto tenantDto)
         {
@@ -1663,7 +1663,6 @@ namespace MagicVilla_VillaAPI.Repository
             tenant.Locality = tenantDto.Locality;
             tenant.Unit = tenantDto.Unit;
             tenant.District = tenantDto.District;
-            tenant.Region = tenantDto.District;
             tenant.Region = tenantDto.Region;
             tenant.PostalCode = tenantDto.PostalCode;
             tenant.Country = tenantDto.Country;
@@ -1856,6 +1855,7 @@ namespace MagicVilla_VillaAPI.Repository
                     tenant.CoTenant.Add(newCoTenant);
                 }
             }
+
             var result = await _db.SaveChangesAsync();
 
             if (tenantDto.Picture != null)
@@ -1869,9 +1869,9 @@ namespace MagicVilla_VillaAPI.Repository
                 var ext = Path.GetExtension(tenantDto.DocumentName);
                 await _googleCloudStorageService.UploadImagebyBase64Async(tenantDto.Document, "Tenant_Document_" + tenant.TenantId + ext);
             }
-
             return result > 0;
         }
+
 
         public async Task<APIResponse> DeleteTenantAsync(int tenantId)
         {
