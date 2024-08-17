@@ -1636,248 +1636,257 @@ namespace MagicVilla_VillaAPI.Repository
 
         public async Task<bool> UpdateTenantAsync(TenantModelDto tenantDto)
         {
-            var tenant = await _db.Tenant
+            try
+            {
+                var tenant = await _db.Tenant
                 .Include(t => t.Pets)
                 .Include(t => t.Vehicle)
                 .Include(t => t.TenantDependent)
                 .Include(t => t.CoTenant).FirstOrDefaultAsync(t => t.TenantId == tenantDto.TenantId && t.IsDeleted != true);
-            if (tenant == null)
-                return false;
+                if (tenant == null)
+                    return false;
 
-            tenant.FirstName = tenantDto.FirstName;
-            tenant.MiddleName = tenantDto.MiddleName;
-            tenant.LastName = tenantDto.LastName;
-            tenant.EmailAddress = tenantDto.EmailAddress;
-            tenant.EmailAddress2 = tenantDto.EmailAddress2;
-            tenant.PhoneNumber = tenantDto.PhoneNumber;
-            tenant.PhoneNumber2 = tenantDto.PhoneNumber2;
-            tenant.EmergencyContactInfo = tenantDto.EmergencyContactInfo;
-            tenant.LeaseAgreementId = tenantDto.LeaseAgreementId;
-            tenant.TenantNationality = tenantDto.TenantNationality;
-            tenant.Gender = tenantDto.Gender;
-            tenant.DOB = tenantDto.DOB;
-            tenant.VAT = tenantDto.VAT;
-            tenant.Status = true;
-            tenant.LegalName = tenantDto.LegalName;
-            tenant.Account_Name = tenantDto.Account_Name;
-            tenant.Account_Holder = tenantDto.Account_Holder;
-            tenant.Account_IBAN = tenantDto.Account_IBAN;
-            tenant.Account_Swift = tenantDto.Account_Swift;
-            tenant.Account_Bank = tenantDto.Account_Bank;
-            tenant.Account_Currency = tenantDto.Account_Currency;
-            tenant.AppTenantId = tenantDto.AppTenantId;
-            tenant.Address = tenantDto.Address;
-            tenant.Address2 = tenantDto.Address2;
-            tenant.Locality = tenantDto.Locality;
-            tenant.Unit = tenantDto.Unit;
-            tenant.District = tenantDto.District;
-            tenant.Region = tenantDto.Region;
-            tenant.PostalCode = tenantDto.PostalCode;
-            tenant.Country = tenantDto.Country;
-            tenant.CountryCode = tenantDto.CountryCode;
-            tenant.Document = tenantDto.DocumentName;
-            tenant.Picture = tenantDto.PictureName;
-            tenant.ModifiedBy = tenantDto.AddedBy;
-            tenant.ModifiedDate = DateTime.Now;
+                tenant.FirstName = tenantDto.FirstName;
+                tenant.MiddleName = tenantDto.MiddleName;
+                tenant.LastName = tenantDto.LastName;
+                tenant.EmailAddress = tenantDto.EmailAddress;
+                tenant.EmailAddress2 = tenantDto.EmailAddress2;
+                tenant.PhoneNumber = tenantDto.PhoneNumber;
+                tenant.PhoneNumber2 = tenantDto.PhoneNumber2;
+                tenant.EmergencyContactInfo = tenantDto.EmergencyContactInfo;
+                tenant.LeaseAgreementId = tenantDto.LeaseAgreementId;
+                tenant.TenantNationality = tenantDto.TenantNationality;
+                tenant.Gender = tenantDto.Gender;
+                tenant.DOB = tenantDto.DOB;
+                tenant.VAT = tenantDto.VAT;
+                tenant.Status = true;
+                tenant.LegalName = tenantDto.LegalName;
+                tenant.Account_Name = tenantDto.Account_Name;
+                tenant.Account_Holder = tenantDto.Account_Holder;
+                tenant.Account_IBAN = tenantDto.Account_IBAN;
+                tenant.Account_Swift = tenantDto.Account_Swift;
+                tenant.Account_Bank = tenantDto.Account_Bank;
+                tenant.Account_Currency = tenantDto.Account_Currency;
+                tenant.AppTenantId = tenantDto.AppTenantId;
+                tenant.Address = tenantDto.Address;
+                tenant.Address2 = tenantDto.Address2;
+                tenant.Locality = tenantDto.Locality;
+                tenant.Unit = tenantDto.Unit;
+                tenant.District = tenantDto.District;
+                tenant.Region = tenantDto.Region;
+                tenant.PostalCode = tenantDto.PostalCode;
+                tenant.Country = tenantDto.Country;
+                tenant.CountryCode = tenantDto.CountryCode;
+                tenant.Document = tenantDto.DocumentName;
+                tenant.Picture = tenantDto.PictureName;
+                tenant.ModifiedBy = tenantDto.AddedBy;
+                tenant.ModifiedDate = DateTime.Now;
 
-            // Pets Handling
-            var petIds = tenantDto.Pets.Select(x => x.PetId).ToArray();
-            var petsToBeDeleted = tenant.Pets
-                .Where(p => !petIds.Contains(p.PetId))
-                .ToList();
+                // Pets Handling
+                var petIds = tenantDto.Pets.Select(x => x.PetId).ToArray();
+                var petsToBeDeleted = tenant.Pets
+                    .Where(p => !petIds.Contains(p.PetId))
+                    .ToList();
 
-            _db.Pets.RemoveRange(petsToBeDeleted);
+                _db.Pets.RemoveRange(petsToBeDeleted);
 
-            foreach (var petDto in tenantDto.Pets)
-            {
-                var existingPet = tenant.Pets.FirstOrDefault(p => p.PetId == petDto.PetId);
-                if (existingPet != null)
+                foreach (var petDto in tenantDto.Pets)
                 {
-                    existingPet.Name = petDto.Name;
-                    existingPet.Breed = petDto.Breed;
-                    existingPet.Type = petDto.Type;
-                    existingPet.Quantity = petDto.Quantity;
-                    existingPet.Picture = petDto.PictureName;
-                    existingPet.AppTenantId = petDto.AppTenantId;
-                    existingPet.ModifiedBy = tenantDto.AddedBy;
-                    existingPet.ModifiedDate = DateTime.Now;
-
-                    if (petDto.Picture != null)
+                    var existingPet = tenant.Pets.FirstOrDefault(p => p.PetId == petDto.PetId);
+                    if (existingPet != null)
                     {
-                        var ext = Path.GetExtension(petDto.PictureName);
-                        await _googleCloudStorageService.UploadImagebyBase64Async(petDto.Picture, "Pets_Picture_" + existingPet.PetId + ext);
+                        existingPet.Name = petDto.Name;
+                        existingPet.Breed = petDto.Breed;
+                        existingPet.Type = petDto.Type;
+                        existingPet.Quantity = petDto.Quantity;
+                        existingPet.Picture = petDto.PictureName;
+                        existingPet.AppTenantId = petDto.AppTenantId;
+                        existingPet.ModifiedBy = tenantDto.AddedBy;
+                        existingPet.ModifiedDate = DateTime.Now;
+
+                        if (petDto.Picture != null)
+                        {
+                            var ext = Path.GetExtension(petDto.PictureName);
+                            await _googleCloudStorageService.UploadImagebyBase64Async(petDto.Picture, "Pets_Picture_" + existingPet.PetId + ext);
+                        }
+                    }
+                    else
+                    {
+                        var newPet = new Pets
+                        {
+                            TenantId = tenant.TenantId,
+                            Name = petDto.Name,
+                            Breed = petDto.Breed,
+                            Type = petDto.Type,
+                            Quantity = petDto.Quantity,
+                            Picture = petDto.PictureName,
+                            AppTenantId = tenantDto.AppTenantId,
+                            AddedBy = tenantDto.AddedBy,
+                            AddedDate = DateTime.Now
+                        };
+                        tenant.Pets.Add(newPet);
+                        await _db.SaveChangesAsync();
+
+                        if (petDto.Picture != null)
+                        {
+                            var ext = Path.GetExtension(petDto.PictureName);
+                            await _googleCloudStorageService.UploadImagebyBase64Async(petDto.Picture, "Pets_Picture_" + newPet.PetId + ext);
+                        }
                     }
                 }
-                else
-                {
-                    var newPet = new Pets
-                    {
-                        TenantId = tenant.TenantId,
-                        Name = petDto.Name,
-                        Breed = petDto.Breed,
-                        Type = petDto.Type,
-                        Quantity = petDto.Quantity,
-                        Picture = petDto.PictureName,
-                        AppTenantId = tenantDto.AppTenantId,
-                        AddedBy = tenantDto.AddedBy,
-                        AddedDate = DateTime.Now
-                    };
-                    tenant.Pets.Add(newPet);
-                    await _db.SaveChangesAsync();
 
-                    if (petDto.Picture != null)
+                // Vehicles Handling
+                var vehicleIds = tenantDto.Vehicles.Select(x => x.VehicleId).ToArray();
+                var vehiclesToBeDeleted = tenant.Vehicle
+                    .Where(v => !vehicleIds.Contains(v.VehicleId))
+                    .ToList();
+
+                _db.Vehicle.RemoveRange(vehiclesToBeDeleted);
+
+                foreach (var vehicleDto in tenantDto.Vehicles)
+                {
+                    var existingVehicle = tenant.Vehicle.FirstOrDefault(v => v.VehicleId == vehicleDto.VehicleId);
+                    if (existingVehicle != null)
                     {
-                        var ext = Path.GetExtension(petDto.PictureName);
-                        await _googleCloudStorageService.UploadImagebyBase64Async(petDto.Picture, "Pets_Picture_" + newPet.PetId + ext);
+                        existingVehicle.Manufacturer = vehicleDto.Manufacturer;
+                        existingVehicle.ModelName = vehicleDto.ModelName;
+                        existingVehicle.ModelVariant = vehicleDto.ModelVariant;
+                        existingVehicle.color = vehicleDto.Color;
+                        existingVehicle.Year = vehicleDto.Year;
+                        existingVehicle.ModifiedBy = tenantDto.AddedBy;
+                        existingVehicle.ModifiedDate = DateTime.Now;
+                    }
+                    else
+                    {
+                        var newVehicle = new Vehicle
+                        {
+                            TenantId = tenant.TenantId,
+                            Manufacturer = vehicleDto.Manufacturer,
+                            ModelName = vehicleDto.ModelName,
+                            ModelVariant = vehicleDto.ModelVariant,
+                            color = vehicleDto.Color,
+                            Year = vehicleDto.Year,
+                            AddedBy = tenantDto.AddedBy,
+                            AddedDate = DateTime.Now
+                        };
+                        tenant.Vehicle.Add(newVehicle);
                     }
                 }
-            }
 
-            // Vehicles Handling
-            var vehicleIds = tenantDto.Vehicles.Select(x => x.VehicleId).ToArray();
-            var vehiclesToBeDeleted = tenant.Vehicle
-                .Where(v => !vehicleIds.Contains(v.VehicleId))
-                .ToList();
+                // Dependents Handling
+                var dependentIds = tenantDto.Dependent.Select(x => x.TenantDependentId).ToArray();
+                var dependentsToBeDeleted = tenant.TenantDependent
+                    .Where(d => !dependentIds.Contains(d.TenantDependentId))
+                    .ToList();
 
-            _db.Vehicle.RemoveRange(vehiclesToBeDeleted);
+                _db.TenantDependent.RemoveRange(dependentsToBeDeleted);
 
-            foreach (var vehicleDto in tenantDto.Vehicles)
-            {
-                var existingVehicle = tenant.Vehicle.FirstOrDefault(v => v.VehicleId == vehicleDto.VehicleId);
-                if (existingVehicle != null)
+                foreach (var dependentDto in tenantDto.Dependent)
                 {
-                    existingVehicle.Manufacturer = vehicleDto.Manufacturer;
-                    existingVehicle.ModelName = vehicleDto.ModelName;
-                    existingVehicle.ModelVariant = vehicleDto.ModelVariant;
-                    existingVehicle.color = vehicleDto.Color;
-                    existingVehicle.Year = vehicleDto.Year;
-                    existingVehicle.ModifiedBy = tenantDto.AddedBy;
-                    existingVehicle.ModifiedDate = DateTime.Now;
-                }
-                else
-                {
-                    var newVehicle = new Vehicle
+                    var existingDependent = tenant.TenantDependent.FirstOrDefault(d => d.TenantDependentId == dependentDto.TenantDependentId);
+                    if (existingDependent != null)
                     {
-                        TenantId = tenant.TenantId,
-                        Manufacturer = vehicleDto.Manufacturer,
-                        ModelName = vehicleDto.ModelName,
-                        ModelVariant = vehicleDto.ModelVariant,
-                        color = vehicleDto.Color,
-                        Year = vehicleDto.Year,
-                        AddedBy = tenantDto.AddedBy,
-                        AddedDate = DateTime.Now
-                    };
-                    tenant.Vehicle.Add(newVehicle);
-                }
-            }
-
-            // Dependents Handling
-            var dependentIds = tenantDto.Dependent.Select(x => x.TenantDependentId).ToArray();
-            var dependentsToBeDeleted = tenant.TenantDependent
-                .Where(d => !dependentIds.Contains(d.TenantDependentId))
-                .ToList();
-
-            _db.TenantDependent.RemoveRange(dependentsToBeDeleted);
-
-            foreach (var dependentDto in tenantDto.Dependent)
-            {
-                var existingDependent = tenant.TenantDependent.FirstOrDefault(d => d.TenantDependentId == dependentDto.TenantDependentId);
-                if (existingDependent != null)
-                {
-                    existingDependent.FirstName = dependentDto.FirstName;
-                    existingDependent.LastName = dependentDto.LastName;
-                    existingDependent.EmailAddress = dependentDto.EmailAddress;
-                    existingDependent.PhoneNumber = dependentDto.PhoneNumber;
-                    existingDependent.DOB = dependentDto.DOB;
-                    existingDependent.Relation = dependentDto.Relation;
-                    existingDependent.AppTenantId = tenantDto.AppTenantId;
-                    existingDependent.ModifiedBy = tenantDto.AddedBy;
-                    existingDependent.ModifiedDate = DateTime.Now;
-                }
-                else
-                {
-                    var newDependent = new TenantDependent
+                        existingDependent.FirstName = dependentDto.FirstName;
+                        existingDependent.LastName = dependentDto.LastName;
+                        existingDependent.EmailAddress = dependentDto.EmailAddress;
+                        existingDependent.PhoneNumber = dependentDto.PhoneNumber;
+                        existingDependent.DOB = dependentDto.DOB;
+                        existingDependent.Relation = dependentDto.Relation;
+                        existingDependent.AppTenantId = tenantDto.AppTenantId;
+                        existingDependent.ModifiedBy = tenantDto.AddedBy;
+                        existingDependent.ModifiedDate = DateTime.Now;
+                    }
+                    else
                     {
-                        TenantId = tenant.TenantId,
-                        FirstName = dependentDto.FirstName,
-                        LastName = dependentDto.LastName,
-                        EmailAddress = dependentDto.EmailAddress,
-                        PhoneNumber = dependentDto.PhoneNumber,
-                        DOB = dependentDto.DOB,
-                        Relation = dependentDto.Relation,
-                        AppTenantId = tenantDto.AppTenantId,
-                        AddedBy = tenantDto.AddedBy,
-                        AddedDate = DateTime.Now
-                    };
-                    tenant.TenantDependent.Add(newDependent);
+                        var newDependent = new TenantDependent
+                        {
+                            TenantId = tenant.TenantId,
+                            FirstName = dependentDto.FirstName,
+                            LastName = dependentDto.LastName,
+                            EmailAddress = dependentDto.EmailAddress,
+                            PhoneNumber = dependentDto.PhoneNumber,
+                            DOB = dependentDto.DOB,
+                            Relation = dependentDto.Relation,
+                            AppTenantId = tenantDto.AppTenantId,
+                            AddedBy = tenantDto.AddedBy,
+                            AddedDate = DateTime.Now
+                        };
+                        tenant.TenantDependent.Add(newDependent);
+                    }
                 }
-            }
 
-            // CoTenants Handling
-            var coTenantIds = tenantDto.CoTenant.Select(x => x.CoTenantId).ToArray();
-            var coTenantsToBeDeleted = tenant.CoTenant
-                .Where(ct => !coTenantIds.Contains(ct.CoTenantId))
-                .ToList();
+                // CoTenants Handling
+                var coTenantIds = tenantDto.CoTenant.Select(x => x.CoTenantId).ToArray();
+                var coTenantsToBeDeleted = tenant.CoTenant
+                    .Where(ct => !coTenantIds.Contains(ct.CoTenantId))
+                    .ToList();
 
-            _db.CoTenant.RemoveRange(coTenantsToBeDeleted);
+                _db.CoTenant.RemoveRange(coTenantsToBeDeleted);
 
-            foreach (var coTenantDto in tenantDto.CoTenant)
-            {
-                var existingCoTenant = tenant.CoTenant.FirstOrDefault(ct => ct.CoTenantId == coTenantDto.CoTenantId);
-                if (existingCoTenant != null)
+                foreach (var coTenantDto in tenantDto.CoTenant)
                 {
-                    existingCoTenant.FirstName = coTenantDto.FirstName;
-                    existingCoTenant.LastName = coTenantDto.LastName;
-                    existingCoTenant.EmailAddress = coTenantDto.EmailAddress;
-                    existingCoTenant.PhoneNumber = coTenantDto.PhoneNumber;
-                    existingCoTenant.Address = coTenantDto.Address;
-                    existingCoTenant.Unit = coTenantDto.Unit;
-                    existingCoTenant.District = coTenantDto.District;
-                    existingCoTenant.Region = coTenantDto.Region;
-                    existingCoTenant.PostalCode = coTenantDto.PostalCode;
-                    existingCoTenant.Country = coTenantDto.Country;
-                    existingCoTenant.Status = true;
-                    existingCoTenant.ModifiedBy = tenantDto.AddedBy;
-                    existingCoTenant.ModifiedDate = DateTime.Now;
-                }
-                else
-                {
-                    var newCoTenant = new CoTenant
+                    var existingCoTenant = tenant.CoTenant.FirstOrDefault(ct => ct.CoTenantId == coTenantDto.CoTenantId);
+                    if (existingCoTenant != null)
                     {
-                        TenantId = tenant.TenantId,
-                        FirstName = coTenantDto.FirstName,
-                        LastName = coTenantDto.LastName,
-                        EmailAddress = coTenantDto.EmailAddress,
-                        PhoneNumber = coTenantDto.PhoneNumber,
-                        Address = coTenantDto.Address,
-                        Unit = coTenantDto.Unit,
-                        District = coTenantDto.District,
-                        Region = coTenantDto.Region,
-                        PostalCode = coTenantDto.PostalCode,
-                        Country = coTenantDto.Country,
-                        Status = true,
-                        AppTenantId = tenantDto.AppTenantId,
-                        AddedBy = tenantDto.AddedBy,
-                        AddedDate = DateTime.Now
-                    };
-                    tenant.CoTenant.Add(newCoTenant);
+                        existingCoTenant.FirstName = coTenantDto.FirstName;
+                        existingCoTenant.LastName = coTenantDto.LastName;
+                        existingCoTenant.EmailAddress = coTenantDto.EmailAddress;
+                        existingCoTenant.PhoneNumber = coTenantDto.PhoneNumber;
+                        existingCoTenant.Address = coTenantDto.Address;
+                        existingCoTenant.Unit = coTenantDto.Unit;
+                        existingCoTenant.District = coTenantDto.District;
+                        existingCoTenant.Region = coTenantDto.Region;
+                        existingCoTenant.PostalCode = coTenantDto.PostalCode;
+                        existingCoTenant.Country = coTenantDto.Country;
+                        existingCoTenant.Status = true;
+                        existingCoTenant.ModifiedBy = tenantDto.AddedBy;
+                        existingCoTenant.ModifiedDate = DateTime.Now;
+                    }
+                    else
+                    {
+                        var newCoTenant = new CoTenant
+                        {
+                            TenantId = tenant.TenantId,
+                            FirstName = coTenantDto.FirstName,
+                            LastName = coTenantDto.LastName,
+                            EmailAddress = coTenantDto.EmailAddress,
+                            PhoneNumber = coTenantDto.PhoneNumber,
+                            Address = coTenantDto.Address,
+                            Unit = coTenantDto.Unit,
+                            District = coTenantDto.District,
+                            Region = coTenantDto.Region,
+                            PostalCode = coTenantDto.PostalCode,
+                            Country = coTenantDto.Country,
+                            Status = true,
+                            AppTenantId = tenantDto.AppTenantId,
+                            AddedBy = tenantDto.AddedBy,
+                            AddedDate = DateTime.Now
+                        };
+                        tenant.CoTenant.Add(newCoTenant);
+                    }
                 }
+
+                var result = await _db.SaveChangesAsync();
+
+                if (tenantDto.Picture != null)
+                {
+                    var ext = Path.GetExtension(tenantDto.PictureName);
+                    await _googleCloudStorageService.UploadImagebyBase64Async(tenantDto.Picture, "Tenant_Picture_" + tenant.TenantId + ext);
+                }
+
+                if (tenantDto.Document != null)
+                {
+                    var ext = Path.GetExtension(tenantDto.DocumentName);
+                    await _googleCloudStorageService.UploadImagebyBase64Async(tenantDto.Document, "Tenant_Document_" + tenant.TenantId + ext);
+                }
+                return result > 0;
             }
-
-            var result = await _db.SaveChangesAsync();
-
-            if (tenantDto.Picture != null)
+            catch (Exception)
             {
-                var ext = Path.GetExtension(tenantDto.PictureName);
-                await _googleCloudStorageService.UploadImagebyBase64Async(tenantDto.Picture, "Tenant_Picture_" + tenant.TenantId + ext);
-            }
 
-            if (tenantDto.Document != null)
-            {
-                var ext = Path.GetExtension(tenantDto.DocumentName);
-                await _googleCloudStorageService.UploadImagebyBase64Async(tenantDto.Document, "Tenant_Document_" + tenant.TenantId + ext);
+                throw;
             }
-            return result > 0;
+            
         }
 
 

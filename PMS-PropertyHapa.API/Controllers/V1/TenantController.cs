@@ -158,7 +158,7 @@ namespace PMS_PropertyHapa.API.Controllers.V1
             }
         }
 
-        [HttpPut("Tenant/{tenantId}")]
+        [HttpPost("UpdateTenant/{tenantId}")]
         public async Task<ActionResult<bool>> UpdateTenant(int tenantId, TenantModelDto tenant)
         {
             try
