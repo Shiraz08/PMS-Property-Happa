@@ -238,8 +238,8 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
         Task<string> GetTermsbyId(string id);
 
         //Accounting
-        Task<List<RentDto>> GetRentsAsync();
-        Task<List<AssetExpenseDto>> GetAssetExpenseAsync();
+        Task<List<RentDto>> GetRentsAsync(ReportFilter reportFilter);
+        Task<List<AssetExpenseDto>> GetAssetExpenseAsync(ReportFilter reportFilter);
 
         //Account Type
         Task<List<AccountType>> GetAccountTypesAsync();

@@ -83,16 +83,16 @@ namespace PMS_PropertyHapa.Staff.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> GetRents()
+        public async Task<IActionResult> GetRents([FromBody] ReportFilter reportFilter)
         {
-            var res = await _authService.GetRents();
+            var res = await _authService.GetRents(reportFilter);
             return Ok(res);
         }
 
         [HttpPost]
-        public async Task<IActionResult> GetAssetExpense()
+        public async Task<IActionResult> GetAssetExpense([FromBody] ReportFilter reportFilter)
         {
-            var res = await _authService.GetAssetExpense();
+            var res = await _authService.GetAssetExpense(reportFilter);
             return Ok(res);
         }
     }

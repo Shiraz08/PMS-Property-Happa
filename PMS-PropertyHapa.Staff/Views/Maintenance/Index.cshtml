@@ -267,22 +267,18 @@
                                 <div class="dropdown-basic">
                                     <div class="dropdown">
                                         <div class="btn-group mb-0">
-                                        @if (addMaintenancePermission)
-                                        {
-                                                    <button class="dropbtn btn btn-success" type="button">Action <span><i class="icofont icofont-arrow-down"></i></span></button>
-
-                                        }
+                                            <button class="dropbtn btn btn-success" type="button">Action <span><i class="icofont icofont-arrow-down"></i></span></button>
                                             <div class="dropdown-content">
                                                 ${row.Type == "WorkOrderRequest" ? `
-                                                <a class="info-button btn-secondary" onclick="showTaskLineItems(${JSON.stringify(row.LineItems)})">
-                                                    <i class="fa fa-info-circle"></i> <span class="button-text">Details</span>
-                                                </a>
+                                                    <a class="info-button btn-secondary" onclick='showTaskLineItems(${JSON.stringify(row.LineItems).replace(/'/g, "&apos;")})'>
+                                                        <i class="fa fa-info-circle"></i> <span class="button-text">Details</span>
+                                                    </a>
                                                 ` : ""}
                                                 <a class="btn btn-secondary" onclick="showTaskRequestHistory(${data})">
                                                     <i class="fa fa-eye"></i> History
                                                 </a>
-                                                    <div class="dropdown-divider"></div>
-                                                 ${row.Status !== "Completed" ? `
+                                                <div class="dropdown-divider"></div>
+                                                ${row.Status !== "Completed" ? `
                                                     <div class="dropdown-item">
                                                         <label for="taskStatus-${row.TaskRequestId}" class="form-label">Change Status:</label>
                                                         <select class="form-select task-status-dropdown" data-task-request-type="${row.Type}" data-task-request-id="${row.TaskRequestId}" data-original-value="${row.Status}" id="taskStatus-${row.TaskRequestId}" required>
@@ -293,10 +289,8 @@
                                                             <option value="OnHold" ${row.Status == "OnHold" ? "selected" : ""}>On Hold</option>
                                                         </select>
                                                     </div>
-                                                    ` : ""}
+                                                ` : ""}
                                             </div>
-                                            
-
                                         </div>
                                     </div>
                                 </div>
@@ -452,7 +446,7 @@
                 '<td>' + item.Quantity + '</td>' +
                 '<td>' + item.Price + '</td>' +
                 '<td>' + totalAmount + '</td>' +
-                '<td>' + item.Account + '</td>' +
+                '<td>' + item.AccountName + '</td>' +
                 '</tr>'
             );
         });

@@ -20,11 +20,29 @@
         </div>
     </div>
     <div class="container-fluid">
+        <div class="row mb-3">
+            <div class="col-md-3">
+                <label class="col-sm-12 mb-0 font-weight-bold">Property</label>
+                <div class="col-sm-12">
+                    <select id="allPropertyFilter" multiple name="allPropertyFilter" class="form-control select2"></select>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <label class="col-sm-12 mb-0 font-weight-bold">Unit</label>
+                <div class="col-sm-12">
+                    <select id="allUnitFilter" multiple name="allUnitFilter" class="form-control select2"></select>
+                </div>
+            </div>
+           @*  <div class="col-md-1">
+                <button id="applyFilterBtn" class="btn btn-primary mt-4" type="button">Filter</button>
+            </div>
+            <div class="col-md-1">
+                <button class="btn btn-secondary  mt-4" type="button" id="clearFilterBtn">Clear</button>
+            </div> *@
+        </div>
         <div class="row">
             <div class="col-12">
                 <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                    </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="table-responsive">
@@ -37,11 +55,10 @@
                                             <th>End Date</th>
                                             <th>Property</th>
                                             <th>Unit</th>
-                                            <th>Income</th>
+                                            <th>Rent Charges</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                    </tbody>
+                                    <tbody></tbody>
                                 </table>
                             </div>
                         </div>
@@ -50,29 +67,75 @@
             </div>
         </div>
     </div>
+
 </div>
 <script>
+    // var allPropertiesIdsList = [];
+    // var allUnitsIdsList = [];
+
     $(document).ready(function () {
-        $('#rentTbl').DataTable({
-            "ajax": {
-                "url": "/Accounting/GetRents",
-                "type": "POST",
-                "dataSrc": "",
-                "error": function (xhr, error, thrown) {
-                    alert('Failed to retrieve data. Please try again later.');
+        populateDropDowns();
+        loadRentDataTable();
+
+        $("#allPropertyFilter").on("change", function () {
+            var selectedProperties = $(this).val();
+            if (selectedProperties && selectedProperties.length > 0) {
+                populateUnits(selectedProperties);
+            } else {
+                $("#allUnitFilter").empty();
+            }
+            loadRentDataTable();
+        });
+        
+        $("#allUnitFilter").on("change", function () {
+            loadRentDataTable();
+        });
+
+        // $("#applyFilterBtn").on("click", function () {
+        //     applyAllFilters();
+        // });
+        
+        // $("#clearFilterBtn").on("click", function () {
+        //     clearAllFilters();
+        // });
+    });
+
+    function loadRentDataTable() {
+        if ($.fn.dataTable.isDataTable('#rentTbl')) {
+            $('#rentTbl').DataTable().clear().destroy();
+        }
+
+        $("#rentTbl").DataTable({
+            ajax: {
+                url: "/Accounting/GetRents",
+                type: 'POST',
+                contentType: 'application/json',
+                data: function (d) {
+                    return JSON.stringify({
+                        PropertiesIds: $('#allPropertyFilter').val() || [],
+                        UnitsIds: $('#allUnitFilter').val() || [],
+                        //PropertiesIds: allPropertiesIdsList,
+                        //UnitsIds: allUnitsIdsList,
+                    });
+                },
+                dataSrc: "",
+                error: function (xhr, error, thrown) {
+                    console.error("Error occurred: ", error, thrown);
+                    alert("An error occurred while loading the data table: " + error);
                 }
             },
-            "columns": [
+            order: [[0, "asc"]],
+            columns: [
                 { data: "Invoice" },
                 {
                     data: "StartDate",
-                    render: function (data, type, row) {
+                    render: function (data) {
                         return moment(data).format('MM/DD/YYYY');
                     }
                 },
                 {
                     data: "EndDate",
-                    render: function (data, type, row) {
+                    render: function (data) {
                         return moment(data).format('MM/DD/YYYY');
                     }
                 },
@@ -81,9 +144,62 @@
                 { data: "RentCharges" }
             ]
         });
-    });
+    }
 
+    function populateDropDowns() {
+        $.ajax({
+            url: '/Communication/GetProperties',
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                var $allPropertyFilter = $('#allPropertyFilter');
+                $allPropertyFilter.empty();
+                data.forEach(function (item) {
+                    var option = new Option(item.BuildingNo + " - " + item.BuildingName, item.AssetId);
+                    $allPropertyFilter.append(option);
+                });
+            },
+            error: function (xhr, status, error) {
+                console.error('Error fetching properties:', error);
+            }
+        });
+    }
 
+    function populateUnits(propertyIds) {
+        if (propertyIds.length > 0) {
+            $.ajax({
+                url: '/Lease/GetUnitsDll',
+                method: 'POST',
+                data: { AssetIds: propertyIds },
+                dataType: 'json',
+                success: function (response) {
+                    var $allUnitFilter = $('#allUnitFilter');
+                    $allUnitFilter.empty();
+                    response.forEach(function (unit) {
+                        var option = `<option value="${unit.UnitId}">${unit.UnitName}</option>`;
+                        $allUnitFilter.append(option);
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error fetching units:', error);
+                }
+            });
+        }
+    }
+
+    // function applyAllFilters() {
+    //     allPropertiesIdsList = $('#allPropertyFilter').val() || [];
+    //     allUnitsIdsList = $('#allUnitFilter').val() || [];
+    //     loadRentDataTable();
+    // }
+
+    // function clearAllFilters() {
+    //     $('#allPropertyFilter').val('').trigger('change');
+    //     $('#allUnitFilter').empty();
+    //     allPropertiesIdsList = [];
+    //     allUnitsIdsList = [];
+    //     loadRentDataTable();
+    // }
 </script>
 
 

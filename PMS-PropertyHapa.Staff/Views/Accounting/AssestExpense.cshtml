@@ -20,11 +20,23 @@
         </div>
     </div>
     <div class="container-fluid">
+        <div class="row mb-3">
+            <div class="col-md-3">
+                <label class="col-sm-12 mb-0 font-weight-bold">Property</label>
+                <div class="col-sm-12">
+                    <select id="allPropertyFilter" multiple name="allPropertyFilter" class="form-control select2"></select>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <label class="col-sm-12 mb-0 font-weight-bold">Unit</label>
+                <div class="col-sm-12">
+                    <select id="allUnitFilter" multiple name="allUnitFilter" class="form-control select2"></select>
+                </div>
+            </div>
+        </div>
         <div class="row">
             <div class="col-12">
                 <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                    </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="table-responsive">
@@ -53,26 +65,68 @@
 </div>
 <script>
     $(document).ready(function () {
-        $('#expenseTbl').DataTable({
-            "ajax": {
-                "url": "/Accounting/GetAssetExpense",
-                "type": "POST",
-                "dataSrc": "",
-                "error": function (xhr, error, thrown) {
-                    alert('Failed to retrieve data. Please try again later.');
+        populateDropDowns();
+        loadExpenseDataTable();
+
+        $("#allPropertyFilter").on("change", function () {
+            var selectedProperties = $(this).val();
+            if (selectedProperties && selectedProperties.length > 0) {
+                populateUnits(selectedProperties);
+            } else {
+                $("#allUnitFilter").empty();
+            }
+            loadExpenseDataTable();
+        });
+
+        $("#allUnitFilter").on("change", function () {
+            loadExpenseDataTable();
+        });
+
+        // $("#applyFilterBtn").on("click", function () {
+        //     applyAllFilters();
+        // });
+
+        // $("#clearFilterBtn").on("click", function () {
+        //     clearAllFilters();
+        // });
+    });
+
+    function loadExpenseDataTable() {
+        if ($.fn.dataTable.isDataTable('#expenseTbl')) {
+            $('#expenseTbl').DataTable().clear().destroy();
+        }
+
+        $("#expenseTbl").DataTable({
+            ajax: {
+                url: "/Accounting/GetAssetExpense",
+                type: 'POST',
+                contentType: 'application/json',
+                data: function (d) {
+                    return JSON.stringify({
+                        PropertiesIds: $('#allPropertyFilter').val() || [],
+                        UnitsIds: $('#allUnitFilter').val() || [],
+                        //PropertiesIds: allPropertiesIdsList,
+                        //UnitsIds: allUnitsIdsList,
+                    });
+                },
+                dataSrc: "",
+                error: function (xhr, error, thrown) {
+                    console.error("Error occurred: ", error, thrown);
+                    alert("An error occurred while loading the data table: " + error);
                 }
             },
-            "columns": [
+            order: [[0, "asc"]],
+            columns: [
                 { data: "Task" },
                 {
                     data: "StartDate",
-                    render: function (data, type, row) {
+                    render: function (data) {
                         return moment(data).format('MM/DD/YYYY');
                     }
                 },
                 {
                     data: "EndDate",
-                    render: function (data, type, row) {
+                    render: function (data) {
                         return moment(data).format('MM/DD/YYYY');
                     }
                 },
@@ -81,8 +135,48 @@
                 { data: "Total" }
             ]
         });
-    });
+    }
 
+    function populateDropDowns() {
+        $.ajax({
+            url: '/Communication/GetProperties',
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                var $allPropertyFilter = $('#allPropertyFilter');
+                $allPropertyFilter.empty();
+                data.forEach(function (item) {
+                    var option = new Option(item.BuildingNo + " - " + item.BuildingName, item.AssetId);
+                    $allPropertyFilter.append(option);
+                });
+            },
+            error: function (xhr, status, error) {
+                console.error('Error fetching properties:', error);
+            }
+        });
+    }
+
+    function populateUnits(propertyIds) {
+        if (propertyIds.length > 0) {
+            $.ajax({
+                url: '/Lease/GetUnitsDll',
+                method: 'POST',
+                data: { AssetIds: propertyIds },
+                dataType: 'json',
+                success: function (response) {
+                    var $allUnitFilter = $('#allUnitFilter');
+                    $allUnitFilter.empty();
+                    response.forEach(function (unit) {
+                        var option = `<option value="${unit.UnitId}">${unit.UnitName}</option>`;
+                        $allUnitFilter.append(option);
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error fetching units:', error);
+                }
+            });
+        }
+    }
 
 </script>
 

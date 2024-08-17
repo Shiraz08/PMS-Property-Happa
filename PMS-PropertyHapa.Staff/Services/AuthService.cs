@@ -2622,12 +2622,13 @@ namespace PMS_PropertyHapa.Staff.Services
 
         #region Accounting
 
-        public async Task<IEnumerable<RentDto>> GetRents()
+        public async Task<IEnumerable<RentDto>> GetRents(ReportFilter reportFilter)
         {
 
             var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
             {
                 ApiType = SD.ApiType.POST,
+                Data = reportFilter,
                 Url = $"{villaUrl}/api/v1/AccountingAuth/Rent"
             });
 
@@ -2643,12 +2644,13 @@ namespace PMS_PropertyHapa.Staff.Services
             }
         }
 
-        public async Task<IEnumerable<AssetExpenseDto>> GetAssetExpense()
+        public async Task<IEnumerable<AssetExpenseDto>> GetAssetExpense(ReportFilter reportFilter)
         {
 
             var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
             {
                 ApiType = SD.ApiType.POST,
+                Data = reportFilter,
                 Url = $"{villaUrl}/api/v1/AccountingAuth/AssetExpense"
             });
 

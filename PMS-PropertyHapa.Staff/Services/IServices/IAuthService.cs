@@ -213,8 +213,8 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
 
         #region Accounting
 
-        Task<IEnumerable<RentDto>> GetRents();
-        Task<IEnumerable<AssetExpenseDto>> GetAssetExpense();
+        Task<IEnumerable<RentDto>> GetRents(ReportFilter reportFilter);
+        Task<IEnumerable<AssetExpenseDto>> GetAssetExpense(ReportFilter reportFilter);
         #endregion
 
         #region AccountType

@@ -515,14 +515,14 @@
                                             <div class="col-md-12">
                                                 <div class="form-check">
                                                     <input class="form-check-input" type="radio" name="lateFeePolicy" id="usePropertyPolicy" value="usePropertyPolicy"
-                                                    @(Model?.LateFeesPolicy == "true" ? "checked" : "")>
+                                                    @(Model?.LateFeesPolicy == "false" ? "checked" : "")>
                                                     <label class="form-check-label" for="usePropertyPolicy">
                                                         Use property late fees sructure
                                                     </label>
                                                 </div>
                                                 <div class="form-check">
                                                     <input class="form-check-input" type="radio" name="lateFeePolicy" id="specifyPolicy" value="specifyPolicy"
-                                                    @(Model?.LateFeesPolicy == "false" ? "checked" : "")>
+                                                    @(Model?.LateFeesPolicy == "true" ? "checked" : "")>
                                                     <label class="form-check-label" for="specifyPolicy">
                                                         Specify late fees policy for this lease
                                                     </label>

@@ -30,11 +30,11 @@ namespace PMS_PropertyHapa.API.Controllers.V1
         }
 
         [HttpPost("Rent")]
-        public async Task<ActionResult<RentDto>> GetRents()
+        public async Task<ActionResult<RentDto>> GetRents(ReportFilter reportFilter)
         {
             try
             {
-                var rent = await _userRepo.GetRentsAsync();
+                var rent = await _userRepo.GetRentsAsync(reportFilter);
 
                 if (rent != null)
                 {
@@ -58,11 +58,11 @@ namespace PMS_PropertyHapa.API.Controllers.V1
         }
 
         [HttpPost("AssetExpense")]
-        public async Task<ActionResult<AssetExpenseDto>> GetAssetExpense()
+        public async Task<ActionResult<AssetExpenseDto>> GetAssetExpense(ReportFilter reportFilter)
         {
             try
             {
-                var asset = await _userRepo.GetAssetExpenseAsync();
+                var asset = await _userRepo.GetAssetExpenseAsync(reportFilter);
 
                 if (asset != null)
                 {

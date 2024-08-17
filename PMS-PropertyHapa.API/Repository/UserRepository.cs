@@ -1254,7 +1254,9 @@ namespace MagicVilla_VillaAPI.Repository
                 FirstName = tenant.FirstName,
                 LastName = tenant.LastName,
                 EmailAddress = tenant.EmailAddress,
+                EmailAddress2 = tenant.EmailAddress2,
                 PhoneNumber = tenant.PhoneNumber,
+                PhoneNumber2 = tenant.PhoneNumber2,
                 EmergencyContactInfo = tenant.EmergencyContactInfo,
                 LeaseAgreementId = tenant.LeaseAgreementId,
                 TenantNationality = tenant.TenantNationality,
@@ -1332,7 +1334,9 @@ namespace MagicVilla_VillaAPI.Repository
                 MiddleName = tenant.MiddleName,
                 LastName = tenant.LastName,
                 EmailAddress = tenant.EmailAddress,
+                EmailAddress2 = tenant.EmailAddress2,
                 PhoneNumber = tenant.PhoneNumber,
+                PhoneNumber2 = tenant.PhoneNumber2,
                 Unit = tenant.Unit,
                 District = tenant.District,
                 EmergencyContactInfo = tenant.EmergencyContactInfo,
@@ -1387,7 +1391,9 @@ namespace MagicVilla_VillaAPI.Repository
                 MiddleName = tenant.MiddleName,
                 LastName = tenant.LastName,
                 EmailAddress = tenant.EmailAddress,
+                EmailAddress2 = tenant.EmailAddress2,
                 PhoneNumber = tenant.PhoneNumber,
+                PhoneNumber2 = tenant.PhoneNumber2,
                 EmergencyContactInfo = tenant.EmergencyContactInfo,
                 LeaseAgreementId = tenant.LeaseAgreementId,
                 TenantNationality = tenant.TenantNationality,
@@ -1565,7 +1571,7 @@ namespace MagicVilla_VillaAPI.Repository
                         AddedDate = DateTime.Now
                     };
 
-                   await _db.Vehicle.AddAsync(vehicle);
+                    await _db.Vehicle.AddAsync(vehicle);
                 }
 
                 await _db.SaveChangesAsync();
@@ -1642,7 +1648,9 @@ namespace MagicVilla_VillaAPI.Repository
             tenant.MiddleName = tenantDto.MiddleName;
             tenant.LastName = tenantDto.LastName;
             tenant.EmailAddress = tenantDto.EmailAddress;
+            tenant.EmailAddress2 = tenantDto.EmailAddress2;
             tenant.PhoneNumber = tenantDto.PhoneNumber;
+            tenant.PhoneNumber2 = tenantDto.PhoneNumber2;
             tenant.EmergencyContactInfo = tenantDto.EmergencyContactInfo;
             tenant.LeaseAgreementId = tenantDto.LeaseAgreementId;
             tenant.TenantNationality = tenantDto.TenantNationality;
@@ -4713,6 +4721,7 @@ namespace MagicVilla_VillaAPI.Repository
                                         PartsAndLabor = t.PartsAndLabor,
                                         AddedBy = t.AddedBy,
                                         LineItems = (from item in _db.LineItem
+                                                     from ca in _db.ChartAccount.Where(c=>c.ChartAccountId == item.ChartAccountId).DefaultIfEmpty()
                                                      where item.TaskRequestId == t.TaskRequestId && item.IsDeleted != true
                                                      select new LineItemDto
                                                      {
@@ -4721,6 +4730,7 @@ namespace MagicVilla_VillaAPI.Repository
                                                          Quantity = item.Quantity,
                                                          Price = item.Price,
                                                          ChartAccountId = item.ChartAccountId,
+                                                         AccountName = ca.Name,
                                                          Memo = item.Memo
                                                      }).ToList()
                                     })
@@ -7271,15 +7281,14 @@ namespace MagicVilla_VillaAPI.Repository
 
         #region Accounting
 
-        public async Task<List<RentDto>> GetRentsAsync()
+        public async Task<List<RentDto>> GetRentsAsync(ReportFilter reportFilter)
         {
             try
             {
                 var rent = await (from i in _db.Invoices
                                          join l in _db.Lease on i.LeaseId equals l.LeaseId into leaseGroup
                                          from l in leaseGroup.Where(x => x.IsDeleted != true).DefaultIfEmpty()
-                                         join p in _db.Assets on l.AssetId equals p.AssetId into properties
-                                         from p in properties.Where(x => x.IsDeleted != true).DefaultIfEmpty()
+                                         from p in _db.Assets.Where(x => x.AssetId == l.AssetId && x.IsDeleted != true).DefaultIfEmpty() 
                                          join rc in _db.RentCharge on l.LeaseId equals rc.LeaseId into rentCharges
                                          from rc in rentCharges.DefaultIfEmpty()
                                          where i.IsDeleted != true
@@ -7292,6 +7301,7 @@ namespace MagicVilla_VillaAPI.Repository
                                              p.AssetId,
                                              p.BuildingNo,
                                              p.BuildingName,
+                                             l.UnitId,
                                              l.SelectedUnit
                                          } into g
                                          select new RentDto
@@ -7301,9 +7311,25 @@ namespace MagicVilla_VillaAPI.Repository
                                              EndDate = g.Key.EndDate,
                                              PropertyId = (int?)g.Key.AssetId,
                                              Property = g.Key.BuildingNo + " - " + g.Key.BuildingName,
+                                             UnitId = (int?)g.Key.UnitId,
                                              Unit = g.Key.SelectedUnit,
                                              RentCharges = g.Sum(x => x.rc.Amount)
                                          }).ToListAsync();
+
+                // Apply filters
+                if (reportFilter.PropertiesIds != null && reportFilter.PropertiesIds.Any())
+                {
+                    rent = rent
+                        .Where(x => reportFilter.PropertiesIds.Contains(x.PropertyId))
+                        .ToList();
+                }
+
+                if (reportFilter.UnitsIds != null && reportFilter.UnitsIds.Any())
+                {
+                    rent = rent
+                        .Where(x => reportFilter.UnitsIds.Contains(x.UnitId))
+                        .ToList();
+                }
 
                 return rent;
             }
@@ -7314,15 +7340,14 @@ namespace MagicVilla_VillaAPI.Repository
             }
         }
 
-        public async Task<List<AssetExpenseDto>> GetAssetExpenseAsync()
+        public async Task<List<AssetExpenseDto>> GetAssetExpenseAsync(ReportFilter reportFilter)
         {
             try
             {
                 var assetExpenseReports = await (from l in _db.LineItem
                                                  from t in _db.TaskRequest.Where(x => x.TaskRequestId == l.TaskRequestId).DefaultIfEmpty()
-                                                 join p in _db.Assets on t.AssetId equals p.AssetId into properties
-                                                 from p in properties.DefaultIfEmpty()
-                                                 where t.IsDeleted != true && (p == null || p.IsDeleted != true)
+                                                 from p in _db.Assets.Where(x=> x.AssetId == t.AssetId && x.IsDeleted != true).DefaultIfEmpty()
+                                                 where t.IsDeleted != true
                                                  select new AssetExpenseDto
                                                  {
                                                      Total = l.Price * l.Quantity,
@@ -7335,6 +7360,20 @@ namespace MagicVilla_VillaAPI.Repository
                                                      Unit = t.Unit.UnitName,
                                                  }).ToListAsync();
 
+                // Apply filters
+                if (reportFilter.PropertiesIds != null && reportFilter.PropertiesIds.Any())
+                {
+                    assetExpenseReports = assetExpenseReports
+                        .Where(x => reportFilter.PropertiesIds.Contains(x.PropertyId))
+                        .ToList();
+                }
+
+                if (reportFilter.UnitsIds != null && reportFilter.UnitsIds.Any())
+                {
+                    assetExpenseReports = assetExpenseReports
+                        .Where(x => reportFilter.UnitsIds.Contains(x.UnitId))
+                        .ToList();
+                }
                 return assetExpenseReports;
             }
             catch (Exception ex)
