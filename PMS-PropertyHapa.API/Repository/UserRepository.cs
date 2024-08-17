@@ -7269,6 +7269,84 @@ namespace MagicVilla_VillaAPI.Repository
 
         #endregion
 
+        #region Accounting
+
+        public async Task<List<RentDto>> GetRentsAsync()
+        {
+            try
+            {
+                var rent = await (from i in _db.Invoices
+                                         join l in _db.Lease on i.LeaseId equals l.LeaseId into leaseGroup
+                                         from l in leaseGroup.Where(x => x.IsDeleted != true).DefaultIfEmpty()
+                                         join p in _db.Assets on l.AssetId equals p.AssetId into properties
+                                         from p in properties.Where(x => x.IsDeleted != true).DefaultIfEmpty()
+                                         join rc in _db.RentCharge on l.LeaseId equals rc.LeaseId into rentCharges
+                                         from rc in rentCharges.DefaultIfEmpty()
+                                         where i.IsDeleted != true
+                                         group new { i, l, p, rc } by new
+                                         {
+                                             i.InvoiceId,
+                                             l.LeaseId,
+                                             l.StartDate,
+                                             l.EndDate,
+                                             p.AssetId,
+                                             p.BuildingNo,
+                                             p.BuildingName,
+                                             l.SelectedUnit
+                                         } into g
+                                         select new RentDto
+                                         {
+                                             Invoice = g.Key.InvoiceId.ToString(),
+                                             StartDate = g.Key.StartDate,
+                                             EndDate = g.Key.EndDate,
+                                             PropertyId = (int?)g.Key.AssetId,
+                                             Property = g.Key.BuildingNo + " - " + g.Key.BuildingName,
+                                             Unit = g.Key.SelectedUnit,
+                                             RentCharges = g.Sum(x => x.rc.Amount)
+                                         }).ToListAsync();
+
+                return rent;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while mapping rent reports: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<List<AssetExpenseDto>> GetAssetExpenseAsync()
+        {
+            try
+            {
+                var assetExpenseReports = await (from l in _db.LineItem
+                                                 from t in _db.TaskRequest.Where(x => x.TaskRequestId == l.TaskRequestId).DefaultIfEmpty()
+                                                 join p in _db.Assets on t.AssetId equals p.AssetId into properties
+                                                 from p in properties.DefaultIfEmpty()
+                                                 where t.IsDeleted != true && (p == null || p.IsDeleted != true)
+                                                 select new AssetExpenseDto
+                                                 {
+                                                     Total = l.Price * l.Quantity,
+                                                     Task = t.Subject,
+                                                     StartDate = t.StartDate,
+                                                     EndDate = t.EndDate,
+                                                     PropertyId = p.AssetId,
+                                                     Property = p != null ? p.BuildingNo + " - " + p.BuildingName : null,
+                                                     UnitId = t.UnitId,
+                                                     Unit = t.Unit.UnitName,
+                                                 }).ToListAsync();
+
+                return assetExpenseReports;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while retrieving asset expenses: {ex.Message}");
+                throw;
+            }
+        }
+
+
+        #endregion
+
         #region AccountType
 
         public async Task<List<AccountType>> GetAccountTypesAsync()

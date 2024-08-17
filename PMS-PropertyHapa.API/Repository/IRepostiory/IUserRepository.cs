@@ -237,7 +237,9 @@ namespace MagicVilla_VillaAPI.Repository.IRepostiory
         Task<bool> DeleteApplicationAsync(int id);
         Task<string> GetTermsbyId(string id);
 
-
+        //Accounting
+        Task<List<RentDto>> GetRentsAsync();
+        Task<List<AssetExpenseDto>> GetAssetExpenseAsync();
 
         //Account Type
         Task<List<AccountType>> GetAccountTypesAsync();

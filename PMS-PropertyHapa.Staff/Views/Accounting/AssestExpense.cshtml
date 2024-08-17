@@ -8,6 +8,112 @@
     <div class="container-fluid">
         <div class="page-title">
             <div class="row">
+                <div class="col-12">
+                    <h3>Assest Expense</h3>
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a class="home-item" href="index.html"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item">Expense</li>
+                        <li class="breadcrumb-item active">List</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="table-responsive">
+                                <h3 class="card-title">Assest Expense</h3>
+                                <table class="table display" id="expenseTbl">
+                                    <thead>
+                                        <tr>
+                                            <th>Task Type</th>
+                                            <th>Start Date</th>
+                                            <th>End Date</th>
+                                            <th>Property</th>
+                                            <th>Unit</th>
+                                            <th>Expense</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#expenseTbl').DataTable({
+            "ajax": {
+                "url": "/Accounting/GetAssetExpense",
+                "type": "POST",
+                "dataSrc": "",
+                "error": function (xhr, error, thrown) {
+                    alert('Failed to retrieve data. Please try again later.');
+                }
+            },
+            "columns": [
+                { data: "Task" },
+                {
+                    data: "StartDate",
+                    render: function (data, type, row) {
+                        return moment(data).format('MM/DD/YYYY');
+                    }
+                },
+                {
+                    data: "EndDate",
+                    render: function (data, type, row) {
+                        return moment(data).format('MM/DD/YYYY');
+                    }
+                },
+                { data: "Property" },
+                { data: "Unit" },
+                { data: "Total" }
+            ]
+        });
+    });
+
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@* <div class="page-body">
+    <div class="container-fluid">
+        <div class="page-title">
+            <div class="row">
                 <div class="col-12 col-sm-6">
                     <h3>Assest Expense</h3>
                 </div>
@@ -343,3 +449,4 @@
     }
 
 </script>
+ *@

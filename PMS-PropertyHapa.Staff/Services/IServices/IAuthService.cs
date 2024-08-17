@@ -211,6 +211,12 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
         Task<string> GetTermsbyId(string id);
         #endregion
 
+        #region Accounting
+
+        Task<IEnumerable<RentDto>> GetRents();
+        Task<IEnumerable<AssetExpenseDto>> GetAssetExpense();
+        #endregion
+
         #region AccountType
 
         Task<IEnumerable<AccountType>> GetAccountTypesAsync();
@@ -306,5 +312,7 @@ namespace PMS_PropertyHapa.Staff.Services.IServices
 
 
         #endregion
+
+
     }
 }

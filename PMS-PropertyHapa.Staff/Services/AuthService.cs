@@ -2620,6 +2620,52 @@ namespace PMS_PropertyHapa.Staff.Services
 
         #endregion
 
+        #region Accounting
+
+        public async Task<IEnumerable<RentDto>> GetRents()
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.POST,
+                Url = $"{villaUrl}/api/v1/AccountingAuth/Rent"
+            });
+
+            if (response.IsSuccess == true)
+            {
+                var userListJson = Convert.ToString(response.Result);
+                var rent = JsonConvert.DeserializeObject<IEnumerable<RentDto>>(userListJson);
+                return rent;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve Finance data");
+            }
+        }
+
+        public async Task<IEnumerable<AssetExpenseDto>> GetAssetExpense()
+        {
+
+            var response = await _baseService.SendAsync<APIResponse>(new APIRequest()
+            {
+                ApiType = SD.ApiType.POST,
+                Url = $"{villaUrl}/api/v1/AccountingAuth/AssetExpense"
+            });
+
+            if (response.IsSuccess == true)
+            {
+                var userListJson = Convert.ToString(response.Result);
+                var asset = JsonConvert.DeserializeObject<IEnumerable<AssetExpenseDto>>(userListJson);
+                return asset;
+            }
+            else
+            {
+                throw new Exception("Failed to retrieve Finance data");
+            }
+        }
+
+        #endregion
+
         #region AccountType
 
         public async Task<IEnumerable<AccountType>> GetAccountTypesAsync()

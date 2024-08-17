@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PMS_PropertyHapa.Models.DTO;
 using PMS_PropertyHapa.Staff.Services.IServices;
 using static PMS_PropertyHapa.Shared.Enum.SD;
 
@@ -6,11 +7,13 @@ namespace PMS_PropertyHapa.Staff.Controllers
 {
     public class AccountingController : Controller
     {
+        private readonly IAuthService _authService;
         private readonly IPermissionService _permissionService;
 
-        public AccountingController(IPermissionService permissionService)
+        public AccountingController(IPermissionService permissionService, IAuthService authService)
         {
             _permissionService = permissionService;
+            _authService = authService;
         }
         public async Task<IActionResult> Index()
         {
@@ -27,7 +30,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
         {
             var currenUserId = Request?.Cookies["userId"]?.ToString();
 
-            bool hasAccess = await _permissionService.HasAccess(currenUserId, (int)UserPermissions.ViewRent);
+            bool hasAccess = await _permissionService.HasAccess(currenUserId, (int)UserPermissions.ViewFinanceReports);
             if (!hasAccess)
             {
                 return Unauthorized();
@@ -38,7 +41,7 @@ namespace PMS_PropertyHapa.Staff.Controllers
         {
             var currenUserId = Request?.Cookies["userId"]?.ToString();
 
-            bool hasAccess = await _permissionService.HasAccess(currenUserId, (int)UserPermissions.ViewAssestExpense);
+            bool hasAccess = await _permissionService.HasAccess(currenUserId, (int)UserPermissions.ViewFinanceReports);
             if (!hasAccess)
             {
                 return Unauthorized();
@@ -77,6 +80,20 @@ namespace PMS_PropertyHapa.Staff.Controllers
                 return Unauthorized();
             }
             return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetRents()
+        {
+            var res = await _authService.GetRents();
+            return Ok(res);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetAssetExpense()
+        {
+            var res = await _authService.GetAssetExpense();
+            return Ok(res);
         }
     }
 }
